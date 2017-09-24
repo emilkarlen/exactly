@@ -1,8 +1,8 @@
 from enum import Enum
 
 
-class ElementType(Enum):
-    SYMBOL = 1
+class TypeCategory(Enum):
+    DATA = 1
     LOGIC = 2
 
 
@@ -28,12 +28,12 @@ class ValueType(Enum):
     LINES_TRANSFORMER = 5
 
 
-VALUE_TYPE_2_ELEMENT_TYPE = {
-    ValueType.STRING: ElementType.SYMBOL,
-    ValueType.PATH: ElementType.SYMBOL,
-    ValueType.LIST: ElementType.SYMBOL,
+VALUE_TYPE_2_TYPE_CATEGORY = {
+    ValueType.STRING: TypeCategory.DATA,
+    ValueType.PATH: TypeCategory.DATA,
+    ValueType.LIST: TypeCategory.DATA,
 
-    ValueType.FILE_MATCHER: ElementType.LOGIC,
-    ValueType.LINE_MATCHER: ElementType.LOGIC,
-    ValueType.LINES_TRANSFORMER: ElementType.LOGIC,
+    ValueType.FILE_MATCHER: TypeCategory.LOGIC,
+    ValueType.LINE_MATCHER: TypeCategory.LOGIC,
+    ValueType.LINES_TRANSFORMER: TypeCategory.LOGIC,
 }

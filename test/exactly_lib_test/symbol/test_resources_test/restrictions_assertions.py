@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.symbol.data.restrictions import reference_restrictions
-from exactly_lib.symbol.restriction import ElementTypeRestriction, ValueTypeRestriction
-from exactly_lib.type_system.value_type import ElementType, ValueType
+from exactly_lib.symbol.restriction import TypeCategoryRestriction, ValueTypeRestriction
+from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib_test.symbol.test_resources import restrictions_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
@@ -17,28 +17,28 @@ def suite() -> unittest.TestSuite:
 class TestIsElementTypeRestriction(unittest.TestCase):
     def test_succeed(self):
         # ARRANGE #
-        expected_type = ElementType.LOGIC
+        expected_type = TypeCategory.LOGIC
 
-        assertion_to_check = sut.is_element_type_restriction(expected_type)
+        assertion_to_check = sut.is_type_category_restriction(expected_type)
 
-        restriction = ElementTypeRestriction(expected_type)
+        restriction = TypeCategoryRestriction(expected_type)
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, restriction)
 
-    def test_fail_WHEN_element_type_is_unexpected(self):
+    def test_fail_WHEN_type_category_is_unexpected(self):
         # ARRANGE #
-        expected_type = ElementType.LOGIC
-        actual_type = ElementType.SYMBOL
+        expected_type = TypeCategory.LOGIC
+        actual_type = TypeCategory.DATA
 
-        assertion_to_check = sut.is_element_type_restriction(expected_type)
+        assertion_to_check = sut.is_type_category_restriction(expected_type)
 
-        restriction = ElementTypeRestriction(actual_type)
+        restriction = TypeCategoryRestriction(actual_type)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, restriction)
 
     def test_fail_WHEN_restriction_is_of_other_type(self):
         # ARRANGE #
-        assertion_to_check = sut.is_element_type_restriction(ElementType.SYMBOL)
+        assertion_to_check = sut.is_type_category_restriction(TypeCategory.DATA)
 
         restriction = reference_restrictions.is_any_data_type()
         # ACT & ASSERT #
@@ -56,7 +56,7 @@ class TestIsValueTypeRestriction(unittest.TestCase):
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, restriction)
 
-    def test_fail_WHEN_element_type_is_unexpected(self):
+    def test_fail_WHEN_type_category_is_unexpected(self):
         # ARRANGE #
         expected_type = ValueType.STRING
         actual_type = ValueType.FILE_MATCHER

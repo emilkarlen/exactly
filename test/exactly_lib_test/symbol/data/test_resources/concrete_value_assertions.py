@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, Cons
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.value_type import SymbolValueType, ElementType
+from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -105,8 +105,8 @@ class _EqualsSymbolValueResolverBase(asrt.ValueAssertion):
                                 put: unittest.TestCase,
                                 actual: DataValueResolver,
                                 message_builder: asrt.MessageBuilder):
-        put.assertIs(ElementType.SYMBOL,
-                     actual.element_type,
+        put.assertIs(TypeCategory.DATA,
+                     actual.type_category,
                      'element_type')
         put.assertIs(self.expected_data_value_type,
                      actual.data_value_type,

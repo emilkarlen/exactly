@@ -1,9 +1,9 @@
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
-from exactly_lib.type_system.value_type import ValueType, SymbolValueType, ElementType, LogicValueType
+from exactly_lib.type_system.value_type import ValueType, SymbolValueType, TypeCategory, LogicValueType
 
-SYMBOL_ELEMENT_TYPE = 'data'
-LOGIC_ELEMENT_TYPE = 'logic'
+DATA_TYPE_CATEGORY = 'data'
+LOGIC_TYPE_CATEGORY = 'logic'
 
 PATH_TYPE = 'path'
 STRING_TYPE = 'string'
@@ -80,9 +80,9 @@ TYPE_INFO_DICT = dict([
                       ]
                       )
 
-ELEMENT_TYPE_NAME = {
-    ElementType.SYMBOL: SYMBOL_ELEMENT_TYPE,
-    ElementType.LOGIC: LOGIC_ELEMENT_TYPE,
+TYPE_CATEGORY_NAME = {
+    TypeCategory.DATA: DATA_TYPE_CATEGORY,
+    TypeCategory.LOGIC: LOGIC_TYPE_CATEGORY,
 }
 
 

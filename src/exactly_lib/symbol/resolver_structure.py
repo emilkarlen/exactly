@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
-from exactly_lib.type_system.value_type import SymbolValueType, ValueType, ElementType, LogicValueType
+from exactly_lib.type_system.value_type import SymbolValueType, ValueType, TypeCategory, LogicValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
 
@@ -13,7 +13,7 @@ class SymbolValueResolver(ObjectWithSymbolReferences):
     """ Base class for values in the symbol table used by Exactly. """
 
     @property
-    def element_type(self) -> ElementType:
+    def type_category(self) -> TypeCategory:
         raise NotImplementedError('abstract method')
 
     @property
@@ -34,8 +34,8 @@ def get_references(resolver: SymbolValueResolver) -> list:
     return resolver.references
 
 
-def get_element_type(resolver: SymbolValueResolver) -> ElementType:
-    return resolver.element_type
+def get_type_category(resolver: SymbolValueResolver) -> TypeCategory:
+    return resolver.type_category
 
 
 def get_value_type(resolver: SymbolValueResolver) -> ValueType:
@@ -46,8 +46,8 @@ class LogicValueResolver(SymbolValueResolver):
     """ Base class for logic values - values that represent functionality/logic."""
 
     @property
-    def element_type(self) -> ElementType:
-        return ElementType.LOGIC
+    def type_category(self) -> TypeCategory:
+        return TypeCategory.LOGIC
 
     @property
     def logic_value_type(self) -> LogicValueType:
@@ -119,8 +119,8 @@ class DataValueResolver(SymbolValueResolver):
     """ Base class for symbol values - values that represent data."""
 
     @property
-    def element_type(self) -> ElementType:
-        return ElementType.SYMBOL
+    def type_category(self) -> TypeCategory:
+        return TypeCategory.DATA
 
     @property
     def data_value_type(self) -> SymbolValueType:

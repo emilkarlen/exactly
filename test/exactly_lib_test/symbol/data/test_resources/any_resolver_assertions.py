@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
-from exactly_lib.type_system.value_type import ElementType
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
     equals_string_resolver
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver
@@ -45,8 +45,8 @@ class _EqualsResolver(asrt.ValueAssertion):
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         put.assertIsInstance(value, DataValueResolver)
         assert isinstance(value, DataValueResolver)
-        put.assertEqual(ElementType.SYMBOL,
-                        value.element_type,
+        put.assertEqual(TypeCategory.DATA,
+                        value.type_category,
                         _ELEMENT_TYPE_ERROR_MESSAGE)
         put.assertIs(self.expected.data_value_type,
                      value.data_value_type,
@@ -58,7 +58,7 @@ class _EqualsResolver(asrt.ValueAssertion):
 
 
 _ELEMENT_TYPE_ERROR_MESSAGE = 'the {} of a {} must be {}'.format(
-    ElementType,
+    TypeCategory,
     DataValueResolver,
-    ElementType.SYMBOL,
+    TypeCategory.DATA,
 )

@@ -1,7 +1,7 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.entity.builtin import name_and_ref_target
-from exactly_lib.type_system.value_type import ValueType, ElementType, VALUE_TYPE_2_ELEMENT_TYPE
+from exactly_lib.type_system.value_type import ValueType, TypeCategory, VALUE_TYPE_2_TYPE_CATEGORY
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
@@ -18,8 +18,8 @@ class BuiltinSymbolDocumentation(EntityDocumentationBase):
         self._description = description
 
     @property
-    def type_category(self) -> ElementType:
-        return VALUE_TYPE_2_ELEMENT_TYPE[self.value_type]
+    def type_category(self) -> TypeCategory:
+        return VALUE_TYPE_2_TYPE_CATEGORY[self.value_type]
 
     @property
     def value_type(self) -> ValueType:

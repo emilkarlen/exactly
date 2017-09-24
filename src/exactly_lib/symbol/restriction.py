@@ -1,6 +1,6 @@
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.type_system import value_type
-from exactly_lib.type_system.value_type import ElementType, ValueType
+from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -26,10 +26,10 @@ class ReferenceRestrictions:
         raise NotImplementedError('abstract method')
 
 
-class InvalidElementTypeFailure(FailureInfo):
+class InvalidTypeCategoryFailure(FailureInfo):
     def __init__(self,
-                 expected: ElementType,
-                 actual: ElementType):
+                 expected: TypeCategory,
+                 actual: TypeCategory):
         self.actual = actual
         self.expected = expected
 
@@ -42,13 +42,13 @@ class InvalidValueTypeFailure(FailureInfo):
         self.expected = expected
 
 
-class ElementTypeRestriction(ReferenceRestrictions):
-    def __init__(self, element_type: ElementType):
-        self._element_type = element_type
+class TypeCategoryRestriction(ReferenceRestrictions):
+    def __init__(self, type_category: TypeCategory):
+        self._type_category = type_category
 
     @property
-    def element_type(self) -> ElementType:
-        return self._element_type
+    def type_category(self) -> TypeCategory:
+        return self._type_category
 
     def is_satisfied_by(self,
                         symbol_table: SymbolTable,
@@ -60,11 +60,11 @@ class ElementTypeRestriction(ReferenceRestrictions):
         :param container: The container of the value that the restriction applies to
         :return: None if satisfied, otherwise an error message
         """
-        if container.resolver.element_type is self._element_type:
+        if container.resolver.type_category is self._type_category:
             return None
         else:
-            return InvalidElementTypeFailure(self._element_type,
-                                             container.resolver.element_type)
+            return InvalidTypeCategoryFailure(self._type_category,
+                                              container.resolver.type_category)
 
 
 class ValueTypeRestriction(ReferenceRestrictions):
@@ -72,8 +72,8 @@ class ValueTypeRestriction(ReferenceRestrictions):
         self._expected = expected
 
     @property
-    def element_type(self) -> ElementType:
-        return value_type.VALUE_TYPE_2_ELEMENT_TYPE[self._expected]
+    def type_category(self) -> TypeCategory:
+        return value_type.VALUE_TYPE_2_TYPE_CATEGORY[self._expected]
 
     @property
     def value_type(self) -> ValueType:

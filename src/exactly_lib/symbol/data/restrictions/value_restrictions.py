@@ -6,7 +6,7 @@ from exactly_lib.symbol.err_msg import error_messages as err_msg_for_any_type
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_validation import is_satisfied_by
-from exactly_lib.type_system.value_type import ValueType, ElementType
+from exactly_lib.type_system.value_type import ValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -19,7 +19,7 @@ class AnySymbolTypeRestriction(ValueRestriction):
                         symbol_table: SymbolTable,
                         symbol_name: str,
                         container: SymbolContainer) -> ValueRestrictionFailure:
-        if container.resolver.element_type is not ElementType.SYMBOL:
+        if container.resolver.type_category is not TypeCategory.DATA:
             return err_msg_for_any_type.invalid_type_msg(
                 [type_system.SYMBOL_TYPE_2_VALUE_TYPE[symbol_type]
                  for symbol_type in type_system.SYMBOL_TYPE_LIST_ORDER],

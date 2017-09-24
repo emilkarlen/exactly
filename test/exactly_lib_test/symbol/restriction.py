@@ -6,7 +6,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.value_type import ElementType, ValueType
+from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
@@ -28,20 +28,20 @@ def suite() -> unittest.TestSuite:
 
 class TestElementTypeRestriction(unittest.TestCase):
     element_type_2_resolver_of_type = {
-        ElementType.SYMBOL:
+        TypeCategory.DATA:
             data_symbol_utils.string_constant('string value'),
 
-        ElementType.LOGIC:
+        TypeCategory.LOGIC:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
     }
 
     def test_satisfied_restriction(self):
         # ARRANGE #
         named_elements = empty_symbol_table()
-        for expected_element_type in ElementType:
+        for expected_element_type in TypeCategory:
             container_of_resolver = container(self.element_type_2_resolver_of_type[expected_element_type])
             with self.subTest(element_type=str(expected_element_type)):
-                restriction_to_check = sut.ElementTypeRestriction(expected_element_type)
+                restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(named_elements,
                                                                      'name of element',
@@ -52,9 +52,9 @@ class TestElementTypeRestriction(unittest.TestCase):
     def test_dissatisfied_restriction(self):
         # ARRANGE #
         cases = {
-            ElementType.SYMBOL: ElementType.LOGIC,
+            TypeCategory.DATA: TypeCategory.LOGIC,
 
-            ElementType.LOGIC: ElementType.SYMBOL,
+            TypeCategory.LOGIC: TypeCategory.DATA,
         }
 
         named_elements = empty_symbol_table()
@@ -62,7 +62,7 @@ class TestElementTypeRestriction(unittest.TestCase):
             container_of_unexpected = container(self.element_type_2_resolver_of_type[unexpected_element_type])
             with self.subTest(expected_element_type=str(expected_element_type),
                               unexpected_element_type=str(unexpected_element_type)):
-                restriction_to_check = sut.ElementTypeRestriction(expected_element_type)
+                restriction_to_check = sut.TypeCategoryRestriction(expected_element_type)
                 # ACT
                 error_message = restriction_to_check.is_satisfied_by(named_elements,
                                                                      'name of element',

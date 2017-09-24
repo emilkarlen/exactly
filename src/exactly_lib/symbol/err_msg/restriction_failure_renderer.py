@@ -3,7 +3,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureO
     FailureOfIndirectReference
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
 from exactly_lib.symbol.resolver_structure import SymbolContainer
-from exactly_lib.symbol.restriction import FailureInfo, InvalidElementTypeFailure, InvalidValueTypeFailure
+from exactly_lib.symbol.restriction import FailureInfo, InvalidTypeCategoryFailure, InvalidValueTypeFailure
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -16,8 +16,8 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
         blank_line_separated_parts = error_message_for_direct_reference(failure.error)
     elif isinstance(failure, FailureOfIndirectReference):
         blank_line_separated_parts = _of_indirect(failing_symbol, symbols, failure)
-    elif isinstance(failure, InvalidElementTypeFailure):
-        blank_line_separated_parts = _of_invalid_element_type(failing_symbol, symbols, failure)
+    elif isinstance(failure, InvalidTypeCategoryFailure):
+        blank_line_separated_parts = _of_invalid_type_category(failing_symbol, symbols, failure)
     elif isinstance(failure, InvalidValueTypeFailure):
         blank_line_separated_parts = _of_invalid_value_type(failing_symbol, symbols, failure)
     else:
@@ -26,10 +26,10 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
     return _concat_parts(blank_line_separated_parts)
 
 
-def _of_invalid_element_type(failing_symbol: str, symbols: SymbolTable, failure: InvalidElementTypeFailure) -> list:
+def _of_invalid_type_category(failing_symbol: str, symbols: SymbolTable, failure: InvalidTypeCategoryFailure) -> list:
     msg = _expected_actual(failing_symbol,
-                           type_system.ELEMENT_TYPE_NAME[failure.expected],
-                           type_system.ELEMENT_TYPE_NAME[failure.actual],
+                           type_system.TYPE_CATEGORY_NAME[failure.expected],
+                           type_system.TYPE_CATEGORY_NAME[failure.actual],
                            )
     blank_line_separated_parts = [msg]
     return blank_line_separated_parts
