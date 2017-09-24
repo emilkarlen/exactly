@@ -6,7 +6,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
-    MainStepResultTranslatorForErrorMessageStringResult
+    MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
@@ -99,7 +99,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
 
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
-                                           MainStepResultTranslatorForErrorMessageStringResult())
+                                           MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 

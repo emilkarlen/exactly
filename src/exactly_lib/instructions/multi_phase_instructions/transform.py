@@ -6,7 +6,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
-    MainStepResultTranslatorForErrorMessageStringResult
+    MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
 from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parse_source import ParseSource
@@ -132,7 +132,7 @@ def embryo_parser(phase_is_before_act: bool) -> embryo.InstructionEmbryoParser:
 def parts_parser(phase_is_before_act: bool) -> PartsParserFromEmbryoParser:
     return PartsParserFromEmbryoParser(
         embryo_parser(phase_is_before_act),
-        MainStepResultTranslatorForErrorMessageStringResult())
+        MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
 SRC_PATH_ARGUMENT = instruction_arguments.SOURCE_PATH_ARGUMENT

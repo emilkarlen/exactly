@@ -9,7 +9,7 @@ from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CON
 from exactly_lib.help_texts.test_case.instructions import assign_symbol as syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
-    MainStepResultTranslatorForErrorMessageStringResult
+    MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.named_element.named_element_usage import NamedElementDefinition
@@ -114,7 +114,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
 
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
-                                           MainStepResultTranslatorForErrorMessageStringResult())
+                                           MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
 def _parse(source: ParseSource) -> NamedElementDefinition:
