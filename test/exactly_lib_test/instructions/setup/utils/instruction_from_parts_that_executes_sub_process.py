@@ -15,6 +15,10 @@ from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def suite() -> unittest.TestSuite:
+    return test_impl.suite_for(ConfigurationForTheSetupPhase())
+
+
 class ConfigurationForTheSetupPhase(SetupConfigurationBase, test_impl.Configuration):
     def phase(self) -> phase_identifier.Phase:
         return phase_identifier.SETUP
@@ -37,10 +41,6 @@ class ConfigurationForTheSetupPhase(SetupConfigurationBase, test_impl.Configurat
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         return Expectation(post_validation_result=svh_assertions.is_validation_error(assertion_on_error_message))
-
-
-def suite() -> unittest.TestSuite:
-    return test_impl.suite_for(ConfigurationForTheSetupPhase())
 
 
 if __name__ == '__main__':

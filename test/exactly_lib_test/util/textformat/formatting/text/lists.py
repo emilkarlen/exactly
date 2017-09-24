@@ -4,6 +4,14 @@ from exactly_lib.util.textformat.formatting.text import lists as sut
 from exactly_lib_test.util.textformat.test_resources.constr import text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestHeaderAndIndentFormatPlain))
+    ret_val.addTest(unittest.makeSuite(TestHeaderAndIndentFormatWithMarker))
+    ret_val.addTest(unittest.makeSuite(TestHeaderAndIndentFormatWithNumbering))
+    return ret_val
+
+
 class TestHeaderAndIndentFormatWithMarker(unittest.TestCase):
     def test_header_text(self):
         formatter = sut.HeaderAndIndentFormatWithMarker(marker='MARKER',
@@ -73,13 +81,5 @@ class TestHeaderAndIndentFormatWithNumbering(unittest.TestCase):
                          actual)
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestHeaderAndIndentFormatPlain))
-    ret_val.addTest(unittest.makeSuite(TestHeaderAndIndentFormatWithMarker))
-    ret_val.addTest(unittest.makeSuite(TestHeaderAndIndentFormatWithNumbering))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

@@ -10,10 +10,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestLiteralLayout)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestLiteralLayout(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
@@ -40,3 +36,6 @@ LITERAL_MULTI_LINE_TEXT_RESULT = """\
 
 second line
 </pre></root>"""
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

@@ -13,10 +13,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestParse(unittest.TestCase):
     def test_fail_when_invalid_syntax(self):
         test_cases = [
@@ -42,3 +38,7 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                     parser.parse(source)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

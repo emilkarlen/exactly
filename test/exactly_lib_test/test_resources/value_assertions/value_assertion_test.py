@@ -3,6 +3,23 @@ import unittest
 from exactly_lib_test.test_resources.value_assertions import value_assertion as sut
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestIsNone))
+    ret_val.addTest(unittest.makeSuite(TestIsNotNone))
+    ret_val.addTest(unittest.makeSuite(TestBoolean))
+    ret_val.addTest(unittest.makeSuite(TestEquals))
+    ret_val.addTest(unittest.makeSuite(TestConstant))
+    ret_val.addTest(unittest.makeSuite(TestIsInstance))
+    ret_val.addTest(unittest.makeSuite(TestNot))
+    ret_val.addTest(unittest.makeSuite(TestAnd))
+    ret_val.addTest(unittest.makeSuite(TestOr))
+    ret_val.addTest(unittest.makeSuite(TestOnTransformed))
+    ret_val.addTest(unittest.makeSuite(TestSubComponent))
+    ret_val.addTest(unittest.makeSuite(TestEveryElement))
+    return ret_val
+
+
 class TestException(Exception):
     def __init__(self, msg):
         super().__init__(msg)
@@ -325,26 +342,5 @@ def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCas
     return put
 
 
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestIsNone))
-    ret_val.addTest(unittest.makeSuite(TestIsNotNone))
-    ret_val.addTest(unittest.makeSuite(TestBoolean))
-    ret_val.addTest(unittest.makeSuite(TestEquals))
-    ret_val.addTest(unittest.makeSuite(TestConstant))
-    ret_val.addTest(unittest.makeSuite(TestIsInstance))
-    ret_val.addTest(unittest.makeSuite(TestNot))
-    ret_val.addTest(unittest.makeSuite(TestAnd))
-    ret_val.addTest(unittest.makeSuite(TestOr))
-    ret_val.addTest(unittest.makeSuite(TestOnTransformed))
-    ret_val.addTest(unittest.makeSuite(TestSubComponent))
-    ret_val.addTest(unittest.makeSuite(TestEveryElement))
-    return ret_val
-
-
-def run_suite():
-    unittest.TextTestRunner().run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

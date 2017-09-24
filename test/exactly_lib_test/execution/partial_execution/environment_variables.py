@@ -183,5 +183,4 @@ def _time_stamp_string() -> str:
 
 
 if __name__ == '__main__':
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
+    unittest.TextTestRunner().run(suite())

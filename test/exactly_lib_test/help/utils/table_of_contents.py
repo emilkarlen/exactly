@@ -11,10 +11,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestTocList)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestTocList(unittest.TestCase):
     def test_empty(self):
         # ARRANGE #
@@ -60,3 +56,6 @@ LIST_TYPE = lists.ListType.ITEMIZED_LIST
 
 TI = TargetInfo('presentation',
                 CrossReferenceTarget('target'))
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

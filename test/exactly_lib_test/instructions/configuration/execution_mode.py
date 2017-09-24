@@ -16,6 +16,14 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants__with_source_check
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestChangeMode),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+    ])
+
+
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
         for source in equivalent_source_variants(self, '   '):
@@ -72,13 +80,5 @@ class AssertExecutionMode(config_check.Assertion):
                         'Execution Mode')
 
 
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParse),
-        unittest.makeSuite(TestChangeMode),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
-    ])
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

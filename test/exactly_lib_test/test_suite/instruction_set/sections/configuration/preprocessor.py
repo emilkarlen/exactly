@@ -21,10 +21,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestFailingParse(unittest.TestCase):
     def test_fail_when_invalid_syntax(self):
         test_cases = [
@@ -67,3 +63,7 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
     def test_quoting(self):
         self._check("'executable with space' arg2 \"arg 3\"",
                     ['executable with space', 'arg2', 'arg 3'])
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

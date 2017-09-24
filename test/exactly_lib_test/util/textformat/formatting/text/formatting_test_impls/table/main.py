@@ -4,6 +4,15 @@ from exactly_lib.util.textformat.structure.table import Table, TableCell, TableF
 from exactly_lib_test.util.textformat.test_resources.constr import formatter_with_page_width, single_text_para
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestSingleRow),
+        unittest.makeSuite(TestMultipleRows),
+        unittest.makeSuite(TestEmpty),
+        unittest.makeSuite(TestUnderlineHeaderRow),
+    ])
+
+
 class TestSingleRow(unittest.TestCase):
     def test_single_cell(self):
         # ARRANGE
@@ -185,15 +194,6 @@ class TestUnderlineHeaderRow(unittest.TestCase):
 
 def _text_cell(text_as_string: str) -> TableCell:
     return single_paragraph_cell(single_text_para(text_as_string))
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestSingleRow),
-        unittest.makeSuite(TestMultipleRows),
-        unittest.makeSuite(TestEmpty),
-        unittest.makeSuite(TestUnderlineHeaderRow),
-    ])
 
 
 if __name__ == '__main__':

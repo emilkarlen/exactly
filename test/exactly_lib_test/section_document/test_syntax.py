@@ -3,6 +3,10 @@ import unittest
 from exactly_lib.section_document import syntax
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestExtractSectionNameFromSectionLine)
+
+
 class TestExtractSectionNameFromSectionLine(unittest.TestCase):
     def test_valid_phase_line_without_initial_space(self):
         name = 'name'
@@ -58,10 +62,6 @@ class TestExtractSectionNameFromSectionLine(unittest.TestCase):
         self.assertRaises(ValueError,
                           syntax.extract_section_name_from_section_line,
                           '[invalid-content-after-header]#not even a comment is allowed')
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestExtractSectionNameFromSectionLine)
 
 
 if __name__ == '__main__':

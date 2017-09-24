@@ -12,10 +12,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestCase)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestCase(unittest.TestCase):
     def test(self):
         # ARRANGE #
@@ -25,3 +21,7 @@ class TestCase(unittest.TestCase):
         actual = renderer.apply(RenderingEnvironment(cross_ref_text_constructor))
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

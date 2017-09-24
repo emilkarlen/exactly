@@ -10,9 +10,7 @@ from exactly_lib_test.section_document.test_resources.assertions import assert_e
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestStandardSyntaxElementParser))
-    return ret_val
+    return unittest.makeSuite(TestStandardSyntaxElementParser)
 
 
 class TestStandardSyntaxElementParser(unittest.TestCase):

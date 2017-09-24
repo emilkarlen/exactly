@@ -22,10 +22,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestComplexElementPopulator(unittest.TestCase):
     def test_simple_document(self):
         # ARRANGE #
@@ -220,3 +216,6 @@ TEST_SECTION_RENDERER = sut.SectionRenderer(HnSectionHeaderRenderer(TextRenderer
                                             ParaWithSingleStrTextRenderer())
 
 DOCUMENT_RENDERER = sut.DocumentRenderer(TEST_SECTION_RENDERER)
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

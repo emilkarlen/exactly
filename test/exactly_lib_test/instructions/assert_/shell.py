@@ -10,6 +10,13 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        suite_for(TheConfiguration()),
+        suite_for_instruction_documentation(sut.TheDocumentation('instruction-name')),
+    ])
+
+
 class TheConfiguration(AssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
@@ -19,13 +26,6 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        suite_for(TheConfiguration()),
-        suite_for_instruction_documentation(sut.TheDocumentation('instruction-name')),
-    ])
 
 
 if __name__ == '__main__':

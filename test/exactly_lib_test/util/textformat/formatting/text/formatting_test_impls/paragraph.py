@@ -3,6 +3,10 @@ import unittest
 from exactly_lib_test.util.textformat.test_resources.constr import text, para, formatter_with_page_width
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestParagraph)
+
+
 class TestParagraph(unittest.TestCase):
     def test_too_long_line(self):
         p = para([text('1234567')])
@@ -40,14 +44,5 @@ class TestParagraph(unittest.TestCase):
                          actual)
 
 
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParagraph)
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

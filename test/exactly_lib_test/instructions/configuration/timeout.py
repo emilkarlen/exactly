@@ -83,4 +83,4 @@ class AssertTimeout(config_check.Assertion):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

@@ -3,6 +3,14 @@ import unittest
 from exactly_lib.util.textformat.formatting.text.table import width_distribution as sut
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestSingleColumn),
+        unittest.makeSuite(TestTwoColumns),
+        unittest.makeSuite(TestThreeColumns),
+    ])
+
+
 class TestSingleColumn(unittest.TestCase):
     def test_WHEN_column_fits_within_available_width_THEN_column_width_should_be_equal_to_column(self):
         column_content_width = 10
@@ -84,14 +92,6 @@ class TestThreeColumns(unittest.TestCase):
                           available_width - 12 - 1,
                           12],
                          distribution)
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestSingleColumn),
-        unittest.makeSuite(TestTwoColumns),
-        unittest.makeSuite(TestThreeColumns),
-    ])
 
 
 if __name__ == '__main__':

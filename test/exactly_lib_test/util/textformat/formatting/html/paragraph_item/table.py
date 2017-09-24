@@ -19,10 +19,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestEmptyTable(unittest.TestCase):
     def test_empty(self):
         # ARRANGE #
@@ -213,3 +209,7 @@ class TestHeaderRowAndColumnTable(unittest.TestCase):
 
 def text_cell(content_str: str) -> TableCell:
     return single_paragraph_cell(para(content_str))
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

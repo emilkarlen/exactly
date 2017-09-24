@@ -7,9 +7,7 @@ from exactly_lib_test.test_case_utils.expression import test_resources
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(Test),
-    ])
+    return unittest.makeSuite(Test)
 
 
 class Test(unittest.TestCase):

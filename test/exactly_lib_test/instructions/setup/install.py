@@ -420,4 +420,4 @@ class DestinationSetup:
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

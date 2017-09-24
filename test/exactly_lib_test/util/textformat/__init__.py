@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.util.textformat import formatting, parse, utils
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(formatting.suite())
     ret_val.addTest(parse.suite())

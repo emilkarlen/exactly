@@ -14,6 +14,10 @@ from exactly_lib_test.instructions.test_resources.test_of_test_framework_utils i
     single_line_source
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestCases)
+
+
 class TestCases(instruction_check.TestCaseBase):
     def test_successful_flow(self):
         self._check(
@@ -50,10 +54,5 @@ class ConfigurationCheckRaisesTestError(configuration_check.Assertion):
 
 _SUCCESSFUL_INSTRUCTION = configuration_phase_instruction_that()
 
-
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestCases)
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

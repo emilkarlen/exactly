@@ -24,10 +24,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestHnSectionHeaderRenderer(unittest.TestCase):
     HN_SECTION_HEADER_RENDERER = HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl()))
 
@@ -270,3 +266,6 @@ class TestSection(unittest.TestCase):
 
 TEST_RENDERER = sut.SectionRenderer(HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl())),
                                     ParaWithSingleStrTextRenderer())
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

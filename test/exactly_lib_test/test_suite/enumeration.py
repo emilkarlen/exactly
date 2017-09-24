@@ -13,9 +13,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestDepthFirstEnumerator)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
 T_C_H_S = TestCaseHandlingSetup(command_line.act_phase_setup(),
                                 IDENTITY_PREPROCESSOR)
 
@@ -62,3 +59,7 @@ class TestDepthFirstEnumerator(unittest.TestCase):
             self.assertIs(e,
                           a,
                           'Suite object')
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

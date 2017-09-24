@@ -5,7 +5,7 @@ from exactly_lib_test.util.textformat.formatting.text.formatting_test_impls.tabl
 from exactly_lib_test.util.textformat.formatting.text.formatting_test_impls.table import main
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(main.suite())
     ret_val.addTest(column_max_width.suite())

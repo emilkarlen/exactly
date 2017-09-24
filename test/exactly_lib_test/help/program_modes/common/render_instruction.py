@@ -16,10 +16,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestListItem(unittest.TestCase):
     def test(self):
         actual = sut.instruction_set_list_item(InstructionDocumentationWithConstantValues('instruction name',
@@ -86,3 +82,6 @@ class TestManPage(unittest.TestCase):
 
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

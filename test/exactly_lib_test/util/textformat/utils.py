@@ -13,10 +13,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestParagraphItemVisitor)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestParagraphItemVisitor(unittest.TestCase):
     def test_visit_paragraph(self):
         # ARRANGE #
@@ -99,3 +95,7 @@ class AVisitorThatRecordsVisitedMethods(sut.ParagraphItemVisitor):
     def visit_table(self, table: Table):
         self.visited_types.append(Table)
         return table
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

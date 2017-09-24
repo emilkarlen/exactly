@@ -3,6 +3,13 @@ import unittest
 from exactly_lib.util import tables as sut
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(TestTranspose),
+        unittest.makeSuite(TestExtendLengths),
+    ])
+
+
 class TestExtendLengths(unittest.TestCase):
     def test_single_row(self):
         # ARRANGE #
@@ -47,13 +54,6 @@ class TestTranspose(unittest.TestCase):
                     ['b']]
         self.assertEqual(expected,
                          actual)
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestTranspose),
-        unittest.makeSuite(TestExtendLengths),
-    ])
 
 
 if __name__ == '__main__':

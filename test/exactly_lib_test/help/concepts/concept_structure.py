@@ -12,10 +12,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestVisitor(unittest.TestCase):
     def test_visit_plain_concept(self):
         # ARRANGE #
@@ -80,3 +76,7 @@ class _ConfigurationParameterDocumentationTestImpl(sut.ConfigurationParameterDoc
 
     def purpose(self) -> DescriptionWithSubSections:
         return single_line_description_with_sub_sections('ConfigurationParameterDocumentation')
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

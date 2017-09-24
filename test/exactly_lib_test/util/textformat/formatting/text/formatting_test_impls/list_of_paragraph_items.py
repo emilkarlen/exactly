@@ -5,6 +5,10 @@ from exactly_lib_test.util.textformat.test_resources.constr import text, para, B
     CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestParagraphItems)
+
+
 class TestParagraphItems(unittest.TestCase):
     def test_no_item(self):
         formatter = sut.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
@@ -51,14 +55,5 @@ class TestParagraphItems(unittest.TestCase):
                          actual)
 
 
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParagraphItems)
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

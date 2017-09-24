@@ -4,6 +4,10 @@ import unittest
 from exactly_lib.util.textformat.formatting.text.table import column_max_width as sut
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestCase)
+
+
 class TestCase(unittest.TestCase):
     def test_single_column_single_cell_with_available_width_wider_than_widest_cell(self):
         # ARRANGE #
@@ -63,10 +67,6 @@ def paragraph_items_formatter_where_each_pi_must_be_a_plain_str(available_width:
         return paragraph_items
 
     return ret_val
-
-
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestCase)
 
 
 if __name__ == '__main__':

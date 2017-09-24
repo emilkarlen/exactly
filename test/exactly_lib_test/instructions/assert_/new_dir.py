@@ -10,6 +10,10 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def suite() -> unittest.TestSuite:
+    return suite_for(TheConfiguration())
+
+
 class TheConfiguration(AssertConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
@@ -18,10 +22,6 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
                                      symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
         return Expectation(main_result=pfh_check.is_hard_error(),
                            symbol_usages=symbol_usages)
-
-
-def suite() -> unittest.TestSuite:
-    return suite_for(TheConfiguration())
 
 
 if __name__ == '__main__':

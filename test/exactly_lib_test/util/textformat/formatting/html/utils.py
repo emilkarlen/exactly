@@ -7,13 +7,7 @@ from exactly_lib_test.util.textformat.formatting.html.test_resources import as_u
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestComplexElementPopulator),
-    ])
-
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
+    return unittest.makeSuite(TestComplexElementPopulator)
 
 
 class TestComplexElementPopulator(unittest.TestCase):
@@ -41,3 +35,7 @@ class SingleParaPopulator(exactly_lib.util.textformat.formatting.html.utils.Elem
 
     def apply(self, parent: Element):
         SubElement(parent, 'p').text = self.para_text
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

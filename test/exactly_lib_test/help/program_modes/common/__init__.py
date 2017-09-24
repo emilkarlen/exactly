@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.help.program_modes.common import render_instruction
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         render_instruction.suite(),
     ])

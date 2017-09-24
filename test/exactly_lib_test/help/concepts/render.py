@@ -22,10 +22,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestAllConceptsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
@@ -117,3 +113,6 @@ class ConfigurationParameterTestImpl(ConfigurationParameterDocumentation):
 
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

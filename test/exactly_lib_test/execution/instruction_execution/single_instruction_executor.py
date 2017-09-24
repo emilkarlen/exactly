@@ -17,10 +17,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-if __name__ == '__main__':
-    unittest.main()
-
-
 class NameRecorder:
     def __init__(self):
         self.__list = []
@@ -154,3 +150,7 @@ def assert_equal_lines(unit_tc: unittest.TestCase,
 def new_dummy_instruction_element() -> SectionContentElement:
     return new_instruction_e(new_ls_from_line(line_source.Line(100, '100')),
                              TestCaseInstruction())
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
