@@ -55,15 +55,17 @@ class Expectation(ExpectationBase):
                  validation_post_setup: asrt.ValueAssertion = svh_assertions.is_success(),
                  main_result: asrt.ValueAssertion = sh_assertions.is_success(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
-                 main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
-                 home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
+                 main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
-        super().__init__(validation_pre_sds, main_side_effects_on_files, home_and_sds)
+        super().__init__(validation_pre_sds,
+                         main_side_effects_on_sds,
+                         main_side_effects_on_home_and_sds,
+                         symbol_usages)
         self.validation_post_setup = validation_post_setup
         self.main_result = sh_assertions.is_sh_and(main_result)
         self.source = source
-        self.symbol_usages = symbol_usages
 
 
 is_success = Expectation
@@ -154,7 +156,7 @@ class Executor(InstructionExecutionBase):
             write_act_result(home_and_sds.sds, act_result)
 
             self._execute_main(environment, instruction)
-            self._check_main_side_effects_on_files(home_and_sds)
+            self._check_main_side_effects_on_sds(home_and_sds)
             self._check_side_effects_on_home_and_sds(home_and_sds)
             self.expectation.symbol_usages.apply_with_message(self.put,
                                                               instruction.symbol_usages(),

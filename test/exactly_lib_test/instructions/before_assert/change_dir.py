@@ -21,7 +21,7 @@ class TheConfiguration(BeforeAssertConfigurationBase, Configuration):
     def expect_successful_execution_with_side_effect(self,
                                                      side_effects_check: asrt.ValueAssertion,
                                                      symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
-        return Expectation(home_and_sds=side_effects_check,
+        return Expectation(main_side_effects_on_home_and_sds=side_effects_check,
                            symbol_usages=symbol_usages)
 
     def expect_target_is_not_a_directory(self):

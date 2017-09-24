@@ -36,10 +36,10 @@ class AssertConfigurationBase(ConfigurationBase):
             process_execution_settings=ProcessExecutionSettings(timeout_in_seconds=timeout_in_seconds))
 
     def expect_success(self,
-                       main_side_effects_on_files: asrt.ValueAssertion = asrt.anything_goes(),
+                       main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                        symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
         return Expectation(
-            main_side_effects_on_files=main_side_effects_on_files,
+            main_side_effects_on_sds=main_side_effects_on_sds,
             symbol_usages=symbol_usages)
 
     def expect_failure_of_main(self,
