@@ -10,6 +10,18 @@ from exactly_lib.util.textformat.structure import lists
 from exactly_lib_test.util.textformat.test_resources.constr import single_text_para, item, header_only_item, \
     BLANK_LINE, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
+
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestHeaderOnlyListItemsWithNoLineWraps))
+    ret_val.addTest(unittest.makeSuite(TestHeaderOnlyListItemsWithLineWraps))
+    ret_val.addTest(unittest.makeSuite(TestContentFormatting))
+    ret_val.addTest(unittest.makeSuite(TestThatIdentationIsNotModified))
+    ret_val.addTest(unittest.makeSuite(TestResolveListFormat))
+    ret_val.addTest(unittest.makeSuite(TestWholeListIndent))
+    return ret_val
+
+
 NO_SEPARATIONS = lists.Separations(num_blank_lines_between_elements=0,
                                    num_blank_lines_between_header_and_contents=0)
 
@@ -353,21 +365,5 @@ def formatter_with_page_width(page_width: int) -> sut.Formatter:
                          list_formats=list_formats_with(indent_str=''))
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestHeaderOnlyListItemsWithNoLineWraps))
-    ret_val.addTest(unittest.makeSuite(TestHeaderOnlyListItemsWithLineWraps))
-    ret_val.addTest(unittest.makeSuite(TestContentFormatting))
-    ret_val.addTest(unittest.makeSuite(TestThatIdentationIsNotModified))
-    ret_val.addTest(unittest.makeSuite(TestResolveListFormat))
-    ret_val.addTest(unittest.makeSuite(TestWholeListIndent))
-    return ret_val
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

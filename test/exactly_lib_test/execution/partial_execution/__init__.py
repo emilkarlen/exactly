@@ -10,7 +10,7 @@ from exactly_lib_test.execution.partial_execution import \
     propagation_of_hds
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(act_phase_execution.suite())
     ret_val.addTest(instruction_environment.suite())

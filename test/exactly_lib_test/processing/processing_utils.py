@@ -11,6 +11,14 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib_test.test_case.test_resources import error_info
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestIdentityPreprocessor))
+    ret_val.addTest(unittest.makeSuite(TestAccessor))
+    ret_val.addTest(unittest.makeSuite(TestProcessorFromAccessorAndExecutor))
+    return ret_val
+
+
 class TestIdentityPreprocessor(unittest.TestCase):
     def test(self):
         # ACT #
@@ -269,14 +277,5 @@ TEST_CASE = test_case_doc.TestCase(new_empty_section_contents(),
                                    new_empty_section_contents(),
                                    new_empty_section_contents())
 
-
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestIdentityPreprocessor))
-    ret_val.addTest(unittest.makeSuite(TestAccessor))
-    ret_val.addTest(unittest.makeSuite(TestProcessorFromAccessorAndExecutor))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

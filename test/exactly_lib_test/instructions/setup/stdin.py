@@ -327,4 +327,4 @@ class AssertStdinIsSetToContents(asrt.ValueAssertion):
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

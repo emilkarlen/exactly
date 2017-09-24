@@ -395,10 +395,5 @@ class InstructionThatSetsEnvironmentVariable(embryo.InstructionEmbryo):
         environment.environ[variable.name] = variable.value
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

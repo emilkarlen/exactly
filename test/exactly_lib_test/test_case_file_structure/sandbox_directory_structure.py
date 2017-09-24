@@ -8,6 +8,10 @@ from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestConstructExecutionDirectoryStructure)
+
+
 class TestConstructExecutionDirectoryStructure(unittest.TestCase):
     def test_construct_sandbox_directory_structure(self):
         with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir_name:
@@ -86,11 +90,5 @@ def is_sandbox_directory_structure_after_execution(fc: FileChecker,
     fc.assert_exists_dir(sds.log_dir)
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestConstructExecutionDirectoryStructure))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

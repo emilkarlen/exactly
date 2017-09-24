@@ -7,14 +7,14 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 
 
+def suite() -> unittest.TestSuite:
+    return suite_for(TheConfiguration())
+
+
 class TheConfiguration(SetupConfigurationBase):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
 
 
-def suite() -> unittest.TestSuite:
-    return suite_for(TheConfiguration())
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

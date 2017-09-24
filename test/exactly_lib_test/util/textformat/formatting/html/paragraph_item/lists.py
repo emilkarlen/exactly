@@ -18,10 +18,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestItemizedListType(unittest.TestCase):
     def test_empty(self):
         # ARRANGE #
@@ -197,3 +193,6 @@ class TestVariableListType(unittest.TestCase):
 
 
 TARGET_RENDERER = TargetRendererTestImpl()
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

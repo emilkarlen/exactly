@@ -4,6 +4,10 @@ from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib_test.util.textformat.test_resources.constr import formatter_with_page_width
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestLiteralLayout)
+
+
 class TestLiteralLayout(unittest.TestCase):
     def test_empty(self):
         # ARRANGE
@@ -50,14 +54,5 @@ class TestLiteralLayout(unittest.TestCase):
                          actual)
 
 
-def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestLiteralLayout)
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

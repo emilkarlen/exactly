@@ -6,7 +6,7 @@ from exactly_lib_test.execution.full_execution.execution_mode import \
     xfail
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(normal.suite())
     ret_val.addTest(skipped.suite())

@@ -4,7 +4,7 @@ from exactly_lib_test.instructions.cleanup import change_dir, env, run, new_dir,
 from exactly_lib_test.instructions.cleanup import test_resources, utils
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(test_resources.suite())
     ret_val.addTest(utils.suite())
@@ -17,10 +17,5 @@ def suite():
     return ret_val
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

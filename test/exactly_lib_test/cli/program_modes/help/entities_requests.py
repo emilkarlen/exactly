@@ -61,13 +61,13 @@ def help_request_renderer_resolver(entities: list) -> sut.EntityHelpRequestRende
         ACTOR_ENTITY_CONFIGURATION.cli_list_renderer_getter,
         entities)
 
-
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
 _RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
 
 
 def _actor_help_request(item: sut.EntityHelpItem,
                         individual_actor: ActorDocumentation = None) -> sut.EntityHelpRequest:
     return sut.EntityHelpRequest(ACTOR_ENTITY_TYPE_NAME, item, individual_actor)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

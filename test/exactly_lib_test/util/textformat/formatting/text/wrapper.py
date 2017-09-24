@@ -3,6 +3,14 @@ import unittest
 from exactly_lib.util.textformat.formatting.text import wrapper as sut
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestIndent))
+    ret_val.addTest(unittest.makeSuite(TestIndentIncreaseContextManager))
+    ret_val.addTest(unittest.makeSuite(TestNoWordWrap))
+    return ret_val
+
+
 class TestIndent(unittest.TestCase):
     def test_construction(self):
         wrapper = sut.Wrapper(page_width=10)
@@ -155,18 +163,5 @@ def _check_current_indent(put: unittest.TestCase,
                     'Current indent')
 
 
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestIndent))
-    ret_val.addTest(unittest.makeSuite(TestIndentIncreaseContextManager))
-    ret_val.addTest(unittest.makeSuite(TestNoWordWrap))
-    return ret_val
-
-
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

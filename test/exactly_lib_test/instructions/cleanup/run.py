@@ -10,6 +10,10 @@ from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def suite() -> unittest.TestSuite:
+    return suite_for(TheConfiguration())
+
+
 class TheConfiguration(CleanupConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
@@ -21,9 +25,5 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
                            symbol_usages=symbol_usages)
 
 
-def suite() -> unittest.TestSuite:
-    return suite_for(TheConfiguration())
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

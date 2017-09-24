@@ -9,6 +9,10 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
 from exactly_lib_test.test_case.test_resources import sh_assertions
 
 
+def suite() -> unittest.TestSuite:
+    return suite_for(TheConfiguration())
+
+
 class TheConfiguration(CleanupConfigurationBase, Configuration):
     def instruction_setup(self) -> SingleInstructionSetup:
         return sut.setup('instruction name')
@@ -18,10 +22,6 @@ class TheConfiguration(CleanupConfigurationBase, Configuration):
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()
-
-
-def suite() -> unittest.TestSuite:
-    return suite_for(TheConfiguration())
 
 
 if __name__ == '__main__':

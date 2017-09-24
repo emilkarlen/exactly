@@ -14,10 +14,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestParse(unittest.TestCase):
     def test_parse_single_line_from_single_line_source(self):
         # ARRANGE #
@@ -154,3 +150,7 @@ def _assert_source_is_not_at_eof_and_has_current_whole_line(put: unittest.TestCa
     put.assertEqual(expected_current_line,
                     source.remaining_part_of_current_line,
                     'Current line should be identical to remaining-part-of-current-line')
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

@@ -67,9 +67,6 @@ class Test(TestCaseBase):
                         [phase_step.CONFIGURATION__MAIN],
                         False))
 
-        if __name__ == '__main__':
-            unittest.main()
-
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

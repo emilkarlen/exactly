@@ -23,9 +23,6 @@ def suite() -> unittest.TestSuite:
     return ret_val
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
 _COMMENT_START = 'COMMENT'
 
 _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
@@ -694,3 +691,7 @@ class ElementChecker(TestCaseWithMessageHeader):
         else:
             self.tc.assertIsNone(expected_element.instruction,
                                  'Instruction should not be present for non-instruction elements')
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

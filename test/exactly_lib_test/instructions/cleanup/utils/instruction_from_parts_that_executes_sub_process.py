@@ -14,6 +14,10 @@ from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
+def suite() -> unittest.TestSuite:
+    return test_impl.suite_for(ConfigurationForTheCleanupPhase())
+
+
 class ConfigurationForTheCleanupPhase(CleanupConfigurationBase, test_impl.Configuration):
     def phase(self) -> phase_identifier.Phase:
         return phase_identifier.CLEANUP
@@ -36,10 +40,6 @@ class ConfigurationForTheCleanupPhase(CleanupConfigurationBase, test_impl.Config
     def expect_failing_validation_post_setup(self,
                                              assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
         return Expectation(main_result=sh_assertions.is_hard_error(assertion_on_error_message))
-
-
-def suite() -> unittest.TestSuite:
-    return test_impl.suite_for(ConfigurationForTheCleanupPhase())
 
 
 if __name__ == '__main__':

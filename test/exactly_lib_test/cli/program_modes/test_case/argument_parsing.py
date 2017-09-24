@@ -9,10 +9,6 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestCase)
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestCase(unittest.TestCase):
     def test_resolve_home_directory(self):
         # ARRANGE #
@@ -26,3 +22,7 @@ class TestCase(unittest.TestCase):
         self.assertEqual(expected_home_path,
                          result.initial_home_dir_path,
                          'Initial Home Directory')
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

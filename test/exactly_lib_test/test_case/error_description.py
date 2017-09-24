@@ -4,6 +4,10 @@ import unittest
 from exactly_lib.test_case import error_description as sut
 
 
+def suite() -> unittest.TestSuite:
+    return unittest.makeSuite(TestVisitor)
+
+
 class ReturnValueEnum(enum.Enum):
     MESSAGE = 1
     EXCEPTION = 2
@@ -46,11 +50,5 @@ class TestVisitor(unittest.TestCase):
             self.VISITOR.visit('string is not a sub class of ErrorDescription')
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestVisitor))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

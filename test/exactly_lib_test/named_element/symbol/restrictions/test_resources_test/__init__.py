@@ -4,9 +4,7 @@ from exactly_lib_test.named_element.symbol.restrictions.test_resources_test impo
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(concrete_restriction_assertion.suite())
-    return ret_val
+    return concrete_restriction_assertion.suite()
 
 
 if __name__ == '__main__':

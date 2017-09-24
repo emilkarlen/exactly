@@ -23,6 +23,14 @@ from exactly_lib_test.test_suite.test_resources.suite_reporting import Execution
     ExecutionTracingRootSuiteReporter, EventType, ExecutionTracingSubSuiteProgressReporter
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestError))
+    ret_val.addTest(unittest.makeSuite(TestReturnValueFromTestCaseProcessor))
+    ret_val.addTest(unittest.makeSuite(TestComplexSuite))
+    return ret_val
+
+
 class TestError(unittest.TestCase):
     def test_error_when_reading_suite_structure(self):
         # ARRANGE #
@@ -430,17 +438,5 @@ class ExpectedSuiteReporting(tuple):
                          msg_header + 'Second event of case processing')
 
 
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestError))
-    ret_val.addTest(unittest.makeSuite(TestReturnValueFromTestCaseProcessor))
-    ret_val.addTest(unittest.makeSuite(TestComplexSuite))
-    return ret_val
-
-
-def run_suite():
-    unittest.TextTestRunner().run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

@@ -9,6 +9,13 @@ from exactly_lib_test.util.textformat.test_resources.constr import single_text_p
     BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
 
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestSectionContents))
+    ret_val.addTest(unittest.makeSuite(TestSection))
+    return ret_val
+
+
 class TestSectionContents(unittest.TestCase):
     def test_only_initial_paragraphs(self):
         paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
@@ -230,12 +237,5 @@ def empty_section(header: str) -> sut.Section:
                        sut.SectionContents([], []))
 
 
-def suite():
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestSectionContents))
-    ret_val.addTest(unittest.makeSuite(TestSection))
-    return ret_val
-
-
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

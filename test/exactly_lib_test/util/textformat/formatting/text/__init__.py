@@ -6,7 +6,7 @@ from . import paragraph_item
 from . import section
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(wrapper.suite())
     ret_val.addTest(lists.suite())

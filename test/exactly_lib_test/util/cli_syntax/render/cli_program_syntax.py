@@ -13,10 +13,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class ArgumentUsageOnCommandLineRendererForMandatoryArgumentTest(unittest.TestCase):
     def test_single(self):
         # ARRANGE #
@@ -164,3 +160,7 @@ class ArgumentOnCommandLineRendererTest(unittest.TestCase):
         # ASSERT #
         self.assertEqual('the_constant',
                          actual)
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

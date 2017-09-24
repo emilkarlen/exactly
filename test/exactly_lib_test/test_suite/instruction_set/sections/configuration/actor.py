@@ -29,10 +29,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestParse(unittest.TestCase):
     def test_fail_when_invalid_syntax(self):
         test_cases = [
@@ -85,3 +81,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
                               'Arguments of command to execute should be a string')
         self.assertEqual(actual_cmd_and_args,
                          'act phase source line')
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

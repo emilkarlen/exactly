@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.help.program_modes import common, test_case, test_suite, help, html_doc
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(common.suite())
     ret_val.addTest(test_case.suite())

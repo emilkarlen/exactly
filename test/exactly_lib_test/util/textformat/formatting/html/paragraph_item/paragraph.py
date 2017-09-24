@@ -17,10 +17,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-if __name__ == '__main__':
-    unittest.TextTestRunner().run(suite())
-
-
 class TestParagraph(unittest.TestCase):
     def _assert_first_child__of_actual_is_same_object_as(self,
                                                          actual_element: Element,
@@ -349,3 +345,6 @@ class TestParagraphWithSkippingOfSurroundingPElement(unittest.TestCase):
 
 
 TARGET_RENDERER = TargetRendererTestImpl()
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())

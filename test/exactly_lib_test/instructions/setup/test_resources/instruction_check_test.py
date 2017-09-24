@@ -274,10 +274,5 @@ class InstructionThatSetsStdinToContents(SetupPhaseInstruction):
         return sh.new_sh_success()
 
 
-def run_suite():
-    runner = unittest.TextTestRunner()
-    runner.run(suite())
-
-
 if __name__ == '__main__':
-    run_suite()
+    unittest.TextTestRunner().run(suite())

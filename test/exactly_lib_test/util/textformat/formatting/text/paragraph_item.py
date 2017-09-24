@@ -7,7 +7,7 @@ from .formatting_test_impls import paragraph
 from .formatting_test_impls import table
 
 
-def suite():
+def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTest(paragraph.suite())
     ret_val.addTest(lists.suite())
@@ -18,4 +18,4 @@ def suite():
 
 
 if __name__ == '__main__':
-    unittest.main()
+    unittest.TextTestRunner().run(suite())

@@ -14,6 +14,15 @@ from exactly_lib_test.section_document.test_resources.assertions import assert_e
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_suite.test_resources import check_exception, check_structure
 
+
+def suite() -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTest(unittest.makeSuite(TestInvalidFileSyntax))
+    ret_val.addTest(unittest.makeSuite(TestInvalidFileReferences))
+    ret_val.addTest(unittest.makeSuite(TestStructure))
+    return ret_val
+
+
 T_C_H_S = TestCaseHandlingSetup(command_line.act_phase_setup(),
                                 IDENTITY_PREPROCESSOR)
 
@@ -436,14 +445,6 @@ class TestInvalidFileReferences(unittest.TestCase):
 class TestInvalidFileSyntax(unittest.TestCase):
     def test_invalid_section(self):
         check_exception.check(SuiteFileSyntaxError(), self)
-
-
-def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestInvalidFileSyntax))
-    ret_val.addTest(unittest.makeSuite(TestInvalidFileReferences))
-    ret_val.addTest(unittest.makeSuite(TestStructure))
-    return ret_val
 
 
 if __name__ == '__main__':
