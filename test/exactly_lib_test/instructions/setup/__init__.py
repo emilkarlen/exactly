@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.instructions.setup import \
-    change_dir, run, install, new_file, new_dir, shell, stdin, utils, env, assign_symbol
+    change_dir, run, install, new_file, new_dir, shell, stdin, utils, env, assign_symbol, transform
 from exactly_lib_test.instructions.setup import test_resources
 
 
@@ -18,6 +18,7 @@ def suite():
     ret_val.addTest(new_file.suite())
     ret_val.addTest(new_dir.suite())
     ret_val.addTest(assign_symbol.suite())
+    ret_val.addTest(transform.suite())
     return ret_val
 
 
