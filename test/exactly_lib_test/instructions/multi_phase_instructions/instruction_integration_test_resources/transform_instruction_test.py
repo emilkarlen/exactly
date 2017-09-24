@@ -20,7 +20,7 @@ from exactly_lib_test.test_case_file_structure.test_resources import home_popula
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import dir_contains_exactly
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, conf_rel_home
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.file_structure import DirContents, File, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
@@ -31,6 +31,7 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     common_test_cases = [
         TestSuccessfullyCreateFileInExistingDirectory,
         TestFailingValidationPreSds,
+        TestFailingWhenDestinationFileExists,
     ]
     suites = [tc(conf)
               for tc in common_test_cases]
@@ -150,4 +151,32 @@ class TestFailingValidationPreSds(TestCaseBase):
             self.conf.arrangement(),
             expectation=
             self.conf.expect_failing_validation_pre_sds()
+        )
+
+
+class TestFailingWhenDestinationFileExists(TestCaseBase):
+    def runTest(self):
+        src_file_relativity = RelHomeOptionType.REL_HOME_ACT
+        src_file_arg = PathArgumentWithRelativity('src-file',
+                                                  conf_rel_home(src_file_relativity))
+        dst_file_arg = PathArgumentWithRelativity('dst-file',
+                                                  conf_rel_any(RelOptionType.REL_TMP))
+        source = remaining_source(transform.ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
+        self.conf.run_test(
+            self,
+            source,
+            arrangement=
+            self.conf.arrangement(
+                hds_contents=home_populators.contents_in(
+                    src_file_relativity,
+                    DirContents([
+                        empty_file(src_file_arg.file_name),
+                    ])),
+                home_or_sds_contents=dst_file_arg.relativity.populator_for_relativity_option_root(
+                    DirContents([
+                        empty_file(dst_file_arg.file_name),
+                    ]))
+            ),
+            expectation=
+            self.conf.expect_hard_error_of_main()
         )
