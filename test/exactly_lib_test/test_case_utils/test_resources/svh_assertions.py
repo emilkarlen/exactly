@@ -1,5 +1,8 @@
+import unittest
+
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
 def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> asrt.ValueAssertion:
@@ -20,7 +23,25 @@ def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErr
 
 
 def is_success() -> asrt.ValueAssertion:
-    return status_is(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS)
+    return _IsSuccess()
+
+
+class _IsSuccess(asrt.ValueAssertion):
+    def __init__(self):
+        pass
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIsInstance(value, svh.SuccessOrValidationErrorOrHardError)
+        if not value.is_success:
+            put.fail('\n'.join([
+                'Expected: ' + svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS.name,
+                'Actual  : {st}: {msg}'.format(
+                    st=value.status.name,
+                    msg=repr(value.failure_message))
+            ]))
 
 
 def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
