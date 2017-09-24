@@ -5,17 +5,17 @@ import unittest
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.utils.parse import parse_executable_file as sut
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect, \
-    is_any_data_type
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
-from exactly_lib.named_element.symbol.string_resolver import string_constant
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.data.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect, \
+    is_any_data_type
+from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
+from exactly_lib.symbol.data.string_resolver import string_constant
+from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import StackedFileRef
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
@@ -29,10 +29,10 @@ from exactly_lib_test.instructions.test_resources import executable_file_test_ut
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
     ExpectationOnExeFile
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream, \
     assert_token_string_is
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
@@ -285,24 +285,24 @@ class TestParseWithSymbols(unittest.TestCase):
         string_symbol = NameAndValue('string_symbol',
                                      'string symbol value')
         a_string_constant = 'a_string_constant'
-        reference_of_relativity_symbol = NamedElementReference(
+        reference_of_relativity_symbol = SymbolReference(
             file_symbol.name,
             path_relativity_restriction(
                 sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
             ))
-        reference_of_path_symbol = NamedElementReference(
+        reference_of_path_symbol = SymbolReference(
             file_symbol.name,
             path_or_string_reference_restrictions(
                 sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
             ))
-        reference_of_path_string_symbol_as_path_component = NamedElementReference(string_symbol.name,
-                                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+        reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
+                                                                            ReferenceRestrictionsOnDirectAndIndirect(
                                                                                       direct=StringRestriction(),
                                                                                       indirect=StringRestriction()),
-                                                                                  )
-        reference_of_string_symbol_as_argument = NamedElementReference(string_symbol.name,
-                                                                       is_any_data_type(),
-                                                                       )
+                                                                            )
+        reference_of_string_symbol_as_argument = SymbolReference(string_symbol.name,
+                                                                 is_any_data_type(),
+                                                                 )
         symbols = SymbolTable({
             file_symbol.name: su.container(FileRefConstant(file_symbol.value)),
             string_symbol.name: su.container(string_constant(string_symbol.value)),

@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib_test.test_resources.actions import do_nothing

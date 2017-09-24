@@ -1,7 +1,7 @@
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.named_element.resolver_structure import LineMatcherResolver
-from exactly_lib.named_element.restriction import ValueTypeRestriction
+from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol.restriction import ValueTypeRestriction
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.value_type import ValueType
@@ -34,8 +34,8 @@ class LineMatcherReferenceResolver(LineMatcherResolver):
 
     def __init__(self, name_of_referenced_resolver: str):
         self._name_of_referenced_resolver = name_of_referenced_resolver
-        self._references = [NamedElementReference(name_of_referenced_resolver,
-                                                  ValueTypeRestriction(ValueType.LINE_MATCHER))]
+        self._references = [SymbolReference(name_of_referenced_resolver,
+                                            ValueTypeRestriction(ValueType.LINE_MATCHER))]
 
     def resolve(self, symbols: SymbolTable) -> LineMatcher:
         container = symbols.lookup(self._name_of_referenced_resolver)

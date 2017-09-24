@@ -4,7 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_CONCEPT_INFO
-from exactly_lib.help_texts.test_case.instructions.assign_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
+from exactly_lib.help_texts.test_case.instructions.define_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents.parts import cl_syntax as parts_cl_syntax

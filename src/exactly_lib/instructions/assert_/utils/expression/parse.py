@@ -2,12 +2,12 @@ import types
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
+from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
 from exactly_lib.instructions.assert_.utils.expression import comparators, integer_resolver
 from exactly_lib.instructions.assert_.utils.expression.integer_resolver import IntegerResolver
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
-from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType

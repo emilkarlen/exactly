@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh

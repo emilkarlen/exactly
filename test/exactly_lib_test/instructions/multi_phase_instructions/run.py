@@ -5,10 +5,10 @@ from exactly_lib.help_texts.file_ref import REL_TMP_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
     TheInstructionEmbryo
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType

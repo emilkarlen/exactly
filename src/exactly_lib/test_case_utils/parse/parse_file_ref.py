@@ -3,22 +3,7 @@ import pathlib
 import types
 
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.test_case.instructions import assign_symbol as help_texts
-from exactly_lib.named_element.err_msg.error_messages import invalid_type_msg
-from exactly_lib.named_element.err_msg.restriction_failure_renderer import error_message_for_direct_reference
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedElementContainer
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect, \
-    OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.named_element.symbol.string_resolver import StringResolver
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import rel_symbol
-from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
-from exactly_lib.named_element.symbol.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
-    PathPartResolverAsNothing, PathPartResolverAsStringResolver
+from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -29,6 +14,21 @@ from exactly_lib.section_document.parser_implementations.parser_combinations imp
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError, \
     LookAheadState
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect, \
+    OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings
+from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import rel_symbol
+from exactly_lib.symbol.data.value_resolvers.path_part_resolver import PathPartResolver
+from exactly_lib.symbol.data.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
+    PathPartResolverAsNothing, PathPartResolverAsStringResolver
+from exactly_lib.symbol.err_msg.error_messages import invalid_type_msg
+from exactly_lib.symbol.err_msg.restriction_failure_renderer import error_message_for_direct_reference
+from exactly_lib.symbol.resolver_structure import SymbolContainer
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.file_ref_from_symbol_reference import \
     _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix
@@ -221,7 +221,7 @@ def _file_ref_constructor(relativity_info) -> types.FunctionType:
     if isinstance(relativity_info, RelOptionType):
         return lambda path_suffix_resolver: _FileRefResolverOfRelativityOptionAndSuffixResolver(relativity_info,
                                                                                                 path_suffix_resolver)
-    elif isinstance(relativity_info, NamedElementReference):
+    elif isinstance(relativity_info, SymbolReference):
         return functools.partial(rel_symbol, relativity_info)
     else:
         raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))
@@ -229,8 +229,8 @@ def _file_ref_constructor(relativity_info) -> types.FunctionType:
 
 def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
                                                        conf: RelOptionArgumentConfiguration
-                                                       ) -> (NamedElementReference, PathPartResolver):
-    file_ref_or_string_symbol = NamedElementReference(
+                                                       ) -> (SymbolReference, PathPartResolver):
+    file_ref_or_string_symbol = SymbolReference(
         string_fragments[0].value,
         path_or_string_reference_restrictions(conf.options.accepted_relativity_variants),
     )
@@ -304,7 +304,7 @@ PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
 
 
 def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol: str,
-                                                          container_of_illegal_symbol: NamedElementContainer) -> str:
+                                                          container_of_illegal_symbol: SymbolContainer) -> str:
     value_restriction_failure = invalid_type_msg([ValueType.PATH, ValueType.STRING],
                                                  name_of_failing_symbol,
                                                  container_of_illegal_symbol)

@@ -13,9 +13,9 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
 from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPostSds
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType

@@ -20,7 +20,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.instructions.test_resources.symbol_table_check_help import \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils, symbol_reference_assertions as sym_asrt
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -89,7 +89,7 @@ PARSER_THAT_GIVES_SUCCESSFUL_INSTRUCTION = utils.ParserThatGives(
 class TestSymbolUsages(TestCaseBase):
     def test_that_default_expectation_assumes_no_symbol_usages(self):
         with self.assertRaises(utils.TestError):
-            unexpected_symbol_usages = [symbol_utils.symbol_reference('symbol_name')]
+            unexpected_symbol_usages = [data_symbol_utils.symbol_reference('symbol_name')]
             self._check(
                 utils.ParserThatGives(
                     assert_phase_instruction_that(
@@ -102,7 +102,7 @@ class TestSymbolUsages(TestCaseBase):
     def test_that_fails_due_to_missing_symbol_reference(self):
         with self.assertRaises(utils.TestError):
             symbol_usages_of_instruction = []
-            symbol_usages_of_expectation = [symbol_utils.symbol_reference('symbol_name')]
+            symbol_usages_of_expectation = [data_symbol_utils.symbol_reference('symbol_name')]
             self._check(
                 utils.ParserThatGives(
                     assert_phase_instruction_that(
@@ -116,10 +116,10 @@ class TestSymbolUsages(TestCaseBase):
     def test_that_symbols_from_arrangement_exist_in_environment(self):
         symbol_name = 'symbol_name'
         symbol_value = 'the symbol value'
-        symbol_table_of_arrangement = symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                         symbol_value)
-        expected_symbol_table = symbol_utils.symbol_table_with_single_string_value(symbol_name,
-                                                                                   symbol_value)
+        symbol_table_of_arrangement = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
+                                                                                              symbol_value)
+        expected_symbol_table = data_symbol_utils.symbol_table_with_single_string_value(symbol_name,
+                                                                                        symbol_value)
         assertion_for_validation = do_fail_if_symbol_table_does_not_equal(
             self,
             expected_symbol_table,

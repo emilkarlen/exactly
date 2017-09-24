@@ -15,10 +15,10 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \

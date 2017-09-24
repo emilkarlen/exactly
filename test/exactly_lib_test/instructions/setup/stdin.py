@@ -2,12 +2,12 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION_NAME
 from exactly_lib.instructions.setup import stdin as sut
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.named_element.symbol.string_resolver import StringResolver, string_constant
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.string_resolver import StringResolver, string_constant
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
@@ -22,12 +22,12 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils, here_doc_assertion_utils as hd
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source, source4, \
     remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, here_doc_assertion_utils as hd
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions, relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
@@ -199,14 +199,14 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         symbol_name = 'symbol_name'
         symbol = NameAndValue('symbol_name', 'the symbol value')
         expected_symbol_references = [
-            NamedElementReference(symbol.name,
-                                  is_any_data_type())
+            SymbolReference(symbol.name,
+                            is_any_data_type())
         ]
         cases = [
             ('string value container',
-             symbol_utils.string_constant_container('string symbol value')),
+             data_symbol_utils.string_constant_container('string symbol value')),
             ('file ref value container',
-             symbol_utils.file_ref_constant_container(file_refs.rel_act(PathPartAsFixedPath('file-name.txt')))),
+             data_symbol_utils.file_ref_constant_container(file_refs.rel_act(PathPartAsFixedPath('file-name.txt')))),
         ]
         for case in cases:
             with self.subTest(case[0]):

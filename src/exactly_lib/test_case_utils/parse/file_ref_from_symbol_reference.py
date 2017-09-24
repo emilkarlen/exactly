@@ -1,12 +1,12 @@
 import pathlib
 
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import NamedElementContainer, SymbolValueResolver
-from exactly_lib.named_element.symbol.concrete_resolvers import SymbolValueResolverVisitor
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.string_resolver import StringResolver
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
-from exactly_lib.named_element.symbol.value_resolvers.path_part_resolver import PathPartResolver
+from exactly_lib.symbol.data.concrete_resolvers import SymbolValueResolverVisitor
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import StackedFileRef
+from exactly_lib.symbol.data.value_resolvers.path_part_resolver import PathPartResolver
+from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
@@ -22,7 +22,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
     """
 
     def __init__(self,
-                 file_ref_or_string_symbol: NamedElementReference,
+                 file_ref_or_string_symbol: SymbolReference,
                  suffix_resolver: PathPartResolver,
                  default_relativity: RelOptionType):
         self._file_ref_or_string_symbol = file_ref_or_string_symbol
@@ -34,9 +34,9 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
                                                                             self.default_relativity,
                                                                             symbols)
         container = symbols.lookup(self._file_ref_or_string_symbol.name)
-        assert isinstance(container, NamedElementContainer), 'Implementation consistency/NamedValueContainer'
+        assert isinstance(container, SymbolContainer), 'Implementation consistency/SymbolContainer'
         resolver = container.resolver
-        assert isinstance(resolver, SymbolValueResolver), 'Implementation consistency/SymbolValueResolver'
+        assert isinstance(resolver, DataValueResolver), 'Implementation consistency/SymbolValueResolver'
         return symbol_value_2_file_ref.visit(resolver)
 
     @property

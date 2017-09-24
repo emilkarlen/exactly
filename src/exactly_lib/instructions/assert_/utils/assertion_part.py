@@ -1,7 +1,7 @@
 import types
 
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
-from exactly_lib.named_element.object_with_symbol_references import ObjectWithSymbolReferences, \
+from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences, \
     references_from_objects_with_symbol_references
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

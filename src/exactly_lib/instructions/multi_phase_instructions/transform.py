@@ -9,11 +9,11 @@ from exactly_lib.instructions.multi_phase_instructions.utils import instruction_
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import src_dst
-from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants

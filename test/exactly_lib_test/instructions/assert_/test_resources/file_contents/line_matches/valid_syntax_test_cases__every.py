@@ -11,8 +11,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_mat
     TestCaseBase, args_constructor_for
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -3,8 +3,8 @@ import types
 from exactly_lib.instructions.assert_.utils.expression.comparison_structures import OperandResolver
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds
-from exactly_lib.named_element.symbol.string_resolver import StringResolver
+from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 
 

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
@@ -12,8 +12,8 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import SYMBOL_VALIDATION_STEPS__ONCE, \
     PRE_SDS_VALIDATION_STEPS__ONCE
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_reference
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForPhaseFailure, \
     ExpectedFailureForNoFailure
@@ -30,9 +30,9 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_symbol_that_does_meet_restriction_in_validate_symbols(self):
         test_case = _single_successful_instruction_in_each_phase()
         symbol_name = 'symbol_name'
-        reference_to_string_symbol = symbol_utils.symbol_reference(symbol_name,
-                                                                   StringRestriction())
-        definition_of_string_symbol = symbol_utils.string_symbol_definition(symbol_name)
+        reference_to_string_symbol = data_symbol_utils.symbol_reference(symbol_name,
+                                                                        StringRestriction())
+        definition_of_string_symbol = data_symbol_utils.string_symbol_definition(symbol_name)
         symbol_usages = [
             definition_of_string_symbol,
             reference_to_string_symbol,
@@ -97,9 +97,9 @@ class TestFailingScenarios(TestCaseBase):
     def test_symbol_that_does_not_meet_restriction_in_validate_symbols(self):
         test_case = _single_successful_instruction_in_each_phase()
         symbol_name = 'symbol_name'
-        reference_to_string_symbol = symbol_utils.symbol_reference(symbol_name,
-                                                                   StringRestriction())
-        definition_of_path_symbol = symbol_utils.file_ref_symbol_definition(symbol_name)
+        reference_to_string_symbol = data_symbol_utils.symbol_reference(symbol_name,
+                                                                        StringRestriction())
+        definition_of_path_symbol = data_symbol_utils.file_ref_symbol_definition(symbol_name)
         symbol_usages = [
             definition_of_path_symbol,
             reference_to_string_symbol,

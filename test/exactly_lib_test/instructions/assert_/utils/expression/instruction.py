@@ -5,14 +5,14 @@ from exactly_lib.instructions.assert_.utils.expression import instruction as sut
 from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import StringRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.utils.expression.test_resources.operand_resolver import operand_resolver_that
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils, \
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, \
     symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
@@ -36,11 +36,11 @@ class TestSymbolReferences(unittest.TestCase):
     def test_symbols_from_both_operands_SHOULD_be_reported(self):
         # ARRANGE #
 
-        symbol_reffed_by_l_op = symbol_utils.symbol_reference('l-op symbol')
+        symbol_reffed_by_l_op = data_symbol_utils.symbol_reference('l-op symbol')
 
-        symbol_1_reffed_by_r_op = symbol_utils.symbol_reference('r-op 1 symbol')
-        symbol_2_reffed_by_r_op = symbol_utils.symbol_reference('r-op 2 symbol',
-                                                                StringRestriction())
+        symbol_1_reffed_by_r_op = data_symbol_utils.symbol_reference('r-op 1 symbol')
+        symbol_2_reffed_by_r_op = data_symbol_utils.symbol_reference('r-op 2 symbol',
+                                                                     StringRestriction())
 
         l_op = operand_resolver_that(symbol_usages=[symbol_reffed_by_l_op])
         r_op = operand_resolver_that(symbol_usages=[symbol_1_reffed_by_r_op,

@@ -3,7 +3,7 @@ from contextlib import contextmanager
 from time import strftime, localtime
 
 from exactly_lib import program_info
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value

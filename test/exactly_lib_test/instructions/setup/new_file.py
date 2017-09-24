@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions.new_file import RELATIVITY_VARIANTS
 from exactly_lib.instructions.setup import new_file as sut
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
@@ -13,13 +13,13 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
     Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_file_ref_relativity_restriction
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import file_ref_constant_container
 from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import every_line_is_consumed
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_file_ref_relativity_restriction
+from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import file_ref_constant_container
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
+    equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly

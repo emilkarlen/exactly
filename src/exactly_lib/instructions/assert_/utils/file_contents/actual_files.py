@@ -1,7 +1,7 @@
 import pathlib
 
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import resolver_of_rel_option
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import resolver_of_rel_option
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType

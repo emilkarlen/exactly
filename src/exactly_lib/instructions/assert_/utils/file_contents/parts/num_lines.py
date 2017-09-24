@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
     FileToCheck
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep

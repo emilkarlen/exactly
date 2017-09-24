@@ -3,9 +3,9 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
@@ -17,12 +17,12 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_symbol_reference_restrictions
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
@@ -126,18 +126,18 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     execute_program_option_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         is_any_data_type()
                     )),
                 matches_reference_2(
                     exit_code_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         is_any_data_type()
                     )),
             ]),
@@ -268,20 +268,20 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     file_to_interpret_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             parse_file_ref.ALL_REL_OPTIONS_CONFIG.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     exit_code_symbol.name,
-                    equals_symbol_reference_restrictions(is_any_data_type()
-                                                         )),
+                    equals_data_type_reference_restrictions(is_any_data_type()
+                                                            )),
             ]),
             main_result=spr_check.is_success_result(exit_code_symbol.value, ''),
         )
@@ -360,18 +360,18 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
                             sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     execute_program_option_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         is_any_data_type()
                     )),
                 matches_reference_2(
                     exit_code_symbol.name,
-                    equals_symbol_reference_restrictions(
+                    equals_data_type_reference_restrictions(
                         is_any_data_type()
                     )),
             ]),

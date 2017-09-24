@@ -1,5 +1,5 @@
 from exactly_lib.instructions.utils import return_svh_via_exceptions
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPostSds, \
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator

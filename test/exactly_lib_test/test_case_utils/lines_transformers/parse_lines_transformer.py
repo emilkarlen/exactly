@@ -12,12 +12,12 @@ from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLi
     CustomLinesTransformer, SequenceLinesTransformer, SelectLinesTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
-from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_parser_prime \
     import remaining_source
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher

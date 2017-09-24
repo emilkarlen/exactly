@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
-from exactly_lib.named_element.named_element_usage import NamedElementDefinition
+from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.util.symbol_table import SymbolTable
@@ -10,7 +10,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.basic import Ar
 from exactly_lib_test.execution.test_resources.execution_recording import phase_step_recordings as psr
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.functions import Sequence
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -68,7 +68,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol = NameAndValue('symbol name',
                               'symbol value (not used in test)')
         all_defined_symbols = frozenset((symbol.name,))
-        symbol_definition = symbol_utils.string_symbol_definition(symbol.name, symbol.value)
+        symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
         steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_AFTER_PARSE, all_defined_symbols)
@@ -132,7 +132,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
                                          'predefined string constant symbol value')
 
         expected_predefined_symbols = SymbolTable({
-            predefined_symbol.name: symbol_utils.string_constant(predefined_symbol.value)
+            predefined_symbol.name: data_symbol_utils.string_constant(predefined_symbol.value)
         })
         all_predefined_symbols = frozenset((predefined_symbol.name,))
 
@@ -182,12 +182,12 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
         defined_symbol = NameAndValue('defined symbol',
                                       'value of symbol defined in the setup phase (not used in this test)')
         predefined_symbols_table = SymbolTable({
-            predefined_symbol.name: symbol_utils.string_constant(predefined_symbol.value)
+            predefined_symbol.name: data_symbol_utils.string_constant(predefined_symbol.value)
         })
         predefined_symbols = frozenset((predefined_symbol.name,))
         predefined_and_defined_symbols = frozenset((predefined_symbol.name, defined_symbol.name))
 
-        symbol_definition = symbol_utils.string_symbol_definition(defined_symbol.name, defined_symbol.value)
+        symbol_definition = data_symbol_utils.string_symbol_definition(defined_symbol.name, defined_symbol.value)
 
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
@@ -277,7 +277,7 @@ def get_symbols_name_set_from_instruction_environment(environment: InstructionEn
 
 
 class _ActionThatSetsSymbolInSymbolTable:
-    def __init__(self, symbol: NamedElementDefinition):
+    def __init__(self, symbol: SymbolDefinition):
         self.symbol = symbol
 
     def __call__(self, environment: InstructionEnvironmentForPreSdsStep, *args, **kwargs):

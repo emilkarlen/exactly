@@ -1,9 +1,9 @@
-from exactly_lib.named_element import resolver_structure
-from exactly_lib.named_element.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol import resolver_structure
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
-from exactly_lib_test.named_element.test_resources.type_assertions import is_resolver_of_logic_type
+from exactly_lib_test.symbol.test_resources.type_assertions import is_resolver_of_logic_type
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

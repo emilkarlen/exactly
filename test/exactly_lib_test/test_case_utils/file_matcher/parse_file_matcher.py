@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.named_element.resolver_structure import NamedElementResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher as sut
@@ -10,9 +10,9 @@ from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConsta
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util import symbol_table
-from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_matcher_of, type_matcher_of
@@ -30,7 +30,7 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration):
-    def parse(self, parser: TokenParserPrime) -> NamedElementResolver:
+    def parse(self, parser: TokenParserPrime) -> SymbolValueResolver:
         return sut.parse_resolver(parser)
 
     def resolved_value_equals(self,
@@ -46,7 +46,7 @@ class Configuration(matcher_parse_check.Configuration):
     def is_reference_to(self, symbol_name: str) -> asrt.ValueAssertion:
         return is_file_matcher_reference_to(symbol_name)
 
-    def resolver_of_constant_matcher(self, matcher: FileMatcher) -> NamedElementResolver:
+    def resolver_of_constant_matcher(self, matcher: FileMatcher) -> SymbolValueResolver:
         return FileMatcherConstantResolver(matcher)
 
     def constant_matcher(self, result: bool) -> FileMatcher:

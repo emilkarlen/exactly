@@ -3,10 +3,10 @@ import unittest
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
-from exactly_lib.util.symbol_table import singleton_symbol_table_2, empty_symbol_table
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.test_resources import named_elem_utils
-from exactly_lib_test.named_element.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
+from exactly_lib.util.symbol_table import singleton_symbol_table_2
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import resolver_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -27,7 +27,7 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(ARBITRARY_LINE_MATCHER_RESOLVER),
+                             symbol_utils.container(ARBITRARY_LINE_MATCHER_RESOLVER),
                          )),
 
         ]
@@ -48,7 +48,7 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(ARBITRARY_LINE_MATCHER_RESOLVER),
+                             symbol_utils.container(ARBITRARY_LINE_MATCHER_RESOLVER),
                          )),
 
         ]
@@ -71,7 +71,7 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(ARBITRARY_LINE_MATCHER_RESOLVER),
+                             symbol_utils.container(ARBITRARY_LINE_MATCHER_RESOLVER),
                          )),
 
         ]
@@ -88,7 +88,7 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
 
     def test_equals_references(self):
         # ARRANGE #
-        actual_reference = symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         actual_resolver = LineMatcherResolverConstantTestImpl(
             LineMatcherConstant(False),
@@ -103,7 +103,7 @@ class TestResolvedValueEqualsLineMatcher(unittest.TestCase):
 
     def test_not_equals_references(self):
         # ARRANGE #
-        actual_reference = symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         actual_resolver = LineMatcherResolverConstantTestImpl(
             LineMatcherConstant(False),

@@ -7,12 +7,12 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh

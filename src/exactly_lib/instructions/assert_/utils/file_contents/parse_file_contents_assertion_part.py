@@ -6,9 +6,9 @@ from exactly_lib.instructions.assert_.utils.expression.parse import validator_fo
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart
-from exactly_lib.named_element.resolver_structure import LineMatcherResolver
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref

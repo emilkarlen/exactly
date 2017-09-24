@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.expression import integer_resolver as sut
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException
-from exactly_lib.named_element.symbol import string_resolver
+from exactly_lib.symbol.data import string_resolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds, fake_sds
 from exactly_lib_test.test_resources.actions import do_return
@@ -110,7 +110,7 @@ class TestValidateAndResolve(unittest.TestCase):
 
     def _symbol_table_with_string_values(self, all_symbols):
         return SymbolTable(
-            dict([(sym.name, symbol_utils.string_constant_container(sym.value_str))
+            dict([(sym.name, data_symbol_utils.string_constant_container(sym.value_str))
                   for sym in all_symbols]))
 
 
@@ -134,7 +134,7 @@ class TestSymbolReferences(unittest.TestCase):
     def test_references_of_string_resolver_SHOULD_be_reported(self):
         # ARRANGE #
 
-        reference_of_string_resolver = symbol_utils.symbol_reference('symbol name')
+        reference_of_string_resolver = data_symbol_utils.symbol_reference('symbol name')
 
         the_string_resolver = string_resolver.symbol_reference(reference_of_string_resolver)
 
@@ -273,4 +273,4 @@ class Symbol:
         self.value_int = value_int
         self.value_str = value_str
         self.ref_syntax = symbol_reference_syntax_for_name(name)
-        self.symbol_reference = symbol_utils.symbol_reference(name)
+        self.symbol_reference = data_symbol_utils.symbol_reference(name)

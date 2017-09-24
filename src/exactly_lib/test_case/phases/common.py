@@ -1,8 +1,8 @@
 import pathlib
 
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.section_document.model import Instruction
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds

@@ -1,4 +1,4 @@
-from exactly_lib.named_element.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.value_type import LogicValueType, ValueType
 from exactly_lib.util import symbol_table
