@@ -3,10 +3,10 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity.types import LINE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.named_element.resolver_structure import LineMatcherResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers

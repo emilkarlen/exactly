@@ -2,7 +2,7 @@ import os
 import pathlib
 import subprocess
 
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh

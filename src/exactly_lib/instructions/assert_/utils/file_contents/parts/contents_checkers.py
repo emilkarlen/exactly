@@ -7,7 +7,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck, \
     DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
-from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties
@@ -120,7 +120,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
                  environment: InstructionEnvironmentForPostSdsStep,
                  file_to_transform: ResolvedComparisonActualFile,
                  actual_file_properties: file_properties.Properties) -> str:
-        from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+        from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
         from exactly_lib.util.logic_types import ExpectationType
 
         def actual_info_single_line_value() -> str:

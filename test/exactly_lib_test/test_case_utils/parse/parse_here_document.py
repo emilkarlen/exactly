@@ -5,15 +5,15 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.parse import parse_here_document as sut
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib_test.named_element.symbol.test_resources import here_doc_assertion_utils as hd
-from exactly_lib_test.named_element.symbol.test_resources import references
-from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
-    symbol_table_with_string_values_from_name_and_value
 from exactly_lib_test.section_document.parser_implementations.optional_description_and_instruction_parser import \
     source_is_at_end
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, remaining_source_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as hd
+from exactly_lib_test.symbol.data.test_resources import references
+from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
+    symbol_table_with_string_values_from_name_and_value
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

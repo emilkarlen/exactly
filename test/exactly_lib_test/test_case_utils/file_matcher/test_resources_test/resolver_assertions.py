@@ -5,9 +5,9 @@ from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConsta
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.test_resources import named_elem_utils
-from exactly_lib_test.named_element.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.test_resources import symbol_utils
+from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.test_case_utils.file_matcher.test_resources import resolver_assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -27,7 +27,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(ARBITRARY_FILE_MATCHER_RESOLVER),
+                             symbol_utils.container(ARBITRARY_FILE_MATCHER_RESOLVER),
                          )),
 
         ]
@@ -50,7 +50,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(fake()),
+                             symbol_utils.container(fake()),
                          )),
 
         ]
@@ -71,7 +71,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             named_elem_utils.container(fake()),
+                             symbol_utils.container(fake()),
                          )),
 
         ]
@@ -88,7 +88,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
 
     def test_equals_references(self):
         # ARRANGE #
-        actual_reference = symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         resolver = fake(references=actual_references)
         assertion_to_check = sut.resolved_value_equals_file_matcher(resolver.resolved_value,
@@ -101,7 +101,7 @@ class TestResolvedValueEqualsFileMatcher(unittest.TestCase):
 
     def test_not_equals_references(self):
         # ARRANGE #
-        actual_reference = symbol_utils.symbol_reference('referenced element')
+        actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         resolver = fake(references=actual_references)
 

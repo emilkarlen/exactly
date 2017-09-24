@@ -1,11 +1,11 @@
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.named_element.resolver_structure import SymbolValueResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.sub_process_execution import CmdAndArgsResolver
 
 
 class ConstantCmdAndArgsResolver(CmdAndArgsResolver):
-    def __init__(self, cmd_or_cmd_and_args_resolver: SymbolValueResolver):
+    def __init__(self, cmd_or_cmd_and_args_resolver: DataValueResolver):
         """
         :param cmd_or_cmd_and_args: Either a string or a list of strings
         """

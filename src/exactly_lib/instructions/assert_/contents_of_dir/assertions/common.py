@@ -1,7 +1,7 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.named_element.resolver_structure import FileMatcherResolver
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pre_or_post_validation

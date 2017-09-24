@@ -1,8 +1,8 @@
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.named_element import named_element_usage as su
-from exactly_lib.named_element.err_msg import restriction_failure_renderer
-from exactly_lib.named_element.resolver_structure import NamedElementContainer
+from exactly_lib.symbol import symbol_usage as su
+from exactly_lib.symbol.err_msg import restriction_failure_renderer
+from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -16,23 +16,23 @@ def validate_symbol_usages(symbol_usages: list,
     return None
 
 
-def validate_symbol_usage(usage: su.NamedElementUsage,
+def validate_symbol_usage(usage: su.SymbolUsage,
                           symbol_table: SymbolTable) -> PartialInstructionControlledFailureInfo:
-    if isinstance(usage, su.NamedElementReference):
+    if isinstance(usage, su.SymbolReference):
         return _validate_symbol_reference(symbol_table, usage)
-    elif isinstance(usage, su.NamedElementDefinition):
+    elif isinstance(usage, su.SymbolDefinition):
         return _validate_symbol_definition(symbol_table, usage)
     else:
-        raise TypeError('Unknown variant of {}: {}'.format(str(su.NamedElementUsage),
+        raise TypeError('Unknown variant of {}: {}'.format(str(su.SymbolUsage),
                                                            str(usage)))
 
 
 def _validate_symbol_definition(symbol_table: SymbolTable,
-                                definition: su.NamedElementDefinition,
+                                definition: su.SymbolDefinition,
                                 ) -> PartialInstructionControlledFailureInfo:
     if symbol_table.contains(definition.name):
         already_defined_resolver_container = symbol_table.lookup(definition.name)
-        assert isinstance(already_defined_resolver_container, NamedElementContainer), \
+        assert isinstance(already_defined_resolver_container, SymbolContainer), \
             'Value in SymTbl must be ResolverContainer'
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION,
@@ -50,9 +50,9 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
 
 
 def _validate_symbol_reference(symbol_table: SymbolTable,
-                               reference: su.NamedElementReference,
+                               reference: su.SymbolReference,
                                ) -> PartialInstructionControlledFailureInfo:
-    assert isinstance(reference, su.NamedElementReference)
+    assert isinstance(reference, su.SymbolReference)
     if not symbol_table.contains(reference.name):
         error_message = _undefined_symbol_error_message(reference)
         return PartialInstructionControlledFailureInfo(
@@ -65,7 +65,7 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
     return None
 
 
-def _undefined_symbol_error_message(reference: su.NamedElementReference) -> str:
+def _undefined_symbol_error_message(reference: su.SymbolReference) -> str:
     from exactly_lib.help_texts.names.formatting import InstructionName
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
@@ -77,10 +77,10 @@ def _undefined_symbol_error_message(reference: su.NamedElementReference) -> str:
     return '\n'.join(lines)
 
 
-def _validate_reference(symbol_reference: su.NamedElementReference,
+def _validate_reference(symbol_reference: su.SymbolReference,
                         symbols: SymbolTable) -> str:
     referenced_resolver_container = symbols.lookup(symbol_reference.name)
-    assert isinstance(referenced_resolver_container, NamedElementContainer), \
+    assert isinstance(referenced_resolver_container, SymbolContainer), \
         'Values in SymbolTable must be ResolverContainer'
     result = symbol_reference.restrictions.is_satisfied_by(symbols, symbol_reference.name,
                                                            referenced_resolver_container)

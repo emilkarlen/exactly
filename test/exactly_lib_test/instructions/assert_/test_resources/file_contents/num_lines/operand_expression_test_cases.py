@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_.utils.expression import comparators
-from exactly_lib.named_element.symbol.string_resolver import string_constant
+from exactly_lib.symbol.data.string_resolver import string_constant
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
@@ -13,8 +13,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_line
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.named_element.test_resources.string import is_string_made_up_of_just_strings_reference_to
+from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

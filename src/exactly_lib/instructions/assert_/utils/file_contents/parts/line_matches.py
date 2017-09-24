@@ -6,7 +6,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CO
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
-from exactly_lib.named_element.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg

@@ -1,21 +1,21 @@
 import re
 import unittest
 
-from exactly_lib.named_element.resolver_structure import NamedElementResolver
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher as sut
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex, LineMatcherConstant, \
     LineMatcherNot, LineMatcherAnd, LineMatcherOr
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util import symbol_table
-from exactly_lib_test.named_element.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_parser_prime \
     import remaining_source
+from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_line_matcher
@@ -34,7 +34,7 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration):
-    def parse(self, parser: TokenParserPrime) -> NamedElementResolver:
+    def parse(self, parser: TokenParserPrime) -> SymbolValueResolver:
         return sut.parse_line_matcher_from_token_parser(parser)
 
     def resolved_value_equals(self,
@@ -50,7 +50,7 @@ class Configuration(matcher_parse_check.Configuration):
     def is_reference_to(self, symbol_name: str) -> asrt.ValueAssertion:
         return is_line_matcher_reference_to(symbol_name)
 
-    def resolver_of_constant_matcher(self, matcher: LineMatcher) -> NamedElementResolver:
+    def resolver_of_constant_matcher(self, matcher: LineMatcher) -> SymbolValueResolver:
         return LineMatcherConstantResolver(matcher)
 
     def constant_matcher(self, result: bool) -> LineMatcher:

@@ -1,16 +1,16 @@
 import unittest
 
 from exactly_lib.help_texts import expression
-from exactly_lib.named_element.resolver_structure import NamedElementResolver, NamedElementContainer
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver, SymbolContainer
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_parser_prime \
     import remaining_source
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class Configuration:
-    def parse(self, parser: TokenParserPrime) -> NamedElementResolver:
+    def parse(self, parser: TokenParserPrime) -> SymbolValueResolver:
         raise NotImplementedError('abstract method')
 
     def resolved_value_equals(self, value: Matcher,
@@ -29,10 +29,10 @@ class Configuration:
     def is_reference_to(self, symbol_name: str) -> asrt.ValueAssertion:
         raise NotImplementedError('abstract method')
 
-    def resolver_of_constant_matcher(self, matcher: Matcher) -> NamedElementResolver:
+    def resolver_of_constant_matcher(self, matcher: Matcher) -> SymbolValueResolver:
         raise NotImplementedError('abstract method')
 
-    def container_with_resolver_of_constant_matcher(self, matcher: Matcher) -> NamedElementContainer:
+    def container_with_resolver_of_constant_matcher(self, matcher: Matcher) -> SymbolContainer:
         return container(self.resolver_of_constant_matcher(matcher))
 
     def constant_matcher(self, result: bool) -> Matcher:

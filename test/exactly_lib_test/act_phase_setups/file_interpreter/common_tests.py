@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
@@ -16,8 +16,8 @@ from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import
     check_execution
 from exactly_lib_test.act_phase_setups.test_resources.misc import PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN
 from exactly_lib_test.execution.test_resources import eh_assertions
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
@@ -125,10 +125,10 @@ class TestStringSymbolReferenceInSourceAndArgument(TestCaseBase):
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
-                NamedElementReference(symbol_for_source_file.name,
-                                      path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
-                NamedElementReference(argument_symbol.name,
-                                      is_any_data_type()),
+                SymbolReference(symbol_for_source_file.name,
+                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
+                SymbolReference(argument_symbol.name,
+                                is_any_data_type()),
             ]),
         )
         self._check(command_line,
@@ -177,11 +177,11 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references([
-                NamedElementReference(dir_symbol.name,
-                                      path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
+                SymbolReference(dir_symbol.name,
+                                path_or_string_reference_restrictions(PATH_RELATIVITY_VARIANTS_FOR_FILE_TO_RUN)),
 
-                NamedElementReference(source_file_name_symbol.name,
-                                      PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
+                SymbolReference(source_file_name_symbol.name,
+                                PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
             ]),
         )
         self._check(command_line,

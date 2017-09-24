@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
@@ -24,13 +24,13 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     TestWithConfigurationAndRelativityOptionAndNegationBase, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
@@ -240,11 +240,11 @@ class _ContentsEqualsAHereDocumentWithSymbolReferences(TestWithConfigurationAndN
                 lines_content([expected_content(symbol.value)]),
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=SymbolTable({
-                    symbol.name: symbol_utils.string_constant_container(symbol.value),
+                    symbol.name: data_symbol_utils.string_constant_container(symbol.value),
                 })),
             Expectation(main_result=self.maybe_not.pass__if_positive__fail__if_negative,
                         symbol_usages=equals_symbol_references([
-                            NamedElementReference(symbol.name, is_any_data_type())
+                            SymbolReference(symbol.name, is_any_data_type())
                         ]),
                         source=is_at_beginning_of_line(4)),
         )

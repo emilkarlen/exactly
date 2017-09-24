@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref as sut
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
@@ -14,16 +14,16 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, singleton_symbol_table_2
-from exactly_lib_test.named_element.symbol.test_resources import here_doc_assertion_utils as asrt_hd
-from exactly_lib_test.named_element.symbol.test_resources import references
-from exactly_lib_test.named_element.symbol.test_resources import string_assertions as asrt_string
-from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import matches_file_ref_resolver
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import string_constant_container
-from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import \
-    symbol_table_with_string_values_from_name_and_value, file_ref_constant_container
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source_lines
+from exactly_lib_test.symbol.data.test_resources import here_doc_assertion_utils as asrt_hd
+from exactly_lib_test.symbol.data.test_resources import references
+from exactly_lib_test.symbol.data.test_resources import string_assertions as asrt_string
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
+from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string_constant_container
+from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
+    symbol_table_with_string_values_from_name_and_value, file_ref_constant_container
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources import relativity_arguments
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
@@ -336,8 +336,8 @@ class TestFileRef(unittest.TestCase):
                                                    concrete_path_parts.fixed_path_parts([symbol_path_suffix,
                                                                                          file_name])),
             common=CommonExpectation(
-                symbol_references=[NamedElementReference(symbol.name,
-                                                         file_ref_reference_restrictions(
+                symbol_references=[SymbolReference(symbol.name,
+                                                   file_ref_reference_restrictions(
                                                              accepted_path_relativity_variants))],
 
                 source=asrt_source.assert_source(current_line_number=asrt.equals(1),

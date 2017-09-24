@@ -3,13 +3,13 @@ import unittest
 from exactly_lib.execution.instruction_execution.phase_step_executors import ValidateSymbolsExecutor
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum, \
     PartialInstructionControlledFailureInfo
-from exactly_lib.named_element import named_element_usage as su
+from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as sym_tr
-from exactly_lib_test.named_element.test_resources import named_elem_utils as ne_tr
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as sym_tr
+from exactly_lib_test.symbol.test_resources import symbol_utils as ne_tr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -162,7 +162,7 @@ def env_with_empty_symbol_table() -> InstructionEnvironmentForPreSdsStep:
     return InstructionEnvironmentForPreSdsStep(hds, {})
 
 
-def env_with_singleton_symbol_table(definition: su.NamedElementDefinition) -> InstructionEnvironmentForPreSdsStep:
+def env_with_singleton_symbol_table(definition: su.SymbolDefinition) -> InstructionEnvironmentForPreSdsStep:
     table = ne_tr.symbol_table_from_symbol_definitions([definition])
     hds = fake_hds()
     return InstructionEnvironmentForPreSdsStep(hds,
@@ -178,7 +178,7 @@ def env_with_symbol_table(symbols: list) -> InstructionEnvironmentForPreSdsStep:
                                                symbols=symbols)
 
 
-def symbol_of(name: str) -> su.NamedElementDefinition:
+def symbol_of(name: str) -> su.SymbolDefinition:
     return sym_tr.string_symbol_definition(name)
 
 

@@ -3,9 +3,9 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.resolver_structure import LinesTransformerResolver
-from exactly_lib.named_element.restriction import ValueTypeRestriction
+from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.restriction import ValueTypeRestriction
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor, \
     property_descriptor_with_just_a_constant_name
@@ -16,8 +16,8 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.named_element.test_resources import resolver_structure_assertions as asrt_rs
-from exactly_lib_test.named_element.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
+from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -36,8 +36,8 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
         # ARRANGE #
         ref_1_info = NameAndValue('ref 1', ValueType.FILE_MATCHER)
 
-        ref_1 = NamedElementReference(ref_1_info.name,
-                                      ValueTypeRestriction(ref_1_info.value))
+        ref_1 = SymbolReference(ref_1_info.name,
+                                ValueTypeRestriction(ref_1_info.value))
 
         expected_references = asrt.matches_sequence([
             asrt_rs.matches_reference(asrt.equals(ref_1_info.name),

@@ -1,21 +1,21 @@
 import unittest
 
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol import string_resolver as sr, list_resolver as lr
-from exactly_lib.named_element.symbol.restrictions import reference_restrictions
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
+from exactly_lib.symbol.data.restrictions import reference_restrictions
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_list as sut
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.parse import token as token_syntax
-from exactly_lib_test.named_element.symbol.test_resources.list_assertions import equals_list_resolver
-from exactly_lib_test.named_element.symbol.test_resources.symbol_utils import symbol_reference
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
+from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -179,8 +179,8 @@ class TestSingleElementList(unittest.TestCase):
                          lr.string_element(sr.resolver_from_fragments([
                              sr.ConstantStringFragmentResolver(single_token_value),
                              sr.SymbolStringFragmentResolver(
-                                 NamedElementReference(string_symbol.name,
-                                                       reference_restrictions.is_any_data_type())
+                                 SymbolReference(string_symbol.name,
+                                                 reference_restrictions.is_any_data_type())
                              ),
                          ]))],
                      source=
@@ -331,8 +331,8 @@ class TestMultipleElementList(unittest.TestCase):
                  Expectation(elements=
                  [
                      lr.string_element(sr.resolver_from_fragments([
-                         sr.SymbolStringFragmentResolver(NamedElementReference(symbol_name,
-                                                                               reference_restrictions.is_any_data_type())),
+                         sr.SymbolStringFragmentResolver(SymbolReference(symbol_name,
+                                                                         reference_restrictions.is_any_data_type())),
                          sr.ConstantStringFragmentResolver(single_token_value),
                      ])),
                      lr.string_element(sr.string_constant(single_token_value_1)),

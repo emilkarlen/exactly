@@ -10,9 +10,9 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
-from exactly_lib_test.named_element.test_resources.line_matcher import is_line_matcher_reference_to
-from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

@@ -2,7 +2,7 @@ import sys
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import shell as sut
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.symbol_table import SymbolTable
@@ -11,12 +11,12 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources impor
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_symbol_reference_restrictions
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources import file_structure as fs
@@ -64,10 +64,10 @@ class TestSymbolReferences(unittest.TestCase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     python_interpreter_symbol.name,
-                    equals_symbol_reference_restrictions(is_any_data_type())),
+                    equals_data_type_reference_restrictions(is_any_data_type())),
                 matches_reference_2(
                     file_to_interpret_symbol.name,
-                    equals_symbol_reference_restrictions(is_any_data_type())),
+                    equals_data_type_reference_restrictions(is_any_data_type())),
             ]),
             main_result=spr_check.is_success_result(expected_exit_status, ''),
         )

@@ -7,12 +7,12 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_pa
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreSds, \
-    PathResolvingEnvironmentPostSds
-from exactly_lib.named_element.symbol import string_resolver
-from exactly_lib.named_element.symbol.concrete_resolvers import list_constant
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.symbol.data import string_resolver
+from exactly_lib.symbol.data.concrete_resolvers import list_constant
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
+    PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure

@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep

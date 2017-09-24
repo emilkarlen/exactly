@@ -4,8 +4,8 @@ import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.utils.expression import comparators
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
@@ -31,11 +31,11 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
-from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -120,8 +120,8 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
     def test_symbols_from_contents_assertion_SHOULD_be_reported(self):
         # ARRANGE #
 
-        operand_sym_ref = NamedElementReference('operand_symbol_name',
-                                                string_made_up_by_just_strings())
+        operand_sym_ref = SymbolReference('operand_symbol_name',
+                                          string_made_up_by_just_strings())
 
         condition_str = '{operator} {symbol_reference}'.format(
             operator=comparators.EQ.name,

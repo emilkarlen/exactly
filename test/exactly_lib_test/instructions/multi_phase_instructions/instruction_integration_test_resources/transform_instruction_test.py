@@ -14,12 +14,12 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_symbol_reference_restrictions
-from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_reference_restrictions
@@ -94,11 +94,11 @@ class TestSymbolUsages(TestCaseBase):
                                                                        src_path_rel_variants))
         path_symbol_reference_assertions = [
             matches_reference(asrt.equals(src_path_symbol_name),
-                              equals_symbol_reference_restrictions(
+                              equals_data_type_reference_restrictions(
                                   file_ref_reference_restrictions(src_path_rel_variants))),
 
             matches_reference(asrt.equals(dst_path_symbol_name),
-                              equals_symbol_reference_restrictions(
+                              equals_data_type_reference_restrictions(
                                   file_ref_reference_restrictions(transform.DST_PATH_RELATIVITY_VARIANTS))),
 
         ]

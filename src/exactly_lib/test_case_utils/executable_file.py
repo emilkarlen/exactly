@@ -1,9 +1,9 @@
 import pathlib
 import stat
 
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.named_element.symbol.list_resolver import ListResolver
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.data import file_ref

@@ -3,8 +3,8 @@ import sys
 import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
@@ -21,8 +21,8 @@ from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor im
 from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single_line_source import \
     TestCaseForConfigurationForValidation
 from exactly_lib_test.execution.test_resources import eh_assertions
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
@@ -174,8 +174,8 @@ class TestSymbolUsages(unittest.TestCase):
             sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                   'CLI arguments, one per line')),
             symbol_usages=equals_symbol_references(
-                [NamedElementReference(symbol.name,
-                                       is_any_data_type())]
+                [SymbolReference(symbol.name,
+                                 is_any_data_type())]
             )
         )
         act_phase_execution.check_execution(self,

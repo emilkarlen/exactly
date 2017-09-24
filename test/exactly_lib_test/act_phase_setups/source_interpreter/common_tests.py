@@ -1,16 +1,16 @@
 import unittest
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils as su
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
@@ -73,8 +73,8 @@ class TestThatSymbolReferencesAreReportedAndUsed(TestCaseBase):
             ),
             Expectation(
                 symbol_usages=equals_symbol_references([
-                    NamedElementReference(symbol.name,
-                                          is_any_data_type()),
+                    SymbolReference(symbol.name,
+                                    is_any_data_type()),
                 ]),
                 sub_process_result_from_execute=pr.stdout(asrt.Equals(expected_output,
                                                                       'program output')),
@@ -104,8 +104,8 @@ class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseBase):
             ),
             Expectation(
                 symbol_usages=equals_symbol_references([
-                    NamedElementReference(symbol.name,
-                                          is_any_data_type()),
+                    SymbolReference(symbol.name,
+                                    is_any_data_type()),
                 ]),
                 sub_process_result_from_execute=pr.stdout(str_asrt.contains(path_suffix)),
             ))

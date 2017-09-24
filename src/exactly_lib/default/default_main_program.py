@@ -6,10 +6,10 @@ from exactly_lib.cli.program_modes.test_case import execution as test_case_execu
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.help.builtin.contents_structure import BuiltinSymbolDocumentation
-from exactly_lib.named_element.resolver_structure import NamedElementResolver, container_of_builtin
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin
 from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
@@ -19,7 +19,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 class BuiltinSymbol:
     def __init__(self,
                  name: str,
-                 resolver: NamedElementResolver,
+                 resolver: SymbolValueResolver,
                  single_line_description: str,
                  documentation: SectionContents,
                  ):
@@ -37,7 +37,7 @@ class BuiltinSymbol:
         return self._name, container_of_builtin(self._resolver)
 
     @property
-    def resolver(self) -> NamedElementResolver:
+    def resolver(self) -> SymbolValueResolver:
         return self._resolver
 
     @property

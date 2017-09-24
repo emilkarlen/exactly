@@ -4,12 +4,12 @@ import pathlib
 import shlex
 
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.named_element.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.named_element.symbol.path_resolver import FileRefResolver
-from exactly_lib.named_element.symbol.string_resolver import StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     from_parse_source
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix

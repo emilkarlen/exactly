@@ -1,11 +1,10 @@
 import pathlib
-import pathlib
 import unittest
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import eh
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -17,7 +16,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, simple_success, \
     check_execution, Expectation
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
 
@@ -81,8 +80,8 @@ class TestConstructor(unittest.TestCase):
     def test_symbol_usages_of_object_returned_by_parser_SHOULD_be_reported(self):
         # ARRANGE #
         expected_symbol_references = [
-            NamedElementReference('symbol_name',
-                                  is_any_data_type())
+            SymbolReference('symbol_name',
+                            is_any_data_type())
         ]
         constructor = sut.Constructor(ParserWithConstantResult(
             SymbolUserWithConstantSymbolReferences(expected_symbol_references)),

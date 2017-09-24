@@ -1,27 +1,27 @@
 import unittest
 
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.restriction import ReferenceRestrictions
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
-from exactly_lib.named_element.symbol.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
-    ConstantStringFragmentResolver, StringResolver
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol.data.restrictions.reference_restrictions import \
+    ReferenceRestrictionsOnDirectAndIndirect
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction
+from exactly_lib.symbol.data.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
+    ConstantStringFragmentResolver, StringResolver
+from exactly_lib.symbol.restriction import ReferenceRestrictions
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_string as sut
 from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
-from exactly_lib_test.named_element.symbol.test_resources.concrete_value_assertions import equals_string_resolver
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -268,8 +268,8 @@ def fragment_resolver_from_fragment(fragment: Fragment) -> StringFragmentResolve
     if fragment.is_constant:
         return ConstantStringFragmentResolver(fragment.value)
     else:
-        sr = NamedElementReference(fragment.value,
-                                   ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
+        sr = SymbolReference(fragment.value,
+                             ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
                                                                             indirect=None))
         return SymbolStringFragmentResolver(sr)
 
@@ -278,8 +278,8 @@ def single_symbol_reference(symbol_name: str,
                             reference_restrictions: ReferenceRestrictions = None) -> sut.StringResolver:
     if reference_restrictions is None:
         reference_restrictions = no_restrictions()
-    fragments = (SymbolStringFragmentResolver(NamedElementReference(symbol_name,
-                                                                    reference_restrictions)),)
+    fragments = (SymbolStringFragmentResolver(SymbolReference(symbol_name,
+                                                              reference_restrictions)),)
     return sut.StringResolver(fragments)
 
 

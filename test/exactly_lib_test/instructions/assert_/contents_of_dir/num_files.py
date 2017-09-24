@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.utils.expression import comparators
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -19,8 +19,8 @@ from exactly_lib_test.instructions.assert_.test_resources import expression
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail, ExpectationTypeConfig
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_resources.file_structure import Dir
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 
@@ -80,8 +80,8 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
     def test_symbols_from_comparison_SHOULD_be_reported(self):
         # ARRANGE #
 
-        operand_sym_ref = NamedElementReference('operand_symbol_name',
-                                                string_made_up_by_just_strings())
+        operand_sym_ref = SymbolReference('operand_symbol_name',
+                                          string_made_up_by_just_strings())
 
         condition_str = '{operator} {symbol_reference}'.format(
             operator=comparators.EQ.name,

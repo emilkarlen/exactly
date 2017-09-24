@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
     InstructionArgumentsVariantConstructor
-from exactly_lib_test.named_element.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
+from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 
 
 def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) -> unittest.TestSuite:

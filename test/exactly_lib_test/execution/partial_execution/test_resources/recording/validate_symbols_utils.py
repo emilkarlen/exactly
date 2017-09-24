@@ -2,11 +2,11 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.named_element.named_element_usage import NamedElementReference, NamedElementDefinition
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import \
+from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import AnySymbolTypeRestriction
-from exactly_lib.named_element.symbol.string_resolver import StringResolver, SymbolStringFragmentResolver
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction
+from exactly_lib.symbol.data.string_resolver import StringResolver, SymbolStringFragmentResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
@@ -15,10 +15,10 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
-from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_unsatisfied
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.test_resources.named_elem_utils import element_reference
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.test_resources.symbol_utils import element_reference
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -81,9 +81,9 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
 class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
     def runTest(self):
         conf = self.configuration
-        defined_symbol = symbol_utils.string_symbol_definition('symbol_name')
+        defined_symbol = data_symbol_utils.string_symbol_definition('symbol_name')
         error_message_for_failed_restriction = 'error message'
-        reference_with_restriction_failure = NamedElementReference(
+        reference_with_restriction_failure = SymbolReference(
             defined_symbol.name,
             ReferenceRestrictionsOnDirectAndIndirect(
                 direct=value_restriction_that_is_unconditionally_unsatisfied(error_message_for_failed_restriction)))
@@ -124,17 +124,17 @@ class TestImplementationError(TestCaseBase):
                         sandbox_directory_structure_should_exist=False))
 
 
-def _reference_to_undefined_symbol() -> NamedElementReference:
-    return NamedElementReference('undefined symbol',
-                                 ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction()))
+def _reference_to_undefined_symbol() -> SymbolReference:
+    return SymbolReference('undefined symbol',
+                           ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction()))
 
 
 def definition_with_reference(name_of_defined: str,
-                              name_of_referenced: str) -> NamedElementDefinition:
-    symbol_reference = NamedElementReference(name_of_referenced,
-                                             ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
+                              name_of_referenced: str) -> SymbolDefinition:
+    symbol_reference = SymbolReference(name_of_referenced,
+                                       ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
                                                                                       indirect=AnySymbolTypeRestriction()))
-    return NamedElementDefinition(name_of_defined,
-                                  symbol_utils.container(
+    return SymbolDefinition(name_of_defined,
+                            data_symbol_utils.container(
                                       StringResolver((SymbolStringFragmentResolver(symbol_reference),))
                                   ))

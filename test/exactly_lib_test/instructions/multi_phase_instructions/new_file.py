@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
     PathRelativityVariants
 from exactly_lib.test_case_utils.parse import parse_file_ref
@@ -17,11 +17,11 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources impor
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source, remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
@@ -255,7 +255,7 @@ class TestSymbolReferences(TestCaseBase):
         symbol = NameAndValue('symbol_name',
                               file_refs.of_rel_option(relativity,
                                                       PathPartAsFixedPath(sub_dir_name)))
-        expected_symbol_reference = NamedElementReference(
+        expected_symbol_reference = SymbolReference(
             symbol.name,
             parse_file_ref.path_or_string_reference_restrictions(
                 ACCEPTED_RELATIVITY_VARIANTS
@@ -273,7 +273,7 @@ class TestSymbolReferences(TestCaseBase):
                  'THE_MARKER']),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                symbols=symbol_utils.symbol_table_with_single_file_ref_value(
+                symbols=data_symbol_utils.symbol_table_with_single_file_ref_value(
                     symbol.name,
                     symbol.value),
             ),
@@ -295,11 +295,11 @@ class TestSymbolReferences(TestCaseBase):
         here_doc_symbol = NameAndValue('here_doc_symbol_name',
                                        'here doc symbol value')
 
-        expected_file_symbol_reference = NamedElementReference(
+        expected_file_symbol_reference = SymbolReference(
             file_symbol.name,
             parse_file_ref.path_or_string_reference_restrictions(
                 ACCEPTED_RELATIVITY_VARIANTS))
-        expected_here_doc_symbol_reference = NamedElementReference(
+        expected_here_doc_symbol_reference = SymbolReference(
             here_doc_symbol.name,
             is_any_data_type())
 
@@ -312,9 +312,9 @@ class TestSymbolReferences(TestCaseBase):
         expected_symbol_references = [expected_file_symbol_reference,
                                       expected_here_doc_symbol_reference]
 
-        symbol_table = symbol_utils.SymbolTable({
-            file_symbol.name: symbol_utils.file_ref_constant_container(file_symbol.value),
-            here_doc_symbol.name: symbol_utils.string_constant_container(here_doc_symbol.value),
+        symbol_table = data_symbol_utils.SymbolTable({
+            file_symbol.name: data_symbol_utils.file_ref_constant_container(file_symbol.value),
+            here_doc_symbol.name: data_symbol_utils.string_constant_container(here_doc_symbol.value),
         })
 
         self._check(

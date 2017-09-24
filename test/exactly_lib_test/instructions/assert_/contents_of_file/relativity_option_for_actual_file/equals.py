@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
-from exactly_lib.named_element.symbol.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
+from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.type_system.data import file_refs
@@ -21,10 +21,10 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import \
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
@@ -133,7 +133,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
 
     def runTest(self):
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
-        file_ref_sym_tbl_entry_for_expected_file = symbol_utils.entry(
+        file_ref_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
             expected_file_relativity_symbol,
             FileRefConstant(file_refs.of_rel_option(self.relativity_of_expected_file(),
                                                     PathPartAsNothing())))

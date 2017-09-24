@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.instructions.assert_.utils.expression import comparators
-from exactly_lib.named_element.named_element_usage import NamedElementReference
-from exactly_lib.named_element.symbol.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
@@ -12,8 +12,8 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.test_resources import symbol_utils
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as svh_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -114,7 +114,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                             source,
                             ArrangementPostAct(
                                 symbols=SymbolTable({
-                                    symbol.name: symbol_utils.string_constant_container(
+                                    symbol.name: data_symbol_utils.string_constant_container(
                                         invalid_symbol_value
                                     )
                                 })
@@ -122,8 +122,8 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                             Expectation(
                                 validation_pre_sds=svh_asrt.is_validation_error(),
                                 symbol_usages=equals_symbol_references([
-                                    NamedElementReference(symbol.name,
-                                                          string_made_up_by_just_strings())
+                                    SymbolReference(symbol.name,
+                                                    string_made_up_by_just_strings())
                                 ]),
                             ),
                         )

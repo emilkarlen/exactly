@@ -9,8 +9,8 @@ from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts import file_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ResolvedComparisonActualFile
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.named_element.symbol.value_resolvers.file_ref_with_symbol import StackedFileRef
+from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg

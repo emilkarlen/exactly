@@ -13,14 +13,14 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instr
     ArrangementWithSds, check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.named_element.symbol.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_symbol_reference_restrictions
-from exactly_lib_test.named_element.test_resources.lines_transformer import is_lines_transformer_reference_to
-from exactly_lib_test.named_element.test_resources.named_elem_utils import container
-from exactly_lib_test.named_element.test_resources.resolver_structure_assertions import matches_reference
-from exactly_lib_test.named_element.test_resources.symbol_syntax import A_VALID_SYMBOL_NAME
-from exactly_lib_test.named_element.test_resources.symbol_tables import singleton_symbol_table_3
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference
+from exactly_lib_test.symbol.test_resources.symbol_syntax import A_VALID_SYMBOL_NAME
+from exactly_lib_test.symbol.test_resources.symbol_tables import singleton_symbol_table_3
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import dir_contains_exactly
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.argument_syntax import \
@@ -268,7 +268,7 @@ class TestSymbolUsages(unittest.TestCase):
                     # ASSERT #
                     expected_symbol_references = asrt.matches_sequence([
                         matches_reference(asrt.equals(symbol_name),
-                                          equals_symbol_reference_restrictions(
+                                          equals_data_type_reference_restrictions(
                                               file_ref_reference_restrictions(src_path_rel_variants)))
                     ])
                     expected_symbol_references.apply_without_message(self,
@@ -300,7 +300,7 @@ class TestSymbolUsages(unittest.TestCase):
                     # ASSERT #
                     expected_symbol_references = asrt.matches_sequence([
                         matches_reference(asrt.equals(symbol_name),
-                                          equals_symbol_reference_restrictions(
+                                          equals_data_type_reference_restrictions(
                                               file_ref_reference_restrictions(DST_PATH_RELATIVITY_VARIANTS)))
                     ])
                     expected_symbol_references.apply_without_message(self,

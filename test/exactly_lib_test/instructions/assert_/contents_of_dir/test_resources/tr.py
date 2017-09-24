@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.contents_of_dir import config
-from exactly_lib.named_element.named_element_usage import NamedElementReference
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
     PathRelativityVariants, RelOptionType
@@ -19,9 +19,9 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import equivalent_source_variants
-from exactly_lib_test.named_element.symbol.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.named_element.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, sym_link
@@ -191,7 +191,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
     def test_symbols_from_path_SHOULD_be_reported(self):
         # ARRANGE #
 
-        path_sym_ref = NamedElementReference(
+        path_sym_ref = SymbolReference(
             'path_symbol_name',
             parse_relativity.reference_restrictions_for_path_symbol(
                 config.ACTUAL_RELATIVITY_CONFIGURATION.options.accepted_relativity_variants))
