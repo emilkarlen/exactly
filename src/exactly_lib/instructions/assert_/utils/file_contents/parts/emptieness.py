@@ -1,6 +1,6 @@
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor, \
     CONTENTS_ATTRIBUTE
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.util.logic_types import ExpectationType
 
 
-class EmptinessAssertionPart(ActualFileAssertionPart):
+class EmptinessContentsAssertionPart(FileContentsAssertionPart):
     def __init__(self,
                  expectation_type: ExpectationType):
         super().__init__()

@@ -4,7 +4,7 @@ import pathlib
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE, \
     FilePropertyDescriptorConstructor
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -25,7 +25,7 @@ from exactly_lib.util.logic_types import ExpectationType
 _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 
 
-class EqualityAssertionPart(ActualFileAssertionPart):
+class EqualityContentsAssertionPart(FileContentsAssertionPart):
     def __init__(self,
                  expectation_type: ExpectationType,
                  expected_contents: StringResolverOrFileRef):
