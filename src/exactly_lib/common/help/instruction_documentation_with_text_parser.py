@@ -1,10 +1,8 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME
-from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure.core import Text
 
@@ -47,8 +45,6 @@ class InstructionDocumentationWithCommandLineRenderingBase(InstructionDocumentat
 
     CL_SYNTAX_RENDERER = cli_program_syntax.CommandLineSyntaxRenderer()
 
-    ARG_SYNTAX_RENDERER = cli_program_syntax.ArgumentInArgumentDescriptionRenderer()
-
     def __init__(self,
                  instruction_name: str,
                  format_map: dict):
@@ -56,17 +52,6 @@ class InstructionDocumentationWithCommandLineRenderingBase(InstructionDocumentat
 
     def _cl_syntax_for_args(self, argument_usages: list) -> str:
         return cl_syntax.cl_syntax_for_args(argument_usages)
-
-    def _cl_syntax(self, command_line: a.CommandLine) -> str:
-        return cl_syntax.cl_syntax(command_line)
-
-    def _arg_syntax(self, arg: a.Argument) -> str:
-        return cl_syntax.arg_syntax(arg)
-
-    def _cli_argument_syntax_element_description(self,
-                                                 argument: a.Argument,
-                                                 description_rest: list) -> SyntaxElementDescription:
-        return cl_syntax.cli_argument_syntax_element_description(argument, description_rest)
 
 
 class InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase(
