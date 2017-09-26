@@ -3,7 +3,7 @@ from exactly_lib.help_texts.instruction_arguments import LINE_MATCHER
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE, \
     FilePropertyDescriptorConstructor
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
@@ -17,7 +17,7 @@ from exactly_lib.util.logic_types import ExpectationType
 
 
 def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
-                                        line_matcher_resolver: LineMatcherResolver) -> ActualFileAssertionPart:
+                                        line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
         return _AnyLineMatchesAssertionPartForPositiveMatch(
             instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
@@ -31,7 +31,7 @@ def assertion_part_for_any_line_matches(expectation_type: ExpectationType,
 
 
 def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
-                                          line_matcher_resolver: LineMatcherResolver) -> ActualFileAssertionPart:
+                                          line_matcher_resolver: LineMatcherResolver) -> FileContentsAssertionPart:
     if expectation_type is ExpectationType.POSITIVE:
         return _EveryLineMatchesAssertionPartForPositiveMatch(
             instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
@@ -44,7 +44,7 @@ def assertion_part_for_every_line_matches(expectation_type: ExpectationType,
             line_matcher_resolver)
 
 
-class FileAssertionPart(ActualFileAssertionPart):
+class FileContentsAssertionPart(FileContentsAssertionPart):
     def __init__(self,
                  any_or_every_keyword: str,
                  expectation_type: ExpectationType,
@@ -113,7 +113,7 @@ class FileAssertionPart(ActualFileAssertionPart):
             ))
 
 
-class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
+class _AnyLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
@@ -127,7 +127,7 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
                           'no line matches')
 
 
-class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
+class _AnyLineMatchesAssertionPartForNegativeMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
@@ -146,7 +146,7 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
         return file_to_check
 
 
-class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
+class _EveryLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
@@ -164,7 +164,7 @@ class _EveryLineMatchesAssertionPartForPositiveMatch(FileAssertionPart):
         return file_to_check
 
 
-class _EveryLineMatchesAssertionPartForNegativeMatch(FileAssertionPart):
+class _EveryLineMatchesAssertionPartForNegativeMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,

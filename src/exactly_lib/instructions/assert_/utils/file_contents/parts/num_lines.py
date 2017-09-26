@@ -1,7 +1,7 @@
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
-from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import ActualFileAssertionPart, \
+from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
@@ -15,11 +15,11 @@ from exactly_lib.util.logic_types import ExpectationType
 
 def assertion_part_for_num_lines(expectation_type: ExpectationType,
                                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand,
-                                 ) -> ActualFileAssertionPart:
-    return FileAssertionPart(expectation_type, cmp_op_and_rhs)
+                                 ) -> FileContentsAssertionPart:
+    return FileContentsAssertionPart(expectation_type, cmp_op_and_rhs)
 
 
-class FileAssertionPart(ActualFileAssertionPart):
+class FileContentsAssertionPart(FileContentsAssertionPart):
     def __init__(self,
                  expectation_type: ExpectationType,
                  cmp_op_and_rhs: IntegerComparisonOperatorAndRightOperand):

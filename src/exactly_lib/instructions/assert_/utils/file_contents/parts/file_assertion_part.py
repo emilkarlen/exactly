@@ -94,7 +94,7 @@ class FileToCheck:
                     dst_file.write(line)
 
 
-class ActualFileAssertionPart(AssertionPart):
+class FileContentsAssertionPart(AssertionPart):
     """
     A :class:`AssertionPart` that is given
     the path of a file to operate on.
