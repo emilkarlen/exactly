@@ -76,6 +76,11 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                     'Builtin symbols'),
             ),
             (
+                'syntax',
+                application_help.entity_conf_for(entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME).get_hierarchy_generator(
+                    'Syntax elements'),
+            ),
+            (
                 'help',
                 help.generator('Getting Help')
             ),

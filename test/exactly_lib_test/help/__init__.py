@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.help import program_modes, concepts, actors, suite_reporters, html_doc
+from exactly_lib_test.help import program_modes, concepts, actors, suite_reporters, syntax_elements, html_doc
 from exactly_lib_test.help.utils import table_of_contents, section_hierarchy_rendering
 
 
@@ -12,6 +12,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(concepts.suite())
     ret_val.addTest(actors.suite())
     ret_val.addTest(suite_reporters.suite())
+    ret_val.addTest(syntax_elements.suite())
     ret_val.addTest(html_doc.suite())
     return ret_val
 

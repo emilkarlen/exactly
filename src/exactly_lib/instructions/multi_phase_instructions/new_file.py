@@ -1,6 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_elements import here_document
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
@@ -54,8 +55,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
                                                                    REL_OPT_ARG_CONF.options) + \
                [
-                   dt.here_document_syntax_element_description(self.instruction_name(),
-                                                               instruction_arguments.HERE_DOCUMENT),
+                   here_document.here_document_syntax_element_description(self.instruction_name(),
+                                                                          instruction_arguments.HERE_DOCUMENT),
                ]
 
     def _see_also_cross_refs(self) -> list:

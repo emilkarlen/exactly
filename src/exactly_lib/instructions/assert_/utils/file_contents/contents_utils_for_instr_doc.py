@@ -1,5 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_elements import here_document
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
@@ -9,7 +10,6 @@ from exactly_lib.instructions.assert_.utils.expression import parse as parse_exp
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.assert_.utils.file_contents.parts import cl_syntax as parts_cl_syntax
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_utils import negation_of_predicate
@@ -83,8 +83,8 @@ class FileContentsHelpParts:
                 [
                     SyntaxElementDescription(instruction_arguments.REG_EX.name,
                                              self._parser.fnap('A Python regular expression.')),
-                    dt.here_document_syntax_element_description(self.instruction_name,
-                                                                instruction_arguments.HERE_DOCUMENT),
+                    here_document.here_document_syntax_element_description(self.instruction_name,
+                                                                           instruction_arguments.HERE_DOCUMENT),
                 ] +
                 parse_expr.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
                 )

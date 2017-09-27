@@ -13,6 +13,7 @@ from exactly_lib.help.program_modes.test_suite.section.cases import CasesSection
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
 from exactly_lib.help.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
+from exactly_lib.help.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
 from exactly_lib.help.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
@@ -43,6 +44,8 @@ def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list):
         entity_names.SUITE_REPORTER_ENTITY_TYPE_NAME: SUITE_REPORTER_ENTITY_CONFIGURATION,
 
         entity_names.TYPE_ENTITY_TYPE_NAME: TYPE_ENTITY_CONFIGURATION,
+
+        entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME: SYNTAX_ELEMENT_ENTITY_CONFIGURATION,
 
         entity_names.BUILTIN_ENTITY_TYPE_NAME: builtin_symbols_entity_configuration(
             builtin_symbol_documentation_list),
