@@ -1,6 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_elements import here_document
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
@@ -68,8 +69,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 self.path_arg,
                 parse_here_doc_or_file_ref.CONFIGURATION.options) +
             [
-                dt.here_document_syntax_element_description(self.instruction_name(),
-                                                            instruction_arguments.HERE_DOCUMENT),
+                here_document.here_document_syntax_element_description(self.instruction_name(),
+                                                                       instruction_arguments.HERE_DOCUMENT),
             ]
         )
 

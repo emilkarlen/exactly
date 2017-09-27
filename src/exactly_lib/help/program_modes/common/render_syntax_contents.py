@@ -23,10 +23,10 @@ def variants_list(instruction_name: str,
                                                 custom_separations=custom_separations))
 
 
-def invokation_variants_content(instruction_name_or_none: str,
-                                invokation_variants: list,
-                                syntax_element_descriptions: list
-                                ) -> doc.SectionContents:
+def invokation_variants_paragraphs(instruction_name_or_none: str,
+                                   invokation_variants: list,
+                                   syntax_element_descriptions: list
+                                   ) -> list:
     def syntax_element_description_list() -> paragraph.ParagraphItem:
         items = []
         for x in syntax_element_descriptions:
@@ -54,10 +54,20 @@ def invokation_variants_content(instruction_name_or_none: str,
                 syntax_element_description_list()
                 ]
 
-    return doc.SectionContents([variants_list(instruction_name_or_none,
-                                              invokation_variants,
-                                              custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)] +
-                               syntax_element_description_paragraph_items(),
+    return ([variants_list(instruction_name_or_none,
+                           invokation_variants,
+                           custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)] +
+            syntax_element_description_paragraph_items())
+
+
+def invokation_variants_content(instruction_name_or_none: str,
+                                invokation_variants: list,
+                                syntax_element_descriptions: list
+                                ) -> doc.SectionContents:
+    return doc.SectionContents(invokation_variants_paragraphs(instruction_name_or_none,
+                                                              invokation_variants,
+                                                              syntax_element_descriptions
+                                                              ),
                                [])
 
 
