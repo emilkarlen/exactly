@@ -16,16 +16,33 @@ class InvokationVariant(tuple):
         return self[1]
 
 
-class SyntaxElementDescription:
-    def __init__(self,
-                 element_name: str,
-                 description_rest: list,
-                 invokation_variants: list = None):
+class SyntaxElementDescription(tuple):
+    def __new__(cls,
+                element_name: str,
+                description_rest: list,
+                invokation_variants: list = None):
         """
-        :param element_name:
         :type description_rest: [`ParagraphItem`]
         :type invokation_variants: [`InvokationVariant`]
         """
-        self.element_name = element_name
-        self.invokation_variants = [] if invokation_variants is None else invokation_variants
-        self.description_rest = description_rest
+        return tuple.__new__(cls, (element_name,
+                                   description_rest,
+                                   [] if invokation_variants is None else invokation_variants))
+
+    @property
+    def element_name(self) -> str:
+        return self[0]
+
+    @property
+    def description_rest(self) -> list:
+        """
+        :rtype: [`ParagraphItem`]
+        """
+        return self[1]
+
+    @property
+    def invokation_variants(self) -> list:
+        """
+        :rtype: [`InvokationVariant`]
+        """
+        return self[2]
