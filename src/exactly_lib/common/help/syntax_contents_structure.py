@@ -1,13 +1,19 @@
-class InvokationVariant:
-    def __init__(self,
-                 syntax: str,
-                 description_rest: list = None):
+class InvokationVariant(tuple):
+    def __new__(cls,
+                syntax: str,
+                description_rest: list = None):
         """
-        :param syntax:
         :type description_rest: [`ParagraphItem`]
         """
-        self.syntax = syntax
-        self.description_rest = [] if description_rest is None else description_rest
+        return tuple.__new__(cls, (syntax, [] if description_rest is None else description_rest))
+
+    @property
+    def syntax(self) -> str:
+        return self[0]
+
+    @property
+    def description_rest(self) -> list:
+        return self[1]
 
 
 class SyntaxElementDescription:
