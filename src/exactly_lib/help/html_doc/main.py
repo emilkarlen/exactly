@@ -71,14 +71,14 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
                 application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME).get_hierarchy_generator('Actors'),
             ),
             (
-                'builtin',
-                application_help.entity_conf_for(entity_names.BUILTIN_ENTITY_TYPE_NAME).get_hierarchy_generator(
-                    'Builtin symbols'),
-            ),
-            (
                 'syntax',
                 application_help.entity_conf_for(entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME).get_hierarchy_generator(
                     'Syntax elements'),
+            ),
+            (
+                'builtin',
+                application_help.entity_conf_for(entity_names.BUILTIN_ENTITY_TYPE_NAME).get_hierarchy_generator(
+                    'Builtin symbols'),
             ),
             (
                 'help',
