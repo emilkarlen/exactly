@@ -2,9 +2,9 @@ import io
 import pathlib
 import unittest
 
+from exactly_lib.cli import main_program
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
 from exactly_lib.common import instruction_setup
-from exactly_lib.default import default_main_program
 from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help_texts.test_suite.section_names_with_syntax import SECTION_NAME__CONF
@@ -173,15 +173,15 @@ def _run_test_case(command_line_arguments: list,
     std_output_files = StdOutputFiles(stdout_file=stdout_file,
                                       stderr_file=stderr_file)
 
-    main_program = default_main_program.MainProgram(
+    main_pgm = main_program.MainProgram(
         std_output_files,
+        default_test_case_handling_setup,
         test_case_definition,
         test_suite_definition,
-        default_test_case_handling_setup
     )
     with tmp_dir_as_cwd(cwd_contents):
         # ACT #
-        actual_exit_code = main_program.execute(command_line_arguments)
+        actual_exit_code = main_pgm.execute(command_line_arguments)
 
     ret_val = SubProcessResult(actual_exit_code,
                                stdout=stdout_file.getvalue(),

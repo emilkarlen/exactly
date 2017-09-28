@@ -8,7 +8,7 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstru
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 
 
-def test_case_handling_setup() -> TestCaseHandlingSetup:
+def setup() -> TestCaseHandlingSetup:
     return TestCaseHandlingSetup(ActPhaseSetup(Constructor()),
                                  IdentityPreprocessor())
 
