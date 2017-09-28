@@ -1,7 +1,7 @@
 from exactly_lib import program_info
-from exactly_lib.help.concepts.configuration_parameters.home_act_directory import \
+from exactly_lib.help.entities.concepts.configuration_parameters.home_act_directory import \
     HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
+from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO

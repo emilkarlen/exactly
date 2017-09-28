@@ -4,8 +4,8 @@ from exactly_lib.cli.program_modes.help import argument_parsing as sut
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
-from exactly_lib.help.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 

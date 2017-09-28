@@ -3,7 +3,8 @@ import os
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory import \
+    CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo

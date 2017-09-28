@@ -1,7 +1,10 @@
-from exactly_lib.help.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
-from exactly_lib.help.builtin.entity_configuration import builtin_symbols_entity_configuration
-from exactly_lib.help.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.builtin.entity_configuration import builtin_symbols_entity_configuration
+from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
@@ -12,9 +15,6 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
-from exactly_lib.help.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
-from exactly_lib.help.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
-from exactly_lib.help.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 from exactly_lib.processing.instruction_setup import InstructionsSetup
