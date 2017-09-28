@@ -4,8 +4,7 @@ from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import builtin_symbols
 from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help_texts.entity import types
-from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
+from exactly_lib.help_texts.entity import types, actors, syntax_element
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
@@ -50,7 +49,7 @@ def _main_program_test_cases() -> list:
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "actor concept" SHOULD be successful',
-                        HelpInvokation(arguments_for.actor_single(COMMAND_LINE_ACTOR.singular_name)),
+                        HelpInvokation(arguments_for.actor_single(actors.COMMAND_LINE_ACTOR.singular_name)),
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "type list" SHOULD be successful',
@@ -67,5 +66,13 @@ def _main_program_test_cases() -> list:
 
         ProcessTestCase('help for single "builtin" SHOULD be successful',
                         HelpInvokation(arguments_for.builtin(builtin_symbols.ALL[0].name)),
+                        RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "syntax list" SHOULD be successful',
+                        HelpInvokation(arguments_for.syntax()),
+                        RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for single "syntax" SHOULD be successful',
+                        HelpInvokation(arguments_for.syntax(syntax_element.ALL_SYNTAX_ELEMENTS[0].singular_name)),
                         RESULT_IS_SUCCESSFUL),
     ]
