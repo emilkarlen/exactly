@@ -2,10 +2,10 @@ import io
 import pathlib
 import unittest
 
+from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import default_main_program
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.default.default_main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.help_texts.test_suite.section_names_with_syntax import SECTION_NAME__CONF
 from exactly_lib.processing import exit_values
@@ -25,7 +25,6 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
-from exactly_lib.test_suite.instruction_set.test_suite_definition import TestSuiteDefinition
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup

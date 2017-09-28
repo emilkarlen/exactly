@@ -1,4 +1,4 @@
-from exactly_lib.default.default_main_program import BuiltinSymbol
+from exactly_lib.cli.main_program import BuiltinSymbol
 from exactly_lib.test_case_utils.lines_transformer import env_vars_replacement
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 

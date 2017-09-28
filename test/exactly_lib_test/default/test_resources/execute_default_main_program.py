@@ -1,5 +1,5 @@
+from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.default import default_main_program as sut
-from exactly_lib.default.default_main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.default.program_modes.test_suite import test_suite_definition
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup

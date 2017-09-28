@@ -1,4 +1,4 @@
-from exactly_lib.default.default_main_program import BuiltinSymbol
+from exactly_lib.cli.main_program import BuiltinSymbol
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.environment_variables import ENVIRONMENT_VARIABLE_DESCRIPTION
 from exactly_lib.symbol import resolver_structure
