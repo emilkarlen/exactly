@@ -87,8 +87,9 @@ class _CheckInstructionParser:
                                    parser: TokenParserPrime) -> DirContentsAssertionPart:
         parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
                                                           must_be_on_current_line=True)
-        parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_SEPARATOR_ARGUMENT,
-                                                          must_be_on_current_line=True)
+        parser.consume_mandatory_constant_unquoted_string(
+            instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+            must_be_on_current_line=True)
         from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
         return quant_over_files.QuantifiedAssertion(self.settings, quantifier, actual_file_assertion_part)

@@ -126,7 +126,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                             a.Constant(config.QUANTIFICATION_OVER_FILE_ARGUMENT))
 
         separator_arg = a.Single(a.Multiplicity.MANDATORY,
-                                 a.Constant(config.QUANTIFICATION_SEPARATOR_ARGUMENT))
+                                 a.Constant(
+                                     instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT))
 
         file_contents_args = ([quantifier_arg,
                                file_arg,

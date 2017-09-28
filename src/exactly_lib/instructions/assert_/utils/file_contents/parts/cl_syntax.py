@@ -77,6 +77,9 @@ class FileContentsAssertionHelp:
         line_arg = a.Single(a.Multiplicity.MANDATORY,
                             a.Constant(instruction_options.LINE_ARGUMENT))
 
+        quantifier_separator_arg = a.Single(a.Multiplicity.MANDATORY,
+                                            a.Constant(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT))
+
         matches_arg = a.Single(a.Multiplicity.MANDATORY,
                                a.Constant(instruction_options.MATCHES_ARGUMENT))
         line_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -102,6 +105,7 @@ class FileContentsAssertionHelp:
 
                 InvokationVariant(_cls([quantifier_arg,
                                         line_arg,
+                                        quantifier_separator_arg,
                                         matches_arg,
                                         line_matcher_arg,
                                         ]),
