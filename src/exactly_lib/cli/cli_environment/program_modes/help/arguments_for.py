@@ -85,6 +85,13 @@ def builtin(symbol_name: str = '') -> list:
         return [clo.BUILTIN]
 
 
+def syntax(syntax_element: str = '') -> list:
+    if syntax_element:
+        return [clo.SYNTAX, syntax_element]
+    else:
+        return [clo.SYNTAX]
+
+
 def symbol_type(type_name: str = '') -> list:
     if type_name:
         return [clo.TYPE, type_name]
