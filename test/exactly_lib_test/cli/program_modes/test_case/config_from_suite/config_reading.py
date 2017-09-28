@@ -27,8 +27,8 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 from exactly_lib.util.string import lines_content
+from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
-from exactly_lib_test.default.program_modes.test_case.config_from_suite.test_resources import cli_args_for
 from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorForConstantExecutor

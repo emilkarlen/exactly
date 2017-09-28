@@ -3,9 +3,8 @@ import unittest
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.exit_codes import EXIT_INVALID_USAGE
-from exactly_lib_test.default.program_modes.test_case.config_from_suite.test_resources import cli_args_for
-from exactly_lib_test.default.test_resources.internal_main_program_runner import \
-    main_program_runner_with_default_setup__in_same_process
+from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for
+from exactly_lib_test.cli.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.main_program import main_program_check_base as mpr_check
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
@@ -40,7 +39,7 @@ def suite_for(mpr: MainProgramRunner) -> unittest.TestSuite:
 
 
 def _suite() -> unittest.TestSuite:
-    return suite_for(main_program_runner_with_default_setup__in_same_process())
+    return suite_for(RunViaMainProgramInternally())
 
 
 class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessorAndTestActor):

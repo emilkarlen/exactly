@@ -5,10 +5,7 @@ from exactly_lib_test.test_resources.main_program.main_program_runner import Mai
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(help.suite_that_does_not_require_main_program_runner())
-    ret_val.addTest(test_case.suite_that_does_not_require_main_program_runner())
-    return ret_val
+    return help.suite_that_does_not_require_main_program_runner()
 
 
 def suite_that_does_require_any_main_program_runner(mpr: MainProgramRunner) -> unittest.TestSuite:
