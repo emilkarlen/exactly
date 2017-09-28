@@ -4,15 +4,10 @@ from exactly_lib_test.default.program_modes.test_case import misc, \
     command_line_options, keep_sandbox, output_result_of_act_phase, \
     preprocessing, \
     act_phase, \
-    predefined_symbols, \
-    config_from_suite
+    predefined_symbols
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
-
-
-def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
-    return config_from_suite.suite_that_does_not_require_main_program_runner()
 
 
 def suite_that_does_require_main_program_runner(mpr: MainProgramRunner) -> unittest.TestSuite:
@@ -23,7 +18,6 @@ def suite_that_does_require_main_program_runner(mpr: MainProgramRunner) -> unitt
     ret_val.addTest(misc.suite_for(mpr))
     ret_val.addTest(preprocessing.suite_for(mpr))
     ret_val.addTest(act_phase.suite_for(mpr))
-    ret_val.addTest(config_from_suite.suite_that_does_require_main_program_runner(mpr))
     return ret_val
 
 

@@ -6,13 +6,16 @@ from exactly_lib_test.test_resources.main_program.main_program_runner import Mai
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(test_case.suite())
+    ret_val.addTest(test_case.suite_that_does_not_require_main_program_runner())
     ret_val.addTest(help.suite())
     return ret_val
 
 
 def suite_that_does_require_main_program_runner(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    return test_suite.suite_that_does_require_main_program_runner(main_program_runner)
+    return unittest.TestSuite([
+        test_case.suite_that_does_require_main_program_runner(main_program_runner),
+        test_suite.suite_that_does_require_main_program_runner(main_program_runner),
+    ])
 
 
 def complete_suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
