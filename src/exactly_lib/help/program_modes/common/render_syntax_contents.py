@@ -54,6 +54,8 @@ def invokation_variants_paragraphs(instruction_name_or_none: str,
                 syntax_element_description_list()
                 ]
 
+    if not invokation_variants:
+        return []
     return ([variants_list(instruction_name_or_none,
                            invokation_variants,
                            custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)] +
