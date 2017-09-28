@@ -1,4 +1,5 @@
 import os
+import types
 
 import exactly_lib.cli.program_modes.help.error
 from exactly_lib.cli.cli_environment import exit_codes
@@ -62,9 +63,6 @@ class TestCaseDefinitionForMainProgram:
     extra information about predefined symbols for the help system.
     """
 
-    # FIXME: Should act phase parser be part of this class?
-    # Feels right, but have not looked into it.
-
     def __init__(self,
                  instruction_name_extractor_function,
                  instruction_setup: InstructionsSetup,
@@ -80,12 +78,14 @@ class TestCaseDefinitionForMainProgram:
 class TestSuiteDefinition(tuple):
     def __new__(cls,
                 configuration_section_instructions: dict,
-                configuration_section_parser: document_parser.SectionElementParser):
+                configuration_section_parser: document_parser.SectionElementParser,
+                get_sds_root_name_prefix: types.FunctionType = lambda: ''):
         """
         :param configuration_section_instructions: instruction-name -> `SingleInstructionSetup`.
         """
         return tuple.__new__(cls, (configuration_section_instructions,
-                                   configuration_section_parser))
+                                   configuration_section_parser,
+                                   get_sds_root_name_prefix))
 
     @property
     def configuration_section_instructions(self) -> dict:
@@ -98,20 +98,18 @@ class TestSuiteDefinition(tuple):
     def configuration_section_parser(self) -> document_parser.SectionElementParser:
         return self[1]
 
+    @property
+    def get_sds_root_name_prefix(self) -> types.FunctionType:
+        return self[2]
+
 
 class MainProgram:
     def __init__(self,
                  output: StdOutputFiles,
-                 configuration_section_instructions: dict,
-                 default: TestCaseHandlingSetup,
-                 builtin_symbol_documentation_list: list,
+                 default_test_case_handling_setup: TestCaseHandlingSetup,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
                  ):
-        """
-        :type builtin_symbol_documentation_list: list of `BuiltinSymbol`
-        :param configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
-        """
 
         self._test_suite_definition = test_suite_definition
         self._test_case_definition = TestCaseDefinition(
@@ -122,11 +120,9 @@ class MainProgram:
                                      test_case_definition.builtin_symbols)))
             )
         )
-        self._test_case_def_for_m_p = test_case_definition
         self._output = output
-        self._configuration_section_instructions = configuration_section_instructions
-        self._default = default
-        self._builtin_symbol_documentation_list = builtin_symbol_documentation_list
+        self._default_test_case_handling_setup = default_test_case_handling_setup
+        self._test_case_def_for_m_p = test_case_definition
 
     def execute(self, command_line_arguments: list) -> int:
         if len(command_line_arguments) > 0:
@@ -148,21 +144,40 @@ class MainProgram:
 
     def execute_test_suite(self,
                            test_suite_execution_settings: TestSuiteExecutionSettings) -> int:
-        raise NotImplementedError()
+        from exactly_lib.processing import processors
+        from exactly_lib.test_suite import enumeration
+        from exactly_lib.test_suite import suite_hierarchy_reading
+        from exactly_lib.test_suite import execution
+        default_configuration = processors.Configuration(self._test_case_definition,
+                                                         test_suite_execution_settings.handling_setup,
+                                                         False,
+                                                         self._test_suite_definition.get_sds_root_name_prefix())
+        executor = execution.Executor(default_configuration,
+                                      self._output,
+                                      suite_hierarchy_reading.Reader(
+                                          suite_hierarchy_reading.Environment(
+                                              self._test_suite_definition.configuration_section_parser,
+                                              default_configuration.default_handling_setup)
+                                      ),
+                                      test_suite_execution_settings.reporter_factory,
+                                      enumeration.DepthFirstEnumerator(),
+                                      processors.new_processor_that_should_not_pollute_current_process,
+                                      test_suite_execution_settings.suite_root_file_path)
+        return executor.execute()
 
     @property
     def _std(self) -> StdOutputFiles:
         return self._output
 
     def _parse_and_execute_test_case(self, command_line_arguments: list) -> int:
-        settings = case_argument_parsing.parse(self._default,
+        settings = case_argument_parsing.parse(self._default_test_case_handling_setup,
                                                command_line_arguments,
                                                COMMAND_DESCRIPTIONS)
         return self.execute_test_case(settings)
 
     def _parse_and_execute_test_suite(self, command_line_arguments: list) -> int:
         from exactly_lib.cli.program_modes.test_suite import argument_parsing
-        settings = argument_parsing.parse(self._default,
+        settings = argument_parsing.parse(self._default_test_case_handling_setup,
                                           command_line_arguments)
         return self.execute_test_suite(settings)
 
@@ -170,10 +185,14 @@ class MainProgram:
         from exactly_lib.cli.program_modes.help import argument_parsing
         from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
         from exactly_lib.help.the_application_help import new_application_help
+        builtin_symbol_documentation_list = [
+            builtin_symbol.documentation
+            for builtin_symbol in self._test_case_def_for_m_p.builtin_symbols
+        ]
         try:
             application_help = new_application_help(self._test_case_def_for_m_p.instruction_setup,
-                                                    self._configuration_section_instructions,
-                                                    self._builtin_symbol_documentation_list,
+                                                    self._test_suite_definition.configuration_section_instructions,
+                                                    builtin_symbol_documentation_list,
                                                     )
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)

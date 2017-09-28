@@ -1,3 +1,6 @@
+import datetime
+
+from exactly_lib import program_info
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import instruction_name_and_argument_splitter
@@ -28,4 +31,12 @@ def new_parser() -> document_parser.SectionElementParser:
 
 def test_suite_definition() -> TestSuiteDefinition:
     return TestSuiteDefinition(CONFIGURATION_SECTION_INSTRUCTIONS,
-                               new_parser())
+                               new_parser(),
+                               _sds_root_name_prefix_for_suite)
+
+
+def _sds_root_name_prefix_for_suite():
+    today = datetime.datetime.today()
+    datetime_suffix = today.strftime('%Y-%m-%d-%H-%M-%S')
+    sandbox_directory_root_name_prefix = program_info.PROGRAM_NAME + '-suite-' + datetime_suffix + '-'
+    return sandbox_directory_root_name_prefix
