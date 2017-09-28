@@ -1,8 +1,9 @@
 import sys
 
 from exactly_lib.cli import main_program
+from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.default.default_main_program import MainProgram, TestCaseDefinitionForMainProgram
+from exactly_lib.default.default_main_program import MainProgram
 from exactly_lib.default.program_modes import test_suite
 from exactly_lib.default.program_modes.test_case import builtin_symbols
 from exactly_lib.default.program_modes.test_case import default_instructions_setup
