@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import builtin_symbols
-from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL

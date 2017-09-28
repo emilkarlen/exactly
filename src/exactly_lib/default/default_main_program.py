@@ -5,7 +5,7 @@ from exactly_lib.cli import main_program
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.execution.full_execution import PredefinedProperties
-from exactly_lib.help.builtin.contents_structure import BuiltinSymbolDocumentation
+from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup

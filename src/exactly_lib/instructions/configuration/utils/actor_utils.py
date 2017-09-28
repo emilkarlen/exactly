@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups import source_interpreter as source_interprete
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help.actors.actor import command_line as command_line_actor_help
+from exactly_lib.help.entities.actors.actor import command_line as command_line_actor_help
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
@@ -39,7 +39,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         self.command_line_syntax = command_line_actor_help.ActPhaseDocumentationSyntax()
         self.single_line_description_unformatted = single_line_description_unformatted
         self.main_description_rest_unformatted = main_description_rest_unformatted
-        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
+        from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         super().__init__(name, {
             'EXECUTABLE': self.command_line_syntax.executable.name,
             'ARGUMENT': self.command_line_syntax.argument.name,
@@ -70,7 +70,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
             return []
 
     def _see_also_cross_refs(self) -> list:
-        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
+        from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
         return ([ACTOR_CONCEPT.cross_reference_target()] +
                 all_actor_cross_refs() +

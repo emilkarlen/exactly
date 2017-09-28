@@ -1,6 +1,7 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
-from exactly_lib.help.concepts.plain_concepts.current_working_directory import CURRENT_WORKING_DIRECTORY_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory import \
+    CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.help_texts.names import formatting

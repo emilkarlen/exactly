@@ -1,9 +1,9 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
-from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
-from exactly_lib.help.concepts.configuration_parameters.home_case_directory import \
+from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
+from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
@@ -46,7 +46,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         }
 
     def purpose(self) -> Description:
-        from exactly_lib.help.actors.all_actor_docs import DEFAULT_ACTOR_DOC
+        from exactly_lib.help.entities.actors.all_actor_docs import DEFAULT_ACTOR_DOC
         actor_info = (self._parse(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
                       docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
                       self._parse(HOW_TO_SPECIFY_ACTOR)
@@ -75,7 +75,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
     @property
     def see_also(self) -> list:
-        from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
+        from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
                    ACTOR_CONCEPT.cross_reference_target(),
                    SANDBOX_CONCEPT.cross_reference_target(),

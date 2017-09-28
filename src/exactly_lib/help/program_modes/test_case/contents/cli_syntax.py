@@ -1,11 +1,11 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
-from exactly_lib.help.concepts.configuration_parameters import actor
-from exactly_lib.help.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-from exactly_lib.help.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
-from exactly_lib.help.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
+from exactly_lib.help.entities.concepts.configuration_parameters import actor
+from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer

@@ -4,7 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.concepts.configuration_parameters.home_act_directory import \
+from exactly_lib.help.entities.concepts.configuration_parameters.home_act_directory import \
     HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text

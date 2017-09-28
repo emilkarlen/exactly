@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.cli.program_modes.help import entities_requests as sut
-from exactly_lib.help.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
+from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME
-from exactly_lib_test.help.actors.test_resources.documentation import ActorTestImpl
+from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
