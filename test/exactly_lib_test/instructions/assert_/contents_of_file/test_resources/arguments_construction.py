@@ -96,9 +96,11 @@ class LineMatchesAssertionArgumentsConstructor(FileContentsArgumentsConstructor)
         self._condition = line_matcher
 
     def __str__(self):
-        return '{any_or_every} {line_matches} {condition}'.format(
+        return '{any_or_every} {line} {quantifier_separator} {matches} {condition}'.format(
             any_or_every=instruction_arguments.QUANTIFIER_ARGUMENTS[self.quantifier],
-            line_matches=instruction_options.LINE_ARGUMENT + ' ' + instruction_options.MATCHES_ARGUMENT,
+            line=instruction_options.LINE_ARGUMENT,
+            quantifier_separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+            matches=instruction_options.MATCHES_ARGUMENT,
             condition=self._condition,
         )
 

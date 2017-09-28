@@ -1,3 +1,4 @@
+import exactly_lib.help_texts.instruction_arguments
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
@@ -107,7 +108,7 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
         return '{quantifier} {file} {separator} {contents_assertion}'.format(
             quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
             file=config.QUANTIFICATION_OVER_FILE_ARGUMENT,
-            separator=config.QUANTIFICATION_SEPARATOR_ARGUMENT,
+            separator=exactly_lib.help_texts.instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
             contents_assertion=self._file_contents_assertion.apply(self._contents_argument_expectation_type))
 
 

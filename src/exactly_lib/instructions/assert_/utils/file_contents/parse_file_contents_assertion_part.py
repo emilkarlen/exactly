@@ -106,6 +106,8 @@ class ParseFileContentsAssertionPart:
     def _parse_line_matches_tokens_and_line_matcher(token_parser: TokenParserPrime) -> LineMatcherResolver:
         token_parser.consume_mandatory_constant_unquoted_string(instruction_options.LINE_ARGUMENT,
                                                                 must_be_on_current_line=True)
+        token_parser.consume_mandatory_constant_unquoted_string(instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+                                                                must_be_on_current_line=True)
         token_parser.consume_mandatory_constant_unquoted_string(instruction_options.MATCHES_ARGUMENT,
                                                                 must_be_on_current_line=True)
         token_parser.require_is_not_at_eol('Missing {_MATCHER_}')
