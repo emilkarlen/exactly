@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <glossary version="5.0" xmlns="http://docbook.org/ns/docbook"
-          xmlns:xlink="http://www.w3.org/1999/xlink"
-          xmlns:xi="http://www.w3.org/2001/XInclude"
-          xmlns:svg="http://www.w3.org/2000/svg"
-          xmlns:m="http://www.w3.org/1998/Math/MathML"
-          xmlns:html="http://www.w3.org/1999/xhtml"
-          xmlns:db="http://docbook.org/ns/docbook">
+>
   <glossdiv>
     <title/>
 
@@ -224,6 +219,86 @@
       <glossdef>
         <para>The test case itself - the instructions used by the test case
         writer to perform the test.</para>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>type</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>type system</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>data type</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>logic type</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>type (of argument)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>type (of symbol)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>value (of symbol)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>symbol</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>definition (of symbol)</glossterm>
+
+      <glossdef>
+        <para/>
+      </glossdef>
+    </glossentry>
+
+    <glossentry>
+      <glossterm>symbol reference</glossterm>
+
+      <glossdef>
+        <para/>
       </glossdef>
     </glossentry>
   </glossdiv>
