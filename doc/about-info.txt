@@ -1,0 +1,24 @@
+-*- org -*-
+
+* purpose
+Test comman line program with setup
+consisting of temporary files and directories,
+and outcome consisting of side effects on
+files and directories.
+* features
+** temporary sandbox
+** referencing predefined files
+** checking
+*** existence of files
+*** contents of files
+*** contents of dirs
+** suites
+** utils: symbols
+* intro examples
+** running program with stdin, checking exitcode, stdout, stderr
+** setup of files and dirs, checking modified/created files, dirs
+Testing a program that categorieses input files as either
+valid or invalid,
+and moves them to a correspondig directory.
+** transformations of files
+** selection of files in directories
