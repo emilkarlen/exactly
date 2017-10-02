@@ -64,7 +64,7 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
             (
                 'types',
                 application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).get_hierarchy_generator(
-                    'Symbol types'),
+                    'Types'),
             ),
             (
                 'actors',
