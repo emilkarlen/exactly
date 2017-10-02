@@ -1,5 +1,5 @@
 #
-# The predefined EXACTLY_TEST_CASE_DIRS_REPLACEMENT transformer replaces absolute paths in a file.
+# The predefined REPLACE_TEST_CASE_DIRS transformer replaces absolute paths in a file.
 #
 # It replaces paths that equals any of the Exactly test case directories,
 # with the name of the corresponding environment variable/builtin symbol.
@@ -25,12 +25,12 @@ $ echo $PWD
 [assert]
 
 
-stdout --transformation EXACTLY_TEST_CASE_DIRS_REPLACEMENT equals <<EOF
+stdout --transformation REPLACE_TEST_CASE_DIRS equals <<EOF
 EXACTLY_ACT
 EOF
 
 
-contents my-file-with-abs-paths.txt --transformation EXACTLY_TEST_CASE_DIRS_REPLACEMENT equals <<EOF
+contents my-file-with-abs-paths.txt --transformation REPLACE_TEST_CASE_DIRS equals <<EOF
 EXACTLY_ACT
 EXACTLY_TMP
 EXACTLY_HOME
