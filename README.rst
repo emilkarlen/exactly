@@ -58,6 +58,46 @@ The ``home`` and ``act-home`` instructions
 can be used to change the directories where Exactly looks for files referenced from the test case.
 
 
+Testing side effects on files and directories
+------------------------------------------------------------
+
+A test case is executed in a temporary sandbox directory,
+so files and directories can be created and deleted
+without modifying a source code repo.
+
+The following tests a program that classifies
+files as either good or bad, by moving them to the
+appropriate output directory::
+
+    [setup]
+
+    dir input-files
+    dir output-files/good
+    dir output-files/bad
+
+    file input-files/a.txt <<EOF
+    GOOD contents
+    EOF
+
+    file input-files/b.txt <<EOF
+    bad contents
+    EOF
+
+    [act]
+
+    classify-files-by-moving-to-appropriate-dir GOOD .
+
+    [assert]
+
+    dir-contents input-files empty
+
+    exists --file output-files/good/a.txt
+    dir-contents  output-files/good num-files = 1
+
+    exists --file output-files/bad/b.txt
+    dir-contents  output-files/bad num-files = 1
+
+
 Using shell commands
 --------------------
 
