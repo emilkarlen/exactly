@@ -4,14 +4,19 @@ dir my-dir
 
 file my-dir/file-A.txt
 file my-dir/file-B.txt
+file my-dir/file-C.txt
 
 
 [assert]
 
 dir-contents my-dir --selection type file && name '*A.txt' num-files = 1
 
+
 # readability might be improved by ( )
 
 dir-contents my-dir --selection ( type file && name '*A.txt' ) num-files = 1
 
-dir-contents my-dir --selection ! name '*A.txt' num-files = 1
+
+# The selection can be negated
+
+dir-contents my-dir --selection ! name '*A.txt' num-files = 2
