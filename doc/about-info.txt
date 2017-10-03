@@ -6,12 +6,18 @@ consisting of temporary files and directories,
 and outcome consisting of side effects on
 files and directories.
 * features
+** std env: std{int, out, err}, exitcode, env vars, current dir
 ** temporary sandbox
 ** referencing predefined files
 ** checking
 *** existence of files
 *** contents of files
 *** contents of dirs
+** SUTs
+*** executable
+*** source file
+*** inline source
+*** current os env: files, dirs
 ** suites
 ** utils: symbols
 * intro examples

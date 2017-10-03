@@ -137,6 +137,8 @@ external_programs_dir = pathlib.Path('external-programs')
 setup_dir = pathlib.Path('setup')
 file_transformations_dir = pathlib.Path('file-transformations')
 
+readme_contacts_dir = pathlib.Path('readme-file-examples') / 'contacts'
+
 
 def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
     return SourceAndTarget(src_base_dir / file_name,
@@ -156,52 +158,59 @@ def do_nothing_list(target_base: pathlib.Path, target_file_names: list) -> list:
     return [do_nothing(target_base / file_name) for file_name in target_file_names]
 
 
-files = itertools.chain.from_iterable([
-    sts(first_step_dir,
-        ['hello-world',
-         'filter-lines',
+readme_files = [
+    sts(readme_contacts_dir,
+        ['my-contacts-program',
          ]),
+]
 
-    sts(sandbox_dir,
-        ['hello-world',
-         'classify-files-by-moving-to-appropriate-dir',
-         'remove-all-files-in-the-current-directory',
-         ]),
+files = itertools.chain.from_iterable(
+    [
+        sts(first_step_dir,
+            ['hello-world',
+             'filter-lines',
+             ]),
 
-    sts(symbols_dir / 'bin',
-        ['print-number-of-arguments',
-         'print-one-argument-per-line',
-         'classify-files-by-moving-to-appropriate-dir',
-         'print-number-of-lines-in-file',
-         'filter-lines',
-         ]),
+        sts(sandbox_dir,
+            ['hello-world',
+             'classify-files-by-moving-to-appropriate-dir',
+             'remove-all-files-in-the-current-directory',
+             ]),
 
-    sts(file_transformations_dir / 'bin',
-        ['print-one-argument-per-line',
-         ]),
+        sts(symbols_dir / 'bin',
+            ['print-number-of-arguments',
+             'print-one-argument-per-line',
+             'classify-files-by-moving-to-appropriate-dir',
+             'print-number-of-lines-in-file',
+             'filter-lines',
+             ]),
 
-    do_nothing_list(cleanup_dir,
-                    ['manipulate-database-contents',
-                     'my-helper-program',
-                     ]),
+        sts(file_transformations_dir / 'bin',
+            ['print-one-argument-per-line',
+             ]),
 
-    do_nothing_list(external_programs_dir,
-                    ['my-assert-helper-program',
-                     'my-setup-helper-program',
-                     'system-under-test',
-                     ]),
+        do_nothing_list(cleanup_dir,
+                        ['manipulate-database-contents',
+                         'my-helper-program',
+                         ]),
 
-    do_nothing_list(home_dir / 'bin',
-                    ['do-something-good-with',
-                     ]),
+        do_nothing_list(external_programs_dir,
+                        ['my-assert-helper-program',
+                         'my-setup-helper-program',
+                         'system-under-test',
+                         ]),
 
-    sts(setup_dir,
-        ['copy-stdin-to-stdout',
-         'remove-all-files-in-the-current-directory',
-         'print-environment-variables',
-         'list-files-under-current-directory',
-         ]),
-])
+        do_nothing_list(home_dir / 'bin',
+                        ['do-something-good-with',
+                         ]),
+
+        sts(setup_dir,
+            ['copy-stdin-to-stdout',
+             'remove-all-files-in-the-current-directory',
+             'print-environment-variables',
+             'list-files-under-current-directory',
+             ]),
+    ] + readme_files)
 
 if __name__ == '__main__':
     base_dir = _resolve_root(sys.argv[0])

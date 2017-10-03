@@ -1,0 +1,17 @@
+[setup]
+
+stdin --file some-test-contacts.txt
+
+[act]
+
+my-contacts-program get-email-of --name 'Pablo Gauss'
+
+[assert]
+
+exitcode 0
+
+stdout equals <<EOF
+pablo@gauss.org
+EOF
+
+stderr empty
