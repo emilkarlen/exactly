@@ -4,10 +4,10 @@ from exactly_lib.util.textformat.parse import normalize_and_parse
 
 _MAIN_DESCRIPTION_REST = """\
 ```
-... <<EOF
-<first line>
+<<EOF
+first line
 ...
-<last line>
+last line
 EOF
 ```
 
