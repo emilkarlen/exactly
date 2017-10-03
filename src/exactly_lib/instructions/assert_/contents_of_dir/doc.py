@@ -101,7 +101,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 expression_parse.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION) +
                 [actual_file_arg_sed,
                  relativity_of_actual_file_sed,
-                 ])
+                 ] +
+                self.file_contents_assertion_help.used_syntax_element_descriptions())
 
     def _files_assertion_sed(self) -> SyntaxElementDescription:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
