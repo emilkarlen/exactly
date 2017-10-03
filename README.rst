@@ -15,7 +15,7 @@ It also has a `Reference manual
 
 
 TEST CASES
-==========
+========================================
 
 A test case is written as a plain text file.
 The following checks that your new ``my-contacts-program`` reads a contact list from stdin,
@@ -47,7 +47,7 @@ If the file 'contacts.case' contains this test case, then Exactly can execute it
     PASS
 
 
-"PASS" means that the two assertions were satisfied.
+"PASS" means that all assertions were satisfied.
 
 This test assumes that
 
@@ -98,18 +98,19 @@ appropriate output directory::
     dir-contents  output-files/bad num-files = 1
 
 
-Transforming and testing the contents of files
+Testing and transforming the contents of files
 ------------------------------------------------------------
 
 The "contents" instruction tests the contents of a file.
 It can also test a transformed version of a file,
 by applying a "file transformer".
 
-Such a "file transformer" may be defined as a "symbol",
+Such a "file transformer" may be given a name
+using the ``def`` instruction
 to make the test easier to read.
 
 The following test case
-tests "timing lines" that are output as part of a log file "log.txt"::
+tests that "timing lines" are output as part of a log file "log.txt"::
 
     [act]
 
@@ -134,7 +135,7 @@ tests "timing lines" that are output as part of a log file "log.txt"::
     def file-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
 
-Note that the --transformation option does not modify the tested file,
+The ``--transformation`` option does not modify the tested file,
 it just applies the assertion to a transformed version of it.
 
 
@@ -299,7 +300,7 @@ The result of the "act" phase is saved in the ``result/`` directory.
 ``tmp/user/`` is a directory where the test can put temporary files.
 
 TEST SUITES
-===========
+========================================
 
 
 Tests can be grouped in suites::
@@ -336,7 +337,7 @@ The result of a suite can also be reported as JUnit XML, by using ``--reporter j
 
 
 HELP
-====
+========================================
 
 
 Exactly has a built in help system.
@@ -352,7 +353,7 @@ Use ``exactly --help`` or ``exactly help`` to get brief help.
 
 
 EXAMPLES
-========
+========================================
 
 The ``examples/`` directory of the source distribution contains examples.
 
@@ -469,7 +470,7 @@ it just displays some of Exactly's features.)
 
 
 INSTALLING
-==========
+========================================
 
 
 Exactly is written entirely in Python and does not require any external libraries.
@@ -490,7 +491,7 @@ The program can also be run from a source distribution::
 
 
 DEVELOPMENT STATUS
-==================
+========================================
 
 
 Current version is fully functional, but syntax and semantics are experimental.
@@ -499,7 +500,7 @@ Comments are welcome!
 
 
 AUTHOR
-======
+========================================
 
 
 Emil Karlén
@@ -508,7 +509,7 @@ emil@member.fsf.org
 
 
 DEDICATION
-==========
+========================================
 
 
 Aron Karlén
