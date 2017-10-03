@@ -11,6 +11,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.instruction_options im
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
     EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -20,6 +21,7 @@ EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 FILE_CONTENTS_ASSERTION = a.Named('FILE-CONTENTS-ASSERTION')
 
 EXPECTED_PATH_NAME = 'EXPECTED-PATH'
+RELATIVITY_OF_EXPECTED_PATH_NAME = 'RELATIVITY-OF-EXPECTED-PATH'
 
 
 def file_contents_assertion_arguments() -> list:
@@ -40,7 +42,11 @@ class FileContentsAssertionHelp:
                  checked_file: str):
         self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
                                           EXPECTED_PATH_NAME)
-
+        self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
+            EXPECTED_PATH_NAME,
+            RELATIVITY_OF_EXPECTED_PATH_NAME,
+            EXPECTED_FILE_REL_OPT_ARG_CONFIG,
+            'The file that contains the expected contents.')
         format_map = {
             'checked_file': checked_file,
             'expected_file_arg': EXPECTED_PATH_NAME,
@@ -70,10 +76,6 @@ class FileContentsAssertionHelp:
         equals_arg = a.Single(a.Multiplicity.MANDATORY,
                               a.Constant(
                                   instruction_options.EQUALS_ARGUMENT))
-        equals_expected_arg = a.Choice(a.Multiplicity.MANDATORY,
-                                       [instruction_arguments.STRING,
-                                        instruction_arguments.HERE_DOCUMENT,
-                                        self.expected_file_arg])
         line_arg = a.Single(a.Multiplicity.MANDATORY,
                             a.Constant(instruction_options.LINE_ARGUMENT))
 
@@ -94,7 +96,7 @@ class FileContentsAssertionHelp:
                 InvokationVariant(_cls([mandatory_empty_arg]),
                                   self._paragraphs(_DESCRIPTION_OF_EMPTY)),
                 InvokationVariant(_cls([equals_arg,
-                                        equals_expected_arg,
+                                        self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY),
                                         ]),
                                   self._paragraphs(_DESCRIPTION_OF_EQUALS_STRING)),
                 InvokationVariant(_cls([num_lines_arg,
@@ -113,6 +115,9 @@ class FileContentsAssertionHelp:
             ]
         )
 
+    def used_syntax_element_descriptions(self) -> list:
+        return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
+
     def see_also_items(self) -> list:
         cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
         reg_ex_url = see_also_url('Python regular expressions',
@@ -120,7 +125,7 @@ class FileContentsAssertionHelp:
         from exactly_lib.help_texts.entity import types
         types = [CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target),
                  CrossReferenceIdSeeAlsoItem(types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target)]
-        return cross_refs + types + [reg_ex_url]
+        return cross_refs + types + [reg_ex_url] + self.string_or_here_doc_or_file_arg.see_also_items()
 
     @staticmethod
     def _see_also_cross_refs() -> list:

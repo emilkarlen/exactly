@@ -1,7 +1,5 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import \
-    EXPECTED_FILE_REL_OPT_ARG_CONFIG
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -132,6 +130,9 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         raise NotImplementedError()
 
     def runTest(self):
+        from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
+            EXPECTED_FILE_REL_OPT_ARG_CONFIG
+
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
         file_ref_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
             expected_file_relativity_symbol,

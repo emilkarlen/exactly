@@ -1,13 +1,12 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.common.help.syntax_elements import here_document
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
@@ -40,43 +39,33 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str):
         super().__init__(name, {})
         self.path_arg = instruction_arguments.PATH_ARGUMENT
+        self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
+            self.path_arg.name,
+            'RELATIVITY',
+            RELATIVITY_OPTIONS_CONFIGURATION,
+            'The file that will be the contents of stdin.'
+        )
 
     def single_line_description(self) -> str:
         return 'Sets the contents of stdin for the act phase program'
 
     def main_description_rest(self) -> list:
-        return (
-            rel_path_doc.default_relativity_for_rel_opt_type(
-                self.path_arg.name,
-                RELATIVITY_OPTIONS_CONFIGURATION.options.default_option) +
-            dt.paths_uses_posix_syntax())
+        return dt.paths_uses_posix_syntax()
 
     def invokation_variants(self) -> list:
-        arguments = path_syntax.mandatory_path_with_optional_relativity(
-            self.path_arg,
-            RELATIVITY_OPTIONS_CONFIGURATION.path_suffix_is_required)
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY, instruction_arguments.HERE_DOCUMENT)
+        contents_arg = self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY)
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments),
-                              docs.paras('Sets stdin to be the contents of a file.')),
-            InvokationVariant(self._cl_syntax_for_args([here_doc_arg]),
-                              docs.paras('Sets stdin to be the contents of a "here document".')),
+            InvokationVariant(self._cl_syntax_for_args([contents_arg]),
+                              docs.paras('Sets stdin to be the contents of a string, "here document" or file')),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return (
-            rel_path_doc.relativity_syntax_element_descriptions(
-                self.path_arg,
-                parse_here_doc_or_file_ref.CONFIGURATION.options) +
-            [
-                here_document.here_document_syntax_element_description(self.instruction_name(),
-                                                                       instruction_arguments.HERE_DOCUMENT),
-            ]
-        )
+        return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
     def _see_also_cross_refs(self) -> list:
         concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)
-        return [concept.cross_reference_target for concept in concepts]
+        return [concept.cross_reference_target for concept in
+                concepts] + self.string_or_here_doc_or_file_arg.see_also_cross_refs()
 
 
 class Parser(InstructionParser):
