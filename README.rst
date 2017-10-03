@@ -18,30 +18,32 @@ TEST CASES
 ==========
 
 A test case is written as a plain text file.
-The following checks that your new ``addressbook`` program reads an address book from stdin,
-and is able to find an address::
+The following checks that your new ``my-contacts-program`` reads a contact list from stdin,
+and is able to find the email of a person::
 
     [setup]
 
-    stdin a-test-address-book.txt
+    stdin --file some-test-contacts.txt
 
     [act]
 
-    addressbook --get-email-of --name 'Test Testingson'
+    my-contacts-program get-email-of --name 'Pablo Gauss'
 
     [assert]
 
     exitcode 0
 
     stdout equals <<EOF
-    expected@email.org
+    pablo@gauss.org
     EOF
 
+    stderr empty
 
-If the file 'addressbook.case' contains this test case, then Exactly can execute it::
+
+If the file 'contacts.case' contains this test case, then Exactly can execute it::
 
 
-    > exactly addressbook.case
+    > exactly contacts.case
     PASS
 
 
@@ -49,10 +51,11 @@ If the file 'addressbook.case' contains this test case, then Exactly can execute
 
 This test assumes that
 
- * the system under test - the ``addressbook`` program - is is found in the same directory as the test case file
- * the file "an-address-book.txt" (that is referenced from the test case) is found in the same directory as the test case file
+ * the system under test - ``my-contacts-program`` - is is found in the same directory as the test case file
+ * the file "some-test-contacts.txt" (that is referenced from the test case) is found in the same directory as the test case file
 
-The ``home`` instruction can be used to change the directory where Exactly looks for files referenced from the test case.
+The ``home`` and ``act-home`` instructions
+can be used to change the directories where Exactly looks for files referenced from the test case.
 
 
 Using shell commands
@@ -242,9 +245,9 @@ or::
     **/*.suite
 
 
-If the file ``mysuite.suite`` contains this text, then Exactly can run it::
+If the file ``my-suite.suite`` contains this text, then Exactly can run it::
 
-  > exactly suite mysuite.suite
+  > exactly suite my-suite.suite
   ...
   OK
 

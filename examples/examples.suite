@@ -54,3 +54,10 @@ file-transformations/package.suite
 #
 
 misc-instructions/package.suite
+
+
+######################################################################
+# Examples for the README file
+#
+
+readme-file-examples/package.suite
