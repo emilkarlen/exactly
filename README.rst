@@ -98,6 +98,46 @@ appropriate output directory::
     dir-contents  output-files/bad num-files = 1
 
 
+Transforming and testing the contents of files
+------------------------------------------------------------
+
+The "contents" instruction tests the contents of a file.
+It can also test a transformed version of a file,
+by applying a "file transformer".
+
+Such a "file transformer" may be defined as a "symbol",
+to make the test easier to read.
+
+The following test case
+tests "timing lines" that are output as part of a log file "log.txt"::
+
+    [act]
+
+    my-system-under-test-that-writes-log-file
+
+    [assert]
+
+    contents log.txt --transformation GET_TIMING_LINES equals <<EOF
+    timing TIMESTAMP begin
+    timing TIMESTAMP preprocessing
+    timing TIMESTAMP validation
+    timing TIMESTAMP execution
+    timing TIMESTAMP end
+    EOF
+
+    [setup]
+
+    def line-matcher     IS_TIMING_LINE     = regex ^timing
+
+    def file-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
+
+    def file-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
+
+
+Note that the --transformation option does not modify the tested file,
+it just applies the assertion to a transformed version of it.
+
+
 Using shell commands
 --------------------
 

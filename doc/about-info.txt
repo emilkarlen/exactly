@@ -20,6 +20,7 @@ files and directories.
 *** current os env: files, dirs
 ** suites
 ** utils: symbols
+** utils: shell commands and external programs (run)
 * intro examples
 ** running program with stdin, checking exitcode, stdout, stderr
 ** setup of files and dirs, checking modified/created files, dirs

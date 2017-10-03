@@ -1,0 +1,21 @@
+[act]
+
+$ python "@[EXACTLY_HOME]@/my-system-under-test.py"
+
+[assert]
+
+contents log.txt --transformation GET_TIMING_LINES equals <<EOF
+timing TIMESTAMP begin
+timing TIMESTAMP preprocessing
+timing TIMESTAMP validation
+timing TIMESTAMP execution
+timing TIMESTAMP end
+EOF
+
+[setup]
+
+def line-matcher     IS_TIMING_LINE     = regex ^timing
+
+def file-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
+
+def file-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
