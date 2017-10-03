@@ -1,0 +1,18 @@
+-*- org -*-
+
+* symbols
+** structure
+*** values
+*** types
+**** different types
+**** different categories of types
+**** purpose
+*** symbols
+** DONE usage
+*** definition
+*** reference
+**** plain symbol name
+***** path values --rel SYM
+***** logic types
+**** special syntax
+**** file contents of here docs
