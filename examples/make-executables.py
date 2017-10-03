@@ -137,7 +137,9 @@ external_programs_dir = pathlib.Path('external-programs')
 setup_dir = pathlib.Path('setup')
 file_transformations_dir = pathlib.Path('file-transformations')
 
-readme_contacts_dir = pathlib.Path('readme-file-examples') / 'contacts'
+readme_examples_root_dir = pathlib.Path('readme-file-examples')
+readme_contacts_dir = readme_examples_root_dir / 'contacts'
+readme_classify_dir = readme_examples_root_dir / 'classify'
 
 
 def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
@@ -161,6 +163,9 @@ def do_nothing_list(target_base: pathlib.Path, target_file_names: list) -> list:
 readme_files = [
     sts(readme_contacts_dir,
         ['my-contacts-program',
+         ]),
+    sts(readme_classify_dir,
+        ['classify-files-by-moving-to-appropriate-dir',
          ]),
 ]
 
