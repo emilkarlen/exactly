@@ -25,9 +25,7 @@ print-number-of-arguments @[MY_PATH_AS_A_STRING]@ @[MY_LIST_AS_A_STRING]@
 [assert]
 
 
-stdout equals <<EOF
-2
-EOF
+stdout equals '2'
 
 
 [conf]
