@@ -110,7 +110,16 @@ using the ``def`` instruction
 to make the test easier to read.
 
 The following test case
-tests that "timing lines" are output as part of a log file "log.txt"::
+tests that "timing lines" are output as part of a log file "log.txt".
+
+The challenge is that the (fictive) log file contains
+non-timing lines that we are not interested in,
+and that timing lines contains a time stamp of the form
+"DD:DD", whos exact value we are also not interested in.
+
+A "file transformer" is used to extract all timing lines
+and to replace "DD:DD"s time stamps with the constant string ``TIMESTAMP``::
+
 
     [act]
 
