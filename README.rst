@@ -18,6 +18,11 @@ TEST CASES
 ========================================
 
 A test case is written as a plain text file.
+
+
+Testing stdin, stdout, stderr, exit code
+------------------------------------------------------------
+
 The following checks that your new ``my-contacts-program`` reads a contact list from stdin,
 and is able to find the email of a person::
 
@@ -101,7 +106,7 @@ appropriate output directory::
 Testing and transforming the contents of files
 ------------------------------------------------------------
 
-The "contents" instruction tests the contents of a file.
+The ``contents`` instruction tests the contents of a file.
 It can also test a transformed version of a file,
 by applying a "file transformer".
 
@@ -115,10 +120,10 @@ tests that "timing lines" are output as part of a log file "log.txt".
 The challenge is that the (fictive) log file contains
 non-timing lines that we are not interested in,
 and that timing lines contains a time stamp of the form
-"DD:DD", whos exact value we are also not interested in.
+"NN:NN", whos exact value we are also not interested in.
 
 A "file transformer" is used to extract all timing lines
-and to replace "DD:DD"s time stamps with the constant string ``TIMESTAMP``::
+and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
 
     [act]
