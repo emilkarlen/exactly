@@ -23,9 +23,7 @@ print-number-of-arguments @[LIST_W_6_ELEMS]@ 'seventh element'
 [assert]
 
 
-stdout equals <<EOF
-7
-EOF
+stdout equals '7'
 
 
 [conf]
