@@ -27,5 +27,15 @@ files and directories.
 Testing a program that categorieses input files as either
 valid or invalid,
 and moves them to a correspondig directory.
-** transformations of files
+*** exists
+*** dir-contents
+** transformations of files (and symbols)
+*** file-transformer
+*** line-matcher
+*** def / symbol
 ** selection of files in directories
+** symbols
+*** string	: file-name arbitrary-value (exit code)
+*** list	: args to sut
+*** path	: root dir for files
+*** here-doc    : symbols in here-doc
