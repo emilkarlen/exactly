@@ -1,7 +1,11 @@
 import unittest
 
-from exactly_lib_test.common.help import see_also
+from exactly_lib_test.common import help
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(see_also.SeeAlsoItemVisitorTest)
+    return help.suite()
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
