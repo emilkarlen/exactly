@@ -9,7 +9,6 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(SeeAlsoItemVisitorTest),
         unittest.makeSuite(TestSeeAlsoUrlInfo),
-        unittest.makeSuite(TestCrossReferenceSet),
     ])
 
 
@@ -76,64 +75,3 @@ class TestSeeAlsoUrlInfo(unittest.TestCase):
             with self.subTest(actual=actual):
                 # ASSERT #
                 self.assertNotEqual(expected, actual)
-
-
-class TestCrossReferenceSet(unittest.TestCase):
-    def test_create_empty(self):
-        actual = sut.CrossReferenceIdSet([])
-        self.assertEqual(0,
-                         len(actual.cross_references))
-
-    def test_create_non_empty(self):
-        cross_ref = CustomCrossReferenceId('target_name')
-        actual = sut.CrossReferenceIdSet([cross_ref])
-        self.assertEqual((cross_ref,),
-                         actual.cross_references)
-
-    def test_union(self):
-        cases = [
-            (
-                'both sets are empty',
-                sut.CrossReferenceIdSet([]),
-                sut.CrossReferenceIdSet([]),
-                [],
-            ),
-            (
-                'one empty and one non-empty',
-                sut.CrossReferenceIdSet([CustomCrossReferenceId('target_name')]),
-                sut.CrossReferenceIdSet([]),
-                [CustomCrossReferenceId('target_name')],
-            ),
-            (
-                'two non-empty with different elements',
-                sut.CrossReferenceIdSet([CustomCrossReferenceId('a')]),
-                sut.CrossReferenceIdSet([CustomCrossReferenceId('b')]),
-                [CustomCrossReferenceId('a'),
-                 CustomCrossReferenceId('b')],
-            ),
-            (
-                'two non-empty with equal elements',
-                sut.CrossReferenceIdSet([CustomCrossReferenceId('a')]),
-                sut.CrossReferenceIdSet([CustomCrossReferenceId('a')]),
-                [CustomCrossReferenceId('a')],
-            ),
-
-        ]
-        for name, a, b, expected in cases:
-            with self.subTest(name=name,
-                              order='left to right'):
-                actual = a.union(b)
-                self._assert_equals_module_order(actual.cross_references, expected)
-            with self.subTest(name=name,
-                              order='right to left'):
-                actual = b.union(a)
-                self._assert_equals_module_order(actual.cross_references, expected)
-
-    def _assert_equals_module_order(self,
-                                    actual: sut.CrossReferenceIdSet,
-                                    expected: sut.CrossReferenceIdSet):
-        self.assertEqual(len(expected),
-                         len(actual),
-                         'number of elements')
-        for a in actual:
-            self.assertIn(a, expected)

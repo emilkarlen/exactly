@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.util import functional, textformat, tables, \
-    cli_syntax, symbol_table
+    cli_syntax, symbol_table, collection
 from exactly_lib_test.util import test_resources_test
 
 
@@ -13,6 +13,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(tables.suite())
     ret_val.addTest(textformat.suite())
     ret_val.addTest(cli_syntax.suite())
+    ret_val.addTest(collection.suite())
     return ret_val
 
 
