@@ -53,3 +53,20 @@ class SeeAlsoItemVisitor:
 
     def visit_text(self, x: TextSeeAlsoItem):
         raise NotImplementedError()
+
+
+class CrossReferenceIdSet(tuple):
+    def __new__(cls,
+                cross_references: list):
+        return tuple.__new__(cls, (tuple(cross_references),))
+
+    @property
+    def cross_references(self) -> tuple:
+        return self[0]
+
+    def union(self, other):
+        ret_val = list(self.cross_references)
+        for o in other.cross_references:
+            if not o in self.cross_references:
+                ret_val.append(o)
+        return CrossReferenceIdSet(ret_val)

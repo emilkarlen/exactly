@@ -5,17 +5,11 @@ from exactly_lib.help_texts.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.util.textformat.structure.core import StringText
 
 
-class ArgumentRecordingVisitor(sut.SeeAlsoItemVisitor):
-    def __init__(self):
-        self.visited_classes = []
-
-    def visit_cross_reference_id(self, x: sut.CrossReferenceIdSeeAlsoItem):
-        self.visited_classes.append(sut.CrossReferenceIdSeeAlsoItem)
-        return x
-
-    def visit_text(self, x: sut.TextSeeAlsoItem):
-        self.visited_classes.append(sut.TextSeeAlsoItem)
-        return x
+def suite() -> unittest.TestSuite:
+    return unittest.TestSuite([
+        unittest.makeSuite(SeeAlsoItemVisitorTest),
+        unittest.makeSuite(TestCrossReferenceSet),
+    ])
 
 
 class SeeAlsoItemVisitorTest(unittest.TestCase):
@@ -43,3 +37,77 @@ class SeeAlsoItemVisitorTest(unittest.TestCase):
         self.assertIs(x,
                       returned,
                       'Visitor should return the return-value of the visited method')
+
+
+class ArgumentRecordingVisitor(sut.SeeAlsoItemVisitor):
+    def __init__(self):
+        self.visited_classes = []
+
+    def visit_cross_reference_id(self, x: sut.CrossReferenceIdSeeAlsoItem):
+        self.visited_classes.append(sut.CrossReferenceIdSeeAlsoItem)
+        return x
+
+    def visit_text(self, x: sut.TextSeeAlsoItem):
+        self.visited_classes.append(sut.TextSeeAlsoItem)
+        return x
+
+
+class TestCrossReferenceSet(unittest.TestCase):
+    def test_create_empty(self):
+        actual = sut.CrossReferenceIdSet([])
+        self.assertEqual(0,
+                         len(actual.cross_references))
+
+    def test_create_non_empty(self):
+        cross_ref = CustomCrossReferenceId('target_name')
+        actual = sut.CrossReferenceIdSet([cross_ref])
+        self.assertEqual((cross_ref,),
+                         actual.cross_references)
+
+    def test_union(self):
+        cases = [
+            (
+                'both sets are empty',
+                sut.CrossReferenceIdSet([]),
+                sut.CrossReferenceIdSet([]),
+                [],
+            ),
+            (
+                'one empty and one non-empty',
+                sut.CrossReferenceIdSet([CustomCrossReferenceId('target_name')]),
+                sut.CrossReferenceIdSet([]),
+                [CustomCrossReferenceId('target_name')],
+            ),
+            (
+                'two non-empty with different elements',
+                sut.CrossReferenceIdSet([CustomCrossReferenceId('a')]),
+                sut.CrossReferenceIdSet([CustomCrossReferenceId('b')]),
+                [CustomCrossReferenceId('a'),
+                 CustomCrossReferenceId('b')],
+            ),
+            (
+                'two non-empty with equal elements',
+                sut.CrossReferenceIdSet([CustomCrossReferenceId('a')]),
+                sut.CrossReferenceIdSet([CustomCrossReferenceId('a')]),
+                [CustomCrossReferenceId('a')],
+            ),
+
+        ]
+        for name, a, b, expected in cases:
+            with self.subTest(name=name,
+                              order='left to right'):
+                actual = a.union(b)
+                self._assert_equals_module_order(actual.cross_references, expected)
+            with self.subTest(name=name,
+                              order='right to left'):
+                actual = b.union(a)
+                self._assert_equals_module_order(actual.cross_references, expected)
+
+    def _assert_equals_module_order(self,
+                                    actual: sut.CrossReferenceIdSet,
+                                    expected: sut.CrossReferenceIdSet):
+        self.assertEqual(len(expected),
+                         len(actual),
+                         'number of elements')
+        for a in actual:
+            self.assertIn(a, expected)
