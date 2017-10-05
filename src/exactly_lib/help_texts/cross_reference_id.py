@@ -12,6 +12,9 @@ class CustomCrossReferenceId(CrossReferenceId):
     def target_name(self) -> str:
         return self._target_name
 
+    def _eq_object_of_same_type(self, other):
+        return self._target_name == other.target_name
+
 
 class TestCaseCrossReferenceId(CrossReferenceId):
     pass
@@ -25,9 +28,16 @@ class TestCasePhaseCrossReferenceBase(TestCaseCrossReferenceId):
     def phase_name(self) -> str:
         return self._phase_name
 
+    def _eq_object_of_same_type(self, other):
+        return self.phase_name == other.phase_name and self._eq_object_of_same_phase(other)
+
+    def _eq_object_of_same_phase(self, other):
+        raise NotImplementedError('abstract method')
+
 
 class TestCasePhaseCrossReference(TestCasePhaseCrossReferenceBase):
-    pass
+    def _eq_object_of_same_phase(self, other):
+        return True
 
 
 class TestCasePhaseInstructionCrossReference(TestCasePhaseCrossReferenceBase):
@@ -40,6 +50,9 @@ class TestCasePhaseInstructionCrossReference(TestCasePhaseCrossReferenceBase):
     @property
     def instruction_name(self) -> str:
         return self._instruction_name
+
+    def _eq_object_of_same_phase(self, other):
+        return self.instruction_name == other.instruction_name
 
 
 class TestSuiteCrossReferenceId(CrossReferenceId):
@@ -54,9 +67,16 @@ class TestSuiteSectionCrossReferenceBase(TestSuiteCrossReferenceId):
     def section_name(self) -> str:
         return self._section_name
 
+    def _eq_object_of_same_type(self, other):
+        return self._section_name == other._section_name and self._eq_object_of_same_section(other)
+
+    def _eq_object_of_same_section(self, other):
+        raise NotImplementedError('abstract method')
+
 
 class TestSuiteSectionCrossReference(TestSuiteSectionCrossReferenceBase):
-    pass
+    def _eq_object_of_same_section(self, other):
+        return True
 
 
 class TestSuiteSectionInstructionCrossReference(TestSuiteSectionCrossReferenceBase):
@@ -69,6 +89,9 @@ class TestSuiteSectionInstructionCrossReference(TestSuiteSectionCrossReferenceBa
     @property
     def instruction_name(self) -> str:
         return self._instruction_name
+
+    def _eq_object_of_same_section(self, other):
+        return self._instruction_name == other.instruction_name
 
 
 class EntityCrossReferenceId(CrossReferenceId):
@@ -85,6 +108,10 @@ class EntityCrossReferenceId(CrossReferenceId):
     @property
     def entity_name(self) -> str:
         return self._entity_name
+
+    def _eq_object_of_same_type(self, other):
+        return self.entity_type_name == other.entity_type_name and \
+               self.entity_name == other.entity_name
 
 
 class CrossReferenceIdVisitor:

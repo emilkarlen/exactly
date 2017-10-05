@@ -6,8 +6,17 @@ class CrossReferenceId(CrossReferenceTarget):
     A part of the help text that can be referred to.
 
     The base class for all cross references used by Exactly.
+
+    Supports equality.
     """
-    pass
+
+    def __eq__(self, other):
+        if not isinstance(other, type(self)):
+            return False
+        return self._eq_object_of_same_type(other)
+
+    def _eq_object_of_same_type(self, other):
+        raise NotImplementedError('abstract method')
 
 
 class Name(tuple):
