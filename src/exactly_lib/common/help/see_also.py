@@ -1,4 +1,5 @@
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
+from exactly_lib.util.collection import FrozenSetBasedOnEquality
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget
 
 
@@ -67,3 +68,27 @@ class SeeAlsoItemVisitor:
 
     def visit_text(self, x: TextSeeAlsoItem):
         raise NotImplementedError()
+
+
+class SeeAlsoSet(tuple):
+    def __new__(cls,
+                cross_reference_or_see_also_url_info_list: list):
+        return tuple.__new__(cls, (FrozenSetBasedOnEquality(cross_reference_or_see_also_url_info_list),))
+
+    def union(self, see_also_set):
+        return SeeAlsoSet(list(self[0].union(see_also_set[0]).elements))
+
+    @property
+    def see_also_items(self) -> list:
+        return [self._see_also_item(x)
+                for x in self[0].elements
+                ]
+
+    @staticmethod
+    def _see_also_item(x) -> SeeAlsoItem:
+        if isinstance(x, CrossReferenceId):
+            return CrossReferenceIdSeeAlsoItem(x)
+        elif isinstance(x, SeeAlsoUrlInfo):
+            return see_also_url(x.title, x.url)
+        else:
+            raise TypeError('Expected: {} or {}: Found{}'.format(CrossReferenceId, SeeAlsoUrlInfo, x))
