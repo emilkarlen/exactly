@@ -32,6 +32,20 @@ def see_also_url(title: str, url: str) -> SeeAlsoItem:
                            allow_rendering_of_visible_extra_target_text=True))
 
 
+class SeeAlsoUrlInfo(tuple):
+    def __new__(cls,
+                title: str, url: str):
+        return tuple.__new__(cls, (title, url))
+
+    @property
+    def title(self) -> str:
+        return self[0]
+
+    @property
+    def url(self) -> str:
+        return self[1]
+
+
 def see_also_items_from_cross_refs(cross_refs: list) -> list:
     return [CrossReferenceIdSeeAlsoItem(x) for x in cross_refs]
 
