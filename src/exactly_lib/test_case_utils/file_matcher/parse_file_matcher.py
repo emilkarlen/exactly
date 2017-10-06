@@ -1,7 +1,9 @@
 """Functionality for accessing a subset of the files in a directory."""
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
-from exactly_lib.help_texts import expression
+from exactly_lib.help_texts import expression, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.entity import syntax_element
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.help_texts.type_system import FILE_MATCHER_TYPE
@@ -29,7 +31,7 @@ NAME_MATCHER_NAME = 'name'
 
 TYPE_MATCHER_NAME = 'type'
 
-NAME_MATCHER_ARGUMENT = a.Named('PATTERN')
+NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
 
 TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
 
@@ -171,7 +173,8 @@ NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  NAME_MATCHER_ARGUMENT)
     ],
-    description_rest=_fnap(_NAME_MATCHER_SED_DESCRIPTION)
+    description_rest=_fnap(_NAME_MATCHER_SED_DESCRIPTION),
+    see_also_items=SeeAlsoSet([syntax_element.GLOB_PATTERN_SYNTAX_ELEMENT.cross_reference_target]),
 )
 
 TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(

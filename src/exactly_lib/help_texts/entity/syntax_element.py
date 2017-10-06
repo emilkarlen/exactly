@@ -25,9 +25,15 @@ REGEX_SYNTAX_ELEMENT = name_and_ref_target(
     'A regular expression, using Python syntax'
 )
 
+GLOB_PATTERN_SYNTAX_ELEMENT = name_and_ref_target(
+    instruction_arguments.GLOB_PATTERN.name,
+    'A shell glob pattern'
+)
+
 ALL_SYNTAX_ELEMENTS = [
     HERE_DOCUMENT_SYNTAX_ELEMENT,
     REGEX_SYNTAX_ELEMENT,
+    GLOB_PATTERN_SYNTAX_ELEMENT,
 ]
 
 

@@ -1,8 +1,9 @@
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity import types
+from exactly_lib.help_texts.entity import types, syntax_element
 from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_CONCEPT_INFO
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -135,7 +136,8 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  REPLACE_REPLACEMENT_ARGUMENT),
     ],
-    description_rest=_fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION)
+    description_rest=_fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION),
+    see_also_items=SeeAlsoSet([syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target]),
 )
 
 _SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
