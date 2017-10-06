@@ -85,5 +85,5 @@ class TestInvokationVariants(WithSyntaxElementDocumentationBase):
 
 class TestSeeAlso(WithSyntaxElementDocumentationBase):
     def runTest(self):
-        actual = self.documentation.see_also_items()
-        asrt.is_list_of(asrt_see_also.is_see_also_item).apply_with_message(self, actual, 'see_also_items')
+        actual = self.documentation.see_also_targets()
+        asrt_see_also.is_see_also_target_list.apply_with_message(self, actual, 'see_also_targets')
