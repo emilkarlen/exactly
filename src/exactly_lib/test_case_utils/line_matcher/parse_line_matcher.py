@@ -1,4 +1,3 @@
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help_texts import expression
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
@@ -84,7 +83,7 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  REPLACE_REGEX_ARGUMENT),
     ],
     description_rest=_fnap(_REGEX_MATCHER_SED_DESCRIPTION),
-    see_also_set=SeeAlsoSet([syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target]),
+    see_also_targets=[syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 _CONCEPT = grammar.Concept(

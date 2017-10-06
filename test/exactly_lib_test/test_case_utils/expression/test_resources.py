@@ -1,4 +1,3 @@
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help_texts.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.expression import grammar
@@ -111,7 +110,7 @@ CONCEPT = grammar.Concept(grammar.Name('concept singular',
 SIMPLE_EXPRESSIONS = {
     SIMPLE_WITH_ARG: grammar.SimpleExpression(parse_simple_with_arg,
                                               grammar.SimpleExpressionDescription([], [],
-                                                                                  SeeAlsoSet([CROSS_REF_ID]))),
+                                                                                  [CROSS_REF_ID])),
     SIMPLE_SANS_ARG: grammar.SimpleExpression(parse_simple_sans_arg,
                                               grammar.SimpleExpressionDescription([], [])),
 }
@@ -131,11 +130,11 @@ GRAMMAR_WITH_ALL_COMPONENTS = grammar.Grammar(
         COMPLEX_A:
             grammar.ComplexExpression(ComplexA,
                                       grammar.OperatorExpressionDescription([],
-                                                                            SeeAlsoSet([CROSS_REF_ID]))),
+                                                                            [CROSS_REF_ID])),
         COMPLEX_B_THAT_IS_NOT_A_VALID_SYMBOL_NAME:
             grammar.ComplexExpression(ComplexB,
                                       grammar.OperatorExpressionDescription([],
-                                                                            SeeAlsoSet([CROSS_REF_ID]))),
+                                                                            [CROSS_REF_ID])),
     },
     prefix_expressions=PREFIX_EXPRESSIONS,
 )

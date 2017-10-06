@@ -1,4 +1,3 @@
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
@@ -136,7 +135,7 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  REPLACE_REPLACEMENT_ARGUMENT),
     ],
     description_rest=_fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION),
-    see_also_set=SeeAlsoSet([syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target]),
+    see_also_targets=[syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 _SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
@@ -145,7 +144,7 @@ _SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  instruction_arguments.LINE_MATCHER),
     ],
     description_rest=_fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION),
-    see_also_set=SeeAlsoSet([types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target]),
+    see_also_targets=[types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target],
 )
 
 _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
