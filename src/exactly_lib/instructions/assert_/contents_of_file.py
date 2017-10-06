@@ -1,6 +1,5 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
@@ -83,8 +82,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 relativity_of_actual_file_seds +
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
-    def see_also_set(self) -> SeeAlsoSet:
-        return self._help_parts.see_also_set()
+    def see_also_targets(self) -> list:
+        return self._help_parts.see_also_targets()
 
 
 class Parser(InstructionParser):

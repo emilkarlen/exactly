@@ -1,11 +1,10 @@
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_element
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
+from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
@@ -119,25 +118,16 @@ class FileContentsAssertionHelp:
     def used_syntax_element_descriptions(self) -> list:
         return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
-    def see_also_items(self) -> list:
-        return self.see_also_set().see_also_items
-
-    def see_also_set(self) -> SeeAlsoSet:
+    def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
-        cross_refs = self.see_also_targets()
-        cross_refs += [
-            syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target,
-            types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target,
-            types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target,
+        name_and_cross_ref_elements = rel_opts.see_also_concepts(EXPECTED_FILE_REL_OPT_ARG_CONFIG.options) + [
+            ENVIRONMENT_VARIABLE_CONCEPT_INFO,
+            syntax_element.REGEX_SYNTAX_ELEMENT,
+            types.LINES_TRANSFORMER_CONCEPT_INFO,
+            types.LINE_MATCHER_CONCEPT_INFO,
         ]
-        return SeeAlsoSet(cross_refs).union(self.string_or_here_doc_or_file_arg.see_also_set())
-
-    @staticmethod
-    def see_also_targets() -> list:
-        concepts = rel_opts.see_also_concepts(EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
-        if ENVIRONMENT_VARIABLE_CONCEPT_INFO not in concepts:
-            concepts.append(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
-        return list(map(SingularAndPluralNameAndCrossReferenceId.cross_reference_target.fget, concepts))
+        return cross_reference_id_list(name_and_cross_ref_elements) + \
+               self.string_or_here_doc_or_file_arg.see_also_targets()
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:
         """

@@ -64,8 +64,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def see_also_targets(self) -> list:
         concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)
-        return [concept.cross_reference_target for concept in
-                concepts] + self.string_or_here_doc_or_file_arg.see_also_cross_refs()
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(concepts) + self.string_or_here_doc_or_file_arg.see_also_targets()
 
 
 class Parser(InstructionParser):
