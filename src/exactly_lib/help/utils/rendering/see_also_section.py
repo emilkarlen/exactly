@@ -1,4 +1,5 @@
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, TextSeeAlsoItem, SeeAlsoItemVisitor
+from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, TextSeeAlsoItem, SeeAlsoItemVisitor, \
+    SeeAlsoSet
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import lists
@@ -33,18 +34,19 @@ def see_also_items_paragraphs(see_also_items: list,
     return [see_also_items_paragraph(see_also_items, environment)]
 
 
-def see_also_sections(see_also_items: list,
+def see_also_sections(see_also_targets: list,
                       rendering_environment: RenderingEnvironment,
                       uppercase_title: bool = False) -> list:
     """
-    :return: An empty list if no `SeeAlsoItem`s, otherwise a singleton list.
+    :return: An empty list if no :class:`SeeAlsoTarget`s, otherwise a singleton list.
     """
     ret_val = []
     title = SEE_ALSO_TITLE__UPPERCASE if uppercase_title else SEE_ALSO_TITLE
     append_section_if_contents_is_non_empty(
         ret_val,
         title,
-        see_also_items_paragraphs(see_also_items, rendering_environment))
+        see_also_items_paragraphs(SeeAlsoSet(see_also_targets).see_also_items,
+                                  rendering_environment))
     return ret_val
 
 

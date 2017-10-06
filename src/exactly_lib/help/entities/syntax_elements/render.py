@@ -1,4 +1,3 @@
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_paragraphs
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
@@ -18,9 +17,8 @@ class IndividualSyntaxElementRenderer(SectionContentsRenderer):
                                                                  self.syntax_element.invokation_variants(),
                                                                  []))
         sub_sections = []
-        see_also_items = SeeAlsoSet(self.syntax_element.see_also_targets()).see_also_items
-        sub_sections.extend(see_also_sections(see_also_items, environment,
-                                              uppercase_title=False))
+        sub_sections += see_also_sections(self.syntax_element.see_also_targets(), environment,
+                                          uppercase_title=False)
 
         return doc.SectionContents(initial_paragraphs,
                                    sub_sections)
