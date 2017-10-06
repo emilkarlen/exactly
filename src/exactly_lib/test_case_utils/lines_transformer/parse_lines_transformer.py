@@ -4,7 +4,6 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import types, syntax_element
-from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_CONCEPT_INFO
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
@@ -66,7 +65,7 @@ class LinesTransformerDescriptor(property_description.ErrorMessagePartConstructo
 
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the contents of the tested file using a {transformer} before it is tested.
-""".format(transformer=LINES_TRANSFORMER_CONCEPT_INFO.name.singular)
+""".format(transformer=types.LINES_TRANSFORMER_CONCEPT_INFO.name.singular)
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
@@ -145,7 +144,8 @@ _SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  instruction_arguments.LINE_MATCHER),
     ],
-    description_rest=_fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION)
+    description_rest=_fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION),
+    see_also_items=SeeAlsoSet([types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target]),
 )
 
 _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
