@@ -1,5 +1,12 @@
 -*- org -*-
 
+* new instr to create symlink (complement to "file", "dir")
+<2017-10-06 Fri>
+
+symlink DESTINATION [SOURCE]
+
+SOURCE is optional, so that it is possible to create
+broken sym-links.
 * division of responsibilities between default MainProgram and the super class
 <2017-09-01 Fri>
 # NOTE: The division of responsibilities between this class and
@@ -84,6 +91,33 @@ A solution may need to let two kind of file-refs reside in the sym-tbl:
  - ordinary FileRef (with fixed relativity)
  - relative paths only consisting of a relative path-suffix
    Relativity of the path-suffix is determined by each using instruction.
+** possibility to use custom delimiters for symbols
+e.g. in here-docs:
+
+file f --symbol-syntax BEGIN_DELIM END_DELMI <<EOF
+@[this_should_not_be_substitiuted_by_symbol]@
+EOF
+
+Today it is impossible to show that symbol values are not
+substituted inside hard quotes:
+
+----------------------------------------
+[setup]
+
+def string MY_SYMBOL = '@[SYM_REF_SYNTAX_INSIDE_HARD_QUOTES]@'
+
+[act]
+
+print-command-line-arguments @[MY_SYMBOL]@
+[assert]
+
+stdout equals <<EOF
+@[SYM_REF_SYNTAX_INSIDE_HARD_QUOTES]@
+EOF
+----------------------------------------
+
+stdout will not validate, since it referes to an undefined symbol.
+
 * TODO [#C] DestinationPathFromRelRootResolver: Should be Path or PurePath?
 Returns type is invalid, but works: combining Path and PurePath in apparently
 incorrect way.
