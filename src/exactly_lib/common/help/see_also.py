@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
+from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId, SeeAlsoTarget
 from exactly_lib.util.collection import FrozenSetBasedOnEquality
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget
 
@@ -25,7 +25,7 @@ class TextSeeAlsoItem(SeeAlsoItem):
         return self._text
 
 
-class SeeAlsoUrlInfo(tuple):
+class SeeAlsoUrlInfo(tuple, SeeAlsoTarget):
     def __new__(cls,
                 title: str, url: str):
         return tuple.__new__(cls, (title, url))
@@ -72,11 +72,7 @@ class SeeAlsoItemVisitor:
 
 class SeeAlsoSet(tuple):
     """
-    Set of elements that can be transformed to a SeeAlsoItem
-
-    Elements are
-      - :class:`CrossReferenceId`
-      - :class:`SeeAlsoUrlInfo`
+    Set of :class:`SeeAlsoTarget`
     """
 
     def __new__(cls,

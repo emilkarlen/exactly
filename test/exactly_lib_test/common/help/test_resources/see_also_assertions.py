@@ -38,9 +38,41 @@ class _IsSeeAlsoItem(struct.SeeAlsoItemVisitor):
         assertion.apply(self.put, x, self.message_builder)
 
 
+class _IsSeeAlsoTarget(asrt.ValueAssertion):
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        if isinstance(value, struct.CrossReferenceId):
+            cross_reference_id_va.is_any.apply_with_message(put,
+                                                            value,
+                                                            str(struct.CrossReferenceId))
+        elif isinstance(value, struct.SeeAlsoUrlInfo):
+            is_see_also_url_info.apply_with_message(put, value,
+                                                    str(struct.SeeAlsoUrlInfo))
+        else:
+            put.fail('Not a {}: {}'.format(
+                struct.SeeAlsoTarget,
+                value
+            ))
+
+
+is_see_also_url_info = asrt.is_instance_with(struct.SeeAlsoUrlInfo,
+                                             asrt.and_([
+                                                 asrt.sub_component('name',
+                                                                    struct.SeeAlsoUrlInfo.title.fget,
+                                                                    asrt.is_instance(str)),
+                                                 asrt.sub_component('url',
+                                                                    struct.SeeAlsoUrlInfo.url.fget,
+                                                                    asrt.is_instance(str)),
+                                             ]))
 is_see_also_item = _IsSeeAlsoItemVa()
 
 is_see_also_item_list = asrt.is_list_of(is_see_also_item)
+
+is_see_also_target = _IsSeeAlsoTarget()
+
+is_see_also_target_list = asrt.is_list_of(is_see_also_target)
 
 is_see_also_set_with_valid_contents = asrt.is_instance_with(SeeAlsoSet,
                                                             asrt.sub_component('see_also_items',
