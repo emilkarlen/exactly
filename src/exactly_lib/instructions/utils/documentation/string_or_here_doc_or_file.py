@@ -1,4 +1,3 @@
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
@@ -61,9 +60,6 @@ class StringOrHereDocOrFile:
                     self._path_argument_configuration.options,
                     relativity_of_expected_arg)
                 )
-
-    def see_also_set(self) -> SeeAlsoSet:
-        return SeeAlsoSet(self.see_also_targets())
 
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import syntax_element
