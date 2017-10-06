@@ -1,7 +1,14 @@
 from exactly_lib.util.textformat.structure.core import Text, StringText, CrossReferenceTarget
 
 
-class CrossReferenceId(CrossReferenceTarget):
+class SeeAlsoTarget:
+    """
+    A target that can be presented as a see-also item
+    """
+    pass
+
+
+class CrossReferenceId(CrossReferenceTarget, SeeAlsoTarget):
     """
     A part of the help text that can be referred to.
 
