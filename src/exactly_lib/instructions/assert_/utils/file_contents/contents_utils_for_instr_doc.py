@@ -1,6 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.common.help.syntax_elements import here_document
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
@@ -55,12 +54,6 @@ class FileContentsHelpParts:
 
         return ([transformation] +
                 self.file_contents_assertion_help.used_syntax_element_descriptions() +
-                [
-                    SyntaxElementDescription(instruction_arguments.REG_EX.name,
-                                             self._parser.fnap('A Python regular expression.')),
-                    here_document.here_document_syntax_element_description(self.instruction_name,
-                                                                           instruction_arguments.HERE_DOCUMENT),
-                ] +
                 parse_expr.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
                 )
 
