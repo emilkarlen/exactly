@@ -3,7 +3,6 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax, cl_syntax
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -78,10 +77,10 @@ class DocumentationElements:
         return [file_arg_sed] + relativity_of_file_seds
 
     def see_also_targets(self) -> list:
-        concepts = rel_opts.see_also_concepts(self._dst_rel_opt_conf.options)
-        rel_path_doc.add_concepts_if_not_listed(concepts,
-                                                rel_opts.see_also_concepts(self._src_rel_opt_conf.options))
-        return rel_path_doc.cross_refs_for_concepts(concepts)
+        name_and_cross_refs = rel_opts.see_also_name_and_cross_refs(self._dst_rel_opt_conf.options)
+        name_and_cross_refs += rel_opts.see_also_name_and_cross_refs(self._src_rel_opt_conf.options)
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(name_and_cross_refs)
 
     def _cl_syntax_for_args(self, argument_usages: list) -> str:
         return cl_syntax.cl_syntax_for_args(argument_usages)

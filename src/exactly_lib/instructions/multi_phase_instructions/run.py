@@ -178,9 +178,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                                    REL_OPTION_ARG_CONF.options)
 
     def see_also_targets(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(REL_OPTION_ARG_CONF.options)
-        concepts.append(SHELL_SYNTAX_CONCEPT_INFO)
-        return [concept.cross_reference_target for concept in concepts]
+        name_and_cross_ref_list = rel_path_doc.see_also_name_and_cross_refs(REL_OPTION_ARG_CONF.options)
+        name_and_cross_ref_list += [SHELL_SYNTAX_CONCEPT_INFO]
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(name_and_cross_ref_list)
 
 
 class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):

@@ -111,11 +111,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return all_elements
 
     def see_also_targets(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(_REL_OPTION_CONFIG.options)
-        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
-        refs = rel_path_doc.cross_refs_for_concepts(concepts)
-        refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
-        return refs
+        name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(_REL_OPTION_CONFIG.options)
+        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
+        cross_refs = [ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(name_and_cross_refs) + cross_refs
 
     def _type_element_description(self):
         return self._paragraphs(_TYPE_ELEMENT_DESCRIPTION_INTRO) + [self._file_type_list()]

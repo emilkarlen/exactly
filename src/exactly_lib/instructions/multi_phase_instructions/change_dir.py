@@ -63,13 +63,13 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             self.relativity_options.options)
 
     def see_also_targets(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(self.relativity_options.options)
         from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
         from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO
-        rel_path_doc.add_concepts_if_not_listed(concepts,
-                                                [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
-                                                 SANDBOX_CONCEPT_INFO])
-        return [concept.cross_reference_target for concept in concepts]
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(self.relativity_options.options)
+        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                                SANDBOX_CONCEPT_INFO]
+        return cross_reference_id_list(name_and_cross_refs)
 
 
 _NO_DIR_ARG_MEANING = """\

@@ -13,7 +13,6 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -98,10 +97,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._doc_elements.syntax_element_descriptions()
 
     def see_also_targets(self) -> list:
-        concepts = rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_DESTINATION.options)
-        rel_path_doc.add_concepts_if_not_listed(concepts,
-                                                rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_SOURCE.options))
-        return rel_path_doc.cross_refs_for_concepts(concepts)
+        name_and_cross_refs = rel_opts.see_also_name_and_cross_refs(REL_OPTION_ARG_CONF_FOR_DESTINATION.options)
+        name_and_cross_refs += rel_opts.see_also_name_and_cross_refs(REL_OPTION_ARG_CONF_FOR_SOURCE.options)
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(name_and_cross_refs)
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):

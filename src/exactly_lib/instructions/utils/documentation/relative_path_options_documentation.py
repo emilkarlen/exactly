@@ -10,7 +10,6 @@ from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.entity import concepts as ci
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.instruction_arguments import RELATIVITY_ARGUMENT
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.type_system import PATH_TYPE
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
@@ -51,7 +50,7 @@ def relativity_syntax_element_description(
                                     [transform_list_to_table(renderer.list_for(rel_options_conf))])
 
 
-def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
+def see_also_name_and_cross_refs(rel_options_conf: RelOptionsConfiguration) -> list:
     """
     :rtype: [`SingularAndPluralNameAndCrossReferenceId`]
     """
@@ -65,17 +64,6 @@ def see_also_concepts(rel_options_conf: RelOptionsConfiguration) -> list:
     if ci.SYMBOL_CONCEPT_INFO not in ret_val:
         ret_val.append(ci.SYMBOL_CONCEPT_INFO)
     return ret_val
-
-
-def add_concepts_if_not_listed(output: list,
-                               concepts_to_add: list):
-    for concept in concepts_to_add:
-        if concept not in output:
-            output.append(concept)
-
-
-def cross_refs_for_concepts(concepts: list) -> list:
-    return list(map(SingularAndPluralNameAndCrossReferenceId.cross_reference_target.fget, concepts))
 
 
 class _RelOptionInfo(tuple):

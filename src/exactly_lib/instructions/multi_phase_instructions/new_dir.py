@@ -51,9 +51,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                                                    RELATIVITY_VARIANTS.options)
 
     def see_also_targets(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(RELATIVITY_VARIANTS.options)
-        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
-        return [concept.cross_reference_target for concept in concepts]
+        name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(RELATIVITY_VARIANTS.options)
+        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(name_and_cross_refs)
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):

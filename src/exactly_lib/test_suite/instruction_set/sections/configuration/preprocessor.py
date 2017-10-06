@@ -56,10 +56,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._paragraphs(_DESCRIPTION)
 
     def see_also_targets(self) -> list:
-        return [
-            PREPROCESSOR_CONCEPT.cross_reference_target(),
-            SHELL_SYNTAX_CONCEPT.cross_reference_target(),
-        ]
+        from exactly_lib.help.utils.entity_documentation import cross_reference_id_list
+        return cross_reference_id_list([
+            PREPROCESSOR_CONCEPT,
+            SHELL_SYNTAX_CONCEPT,
+        ])
 
 
 _DESCRIPTION = """\

@@ -120,7 +120,8 @@ class FileContentsAssertionHelp:
 
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
-        name_and_cross_ref_elements = rel_opts.see_also_concepts(EXPECTED_FILE_REL_OPT_ARG_CONFIG.options) + [
+        name_and_cross_ref_elements = rel_opts.see_also_name_and_cross_refs(
+            EXPECTED_FILE_REL_OPT_ARG_CONFIG.options) + [
             ENVIRONMENT_VARIABLE_CONCEPT_INFO,
             syntax_element.REGEX_SYNTAX_ELEMENT,
             types.LINES_TRANSFORMER_CONCEPT_INFO,

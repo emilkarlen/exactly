@@ -79,12 +79,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                ]
 
     def see_also_targets(self) -> list:
-        concepts = []
-        concepts.append(SYMBOL_CONCEPT_INFO)
-        concepts.extend(rel_path_doc.see_also_concepts(REL_OPTIONS_CONFIGURATION))
-        concepts.extend(types.ALL_TYPE_CONCEPT_INFO_TUPLE)
-        rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
-        return [concept.cross_reference_target for concept in concepts]
+        name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
+                               CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
+        name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(REL_OPTIONS_CONFIGURATION)
+        name_and_cross_refs += types.ALL_TYPE_CONCEPT_INFO_TUPLE
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(name_and_cross_refs)
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
