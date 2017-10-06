@@ -16,10 +16,6 @@ class _TypeConcept(PlainConceptDocumentation):
                                           SectionContents(rest_paragraphs,
                                                           sub_sections))
 
-    def see_also_targets(self) -> list:
-        return [
-        ]
-
 
 TYPE_CONCEPT = _TypeConcept()
 

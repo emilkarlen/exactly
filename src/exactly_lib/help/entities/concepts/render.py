@@ -1,5 +1,6 @@
 import functools
 
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
     PlainConceptDocumentation, ConfigurationParameterDocumentation
 from exactly_lib.help.entities.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
@@ -80,7 +81,7 @@ class IndividualConceptRenderer(SectionContentsRenderer, ConceptDocumentationVis
         return [sect]
 
     def _see_also_sections(self) -> list:
-        return render_utils.see_also_sections(self.concept.see_also_items(),
+        return render_utils.see_also_sections(SeeAlsoSet(self.concept.see_also_targets()).see_also_items,
                                               self.rendering_environment)
 
 

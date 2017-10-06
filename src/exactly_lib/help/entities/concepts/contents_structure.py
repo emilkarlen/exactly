@@ -1,4 +1,3 @@
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
 from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import Name, SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
@@ -40,15 +39,9 @@ class ConceptDocumentation(EntityDocumentation):
         """
         return [para(self.purpose().single_line_description)]
 
-    def see_also_items(self) -> list:
-        """
-        :rtype: [`SeeAlsoItem`]
-        """
-        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also_targets()]
-
     def see_also_targets(self) -> list:
         """
-        :rtype [`CrossReferenceTarget`]
+        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
         return []
 

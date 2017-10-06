@@ -16,10 +16,6 @@ class _SymbolConcept(PlainConceptDocumentation):
                                           SectionContents(rest_paragraphs,
                                                           sub_sections))
 
-    def see_also_targets(self) -> list:
-        return [
-        ]
-
 
 SYMBOL_CONCEPT = _SymbolConcept()
 
