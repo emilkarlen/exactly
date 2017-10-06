@@ -1,4 +1,4 @@
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity_names import SYNTAX_ELEMENT_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
@@ -9,7 +9,7 @@ class SyntaxElementDocumentation(EntityDocumentationBase):
                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
                  main_description_rest: list,
                  invokation_variants: list,
-                 see_also_cross_refs: list):
+                 see_also_cross_refs: SeeAlsoSet):
         """
 
         :param name_and_cross_ref_target:
@@ -38,7 +38,7 @@ class SyntaxElementDocumentation(EntityDocumentationBase):
         """
         :rtype: [`SeeAlsoItem`]
         """
-        return [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs]
+        return self._see_also_cross_refs.see_also_items
 
 
 def syntax_elements_help(syntax_elements: iter) -> EntitiesHelp:
