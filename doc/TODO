@@ -1,5 +1,12 @@
 -*- org -*-
 
+* new instr to create symlink (complement to "file", "dir")
+<2017-10-06 Fri>
+
+symlink DESTINATION [SOURCE]
+
+SOURCE is optional, so that it is possible to create
+broken sym-links.
 * division of responsibilities between default MainProgram and the super class
 <2017-09-01 Fri>
 # NOTE: The division of responsibilities between this class and
