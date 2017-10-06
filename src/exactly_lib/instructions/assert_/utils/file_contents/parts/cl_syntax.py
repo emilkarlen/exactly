@@ -1,9 +1,9 @@
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help.entities.syntax_elements.element import regex
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.entity import syntax_element
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
@@ -120,12 +120,17 @@ class FileContentsAssertionHelp:
         return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
     def see_also_items(self) -> list:
-        cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
-        reg_ex_url = see_also_url(regex.SEE_ALSO_URL_INFO)
+        return self.see_also_set().see_also_items
+
+    def see_also_set(self) -> SeeAlsoSet:
         from exactly_lib.help_texts.entity import types
-        types = [CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target),
-                 CrossReferenceIdSeeAlsoItem(types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target)]
-        return cross_refs + types + [reg_ex_url] + self.string_or_here_doc_or_file_arg.see_also_items()
+        cross_refs = self._see_also_cross_refs()
+        cross_refs += [
+            syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target,
+            types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target,
+            types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target,
+        ]
+        return SeeAlsoSet(cross_refs).union(self.string_or_here_doc_or_file_arg.see_also_set())
 
     @staticmethod
     def _see_also_cross_refs() -> list:
