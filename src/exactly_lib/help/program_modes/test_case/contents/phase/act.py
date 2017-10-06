@@ -74,7 +74,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                                         env_vars_up_to_act())
 
     @property
-    def see_also(self) -> list:
+    def see_also_targets(self) -> list:
         from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
                    ACTOR_CONCEPT.cross_reference_target(),

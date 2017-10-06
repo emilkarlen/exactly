@@ -52,7 +52,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
                                         EXISTS_AT_BEFORE_ASSERT_MAIN)
 
     @property
-    def see_also(self) -> list:
+    def see_also_targets(self) -> list:
         return [
             SANDBOX_CONCEPT.cross_reference_target(),
             ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
