@@ -52,7 +52,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
                                         env_vars_for_configuration_phase())
 
     @property
-    def see_also(self) -> list:
+    def see_also_targets(self) -> list:
         return [
             CONFIGURATION_PARAMETER_CONCEPT.cross_reference_target(),
             EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target(),

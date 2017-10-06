@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationRendererBase
 from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
@@ -44,7 +45,7 @@ class TestSuiteSectionDocumentationRenderer(SectionDocumentationRendererBase):
             output.append(docs.section('Instructions', [il]))
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
-        sections.extend(see_also_sections(self._doc.see_also_items, environment))
+        sections.extend(see_also_sections(SeeAlsoSet(self._doc.see_also_targets).see_also_items, environment))
 
     def _cross_ref_text(self, instr_name: str) -> docs.Text:
         return docs.cross_reference(instr_name,

@@ -1,5 +1,4 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import Description
 
@@ -57,15 +56,9 @@ class SectionDocumentation:
         raise NotImplementedError()
 
     @property
-    def see_also_items(self) -> list:
+    def see_also_targets(self) -> list:
         """
-        :rtype: [`SeeAlsoItem`]
+        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
-        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also]
 
-    @property
-    def see_also(self) -> list:
-        """
-        :rtype [`CrossReferenceTarget`]
-        """
         return []
