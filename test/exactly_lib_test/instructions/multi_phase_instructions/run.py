@@ -14,7 +14,7 @@ from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEn
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils import sub_process_execution as spe
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
-from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source

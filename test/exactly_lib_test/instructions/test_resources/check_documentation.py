@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib_test.common.help.test_resources.see_also_assertions import is_see_also_item
+from exactly_lib_test.common.help.test_resources.see_also_assertions import is_see_also_set_with_valid_contents
 from exactly_lib_test.common.help.test_resources.syntax_contents_structure_assertions import is_invokation_variant, \
     is_syntax_element_description
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -21,7 +21,7 @@ def suite_for_instruction_documentation(documentation: InstructionDocumentation)
         TestMainDescriptionRest,
         TestInvokationVariants,
         TestSyntaxElementDescriptions,
-        TestSeeAlsoItems,
+        TestSeeAlsoSet,
     ])
 
 
@@ -46,10 +46,10 @@ class TestInstructionName(WithDescriptionBase):
         self.assertIsInstance(actual, str)
 
 
-class TestSeeAlsoItems(WithDescriptionBase):
+class TestSeeAlsoSet(WithDescriptionBase):
     def runTest(self):
-        actual = self.description.see_also_items()
-        asrt.every_element('see also items', is_see_also_item).apply(self, actual)
+        actual = self.description.see_also_set()
+        is_see_also_set_with_valid_contents.apply_without_message(self, actual)
 
 
 class TestSingleLineDescription(WithDescriptionBase):

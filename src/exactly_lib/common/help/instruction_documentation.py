@@ -1,4 +1,4 @@
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, SeeAlsoSet
+from exactly_lib.common.help.see_also import SeeAlsoSet
 
 
 class InstructionDocumentation:
@@ -34,12 +34,6 @@ class InstructionDocumentation:
         :rtype [`SyntaxElementDescription`]
         """
         return []
-
-    def see_also_items(self) -> list:
-        """
-        :rtype: [`SeeAlsoItem`]
-        """
-        return [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
 
     def see_also_set(self) -> SeeAlsoSet:
         return SeeAlsoSet(self._see_also_cross_refs())

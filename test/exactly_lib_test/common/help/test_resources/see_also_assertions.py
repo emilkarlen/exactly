@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.common.help import see_also as struct
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -40,3 +41,8 @@ class _IsSeeAlsoItem(struct.SeeAlsoItemVisitor):
 is_see_also_item = _IsSeeAlsoItemVa()
 
 is_see_also_item_list = asrt.is_list_of(is_see_also_item)
+
+is_see_also_set_with_valid_contents = asrt.is_instance_with(SeeAlsoSet,
+                                                            asrt.sub_component('see_also_items',
+                                                                               SeeAlsoSet.see_also_items.fget,
+                                                                               is_see_also_item_list))

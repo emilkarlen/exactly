@@ -10,7 +10,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in

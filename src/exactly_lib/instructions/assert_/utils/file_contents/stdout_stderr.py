@@ -1,5 +1,6 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
@@ -39,8 +40,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return (self._help_parts.syntax_element_descriptions_at_top() +
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
-    def see_also_items(self) -> list:
-        return self._help_parts.see_also_set().see_also_items
+    def see_also_set(self) -> SeeAlsoSet:
+        return self._help_parts.see_also_set()
 
 
 class ParserForContentsForActualValue(InstructionParser):
