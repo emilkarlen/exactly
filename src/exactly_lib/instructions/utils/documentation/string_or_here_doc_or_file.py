@@ -1,4 +1,4 @@
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
@@ -62,9 +62,11 @@ class StringOrHereDocOrFile:
                     relativity_of_expected_arg)
                 )
 
+    def see_also_set(self) -> SeeAlsoSet:
+        return SeeAlsoSet(self.see_also_cross_refs())
+
     def see_also_items(self) -> list:
-        return [CrossReferenceIdSeeAlsoItem(cross_ref)
-                for cross_ref in self.see_also_cross_refs()]
+        return self.see_also_set().see_also_items
 
     def see_also_cross_refs(self) -> list:
         from exactly_lib.help_texts.entity import syntax_element

@@ -1,5 +1,6 @@
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_url
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help.entities.syntax_elements.element import regex
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
@@ -120,8 +121,7 @@ class FileContentsAssertionHelp:
 
     def see_also_items(self) -> list:
         cross_refs = [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
-        reg_ex_url = see_also_url('Python regular expressions',
-                                  'https://docs.python.org/3/library/re.html#regular-expression-syntax')
+        reg_ex_url = see_also_url(regex.SEE_ALSO_URL_INFO)
         from exactly_lib.help_texts.entity import types
         types = [CrossReferenceIdSeeAlsoItem(types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target),
                  CrossReferenceIdSeeAlsoItem(types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target)]

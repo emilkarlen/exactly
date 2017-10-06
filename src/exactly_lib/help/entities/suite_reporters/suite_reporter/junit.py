@@ -1,4 +1,4 @@
-from exactly_lib.common.help.see_also import see_also_url
+from exactly_lib.common.help.see_also import see_also_url, SeeAlsoUrlInfo
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity.suite_reporters import JUNIT_REPORTER
@@ -12,7 +12,7 @@ class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):
             'EXIT_CODE': str(junit.UNCONDITIONAL_EXIT_CODE),
             'test_suite_element': junit.TEST_SUITE_ELEMENT_NAME,
             'test_suites_element': junit.TEST_SUITES_ELEMENT_NAME,
-            'url': _URL,
+            'url': JUNIT_XML_SYNTAX_SEE_ALSO_URL_INFO.url,
         }
         self._parser = TextParser(format_map)
 
@@ -24,11 +24,12 @@ class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):
 
     def see_also_items(self) -> list:
         from_super = super().see_also_items()
-        schema_url = see_also_url('Windy Road JUnit XSD', _URL)
+        schema_url = see_also_url(JUNIT_XML_SYNTAX_SEE_ALSO_URL_INFO)
         return from_super + [schema_url]
 
 
-_URL = 'https://github.com/windyroad/JUnit-Schema/'
+JUNIT_XML_SYNTAX_SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Windy Road JUnit XSD',
+                                                    'https://github.com/windyroad/JUnit-Schema/')
 
 _SYNTAX_OF_OUTPUT = """\
 {url}
