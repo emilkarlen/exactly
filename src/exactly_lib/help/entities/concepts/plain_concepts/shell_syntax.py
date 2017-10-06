@@ -1,5 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_suite.command_line_options import OPTION_FOR_REPORTER
-from exactly_lib.common.help.see_also import see_also_url, SeeAlsoUrlInfo
+from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity import suite_reporters as reporters
@@ -24,9 +24,9 @@ class _ShellSyntaxConcept(PlainConceptDocumentation):
             Description(self.single_line_description(),
                         tp.fnap(_DESCRIPTION_REST)))
 
-    def see_also_items(self) -> list:
+    def see_also_targets(self) -> list:
         return [
-            see_also_url(PYTHON_SHELL_SYNTAX_SEE_ALSO_URL_INFO)
+            PYTHON_SHELL_SYNTAX_SEE_ALSO_URL_INFO
         ]
 
 

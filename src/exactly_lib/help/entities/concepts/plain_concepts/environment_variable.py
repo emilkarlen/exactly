@@ -25,11 +25,12 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
                              self._variables_from_before_assert()]))
 
     def see_also_targets(self) -> list:
-        return [
-            SANDBOX_CONCEPT_INFO.cross_reference_target,
-            HOME_CASE_DIRECTORY_CONCEPT_INFO.cross_reference_target,
-            HOME_ACT_DIRECTORY_CONCEPT_INFO.cross_reference_target,
-        ]
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list([
+            SANDBOX_CONCEPT_INFO,
+            HOME_CASE_DIRECTORY_CONCEPT_INFO,
+            HOME_ACT_DIRECTORY_CONCEPT_INFO,
+        ])
 
     def _variables_from_setup(self) -> docs.Section:
         return _variables_section(SETUP_PHASE_NAME,
