@@ -7,6 +7,7 @@ from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.type_system.value_type import TypeCategory
@@ -48,7 +49,9 @@ class IndividualTypeRenderer(SectionContentsRenderer):
                 invokation_variants_content(None,
                                             self.doc.invokation_variants(),
                                             [])))
-
+        sub_sections += see_also_sections(self.doc.see_also_set().see_also_items,
+                                          environment,
+                                          uppercase_title=True)
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
 
