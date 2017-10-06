@@ -77,7 +77,7 @@ class DocumentationElements:
 
         return [file_arg_sed] + relativity_of_file_seds
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_opts.see_also_concepts(self._dst_rel_opt_conf.options)
         rel_path_doc.add_concepts_if_not_listed(concepts,
                                                 rel_opts.see_also_concepts(self._src_rel_opt_conf.options))

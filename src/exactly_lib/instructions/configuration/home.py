@@ -45,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
                                      documentation_text.paths_uses_posix_syntax()),
         ]
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         return [HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 

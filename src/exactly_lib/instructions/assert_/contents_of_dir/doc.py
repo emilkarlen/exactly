@@ -150,7 +150,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             invokation_variants
         )
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
         types = [types.FILE_MATCHER_CONCEPT_INFO.cross_reference_target,
                  types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target,

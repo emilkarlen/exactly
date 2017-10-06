@@ -59,7 +59,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                                           instruction_arguments.HERE_DOCUMENT),
                ]
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_path_doc.see_also_concepts(REL_OPT_ARG_CONF.options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]

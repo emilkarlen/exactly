@@ -124,7 +124,7 @@ class FileContentsAssertionHelp:
 
     def see_also_set(self) -> SeeAlsoSet:
         from exactly_lib.help_texts.entity import types
-        cross_refs = self._see_also_cross_refs()
+        cross_refs = self.see_also_targets()
         cross_refs += [
             syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target,
             types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target,
@@ -133,7 +133,7 @@ class FileContentsAssertionHelp:
         return SeeAlsoSet(cross_refs).union(self.string_or_here_doc_or_file_arg.see_also_set())
 
     @staticmethod
-    def _see_also_cross_refs() -> list:
+    def see_also_targets() -> list:
         concepts = rel_opts.see_also_concepts(EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
         if ENVIRONMENT_VARIABLE_CONCEPT_INFO not in concepts:
             concepts.append(ENVIRONMENT_VARIABLE_CONCEPT_INFO)

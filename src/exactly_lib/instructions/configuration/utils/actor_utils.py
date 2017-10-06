@@ -69,7 +69,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         else:
             return []
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
         return ([ACTOR_CONCEPT.cross_reference_target()] +

@@ -26,9 +26,9 @@ class ActorDocumentation(EntityDocumentationBase):
         """
         :rtype: [`SeeAlsoItem`]
         """
-        return [CrossReferenceIdSeeAlsoItem(x) for x in self._see_also_cross_refs()]
+        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also_targets()]
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         """
         :rtype [`CrossReferenceTarget`]
         """

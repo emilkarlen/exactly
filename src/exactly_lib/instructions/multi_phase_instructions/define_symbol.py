@@ -78,7 +78,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                             self._paragraphs(_STRING_SYNTAX_ELEMENT_DESCRIPTION)),
                ]
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = []
         concepts.append(SYMBOL_CONCEPT_INFO)
         concepts.extend(rel_path_doc.see_also_concepts(REL_OPTIONS_CONFIGURATION))

@@ -110,7 +110,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         return all_elements
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_path_doc.see_also_concepts(_REL_OPTION_CONFIG.options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         refs = rel_path_doc.cross_refs_for_concepts(concepts)
