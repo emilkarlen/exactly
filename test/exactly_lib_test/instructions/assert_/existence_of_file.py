@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     InstructionArgumentsVariantConstructorWithTemplateStringBase, InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     with_negation_argument, PassOrFail, ExpectationTypeConfig
-from exactly_lib_test.instructions.test_resources.check_description import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun

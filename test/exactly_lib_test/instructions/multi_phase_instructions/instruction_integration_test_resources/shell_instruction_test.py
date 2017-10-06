@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.instructions.test_resources.check_description import suite_for_documentation_instance
+from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing

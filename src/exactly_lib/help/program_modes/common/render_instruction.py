@@ -29,7 +29,7 @@ class InstructionManPageRenderer(SectionContentsRenderer):
         main_description_rest = documentation.main_description_rest()
         if main_description_rest:
             sub_sections.append(description_section(doc.SectionContents(main_description_rest)))
-        cross_references = documentation.see_also_items()
+        cross_references = documentation.see_also_set().see_also_items
         sub_sections.extend(see_also_sections(cross_references, environment, uppercase_title=True))
         prelude_paragraphs = [para(documentation.single_line_description())]
         return doc.SectionContents(prelude_paragraphs,
