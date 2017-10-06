@@ -19,8 +19,14 @@ HERE_DOCUMENT_SYNTAX_ELEMENT = name_and_ref_target(
     'A sequence of lines, given using the shell "here document" syntax'
 )
 
+REGEX_SYNTAX_ELEMENT = name_and_ref_target(
+    'REGEX',
+    'A regular expression, using Python syntax'
+)
+
 ALL_SYNTAX_ELEMENTS = [
     HERE_DOCUMENT_SYNTAX_ELEMENT,
+    REGEX_SYNTAX_ELEMENT,
 ]
 
 
