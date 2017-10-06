@@ -63,7 +63,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
     def see_also_targets(self) -> list:
-        concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)
+        concepts = rel_path_doc.see_also_name_and_cross_refs(parse_here_doc_or_file_ref.CONFIGURATION.options)
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(concepts) + self.string_or_here_doc_or_file_arg.see_also_targets()
 

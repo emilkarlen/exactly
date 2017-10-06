@@ -152,14 +152,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
-        types = [types.FILE_MATCHER_CONCEPT_INFO.cross_reference_target,
-                 types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target,
-                 types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target]
-        concepts = rel_path_doc.see_also_concepts(ACTUAL_RELATIVITY_CONFIGURATION.options)
-        refs = rel_path_doc.cross_refs_for_concepts(concepts)
-        refs.extend(types)
-        refs.append(ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE)
-        return refs
+        name_and_cross_refs = [types.FILE_MATCHER_CONCEPT_INFO,
+                               types.LINE_MATCHER_CONCEPT_INFO,
+                               types.LINES_TRANSFORMER_CONCEPT_INFO]
+        name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
+        cross_refs = [ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
+        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        return cross_reference_id_list(name_and_cross_refs) + cross_refs
 
     def _cls(self, additional_argument_usages: list) -> str:
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)

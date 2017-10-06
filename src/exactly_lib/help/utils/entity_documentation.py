@@ -76,3 +76,8 @@ class EntitiesHelp(tuple):
         :type: [`EntityDocumentation`]
         """
         return self[1]
+
+
+def cross_reference_id_list(entity_documentation_iterable) -> list:
+    return [x.cross_reference_target()
+            for x in entity_documentation_iterable]
