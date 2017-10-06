@@ -71,6 +71,14 @@ class SeeAlsoItemVisitor:
 
 
 class SeeAlsoSet(tuple):
+    """
+    Set of elements that can be transformed to a SeeAlsoItem
+
+    Elements are
+      - :class:`CrossReferenceId`
+      - :class:`SeeAlsoUrlInfo`
+    """
+
     def __new__(cls,
                 cross_reference_or_see_also_url_info_list: list):
         return tuple.__new__(cls, (FrozenSetBasedOnEquality(cross_reference_or_see_also_url_info_list),))
@@ -80,6 +88,9 @@ class SeeAlsoSet(tuple):
 
     @property
     def see_also_items(self) -> list:
+        """
+        :rtype: list of :class:`SeeAlsoItem`
+        """
         return [self._see_also_item(x)
                 for x in self[0].elements
                 ]

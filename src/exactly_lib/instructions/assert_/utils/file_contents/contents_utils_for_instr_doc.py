@@ -1,4 +1,5 @@
 from exactly_lib import program_info
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
@@ -58,7 +59,10 @@ class FileContentsHelpParts:
                 )
 
     def see_also_items(self) -> list:
-        return self.file_contents_assertion_help.see_also_items()
+        return self.see_also_set().see_also_items
+
+    def see_also_set(self) -> SeeAlsoSet:
+        return self.file_contents_assertion_help.see_also_set()
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:
         """

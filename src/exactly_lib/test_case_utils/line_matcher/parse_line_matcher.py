@@ -84,7 +84,7 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  REPLACE_REGEX_ARGUMENT),
     ],
     description_rest=_fnap(_REGEX_MATCHER_SED_DESCRIPTION),
-    see_also_items=SeeAlsoSet([syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target]),
+    see_also_set=SeeAlsoSet([syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target]),
 )
 
 _CONCEPT = grammar.Concept(
