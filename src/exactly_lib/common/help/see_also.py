@@ -92,3 +92,7 @@ class SeeAlsoSet(tuple):
             return see_also_url(x.title, x.url)
         else:
             raise TypeError('Expected: {} or {}: Found{}'.format(CrossReferenceId, SeeAlsoUrlInfo, x))
+
+
+def no_see_also() -> SeeAlsoSet:
+    return SeeAlsoSet([])
