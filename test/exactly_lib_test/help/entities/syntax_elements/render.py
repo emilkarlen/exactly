@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.common.help.see_also import no_see_also, SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.entities.syntax_elements import render as sut
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
@@ -29,9 +28,9 @@ class TestAllSyntaxElementsList(unittest.TestCase):
         renderer = SYNTAX_ELEMENT_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
             [
                 SyntaxElementDocumentation(name_and_ref_target('SE1', 'single line description of SE1'),
-                                           [], [], no_see_also()),
+                                           [], [], []),
                 SyntaxElementDocumentation(name_and_ref_target('SE2', 'single line description of SE2'),
-                                           [], [], no_see_also()),
+                                           [], [], []),
             ])
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
@@ -44,27 +43,27 @@ class TestIndividualSyntaxElement(unittest.TestCase):
         nrt = name_and_ref_target('SE1', 'single line description of SE1')
         test_cases = [
             ('minimal',
-             SyntaxElementDocumentation(nrt, [], [], no_see_also())
+             SyntaxElementDocumentation(nrt, [], [], [])
              ),
             ('with  main description rest',
              SyntaxElementDocumentation(nrt,
                                         [docs.para('a paragraph')],
-                                        [], no_see_also())
+                                        [], [])
              ),
             ('with invokation variants',
              SyntaxElementDocumentation(nrt, [],
                                         [InvokationVariant('syntax', [docs.para('a paragraph')])],
-                                        no_see_also())
+                                        [])
              ),
             ('see_also_specific',
              SyntaxElementDocumentation(nrt, [], [],
-                                        SeeAlsoSet([CustomCrossReferenceId('custom-target-name')]))
+                                        [CustomCrossReferenceId('custom-target-name')])
              ),
             ('full',
              SyntaxElementDocumentation(nrt,
                                         [docs.para('a paragraph')],
                                         [InvokationVariant('syntax', [docs.para('a paragraph')])],
-                                        SeeAlsoSet([CustomCrossReferenceId('custom-target-name')]))
+                                        [CustomCrossReferenceId('custom-target-name')])
              ),
         ]
         for test_case_name, documentation in test_cases:
