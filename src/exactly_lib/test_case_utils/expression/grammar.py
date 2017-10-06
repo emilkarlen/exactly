@@ -7,10 +7,10 @@ class SimpleExpressionDescription:
     def __init__(self,
                  argument_usage_list: list,
                  description_rest: list,
-                 see_also_items: SeeAlsoSet = SeeAlsoSet([])):
+                 see_also_set: SeeAlsoSet = SeeAlsoSet([])):
         self.argument_usage_list = argument_usage_list
         self.description_rest = description_rest
-        self.see_also_items = see_also_items
+        self.see_also_set = see_also_set
 
 
 class SimpleExpression:
@@ -27,9 +27,9 @@ class SimpleExpression:
 class OperatorExpressionDescription:
     def __init__(self,
                  description_rest: list,
-                 see_also_items: SeeAlsoSet = SeeAlsoSet([])):
+                 see_also_set: SeeAlsoSet = SeeAlsoSet([])):
         self.description_rest = description_rest
-        self.see_also_items = see_also_items
+        self.see_also_set = see_also_set
 
 
 class ComplexExpression:
