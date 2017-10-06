@@ -1,3 +1,6 @@
+import functools
+
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.type_system import syntax_of_type_name_in_text
@@ -93,6 +96,19 @@ class Syntax:
                                [])
         return [iv]
 
+    def see_also_set(self) -> SeeAlsoSet:
+        expression_dicts = [
+            self.grammar.simple_expressions,
+            self.grammar.prefix_expressions,
+            self.grammar.complex_expressions,
+        ]
+        return functools.reduce(
+            SeeAlsoSet.union,
+            map(_see_also_items_for_expr,
+                expression_dicts),
+            SeeAlsoSet([]),
+        )
+
     def _symbol_ref_description(self):
         return normalize_and_parse(
             _SYMBOL_REF_DESCRIPTION.format(
@@ -100,6 +116,14 @@ class Syntax:
                 concept_type_name=syntax_of_type_name_in_text(self.grammar.concept.type_system_type_name),
 
             ))
+
+
+def _see_also_items_for_expr(expressions_dict: dict) -> SeeAlsoSet:
+    return functools.reduce(
+        SeeAlsoSet.union,
+        map(lambda expr: expr.syntax.see_also_items,
+            expressions_dict.values()),
+        SeeAlsoSet([]))
 
 
 _SYMBOL_REF_DESCRIPTION = """\

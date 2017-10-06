@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -5,9 +6,11 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 class SimpleExpressionDescription:
     def __init__(self,
                  argument_usage_list: list,
-                 description_rest: list):
+                 description_rest: list,
+                 see_also_items: SeeAlsoSet = SeeAlsoSet([])):
         self.argument_usage_list = argument_usage_list
         self.description_rest = description_rest
+        self.see_also_items = see_also_items
 
 
 class SimpleExpression:
@@ -23,8 +26,10 @@ class SimpleExpression:
 
 class OperatorExpressionDescription:
     def __init__(self,
-                 description_rest: list):
+                 description_rest: list,
+                 see_also_items: SeeAlsoSet = SeeAlsoSet([])):
         self.description_rest = description_rest
+        self.see_also_items = see_also_items
 
 
 class ComplexExpression:
@@ -65,7 +70,7 @@ class Grammar:
                  mk_reference,
                  simple_expressions: dict,
                  complex_expressions: dict,
-                 prefix_expressions: dict=None):
+                 prefix_expressions: dict = None):
         """
         :param mk_reference: str -> Expr
         :param simple_expressions: dict str -> :class:`SimpleExpression`

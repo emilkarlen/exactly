@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, Name
@@ -36,6 +37,9 @@ class TypeDocumentation(EntityDocumentationBase):
         """
         return []
 
+    def see_also_set(self) -> SeeAlsoSet:
+        return SeeAlsoSet([])
+
 
 class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
     def __init__(self,
@@ -51,6 +55,9 @@ class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
 
     def invokation_variants(self) -> list:
         return self._syntax.invokation_variants()
+
+    def see_also_set(self) -> SeeAlsoSet:
+        return self._syntax.see_also_set()
 
 
 def types_help(types: iter) -> EntitiesHelp:
