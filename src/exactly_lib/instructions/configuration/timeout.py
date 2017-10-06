@@ -49,7 +49,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                      self._paragraphs('Timeout in seconds.'))
         ]
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         return [TIMEOUT_CONFIGURATION_PARAMETER.cross_reference_target()]
 
 

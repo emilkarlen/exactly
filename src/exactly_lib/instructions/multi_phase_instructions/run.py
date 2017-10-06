@@ -177,7 +177,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                rel_path_doc.relativity_syntax_element_descriptions(self.relativity_arg_path,
                                                                    REL_OPTION_ARG_CONF.options)
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_path_doc.see_also_concepts(REL_OPTION_ARG_CONF.options)
         concepts.append(SHELL_SYNTAX_CONCEPT_INFO)
         return [concept.cross_reference_target for concept in concepts]

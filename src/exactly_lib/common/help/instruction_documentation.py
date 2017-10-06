@@ -36,10 +36,10 @@ class InstructionDocumentation:
         return []
 
     def see_also_set(self) -> SeeAlsoSet:
-        return SeeAlsoSet(self._see_also_cross_refs())
+        return SeeAlsoSet(self.see_also_targets())
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         """
-        :rtype [`CrossReferenceId`]
+        :returns: A new list of :class:`SeeAlsoTarget`
         """
         return []

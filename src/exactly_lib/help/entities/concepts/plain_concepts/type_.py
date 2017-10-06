@@ -16,7 +16,7 @@ class _TypeConcept(PlainConceptDocumentation):
                                           SectionContents(rest_paragraphs,
                                                           sub_sections))
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         return [
         ]
 

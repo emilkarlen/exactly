@@ -97,7 +97,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         return self._doc_elements.syntax_element_descriptions()
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_DESTINATION.options)
         rel_path_doc.add_concepts_if_not_listed(concepts,
                                                 rel_opts.see_also_concepts(REL_OPTION_ARG_CONF_FOR_SOURCE.options))

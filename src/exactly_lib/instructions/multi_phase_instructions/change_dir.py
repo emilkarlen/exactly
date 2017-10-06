@@ -62,7 +62,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             _DIR_ARGUMENT,
             self.relativity_options.options)
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_path_doc.see_also_concepts(self.relativity_options.options)
         from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
         from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO

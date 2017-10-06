@@ -50,7 +50,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
                                                                    RELATIVITY_VARIANTS.options)
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_path_doc.see_also_concepts(RELATIVITY_VARIANTS.options)
         rel_path_doc.add_concepts_if_not_listed(concepts, [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO])
         return [concept.cross_reference_target for concept in concepts]

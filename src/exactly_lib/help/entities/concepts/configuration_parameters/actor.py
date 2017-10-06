@@ -34,7 +34,7 @@ class _ActorConcept(ConfigurationParameterDocumentation):
                 ' - ' +
                 DEFAULT_ACTOR_DOC.single_line_description_str())
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         return (all_actor_cross_refs() +
                 [
                     TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,

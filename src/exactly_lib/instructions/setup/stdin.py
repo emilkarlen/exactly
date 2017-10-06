@@ -62,7 +62,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         concepts = rel_path_doc.see_also_concepts(parse_here_doc_or_file_ref.CONFIGURATION.options)
         return [concept.cross_reference_target for concept in
                 concepts] + self.string_or_here_doc_or_file_arg.see_also_cross_refs()

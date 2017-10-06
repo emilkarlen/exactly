@@ -9,18 +9,11 @@ class SyntaxElementDocumentation(EntityDocumentationBase):
                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
                  main_description_rest: list,
                  invokation_variants: list,
-                 see_also_cross_refs: SeeAlsoSet):
-        """
-
-        :param name_and_cross_ref_target:
-        :param main_description_rest:
-        :param invokation_variants:
-        :param see_also_cross_refs: [:class:`CrossReferenceId`]
-        """
+                 see_also_set: SeeAlsoSet):
         super().__init__(name_and_cross_ref_target)
         self._main_description_rest = main_description_rest
         self._invokation_variants = invokation_variants
-        self._see_also_cross_refs = see_also_cross_refs
+        self.see_also_set = see_also_set
 
     def main_description_rest(self) -> list:
         """
@@ -38,7 +31,7 @@ class SyntaxElementDocumentation(EntityDocumentationBase):
         """
         :rtype: [`SeeAlsoItem`]
         """
-        return self._see_also_cross_refs.see_also_items
+        return self.see_also_set.see_also_items
 
 
 def syntax_elements_help(syntax_elements: iter) -> EntitiesHelp:

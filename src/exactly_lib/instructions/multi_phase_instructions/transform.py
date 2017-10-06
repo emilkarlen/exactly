@@ -71,7 +71,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         return self._doc_elements.syntax_element_descriptions()
 
-    def _see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
         return [
             types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target
