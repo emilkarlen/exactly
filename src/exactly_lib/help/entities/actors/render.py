@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
@@ -30,7 +31,7 @@ class IndividualActorRenderer(SectionContentsRenderer):
             sub_sections,
             [(self._parser.format('{act_phase} phase contents'), self.actor.act_phase_contents()),
              (self._parser.format('Syntax of {act_phase} phase contents'), self.actor.act_phase_contents_syntax())])
-        sub_sections.extend(see_also_sections(self.actor.see_also_items(), environment))
+        sub_sections.extend(see_also_sections(SeeAlsoSet(self.actor.see_also_targets()).see_also_items, environment))
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _default_reporter_info(self) -> list:
