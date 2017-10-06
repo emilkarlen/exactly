@@ -40,7 +40,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
     def see_also_items(self) -> list:
-        return self._help_parts.see_also_items()
+        return self._help_parts.see_also_set().see_also_items
 
 
 class ParserForContentsForActualValue(InstructionParser):

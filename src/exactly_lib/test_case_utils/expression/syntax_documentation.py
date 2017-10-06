@@ -104,7 +104,7 @@ class Syntax:
         ]
         return functools.reduce(
             SeeAlsoSet.union,
-            map(_see_also_items_for_expr,
+            map(_see_also_set_for_expr,
                 expression_dicts),
             SeeAlsoSet([]),
         )
@@ -118,10 +118,10 @@ class Syntax:
             ))
 
 
-def _see_also_items_for_expr(expressions_dict: dict) -> SeeAlsoSet:
+def _see_also_set_for_expr(expressions_dict: dict) -> SeeAlsoSet:
     return functools.reduce(
         SeeAlsoSet.union,
-        map(lambda expr: expr.syntax.see_also_items,
+        map(lambda expr: expr.syntax.see_also_set,
             expressions_dict.values()),
         SeeAlsoSet([]))
 
