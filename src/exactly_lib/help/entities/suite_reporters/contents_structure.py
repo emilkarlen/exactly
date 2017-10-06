@@ -1,4 +1,3 @@
-from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
 
@@ -26,31 +25,25 @@ class SuiteReporterDocumentation(EntityDocumentationBase):
         """
         raise NotImplementedError()
 
-    def see_also_items(self) -> list:
+    def see_also_targets(self) -> list:
         """
-        :rtype: [`SeeAlsoItem`]
+        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
-        return [CrossReferenceIdSeeAlsoItem(x) for x in self.see_also()]
-
-    def see_also(self) -> list:
-        """
-        :rtype [`CrossReferenceTarget`]
-        """
-        return self.__see_also_common() + self._see_also_specific()
+        return self.__see_also_targets__common() + self._see_also_targets__specific()
 
     @staticmethod
-    def __see_also_common() -> list:
+    def __see_also_targets__common() -> list:
         """
-        :rtype [`CrossReferenceTarget`]
+        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
         from exactly_lib.help.entities.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
         return [
             SUITE_REPORTER_CONCEPT.cross_reference_target(),
         ]
 
-    def _see_also_specific(self) -> list:
+    def _see_also_targets__specific(self) -> list:
         """
-        :rtype [`CrossReferenceTarget`]
+        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
         return []
 

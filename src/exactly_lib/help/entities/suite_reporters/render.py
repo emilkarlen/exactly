@@ -1,3 +1,4 @@
+from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
@@ -25,7 +26,7 @@ class IndividualSuiteReporterRenderer(SectionContentsRenderer):
             ('Exit code', srd.exit_code_description()),
         ]
         append_sections_if_contents_is_non_empty(sub_sections, names_and_contents)
-        sub_sections.extend(see_also_sections(srd.see_also_items(), environment))
+        sub_sections.extend(see_also_sections(SeeAlsoSet(srd.see_also_targets()).see_also_items, environment))
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _default_reporter_info(self) -> list:
