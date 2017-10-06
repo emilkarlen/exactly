@@ -84,3 +84,8 @@ class SingularAndPluralNameAndCrossReferenceId(SingularNameAndCrossReferenceId):
     @property
     def plural_name(self) -> str:
         return self.name.plural
+
+
+def cross_reference_id_list(singular_name_and_cross_reference_id_iterable) -> list:
+    return [x.cross_reference_target
+            for x in singular_name_and_cross_reference_id_iterable]

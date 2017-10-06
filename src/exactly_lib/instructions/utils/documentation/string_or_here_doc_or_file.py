@@ -63,12 +63,9 @@ class StringOrHereDocOrFile:
                 )
 
     def see_also_set(self) -> SeeAlsoSet:
-        return SeeAlsoSet(self.see_also_cross_refs())
+        return SeeAlsoSet(self.see_also_targets())
 
-    def see_also_items(self) -> list:
-        return self.see_also_set().see_also_items
-
-    def see_also_cross_refs(self) -> list:
+    def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import syntax_element
         return [syntax_element.HERE_DOCUMENT_SYNTAX_ELEMENT.cross_reference_target]
 

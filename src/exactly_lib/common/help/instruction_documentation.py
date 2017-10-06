@@ -40,6 +40,6 @@ class InstructionDocumentation:
 
     def see_also_targets(self) -> list:
         """
-        :returns: A new list of :class:`SeeAlsoTarget`
+        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
         return []
