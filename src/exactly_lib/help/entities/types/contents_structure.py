@@ -57,7 +57,7 @@ class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
         return self._syntax.invokation_variants()
 
     def see_also_set(self) -> SeeAlsoSet:
-        return self._syntax.see_also_set()
+        return SeeAlsoSet(self._syntax.see_also_targets())
 
 
 def types_help(types: iter) -> EntitiesHelp:

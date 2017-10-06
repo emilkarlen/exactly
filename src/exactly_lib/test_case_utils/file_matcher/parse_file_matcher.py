@@ -1,5 +1,4 @@
 """Functionality for accessing a subset of the files in a directory."""
-from exactly_lib.common.help.see_also import SeeAlsoSet
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import expression, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
@@ -174,7 +173,7 @@ NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  NAME_MATCHER_ARGUMENT)
     ],
     description_rest=_fnap(_NAME_MATCHER_SED_DESCRIPTION),
-    see_also_set=SeeAlsoSet([syntax_element.GLOB_PATTERN_SYNTAX_ELEMENT.cross_reference_target]),
+    see_also_targets=[syntax_element.GLOB_PATTERN_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
