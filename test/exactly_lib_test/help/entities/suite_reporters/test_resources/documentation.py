@@ -28,5 +28,5 @@ class SuiteReporterDocTestImpl(SuiteReporterDocumentation):
     def exit_code_description(self) -> list:
         return self._exit_code_description
 
-    def _see_also_specific(self) -> list:
+    def _see_also_targets__specific(self) -> list:
         return [CustomCrossReferenceId('custom-cross-reference-target')]

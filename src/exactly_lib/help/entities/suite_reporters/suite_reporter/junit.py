@@ -1,4 +1,4 @@
-from exactly_lib.common.help.see_also import see_also_url, SeeAlsoUrlInfo
+from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity.suite_reporters import JUNIT_REPORTER
@@ -22,10 +22,8 @@ class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):
     def exit_code_description(self) -> list:
         return self._parser.fnap(_EXIT_CODE_DESCRIPTION)
 
-    def see_also_items(self) -> list:
-        from_super = super().see_also_items()
-        schema_url = see_also_url(JUNIT_XML_SYNTAX_SEE_ALSO_URL_INFO)
-        return from_super + [schema_url]
+    def _see_also_targets__specific(self) -> list:
+        return [JUNIT_XML_SYNTAX_SEE_ALSO_URL_INFO]
 
 
 JUNIT_XML_SYNTAX_SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Windy Road JUnit XSD',
