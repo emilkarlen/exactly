@@ -25,14 +25,6 @@ class TextSeeAlsoItem(SeeAlsoItem):
         return self._text
 
 
-def see_also_url(title: str, url: str) -> SeeAlsoItem:
-    return TextSeeAlsoItem(
-        CrossReferenceText(title,
-                           UrlCrossReferenceTarget(url),
-                           target_is_id_in_same_document=False,
-                           allow_rendering_of_visible_extra_target_text=True))
-
-
 class SeeAlsoUrlInfo(tuple):
     def __new__(cls,
                 title: str, url: str):
@@ -45,6 +37,14 @@ class SeeAlsoUrlInfo(tuple):
     @property
     def url(self) -> str:
         return self[1]
+
+
+def see_also_url(url_info: SeeAlsoUrlInfo) -> SeeAlsoItem:
+    return TextSeeAlsoItem(
+        CrossReferenceText(url_info.title,
+                           UrlCrossReferenceTarget(url_info.url),
+                           target_is_id_in_same_document=False,
+                           allow_rendering_of_visible_extra_target_text=True))
 
 
 def see_also_items_from_cross_refs(cross_refs: list) -> list:
@@ -89,7 +89,7 @@ class SeeAlsoSet(tuple):
         if isinstance(x, CrossReferenceId):
             return CrossReferenceIdSeeAlsoItem(x)
         elif isinstance(x, SeeAlsoUrlInfo):
-            return see_also_url(x.title, x.url)
+            return see_also_url(x)
         else:
             raise TypeError('Expected: {} or {}: Found{}'.format(CrossReferenceId, SeeAlsoUrlInfo, x))
 

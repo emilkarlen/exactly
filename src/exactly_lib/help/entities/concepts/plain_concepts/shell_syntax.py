@@ -1,11 +1,14 @@
 from exactly_lib.cli.cli_environment.program_modes.test_suite.command_line_options import OPTION_FOR_REPORTER
-from exactly_lib.common.help.see_also import see_also_url
+from exactly_lib.common.help.see_also import see_also_url, SeeAlsoUrlInfo
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity import suite_reporters as reporters
 from exactly_lib.help_texts.entity.concepts import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
+
+PYTHON_SHELL_SYNTAX_SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Python shell syntax',
+                                                       'https://docs.python.org/3/library/shlex.html#parsing-rules')
 
 
 class _ShellSyntaxConcept(PlainConceptDocumentation):
@@ -23,8 +26,7 @@ class _ShellSyntaxConcept(PlainConceptDocumentation):
 
     def see_also_items(self) -> list:
         return [
-            see_also_url('Python shell syntax',
-                         'https://docs.python.org/3/library/shlex.html#parsing-rules')
+            see_also_url(PYTHON_SHELL_SYNTAX_SEE_ALSO_URL_INFO)
         ]
 
 
