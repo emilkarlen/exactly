@@ -1,6 +1,3 @@
-from exactly_lib.common.help.see_also import SeeAlsoSet
-
-
 class InstructionDocumentation:
     """
     Reference documentation about an instruction,
@@ -34,9 +31,6 @@ class InstructionDocumentation:
         :rtype [`SyntaxElementDescription`]
         """
         return []
-
-    def see_also_set(self) -> SeeAlsoSet:
-        return SeeAlsoSet(self.see_also_targets())
 
     def see_also_targets(self) -> list:
         """
