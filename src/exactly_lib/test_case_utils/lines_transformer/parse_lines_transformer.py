@@ -113,7 +113,7 @@ def _fnap(s: str) -> list:
 _REPLACE_TRANSFORMER_SED_DESCRIPTION = """\
 Replaces the contents of a file.
 
-All occurrences of {_REG_EX_} are replaced with {_STRING_}.
+Every occurrence of regular expression {_REG_EX_} is replaced with {_STRING_}.
 """
 
 _SELECT_TRANSFORMER_SED_DESCRIPTION = """\
