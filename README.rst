@@ -522,6 +522,19 @@ Emil Karlén
 emil@member.fsf.org
 
 
+THANKS
+========================================
+
+
+The Python IDE
+`PyCharm
+<https://www.jetbrains.com/pycharm/>`_
+from
+`JetBrains
+<https://www.jetbrains.com/>`_
+has greatly helped the development of this software.
+
+
 DEDICATION
 ========================================
 
