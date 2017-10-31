@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<article version="5.0" xmlns="http://docbook.org/ns/docbook"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         xmlns:xi="http://www.w3.org/2001/XInclude"
+         xmlns:svg="http://www.w3.org/2000/svg"
+         xmlns:m="http://www.w3.org/1998/Math/MathML"
+         xmlns:html="http://www.w3.org/1999/xhtml"
+         xmlns:db="http://docbook.org/ns/docbook">
+  <info>
+    <title>Exactly 0.9</title>
+  </info>
+
+  <section>
+    <title>Concepts</title>
+
+    <section>
+      <title>Symbol</title>
+
+      <para>A named, constant, value.</para>
+
+      <para>A symbol corresponds to a variable, found in most programming
+      languages, except that it is constant.</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>purpose, structure</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>type system (data / logic)</para>
+            </listitem>
+
+            <listitem>
+              <para/>
+            </listitem>
+          </itemizedlist>
+        </listitem>
+
+        <listitem>
+          <para>def</para>
+        </listitem>
+
+        <listitem>
+          <para>ref</para>
+        </listitem>
+      </itemizedlist>
+
+      <section>
+        <title>Definition</title>
+
+        <para>A symbol is defined using the <command>def</command>
+        instruction:</para>
+
+        <programlisting>def string MY_SYMBOL = "the symbol value"</programlisting>
+
+        <para>This defines the symbol <code>MY_SYMBOL</code> to be the value
+        <code>the symbol value</code>, which is a value of type
+        <code>string</code>.</para>
+
+        <para>&lt;syntax hos symbolnamn&gt;</para>
+      </section>
+
+      <section>
+        <title>Types</title>
+
+        <para>Every symbol has a type.</para>
+
+        <para>The types are:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>Data types</para>
+          </listitem>
+
+          <listitem>
+            <para>Logic types</para>
+          </listitem>
+        </itemizedlist>
+
+        <programlisting>def list             LIST_SYMBOL = first second "the third"
+
+def file-transformer REPLACE_ID  = replace [0-9]{10} ID</programlisting>
+      </section>
+
+      <section>
+        <title>Reference</title>
+
+        <para>A symbol must be defined before it is referenced.</para>
+
+        <para>A symbol reference may appear as an instruction argument, in
+        most places where an argument of a certain type is expected.</para>
+
+        <para>There are two forms of symbol references:</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>plain symbol name</term>
+
+            <listitem>
+              <para>MY_SYMBOL</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>special syntax</term>
+
+            <listitem>
+              <para>@[MY_SYMBOL]@</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>The plain symbol name is used where a reference is
+        unambiguous.</para>
+
+        <programlisting>def string S = "reference to @[symbol_name]@"
+
+exists --file --rel DIR_SYMBOL @[BASE_NAME_SYMBOL]@
+
+stdout --transformation ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
+      </section>
+    </section>
+
+    <section>
+      <title>Type</title>
+
+      <para>What are types used for?</para>
+
+      <para>Type of</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>instruction argument</para>
+        </listitem>
+
+        <listitem>
+          <para>symbol</para>
+        </listitem>
+
+        <listitem>
+          <para/>
+        </listitem>
+      </itemizedlist>
+
+      <para>Does every instruction argument value has a type?</para>
+
+      <para>No, here document is a string, but a string symbol cannot be
+      defined in terms of a here doc. This should be fixed - a here doc is
+      just an alt syntax of strings.</para>
+
+      <section>
+        <title>One line</title>
+
+        <para>Type system for symbols and instruction arguments</para>
+      </section>
+
+      <section>
+        <title>Main rest</title>
+
+        <para>PGM has a type system specialized for the purpose of test
+        cases.</para>
+
+        <para>Every symbol, and most instruction arguments, have a
+        type.</para>
+
+        <para>There are two categories of types:</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>data types<itemizedlist>
+                <listitem>
+                  <para>string</para>
+                </listitem>
+
+                <listitem>
+                  <para>....</para>
+                </listitem>
+
+                <listitem>
+                  <para/>
+                </listitem>
+              </itemizedlist></para>
+          </listitem>
+
+          <listitem>
+            <para>logic types</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>line matcher</para>
+              </listitem>
+
+              <listitem>
+                <para>....</para>
+              </listitem>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para/>
+          </listitem>
+        </itemizedlist>
+
+        <para>A data type value is pure data.</para>
+
+        <para>A logic type value is a pure function.</para>
+      </section>
+
+      <section>
+        <title>Casting (of data types)</title>
+
+        <!--Should be described as part of descr of specific type. But overall cast func should be described here.
+
+But perhaps the type sys does not support casting. Instead, different syntaxes allow for constructing of type B from type A.
+
+Yes, casting is supported - casting data type -> string-->
+
+        <section>
+          <title>path|list -&gt; string</title>
+
+          <para>Paths and lists are casted to strings.</para>
+        </section>
+
+        <section>
+          <title>path</title>
+
+          <variablelist>
+            <varlistentry>
+              <term>PATH = PATH</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>PATH = RELATIVITY SUB-PATH (string) : RELATIVITY
+              STRING</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term/>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+      </section>
+    </section>
+  </section>
+</article>
