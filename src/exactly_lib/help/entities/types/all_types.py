@@ -13,6 +13,9 @@ def all_types() -> list:
     ]
 
 
+DATA_TYPE_CATEGORY_NAME = 'data'
+LOGIC_TYPE_CATEGORY_NAME = 'logic'
+
 NAME_2_TYPE_DOC = dict(map(lambda x: (x.singular_name(), x), all_types()))
 
 
