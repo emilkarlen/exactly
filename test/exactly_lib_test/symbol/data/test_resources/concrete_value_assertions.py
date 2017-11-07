@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, Cons
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory
+from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -69,7 +69,7 @@ def equals_string_resolver(expected: StringResolver,
 
 class _EqualsSymbolValueResolverBase(asrt.ValueAssertion):
     def __init__(self,
-                 expected_data_value_type: SymbolValueType,
+                 expected_data_value_type: DataValueType,
                  expected_symbol_references: asrt.ValueAssertion,
                  expected_resolved_value: asrt.ValueAssertion,
                  symbols_for_checking_resolving: SymbolTable):
@@ -112,7 +112,7 @@ class _EqualsSymbolValueResolverBase(asrt.ValueAssertion):
                      actual.data_value_type,
                      message_builder.apply('data_value_type'))
 
-        expected_value_type = type_system.SYMBOL_TYPE_2_VALUE_TYPE[self.expected_data_value_type]
+        expected_value_type = type_system.DATA_TYPE_2_VALUE_TYPE[self.expected_data_value_type]
 
         put.assertIs(expected_value_type,
                      actual.value_type,
@@ -192,7 +192,7 @@ class _FileRefResolverAssertion(_EqualsSymbolValueResolverBase):
                  expected_symbol_references: asrt.ValueAssertion,
                  expected_resolved_value: asrt.ValueAssertion,
                  symbols_for_checking_resolving: SymbolTable):
-        super().__init__(SymbolValueType.PATH,
+        super().__init__(DataValueType.PATH,
                          expected_symbol_references,
                          expected_resolved_value,
                          symbols_for_checking_resolving)
@@ -211,7 +211,7 @@ class _StringValueResolverAssertion(_EqualsSymbolValueResolverBase):
                  expected_resolved_value: asrt.ValueAssertion,
                  expected_string_fragments: asrt.ValueAssertion,
                  symbols_for_checking_resolving: SymbolTable):
-        super().__init__(SymbolValueType.STRING,
+        super().__init__(DataValueType.STRING,
                          expected_symbol_references,
                          expected_resolved_value,
                          symbols_for_checking_resolving)

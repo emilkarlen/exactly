@@ -5,7 +5,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
-from exactly_lib.type_system.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 EQUALS_ARGUMENT = '='
@@ -75,14 +75,14 @@ def _def_instruction_syntax_lines_function__lines_transformer() -> list:
     ]
 
 
-SYMBOL_INFO_DICT = {
-    SymbolValueType.STRING:
+DATA_TYPE_INFO_DICT = {
+    DataValueType.STRING:
         TypeInfo(type_system.STRING_TYPE,
                  _def_instruction_syntax_lines_function__string),
-    SymbolValueType.PATH:
+    DataValueType.PATH:
         TypeInfo(type_system.PATH_TYPE,
                  _def_instruction_syntax_lines_function__path),
-    SymbolValueType.LIST:
+    DataValueType.LIST:
         TypeInfo(type_system.LIST_TYPE,
                  _def_instruction_syntax_lines_function__list),
 }

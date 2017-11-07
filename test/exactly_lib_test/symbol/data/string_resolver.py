@@ -7,7 +7,7 @@ from exactly_lib.type_system.data import concrete_string_values as csv, file_ref
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory, ValueType
+from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table, Entry
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_fragments
@@ -130,7 +130,7 @@ class StringResolverTest(unittest.TestCase):
         # ACT & ASSERT #
         self.assertIs(TypeCategory.DATA,
                       resolver.type_category)
-        self.assertIs(SymbolValueType.STRING,
+        self.assertIs(DataValueType.STRING,
                       resolver.data_value_type)
         self.assertIs(ValueType.STRING,
                       resolver.value_type)

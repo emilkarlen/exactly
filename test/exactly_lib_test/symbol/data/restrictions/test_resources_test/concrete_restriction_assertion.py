@@ -8,7 +8,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTyp
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
 from exactly_lib.symbol.restriction import ReferenceRestrictions, TypeCategoryRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory
+from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -239,17 +239,17 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
             (
                 'multiple parts',
                 r.OrReferenceRestrictions([
-                    r.OrRestrictionPart(SymbolValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
+                    r.OrRestrictionPart(DataValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
                         vr.AnySymbolTypeRestriction())),
-                    r.OrRestrictionPart(SymbolValueType.STRING,
+                    r.OrRestrictionPart(DataValueType.STRING,
                                         r.ReferenceRestrictionsOnDirectAndIndirect(
                                             vr.StringRestriction(),
                                             vr.AnySymbolTypeRestriction()))
                 ]),
                 r.OrReferenceRestrictions([
-                    r.OrRestrictionPart(SymbolValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
+                    r.OrRestrictionPart(DataValueType.PATH, r.ReferenceRestrictionsOnDirectAndIndirect(
                         vr.AnySymbolTypeRestriction())),
-                    r.OrRestrictionPart(SymbolValueType.STRING,
+                    r.OrRestrictionPart(DataValueType.STRING,
                                         r.ReferenceRestrictionsOnDirectAndIndirect(
                                             vr.StringRestriction(),
                                             vr.AnySymbolTypeRestriction()))
@@ -263,7 +263,7 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
 
     def test_fail__invalid_type(self):
         expected = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))])
         actual = r.ReferenceRestrictionsOnDirectAndIndirect(
@@ -272,36 +272,36 @@ class TestEqualsOrReferenceRestrictions(unittest.TestCase):
 
     def test_fail__different_number_of_sub_restrictions(self):
         expected = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction())),
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))])
         actual = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))])
         self._assert_fails(expected, actual)
 
     def test_fail__different_part_selector(self):
         expected = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))])
         actual = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.PATH,
+            r.OrRestrictionPart(DataValueType.PATH,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))])
         self._assert_fails(expected, actual)
 
     def test_fail__different_part_restriction(self):
         expected = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))])
         actual = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.AnySymbolTypeRestriction()))])
         self._assert_fails(expected, actual)
@@ -353,12 +353,12 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
 
     def test_fail__or__different_sub_restriction(self):
         expected = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.AnySymbolTypeRestriction()))
         ])
         actual = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))
         ])
@@ -366,7 +366,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
 
     def test_fail__or__direct_and_indirect(self):
         expected = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))
         ])
@@ -378,7 +378,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
         expected = r.ReferenceRestrictionsOnDirectAndIndirect(
             vr.StringRestriction())
         actual = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))
         ])
@@ -392,7 +392,7 @@ class TestEqualsReferenceRestrictions(unittest.TestCase):
 
     def test_fail__or__non_symbol_restriction(self):
         expected = r.OrReferenceRestrictions([
-            r.OrRestrictionPart(SymbolValueType.STRING,
+            r.OrRestrictionPart(DataValueType.STRING,
                                 r.ReferenceRestrictionsOnDirectAndIndirect(
                                     vr.StringRestriction()))
         ])

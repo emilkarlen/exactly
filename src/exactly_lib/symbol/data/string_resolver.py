@@ -4,7 +4,7 @@ from exactly_lib.type_system.data import concrete_string_values as csv
 from exactly_lib.type_system.data import string_value as sv
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -14,8 +14,8 @@ class StringFragmentResolver(DataValueResolver):
     """
 
     @property
-    def data_value_type(self) -> SymbolValueType:
-        return SymbolValueType.STRING
+    def data_value_type(self) -> DataValueType:
+        return DataValueType.STRING
 
     @property
     def value_type(self) -> ValueType:
@@ -123,8 +123,8 @@ class StringResolver(DataValueResolver):
         self._fragment_resolvers = fragment_resolvers
 
     @property
-    def data_value_type(self) -> SymbolValueType:
-        return SymbolValueType.STRING
+    def data_value_type(self) -> DataValueType:
+        return DataValueType.STRING
 
     @property
     def value_type(self) -> ValueType:

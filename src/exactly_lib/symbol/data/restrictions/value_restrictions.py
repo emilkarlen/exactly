@@ -21,8 +21,8 @@ class AnySymbolTypeRestriction(ValueRestriction):
                         container: SymbolContainer) -> ValueRestrictionFailure:
         if container.resolver.type_category is not TypeCategory.DATA:
             return err_msg_for_any_type.invalid_type_msg(
-                [type_system.SYMBOL_TYPE_2_VALUE_TYPE[symbol_type]
-                 for symbol_type in type_system.SYMBOL_TYPE_LIST_ORDER],
+                [type_system.DATA_TYPE_2_VALUE_TYPE[symbol_type]
+                 for symbol_type in type_system.DATA_TYPE_LIST_ORDER],
                 symbol_name,
                 container)
         return None

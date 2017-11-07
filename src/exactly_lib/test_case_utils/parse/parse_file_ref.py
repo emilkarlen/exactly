@@ -40,7 +40,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -241,10 +241,10 @@ def _extract_parts_that_can_act_as_file_ref_and_suffix(string_fragments: list,
 def path_or_string_reference_restrictions(accepted_relativity_variants: PathRelativityVariants):
     return OrReferenceRestrictions([
         OrRestrictionPart(
-            SymbolValueType.PATH,
+            DataValueType.PATH,
             path_relativity_restriction(accepted_relativity_variants)),
         OrRestrictionPart(
-            SymbolValueType.STRING,
+            DataValueType.STRING,
             PATH_COMPONENT_STRING_REFERENCES_RESTRICTION),
     ],
         type_must_be_either_path_or_string__err_msg_generator)
@@ -298,8 +298,8 @@ def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     'Every symbol used as a path component of a {path_type} '
     'must be defined as a {string_type}.'.format(
-        path_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.PATH].type_name,
-        string_type=help_texts.SYMBOL_INFO_DICT[SymbolValueType.STRING].type_name,
+        path_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.PATH].type_name,
+        string_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.STRING].type_name,
     ))
 
 

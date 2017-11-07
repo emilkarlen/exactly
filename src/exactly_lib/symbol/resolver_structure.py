@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
-from exactly_lib.type_system.value_type import SymbolValueType, ValueType, TypeCategory, LogicValueType
+from exactly_lib.type_system.value_type import DataValueType, ValueType, TypeCategory, LogicValueType
 from exactly_lib.util.line_source import Line
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
 
@@ -123,7 +123,7 @@ class DataValueResolver(SymbolValueResolver):
         return TypeCategory.DATA
 
     @property
-    def data_value_type(self) -> SymbolValueType:
+    def data_value_type(self) -> DataValueType:
         raise NotImplementedError('abstract method')
 
     @property
@@ -148,7 +148,7 @@ class DataValueResolver(SymbolValueResolver):
         return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
 
 
-def get_data_value_type(resolver: DataValueResolver) -> SymbolValueType:
+def get_data_value_type(resolver: DataValueResolver) -> DataValueType:
     return resolver.data_value_type
 
 
