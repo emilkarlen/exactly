@@ -62,7 +62,7 @@ SUITE_REPORTER_CONCEPT_INFO = name_and_ref_target(
 
 TYPE_CONCEPT_INFO = name_and_ref_target(
     Name('type', 'types'),
-    'Type system for symbols.'
+    'Type system for symbols and instruction arguments.'
 )
 
 SYMBOL_CONCEPT_INFO = name_and_ref_target(

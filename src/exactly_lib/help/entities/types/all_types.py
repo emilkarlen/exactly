@@ -1,4 +1,5 @@
 from exactly_lib.help.entities.types.type_ import data_types, logic_types
+from exactly_lib.type_system.value_type import TypeCategory
 
 
 def all_types() -> list:
@@ -13,3 +14,8 @@ def all_types() -> list:
 
 
 NAME_2_TYPE_DOC = dict(map(lambda x: (x.singular_name(), x), all_types()))
+
+
+def type_docs_of_type_category(category: TypeCategory, type_doc_list: list) -> list:
+    return list(filter(lambda type_doc: type_doc.type_category is category,
+                       type_doc_list))

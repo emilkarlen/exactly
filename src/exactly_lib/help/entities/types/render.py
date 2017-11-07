@@ -1,5 +1,6 @@
 import functools
 
+from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils.doc_utils import synopsis_section
@@ -14,20 +15,14 @@ from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
-
-def _type_docs_of_type_category(element_type: TypeCategory, type_doc_list: list) -> list:
-    return list(filter(lambda type_doc: type_doc.type_category is element_type,
-                       type_doc_list))
-
-
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(pes.PartitionNamesSetup('data-type',
                                                'Data types'),
-                       functools.partial(_type_docs_of_type_category, TypeCategory.DATA)
+                       functools.partial(all_types.type_docs_of_type_category, TypeCategory.DATA)
                        ),
     pes.PartitionSetup(pes.PartitionNamesSetup('logic-type',
                                                'Logic types'),
-                       functools.partial(_type_docs_of_type_category, TypeCategory.LOGIC)
+                       functools.partial(all_types.type_docs_of_type_category, TypeCategory.LOGIC)
                        ),
 ]
 
