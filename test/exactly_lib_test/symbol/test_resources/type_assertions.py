@@ -1,10 +1,10 @@
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.resolver_structure import LogicValueResolver, DataValueResolver
-from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, SymbolValueType
+from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def is_resolver_of_data_type(data_value_type: SymbolValueType,
+def is_resolver_of_data_type(data_value_type: DataValueType,
                              value_type: ValueType) -> asrt.ValueAssertion:
     """
     :return: A assertion on a :class:`NamedValueResolver`

@@ -4,7 +4,7 @@ from exactly_lib.symbol.data import list_resolver, concrete_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.value_type import SymbolValueType
+from exactly_lib.type_system.value_type import DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
@@ -83,7 +83,7 @@ class _EqualsListValueResolverAssertion(_EqualsSymbolValueResolverBase):
                  expected_symbol_references: asrt.ValueAssertion,
                  expected_resolver: ListResolver,
                  symbols_for_checking_resolving: SymbolTable):
-        super().__init__(SymbolValueType.LIST,
+        super().__init__(DataValueType.LIST,
                          expected_symbol_references,
                          equals_list_value(expected_resolver.resolve(symbols_for_checking_resolving)),
                          symbols_for_checking_resolving)
@@ -106,7 +106,7 @@ class _MatchesListValueResolverAssertion(_EqualsSymbolValueResolverBase):
                  expected_symbol_references: asrt.ValueAssertion,
                  expected_resolved_value: ListValue,
                  symbols_for_checking_resolving: SymbolTable):
-        super().__init__(SymbolValueType.LIST,
+        super().__init__(DataValueType.LIST,
                          expected_symbol_references,
                          equals_list_value(expected_resolved_value),
                          symbols_for_checking_resolving)

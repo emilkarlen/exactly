@@ -6,7 +6,7 @@ class TypeCategory(Enum):
     LOGIC = 2
 
 
-class SymbolValueType(Enum):
+class DataValueType(Enum):
     STRING = 0
     PATH = 1
     LIST = 2

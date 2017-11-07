@@ -1,6 +1,6 @@
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.value_type import SymbolValueType, ValueType
+from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -10,8 +10,8 @@ class FileRefResolver(DataValueResolver):
     """
 
     @property
-    def data_value_type(self) -> SymbolValueType:
-        return SymbolValueType.PATH
+    def data_value_type(self) -> DataValueType:
+        return DataValueType.PATH
 
     @property
     def value_type(self) -> ValueType:

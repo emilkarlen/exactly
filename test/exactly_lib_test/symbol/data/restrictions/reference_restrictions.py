@@ -3,14 +3,14 @@ import unittest
 from collections import Counter
 
 from exactly_lib.help_texts import type_system
-from exactly_lib.help_texts.type_system import SYMBOL_TYPE_2_VALUE_TYPE
+from exactly_lib.help_texts.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.resolver_structure import DataValueResolver, SymbolContainer, LogicValueResolver, \
     SymbolValueResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.value_type import SymbolValueType, ValueType, LogicValueType
+from exactly_lib.type_system.value_type import DataValueType, ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_satisfied, is_failure_of_direct_reference, \
@@ -242,7 +242,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
                 ValueType.PATH,
                 symbol_table_entry('level_2_symbol',
                                    references=[],
-                                   value_type=SymbolValueType.PATH)
+                                   value_type=DataValueType.PATH)
             ),
             (
                 ValueType.FILE_MATCHER,
@@ -253,7 +253,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         ]
         for dissatisfied_value_type, dissatisfied_level_2_symbol in dissatisfied_level_2_symbol_variants:
             with self.subTest(dissatisfied_value_type=str(dissatisfied_value_type)):
-                satisfied_value_type = SymbolValueType.STRING
+                satisfied_value_type = DataValueType.STRING
                 restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
                     direct=ValueRestrictionThatRaisesErrorIfApplied(),
                     indirect=ValueRestrictionThatRaisesErrorIfApplied())
@@ -304,8 +304,8 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
         restrictions_that_should_not_be_used = sut.ReferenceRestrictionsOnDirectAndIndirect(
             direct=ValueRestrictionThatRaisesErrorIfApplied(),
             indirect=ValueRestrictionThatRaisesErrorIfApplied())
-        satisfied_value_type = SymbolValueType.STRING
-        dissatisfied_value_type = SymbolValueType.PATH
+        satisfied_value_type = DataValueType.STRING
+        dissatisfied_value_type = DataValueType.PATH
 
         level_3_symbol = symbol_table_entry('level_3_symbol',
                                             references=[],
@@ -333,7 +333,7 @@ class TestUsageOfRestrictionOnIndirectReferencedSymbol(unittest.TestCase):
 
         restriction_on_every_indirect = RestrictionThatRegistersProcessedSymbols(
             resolver_container_2_result__fun=dissatisfaction_if_value_type_is(
-                SYMBOL_TYPE_2_VALUE_TYPE[dissatisfied_value_type]))
+                DATA_TYPE_2_VALUE_TYPE[dissatisfied_value_type]))
         restrictions_to_test = sut.ReferenceRestrictionsOnDirectAndIndirect(
             indirect=restriction_on_every_indirect,
             direct=unconditionally_satisfied_value_restriction(),
@@ -362,17 +362,17 @@ class TestOrReferenceRestrictions(unittest.TestCase):
         cases = [
             ('single satisfied string-selector restriction, unconditionally satisfied part',
              sut.OrReferenceRestrictions([
-                 sut.OrRestrictionPart(SymbolValueType.STRING,
+                 sut.OrRestrictionPart(DataValueType.STRING,
                                        sut.ReferenceRestrictionsOnDirectAndIndirect(
                                            direct=value_restriction_that_is_unconditionally_satisfied()))
              ])
              ),
             ('multiple unconditionally satisfied restrictions',
              sut.OrReferenceRestrictions([
-                 sut.OrRestrictionPart(SymbolValueType.STRING,
+                 sut.OrRestrictionPart(DataValueType.STRING,
                                        sut.ReferenceRestrictionsOnDirectAndIndirect(
                                            direct=value_restriction_that_is_unconditionally_satisfied())),
-                 sut.OrRestrictionPart(SymbolValueType.STRING,
+                 sut.OrRestrictionPart(DataValueType.STRING,
                                        sut.ReferenceRestrictionsOnDirectAndIndirect(
                                            direct=value_restriction_that_is_unconditionally_satisfied()))
              ])
@@ -412,8 +412,8 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                 direct=ValueRestrictionThatRaisesErrorIfApplied(),
                 indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
-            value_type_of_referencing_symbol = SymbolValueType.STRING
-            value_type_other_than_referencing_symbol = SymbolValueType.PATH
+            value_type_of_referencing_symbol = DataValueType.STRING
+            value_type_other_than_referencing_symbol = DataValueType.PATH
 
             referencing_symbol = symbol_table_entry('referencing_symbol',
                                                     value_type=value_type_of_referencing_symbol,
@@ -432,7 +432,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
                  sut.OrReferenceRestrictions([], value_type_error_message_function),
                  is_failure_of_direct_reference(
                      message=asrt.equals(mk_err_msg(referencing_symbol.key,
-                                                    SYMBOL_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])),
+                                                    DATA_TYPE_2_VALUE_TYPE[value_type_of_referencing_symbol])),
                  )
                  ),
                 ('single direct: unsatisfied selector',
@@ -510,7 +510,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             indirect=ValueRestrictionThatRaisesErrorIfApplied())
 
         referencing_symbol = symbol_table_entry('referencing_symbol',
-                                                value_type=SymbolValueType.STRING,
+                                                value_type=DataValueType.STRING,
                                                 references=[reference_to(referenced_symbol,
                                                                          restrictions_that_should_not_be_used)])
         symbol_table_entries = [referencing_symbol, referenced_symbol]
@@ -564,17 +564,17 @@ class RestrictionThatRegistersProcessedSymbols(vr.ValueRestriction):
 class DataValueResolverForTest(DataValueResolver):
     def __init__(self,
                  references: list,
-                 symbol_value_type: SymbolValueType):
-        self._symbol_value_type = symbol_value_type
+                 data_value_type: DataValueType):
+        self._data_value_type = data_value_type
         self._references = references
 
     @property
-    def data_value_type(self) -> SymbolValueType:
-        return self._symbol_value_type
+    def data_value_type(self) -> DataValueType:
+        return self._data_value_type
 
     @property
     def value_type(self) -> ValueType:
-        return type_system.SYMBOL_TYPE_2_VALUE_TYPE[self._symbol_value_type]
+        return type_system.DATA_TYPE_2_VALUE_TYPE[self._data_value_type]
 
     def resolve(self, symbols: SymbolTable):
         raise NotImplementedError('It is an error if this method is called')
@@ -609,10 +609,10 @@ class LogicValueResolverForTest(LogicValueResolver):
 
 def symbol_table_entry(symbol_name: str,
                        references,
-                       value_type: SymbolValueType = SymbolValueType.STRING) -> Entry:
+                       value_type: DataValueType = DataValueType.STRING) -> Entry:
     return Entry(symbol_name,
                  symbol_utils.container(DataValueResolverForTest(references,
-                                                                 symbol_value_type=value_type)))
+                                                                 data_value_type=value_type)))
 
 
 def logic_symbol_table_entry(symbol_name: str,

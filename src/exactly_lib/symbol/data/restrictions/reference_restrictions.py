@@ -6,7 +6,7 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueRe
     DataValueResolver
 from exactly_lib.symbol.restriction import FailureInfo, \
     DataTypeReferenceRestrictions
-from exactly_lib.type_system.value_type import SymbolValueType, TypeCategory
+from exactly_lib.type_system.value_type import DataValueType, TypeCategory
 from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -133,12 +133,12 @@ class ReferenceRestrictionsOnDirectAndIndirect(DataTypeReferenceRestrictions):
 
 class OrRestrictionPart(tuple):
     def __new__(cls,
-                selector: SymbolValueType,
+                selector: DataValueType,
                 restriction: ReferenceRestrictionsOnDirectAndIndirect):
         return tuple.__new__(cls, (selector, restriction))
 
     @property
-    def selector(self) -> SymbolValueType:
+    def selector(self) -> DataValueType:
         return self[0]
 
     @property
@@ -188,7 +188,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                                container: SymbolContainer,
                                resolver: SymbolValueResolver) -> str:
         from exactly_lib.help_texts.test_case.instructions import define_symbol
-        accepted_value_types = ', '.join([define_symbol.SYMBOL_INFO_DICT[part.selector].type_name
+        accepted_value_types = ', '.join([define_symbol.DATA_TYPE_INFO_DICT[part.selector].type_name
                                           for part in self._parts])
         lines = ([
                      'Invalid type, of symbol "{}"'.format(symbol_name)
