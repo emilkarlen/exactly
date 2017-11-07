@@ -5,7 +5,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
-from exactly_lib.help_texts.test_case.instructions.define_symbol import ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE
+from exactly_lib.help_texts.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
@@ -113,7 +113,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def see_also_targets(self) -> list:
         name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(_REL_OPTION_CONFIG.options)
         name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
-        cross_refs = [ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
+        cross_refs = [DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs) + cross_refs
 

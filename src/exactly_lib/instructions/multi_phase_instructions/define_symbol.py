@@ -5,7 +5,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
-    SYMBOL_CONCEPT_INFO
+    SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -49,7 +49,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         }, is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return self._format('Defines a symbol that can be used by later instructions')
+        return self._format('Defines a ' + SYMBOL_CONCEPT_INFO.singular_name)
 
     def _main_description_rest_body(self) -> list:
         return (
@@ -76,10 +76,13 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                [
                    SyntaxElementDescription(self.string_value.name,
                                             self._paragraphs(_STRING_SYNTAX_ELEMENT_DESCRIPTION)),
+                   SyntaxElementDescription(self.name.name,
+                                            self._paragraphs(syntax_elements.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
                ]
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
+                               TYPE_CONCEPT_INFO,
                                CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(REL_OPTIONS_CONFIGURATION)
         name_and_cross_refs += types.ALL_TYPE_CONCEPT_INFO_TUPLE
@@ -162,7 +165,7 @@ REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_C
                                                                    syntax_elements.PATH_SUFFIX_IS_REQUIRED)
 
 _MAIN_DESCRIPTION_REST = """\
-Defines the symbol {NAME} to be the given string or path.
+Defines the symbol {NAME} to be a value of the given type.
 
 
 {NAME} must not have been defined earlier.

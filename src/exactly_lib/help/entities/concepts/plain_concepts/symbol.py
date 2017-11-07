@@ -5,6 +5,7 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
+from exactly_lib.help_texts.test_case.instructions import define_symbol
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.help_texts.type_system import TYPE_INFO_DICT
 from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
@@ -31,6 +32,7 @@ class _SymbolConcept(PlainConceptDocumentation):
             'data': all_types.DATA_TYPE_CATEGORY_NAME,
             'logic': all_types.LOGIC_TYPE_CATEGORY_NAME,
             'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+            'symbol_name_syntax': define_symbol.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
             'string_type': TYPE_INFO_DICT[ValueType.STRING].type_name,
@@ -64,6 +66,7 @@ class _SymbolConcept(PlainConceptDocumentation):
     def see_also_targets(self) -> list:
         return [
             TYPE_CONCEPT_INFO.cross_reference_target,
+            define_symbol.DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE,
         ]
 
     def _reference_paragraphs(self) -> list:
@@ -120,7 +123,7 @@ A {symbol} corresponds to a named constant, found in most programming languages.
 Every {symbol} has a type according to {program_name}'s type system.
 
 
-A symbol name must consist of only alphanumerical characters and underscore.
+A symbol name is: {symbol_name_syntax}
 """
 
 _DEFINITION = """\
