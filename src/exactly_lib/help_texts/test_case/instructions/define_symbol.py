@@ -14,7 +14,9 @@ SYMBOL_NAME = 'NAME'
 
 PATH_SUFFIX_IS_REQUIRED = False
 
-ASSIGN_SYMBOL_INSTRUCTION_CROSS_REFERENCE = TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME,
+SYMBOL_NAME_SYNTAX_DESCRIPTION = 'A combination of alphanumeric characters and underscores.'
+
+DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE = TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME,
                                                                                    SYMBOL_DEFINITION_INSTRUCTION_NAME)
 
 
