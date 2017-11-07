@@ -36,6 +36,10 @@ class _TypeConcept(PlainConceptDocumentation):
     def _list_header(self, template_string: str) -> str:
         return self._parser.format(template_string).capitalize()
 
+    def see_also_targets(self) -> list:
+        return list(map(lambda type_doc: type_doc.cross_reference_target(),
+                        all_types.all_types()))
+
 
 TYPE_CONCEPT = _TypeConcept()
 
