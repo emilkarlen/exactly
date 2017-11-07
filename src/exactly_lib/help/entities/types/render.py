@@ -17,11 +17,11 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(pes.PartitionNamesSetup('data-type',
-                                               'Data types'),
+                                               all_types.DATA_TYPE_CATEGORY_NAME.capitalize() + ' types'),
                        functools.partial(all_types.type_docs_of_type_category, TypeCategory.DATA)
                        ),
     pes.PartitionSetup(pes.PartitionNamesSetup('logic-type',
-                                               'Logic types'),
+                                               all_types.LOGIC_TYPE_CATEGORY_NAME.capitalize() + ' types'),
                        functools.partial(all_types.type_docs_of_type_category, TypeCategory.LOGIC)
                        ),
 ]

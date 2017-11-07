@@ -17,8 +17,8 @@ class _TypeConcept(PlainConceptDocumentation):
         super().__init__(concepts.TYPE_CONCEPT_INFO)
         self._parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'data': 'data',
-            'logic': 'logic',
+            'data': all_types.DATA_TYPE_CATEGORY_NAME,
+            'logic': all_types.LOGIC_TYPE_CATEGORY_NAME,
         })
 
     def purpose(self) -> DescriptionWithSubSections:

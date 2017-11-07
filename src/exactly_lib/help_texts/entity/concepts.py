@@ -67,7 +67,7 @@ TYPE_CONCEPT_INFO = name_and_ref_target(
 
 SYMBOL_CONCEPT_INFO = name_and_ref_target(
     Name('symbol', 'symbols'),
-    'A named value that can be used by many instructions.'
+    'A named, constant, value.'
 )
 
 ACTOR_CONCEPT_INFO = name_and_ref_target(
