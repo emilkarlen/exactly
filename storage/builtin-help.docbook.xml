@@ -46,24 +46,10 @@
       </itemizedlist>
 
       <section>
-        <title>Definition</title>
-
-        <para>A symbol is defined using the <command>def</command>
-        instruction:</para>
-
-        <programlisting>def string MY_SYMBOL = "the symbol value"</programlisting>
-
-        <para>This defines the symbol <code>MY_SYMBOL</code> to be the value
-        <code>the symbol value</code>, which is a value of type
-        <code>string</code>.</para>
-
-        <para>&lt;syntax hos symbolnamn&gt;</para>
-      </section>
-
-      <section>
         <title>Types</title>
 
-        <para>Every symbol has a type.</para>
+        <para>The value of a symbol has a type according to Exactly's type
+        system.</para>
 
         <para>The types are:</para>
 
@@ -76,10 +62,27 @@
             <para>Logic types</para>
           </listitem>
         </itemizedlist>
+      </section>
+
+      <section>
+        <title>Definition</title>
+
+        <para>A symbol is defined using the <command>def</command>
+        instruction:</para>
+
+        <programlisting>def string SYMBOL_NAME = "the symbol value"</programlisting>
+
+        <para>This defines the symbol <code>SYMBOL_NAME</code> to be the value
+        <code>the symbol value</code>, which is a value of type
+        <code>string</code>.</para>
+
+        <para>The type must be given explicitly.</para>
 
         <programlisting>def list             LIST_SYMBOL = first second "the third"
 
 def file-transformer REPLACE_ID  = replace [0-9]{10} ID</programlisting>
+
+        <para>&lt;Describe syntax (reg-ex) of symbol name&gt;</para>
       </section>
 
       <section>
@@ -97,7 +100,7 @@ def file-transformer REPLACE_ID  = replace [0-9]{10} ID</programlisting>
             <term>plain symbol name</term>
 
             <listitem>
-              <para>MY_SYMBOL</para>
+              <para><code>SYMBOL_NAME</code></para>
             </listitem>
           </varlistentry>
 
@@ -105,7 +108,7 @@ def file-transformer REPLACE_ID  = replace [0-9]{10} ID</programlisting>
             <term>special syntax</term>
 
             <listitem>
-              <para>@[MY_SYMBOL]@</para>
+              <para><code>@[SYMBOL_NAME]@</code></para>
             </listitem>
           </varlistentry>
         </variablelist>
@@ -117,7 +120,11 @@ def file-transformer REPLACE_ID  = replace [0-9]{10} ID</programlisting>
 
 exists --file --rel DIR_SYMBOL @[BASE_NAME_SYMBOL]@
 
-stdout --transformation ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
+stdout --transformed ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
+
+        <note>
+          <para>--TRANSFORMED instead of --TRANSFORMATION</para>
+        </note>
       </section>
     </section>
 
@@ -130,23 +137,90 @@ stdout --transformation ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
 
       <itemizedlist>
         <listitem>
-          <para>instruction argument</para>
+          <para>instruction argument (most instruction arguments have a
+          type)</para>
         </listitem>
 
         <listitem>
-          <para>symbol</para>
-        </listitem>
-
-        <listitem>
-          <para/>
+          <para>symbol (every symbol has a type)</para>
         </listitem>
       </itemizedlist>
 
-      <para>Does every instruction argument value has a type?</para>
+      <section>
+        <title>Does every instruction argument value has a type?</title>
 
-      <para>No, here document is a string, but a string symbol cannot be
-      defined in terms of a here doc. This should be fixed - a here doc is
-      just an alt syntax of strings.</para>
+        <para>No, here document is a string, but a string symbol cannot be
+        defined in terms of a here doc. This should be fixed - a here doc is
+        just an alt syntax of strings.</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>string, here-document, custom syntax to eol for run
+            --source</para>
+
+            <para>All these can be considered to be strings, since the value
+            is treated in the same way.</para>
+
+            <para>What differs is the syntax. So there are many different
+            syntaxes for strings.</para>
+          </listitem>
+
+          <listitem>
+            <para>enums: file, dir, symlink</para>
+
+            <para>There is no type for these enumerated values.</para>
+          </listitem>
+
+          <listitem>
+            <para>delimiters. For example "(", ")", "|" for logical data type
+            values</para>
+
+            <para>These can be considered to be part of the syntax for the
+            corresponding logic data type.</para>
+          </listitem>
+
+          <listitem>
+            <para>expression for integers</para>
+
+            <para>The syntax is the syntax for strings. And referenced symbols
+            must be strings.</para>
+
+            <para>Or, the syntax is the syntax of Python expressions.</para>
+
+            <para>From Exactly's point of view of parsing, the syntax is that
+            of strings.</para>
+
+            <para>From the point of view of evaluation, the syntax is that of
+            Python expressions.</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Expressions and syntax</title>
+
+        <para>Exactly has a very limited, and specialized syntax for
+        expressions.</para>
+
+        <para>A lot of values must be supplied as a constant and cannot
+        involve arbitrary expressions. For example file type argument
+        <token>file</token>, <token>dir</token>, <token>symlink</token>,
+        cannot be given as an expression involving symbol references,e.g. Also
+        regular expressions must be given literary. On the other hand,
+        integers may be given as an Python expression involving symbol
+        references.</para>
+
+        <para>The most sofisticated, and conventional syntax is the one for
+        logic type values.</para>
+
+        <para>Syntax for paths is highly specialized.</para>
+
+        <para>Syntax for lists is simple, but relatively conventional and
+        clear.</para>
+
+        <para>Syntax for strings is very specialized and does not support
+        conventional expressions (x + y becomes "@[x]@ @[y]@")</para>
+      </section>
 
       <section>
         <title>One line</title>
@@ -157,8 +231,7 @@ stdout --transformation ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
       <section>
         <title>Main rest</title>
 
-        <para>PGM has a type system specialized for the purpose of test
-        cases.</para>
+        <para>PGM has a type system specialized for test cases.</para>
 
         <para>Every symbol, and most instruction arguments, have a
         type.</para>
@@ -173,11 +246,11 @@ stdout --transformation ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
                 </listitem>
 
                 <listitem>
-                  <para>....</para>
+                  <para>path</para>
                 </listitem>
 
                 <listitem>
-                  <para/>
+                  <para>list</para>
                 </listitem>
               </itemizedlist></para>
           </listitem>
@@ -191,17 +264,13 @@ stdout --transformation ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
               </listitem>
 
               <listitem>
-                <para>....</para>
+                <para>file matcher</para>
               </listitem>
 
               <listitem>
-                <para/>
+                <para>file transformer</para>
               </listitem>
             </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para/>
           </listitem>
         </itemizedlist>
 
@@ -211,7 +280,17 @@ stdout --transformation ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
       </section>
 
       <section>
-        <title>Casting (of data types)</title>
+        <title>Syntax</title>
+
+        <para>Logic type values has a syntax that resembles common syntax of
+        expressions.</para>
+
+        <para>Each data type, on the other hand, has it's own specialized
+        syntax.</para>
+      </section>
+
+      <section>
+        <title>Type conversion (of data types)</title>
 
         <!--Should be described as part of descr of specific type. But overall cast func should be described here.
 
@@ -255,6 +334,84 @@ Yes, casting is supported - casting data type -> string-->
             </varlistentry>
           </variablelist>
         </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Syntax</title>
+
+      <para>A type may have many syntaxes</para>
+
+      <section>
+        <title>STRING</title>
+
+        <para>Many syntaxes</para>
+
+        <itemizedlist>
+          <listitem>
+            <para>here document</para>
+          </listitem>
+
+          <listitem>
+            <para>hard quoted</para>
+          </listitem>
+
+          <listitem>
+            <para>soft quoted</para>
+          </listitem>
+
+          <listitem>
+            <para>unquoted</para>
+          </listitem>
+        </itemizedlist>
+
+        <para>References to path and list symbols are converted to string
+        values.</para>
+      </section>
+
+      <section>
+        <title>PATH</title>
+
+        <para>single syntax.</para>
+
+        <para>Relativity options vary.</para>
+      </section>
+
+      <section>
+        <title>LIST</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>[STRING-ELEMENT | LIST-SYMBOL-REFERENCE]...</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>INTEGER</title>
+
+        <para>Syntax of STRING. Interpreted as Python expression.</para>
+
+        <para>Custom restriction on value (0 - 255 for exit codes,
+        e.g.)</para>
+      </section>
+
+      <section>
+        <title>Enumerated values. E.g. file type</title>
+
+        <para>Literal. Must be constant.</para>
+      </section>
+
+      <section>
+        <title>REG-EX</title>
+
+        <para>Literal. Must be constant.</para>
+      </section>
+
+      <section>
+        <title>Logic type values</title>
+
+        <para>Special expression syntax.</para>
       </section>
     </section>
   </section>
