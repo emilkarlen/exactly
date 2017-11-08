@@ -10,6 +10,8 @@ from exactly_lib.util.textformat.structure.table import TableCell, Table, TableF
 
 SEPARATION_OF_HEADER_AND_CONTENTS = lists.Separations(1, 1)
 
+COLON_TABLE_COLUMN_SEPARATOR = ' : '
+
 
 def section(header_str_or_text,
             paragraphs: list,
