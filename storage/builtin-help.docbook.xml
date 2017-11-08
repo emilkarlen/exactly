@@ -372,19 +372,395 @@ Yes, casting is supported - casting data type -> string-->
       <section>
         <title>PATH</title>
 
-        <para>single syntax.</para>
-
         <para>Relativity options vary.</para>
+
+        <para>[RELATIVITY] STRING</para>
+
+        <note>
+          <para>Special syntax for definition of path symbol: empty
+          string.</para>
+
+          <para>This denots the default relativity root directory. An
+          alternative equivalent specification is ".".</para>
+
+          <para>Believe it is best to note this in doc of
+          <command>def</command> - add "special" notes about value syntax. A
+          bit strange to have notes about syntax in this way - notes to be
+          "integrated" into the syntax description found in a separate
+          place.</para>
+        </note>
+
+        <section>
+          <title>Få med</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>syntax [RELATIVITY] STRING</para>
+            </listitem>
+
+            <listitem>
+              <para>description</para>
+
+              <para>an absolute path, or relative the current directory - a
+              relative or absolute path.</para>
+
+              <para>Vad ska beskrivas i type/path, och vad i
+              syntax/path?</para>
+
+              <para>Kan bli abstrakt = svårbegripligt att beskriva i type/path
+              i och med att syntaxen inte visas.</para>
+
+              <para>Men borde kunna ge en övergripande vettig beskrivning.
+              Kanske tom bra att beskriva koncepten utan att blanda in
+              syntax.</para>
+
+              <para>Begrepp</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>test case directories</para>
+                </listitem>
+
+                <listitem>
+                  <para>home directories</para>
+                </listitem>
+
+                <listitem>
+                  <para>sandbox directories</para>
+                </listitem>
+
+                <listitem>
+                  <para>current directory</para>
+                </listitem>
+
+                <listitem>
+                  <para>path</para>
+                </listitem>
+
+                <listitem>
+                  <para>path component</para>
+                </listitem>
+
+                <listitem>
+                  <para>Posix syntax (syntax)</para>
+                </listitem>
+
+                <listitem>
+                  <para>absolute path</para>
+                </listitem>
+
+                <listitem>
+                  <para>relative path</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>STRING</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>STRING är sträng - syntax för type/string.</para>
+                </listitem>
+
+                <listitem>
+                  <para>STRING: Kan innehålla symbolreferenser pss som
+                  strängar gör det. (behöver nämnas här?? nämns i syntax-beskr
+                  för STRING. men vettigt att nämna här för att underlätta för
+                  användaren genom att begränsa antalet noder denne behöver
+                  hitta och läsa).</para>
+
+                  <para>STRING may contain symbol references using special
+                  syntax, if unquoted or inside double quotes.</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>relativitet</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Vad relativitet betyder</para>
+                </listitem>
+
+                <listitem>
+                  <para>Lista o förklaring av alla relativiteter</para>
+                </listitem>
+
+                <listitem>
+                  <para>Olika "platser"/"användningar" har en delmängd av
+                  dessa relativiteter.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Utgångs-relativitet beroende på plats (kan vara olika
+                  inom en och samma instruktion). Utgångsrelativitet varierar
+                  - försöker vara vanligt förekommande val.</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>STRING</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Where</title>
+
+          <variablelist>
+            <varlistentry>
+              <term>RELATIVITY</term>
+
+              <listitem>
+                <para>Specifies a directory that the given STRING is relative
+                to.</para>
+
+                <para>If relativity is given, STRING must be a relative path
+                (, and it is relative the given directory.)</para>
+
+                <para>Relativity variants</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>one of Exactly's test case directories/predefined
+                    directories / a dir in the test case directory structure /
+                    one of the test case directories.</para>
+
+                    <itemizedlist>
+                      <listitem>
+                        <para>one of the directories in the HDS</para>
+
+                        <variablelist>
+                          <varlistentry>
+                            <term><option>--rel-home</option></term>
+
+                            <listitem>
+                              <para>STRING is relative the ...</para>
+                            </listitem>
+                          </varlistentry>
+
+                          <varlistentry>
+                            <term><option>--rel-act-home</option></term>
+
+                            <listitem>
+                              <para>STRING is relative the ...</para>
+                            </listitem>
+                          </varlistentry>
+                        </variablelist>
+                      </listitem>
+
+                      <listitem>
+                        <para>one of the directories in the SDS</para>
+
+                        <variablelist>
+                          <varlistentry>
+                            <term><option>--rel-act</option></term>
+
+                            <listitem>
+                              <para>STRING is relative the ...</para>
+                            </listitem>
+                          </varlistentry>
+
+                          <varlistentry>
+                            <term><option>--rel-tmp</option></term>
+
+                            <listitem>
+                              <para>STRING is relative the ...</para>
+                            </listitem>
+                          </varlistentry>
+                        </variablelist>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+
+                  <listitem>
+                    <para>relative the current directory - the directory that
+                    is CD when the PATH is used</para>
+
+                    <variablelist>
+                      <varlistentry>
+                        <term><option>--rel-cd</option></term>
+
+                        <listitem>
+                          <para>STRING is relative the current
+                          directory.</para>
+
+                          <para>(the directory that is current when the path
+                          is used.)</para>
+
+                          <note>
+                            <para>For defining symbols. It must be clear that
+                            the path is relative the D that is CD <emphasis>when
+                            the symbol/path is used</emphasis>, and not when it
+                            is defined.</para>
+
+                            <para>This may be mentioned either here - at descr
+                            of PATH syntax - and/or at descr of def.</para>
+                          </note>
+                        </listitem>
+                      </varlistentry>
+                    </variablelist>
+                  </listitem>
+
+                  <listitem>
+                    <para>relative a path symbol</para>
+
+                    <variablelist>
+                      <varlistentry>
+                        <term><option>--rel</option> SYMBOL</term>
+
+                        <listitem>
+                          <para>STRING is relative the path denoted by a
+                          symbol.</para>
+
+                          <para>The plain symbol name is used (not special
+                          reference syntax)</para>
+
+                          <para>SYMBOL must have been defined as a path
+                          symbol/value.</para>
+                        </listitem>
+                      </varlistentry>
+                    </variablelist>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>STRING</term>
+
+              <listitem>
+                <para>An absolute or relative directory, using Posix syntax.
+                '/' as directory separator.</para>
+
+                <para>A string according to STRING SYNTAX.</para>
+
+                <para>May contain symbol references. Referenced symbol must be
+                either of type "string" or "path".</para>
+
+                <para>If s path symbol is referenced, it must be the initial
+                path component. The reason for this is that path symbols denot
+                absolute paths. (Even if a path symbol is defined relative the
+                CD, it is considered to be an absolute path, since the CD is
+                an absolute path at the moment the path is
+                used/resolved).</para>
+
+                <para>A symbol that is the initial path component may be a
+                path symbol (defined with type path). If it is, a RELATIVITY
+                option may not be given.</para>
+
+                <para/>
+
+                <para>Symbol references use special syntax @[SYMBOL]@ /
+                @[SYMBOL_NAME]@ / @[NAME]@</para>
+
+                <para>E tries to be clever at interpreting symbols. If it
+                begins with a symbol S (S/P) that denots an absolute path,
+                then it is the same as giving --rel S P.</para>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
+
+        <section>
+          <title>Description</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>If RELATIVITY is not given, and STRING is a relative path,
+              then STRING is relative a default relativity root.</para>
+
+              <para>The default root depends on the instruction where the path
+              is used.</para>
+
+              <para>Different instructions have different default roots. The
+              default is selected to be likely to be a common relativity
+              root.</para>
+            </listitem>
+          </itemizedlist>
+        </section>
       </section>
 
       <section>
         <title>LIST</title>
 
+        <para>[STRING | SYMBOL-REFERENCE]...</para>
+
         <itemizedlist>
           <listitem>
-            <para>[STRING-ELEMENT | LIST-SYMBOL-REFERENCE]...</para>
+            <para>symbol references</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>symbol references uses special reference syntax</para>
+              </listitem>
+
+              <listitem>
+                <para>A top level symbol reference must be either a string or
+                a list symbol.</para>
+
+                <para>If it is a list symbol, the resulting list is the
+                concatenation of the surrounding elements and the (elemets of
+                the) list symbol.</para>
+
+                <para>Unquoted symbol reference without non-space characters
+                around it.</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>naked symbol reference</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>top level symbol reference without non-space
+                    characters around it</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>unquoted symbol reference ....</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>symbol reference not inside quotes ...</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>top level symbol reference ... ("levels" ??? what is
+                    top and what is non-top level ??)</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>symbol reference not embedded in(side) a string
+                    ...</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>just a symbol reference ...</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>plain symbol reference (clashes with plain/special
+                    syntax) ...</para>
+                  </listitem>
+
+                  <listitem>
+                    <para/>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </itemizedlist>
           </listitem>
         </itemizedlist>
+
+        <section>
+          <title>Special syntax for definition of list symbol</title>
+
+          <para>VALUE may be empty, to define an empty list. This is the only
+          way to specify an empty list.</para>
+        </section>
       </section>
 
       <section>
