@@ -36,7 +36,7 @@ LINE_MATCHER_CONCEPT_INFO = name_and_ref_target(
 
 FILE_MATCHER_CONCEPT_INFO = name_and_ref_target(
     Name('file matcher', 'file matchers'),
-    'Matches properties of files, like name and type.'
+    'Matches properties of a file, like name and type.'
 )
 
 LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
