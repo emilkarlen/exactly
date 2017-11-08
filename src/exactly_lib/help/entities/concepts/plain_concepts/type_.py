@@ -73,12 +73,20 @@ def _categories_list(data_types_header: str, logic_types_header: str) -> Paragra
         docs.list_item(logic_types_header,
                        [_list_types_in_category(TypeCategory.LOGIC)]),
     ]
-    return docs.simple_list(items, ListType.ITEMIZED_LIST)
+    return docs.simple_list_with_space_between_elements_and_content(items, ListType.ITEMIZED_LIST)
 
 
 def _list_types_in_category(type_category: TypeCategory) -> ParagraphItem:
+    from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
+
+    def row(type_doc: TypeDocumentation) -> list:
+        return [
+            docs.text_cell(type_doc.name().singular),
+            docs.text_cell(type_doc.single_line_description()),
+        ]
+
     type_docs = all_types.type_docs_of_type_category(type_category, all_types.all_types())
-    items = list(map(lambda type_name: docs.header_only_item(type_name),
-                     sorted(map(lambda type_doc: type_doc.name().singular,
-                                type_docs))))
-    return docs.simple_list(items, ListType.VARIABLE_LIST)
+    rows = list(map(row,
+                    sorted(type_docs,
+                           key=lambda type_doc: type_doc.name().singular)))
+    return docs.first_column_is_header_table(rows, docs.COLON_TABLE_COLUMN_SEPARATOR)
