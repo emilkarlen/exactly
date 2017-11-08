@@ -1,8 +1,7 @@
-import exactly_lib.help_texts.type_system
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts import instruction_arguments, type_system
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
@@ -212,12 +211,12 @@ def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_reso
 
 
 _TYPE_SETUPS = {
-    exactly_lib.help_texts.type_system.PATH_TYPE: _parse_path,
-    exactly_lib.help_texts.type_system.STRING_TYPE: _parse_string,
-    exactly_lib.help_texts.type_system.LIST_TYPE: _parse_list,
-    exactly_lib.help_texts.type_system.LINE_MATCHER_TYPE: _parse_line_matcher,
-    exactly_lib.help_texts.type_system.FILE_MATCHER_TYPE: _parse_file_matcher,
-    exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE: _parse_lines_transformer,
+    type_system.PATH_TYPE: _parse_path,
+    type_system.STRING_TYPE: _parse_string,
+    type_system.LIST_TYPE: _parse_list,
+    type_system.LINE_MATCHER_TYPE: _parse_line_matcher,
+    type_system.FILE_MATCHER_TYPE: _parse_file_matcher,
+    type_system.LINES_TRANSFORMER_TYPE: _parse_lines_transformer,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))

@@ -112,76 +112,45 @@ ANY_TYPE_INFO_DICT = {
 
 
 def definition_of_type_string() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.STRING_TYPE))
-    string_value = a.Single(a.Multiplicity.MANDATORY, a.Named(type_system.STRING_VALUE))
-    arguments = [
-        type_token,
-        _symbol_name(),
-        _equals(),
-        string_value,
-    ]
-    return cl_syntax.cl_syntax_for_args(arguments)
+    return _def_of(type_system.STRING_TYPE,
+                   [a.Single(a.Multiplicity.MANDATORY, a.Named(type_system.STRING_VALUE))])
 
 
 def definition_of_type_path() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.PATH_TYPE))
-    arguments = [
-        type_token,
-        _symbol_name(),
-        _equals(),
-    ]
-    arguments.extend(
-        path_syntax.mandatory_path_with_optional_relativity(
-            instruction_arguments.PATH_ARGUMENT,
-            PATH_SUFFIX_IS_REQUIRED))
-    return cl_syntax.cl_syntax_for_args(arguments)
+    return _def_of(type_system.PATH_TYPE,
+                   path_syntax.mandatory_path_with_optional_relativity(
+                       instruction_arguments.PATH_ARGUMENT,
+                       PATH_SUFFIX_IS_REQUIRED)
+                   )
 
 
 def definition_of_type_list() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.LIST_TYPE))
-    elements = a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(type_system.LIST_ELEMENT))
-    arguments = [
-        type_token,
-        _symbol_name(),
-        _equals(),
-        elements,
-    ]
-    return cl_syntax.cl_syntax_for_args(arguments)
+    return _def_of(type_system.LIST_TYPE,
+                   [a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(type_system.LIST_ELEMENT))])
 
 
 def definition_of_type_line_matcher() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.LINE_MATCHER_TYPE))
-    matcher = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINE_MATCHER_VALUE))
-    arguments = [
-        type_token,
-        _symbol_name(),
-        _equals(),
-        matcher,
-    ]
-    return cl_syntax.cl_syntax_for_args(arguments)
+    return _def_of(type_system.LINE_MATCHER_TYPE,
+                   [a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINE_MATCHER_VALUE))])
 
 
 def definition_of_type_file_matcher() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.FILE_MATCHER_TYPE))
-    matcher = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_MATCHER_VALUE))
-    arguments = [
-        type_token,
-        _symbol_name(),
-        _equals(),
-        matcher,
-    ]
-    return cl_syntax.cl_syntax_for_args(arguments)
+    return _def_of(type_system.FILE_MATCHER_TYPE,
+                   [a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_MATCHER_VALUE))])
 
 
 def definition_of_type_lines_transformer() -> str:
-    type_token = a.Single(a.Multiplicity.MANDATORY, a.Constant(type_system.LINES_TRANSFORMER_TYPE))
-    transformer = a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINES_TRANSFORMER_VALUE))
+    return _def_of(type_system.LINES_TRANSFORMER_TYPE,
+                   [a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINES_TRANSFORMER_VALUE))])
+
+
+def _def_of(type_token: str, value_arguments: list) -> str:
     arguments = [
-        type_token,
+        a.Single(a.Multiplicity.MANDATORY, a.Constant(type_token)),
         _symbol_name(),
         _equals(),
-        transformer,
     ]
+    arguments += value_arguments
     return cl_syntax.cl_syntax_for_args(arguments)
 
 
