@@ -60,9 +60,9 @@ A {data} type values is pure data.
 A {logic} type values is a pure function.
 
 
-The {logic} types all have a syntax that resembles common syntax of expressions.
+Each {data} type has it's own specialized syntax. 
 
-Each {data} type, on the other hand, has it's own specialized syntax. 
+The {logic} types have syntax that resembles common syntax of expressions.
 """
 
 
