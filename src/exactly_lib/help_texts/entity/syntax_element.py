@@ -1,5 +1,6 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.entity.types import STRING_CONCEPT_INFO
 from exactly_lib.help_texts.entity_names import SYNTAX_ELEMENT_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 
@@ -17,7 +18,8 @@ def name_and_ref_target(name: str,
 
 HERE_DOCUMENT_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.HERE_DOCUMENT.name,
-    'A sequence of lines, given using the shell "here document" syntax'
+    'A {string} value, given as a sequence of lines, resembling shell "here document" syntax'.format(
+        string=STRING_CONCEPT_INFO.singular_name)
 )
 
 REGEX_SYNTAX_ELEMENT = name_and_ref_target(
