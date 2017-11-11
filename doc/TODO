@@ -70,11 +70,40 @@ Currently it only supports paths relative CD.
 ** should check parsed file using FileRefCheck
 As done by InstructionWithFileRefsBase
 * symbols
-** DONE def of string should be able to reference symbols in the value
-A la
---------------------------------
-str §[sym1]§ more text and finally §[sym2]§
---------------------------------
+** functionlity for listing and disp value of all symbols in TC
+<2017-11-11 lör>
+Functionallity for displaying symbol info:
+*** Functions
+**** list all symbols defined in the test case (not builtin symbol)
+--------------------
+Line X: string MY_SYM = "the value"
+Line Y: path   MY_P   = EXACTLY_ACT/the/resolved/path
+--------------------
+**** display detailed info about a specific symbol
+Display at least three things:
+ - top level definition
+   Line X: path MY_P = --rel PATH_SYM @[S]@
+
+ - all involved symbols
+
+   path MY_P = @[PS1]@/@[PS2]@/@[S1]@/constant/@[S2]@
+
+ - resolved value
+   
+   EXACTLY_ACT/the_ps1/the_ps2/the_s1/constant/the_s2
+
+*** Command line syntax
+CL options / new mode for symbol info.
+Curent modes:
+ - test case (default)
+ - suite
+ - help
+
+A new mode would be nice.  But this mode would need to allow options and
+arguments for specifying a test case file etc:
+ - test case file
+ - preprocessor
+ - suite (--suite SUITE)
 ** def of FileRef should let context of use determine default relativity
 The "def" instruction should not specify default relativity.
 The default relativity is determined by instructions that use file refs -
@@ -118,6 +147,63 @@ EOF
 
 stdout will not validate, since it referes to an undefined symbol.
 
+* instr for setting conf params: is there a better syntax? use = ?
+<2017-11-11 lör>
+Current syntax is maybe difficult to understand:
+--------------------
+home ..
+act-home ../my-dir
+actor --interpreter ...
+--------------------
+What these instructions do is to set configuration parameters,
+and the de facto syntax for setting things is to use =
+(in both functional and non-functional languages (sometimes := in non-f lng))
+** Variants
+*** use =
+--------------------
+[conf]
+home		= ..
+act-home	= ../my-dir
+actor		= --interpreter ...
+
+status		= SKIP
+--------------------
++ clear that this is setting a property
+- may be confusing since the property name serves as instruction name.
+  but this may be ok, since these instructions exist in a separate phase
+  "conf" which may indicate that these are properties to set
+
+An alternative to having separate instructions per CP is to have a single
+instruction "set configuration parameter" that interprets the beginning of
+the line as the name of a CP.
+*** Separate instruction, "set"/"let" e.g.
+--------------------
+[conf]
+set home	= ..
+set act-home	= ../my-dir
+set actor	= --interpreter ...
+
+set status	= SKIP
+--------------------
+--------------------
+[conf]
+let home	= ..
+let act-home	= ../my-dir
+let actor	= --interpreter ...
+
+let status	= SKIP
+--------------------
++ the instruction "set" helps to identify these elements as conf params
++ the conf params does not serve as instructions, which may avoid
+  confusion by separating instructions and conf params: An instruction is
+  something that has a name that is the first element on the line;
+  A CP is something that can be set/changes and that determines the
+  behaviour of following instructions.
+- do not like the imperative/non-declarative style of "set"
+  "let" is better. "using" is an alternative, but is maybe associated
+  (in other systems) with import of modules and files
+** Discusion
+Maybe 
 * TODO [#C] DestinationPathFromRelRootResolver: Should be Path or PurePath?
 Returns type is invalid, but works: combining Path and PurePath in apparently
 incorrect way.
