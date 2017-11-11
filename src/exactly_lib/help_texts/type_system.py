@@ -5,23 +5,31 @@ from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCat
 DATA_TYPE_CATEGORY = 'data'
 LOGIC_TYPE_CATEGORY = 'logic'
 
-PATH_TYPE = 'path'
-STRING_TYPE = 'string'
-LIST_TYPE = 'list'
 
-LINE_MATCHER_TYPE = 'line-matcher'
-LINE_MATCHER_VALUE = 'LINE-MATCHER'
+def _type_name(type_name: str) -> str:
+    return type_name.replace(' ', '-')
 
-FILE_MATCHER_TYPE = 'file-matcher'
-FILE_MATCHER_VALUE = 'FILE-MATCHER'
 
-LINES_TRANSFORMER_TYPE = 'file-transformer'
-LINES_TRANSFORMER_VALUE = 'FILE-TRANSFORMER'
+_syntax_element = str.upper
 
-PATH_VALUE = 'PATH'
-STRING_VALUE = 'STRING'
-LIST_VALUE = 'LIST'
+PATH_TYPE = _type_name(types.PATH_CONCEPT_INFO.singular_name)
+PATH_SYNTAX_ELEMENT = _syntax_element(PATH_TYPE)
+
+STRING_TYPE = _type_name(types.STRING_CONCEPT_INFO.singular_name)
+STRING_SYNTAX_ELEMENT = _syntax_element(STRING_TYPE)
+
+LIST_TYPE = _type_name(types.LIST_CONCEPT_INFO.singular_name)
+LIST_SYNTAX_ELEMENT = _syntax_element(LIST_TYPE)
 LIST_ELEMENT = 'ELEMENT'
+
+LINE_MATCHER_TYPE = _type_name(types.LINE_MATCHER_CONCEPT_INFO.singular_name)
+LINE_MATCHER_SYNTAX_ELEMENT = LINE_MATCHER_TYPE.upper()
+
+FILE_MATCHER_TYPE = _type_name(types.FILE_MATCHER_CONCEPT_INFO.singular_name)
+FILE_MATCHER_SYNTAX_ELEMENT = FILE_MATCHER_TYPE.upper()
+
+LINES_TRANSFORMER_TYPE = _type_name(types.LINES_TRANSFORMER_CONCEPT_INFO.singular_name)
+LINES_TRANSFORMER_SYNTAX_ELEMENT = LINES_TRANSFORMER_TYPE.upper()
 
 
 class TypeInfo:
@@ -35,11 +43,14 @@ class TypeInfo:
 
 
 DATA_TYPE_INFO_DICT = {
-    DataValueType.STRING: TypeInfo(STRING_TYPE, STRING_VALUE,
+    DataValueType.STRING: TypeInfo(STRING_TYPE,
+                                   STRING_SYNTAX_ELEMENT,
                                    types.STRING_CONCEPT_INFO),
-    DataValueType.PATH: TypeInfo(PATH_TYPE, PATH_VALUE,
+    DataValueType.PATH: TypeInfo(PATH_TYPE,
+                                 PATH_SYNTAX_ELEMENT,
                                  types.PATH_CONCEPT_INFO),
-    DataValueType.LIST: TypeInfo(LIST_TYPE, LIST_VALUE,
+    DataValueType.LIST: TypeInfo(LIST_TYPE,
+                                 LIST_SYNTAX_ELEMENT,
                                  types.LIST_CONCEPT_INFO),
 }
 
@@ -56,11 +67,14 @@ DATA_TYPE_LIST_ORDER = [
 ]
 
 LOGIC_TYPE_INFO_DICT = {
-    LogicValueType.LINE_MATCHER: TypeInfo(LINE_MATCHER_TYPE, LINE_MATCHER_VALUE,
+    LogicValueType.LINE_MATCHER: TypeInfo(LINE_MATCHER_TYPE,
+                                          LINE_MATCHER_SYNTAX_ELEMENT,
                                           types.LINE_MATCHER_CONCEPT_INFO),
-    LogicValueType.FILE_MATCHER: TypeInfo(FILE_MATCHER_TYPE, FILE_MATCHER_VALUE,
+    LogicValueType.FILE_MATCHER: TypeInfo(FILE_MATCHER_TYPE,
+                                          FILE_MATCHER_SYNTAX_ELEMENT,
                                           types.FILE_MATCHER_CONCEPT_INFO),
-    LogicValueType.LINES_TRANSFORMER: TypeInfo(LINES_TRANSFORMER_TYPE, LINES_TRANSFORMER_VALUE,
+    LogicValueType.LINES_TRANSFORMER: TypeInfo(LINES_TRANSFORMER_TYPE,
+                                               LINES_TRANSFORMER_SYNTAX_ELEMENT,
                                                types.LINES_TRANSFORMER_CONCEPT_INFO),
 }
 

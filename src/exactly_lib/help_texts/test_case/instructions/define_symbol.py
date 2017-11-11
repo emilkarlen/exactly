@@ -113,7 +113,8 @@ ANY_TYPE_INFO_DICT = {
 
 def definition_of_type_string() -> str:
     return _def_of(type_system.STRING_TYPE,
-                   [a.Single(a.Multiplicity.MANDATORY, a.Named(type_system.STRING_VALUE))])
+                   [a.Single(a.Multiplicity.MANDATORY,
+                             a.Named(type_system.STRING_SYNTAX_ELEMENT))])
 
 
 def definition_of_type_path() -> str:
@@ -126,22 +127,26 @@ def definition_of_type_path() -> str:
 
 def definition_of_type_list() -> str:
     return _def_of(type_system.LIST_TYPE,
-                   [a.Single(a.Multiplicity.ZERO_OR_MORE, a.Named(type_system.LIST_ELEMENT))])
+                   [a.Single(a.Multiplicity.ZERO_OR_MORE,
+                             a.Named(type_system.LIST_ELEMENT))])
 
 
 def definition_of_type_line_matcher() -> str:
     return _def_of(type_system.LINE_MATCHER_TYPE,
-                   [a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINE_MATCHER_VALUE))])
+                   [a.Single(a.Multiplicity.OPTIONAL,
+                             a.Named(type_system.LINE_MATCHER_SYNTAX_ELEMENT))])
 
 
 def definition_of_type_file_matcher() -> str:
     return _def_of(type_system.FILE_MATCHER_TYPE,
-                   [a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.FILE_MATCHER_VALUE))])
+                   [a.Single(a.Multiplicity.OPTIONAL,
+                             a.Named(type_system.FILE_MATCHER_SYNTAX_ELEMENT))])
 
 
 def definition_of_type_lines_transformer() -> str:
     return _def_of(type_system.LINES_TRANSFORMER_TYPE,
-                   [a.Single(a.Multiplicity.OPTIONAL, a.Named(type_system.LINES_TRANSFORMER_VALUE))])
+                   [a.Single(a.Multiplicity.OPTIONAL,
+                             a.Named(type_system.LINES_TRANSFORMER_SYNTAX_ELEMENT))])
 
 
 def _def_of(type_token: str, value_arguments: list) -> str:
