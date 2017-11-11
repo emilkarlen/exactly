@@ -1,5 +1,5 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
-from exactly_lib.help_texts.entity_names import SYNTAX_ELEMENT_ENTITY_TYPE_NAME
+from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 
 
@@ -37,4 +37,6 @@ def syntax_elements_help(syntax_elements: iter) -> EntitiesHelp:
     """
     :param syntax_elements: [SyntaxElementDocumentation]
     """
-    return EntitiesHelp(SYNTAX_ELEMENT_ENTITY_TYPE_NAME, syntax_elements)
+    return EntitiesHelp(entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME,
+                        entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_PRESENTATION_NAME,
+                        syntax_elements)

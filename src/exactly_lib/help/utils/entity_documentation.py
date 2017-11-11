@@ -57,25 +57,35 @@ class EntityDocumentationBase(EntityDocumentation):
 class EntitiesHelp(tuple):
     def __new__(cls,
                 entity_type_name: str,
+                entity_type_presentation_name: str,
                 entities: iter):
         """
         :type entities: [`EntityDocumentation`]
         """
-        return tuple.__new__(cls, (entity_type_name, list(entities)))
+        return tuple.__new__(cls, (entity_type_name,
+                                   entity_type_presentation_name,
+                                   list(entities)))
 
     @property
     def entity_type_name(self) -> str:
         """
-        Name of entity.
+        Name of entity that is used as command line argument.
         """
         return self[0]
+
+    @property
+    def entity_type_presentation_name(self) -> str:
+        """
+        Name of entity for explanations.
+        """
+        return self[1]
 
     @property
     def all_entities(self) -> list:
         """
         :type: [`EntityDocumentation`]
         """
-        return self[1]
+        return self[2]
 
 
 def cross_reference_id_list(entity_documentation_iterable) -> list:

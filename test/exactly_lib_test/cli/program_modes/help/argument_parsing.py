@@ -440,6 +440,7 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
                                         ACTOR_ENTITY_TYPE_NAME:
                                             EntityConfiguration(
                                                 EntitiesHelp(ACTOR_ENTITY_TYPE_NAME,
+                                                             ACTOR_ENTITY_TYPE_NAME,
                                                              entities),
                                                 IndividualActorRenderer,
                                                 FlatListRendererWithSingleLineDescriptionGetter(),

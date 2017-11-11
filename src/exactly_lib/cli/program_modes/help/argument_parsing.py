@@ -155,6 +155,6 @@ def _is_name_of_phase(name: str):
 
 
 def lookup_entity(entities: EntitiesHelp, arguments: list) -> argument_value_lookup.Match:
-    return argument_value_lookup.lookup_argument(entities.entity_type_name,
+    return argument_value_lookup.lookup_argument(entities.entity_type_presentation_name,
                                                  ' '.join(arguments),
                                                  argument_value_lookup.entities_key_value_iter(entities))
