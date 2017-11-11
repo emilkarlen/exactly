@@ -34,4 +34,6 @@ def builtin_symbols_help(builtin_documentations: iter) -> EntitiesHelp:
     """
     :param builtin_documentations: [BuiltinSymbolDocumentation]
     """
-    return EntitiesHelp(entity_names.BUILTIN_ENTITY_TYPE_NAME, builtin_documentations)
+    return EntitiesHelp(entity_names.BUILTIN_ENTITY_TYPE_NAME,
+                        entity_names.BUILTIN_ENTITY_TYPE_NAME,
+                        builtin_documentations)

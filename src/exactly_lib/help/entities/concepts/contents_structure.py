@@ -1,5 +1,5 @@
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp
-from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME
+from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.name_and_cross_ref import Name, SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
@@ -87,4 +87,6 @@ def concepts_help(concepts: iter) -> EntitiesHelp:
     """
     :param concepts: [ConceptDocumentation]
     """
-    return EntitiesHelp(CONCEPT_ENTITY_TYPE_NAME, concepts)
+    return EntitiesHelp(entity_names.CONCEPT_ENTITY_TYPE_NAME,
+                        entity_names.CONCEPT_ENTITY_TYPE_NAME,
+                        concepts)

@@ -1,5 +1,5 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
-from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
+from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, Name
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.expression.grammar import Grammar
@@ -66,4 +66,6 @@ def types_help(types: iter) -> EntitiesHelp:
     """
     :param types: [TypeDocumentation]
     """
-    return EntitiesHelp(TYPE_ENTITY_TYPE_NAME, types)
+    return EntitiesHelp(entity_names.TYPE_ENTITY_TYPE_NAME,
+                        entity_names.TYPE_ENTITY_TYPE_NAME,
+                        types)

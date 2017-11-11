@@ -52,4 +52,6 @@ def suite_reporters_help(suite_reporters: iter) -> EntitiesHelp:
     """
     :param suite_reporters: [SuiteReporterDocumentation]
     """
-    return EntitiesHelp(SUITE_REPORTER_ENTITY_TYPE_NAME, suite_reporters)
+    return EntitiesHelp(SUITE_REPORTER_ENTITY_TYPE_NAME,
+                        SUITE_REPORTER_ENTITY_TYPE_NAME,
+                        suite_reporters)
