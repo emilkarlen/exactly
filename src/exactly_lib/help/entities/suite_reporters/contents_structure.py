@@ -1,5 +1,10 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
-from exactly_lib.help_texts.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, EntityTypeNames
+from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
+from exactly_lib.help_texts.names import formatting
+
+SUITE_REPORTER_ENTITY_TYPE_NAMES = EntityTypeNames(SUITE_REPORTER_CONCEPT_INFO.name,
+                                                   'reporter',
+                                                   formatting.syntax_element(SUITE_REPORTER_CONCEPT_INFO.singular_name))
 
 
 class SuiteReporterDocumentation(EntityDocumentationBase):
@@ -52,6 +57,5 @@ def suite_reporters_help(suite_reporters: iter) -> EntitiesHelp:
     """
     :param suite_reporters: [SuiteReporterDocumentation]
     """
-    return EntitiesHelp(SUITE_REPORTER_ENTITY_TYPE_NAME,
-                        SUITE_REPORTER_ENTITY_TYPE_NAME,
+    return EntitiesHelp(SUITE_REPORTER_ENTITY_TYPE_NAMES,
                         suite_reporters)

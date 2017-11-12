@@ -4,7 +4,7 @@ from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, phase_name_dictionary
-from exactly_lib.util.name import Name
+from exactly_lib.util.name import Name, name_with_plural_s
 
 
 def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
@@ -27,7 +27,7 @@ _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
 A value set in the {0} phase that determine how the remaining phases are executed."""
 
 CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target(
-    Name('configuration parameter', 'configuration parameters'),
+    name_with_plural_s('configuration parameter'),
     _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)
 )
 
@@ -37,12 +37,12 @@ CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
 )
 
 ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(
-    Name('environment variable', 'environment variables'),
+    name_with_plural_s('environment variable'),
     _format('Environment variables set by {program_name}.')
 )
 
 PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(
-    Name('preprocessor', 'preprocessors'),
+    name_with_plural_s('preprocessor'),
     'A program that transforms a test case file as the first step in the processing of it.'
 )
 
@@ -57,27 +57,27 @@ SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(
 )
 
 SUITE_REPORTER_CONCEPT_INFO = name_and_ref_target(
-    Name('reporter', 'reporters'),
+    name_with_plural_s('suite reporter'),
     'Reports the outcome of a test suite via stdout, stderr and exit code.'
 )
 
 TYPE_CONCEPT_INFO = name_and_ref_target(
-    Name('type', 'types'),
+    name_with_plural_s('type'),
     'Type system for symbols and instruction arguments.'
 )
 
 SYMBOL_CONCEPT_INFO = name_and_ref_target(
-    Name('symbol', 'symbols'),
+    name_with_plural_s('symbol'),
     'A named, constant, value.'
 )
 
 ACTOR_CONCEPT_INFO = name_and_ref_target(
-    Name('actor', 'actors'),
+    name_with_plural_s('actor'),
     _format('Interprets the contents of the {phase[act]} phase, and executes it.')
 )
 
 EXECUTION_MODE_CONCEPT_INFO = name_and_ref_target(
-    Name('execution mode', 'execution modes'),
+    name_with_plural_s('execution mode'),
     _format('Determines how the outcome of the {phase[assert]} phase is interpreted, '
             'or if the test case should be skipped.')
 )
@@ -93,6 +93,6 @@ HOME_ACT_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
 )
 
 TIMEOUT_CONCEPT_INFO = name_and_ref_target(
-    Name('timeout', 'timeouts'),
+    name_with_plural_s('timeout'),
     _format('Timeout of sub processes executed by instructions and the {phase[act]} phase.')
 )

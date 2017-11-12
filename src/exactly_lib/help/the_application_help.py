@@ -1,9 +1,15 @@
 from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.entities.actors.contents_structure import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.builtin.contents_structure import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.builtin.entity_configuration import builtin_symbols_entity_configuration
+from exactly_lib.help.entities.concepts.contents_structure import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.suite_reporters.contents_structure import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.syntax_elements.contents_structure import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.types.contents_structure import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
@@ -15,7 +21,6 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
-from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
@@ -37,19 +42,29 @@ def new_application_help(instructions_setup: InstructionsSetup,
 
 def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list):
     return {
-        entity_names.CONCEPT_ENTITY_TYPE_NAME: CONCEPT_ENTITY_CONFIGURATION,
+        CONCEPT_ENTITY_TYPE_NAMES.command_line_sub_command: CONCEPT_ENTITY_CONFIGURATION,
 
-        entity_names.ACTOR_ENTITY_TYPE_NAME: ACTOR_ENTITY_CONFIGURATION,
+        ACTOR_ENTITY_TYPE_NAMES.command_line_sub_command: ACTOR_ENTITY_CONFIGURATION,
 
-        entity_names.SUITE_REPORTER_ENTITY_TYPE_NAME: SUITE_REPORTER_ENTITY_CONFIGURATION,
+        SUITE_REPORTER_ENTITY_TYPE_NAMES.command_line_sub_command: SUITE_REPORTER_ENTITY_CONFIGURATION,
 
-        entity_names.TYPE_ENTITY_TYPE_NAME: TYPE_ENTITY_CONFIGURATION,
+        TYPE_ENTITY_TYPE_NAMES.command_line_sub_command: TYPE_ENTITY_CONFIGURATION,
 
-        entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME: SYNTAX_ELEMENT_ENTITY_CONFIGURATION,
+        SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.command_line_sub_command: SYNTAX_ELEMENT_ENTITY_CONFIGURATION,
 
-        entity_names.BUILTIN_ENTITY_TYPE_NAME: builtin_symbols_entity_configuration(
+        BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.command_line_sub_command: builtin_symbols_entity_configuration(
             builtin_symbol_documentation_list),
     }
+
+
+ALL_ENTITY_TYPES = (
+    CONCEPT_ENTITY_TYPE_NAMES,
+    TYPE_ENTITY_TYPE_NAMES,
+    ACTOR_ENTITY_TYPE_NAMES,
+    SUITE_REPORTER_ENTITY_TYPE_NAMES,
+    SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
+    BUILTIN_SYMBOL_ENTITY_TYPE_NAMES,
+)
 
 
 def test_suite_help(configuration_section_instructions: dict) -> TestSuiteHelp:

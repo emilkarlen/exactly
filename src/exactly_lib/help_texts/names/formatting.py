@@ -126,3 +126,11 @@ def program_name(name: str) -> str:
 
 def string_constant(constant: str) -> str:
     return '"' + constant + '"'
+
+
+def syntax_element(human_readable_name: str) -> str:
+    """
+    Transforms a name with space and lowercase letters
+    to a string suitable as syntax element
+    """
+    return human_readable_name.upper().replace(' ', '-')
