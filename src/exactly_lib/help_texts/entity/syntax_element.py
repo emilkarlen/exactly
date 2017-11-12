@@ -19,7 +19,7 @@ def name_and_ref_target(name: str,
 HERE_DOCUMENT_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.HERE_DOCUMENT.name,
     'A {string} value, given as a sequence of lines, resembling shell "here document" syntax'.format(
-        string=types.STRING_CONCEPT_INFO.singular_name)
+        string=types.STRING_TYPE_INFO.singular_name)
 )
 
 REGEX_SYNTAX_ELEMENT = name_and_ref_target(

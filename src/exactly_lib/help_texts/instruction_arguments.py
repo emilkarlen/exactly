@@ -5,7 +5,7 @@ from exactly_lib.util.logic_types import Quantifier
 
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 
-STRING = a.Named(types.STRING_CONCEPT_INFO.syntax_element_name)
+STRING = a.Named(types.STRING_TYPE_INFO.syntax_element_name)
 
 REG_EX = a.Named('REG-EX')
 
@@ -13,7 +13,7 @@ GLOB_PATTERN = a.Named('GLOB-PATTERN')
 
 SYMBOL_REFERENCE = a.Named('SYMBOL-REFERENCE')
 
-PATH_SYNTAX_ELEMENT_NAME = types.PATH_CONCEPT_INFO.syntax_element_name
+PATH_SYNTAX_ELEMENT_NAME = types.PATH_TYPE_INFO.syntax_element_name
 PATH_ARGUMENT = a.Named(PATH_SYNTAX_ELEMENT_NAME)
 FILE_ARGUMENT = a.Named('FILE')
 DIR_ARGUMENT = a.Named('DIR')
@@ -24,20 +24,20 @@ OPTIONAL_RELATIVITY_ARGUMENT_USAGE = a.Single(a.Multiplicity.OPTIONAL,
                                               RELATIVITY_ARGUMENT)
 NEGATION_ARGUMENT_STR = '!'
 
-MATCHER_ARGUMENT = a.Named(types.FILE_MATCHER_CONCEPT_INFO.syntax_element_name)
+MATCHER_ARGUMENT = a.Named(types.FILE_MATCHER_TYPE_INFO.syntax_element_name)
 SELECTION_OPTION = a.option(long_name='selection',
                             argument=MATCHER_ARGUMENT.name)
 SELECTION = a.Named('SELECTION')
 
-LINE_MATCHER = a.Named(types.LINE_MATCHER_CONCEPT_INFO.syntax_element_name)
+LINE_MATCHER = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
-LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_CONCEPT_INFO.syntax_element_name)
+LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 LINES_TRANSFORMATION_ARGUMENT = a.Named('TRANSFORMATION')
 WITH_TRANSFORMED_CONTENTS_OPTION_NAME = a.OptionName(long_name='transformation')
 WITH_TRANSFORMED_CONTENTS_OPTION = option_syntax.option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 TRANSFORMATION_OPTION = a.Option(WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
-                                 argument=types.LINES_TRANSFORMER_CONCEPT_INFO.syntax_element_name)
+                                 argument=types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 ALL_QUANTIFIER_ARGUMENT = 'every'
 EXISTS_QUANTIFIER_ARGUMENT = 'any'
