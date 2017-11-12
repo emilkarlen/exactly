@@ -86,8 +86,8 @@ class TestFailingParsePerTypeDueToInvalidSyntax(unittest.TestCase):
             ('{valid_type} name = {valid_value} superfluous argument', 'Superfluous argument'),
         ]
         type_setups = [
-            (types.PATH_CONCEPT_INFO.identifier, '--rel-act f'),
-            (types.STRING_CONCEPT_INFO.identifier, 'string-value'),
+            (types.PATH_TYPE_INFO.identifier, '--rel-act f'),
+            (types.STRING_TYPE_INFO.identifier, 'string-value'),
         ]
         setup = sut.setup('instruction-name')
         for type_name, valid_type_value in type_setups:

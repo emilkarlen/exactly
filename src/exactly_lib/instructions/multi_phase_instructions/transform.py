@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_CONCEPT_INFO
+from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_TYPE_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -36,7 +36,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                  name: str,
                  phase_is_before_act: bool):
         format_map = {
-            'LINES_TRANSFORMER': formatting.concept(LINES_TRANSFORMER_CONCEPT_INFO.name.singular),
+            'LINES_TRANSFORMER': formatting.concept(LINES_TRANSFORMER_TYPE_INFO.name.singular),
             'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
             'DESTINATION': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
         }
@@ -74,7 +74,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
         return [
-            types.LINES_TRANSFORMER_CONCEPT_INFO.cross_reference_target
+            types.LINES_TRANSFORMER_TYPE_INFO.cross_reference_target
         ]
 
 

@@ -21,9 +21,9 @@ class TypeInfo:
 
 
 DATA_TYPE_INFO_DICT = {
-    DataValueType.STRING: TypeInfo(types.STRING_CONCEPT_INFO),
-    DataValueType.PATH: TypeInfo(types.PATH_CONCEPT_INFO),
-    DataValueType.LIST: TypeInfo(types.LIST_CONCEPT_INFO),
+    DataValueType.STRING: TypeInfo(types.STRING_TYPE_INFO),
+    DataValueType.PATH: TypeInfo(types.PATH_TYPE_INFO),
+    DataValueType.LIST: TypeInfo(types.LIST_TYPE_INFO),
 }
 
 DATA_TYPE_2_VALUE_TYPE = {
@@ -39,9 +39,9 @@ DATA_TYPE_LIST_ORDER = [
 ]
 
 LOGIC_TYPE_INFO_DICT = {
-    LogicValueType.LINE_MATCHER: TypeInfo(types.LINE_MATCHER_CONCEPT_INFO),
-    LogicValueType.FILE_MATCHER: TypeInfo(types.FILE_MATCHER_CONCEPT_INFO),
-    LogicValueType.LINES_TRANSFORMER: TypeInfo(types.LINES_TRANSFORMER_CONCEPT_INFO),
+    LogicValueType.LINE_MATCHER: TypeInfo(types.LINE_MATCHER_TYPE_INFO),
+    LogicValueType.FILE_MATCHER: TypeInfo(types.FILE_MATCHER_TYPE_INFO),
+    LogicValueType.LINES_TRANSFORMER: TypeInfo(types.LINES_TRANSFORMER_TYPE_INFO),
 }
 
 LOGIC_TYPE_2_VALUE_TYPE = {

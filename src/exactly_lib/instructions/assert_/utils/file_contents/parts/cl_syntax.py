@@ -124,8 +124,8 @@ class FileContentsAssertionHelp:
             EXPECTED_FILE_REL_OPT_ARG_CONFIG.options) + [
             ENVIRONMENT_VARIABLE_CONCEPT_INFO,
             syntax_element.REGEX_SYNTAX_ELEMENT,
-            types.LINES_TRANSFORMER_CONCEPT_INFO,
-            types.LINE_MATCHER_CONCEPT_INFO,
+                                          types.LINES_TRANSFORMER_TYPE_INFO,
+                                          types.LINE_MATCHER_TYPE_INFO,
         ]
         return cross_reference_id_list(name_and_cross_ref_elements) + \
                self.string_or_here_doc_or_file_arg.see_also_targets()

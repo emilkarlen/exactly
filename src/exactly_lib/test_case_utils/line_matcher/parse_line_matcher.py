@@ -20,13 +20,13 @@ REGEX_MATCHER_NAME = 'regex'
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
-REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_CONCEPT_INFO.syntax_element_name)
+REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_name)
 
 _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
-LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_CONCEPT_INFO.syntax_element_name)
+LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 
 
 def parse_line_matcher(source: ParseSource) -> LineMatcherResolver:
@@ -86,8 +86,8 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 )
 
 _CONCEPT = grammar.Concept(
-    types.LINE_MATCHER_CONCEPT_INFO.name,
-    types.LINE_MATCHER_CONCEPT_INFO.identifier,
+    types.LINE_MATCHER_TYPE_INFO.name,
+    types.LINE_MATCHER_TYPE_INFO.identifier,
     LINE_MATCHER_ARGUMENT,
 )
 

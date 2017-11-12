@@ -28,13 +28,13 @@ SEQUENCE_OPERATOR_NAME = '|'
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
-REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_CONCEPT_INFO.syntax_element_name)
+REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_name)
 
 _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
-LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_CONCEPT_INFO.syntax_element_name)
+LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
@@ -58,13 +58,13 @@ class LinesTransformerDescriptor(property_description.ErrorMessagePartConstructo
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
         transformer = self.resolver.resolve(environment.symbols)
         # FIXME
-        line = types.LINES_TRANSFORMER_CONCEPT_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
+        line = types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
         return [line]
 
 
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the contents of the tested file using a {transformer} before it is tested.
-""".format(transformer=types.LINES_TRANSFORMER_CONCEPT_INFO.name.singular)
+""".format(transformer=types.LINES_TRANSFORMER_TYPE_INFO.name.singular)
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
@@ -100,9 +100,9 @@ def parse_select(parser: TokenParserPrime) -> LinesTransformerResolver:
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
-    '_TRANSFORMER_': types.LINES_TRANSFORMER_CONCEPT_INFO.name.singular,
-    '_LINE_MATCHER_': types.LINE_MATCHER_CONCEPT_INFO.name.singular,
-    '_TRANSFORMERS_': types.LINES_TRANSFORMER_CONCEPT_INFO.name.plural,
+    '_TRANSFORMER_': types.LINES_TRANSFORMER_TYPE_INFO.name.singular,
+    '_LINE_MATCHER_': types.LINE_MATCHER_TYPE_INFO.name.singular,
+    '_TRANSFORMERS_': types.LINES_TRANSFORMER_TYPE_INFO.name.plural,
 }
 
 
@@ -144,7 +144,7 @@ _SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  instruction_arguments.LINE_MATCHER),
     ],
     description_rest=_fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION),
-    see_also_targets=[types.LINE_MATCHER_CONCEPT_INFO.cross_reference_target],
+    see_also_targets=[types.LINE_MATCHER_TYPE_INFO.cross_reference_target],
 )
 
 _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
@@ -152,8 +152,8 @@ _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
 )
 
 _CONCEPT = grammar.Concept(
-    types.LINES_TRANSFORMER_CONCEPT_INFO.name,
-    types.LINES_TRANSFORMER_CONCEPT_INFO.identifier,
+    types.LINES_TRANSFORMER_TYPE_INFO.name,
+    types.LINES_TRANSFORMER_TYPE_INFO.identifier,
     LINES_TRANSFORMER_ARGUMENT,
 )
 

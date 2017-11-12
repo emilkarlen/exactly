@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, lines_transformers
-from exactly_lib.help_texts.entity.types import PATH_CONCEPT_INFO
+from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.processing import exit_values
@@ -44,7 +44,7 @@ class AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(SetupWitho
         one_line_per_predefined_symbol__that_defines_one_symbol_in_terms_of_it = [
             '{def_instruction} {path_type} {name_to_define} = {reference_to_predefined_symbol}'.format(
                 def_instruction=instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
-                path_type=PATH_CONCEPT_INFO.identifier,
+                path_type=PATH_TYPE_INFO.identifier,
                 name_to_define='COPY_OF_' + builtin_symbol.name,
                 reference_to_predefined_symbol=symbol_reference_syntax_for_name(builtin_symbol.name))
             for builtin_symbol in test_case_dir_symbols.ALL

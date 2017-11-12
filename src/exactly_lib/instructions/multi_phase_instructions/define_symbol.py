@@ -84,7 +84,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                TYPE_CONCEPT_INFO,
                                CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(REL_OPTIONS_CONFIGURATION)
-        name_and_cross_refs += types.ALL_TYPE_CONCEPT_INFO_TUPLE
+        name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
 
@@ -211,12 +211,12 @@ def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_reso
 
 
 _TYPE_SETUPS = {
-    types.PATH_CONCEPT_INFO.identifier: _parse_path,
-    types.STRING_CONCEPT_INFO.identifier: _parse_string,
-    types.LIST_CONCEPT_INFO.identifier: _parse_list,
-    types.LINE_MATCHER_CONCEPT_INFO.identifier: _parse_line_matcher,
-    types.FILE_MATCHER_CONCEPT_INFO.identifier: _parse_file_matcher,
-    types.LINES_TRANSFORMER_CONCEPT_INFO.identifier: _parse_lines_transformer,
+    types.PATH_TYPE_INFO.identifier: _parse_path,
+    types.STRING_TYPE_INFO.identifier: _parse_string,
+    types.LIST_TYPE_INFO.identifier: _parse_list,
+    types.LINE_MATCHER_TYPE_INFO.identifier: _parse_line_matcher,
+    types.FILE_MATCHER_TYPE_INFO.identifier: _parse_file_matcher,
+    types.LINES_TRANSFORMER_TYPE_INFO.identifier: _parse_lines_transformer,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))

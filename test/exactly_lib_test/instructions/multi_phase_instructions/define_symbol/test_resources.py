@@ -16,12 +16,12 @@ def src(s: str,
 
 
 _STD_FORMAT_MAP = {
-    'path_type': types.PATH_CONCEPT_INFO.identifier,
-    'string_type': types.STRING_CONCEPT_INFO.identifier,
-    'list_type': types.LIST_CONCEPT_INFO.identifier,
-    'line_match_type': types.LINE_MATCHER_CONCEPT_INFO.identifier,
-    'file_matcher_type': types.FILE_MATCHER_CONCEPT_INFO.identifier,
-    'lines_trans_type': types.LINES_TRANSFORMER_CONCEPT_INFO.identifier,
+    'path_type': types.PATH_TYPE_INFO.identifier,
+    'string_type': types.STRING_TYPE_INFO.identifier,
+    'list_type': types.LIST_TYPE_INFO.identifier,
+    'line_match_type': types.LINE_MATCHER_TYPE_INFO.identifier,
+    'file_matcher_type': types.FILE_MATCHER_TYPE_INFO.identifier,
+    'lines_trans_type': types.LINES_TRANSFORMER_TYPE_INFO.identifier,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
 }

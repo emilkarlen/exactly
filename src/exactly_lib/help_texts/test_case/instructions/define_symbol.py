@@ -3,8 +3,8 @@ import types
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity.types import STRING_CONCEPT_INFO, PATH_CONCEPT_INFO, LIST_CONCEPT_INFO, \
-    LINE_MATCHER_CONCEPT_INFO, FILE_MATCHER_CONCEPT_INFO, LINES_TRANSFORMER_CONCEPT_INFO, TypeNameAndCrossReferenceId
+from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO, PATH_TYPE_INFO, LIST_TYPE_INFO, \
+    LINE_MATCHER_TYPE_INFO, FILE_MATCHER_TYPE_INFO, LINES_TRANSFORMER_TYPE_INFO, TypeNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
 from exactly_lib.type_system.value_type import DataValueType, ValueType
@@ -81,67 +81,67 @@ def _def_instruction_syntax_lines_function__lines_transformer() -> list:
 
 DATA_TYPE_INFO_DICT = {
     DataValueType.STRING:
-        TypeInfo(STRING_CONCEPT_INFO.identifier,
+        TypeInfo(STRING_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__string),
     DataValueType.PATH:
-        TypeInfo(PATH_CONCEPT_INFO.identifier,
+        TypeInfo(PATH_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__path),
     DataValueType.LIST:
-        TypeInfo(LIST_CONCEPT_INFO.identifier,
+        TypeInfo(LIST_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__list),
 }
 
 ANY_TYPE_INFO_DICT = {
     ValueType.STRING:
-        TypeInfo(STRING_CONCEPT_INFO.identifier,
+        TypeInfo(STRING_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__string),
     ValueType.PATH:
-        TypeInfo(PATH_CONCEPT_INFO.identifier,
+        TypeInfo(PATH_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__path),
     ValueType.LIST:
-        TypeInfo(LIST_CONCEPT_INFO.identifier,
+        TypeInfo(LIST_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__list),
     ValueType.LINE_MATCHER:
-        TypeInfo(LINE_MATCHER_CONCEPT_INFO.identifier,
+        TypeInfo(LINE_MATCHER_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__lines_transformer),
     ValueType.FILE_MATCHER:
-        TypeInfo(FILE_MATCHER_CONCEPT_INFO.identifier,
+        TypeInfo(FILE_MATCHER_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__file_matcher),
     ValueType.LINES_TRANSFORMER:
-        TypeInfo(LINES_TRANSFORMER_CONCEPT_INFO.identifier,
+        TypeInfo(LINES_TRANSFORMER_TYPE_INFO.identifier,
                  _def_instruction_syntax_lines_function__lines_transformer),
 }
 
 
 def definition_of_type_string() -> str:
-    return _standard_definition(STRING_CONCEPT_INFO,
+    return _standard_definition(STRING_TYPE_INFO,
                                 a.Multiplicity.MANDATORY)
 
 
 def definition_of_type_path() -> str:
-    return _def_of(PATH_CONCEPT_INFO.identifier,
+    return _def_of(PATH_TYPE_INFO.identifier,
                    path_syntax.mandatory_path_with_optional_relativity(
-                       a.Named(PATH_CONCEPT_INFO.syntax_element_name),
+                       a.Named(PATH_TYPE_INFO.syntax_element_name),
                        PATH_SUFFIX_IS_REQUIRED)
                    )
 
 
 def definition_of_type_list() -> str:
-    return _def_of(LIST_CONCEPT_INFO.identifier,
+    return _def_of(LIST_TYPE_INFO.identifier,
                    [a.Single(a.Multiplicity.ZERO_OR_MORE,
                              a.Named(type_system.LIST_ELEMENT))])
 
 
 def definition_of_type_line_matcher() -> str:
-    return _standard_definition(LINE_MATCHER_CONCEPT_INFO)
+    return _standard_definition(LINE_MATCHER_TYPE_INFO)
 
 
 def definition_of_type_file_matcher() -> str:
-    return _standard_definition(FILE_MATCHER_CONCEPT_INFO)
+    return _standard_definition(FILE_MATCHER_TYPE_INFO)
 
 
 def definition_of_type_lines_transformer() -> str:
-    return _standard_definition(LINES_TRANSFORMER_CONCEPT_INFO)
+    return _standard_definition(LINES_TRANSFORMER_TYPE_INFO)
 
 
 def _standard_definition(type_info: TypeNameAndCrossReferenceId,

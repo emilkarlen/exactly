@@ -57,7 +57,7 @@ def _main_program_test_cases() -> list:
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for single "type" SHOULD be successful',
-                        HelpInvokation(arguments_for.symbol_type(types.LINE_MATCHER_CONCEPT_INFO.name.singular)),
+                        HelpInvokation(arguments_for.symbol_type(types.LINE_MATCHER_TYPE_INFO.name.singular)),
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "builtin list" SHOULD be successful',

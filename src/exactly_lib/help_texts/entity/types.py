@@ -2,7 +2,7 @@ from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.util.name import Name
+from exactly_lib.util.name import Name, name_with_plural_s
 
 
 def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
@@ -45,41 +45,41 @@ def name_and_ref_target(name: Name,
                                        type_cross_ref(name.singular))
 
 
-STRING_CONCEPT_INFO = name_and_ref_target(
-    Name('string', 'strings'),
+STRING_TYPE_INFO = name_and_ref_target(
+    name_with_plural_s('string'),
     'A sequence of characters.',
 )
 
-LIST_CONCEPT_INFO = name_and_ref_target(
-    Name('list', 'lists'),
+LIST_TYPE_INFO = name_and_ref_target(
+    name_with_plural_s('list'),
     'A sequence of zero or more strings.',
 )
 
-PATH_CONCEPT_INFO = name_and_ref_target(
-    Name('path', 'paths'),
+PATH_TYPE_INFO = name_and_ref_target(
+    name_with_plural_s('path'),
     'A path of a file or directory, with special support for the test case directories.',
 )
 
-LINE_MATCHER_CONCEPT_INFO = name_and_ref_target(
-    Name('line matcher', 'line matchers'),
+LINE_MATCHER_TYPE_INFO = name_and_ref_target(
+    name_with_plural_s('line matcher'),
     'Matches individual text lines.'
 )
 
-FILE_MATCHER_CONCEPT_INFO = name_and_ref_target(
-    Name('file matcher', 'file matchers'),
+FILE_MATCHER_TYPE_INFO = name_and_ref_target(
+    name_with_plural_s('file matcher'),
     'Matches properties of a file, like name and type.'
 )
 
-LINES_TRANSFORMER_CONCEPT_INFO = name_and_ref_target(
-    Name('file transformer', 'file transformers'),
+LINES_TRANSFORMER_TYPE_INFO = name_and_ref_target(
+    name_with_plural_s('file transformer'),
     'Transforms the lines of a text file.',
 )
 
-ALL_TYPE_CONCEPT_INFO_TUPLE = (
-    STRING_CONCEPT_INFO,
-    LIST_CONCEPT_INFO,
-    PATH_CONCEPT_INFO,
-    LINE_MATCHER_CONCEPT_INFO,
-    FILE_MATCHER_CONCEPT_INFO,
-    LINES_TRANSFORMER_CONCEPT_INFO,
+ALL_TYPES_INFO_TUPLE = (
+    STRING_TYPE_INFO,
+    LIST_TYPE_INFO,
+    PATH_TYPE_INFO,
+    LINE_MATCHER_TYPE_INFO,
+    FILE_MATCHER_TYPE_INFO,
+    LINES_TRANSFORMER_TYPE_INFO,
 )
