@@ -13,13 +13,14 @@ from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.instruction_arguments import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
@@ -46,8 +47,15 @@ def relativity_syntax_element_description(
         rel_options_conf: RelOptionsConfiguration,
         relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
-    return SyntaxElementDescription(relativity_argument.name,
-                                    [transform_list_to_table(renderer.list_for(rel_options_conf))])
+    return SyntaxElementDescription(
+        relativity_argument.name,
+        [transform_list_to_table(renderer.list_for(rel_options_conf.accepted_relativity_variants))])
+
+
+def relativity_options_paragraph(path_that_may_be_relative: str,
+                                 variants: PathRelativityVariants) -> ParagraphItem:
+    renderer = RelOptionRenderer(path_that_may_be_relative)
+    return transform_list_to_table(renderer.list_for(variants))
 
 
 def see_also_name_and_cross_refs(rel_options_conf: RelOptionsConfiguration) -> list:
@@ -150,10 +158,10 @@ class RelOptionRenderer:
                               self.paragraphs(option_type_info.paragraph_items_text),
                               option_type_info.see_also)
 
-    def list_for(self, rel_options_conf: RelOptionsConfiguration) -> lists.HeaderContentList:
+    def list_for(self, variants: PathRelativityVariants) -> lists.HeaderContentList:
         items = []
         for rel_option_type in _DISPLAY_ORDER:
-            if rel_option_type in rel_options_conf.accepted_relativity_variants.rel_option_types:
+            if rel_option_type in variants.rel_option_types:
                 items.append(self.item_for(self.option_info_for(rel_option_type)))
         items.append(self._rel_symbol_item())
         return lists.HeaderContentList(items,
