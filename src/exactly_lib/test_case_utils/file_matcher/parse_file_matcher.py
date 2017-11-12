@@ -5,7 +5,6 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_element
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_CONCEPT_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
-from exactly_lib.help_texts.type_system import FILE_MATCHER_TYPE
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
@@ -186,7 +185,7 @@ TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 GRAMMAR = grammar.Grammar(
     concept=grammar.Concept(
         name=FILE_MATCHER_CONCEPT_INFO.name,
-        type_system_type_name=FILE_MATCHER_TYPE,
+        type_system_type_name=FILE_MATCHER_CONCEPT_INFO.identifier,
         syntax_element_name=MATCHER_ARGUMENT,
     ),
     mk_reference=resolvers.FileMatcherReferenceResolver,

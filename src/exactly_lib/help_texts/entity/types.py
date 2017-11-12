@@ -29,7 +29,7 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
         return self.name.plural
 
     @property
-    def single_string_name(self) -> str:
+    def identifier(self) -> str:
         """Single string variant of singular name, useful for parsing."""
         return self._single_string_type_name
 

@@ -1,6 +1,5 @@
 import unittest
 
-import exactly_lib.help_texts.type_system
 from exactly_lib.instructions.multi_phase_instructions.define_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import define_symbol as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -87,8 +86,8 @@ class TestFailingParsePerTypeDueToInvalidSyntax(unittest.TestCase):
             ('{valid_type} name = {valid_value} superfluous argument', 'Superfluous argument'),
         ]
         type_setups = [
-            (exactly_lib.help_texts.type_system.PATH_TYPE, '--rel-act f'),
-            (exactly_lib.help_texts.type_system.STRING_TYPE, 'string-value'),
+            (types.PATH_CONCEPT_INFO.identifier, '--rel-act f'),
+            (types.STRING_CONCEPT_INFO.identifier, 'string-value'),
         ]
         setup = sut.setup('instruction-name')
         for type_name, valid_type_value in type_setups:
@@ -345,7 +344,7 @@ class TestPathAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
             expected_file_ref_resolver = rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',
                                 ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(
-                                          REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
+                                    REL_OPTIONS_CONFIGURATION.accepted_relativity_variants))),
                 PathPartResolverAsFixedPath('component'))
             expected_container = resolver_container(expected_file_ref_resolver)
             self._run(source,

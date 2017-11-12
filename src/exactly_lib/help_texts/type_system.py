@@ -1,39 +1,21 @@
 from exactly_lib.help_texts.entity import types
-from exactly_lib.help_texts.names.formatting import syntax_element
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
 
 DATA_TYPE_CATEGORY = 'data'
 LOGIC_TYPE_CATEGORY = 'logic'
 
 
-def _type_name(type_name: str) -> str:
+def _type_identifier(type_name: str) -> str:
     return type_name.replace(' ', '-')
 
 
-PATH_TYPE = _type_name(types.PATH_CONCEPT_INFO.singular_name)
-PATH_SYNTAX_ELEMENT = syntax_element(types.PATH_CONCEPT_INFO.singular_name)
-
-STRING_TYPE = _type_name(types.STRING_CONCEPT_INFO.singular_name)
-STRING_SYNTAX_ELEMENT = syntax_element(types.STRING_CONCEPT_INFO.singular_name)
-
-LIST_TYPE = _type_name(types.LIST_CONCEPT_INFO.singular_name)
-LIST_SYNTAX_ELEMENT = syntax_element(types.LIST_CONCEPT_INFO.singular_name)
 LIST_ELEMENT = 'ELEMENT'
-
-LINE_MATCHER_TYPE = _type_name(types.LINE_MATCHER_CONCEPT_INFO.singular_name)
-LINE_MATCHER_SYNTAX_ELEMENT = syntax_element(types.LINE_MATCHER_CONCEPT_INFO.singular_name)
-
-FILE_MATCHER_TYPE = _type_name(types.FILE_MATCHER_CONCEPT_INFO.singular_name)
-FILE_MATCHER_SYNTAX_ELEMENT = syntax_element(types.FILE_MATCHER_CONCEPT_INFO.singular_name)
-
-LINES_TRANSFORMER_TYPE = _type_name(types.LINES_TRANSFORMER_CONCEPT_INFO.singular_name)
-LINES_TRANSFORMER_SYNTAX_ELEMENT = syntax_element(types.LINES_TRANSFORMER_CONCEPT_INFO.singular_name)
 
 
 class TypeInfo:
     def __init__(self,
                  info: types.TypeNameAndCrossReferenceId):
-        self.type_name = info.single_string_name
+        self.type_name = info.identifier
         self.value_name = info.syntax_element_name
         self.concept_info = info
 

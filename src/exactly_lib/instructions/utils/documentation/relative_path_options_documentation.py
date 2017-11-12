@@ -8,10 +8,10 @@ from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.entity import concepts as ci
+from exactly_lib.help_texts.entity.types import PATH_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.instruction_arguments import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.type_system import PATH_TYPE
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import symbol_syntax
@@ -132,7 +132,7 @@ class RelOptionRenderer:
             'DIR_ACT': sds.SUB_DIRECTORY__ACT,
             'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
             'SYMBOL_NAME': symbol_syntax.SYMBOL_SYNTAX_ELEMENT_NAME,
-            'PATH_SYMBOL_TYPE': PATH_TYPE,
+            'PATH_SYMBOL_TYPE': PATH_CONCEPT_INFO.identifier,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_case_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
             'home_act_directory': formatting.concept(HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),

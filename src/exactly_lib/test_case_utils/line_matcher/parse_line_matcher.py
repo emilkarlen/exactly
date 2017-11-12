@@ -1,8 +1,7 @@
 from exactly_lib.help_texts import expression
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity import syntax_element
-from exactly_lib.help_texts.entity.types import LINE_MATCHER_CONCEPT_INFO
+from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -21,13 +20,13 @@ REGEX_MATCHER_NAME = 'regex'
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
-REPLACE_REPLACEMENT_ARGUMENT = a.Named(type_system.STRING_SYNTAX_ELEMENT)
+REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_CONCEPT_INFO.syntax_element_name)
 
 _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
-LINE_MATCHER_ARGUMENT = a.Named(type_system.LINE_MATCHER_SYNTAX_ELEMENT)
+LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_CONCEPT_INFO.syntax_element_name)
 
 
 def parse_line_matcher(source: ParseSource) -> LineMatcherResolver:
@@ -87,8 +86,8 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
 )
 
 _CONCEPT = grammar.Concept(
-    LINE_MATCHER_CONCEPT_INFO.name,
-    type_system.LINE_MATCHER_TYPE,
+    types.LINE_MATCHER_CONCEPT_INFO.name,
+    types.LINE_MATCHER_CONCEPT_INFO.identifier,
     LINE_MATCHER_ARGUMENT,
 )
 
