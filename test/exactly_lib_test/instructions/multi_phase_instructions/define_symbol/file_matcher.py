@@ -59,7 +59,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         for name, rhs_source, expected_file_matcher in cases:
             with self.subTest(name=name):
                 source = single_line_source(
-                    src('{file_sel_type} {defined_name} = {selector_argument}',
+                    src('{file_matcher_type} {defined_name} = {selector_argument}',
                         defined_name=defined_name,
                         selector_argument=rhs_source),
                 )
@@ -98,7 +98,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         for name, rhs_source in cases:
             with self.subTest(name=name):
                 source = single_line_source(
-                    src('{file_sel_type} {defined_name} = {selector_argument}',
+                    src('{file_matcher_type} {defined_name} = {selector_argument}',
                         defined_name=defined_name,
                         selector_argument=rhs_source),
                 )

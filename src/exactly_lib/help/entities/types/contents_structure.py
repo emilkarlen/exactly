@@ -1,7 +1,7 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, \
     command_line_names_as_singular_name
 from exactly_lib.help_texts.entity.concepts import TYPE_CONCEPT_INFO
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
+from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.type_system.value_type import TypeCategory
@@ -13,11 +13,10 @@ TYPE_ENTITY_TYPE_NAMES = command_line_names_as_singular_name(TYPE_CONCEPT_INFO.n
 class TypeDocumentation(EntityDocumentationBase):
     def __init__(self,
                  type_category: TypeCategory,
-                 type_identifier: str,
-                 name_and_cross_ref_target: SingularAndPluralNameAndCrossReferenceId):
+                 name_and_cross_ref_target: TypeNameAndCrossReferenceId):
         super().__init__(name_and_cross_ref_target)
         self._name_and_cross_ref_target = name_and_cross_ref_target
-        self._type_identifier = type_identifier
+        self._type_identifier = name_and_cross_ref_target.identifier
         self._type_category = type_category
 
     """
@@ -49,10 +48,10 @@ class TypeDocumentation(EntityDocumentationBase):
 
 class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
     def __init__(self,
-                 type_identifier: str,
-                 name_and_cross_ref_target: SingularAndPluralNameAndCrossReferenceId,
+                 name_and_cross_ref_target: TypeNameAndCrossReferenceId,
                  grammar: Grammar):
-        super().__init__(TypeCategory.LOGIC, type_identifier, name_and_cross_ref_target)
+        super().__init__(TypeCategory.LOGIC,
+                         name_and_cross_ref_target)
         self._syntax = syntax_documentation.Syntax(grammar)
 
     """

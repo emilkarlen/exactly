@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.type_system import STRING_TYPE
+from exactly_lib.help_texts.entity.types import STRING_CONCEPT_INFO
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -20,7 +20,7 @@ class Configuration:
         self.argument_name = argument_name
 
 
-DEFAULT_CONFIGURATION = Configuration(STRING_TYPE)
+DEFAULT_CONFIGURATION = Configuration(STRING_CONCEPT_INFO.identifier)
 
 
 def parse_string_resolver_from_parse_source(source: ParseSource,

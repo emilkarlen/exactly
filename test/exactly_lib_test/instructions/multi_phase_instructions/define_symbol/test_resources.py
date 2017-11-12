@@ -1,4 +1,4 @@
-import exactly_lib.help_texts.type_system
+from exactly_lib.help_texts.entity import types
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.util.line_source import Line
@@ -16,12 +16,12 @@ def src(s: str,
 
 
 _STD_FORMAT_MAP = {
-    'path_type': exactly_lib.help_texts.type_system.PATH_TYPE,
-    'string_type': exactly_lib.help_texts.type_system.STRING_TYPE,
-    'list_type': exactly_lib.help_texts.type_system.LIST_TYPE,
-    'line_match_type': exactly_lib.help_texts.type_system.LINE_MATCHER_TYPE,
-    'file_sel_type': exactly_lib.help_texts.type_system.FILE_MATCHER_TYPE,
-    'lines_trans_type': exactly_lib.help_texts.type_system.LINES_TRANSFORMER_TYPE,
+    'path_type': types.PATH_CONCEPT_INFO.identifier,
+    'string_type': types.STRING_CONCEPT_INFO.identifier,
+    'list_type': types.LIST_CONCEPT_INFO.identifier,
+    'line_match_type': types.LINE_MATCHER_CONCEPT_INFO.identifier,
+    'file_matcher_type': types.FILE_MATCHER_CONCEPT_INFO.identifier,
+    'lines_trans_type': types.LINES_TRANSFORMER_CONCEPT_INFO.identifier,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
 }

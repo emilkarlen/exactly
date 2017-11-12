@@ -1,6 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import types, syntax_element
 from exactly_lib.section_document.parse_source import ParseSource
@@ -29,13 +28,13 @@ SEQUENCE_OPERATOR_NAME = '|'
 
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
-REPLACE_REPLACEMENT_ARGUMENT = a.Named(type_system.STRING_SYNTAX_ELEMENT)
+REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_CONCEPT_INFO.syntax_element_name)
 
 _MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
-LINES_TRANSFORMER_ARGUMENT = a.Named(type_system.LINES_TRANSFORMER_SYNTAX_ELEMENT)
+LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_CONCEPT_INFO.syntax_element_name)
 
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
@@ -58,7 +57,8 @@ class LinesTransformerDescriptor(property_description.ErrorMessagePartConstructo
 
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
         transformer = self.resolver.resolve(environment.symbols)
-        line = instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name.capitalize() + ' : (TODO) ' + str(transformer)
+        # FIXME
+        line = types.LINES_TRANSFORMER_CONCEPT_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
         return [line]
 
 
@@ -153,7 +153,7 @@ _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
 
 _CONCEPT = grammar.Concept(
     types.LINES_TRANSFORMER_CONCEPT_INFO.name,
-    type_system.LINES_TRANSFORMER_TYPE,
+    types.LINES_TRANSFORMER_CONCEPT_INFO.identifier,
     LINES_TRANSFORMER_ARGUMENT,
 )
 
