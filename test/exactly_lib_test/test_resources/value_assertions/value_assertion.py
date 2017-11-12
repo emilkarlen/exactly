@@ -519,6 +519,30 @@ class _MatchesSequence(ValueAssertion):
                                                element_message_builder)
 
 
+class _EqualsSequence(ValueAssertion):
+    def __init__(self,
+                 expected: list,
+                 new_value_assertion_for_expected: types.FunctionType):
+        self.expected = expected
+        self.new_value_assertion_for_expected = new_value_assertion_for_expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertEqual(len(self.expected),
+                        len(value),
+                        message_builder.apply('Number of elements'))
+        for idx, element in enumerate(value):
+            element_message_builder = sub_component_builder('[' + str(idx) + ']',
+                                                            message_builder,
+                                                            component_separator='')
+            element_assertion = self.new_value_assertion_for_expected(self.expected[idx])
+            assert isinstance(element_assertion, ValueAssertion)
+            element_assertion.apply(put, element,
+                                    element_message_builder)
+
+
 def fail(msg: str) -> ValueAssertion:
     return Constant(False, msg)
 
@@ -537,6 +561,11 @@ class _WithTransformedMessage(ValueAssertion):
         self.value_assertion.apply(put,
                                    value,
                                    self.message_builder_transformer(message_builder))
+
+
+def equals_sequence(expected: list,
+                    new_value_assertion_for_expected: types.FunctionType) -> ValueAssertion:
+    return _EqualsSequence(expected, new_value_assertion_for_expected)
 
 
 is_instance = IsInstance
