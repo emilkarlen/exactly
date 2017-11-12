@@ -37,7 +37,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.file_contents_assertion_help = parts_cl_syntax.FileContentsAssertionHelp('a file')
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     _PATH_ARGUMENT)
-        self.relativity_of_actual_arg = a.Named('RELATIVITY')
+        self.relativity_of_actual_arg = instruction_arguments.RELATIVITY_ARGUMENT
         self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                                self.relativity_of_actual_arg)
 
@@ -164,7 +164,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
 
 
-_PATH_ARGUMENT = a.Named('PATH')
+_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
     rel_opts_configuration.RelOptionsConfiguration(

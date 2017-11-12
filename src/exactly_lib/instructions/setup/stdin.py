@@ -41,7 +41,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.path_arg = instruction_arguments.PATH_ARGUMENT
         self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
             self.path_arg.name,
-            'RELATIVITY',
+            instruction_arguments.RELATIVITY_ARGUMENT.name,
             RELATIVITY_OPTIONS_CONFIGURATION,
             'The file that will be the contents of stdin.'
         )

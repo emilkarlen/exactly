@@ -12,13 +12,12 @@ class IndividualSyntaxElementRenderer(SectionContentsRenderer):
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         initial_paragraphs = [docs.para(self.syntax_element.single_line_description())]
-        initial_paragraphs.extend(self.syntax_element.main_description_rest())
-        initial_paragraphs.extend(invokation_variants_paragraphs(None,
-                                                                 self.syntax_element.invokation_variants(),
-                                                                 []))
-        sub_sections = []
-        sub_sections += see_also_sections(self.syntax_element.see_also_targets(), environment,
-                                          uppercase_title=False)
+        initial_paragraphs += self.syntax_element.main_description_rest()
+        initial_paragraphs += invokation_variants_paragraphs(None,
+                                                             self.syntax_element.invokation_variants(),
+                                                             self.syntax_element.syntax_element_descriptions())
+        sub_sections = see_also_sections(self.syntax_element.see_also_targets(), environment,
+                                         uppercase_title=False)
 
         return doc.SectionContents(initial_paragraphs,
                                    sub_sections)
