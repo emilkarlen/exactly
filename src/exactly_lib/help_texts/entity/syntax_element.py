@@ -21,6 +21,12 @@ def _name_and_ref_target_of_type(type_info: types.TypeNameAndCrossReferenceId) -
                                type_info.single_line_description_str)
 
 
+STRING_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.STRING_TYPE_INFO)
+
+LIST_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LIST_TYPE_INFO)
+
+PATH_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PATH_TYPE_INFO)
+
 FILE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILE_MATCHER_TYPE_INFO)
 
 LINE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINE_MATCHER_TYPE_INFO)
@@ -48,6 +54,10 @@ ALL_SYNTAX_ELEMENTS = [
     HERE_DOCUMENT_SYNTAX_ELEMENT,
     REGEX_SYNTAX_ELEMENT,
     GLOB_PATTERN_SYNTAX_ELEMENT,
+
+    STRING_SYNTAX_ELEMENT,
+    LIST_SYNTAX_ELEMENT,
+    PATH_SYNTAX_ELEMENT,
 
     FILE_MATCHER_SYNTAX_ELEMENT,
     LINE_MATCHER_SYNTAX_ELEMENT,
