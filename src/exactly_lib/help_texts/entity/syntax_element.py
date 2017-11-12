@@ -16,6 +16,17 @@ def name_and_ref_target(name: str,
                                            syntax_element_cross_ref(name))
 
 
+def _name_and_ref_target_of_type(type_info: types.TypeNameAndCrossReferenceId) -> SingularNameAndCrossReferenceId:
+    return name_and_ref_target(type_info.syntax_element_name,
+                               type_info.single_line_description_str)
+
+
+FILE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILE_MATCHER_TYPE_INFO)
+
+LINE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINE_MATCHER_TYPE_INFO)
+
+LINES_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINES_TRANSFORMER_TYPE_INFO)
+
 HERE_DOCUMENT_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.HERE_DOCUMENT.name,
     'A {string} value, given as a sequence of lines, resembling shell "here document" syntax'.format(
@@ -33,9 +44,14 @@ GLOB_PATTERN_SYNTAX_ELEMENT = name_and_ref_target(
 )
 
 ALL_SYNTAX_ELEMENTS = [
+
     HERE_DOCUMENT_SYNTAX_ELEMENT,
     REGEX_SYNTAX_ELEMENT,
     GLOB_PATTERN_SYNTAX_ELEMENT,
+
+    FILE_MATCHER_SYNTAX_ELEMENT,
+    LINE_MATCHER_SYNTAX_ELEMENT,
+    LINES_TRANSFORMER_SYNTAX_ELEMENT,
 ]
 
 
