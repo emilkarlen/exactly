@@ -69,10 +69,11 @@ def _main_program_test_cases() -> list:
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "syntax list" SHOULD be successful',
-                        HelpInvokation(arguments_for.syntax()),
+                        HelpInvokation(arguments_for.syntax_element()),
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for single "syntax" SHOULD be successful',
-                        HelpInvokation(arguments_for.syntax(syntax_element.ALL_SYNTAX_ELEMENTS[0].singular_name)),
+                        HelpInvokation(
+                            arguments_for.syntax_element(syntax_element.ALL_SYNTAX_ELEMENTS[0].singular_name)),
                         RESULT_IS_SUCCESSFUL),
     ]

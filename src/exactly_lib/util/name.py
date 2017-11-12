@@ -11,3 +11,8 @@ class Name(tuple):
     @property
     def plural(self) -> str:
         return self[1]
+
+
+def name_with_plural_s(singular: str) -> Name:
+    return Name(singular,
+                singular + 's')

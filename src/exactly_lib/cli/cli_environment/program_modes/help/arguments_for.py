@@ -1,5 +1,12 @@
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
+from exactly_lib.help.entities.actors.contents_structure import ACTOR_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.builtin.contents_structure import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.concepts.contents_structure import CONCEPT_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.suite_reporters.contents_structure import SUITE_REPORTER_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.syntax_elements.contents_structure import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.types.contents_structure import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
+from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.test_case import phase_identifier
 
 
@@ -71,45 +78,47 @@ def entity_single(entity_type_name: str,
 
 
 def concept_list() -> list:
-    return [clo.CONCEPT]
+    return single_or_list(CONCEPT_ENTITY_TYPE_NAMES)
 
 
 def concept_single(concept_name: str) -> list:
-    return [clo.CONCEPT] + concept_name.split()
+    return single_or_list(CONCEPT_ENTITY_TYPE_NAMES,
+                          concept_name)
 
 
 def builtin(symbol_name: str = '') -> list:
-    if symbol_name:
-        return [clo.BUILTIN, symbol_name]
-    else:
-        return [clo.BUILTIN]
+    return single_or_list(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES, symbol_name)
 
 
-def syntax(syntax_element: str = '') -> list:
-    if syntax_element:
-        return [clo.SYNTAX, syntax_element]
-    else:
-        return [clo.SYNTAX]
+def syntax_element(element: str = '') -> list:
+    return single_or_list(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, element)
 
 
 def symbol_type(type_name: str = '') -> list:
-    if type_name:
-        return [clo.TYPE, type_name]
-    else:
-        return [clo.TYPE]
+    return single_or_list(TYPE_ENTITY_TYPE_NAMES, type_name)
 
 
 def actor_list() -> list:
-    return [clo.ACTOR]
+    return single_or_list(ACTOR_ENTITY_TYPE_NAMES)
 
 
 def actor_single(actor_name: str) -> list:
-    return [clo.ACTOR] + actor_name.split()
+    return single_or_list(ACTOR_ENTITY_TYPE_NAMES,
+                          actor_name)
 
 
 def suite_reporter_list() -> list:
-    return [clo.SUITE_REPORTER]
+    return single_or_list(SUITE_REPORTER_ENTITY_TYPE_NAMES)
 
 
 def suite_reporter_single(suite_reporter_name: str) -> list:
-    return [clo.SUITE_REPORTER] + suite_reporter_name.split()
+    return single_or_list(SUITE_REPORTER_ENTITY_TYPE_NAMES,
+                          suite_reporter_name)
+
+
+def single_or_list(entity_type_names: EntityTypeNames,
+                   entity_name: str = '') -> list:
+    if entity_name:
+        return [entity_type_names.command_line_sub_command] + entity_name.split()
+    else:
+        return [entity_type_names.command_line_sub_command]

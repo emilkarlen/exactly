@@ -1,10 +1,13 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
-from exactly_lib.help_texts import entity_names
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, \
+    command_line_names_as_singular_name
+from exactly_lib.help_texts.entity.concepts import TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.name import Name
+
+TYPE_ENTITY_TYPE_NAMES = command_line_names_as_singular_name(TYPE_CONCEPT_INFO.name)
 
 
 class TypeDocumentation(EntityDocumentationBase):
@@ -67,6 +70,5 @@ def types_help(types: iter) -> EntitiesHelp:
     """
     :param types: [TypeDocumentation]
     """
-    return EntitiesHelp(entity_names.TYPE_ENTITY_TYPE_NAME,
-                        entity_names.TYPE_ENTITY_TYPE_NAME,
+    return EntitiesHelp(TYPE_ENTITY_TYPE_NAMES,
                         types)

@@ -2,8 +2,9 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
+from exactly_lib.help.the_application_help import ALL_ENTITY_TYPES
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
-from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -21,7 +22,7 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                           docs.SectionContents([], []))
 
     def synopsises(self) -> list:
-        return [
+        non_entities_help = [
             _synopsis([], 'Gives a brief description of the program.'),
             _synopsis([_c(clo.HELP)], 'Displays this help.'),
             _synopsis([_c(clo.HTML_DOCUMENTATION)],
@@ -35,29 +36,21 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             _synopsis(_ns(arguments_for.case_instruction_search('INSTRUCTION')),
                       'Describes all test case instructions with the given name.'),
             _synopsis(_ns(arguments_for.suite_cli_syntax()), 'Describes the test suite command line syntax.'),
-            _synopsis(_ns(arguments_for.suite_specification()), 'Specification of the test suite functionality.'),
+            _synopsis(_ns(arguments_for.suite_specification()),
+                      'Specification of the test suite functionality.'),
             _synopsis(_ns(arguments_for.suite_section_for_name('SECTION')), 'Describes a test suite section.'),
             _synopsis(_ns(arguments_for.suite_instruction_in_section('SECTION', 'INSTRUCTION')),
                       'Describes an instruction in a test suite section.'),
-            _entity_list_and_describe(clo.CONCEPT, 'CONCEPT',
-                                      'Lists all concepts; or describes a given concept.'),
-            _entity_list_and_describe(clo.TYPE, 'TYPE',
-                                      'Lists all types; or describes a given type.'),
-            _entity_list_and_describe(clo.ACTOR, 'ACTOR',
-                                      'Lists all actors; or describes a given actor.'),
-            _entity_list_and_describe(clo.SUITE_REPORTER, 'REPORTER',
-                                      'Lists all suite reporters; or describes a given suite reporter.'),
-            _entity_list_and_describe(clo.SYNTAX, 'SYNTAX-ELEMENT',
-                                      'Lists all syntax elements; or describes a given syntax element.'),
-            _entity_list_and_describe(clo.BUILTIN, 'SYMBOL',
-                                      'Lists all builtin {symbols}; or describes a given builtin {symbol}.'.format(
-                                          symbols=SYMBOL_CONCEPT_INFO.name.plural,
-                                          symbol=SYMBOL_CONCEPT_INFO.name.singular,
-                                      )),
         ]
+
+        return non_entities_help + self._entities_help()
 
     def argument_descriptions(self) -> list:
         return []
+
+    @staticmethod
+    def _entities_help() -> list:
+        return list(map(_entity_list_and_describe, ALL_ENTITY_TYPES))
 
 
 def _synopsis(additional_arguments: list,
@@ -67,17 +60,19 @@ def _synopsis(additional_arguments: list,
                                docs.text(single_line_description))
 
 
-def _entity_list_and_describe(entity_type_name: str,
-                              entity_option_syntax_element: str,
-                              single_line_description: str) -> cli_syntax.Synopsis:
+def _entity_list_and_describe(names: EntityTypeNames) -> cli_syntax.Synopsis:
     arguments = [
         arg.Single(arg.Multiplicity.MANDATORY,
                    _c(clo.HELP)),
         arg.Single(arg.Multiplicity.MANDATORY,
-                   _c(entity_type_name)),
+                   _c(names.command_line_sub_command)),
         arg.Single(arg.Multiplicity.OPTIONAL,
-                   _n(entity_option_syntax_element))
+                   _n(names.command_line_entity_argument))
     ]
+    single_line_description = 'Lists all {entities}; or describes a given {entity}.'.format(
+        entity=names.name.singular,
+        entities=names.name.plural,
+    )
     return cli_syntax.Synopsis(arg.CommandLine(arguments),
                                docs.text(single_line_description))
 

@@ -1,6 +1,13 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, EntityTypeNames
 from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.help_texts.names.formatting import syntax_element
+from exactly_lib.util import name
+
+SYNTAX_ELEMENT_ENTITY_TYPE_NAMES = EntityTypeNames(
+    name.name_with_plural_s('syntax element'),
+    entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME,
+    syntax_element('syntax element'))
 
 
 class SyntaxElementDocumentation(EntityDocumentationBase):
@@ -37,6 +44,5 @@ def syntax_elements_help(syntax_elements: iter) -> EntitiesHelp:
     """
     :param syntax_elements: [SyntaxElementDocumentation]
     """
-    return EntitiesHelp(entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME,
-                        entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_PRESENTATION_NAME,
+    return EntitiesHelp(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
                         syntax_elements)
