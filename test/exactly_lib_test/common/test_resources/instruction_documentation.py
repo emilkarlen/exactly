@@ -1,7 +1,6 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.util.textformat import parse as text_parse
-from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib_test.common.test_resources import syntax_parts
 
 
 class InstructionDocumentationWithConstantValues(InstructionDocumentation):
@@ -34,16 +33,9 @@ class InstructionDocumentationWithConstantValues(InstructionDocumentation):
         return self.__syntax_element_descriptions
 
 
-SYNTAX_ELEMENT_DESCRIPTIONS = [
-    SyntaxElementDescription('syntax element name',
-                             docs.paras('syntax element description rest'))]
-
-INVOKATION_VARIANTS = [InvokationVariant('invokation variant syntax')]
-
-
 def instruction_documentation(instruction_name: str) -> InstructionDocumentation:
     return InstructionDocumentationWithConstantValues(instruction_name,
                                                       'single line description',
                                                       'main description rest',
-                                                      INVOKATION_VARIANTS,
-                                                      SYNTAX_ELEMENT_DESCRIPTIONS)
+                                                      syntax_parts.INVOKATION_VARIANTS,
+                                                      syntax_parts.SYNTAX_ELEMENT_DESCRIPTIONS)

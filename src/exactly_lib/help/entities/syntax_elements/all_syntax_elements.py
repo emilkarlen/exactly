@@ -1,4 +1,5 @@
-from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
+from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation, \
+    syntax_element_documentation
 from exactly_lib.help.entities.syntax_elements.element import here_document, regex, glob_pattern, \
     type_string, type_list, type_path
 from exactly_lib.help_texts.entity import syntax_element
@@ -13,10 +14,11 @@ from exactly_lib.test_case_utils.lines_transformer import parse_lines_transforme
 def _for_expression_grammar(type_info: SingularNameAndCrossReferenceId,
                             grammar: Grammar) -> SyntaxElementDocumentation:
     syntax = Syntax(grammar)
-    return SyntaxElementDocumentation(type_info,
-                                      [],
-                                      syntax.invokation_variants(),
-                                      syntax.see_also_targets())
+    return syntax_element_documentation(type_info,
+                                        [],
+                                        syntax.invokation_variants(),
+                                        [],
+                                        syntax.see_also_targets())
 
 
 ALL_SYNTAX_ELEMENT_DOCS = [
