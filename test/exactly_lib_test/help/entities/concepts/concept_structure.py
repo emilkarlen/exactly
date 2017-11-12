@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.help.entities.concepts import contents_structure as sut
-from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.util.description import DescriptionWithSubSections, \
     single_line_description_with_sub_sections
+from exactly_lib.util.name import Name
 
 
 def suite() -> unittest.TestSuite:

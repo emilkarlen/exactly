@@ -1,9 +1,10 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts import entity_names
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, Name
+from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.util.name import Name
 
 
 class TypeDocumentation(EntityDocumentationBase):

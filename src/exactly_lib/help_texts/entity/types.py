@@ -1,6 +1,7 @@
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, Name
+from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
+from exactly_lib.util.name import Name
 
 
 def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
