@@ -1,3 +1,4 @@
+from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.core import Text, StringText, CrossReferenceTarget
 
 
@@ -24,21 +25,6 @@ class CrossReferenceId(CrossReferenceTarget, SeeAlsoTarget):
 
     def _eq_object_of_same_type(self, other):
         raise NotImplementedError('abstract method')
-
-
-class Name(tuple):
-    def __new__(cls,
-                singular: str,
-                plural: str):
-        return tuple.__new__(cls, (singular, plural))
-
-    @property
-    def singular(self) -> str:
-        return self[0]
-
-    @property
-    def plural(self) -> str:
-        return self[1]
 
 
 class SingularNameAndCrossReferenceId:

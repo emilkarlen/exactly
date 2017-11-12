@@ -1,5 +1,5 @@
-from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.name import Name
 
 
 class SimpleExpressionDescription:

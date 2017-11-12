@@ -7,8 +7,8 @@ from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDo
 from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.entity.concepts import name_and_ref_target
-from exactly_lib.help_texts.name_and_cross_ref import Name
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
+from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import text, para
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
