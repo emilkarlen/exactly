@@ -221,6 +221,51 @@ class TestItemizedList(unittest.TestCase):
                             ''])
         check(self, expected, actual)
 
+    def test_single_list_with_single_item_with_contents_on_next_line(self):
+        expected = [lists.HeaderContentList([
+            _list_item('item',
+                       [
+                           Paragraph([StringText('contents')]),
+                       ])],
+            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  * item',
+                            '    contents',
+                            ])
+        check(self, expected, actual)
+
+    def test_single_list_with_single_item_with_contents_on_line_after_separator(self):
+        expected = [lists.HeaderContentList([
+            _list_item('item',
+                       [
+                           Paragraph([StringText('contents')]),
+                       ])],
+            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  * item',
+
+                            '    contents',
+                            ])
+        check(self, expected, actual)
+
+    def test_single_list_with_with_contents(self):
+        expected = [lists.HeaderContentList([
+            _list_item('item 1',
+                       [
+                           Paragraph([StringText('contents 1')]),
+                       ]),
+            _list_item('item 2',
+                       [
+                           Paragraph([StringText('contents 2')]),
+                       ]),
+        ],
+            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  * item 1',
+
+                            '    contents 1',
+                            '  * item 2',
+                            '    contents 2',
+                            ])
+        check(self, expected, actual)
+
     def test_single_list_with_multiple_items(self):
         expected = [lists.HeaderContentList([_list_item('item 1'),
                                              _list_item('item 2')],
