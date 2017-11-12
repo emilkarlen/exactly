@@ -19,10 +19,10 @@ def _builtin_docs_of_value_type(value_type: ValueType, builtin_doc_list: list) -
                        builtin_doc_list))
 
 
-# TODO Sortering av typerna
+# FIXME Sort on types
 def _header(value_type: ValueType) -> str:
     return '{type_name} {symbols}'.format(
-        type_name=TYPE_INFO_DICT[value_type].concept_info.name.singular.capitalize(),
+        type_name=TYPE_INFO_DICT[value_type].name.singular.capitalize(),
         symbols=SYMBOL_CONCEPT_INFO.name.plural)
 
 
@@ -49,7 +49,7 @@ class IndividualBuiltinSymbolRenderer(SectionContentsRenderer):
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _type_paragraph(self) -> docs.ParagraphItem:
-        return docs.para('Type: ' + TYPE_INFO_DICT[self.builtin_doc.value_type].concept_info.name.singular)
+        return docs.para('Type: ' + TYPE_INFO_DICT[self.builtin_doc.value_type].name.singular)
 
 
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:

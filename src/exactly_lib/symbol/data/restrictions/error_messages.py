@@ -40,7 +40,7 @@ def unsatisfied_path_relativity(symbol_name: str,
 
     lines = ([
                  'Illegal relativity, of {} symbol "{}"'.format(
-                     define_symbol.DATA_TYPE_INFO_DICT[DataValueType.PATH].type_name,
+                     define_symbol.DATA_TYPE_INFO_DICT[DataValueType.PATH].identifier,
                      symbol_name)
              ] +
              defined_at_line__err_msg_lines(container.definition_source) +

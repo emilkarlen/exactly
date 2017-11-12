@@ -35,10 +35,10 @@ class _SymbolConcept(PlainConceptDocumentation):
             'symbol_name_syntax': define_symbol.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
-            'string_type': TYPE_INFO_DICT[ValueType.STRING].type_name,
-            'list_type': TYPE_INFO_DICT[ValueType.LIST].type_name,
-            'file_trans_type': TYPE_INFO_DICT[ValueType.LINES_TRANSFORMER].type_name,
-            'max_type_width': max(map(lambda type_info: len(type_info.type_name),
+            'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
+            'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,
+            'file_trans_type': TYPE_INFO_DICT[ValueType.LINES_TRANSFORMER].identifier,
+            'max_type_width': max(map(lambda type_info: len(type_info.identifier),
                                       TYPE_INFO_DICT.values())),
             'LIST_SYMBOL': list_symbol_name,
             'FILE_TRANS_SYMBOL': file_trans_symbol_name,
@@ -82,9 +82,9 @@ class _SymbolConcept(PlainConceptDocumentation):
 
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
-            'string_type': TYPE_INFO_DICT[ValueType.STRING].type_name,
-            'list_type': TYPE_INFO_DICT[ValueType.LIST].type_name,
-            'max_type_width': max(map(lambda value_type: len(TYPE_INFO_DICT[value_type].type_name),
+            'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
+            'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,
+            'max_type_width': max(map(lambda value_type: len(TYPE_INFO_DICT[value_type].identifier),
                                       [ValueType.LIST,
                                        ValueType.STRING])),
 

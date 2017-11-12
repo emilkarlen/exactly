@@ -24,13 +24,13 @@ DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE = TestCasePhaseInstructionCrossReferen
 
 class TypeInfo(tuple):
     def __new__(cls,
-                type_name: str,
-                def_instruction_syntax_lines_function):
-        return tuple.__new__(cls, (type_name,
-                                   def_instruction_syntax_lines_function))
+                type_info: TypeNameAndCrossReferenceId,
+                def_instruction_syntax_line_function):
+        return tuple.__new__(cls, (type_info.identifier,
+                                   def_instruction_syntax_line_function))
 
     @property
-    def type_name(self) -> str:
+    def identifier(self) -> str:
         return self[0]
 
     @property
@@ -40,77 +40,13 @@ class TypeInfo(tuple):
         strings.  Each string is a command line syntax for defining a symbol of the
         type that this object represents.
         """
-        return self[1]
 
+        def ret_val():
+            return [
+                self[1]()
+            ]
 
-def _def_instruction_syntax_lines_function__string() -> list:
-    return [
-        definition_of_type_string()
-    ]
-
-
-def _def_instruction_syntax_lines_function__path() -> list:
-    return [
-        definition_of_type_path()
-    ]
-
-
-def _def_instruction_syntax_lines_function__list() -> list:
-    return [
-        definition_of_type_list()
-    ]
-
-
-def _def_instruction_syntax_lines_function__line_matcher() -> list:
-    return [
-        definition_of_type_line_matcher()
-    ]
-
-
-def _def_instruction_syntax_lines_function__file_matcher() -> list:
-    return [
-        definition_of_type_file_matcher()
-    ]
-
-
-def _def_instruction_syntax_lines_function__lines_transformer() -> list:
-    return [
-        definition_of_type_lines_transformer()
-    ]
-
-
-DATA_TYPE_INFO_DICT = {
-    DataValueType.STRING:
-        TypeInfo(STRING_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__string),
-    DataValueType.PATH:
-        TypeInfo(PATH_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__path),
-    DataValueType.LIST:
-        TypeInfo(LIST_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__list),
-}
-
-ANY_TYPE_INFO_DICT = {
-    ValueType.STRING:
-        TypeInfo(STRING_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__string),
-    ValueType.PATH:
-        TypeInfo(PATH_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__path),
-    ValueType.LIST:
-        TypeInfo(LIST_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__list),
-    ValueType.LINE_MATCHER:
-        TypeInfo(LINE_MATCHER_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__lines_transformer),
-    ValueType.FILE_MATCHER:
-        TypeInfo(FILE_MATCHER_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__file_matcher),
-    ValueType.LINES_TRANSFORMER:
-        TypeInfo(LINES_TRANSFORMER_TYPE_INFO.identifier,
-                 _def_instruction_syntax_lines_function__lines_transformer),
-}
+        return ret_val
 
 
 def definition_of_type_string() -> str:
@@ -119,7 +55,7 @@ def definition_of_type_string() -> str:
 
 
 def definition_of_type_path() -> str:
-    return _def_of(PATH_TYPE_INFO.identifier,
+    return _def_of(PATH_TYPE_INFO,
                    path_syntax.mandatory_path_with_optional_relativity(
                        a.Named(PATH_TYPE_INFO.syntax_element_name),
                        PATH_SUFFIX_IS_REQUIRED)
@@ -127,7 +63,7 @@ def definition_of_type_path() -> str:
 
 
 def definition_of_type_list() -> str:
-    return _def_of(LIST_TYPE_INFO.identifier,
+    return _def_of(LIST_TYPE_INFO,
                    [a.Single(a.Multiplicity.ZERO_OR_MORE,
                              a.Named(type_system.LIST_ELEMENT))])
 
@@ -146,14 +82,14 @@ def definition_of_type_lines_transformer() -> str:
 
 def _standard_definition(type_info: TypeNameAndCrossReferenceId,
                          value_multiplicity: a.Multiplicity = a.Multiplicity.OPTIONAL) -> str:
-    return _def_of(type_info.identifier,
+    return _def_of(type_info,
                    [a.Single(value_multiplicity,
                              a.Named(type_info.syntax_element_name))])
 
 
-def _def_of(type_token: str, value_arguments: list) -> str:
+def _def_of(type_info: TypeNameAndCrossReferenceId, value_arguments: list) -> str:
     arguments = [
-        a.Single(a.Multiplicity.MANDATORY, a.Constant(type_token)),
+        a.Single(a.Multiplicity.MANDATORY, a.Constant(type_info.identifier)),
         _symbol_name(),
         _equals(),
     ]
@@ -167,3 +103,35 @@ def _symbol_name() -> a.ArgumentUsage:
 
 def _equals() -> a.ArgumentUsage:
     return a.Single(a.Multiplicity.MANDATORY, a.Constant(EQUALS_ARGUMENT))
+
+
+DATA_TYPE_INFO_DICT = {
+    DataValueType.STRING:
+        TypeInfo(STRING_TYPE_INFO,
+                 definition_of_type_string),
+    DataValueType.PATH:
+        TypeInfo(PATH_TYPE_INFO,
+                 definition_of_type_path),
+    DataValueType.LIST:
+        TypeInfo(LIST_TYPE_INFO,
+                 definition_of_type_list),
+}
+
+ANY_TYPE_INFO_DICT = {
+    ValueType.STRING:
+        DATA_TYPE_INFO_DICT[DataValueType.STRING],
+    ValueType.PATH:
+        DATA_TYPE_INFO_DICT[DataValueType.PATH],
+    ValueType.LIST:
+        DATA_TYPE_INFO_DICT[DataValueType.LIST],
+
+    ValueType.LINE_MATCHER:
+        TypeInfo(LINE_MATCHER_TYPE_INFO,
+                 definition_of_type_lines_transformer),
+    ValueType.FILE_MATCHER:
+        TypeInfo(FILE_MATCHER_TYPE_INFO,
+                 definition_of_type_file_matcher),
+    ValueType.LINES_TRANSFORMER:
+        TypeInfo(LINES_TRANSFORMER_TYPE_INFO,
+                 definition_of_type_lines_transformer),
+}

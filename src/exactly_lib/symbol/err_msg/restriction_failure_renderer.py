@@ -37,8 +37,8 @@ def _of_invalid_type_category(failing_symbol: str, symbols: SymbolTable, failure
 
 def _of_invalid_value_type(failing_symbol: str, symbols: SymbolTable, failure: InvalidValueTypeFailure) -> list:
     msg = _expected_actual(failing_symbol,
-                           type_system.TYPE_INFO_DICT[failure.expected].type_name,
-                           type_system.TYPE_INFO_DICT[failure.actual].type_name,
+                           type_system.TYPE_INFO_DICT[failure.expected].identifier,
+                           type_system.TYPE_INFO_DICT[failure.actual].identifier,
                            )
     blank_line_separated_parts = [msg]
     return blank_line_separated_parts
