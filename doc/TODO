@@ -104,6 +104,12 @@ arguments for specifying a test case file etc:
  - test case file
  - preprocessor
  - suite (--suite SUITE)
+*** Relation to other functionallity
+The --act CLO invokes a similair alternative way of "looking at a test case".
+There could/should also be a similair functionality to run a test case "dry",
+that prints instructions and arguments instead of executing them.
+All these alternative ways of executing a test case maybe should have some
+common syntax.
 ** def of FileRef should let context of use determine default relativity
 The "def" instruction should not specify default relativity.
 The default relativity is determined by instructions that use file refs -
