@@ -4,7 +4,10 @@ from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_element
+from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.entity.syntax_element import STRING_SYNTAX_ELEMENT
+from exactly_lib.help_texts.names import formatting
+from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -12,10 +15,15 @@ class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(syntax_element.PATH_SYNTAX_ELEMENT)
 
-        self._parser = TextParser()
-
         self._string_name = a.Named(STRING_SYNTAX_ELEMENT.singular_name)
         self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT
+
+        self._parser = TextParser({
+            'PATH_STRING': self._string_name.name,
+            'posix_syntax': documentation_text.POSIX_SYNTAX,
+            'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
+            'string_syntax_element': STRING_SYNTAX_ELEMENT.singular_name,
+        })
 
     def invokation_variants(self) -> list:
         return [
@@ -59,13 +67,15 @@ class _Documentation(SyntaxElementDocumentation):
 DOCUMENTATION = _Documentation()
 
 _MAIN_DESCRIPTION_REST = """\
-Main description rest
 """
 
 _STRING_DESCRIPTION_REST = """\
-String description rest
+A relative or absolute path, using {posix_syntax}.
+
+
+It is a value of type {string_type}, and thus uses {string_syntax_element} syntax.
 """
 
 _RELATIVITY_DESCRIPTION_REST = """\
-Relativity description rest
+Specifies a directory that {PATH_STRING} is relative to.
 """

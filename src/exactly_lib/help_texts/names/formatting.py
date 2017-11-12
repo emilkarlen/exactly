@@ -128,6 +128,10 @@ def string_constant(constant: str) -> str:
     return '"' + constant + '"'
 
 
+def keyword(keyword: str) -> str:
+    return '"' + keyword + '"'
+
+
 def syntax_element(human_readable_name: str) -> str:
     """
     Transforms a name with space and lowercase letters
