@@ -114,6 +114,6 @@ def _string_resolver_of(value_token: Token) -> StringResolver:
         string_made_up_by_just_strings(
             'The {INTEGER} argument must be made up of just {string_type} values.'.format(
                 INTEGER=INTEGER_ARGUMENT.name,
-                string_type=help_texts.ANY_TYPE_INFO_DICT[ValueType.STRING].type_name,
+                string_type=help_texts.ANY_TYPE_INFO_DICT[ValueType.STRING].identifier,
             )
         ))

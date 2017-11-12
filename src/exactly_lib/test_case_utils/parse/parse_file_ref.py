@@ -298,8 +298,8 @@ def _path_suffix_resolver_from_fragments(fragments: list) -> PathPartResolver:
 PATH_COMPONENT_STRING_REFERENCES_RESTRICTION = string_made_up_by_just_strings(
     'Every symbol used as a path component of a {path_type} '
     'must be defined as a {string_type}.'.format(
-        path_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.PATH].type_name,
-        string_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.STRING].type_name,
+        path_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.PATH].identifier,
+        string_type=help_texts.DATA_TYPE_INFO_DICT[DataValueType.STRING].identifier,
     ))
 
 

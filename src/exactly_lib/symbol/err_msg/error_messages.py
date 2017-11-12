@@ -71,4 +71,4 @@ def invalid_type_how_to_fix_lines(expected_value_types: list) -> list:
 
 
 def _type_name_of(value_type: ValueType) -> str:
-    return type_system.TYPE_INFO_DICT[value_type].type_name
+    return type_system.TYPE_INFO_DICT[value_type].identifier

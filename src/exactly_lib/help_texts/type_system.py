@@ -11,19 +11,10 @@ def _type_identifier(type_name: str) -> str:
 
 LIST_ELEMENT = 'ELEMENT'
 
-
-class TypeInfo:
-    def __init__(self,
-                 info: types.TypeNameAndCrossReferenceId):
-        self.type_name = info.identifier
-        self.value_name = info.syntax_element_name
-        self.concept_info = info
-
-
 DATA_TYPE_INFO_DICT = {
-    DataValueType.STRING: TypeInfo(types.STRING_TYPE_INFO),
-    DataValueType.PATH: TypeInfo(types.PATH_TYPE_INFO),
-    DataValueType.LIST: TypeInfo(types.LIST_TYPE_INFO),
+    DataValueType.STRING: types.STRING_TYPE_INFO,
+    DataValueType.PATH: types.PATH_TYPE_INFO,
+    DataValueType.LIST: types.LIST_TYPE_INFO,
 }
 
 DATA_TYPE_2_VALUE_TYPE = {
@@ -39,9 +30,9 @@ DATA_TYPE_LIST_ORDER = [
 ]
 
 LOGIC_TYPE_INFO_DICT = {
-    LogicValueType.LINE_MATCHER: TypeInfo(types.LINE_MATCHER_TYPE_INFO),
-    LogicValueType.FILE_MATCHER: TypeInfo(types.FILE_MATCHER_TYPE_INFO),
-    LogicValueType.LINES_TRANSFORMER: TypeInfo(types.LINES_TRANSFORMER_TYPE_INFO),
+    LogicValueType.LINE_MATCHER: types.LINE_MATCHER_TYPE_INFO,
+    LogicValueType.FILE_MATCHER: types.FILE_MATCHER_TYPE_INFO,
+    LogicValueType.LINES_TRANSFORMER: types.LINES_TRANSFORMER_TYPE_INFO,
 }
 
 LOGIC_TYPE_2_VALUE_TYPE = {
