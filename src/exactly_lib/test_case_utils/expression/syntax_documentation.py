@@ -1,9 +1,10 @@
 import itertools
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.type_system import syntax_of_type_name_in_text
-from exactly_lib.symbol import symbol_syntax
+from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription
@@ -50,7 +51,7 @@ class Syntax:
 
     def invokation_variants_symbol_ref(self) -> list:
         symbol_argument = a.Single(a.Multiplicity.MANDATORY,
-                                   a.Named(symbol_syntax.SYMBOL_SYNTAX_ELEMENT_NAME))
+                                   a.Named(instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME))
         iv = InvokationVariant(cl_syntax.cl_syntax_for_args([symbol_argument]),
                                self._symbol_ref_description())
         return [iv]
@@ -112,8 +113,8 @@ class Syntax:
     def _symbol_ref_description(self):
         return normalize_and_parse(
             _SYMBOL_REF_DESCRIPTION.format(
+                symbol_concept=formatting.concept(SYMBOL_CONCEPT_INFO.singular_name),
                 concept_name=self.grammar.concept.name.singular,
-                concept_type_name=syntax_of_type_name_in_text(self.grammar.concept.type_system_type_name),
 
             ))
 
@@ -125,6 +126,6 @@ def _see_also_targets_for_expr(expressions_dict: dict) -> iter:
 
 
 _SYMBOL_REF_DESCRIPTION = """\
-Reference to a symbol,
+Reference to a {symbol_concept},
 that must have been defined as a {concept_name}.
 """

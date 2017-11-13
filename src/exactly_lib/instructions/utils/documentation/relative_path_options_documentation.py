@@ -7,12 +7,11 @@ from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory
     CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import concepts as ci
 from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
-from exactly_lib.help_texts.instruction_arguments import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
@@ -34,7 +33,7 @@ def default_relativity_for_rel_opt_type(path_arg_name: str,
 def relativity_syntax_element_descriptions(
         path_that_may_be_relative: a.Named,
         rel_options_conf: RelOptionsConfiguration,
-        relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> list:
+        relativity_argument: a.Named = instruction_arguments.RELATIVITY_ARGUMENT) -> list:
     return [
         relativity_syntax_element_description(path_that_may_be_relative,
                                               rel_options_conf,
@@ -45,7 +44,7 @@ def relativity_syntax_element_descriptions(
 def relativity_syntax_element_description(
         path_that_may_be_relative: a.Named,
         rel_options_conf: RelOptionsConfiguration,
-        relativity_argument: a.Named = RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
+        relativity_argument: a.Named = instruction_arguments.RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
     renderer = RelOptionRenderer(path_that_may_be_relative.name)
     return SyntaxElementDescription(
         relativity_argument.name,
@@ -139,7 +138,7 @@ class RelOptionRenderer:
             'DIR_TMP': sds.PATH__TMP_USER,
             'DIR_ACT': sds.SUB_DIRECTORY__ACT,
             'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
-            'SYMBOL_NAME': symbol_syntax.SYMBOL_SYNTAX_ELEMENT_NAME,
+            'SYMBOL_NAME': instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME,
             'PATH_SYMBOL_TYPE': PATH_TYPE_INFO.identifier,
             'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
             'home_case_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
@@ -254,7 +253,7 @@ By default, {path} is relative the {default_relativity_location}.
 """
 
 _REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME,
-                              symbol_syntax.SYMBOL_SYNTAX_ELEMENT_NAME)
+                              instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME)
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
 A reference to a symbol {symbol_name} using the syntax
