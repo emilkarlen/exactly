@@ -7,12 +7,12 @@ from exactly_lib.help.entities.actors.actor.common import \
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
+from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
@@ -29,7 +29,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
+            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),

@@ -5,7 +5,6 @@ from exactly_lib.help.entities.actors.actor.common import ARGUMENT_SYNTAX_ELEMEN
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
     HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
@@ -14,6 +13,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
+from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import file_interpreter as help_texts
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -37,7 +37,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
+            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
