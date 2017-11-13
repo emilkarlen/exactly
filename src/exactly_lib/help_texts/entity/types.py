@@ -57,7 +57,7 @@ LIST_TYPE_INFO = name_and_ref_target(
 
 PATH_TYPE_INFO = name_and_ref_target(
     name_with_plural_s('path'),
-    'A path of a file or directory, with special support for the test case directories.',
+    'A file path, with special support for the test case directories.',
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
