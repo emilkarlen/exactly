@@ -80,16 +80,9 @@ class _Documentation(SyntaxElementDocumentation):
 DOCUMENTATION = _Documentation()
 
 _MAIN_DESCRIPTION_REST = """\
-"""
+If {PATH_STRING} is an absolute path, then {RELATIVITY_OPTION} must not be given.
 
-_STRING_DESCRIPTION_REST = """\
-A relative or absolute path, using {posix_syntax}.
-
-
-It is a value of type {string_type}, and thus uses {string_syntax_element} syntax.
-
-
-If it is a relative path, then if {RELATIVITY_OPTION} is ...
+If {PATH_STRING} is a relative path, then if {RELATIVITY_OPTION} is ...
 
 
   * given
@@ -99,26 +92,25 @@ If it is a relative path, then if {RELATIVITY_OPTION} is ...
   * not given
   
     {PATH_STRING} is relative to the default relativity root directory,
-    
-    as specified by the place where the path is used.
 
 
 The default relativity depends on the instruction,
 and also on the argument position of the instruction. 
+"""
+
+_STRING_DESCRIPTION_REST = """\
+A relative or absolute path, using {posix_syntax}.
 
 
-If {PATH_STRING} is an absolute path, then {RELATIVITY_OPTION} must not be given.
+It is a value of type {string_type}, and thus uses {string_syntax_element} syntax.
 """
 
 _RELATIVITY_DESCRIPTION_REST = """\
-Specifies a directory that {PATH_STRING} is relative to.
+An option that specifies the directory that {PATH_STRING} is relative to.
 
 
 The available relativities depends on the instruction,
 and also on the argument position of the instruction. 
-
-
-If {PATH_STRING} is an absolute path, then {RELATIVITY_OPTION} must not be given.
 
 
 Forms:
