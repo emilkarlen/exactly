@@ -41,8 +41,8 @@ class EnvironmentVariableDescription:
     def __init__(self):
         self.text_parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'case_home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO),
-            'act_home_directory': formatting.concept_(concepts.HOME_ACT_DIRECTORY_CONCEPT_INFO),
+            'case_home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
+            'act_home_directory': formatting.concept_(concepts.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
             'act_sub_dir': sds.SUB_DIRECTORY__ACT,
             'tmp_sub_dir': sds.PATH__TMP_USER,
             'result_sub_dir': sds.SUB_DIRECTORY__RESULT,

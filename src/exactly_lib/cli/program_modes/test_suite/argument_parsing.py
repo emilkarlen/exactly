@@ -77,7 +77,7 @@ class _Parser:
                                  ARGUMENT=case_opts.ACTOR_OPTION_ARGUMENT,
                                  INTERPRETER_ACTOR_TERM=formatting.entity(
                                      actors.SOURCE_INTERPRETER_ACTOR.singular_name),
-                                 ACTOR_CONCEPT=formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
+                                 ACTOR_CONCEPT=formatting.concept_(concepts.ACTOR_CONF_PARAM_INFO),
                                  shell_syntax_concept=formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
                              ))
         return ret_val

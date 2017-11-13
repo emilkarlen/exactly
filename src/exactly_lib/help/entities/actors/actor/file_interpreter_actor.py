@@ -79,9 +79,9 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         fm = {
             'FILE': self.file.name,
             'ARGUMENT': self.argument.name,
-            'actor': formatting.concept(concepts.ACTOR_CONCEPT_INFO.singular_name),
+            'actor': formatting.concept(concepts.ACTOR_CONF_PARAM_INFO.singular_name),
             'act_phase': ACT_PHASE_NAME.emphasis,
-            'home_directory_concept': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
+            'home_directory_concept': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
             'shell_syntax_concept': formatting.concept(concepts.SHELL_SYNTAX_CONCEPT_INFO.singular_name),
         }
         super().__init__(TextParser(fm))

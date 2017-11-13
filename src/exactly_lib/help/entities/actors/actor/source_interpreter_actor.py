@@ -21,7 +21,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO),
+            'home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,

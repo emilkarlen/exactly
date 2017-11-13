@@ -135,8 +135,8 @@ class RelOptionRenderer:
             'SYMBOL_NAME': instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME,
             'PATH_SYMBOL_TYPE': PATH_TYPE_INFO.identifier,
             'cwd': formatting.concept(ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
-            'home_case_directory': formatting.concept(ci.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
-            'home_act_directory': formatting.concept(ci.HOME_ACT_DIRECTORY_CONCEPT_INFO.singular_name),
+            'home_case_directory': formatting.concept(ci.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
+            'home_act_directory': formatting.concept(ci.HOME_ACT_DIRECTORY_CONF_PARAM_INFO.singular_name),
             'sandbox_concept': formatting.concept(ci.SANDBOX_CONCEPT_INFO.singular_name),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
@@ -232,14 +232,14 @@ _ALL = {
                                               [ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
     RelOptionType.REL_HOME_CASE: _RelOptionTypeInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                     formatting.concept(
-                                                        ci.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
+                                                        ci.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
                                                     _REL_HOME_CASE_DESCRIPTION,
-                                                    [ci.HOME_CASE_DIRECTORY_CONCEPT_INFO]),
+                                                    [ci.HOME_CASE_DIRECTORY_CONF_PARAM_INFO]),
     RelOptionType.REL_HOME_ACT: _RelOptionTypeInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
                                                    formatting.concept(
-                                                       ci.HOME_ACT_DIRECTORY_CONCEPT_INFO.singular_name),
+                                                       ci.HOME_ACT_DIRECTORY_CONF_PARAM_INFO.singular_name),
                                                    _REL_HOME_ACT_DESCRIPTION,
-                                                   [ci.HOME_ACT_DIRECTORY_CONCEPT_INFO]),
+                                                   [ci.HOME_ACT_DIRECTORY_CONF_PARAM_INFO]),
 }
 
 _DEFAULT_RELATIVITY = """\

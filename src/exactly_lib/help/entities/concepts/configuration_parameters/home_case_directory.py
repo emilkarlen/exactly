@@ -1,6 +1,6 @@
 from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity.concepts import HOME_CASE_DIRECTORY_CONCEPT_INFO
+from exactly_lib.help_texts.entity.concepts import HOME_CASE_DIRECTORY_CONF_PARAM_INFO
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_CASE_DIRECTORY_INSTRUCTION_NAME
@@ -12,12 +12,12 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(HOME_CASE_DIRECTORY_CONCEPT_INFO)
+        super().__init__(HOME_CASE_DIRECTORY_CONF_PARAM_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
         parser = TextParser({
             'phase': phase_name_dictionary(),
-            'the_concept': HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name,
+            'the_concept': HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name,
             'home_dir_env_var': ENV_VAR_HOME_CASE,
             'rel_option': formatting.cli_option(REL_HOME_CASE_OPTION)
         })

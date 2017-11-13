@@ -72,7 +72,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         fm = {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
-            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
+            'actor': formatting.concept_(concepts.ACTOR_CONF_PARAM_INFO),
             'act_phase': ACT_PHASE_NAME.emphasis,
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),

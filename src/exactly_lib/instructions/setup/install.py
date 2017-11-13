@@ -58,7 +58,7 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         format_map = {
-            'home_dir': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO),
+            'home_dir': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'current_dir': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,

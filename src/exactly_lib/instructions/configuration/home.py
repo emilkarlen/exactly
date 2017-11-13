@@ -25,7 +25,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
-            'home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO),
+            'home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'PATH': _ARG_NAME
         })
 
@@ -45,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def see_also_targets(self) -> list:
-        return [concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO.cross_reference_target]
+        return [concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.cross_reference_target]
 
 
 _ARG_NAME = 'PATH'

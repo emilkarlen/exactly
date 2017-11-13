@@ -33,8 +33,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         self.phase_name_dictionary = phase_name_dictionary()
         self._parser = TextParser({
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
-            'sandbox': formatting.concept(concepts.ACTOR_CONCEPT_INFO.singular_name),
+            'home_directory': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
+            'sandbox': formatting.concept(concepts.ACTOR_CONF_PARAM_INFO.singular_name),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
             'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
@@ -72,10 +72,10 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     @property
     def see_also_targets(self) -> list:
         return [
-                   concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
+                   concepts.ACTOR_CONF_PARAM_INFO.cross_reference_target,
                    concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
                    concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-                   concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO.cross_reference_target,
+                   concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.cross_reference_target,
                    TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
