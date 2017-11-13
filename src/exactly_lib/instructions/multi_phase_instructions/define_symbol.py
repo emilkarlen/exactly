@@ -17,6 +17,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
@@ -31,7 +32,6 @@ from exactly_lib.test_case_utils.lines_transformer import resolvers as line_tran
     parse_lines_transformer
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
-from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration

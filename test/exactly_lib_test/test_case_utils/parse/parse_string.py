@@ -10,11 +10,11 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTyp
 from exactly_lib.symbol.data.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
     ConstantStringFragmentResolver, StringResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.parse import parse_string as sut
-from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax, \
+from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \
     constant, symbol, Fragment
+from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_utils.parse import parse_string as sut
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
     assert_token_stream, \

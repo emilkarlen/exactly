@@ -11,9 +11,9 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelat
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.data.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
+from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib.test_case_utils.parse.symbol_syntax import SymbolWithReferenceSyntax, symbol, constant
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *

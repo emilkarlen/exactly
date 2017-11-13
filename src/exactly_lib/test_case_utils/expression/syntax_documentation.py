@@ -3,7 +3,7 @@ import itertools
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.type_system import syntax_of_type_name_in_text
-from exactly_lib.test_case_utils.parse import symbol_syntax
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription
