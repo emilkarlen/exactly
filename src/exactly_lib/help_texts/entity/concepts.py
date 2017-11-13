@@ -31,6 +31,21 @@ CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target(
     _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)
 )
 
+TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
+    name_with_plural_s('test case directory structure'),
+    'Preexisting and temporary directories used during the execution of a test case.'
+)
+
+HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
+    name_with_plural_s('home directory structure'),
+    'Preexisting directories where source files are located.'
+)
+
+SANDBOX_CONCEPT_INFO = name_and_ref_target(
+    name_with_plural_s('sandbox directory structure'),
+    'Temporary directories used during a single execution of a test case.'
+)
+
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
     Name('current directory', 'current directories'),
     'The current directory of the environment in which an instruction is executed.'
@@ -44,16 +59,6 @@ ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(
 PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('preprocessor'),
     'A program that transforms a test case file as the first step in the processing of it.'
-)
-
-SANDBOX_CONCEPT_INFO = name_and_ref_target(
-    Name('sandbox', 'sandboxes'),
-    'The temporary directory where a test case is executed.'
-)
-
-HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('home directory structure'),
-    'The directories where source files are located.'
 )
 
 SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(
