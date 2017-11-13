@@ -210,6 +210,10 @@ let status	= SKIP
   (in other systems) with import of modules and files
 ** Discusion
 Maybe 
+* removal of SDS: does it work if there is a read-only file?
+<2017-11-13 Mon>
+Do not know how read-only files are handled.
+Make sure that Excatly does not crach.
 * TODO [#C] DestinationPathFromRelRootResolver: Should be Path or PurePath?
 Returns type is invalid, but works: combining Path and PurePath in apparently
 incorrect way.
