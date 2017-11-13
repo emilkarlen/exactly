@@ -308,7 +308,7 @@ Yes, casting is supported - casting data type -> string-->
               <term>PATH = PATH</term>
 
               <listitem>
-                <para/>
+                <para></para>
               </listitem>
             </varlistentry>
 
@@ -317,19 +317,215 @@ Yes, casting is supported - casting data type -> string-->
               STRING</term>
 
               <listitem>
-                <para/>
+                <para></para>
               </listitem>
             </varlistentry>
 
             <varlistentry>
-              <term/>
+              <term></term>
 
               <listitem>
-                <para/>
+                <para></para>
               </listitem>
             </varlistentry>
           </variablelist>
         </section>
+      </section>
+    </section>
+
+    <section>
+      <title>Test Case Directory Structure</title>
+
+      <section>
+        <title>Info to provide</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>contains the HDS</para>
+          </listitem>
+
+          <listitem>
+            <para>contains the SDS</para>
+          </listitem>
+
+          <listitem>
+            <para>contains reserved directories that should not be
+            accessed</para>
+          </listitem>
+
+          <listitem>
+            <para>files and directories should preferable only be created in
+            the SDS directories</para>
+          </listitem>
+
+          <listitem>
+            <para>PGM has support for referring to all of these
+            directories</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Single line descr</title>
+
+        <para>Preexisting and temporary directories accessed by a test
+        case.</para>
+      </section>
+
+      <section>
+        <title>Rest</title>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Home Directory Structure</title>
+
+      <section>
+        <title>Info to provide</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>existing directories</para>
+          </listitem>
+
+          <listitem>
+            <para>default home/case = dir where test case file is
+            located</para>
+          </listitem>
+
+          <listitem>
+            <para>default home/act = dir where test case file is
+            located</para>
+          </listitem>
+
+          <listitem>
+            <para>contains files that typically must not be modified</para>
+          </listitem>
+
+          <listitem>
+            <para>specified in the [conf] phase, and cannot be modified
+            thereafter</para>
+          </listitem>
+
+          <listitem>
+            <para>typlical uses</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>SUT</para>
+              </listitem>
+
+              <listitem>
+                <para>input</para>
+              </listitem>
+
+              <listitem>
+                <para>expected output</para>
+              </listitem>
+
+              <listitem>
+                <para>helper programs</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>PGM has support for referring to all of these
+            directories</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Single line descr</title>
+
+        <para>Preexisting and temporary directories accessed by a test
+        case.</para>
+      </section>
+
+      <section>
+        <title>Rest</title>
+
+        <para></para>
+      </section>
+    </section>
+
+    <section>
+      <title>Sandbox Directory Structure</title>
+
+      <section>
+        <title>Info to provide</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>temporary directories used during a single execution of a
+            test case</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>created when the [setup] phase begins</para>
+              </listitem>
+
+              <listitem>
+                <para>deleted after the test case ends (which deletes all
+                contents in them)</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>directory locations cannot be altered (as those in the
+            HDS)</para>
+          </listitem>
+
+          <listitem>
+            <para>act/ inside of SDS is CD when [setup] begins</para>
+          </listitem>
+
+          <listitem>
+            <para>specified in the [conf] phase, and cannot be modified
+            thereafter</para>
+          </listitem>
+
+          <listitem>
+            <para>typlical uses</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>files that SUT is supposed to
+                access/modify/delete</para>
+              </listitem>
+
+              <listitem>
+                <para>temporary helper files (tmp/)</para>
+              </listitem>
+
+              <listitem>
+                <para>standard result from [act] (result/)</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>PGM has support for referring to all of these
+            directories</para>
+          </listitem>
+        </itemizedlist>
+      </section>
+
+      <section>
+        <title>Single line descr</title>
+
+        <para>Preexisting and temporary directories accessed by a test
+        case.</para>
+      </section>
+
+      <section>
+        <title>Rest</title>
+
+        <para></para>
       </section>
     </section>
   </section>
@@ -519,14 +715,45 @@ Yes, casting is supported - casting data type -> string-->
 
               <itemizedlist>
                 <listitem>
-                  <para>one of the directories in the HDS</para>
+                  <para>Options for directories of the HDS</para>
 
                   <variablelist>
                     <varlistentry>
                       <term><option>--rel-home</option></term>
 
                       <listitem>
-                        <para>STRING is relative the ...</para>
+                        <itemizedlist>
+                          <listitem>
+                            <para>refers to case-home directory</para>
+                          </listitem>
+
+                          <listitem>
+                            <para>set in [conf] by "home" instruction ("home"
+                            configuration parameter)</para>
+                          </listitem>
+
+                          <listitem>
+                            <para>this is the ...</para>
+
+                            <itemizedlist>
+                              <listitem>
+                                <para>case-home directory</para>
+                              </listitem>
+
+                              <listitem>
+                                <para>"home" conf param</para>
+                              </listitem>
+
+                              <listitem>
+                                <para>EXACTLY_HOME env var</para>
+                              </listitem>
+
+                              <listitem>
+                                <para>EXACTLY_HOME builtin path symbol</para>
+                              </listitem>
+                            </itemizedlist>
+                          </listitem>
+                        </itemizedlist>
                       </listitem>
                     </varlistentry>
 
@@ -541,11 +768,43 @@ Yes, casting is supported - casting data type -> string-->
                 </listitem>
 
                 <listitem>
-                  <para>one of the directories in the SDS</para>
+                  <para>Options for directories of the SDS</para>
 
                   <variablelist>
                     <varlistentry>
                       <term><option>--rel-act</option></term>
+
+                      <listitem>
+                        <itemizedlist>
+                          <listitem>
+                            <para>this is the ...</para>
+
+                            <itemizedlist>
+                              <listitem>
+                                <para>act directory</para>
+                              </listitem>
+
+                              <listitem>
+                                <para>act/ dir inside the SDS (mention this?? it
+                                mentions the actula name/path, which may encourage
+                                to use a hard coded value in test cases)</para>
+                              </listitem>
+
+                              <listitem>
+                                <para>EXACTLY_ACT env var</para>
+                              </listitem>
+
+                              <listitem>
+                                <para>EXACTLY_ACT builtin path symbol</para>
+                              </listitem>
+                            </itemizedlist>
+                          </listitem>
+                        </itemizedlist>
+                      </listitem>
+                    </varlistentry>
+
+                    <varlistentry>
+                      <term><option>--rel-tmp</option></term>
 
                       <listitem>
                         <para>STRING is relative the ...</para>
@@ -553,7 +812,7 @@ Yes, casting is supported - casting data type -> string-->
                     </varlistentry>
 
                     <varlistentry>
-                      <term><option>--rel-tmp</option></term>
+                      <term><option>--rel-result</option></term>
 
                       <listitem>
                         <para>STRING is relative the ...</para>
@@ -860,7 +1119,7 @@ Yes, casting is supported - casting data type -> string-->
                 </listitem>
 
                 <listitem>
-                  <para/>
+                  <para></para>
                 </listitem>
               </itemizedlist>
             </listitem>
