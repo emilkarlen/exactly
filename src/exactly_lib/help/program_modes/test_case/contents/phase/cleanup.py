@@ -26,7 +26,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         self.format_map = {
             'phase': phase_name_dictionary(),
             'SKIP': NAME_SKIP,
-            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONCEPT_INFO.singular_name),
+            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONF_PARAM_INFO.singular_name),
         }
 
     def purpose(self) -> Description:
@@ -53,7 +53,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            concepts.EXECUTION_MODE_CONCEPT_INFO.cross_reference_target,
+            concepts.EXECUTION_MODE_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    EXECUTION_MODE_INSTRUCTION_NAME),

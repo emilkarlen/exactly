@@ -26,7 +26,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
 
         self._parser = TextParser({
             'configuration_parameters': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name),
-            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONCEPT_INFO.singular_name),
+            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONF_PARAM_INFO.singular_name),
             'SKIP': NAME_SKIP,
             'setup': SETUP_PHASE_NAME,
         })

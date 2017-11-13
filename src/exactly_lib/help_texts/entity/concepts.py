@@ -81,28 +81,28 @@ SYMBOL_CONCEPT_INFO = name_and_ref_target(
     'A named, constant, value.'
 )
 
-ACTOR_CONCEPT_INFO = name_and_ref_target(
+ACTOR_CONF_PARAM_INFO = name_and_ref_target(
     name_with_plural_s('actor'),
     _format('Interprets the contents of the {phase[act]} phase, and executes it.')
 )
 
-EXECUTION_MODE_CONCEPT_INFO = name_and_ref_target(
+EXECUTION_MODE_CONF_PARAM_INFO = name_and_ref_target(
     name_with_plural_s('execution mode'),
     _format('Determines how the outcome of the {phase[assert]} phase is interpreted, '
             'or if the test case should be skipped.')
 )
 
-HOME_CASE_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
+HOME_CASE_DIRECTORY_CONF_PARAM_INFO = name_and_ref_target(
     Name('home directory', 'home directories'),
     'Default location of files referenced from the test case.'
 )
 
-HOME_ACT_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
+HOME_ACT_DIRECTORY_CONF_PARAM_INFO = name_and_ref_target(
     Name('act-home directory', 'act-home directories'),
     _format('Default location of files referenced from the {phase[act]} phase.')
 )
 
-TIMEOUT_CONCEPT_INFO = name_and_ref_target(
+TIMEOUT_CONF_PARAM_INFO = name_and_ref_target(
     name_with_plural_s('timeout'),
     _format('Timeout of sub processes executed by instructions and the {phase[act]} phase.')
 )

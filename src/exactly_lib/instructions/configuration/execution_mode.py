@@ -24,7 +24,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
             'MODE': _ARG_NAME,
-            'execution_mode_config_param': formatting.concept_(concepts.EXECUTION_MODE_CONCEPT_INFO),
+            'execution_mode_config_param': formatting.concept_(concepts.EXECUTION_MODE_CONF_PARAM_INFO),
             'default_mode': NAME_DEFAULT,
         })
 
@@ -47,7 +47,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def see_also_targets(self) -> list:
-        return [concepts.EXECUTION_MODE_CONCEPT_INFO.cross_reference_target]
+        return [concepts.EXECUTION_MODE_CONF_PARAM_INFO.cross_reference_target]
 
 
 _ARG_NAME = 'MODE'
