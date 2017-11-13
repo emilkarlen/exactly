@@ -55,7 +55,3 @@ TYPE_CATEGORY_NAME = {
     TypeCategory.DATA: DATA_TYPE_CATEGORY,
     TypeCategory.LOGIC: LOGIC_TYPE_CATEGORY,
 }
-
-
-def syntax_of_type_name_in_text(type_name: str) -> str:
-    return '"' + type_name + '"'

@@ -3,6 +3,8 @@ from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import Quantifier
 
+SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
+
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 
 STRING = a.Named(types.STRING_TYPE_INFO.syntax_element_name)

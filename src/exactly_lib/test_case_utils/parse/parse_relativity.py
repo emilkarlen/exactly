@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -104,7 +105,7 @@ def _valid_options_info_lines(options: RelOptionsConfiguration) -> list:
     ret_val = []
     ret_val.append('  {rel_symbol_option} {symbol_syntax_element_name}'.format(
         rel_symbol_option=option_parsing.long_option_syntax(REL_SYMBOL_OPTION_NAME.long),
-        symbol_syntax_element_name=symbol_syntax.SYMBOL_SYNTAX_ELEMENT_NAME))
+        symbol_syntax_element_name=instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME))
     for option_type in options.accepted_options:
         option_name = rel_opts.REL_OPTIONS_MAP[option_type].option_name
         option_str = option_parsing.long_option_syntax(option_name.long)

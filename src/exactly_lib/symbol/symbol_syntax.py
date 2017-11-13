@@ -4,8 +4,6 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.parse.token import Token
 
-SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
-
 SYMBOL_REFERENCE_BEGIN = '@['
 SYMBOL_REFERENCE_END = ']@'
 
