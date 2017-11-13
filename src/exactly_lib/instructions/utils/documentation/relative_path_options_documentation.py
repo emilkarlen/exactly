@@ -1,11 +1,4 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.help.entities.concepts.configuration_parameters.home_act_directory import \
-    HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
-    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory import \
-    CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import concepts as ci
@@ -20,6 +13,7 @@ from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgu
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.textformat_parser import TextParser
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
@@ -140,9 +134,9 @@ class RelOptionRenderer:
             'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
             'SYMBOL_NAME': instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME,
             'PATH_SYMBOL_TYPE': PATH_TYPE_INFO.identifier,
-            'cwd': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-            'home_case_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'home_act_directory': formatting.concept(HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'cwd': formatting.concept(ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
+            'home_case_directory': formatting.concept(ci.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
+            'home_act_directory': formatting.concept(ci.HOME_ACT_DIRECTORY_CONCEPT_INFO.singular_name),
             'sandbox_concept': formatting.concept(ci.SANDBOX_CONCEPT_INFO.singular_name),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()

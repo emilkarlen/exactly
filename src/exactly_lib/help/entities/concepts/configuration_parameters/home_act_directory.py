@@ -1,28 +1,29 @@
 from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity.concepts import HOME_ACT_DIRECTORY_CONCEPT_INFO
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.file_ref import REL_HOME_ACT_OPTION
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_ACT_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HOME_ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _HomeActDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(HOME_ACT_DIRECTORY_CONCEPT_INFO)
+        super().__init__(concepts.HOME_ACT_DIRECTORY_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
+        parser = TextParser({
+            'phase': phase_name_dictionary(),
+            'the_concept': formatting.concept_(concepts.HOME_ACT_DIRECTORY_CONCEPT_INFO),
+            'home_dir_env_var': ENV_VAR_HOME_ACT,
+            'rel_option': formatting.cli_option(REL_HOME_ACT_OPTION)
+        })
         return from_simple_description(
             Description(self.single_line_description(),
-                        normalize_and_parse(
-                            _REST_DESCRIPTION
-                                .format(phase=phase_name_dictionary(),
-                                        the_concept=HOME_ACT_DIRECTORY_CONCEPT_INFO.singular_name,
-                                        home_dir_env_var=ENV_VAR_HOME_ACT,
-                                        rel_option=formatting.cli_option(REL_HOME_ACT_OPTION)))))
+                        parser.fnap(_REST_DESCRIPTION)))
 
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'

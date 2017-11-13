@@ -1,5 +1,3 @@
-from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory import \
-    CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help.entities.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
 from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
@@ -11,6 +9,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ACT_PHASE_NAME, ASSERT_PHASE_NAME, \
     SETUP_PHASE_NAME
@@ -28,7 +27,7 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
         self.phase_name_dictionary = phase_name_dictionary()
         self.format_map = {
             'phase': phase_name_dictionary(),
-            'CWD': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
+            'CWD': formatting.concept(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
         }
 
     def purpose(self) -> Description:

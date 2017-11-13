@@ -1,5 +1,4 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_element
@@ -15,6 +14,7 @@ from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file imp
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
 

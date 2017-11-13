@@ -1,5 +1,4 @@
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity import actors
@@ -9,6 +8,7 @@ from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAM
 from exactly_lib.help_texts.test_suite import formatted_section_names
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import section_contents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class NullActorDocumentation(ActorDocumentation):

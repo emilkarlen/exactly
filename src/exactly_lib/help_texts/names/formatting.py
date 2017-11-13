@@ -1,3 +1,4 @@
+from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.section_document.syntax import section_header
 
 
@@ -114,6 +115,10 @@ def term(s: str) -> str:
 
 def concept(s: str) -> str:
     return '"' + s + '"'
+
+
+def concept_(x: SingularNameAndCrossReferenceId) -> str:
+    return concept(x.singular_name)
 
 
 def entity(name: str) -> str:

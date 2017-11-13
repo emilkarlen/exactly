@@ -1,7 +1,3 @@
-from exactly_lib.help.entities.concepts.configuration_parameters.execution_mode import \
-    EXECUTION_MODE_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip
@@ -9,6 +5,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ASSERT_PHASE_NAME, \
@@ -29,7 +26,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         self.format_map = {
             'phase': phase_name_dictionary(),
             'SKIP': NAME_SKIP,
-            'execution_mode': formatting.concept(EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular),
+            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONCEPT_INFO.singular_name),
         }
 
     def purpose(self) -> Description:
@@ -54,9 +51,9 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
     @property
     def see_also_targets(self) -> list:
         return [
-            SANDBOX_CONCEPT.cross_reference_target(),
-            ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
-            EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target(),
+            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            concepts.EXECUTION_MODE_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    EXECUTION_MODE_INSTRUCTION_NAME),

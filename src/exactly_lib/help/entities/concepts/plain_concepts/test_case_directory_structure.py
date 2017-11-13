@@ -1,10 +1,10 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _TcdsConcept(PlainConceptDocumentation):
@@ -12,9 +12,9 @@ class _TcdsConcept(PlainConceptDocumentation):
         super().__init__(concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO)
 
         self._parser = TextParser({
-            'HDS': formatting.concept(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name),
+            'HDS': formatting.concept_(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO),
             'HDS_description': concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.single_line_description_str,
-            'SDS': formatting.concept(concepts.SANDBOX_CONCEPT_INFO.singular_name),
+            'SDS': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'SDS_description': concepts.SANDBOX_CONCEPT_INFO.single_line_description_str,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
         })

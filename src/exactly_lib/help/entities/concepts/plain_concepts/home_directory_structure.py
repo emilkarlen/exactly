@@ -1,10 +1,10 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _HdsConcept(PlainConceptDocumentation):

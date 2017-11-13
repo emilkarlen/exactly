@@ -1,11 +1,11 @@
 from exactly_lib.cli.cli_environment.program_modes.test_suite.command_line_options import OPTION_FOR_REPORTER
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity import suite_reporters as reporters
 from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 from exactly_lib.help_texts.entity.suite_reporters import all_suite_reporters_cross_refs
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _SuiteReporterConcept(PlainConceptDocumentation):

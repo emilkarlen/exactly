@@ -4,8 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.entities.concepts.configuration_parameters.home_act_directory import \
-    HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -26,7 +25,7 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
-            'target_directory': formatting.concept(HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
+            'target_directory': formatting.concept_(concepts.HOME_ACT_DIRECTORY_CONCEPT_INFO),
             'PATH': _ARG_NAME
         })
 
@@ -46,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def see_also_targets(self) -> list:
-        return [HOME_ACT_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target()]
+        return [concepts.HOME_ACT_DIRECTORY_CONCEPT_INFO.cross_reference_target]
 
 
 _ARG_NAME = 'PATH'

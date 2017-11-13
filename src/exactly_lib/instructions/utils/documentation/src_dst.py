@@ -1,10 +1,10 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax, cl_syntax
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class DocumentationElements:

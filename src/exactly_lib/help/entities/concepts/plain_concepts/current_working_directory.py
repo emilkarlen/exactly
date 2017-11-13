@@ -1,19 +1,19 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
-from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, SANDBOX_CONCEPT_INFO
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
     def __init__(self):
-        super().__init__(CURRENT_WORKING_DIRECTORY_CONCEPT_INFO)
+        super().__init__(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
         tp = TextParser({
@@ -22,8 +22,8 @@ class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
             'act_dir': SUB_DIRECTORY__ACT,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
-            'concept': formatting.concept(self.name().singular),
+            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+            'concept': formatting.concept(self.singular_name()),
         })
         return from_simple_description(
             Description(self.single_line_description(),

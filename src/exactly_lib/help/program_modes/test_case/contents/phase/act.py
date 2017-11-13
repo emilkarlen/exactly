@@ -1,9 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
 from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
-from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
-    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
@@ -14,6 +10,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -23,10 +20,10 @@ from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, 
 from exactly_lib.help_texts.test_suite import formatted_section_names
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.structures import cell
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstructions):
@@ -34,25 +31,24 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                  name: str):
         super().__init__(name)
         self.phase_name_dictionary = phase_name_dictionary()
-        self.format_map = {
+        self._parser = TextParser({
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'actor': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
+            'home_directory': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
+            'sandbox': formatting.concept(concepts.ACTOR_CONCEPT_INFO.singular_name),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
             'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
-        }
+        })
 
     def purpose(self) -> Description:
         from exactly_lib.help.entities.actors.all_actor_docs import DEFAULT_ACTOR_DOC
-        actor_info = (self._parse(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
+        actor_info = (self._fnap(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
                       docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
-                      self._parse(HOW_TO_SPECIFY_ACTOR)
+                      self._fnap(HOW_TO_SPECIFY_ACTOR)
                       )
-        return Description(docs.text(ONE_LINE_DESCRIPTION.format_map(self.format_map)),
-                           self._parse(REST_OF_DESCRIPTION) +
+        return Description(self._parser.text(ONE_LINE_DESCRIPTION),
+                           self._fnap(REST_OF_DESCRIPTION) +
                            [result_sub_dir_files_table()] +
                            actor_info)
 
@@ -66,7 +62,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         return True
 
     def contents_description(self) -> doc.SectionContents:
-        initial_paragraphs = self._parse(_CONTENTS_DESCRIPTION) + [_escape_sequence_table()]
+        initial_paragraphs = self._fnap(_CONTENTS_DESCRIPTION) + [_escape_sequence_table()]
         return docs.section_contents(initial_paragraphs)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
@@ -75,12 +71,11 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
     @property
     def see_also_targets(self) -> list:
-        from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         return [
-                   ACTOR_CONCEPT.cross_reference_target(),
-                   SANDBOX_CONCEPT.cross_reference_target(),
-                   ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
-                   HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
+                   concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
+                   concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+                   concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+                   concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO.cross_reference_target,
                    TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
@@ -90,8 +85,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                                                              ACTOR_INSTRUCTION_NAME),
                ] + all_actor_cross_refs()
 
-    def _parse(self, multi_line_string: str) -> list:
-        return normalize_and_parse(multi_line_string.format_map(self.format_map))
+    def _fnap(self, multi_line_string: str) -> list:
+        return self._parser.fnap(multi_line_string)
 
 
 ONE_LINE_DESCRIPTION = """\

@@ -9,13 +9,13 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestCasePhaseCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME
 from exactly_lib.test_case.execution_mode import NAME_SKIP
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
@@ -24,28 +24,28 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
 
+        self._parser = TextParser({
+            'configuration_parameters': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name),
+            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONCEPT_INFO.singular_name),
+            'SKIP': NAME_SKIP,
+            'setup': SETUP_PHASE_NAME,
+        })
+
     def purpose(self) -> Description:
-        first_line = docs.text(
-            ONE_LINE_DESCRIPTION.format(configuration_parameters=CONFIGURATION_PARAMETER_CONCEPT.name().plural))
+        first_line = self._parser.text(ONE_LINE_DESCRIPTION)
         remaining_lines = []
         return Description(first_line, remaining_lines)
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        preceding_phase = normalize_and_parse(SEQUENCE_INFO__PRECEDING_PHASE)
-        succeeding_phase = normalize_and_parse(
-            SEQUENCE_INFO__SUCCEEDING_PHASE.format(
-                execution_mode=formatting.concept(EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular),
-                SKIP=NAME_SKIP,
-                setup=SETUP_PHASE_NAME))
+        preceding_phase = self._parser.fnap(SEQUENCE_INFO__PRECEDING_PHASE)
+        succeeding_phase = self._parser.fnap(SEQUENCE_INFO__SUCCEEDING_PHASE)
         return PhaseSequenceInfo(preceding_phase, succeeding_phase)
 
     def is_mandatory(self) -> bool:
         return False
 
     def instruction_purpose_description(self) -> list:
-        return [docs.para(INSTRUCTION_PURPOSE_DESCRIPTION
-                          .format(configuration_parameters=CONFIGURATION_PARAMETER_CONCEPT.name().plural))
-                ]
+        return self._parser.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_configuration_phase(),

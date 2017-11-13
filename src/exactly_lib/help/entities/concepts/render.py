@@ -2,11 +2,10 @@ import functools
 
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation, ConceptDocumentationVisitor, \
     PlainConceptDocumentation, ConfigurationParameterDocumentation
-from exactly_lib.help.entities.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering import see_also_section as render_utils
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
-from exactly_lib.help_texts.entity.concepts import CONFIGURATION_PARAMETER_CONCEPT_INFO
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -21,7 +20,7 @@ def _configuration_parameter_or_not(get_configuration_parameters: bool, type_doc
 
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(pes.PartitionNamesSetup('configuration-parameter-concept',
-                                               CONFIGURATION_PARAMETER_CONCEPT_INFO.name.plural.capitalize()),
+                                               concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.name.plural.capitalize()),
                        functools.partial(_configuration_parameter_or_not, True)
                        ),
     pes.PartitionSetup(pes.PartitionNamesSetup('other-concept',
@@ -91,6 +90,6 @@ class _SummaryConstructor(ConceptDocumentationVisitor):
     def visit_configuration_parameter(self, x: ConfigurationParameterDocumentation) -> list:
         header = x.summary_paragraphs()
         footer = paras('This is a {cp} that can be set in the {phase[conf]} phase.'
-                       .format(cp=formatting.concept(CONFIGURATION_PARAMETER_CONCEPT.name().singular),
+                       .format(cp=formatting.concept_(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO),
                                phase=phase_name_dictionary()))
         return header + footer

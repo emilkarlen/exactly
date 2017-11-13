@@ -1,7 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.entities.types import all_types
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
@@ -15,6 +14,7 @@ from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _SymbolConcept(PlainConceptDocumentation):
@@ -28,7 +28,7 @@ class _SymbolConcept(PlainConceptDocumentation):
         ]
         self._parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'symbol': SYMBOL_CONCEPT_INFO.singular_name,
+            'symbol': formatting.concept_(SYMBOL_CONCEPT_INFO),
             'data': all_types.DATA_TYPE_CATEGORY_NAME,
             'logic': all_types.LOGIC_TYPE_CATEGORY_NAME,
             'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
@@ -102,10 +102,10 @@ class _SymbolConcept(PlainConceptDocumentation):
             'ref_syntax_of_base_name_symbol': symbol_reference_syntax_for_name('BASE_NAME_SYMBOL'),
             'ref_syntax_of_2nd_element_symbol': symbol_reference_syntax_for_name('STRING_SYMBOL'),
 
-            'special_syntax_with_invalid_symbol_name': symbol_reference_syntax_for_name('NOT/A_SYMBOL_NAME'),
+            'special_syntax_with_invalid_symbol_name': symbol_reference_syntax_for_name('NOT/A_VALID_SYMBOL_NAME'),
             'special_syntax_with_valid_symbol_name_but_invalid_delimiter':
                 symbol_reference_syntax_for_name('VALID_SYMBOL_NAME')[:-1],
-            'special_syntax_with_invalid_space': symbol_reference_syntax_for_name('SYMBOL_NAME '),
+            'special_syntax_with_invalid_space': symbol_reference_syntax_for_name('VALID_SYMBOL_NAME '),
         })
 
         ret_val = self._parser.fnap(_REFERENCE_1)
@@ -199,7 +199,7 @@ and {program_name} will not complain:
 ```
 
 
-The plain symbol name is used when a {symbol} reference is unambiguous.
+The plain {symbol} name is used when a {symbol} reference is unambiguous.
 Otherwise, the special syntax is needed.
 
 For example:

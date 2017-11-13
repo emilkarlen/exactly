@@ -1,6 +1,6 @@
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class ActPhaseDocumentationSyntaxBase:
