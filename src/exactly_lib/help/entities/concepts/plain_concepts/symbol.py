@@ -35,6 +35,8 @@ class _SymbolConcept(PlainConceptDocumentation):
             'symbol_name_syntax': define_symbol.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
+            'string_type_in_text': formatting.keyword(TYPE_INFO_DICT[ValueType.STRING].identifier),
+
             'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
             'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,
             'file_trans_type': TYPE_INFO_DICT[ValueType.LINES_TRANSFORMER].identifier,
@@ -78,7 +80,7 @@ class _SymbolConcept(PlainConceptDocumentation):
         from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
         part_2_parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'symbol': SYMBOL_CONCEPT_INFO.singular_name,
+            'symbol': formatting.concept_(SYMBOL_CONCEPT_INFO),
 
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
@@ -123,7 +125,7 @@ A {symbol} corresponds to a named constant, found in most programming languages.
 Every {symbol} has a type according to {program_name}'s type system.
 
 
-A symbol name is: {symbol_name_syntax}
+A {symbol} name is: {symbol_name_syntax}
 """
 
 _DEFINITION = """\
@@ -135,8 +137,8 @@ A {symbol} is defined by the {define_symbol} instruction:
 ```
 
 
-This defines a symbol SYMBOL_NAME to be the value "the symbol value",
-which is a value of type {string_type}.
+This defines a {symbol} SYMBOL_NAME to be the value "the symbol value",
+which is a value of type {string_type_in_text}.
 
 
 The type must be given explicitly.
