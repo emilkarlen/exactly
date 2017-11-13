@@ -1,11 +1,11 @@
 from exactly_lib.cli.main_program import BuiltinSymbol
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.environment_variables import ENVIRONMENT_VARIABLE_DESCRIPTION
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data.value_resolvers import file_ref_resolvers
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def __resolver_of(rel_option_type: RelOptionType) -> resolver_structure.SymbolValueResolver:

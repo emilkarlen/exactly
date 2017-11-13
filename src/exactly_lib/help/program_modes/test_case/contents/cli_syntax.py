@@ -5,7 +5,6 @@ from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProg
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
@@ -14,6 +13,7 @@ from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def generator(header: str) -> SectionHierarchyGenerator:
@@ -66,7 +66,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def _keep_sandbox_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
-            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
+            'sandbox': formatting.concept_(SANDBOX_CONCEPT_INFO),
         }
         return cli_syntax.DescribedArgument(_KEEP_SANDBOX_OPTION,
                                             self.parser.fnap(_KEEPING_SANDBOX_OPTION_DESCRIPTION, extra_format_map),

@@ -1,6 +1,5 @@
 from exactly_lib import program_info
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.names.formatting import InstructionName
@@ -10,6 +9,7 @@ from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class FileContentsHelpParts:

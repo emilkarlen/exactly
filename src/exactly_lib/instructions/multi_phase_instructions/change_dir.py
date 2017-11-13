@@ -3,9 +3,8 @@ import os
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory import \
-    CURRENT_WORKING_DIRECTORY_CONCEPT
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -31,7 +30,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                  is_in_assert_phase: bool = False):
         self.is_after_act_phase = is_after_act_phase
         self.relativity_options = relativity_options(is_after_act_phase)
-        self.cwd_concept_name = formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)
+        self.cwd_concept_name = formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO)
         super().__init__(name, {
             'cwd_concept': self.cwd_concept_name,
             'dir_argument': _DIR_ARGUMENT.name,
@@ -63,12 +62,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             self.relativity_options.options)
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
-        from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(self.relativity_options.options)
-        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
-                                SANDBOX_CONCEPT_INFO]
+        name_and_cross_refs += [concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                                concepts.SANDBOX_CONCEPT_INFO]
         return cross_reference_id_list(name_and_cross_refs)
 
 

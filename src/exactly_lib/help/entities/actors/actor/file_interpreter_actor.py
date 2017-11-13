@@ -3,17 +3,14 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help.entities.actors.actor.common import ARGUMENT_SYNTAX_ELEMENT, \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
-    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
 from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import file_interpreter as help_texts
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -25,6 +22,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import section_contents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class FileInterpreterActorDocumentation(ActorDocumentation):
@@ -37,12 +35,12 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
+            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
         }
         self._parser = TextParser(format_map)
@@ -78,14 +76,13 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
     def __init__(self):
         self.file = instruction_arguments.FILE_ARGUMENT
         self.argument = a.Named(help_texts.ARGUMENT)
-        from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         fm = {
             'FILE': self.file.name,
             'ARGUMENT': self.argument.name,
-            'actor': formatting.concept(ACTOR_CONCEPT.name().singular),
+            'actor': formatting.concept(concepts.ACTOR_CONCEPT_INFO.singular_name),
             'act_phase': ACT_PHASE_NAME.emphasis,
-            'home_directory_concept': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.name().singular),
+            'home_directory_concept': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
+            'shell_syntax_concept': formatting.concept(concepts.SHELL_SYNTAX_CONCEPT_INFO.singular_name),
         }
         super().__init__(TextParser(fm))
 

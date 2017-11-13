@@ -4,12 +4,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
-    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory import \
-    CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
@@ -62,9 +58,9 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         format_map = {
-            'home_dir': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'current_dir': formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
+            'home_dir': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONCEPT_INFO),
+            'current_dir': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
             'DESTINATION': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
         }

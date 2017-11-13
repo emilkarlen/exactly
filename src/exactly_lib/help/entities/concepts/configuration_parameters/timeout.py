@@ -1,10 +1,10 @@
 from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity.concepts import TIMEOUT_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions.instruction_names import TIMEOUT_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):

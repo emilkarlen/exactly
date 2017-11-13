@@ -3,15 +3,12 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
-from exactly_lib.help.entities.concepts.configuration_parameters import actor
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import suite_reporters as reporters
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
@@ -22,6 +19,7 @@ from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def generator(header: str) -> SectionHierarchyGenerator:
@@ -32,7 +30,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
         self.parser = TextParser({
-            'actor': formatting.concept(actor.ACTOR_CONCEPT.name().singular),
+            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
             'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
@@ -60,13 +58,13 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
             'interpreter_program': _ACTOR_OPTION.argument,
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=see_also_items_from_cross_refs([
-                                                actor.ACTOR_CONCEPT.cross_reference_target(),
-                                                SHELL_SYNTAX_CONCEPT.cross_reference_target(),
+                                                concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
+                                                concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
                                                 TestSuiteSectionInstructionCrossReference(
                                                     section_names.SECTION_NAME__CONF,
                                                     INSTRUCTION_NAME__ACTOR),
@@ -76,7 +74,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return cli_syntax.DescribedArgument(_REPORTER_OPTION,
                                             self.parser.fnap(_REPORTER_OPTION_DESCRIPTION),
                                             see_also_items=see_also_items_from_cross_refs(
-                                                [SUITE_REPORTER_CONCEPT.cross_reference_target()] +
+                                                [concepts.SUITE_REPORTER_CONCEPT_INFO.cross_reference_target] +
                                                 reporters.all_suite_reporters_cross_refs()
                                             ))
 

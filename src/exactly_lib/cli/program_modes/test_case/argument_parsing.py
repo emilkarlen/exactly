@@ -6,8 +6,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption, TestCaseExecutionSettings
-from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
@@ -93,8 +92,8 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          help=_ACTOR_OPTION_DESCRIPTION.format(
                              ARGUMENT=opt.ACTOR_OPTION_ARGUMENT,
                              INTERPRETER_ACTOR_TERM=formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
-                             ACTOR_CONCEPT=ACTOR_CONCEPT.singular_name(),
-                             shell_syntax_concept=formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+                             ACTOR_CONCEPT=concepts.ACTOR_CONCEPT_INFO.singular_name,
+                             shell_syntax_concept=formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
                          ))
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_SUITE__LONG),
                          metavar=opt.SUITE_OPTION_METAVAR,
@@ -115,7 +114,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                         If the exit code from the preprocessor is non-zero,
                         then processing is considered to have failed.
                         """.format(preprocessor=opt.PREPROCESSOR_OPTION_ARGUMENT,
-                                   shell_syntax_concept=formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+                                   shell_syntax_concept=formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
                                    ))
     return ret_val
 

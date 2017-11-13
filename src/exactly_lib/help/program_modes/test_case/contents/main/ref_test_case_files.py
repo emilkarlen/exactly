@@ -1,7 +1,6 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary
@@ -10,6 +9,7 @@ from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def generator(header: str, setup: Setup) -> hierarchy_rendering.SectionHierarchyGenerator:

@@ -1,5 +1,3 @@
-from exactly_lib.help.entities.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
@@ -7,6 +5,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, BEFORE_ASSERT_PHASE_NAME, \
     CLEANUP_PHASE_NAME
@@ -14,8 +13,7 @@ from exactly_lib.processing.exit_values import EXECUTION__PASS, EXECUTION__FAIL
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN, ENV_VAR_RESULT
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure.structures import text
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
@@ -24,29 +22,29 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
         self.phase_name_dictionary = phase_name_dictionary()
-        self.format_map = {
+        self._parser = TextParser({
             'phase': phase_name_dictionary(),
             'PASS': EXECUTION__PASS.exit_identifier,
             'FAIL': EXECUTION__FAIL.exit_identifier,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
-            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
+            'sandbox': formatting.concept(concepts.SANDBOX_CONCEPT_INFO.singular_name),
             'ENV_VAR_RESULT': ENV_VAR_RESULT,
-        }
+        })
 
     def purpose(self) -> Description:
-        return Description(text(ONE_LINE_DESCRIPTION.format_map(self.format_map)),
-                           self._parse(REST_OF_DESCRIPTION))
+        return Description(self._parser.text(ONE_LINE_DESCRIPTION),
+                           self._parser.fnap(REST_OF_DESCRIPTION))
 
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo(sequence_info__preceding_phase(BEFORE_ASSERT_PHASE_NAME),
-                                 self._parse(_SEQUENCE_INFO__SUCCEEDING_PHASE),
+                                 self._parser.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def is_mandatory(self) -> bool:
         return False
 
     def instruction_purpose_description(self) -> list:
-        return self._parse(INSTRUCTION_PURPOSE_DESCRIPTION)
+        return self._parser.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_non_first_phases(),
@@ -56,14 +54,11 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
     @property
     def see_also_targets(self) -> list:
         return [
-            SANDBOX_CONCEPT.cross_reference_target(),
-            ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
+            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
             TestCasePhaseCrossReference(CLEANUP_PHASE_NAME.plain),
         ]
-
-    def _parse(self, multi_line_string: str) -> list:
-        return normalize_and_parse(multi_line_string.format_map(self.format_map))
 
 
 ONE_LINE_DESCRIPTION = """\

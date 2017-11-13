@@ -10,9 +10,8 @@ from exactly_lib.help.entities.concepts.configuration_parameters.home_case_direc
 from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
-from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
-from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
@@ -21,6 +20,7 @@ from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class CommandLineActorDocumentation(ActorDocumentation):
@@ -29,7 +29,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
+            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
@@ -69,13 +69,12 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         self.executable = a.Named(command_line_actor.EXECUTABLE)
         self.argument = a.Named(command_line_actor.ARGUMENT)
         self.command = a.Constant(command_line_actor.COMMAND)
-        from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
         fm = {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
-            'actor': formatting.concept(ACTOR_CONCEPT.name().singular),
+            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': ACT_PHASE_NAME.emphasis,
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.name().singular),
+            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
         }
         super().__init__(TextParser(fm))

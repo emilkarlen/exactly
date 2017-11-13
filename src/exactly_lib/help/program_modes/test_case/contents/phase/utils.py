@@ -1,8 +1,4 @@
-from exactly_lib.help.entities.concepts.configuration_parameters.execution_mode import \
-    EXECUTION_MODE_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.current_working_directory import \
-    CURRENT_WORKING_DIRECTORY_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import SectionName
 from exactly_lib.test_case.execution_mode import NAME_SKIP
@@ -10,6 +6,17 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure as 
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_RESULT
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs, table
+from exactly_lib.util.textformat.textformat_parser import TextParser
+
+_TEXT_PARSER = TextParser({
+    'act_dir': sds.SUB_DIRECTORY__ACT,
+    'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+    'execution_mode': formatting.concept_(concepts.EXECUTION_MODE_CONCEPT_INFO),
+    'SKIP': NAME_SKIP,
+    'result_subdir': sds.SUB_DIRECTORY__RESULT,
+    'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+    'ENV_VAR_RESULT': ENV_VAR_RESULT,
+})
 
 
 def cwd_at_start_of_phase_for_configuration_phase() -> list:
@@ -17,23 +24,14 @@ def cwd_at_start_of_phase_for_configuration_phase() -> list:
 
 
 def cwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
-    text = """\
-    At the beginning of the phase, the {cwd}
-    is the {act_dir}/ sub directory of the sandbox.
-    """
-    return normalize_and_parse(text.format(act_dir=sds.SUB_DIRECTORY__ACT,
-                                           cwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular)))
+    return _TEXT_PARSER.fnap(_CWD_AT_START_OF_PHASE_FIRST_PHASE_EXECUTED_IN_THE_SANDBOX)
 
 
 def cwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> list:
-    text = """\
-    The {cwd} is the same as at the end of the {previous}.
-
-    (which is the {act_dir}/ sub directory of the sandbox, if it has not been changed.)
-    """
-    return normalize_and_parse(text.format(act_dir=sds.SUB_DIRECTORY__ACT,
-                                           cwd=formatting.concept(CURRENT_WORKING_DIRECTORY_CONCEPT.name().singular),
-                                           previous=previous))
+    return _TEXT_PARSER.fnap(
+        _CWD_AT_START_OF_PHASE_IS_SAME_AS_AT_END_OF_THE,
+        {'previous': previous}
+    )
 
 
 def cwd_at_start_of_phase_for_non_first_phases() -> list:
@@ -53,10 +51,7 @@ def env_vars_after_act() -> list:
 
 
 def sequence_info__not_executed_if_execution_mode_is_skip() -> list:
-    return normalize_and_parse(_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP.format(
-        execution_mode=formatting.concept(EXECUTION_MODE_CONFIGURATION_PARAMETER.name().singular),
-        SKIP=NAME_SKIP,
-    ))
+    return _TEXT_PARSER.fnap(_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP)
 
 
 def sequence_info__succeeding_phase(phase_name_dictionary: dict,
@@ -65,27 +60,10 @@ def sequence_info__succeeding_phase(phase_name_dictionary: dict,
                                                                        following_phase=following_phase))
 
 
-_SEQUENCE_INFO__SUCCEEDING_PHASE = """\
-If any of the instructions fail, then execution jumps to the {phase[cleanup]} phase,
-and the test case halts with an error.
-
-Otherwise, the {following_phase} phase follows.
-"""
-
-
 def sequence_info__preceding_phase(following_phase: SectionName) -> list:
-    return normalize_and_parse(_SEQUENCE_INFO__PRECEDING_PHASE.format(following_phase=following_phase))
-
-
-_SEQUENCE_INFO__PRECEDING_PHASE = """\
-This phase is executed directly after the {following_phase} phase.
-"""
-
-_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP = """\
-If the {execution_mode} is set to {SKIP}, then this phase is not executed.
-
-Otherwise:
-"""
+    return _TEXT_PARSER.fnap(_SEQUENCE_INFO__PRECEDING_PHASE,
+                             {'following_phase': following_phase}
+                             )
 
 
 def result_sub_dir_files_table() -> docs.ParagraphItem:
@@ -104,20 +82,46 @@ def result_sub_dir_files_table() -> docs.ParagraphItem:
 
 
 def execution_environment_prologue_for_post_act_phase() -> list:
-    format_map = {
-        'result_subdir': sds.SUB_DIRECTORY__RESULT,
-        'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
-        'ENV_VAR_RESULT': ENV_VAR_RESULT,
-    }
-    return (normalize_and_parse(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR.format_map(format_map)) +
-            [result_sub_dir_files_table()] +
-            normalize_and_parse(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE.format_map(format_map)))
+    return (
+        _TEXT_PARSER.fnap(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR) +
+        [result_sub_dir_files_table()] +
+        _TEXT_PARSER.fnap(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE)
+    )
 
+
+_CWD_AT_START_OF_PHASE_FIRST_PHASE_EXECUTED_IN_THE_SANDBOX = """\
+At the beginning of the phase, the {cwd}
+is the {act_dir}/ sub directory of the sandbox.
+"""
+
+_CWD_AT_START_OF_PHASE_IS_SAME_AS_AT_END_OF_THE = """\
+The {cwd} is the same as at the end of the {previous}.
+
+(which is the {act_dir}/ sub directory of the sandbox, if it has not been changed.)
+"""
+
+_SEQUENCE_INFO__PRECEDING_PHASE = """\
+This phase is executed directly after the {following_phase} phase.
+"""
+
+_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP = """\
+If the {execution_mode} is set to {SKIP}, then this phase is not executed.
+
+Otherwise:
+"""
+
+_SEQUENCE_INFO__SUCCEEDING_PHASE = """\
+If any of the instructions fail, then execution jumps to the {phase[cleanup]} phase,
+and the test case halts with an error.
+
+Otherwise, the {following_phase} phase follows.
+"""
 
 _ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR = """\
 Instructions have access to the result of the SUT via
 the files in the {result_subdir}/ sub directory of the {sandbox}:
 """
+
 _ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE = """\
 The value of the {ENV_VAR_RESULT} environment variable is the absolute path of
 the {result_subdir}/ directory.

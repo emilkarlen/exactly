@@ -9,11 +9,11 @@ from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(pes.PartitionNamesSetup('data-type',

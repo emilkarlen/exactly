@@ -1,6 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
@@ -11,6 +10,7 @@ from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, 
 from exactly_lib.help_texts.test_suite import formatted_section_names
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _ActorConcept(ConfigurationParameterDocumentation):
@@ -19,7 +19,7 @@ class _ActorConcept(ConfigurationParameterDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({
-            'actor_concept': formatting.concept(self.name().singular),
+            'actor_concept': formatting.concept(self.singular_name()),
             'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'phase': phase_name_dictionary(),

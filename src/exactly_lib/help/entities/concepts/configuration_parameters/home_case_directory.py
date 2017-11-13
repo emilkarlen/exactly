@@ -7,7 +7,7 @@ from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HOME_CASE
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentation):
@@ -15,14 +15,16 @@ class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentati
         super().__init__(HOME_CASE_DIRECTORY_CONCEPT_INFO)
 
     def purpose(self) -> DescriptionWithSubSections:
+        parser = TextParser({
+            'phase': phase_name_dictionary(),
+            'the_concept': HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name,
+            'home_dir_env_var': ENV_VAR_HOME_CASE,
+            'rel_option': formatting.cli_option(REL_HOME_CASE_OPTION)
+        })
         return from_simple_description(
             Description(self.single_line_description(),
-                        normalize_and_parse(
-                            _REST_DESCRIPTION
-                                .format(phase=phase_name_dictionary(),
-                                        the_concept=HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name,
-                                        home_dir_env_var=ENV_VAR_HOME_CASE,
-                                        rel_option=formatting.cli_option(REL_HOME_CASE_OPTION)))))
+                        parser.fnap(_REST_DESCRIPTION))
+        )
 
     def default_value_str(self) -> str:
         return 'The directory where the test case file is located.'

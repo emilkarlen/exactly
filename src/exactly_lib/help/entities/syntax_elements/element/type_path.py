@@ -1,6 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_element
@@ -13,6 +12,7 @@ from exactly_lib.instructions.utils.documentation.relative_path_options_document
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class _Documentation(SyntaxElementDocumentation):
