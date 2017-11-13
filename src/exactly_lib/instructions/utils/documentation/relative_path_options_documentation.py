@@ -12,9 +12,9 @@ from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.help_texts.instruction_arguments import RELATIVITY_ARGUMENT
 from exactly_lib.help_texts.names import formatting
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.test_case_utils.parse import symbol_syntax
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer

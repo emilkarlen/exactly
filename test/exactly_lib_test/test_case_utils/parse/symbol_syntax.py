@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.test_case_utils.parse import symbol_syntax as sut
-from exactly_lib.test_case_utils.parse.symbol_syntax import constant, symbol
+from exactly_lib.symbol import symbol_syntax as sut
+from exactly_lib.symbol.symbol_syntax import constant, symbol
 
 
 def suite() -> unittest.TestSuite:

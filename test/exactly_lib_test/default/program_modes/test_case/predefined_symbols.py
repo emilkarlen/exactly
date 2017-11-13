@@ -6,8 +6,8 @@ from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.processing import exit_values
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.program_modes.test_case.act_phase import PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0
 from exactly_lib_test.default.test_resources.actors import SET_ACTOR_TO__FILE_INTERPRETER__WITH_PYTHON_INTERPRETER

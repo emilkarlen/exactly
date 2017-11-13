@@ -1,11 +1,12 @@
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_parse as tp
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.parse import symbol_syntax, parse_string
+from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.parse.token import Token
 
 

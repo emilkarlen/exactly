@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.symbol.data.string_resolver import string_constant
-from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable

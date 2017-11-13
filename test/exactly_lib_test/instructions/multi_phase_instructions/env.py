@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \

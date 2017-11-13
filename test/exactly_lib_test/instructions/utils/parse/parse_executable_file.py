@@ -15,12 +15,12 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestri
 from exactly_lib.symbol.data.string_resolver import string_constant
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import StackedFileRef
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
-from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef

@@ -17,13 +17,13 @@ from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import rel_sym
 from exactly_lib.symbol.data.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import ReferenceRestrictions, DataTypeReferenceRestrictions
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_file_ref as sut
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef

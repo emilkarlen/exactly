@@ -8,7 +8,7 @@ from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions import define_symbol
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.help_texts.type_system import TYPE_INFO_DICT
-from exactly_lib.test_case_utils.parse.symbol_syntax import symbol_reference_syntax_for_name
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
