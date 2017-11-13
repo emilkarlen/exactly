@@ -1,13 +1,12 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
-    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils.textformat_parser import TextParser
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
+from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
+    HOME_CASE_DIRECTORY_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
@@ -23,13 +22,13 @@ class InterpreterActorDocumentation(ActorDocumentation):
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.name().singular),
-            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
+            'home_directory': formatting.concept(HOME_CASE_DIRECTORY_CONCEPT_INFO.singular_name),
+            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT_INFO.singular_name),
         }
         self._parser = TextParser(format_map)
 

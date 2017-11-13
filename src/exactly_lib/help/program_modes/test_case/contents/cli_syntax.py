@@ -1,16 +1,13 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
-from exactly_lib.help.entities.concepts.configuration_parameters import actor
-from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
 from exactly_lib.help.utils.textformat_parser import TextParser
+from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
+    PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.util.cli_syntax.elements import argument as arg
@@ -31,8 +28,8 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
             'phase': phase_name_dictionary(),
-            'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+            'actor_concept': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
+            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT_INFO.singular_name),
         })
         self.synopsis = synopsis()
 
@@ -62,19 +59,20 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=see_also_items_from_cross_refs([
-                                                actor.ACTOR_CONCEPT.cross_reference_target(),
-                                                SHELL_SYNTAX_CONCEPT.cross_reference_target()
+                                                ACTOR_CONCEPT_INFO.cross_reference_target,
+                                                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target
                                             ]),
                                             )
 
     def _keep_sandbox_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
-            'sandbox': formatting.concept(SANDBOX_CONCEPT.name().singular),
+            'sandbox': formatting.concept(SANDBOX_CONCEPT_INFO.singular_name),
         }
         return cli_syntax.DescribedArgument(_KEEP_SANDBOX_OPTION,
                                             self.parser.fnap(_KEEPING_SANDBOX_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=[
-                                                CrossReferenceIdSeeAlsoItem(SANDBOX_CONCEPT.cross_reference_target()),
+                                                CrossReferenceIdSeeAlsoItem(
+                                                    SANDBOX_CONCEPT_INFO.cross_reference_target),
                                             ])
 
     def _execute_act_phase_argument(self) -> cli_syntax.DescribedArgument:
@@ -89,8 +87,8 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return cli_syntax.DescribedArgument(_PREPROCESSOR_OPTION,
                                             self.parser.fnap(_PREPROCESSOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=see_also_items_from_cross_refs([
-                                                PREPROCESSOR_CONCEPT.cross_reference_target(),
-                                                SHELL_SYNTAX_CONCEPT.cross_reference_target()
+                                                PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
+                                                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target
                                             ]
                                             ))
 
