@@ -51,6 +51,11 @@ SANDBOX_CONCEPT_INFO = name_and_ref_target(
     'The temporary directory where a test case is executed.'
 )
 
+HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
+    name_with_plural_s('home directory structure'),
+    'The directories where source files are located.'
+)
+
 SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(
     Name('shell syntax', "shell syntaxes"),
     'Quoting of strings in command lines.'
