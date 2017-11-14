@@ -1,13 +1,13 @@
 import functools
 
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
+from exactly_lib.help.entities.types.render import LOGIC_TYPES_HEADER, DATA_TYPES_HEADER
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_paragraphs
 from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
-from exactly_lib.help_texts import type_system
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
@@ -20,11 +20,11 @@ def _docs_of_type_category(category: TypeCategory, element_doc_list: list) -> li
 
 _PARTITIONS_SETUP = [
     pes.PartitionSetup(pes.PartitionNamesSetup('data-type',
-                                               type_system.DATA_TYPE_CATEGORY_NAME.capitalize() + ' types'),
+                                               DATA_TYPES_HEADER),
                        functools.partial(_docs_of_type_category, TypeCategory.DATA)
                        ),
     pes.PartitionSetup(pes.PartitionNamesSetup('logic-type',
-                                               type_system.LOGIC_TYPE_CATEGORY_NAME.capitalize() + ' types'),
+                                               LOGIC_TYPES_HEADER),
                        functools.partial(_docs_of_type_category, TypeCategory.LOGIC)
                        ),
     pes.PartitionSetup(pes.PartitionNamesSetup('other',
