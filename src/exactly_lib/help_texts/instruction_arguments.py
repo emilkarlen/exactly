@@ -1,9 +1,13 @@
 from exactly_lib.help_texts.entity import types
+from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.logic_types import Quantifier
 
 SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
+
+REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME,
+                             SYMBOL_SYNTAX_ELEMENT_NAME)
 
 HERE_DOCUMENT = a.Named('HERE-DOCUMENT')
 

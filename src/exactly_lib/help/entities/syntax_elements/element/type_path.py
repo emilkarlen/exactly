@@ -2,16 +2,19 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity import syntax_element
-from exactly_lib.help_texts.entity import types
-from exactly_lib.help_texts.entity.syntax_element import STRING_SYNTAX_ELEMENT
+from exactly_lib.help_texts.entity import syntax_element, types, concepts
+from exactly_lib.help_texts.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_CWD_OPTION
+from exactly_lib.help_texts.instruction_arguments import REL_SYMBOL_OPTION, SYMBOL_SYNTAX_ELEMENT_NAME
+from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text
-from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import \
-    relativity_options_paragraph
-from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import RelHomeOptionInfo, REL_HOME_OPTIONS_MAP, \
+    RelSdsOptionInfo, REL_SDS_OPTIONS_MAP
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.option_syntax import option_syntax
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -21,7 +24,7 @@ class _Documentation(SyntaxElementDocumentation):
         super().__init__(TypeCategory.DATA,
                          syntax_element.PATH_SYNTAX_ELEMENT)
 
-        self._string_name = a.Named(STRING_SYNTAX_ELEMENT.singular_name)
+        self._string_name = a.Named(syntax_element.STRING_SYNTAX_ELEMENT.singular_name)
         self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT
 
         self._parser = TextParser({
@@ -29,7 +32,11 @@ class _Documentation(SyntaxElementDocumentation):
             'PATH_STRING': self._string_name.name,
             'posix_syntax': documentation_text.POSIX_SYNTAX,
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
-            'string_syntax_element': STRING_SYNTAX_ELEMENT.singular_name,
+            'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
+            'string_syntax_element': syntax_element.STRING_SYNTAX_ELEMENT.singular_name,
+            'cd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+            'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
+            'SYMBOL_SYNTAX_ELEMENT_NAME': SYMBOL_SYNTAX_ELEMENT_NAME,
         })
 
     def invokation_variants(self) -> list:
@@ -50,7 +57,9 @@ class _Documentation(SyntaxElementDocumentation):
 
     def see_also_targets(self) -> list:
         return [
-            STRING_SYNTAX_ELEMENT.cross_reference_target,
+            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
+            syntax_element.STRING_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     def _relativity_sed(self) -> SyntaxElementDescription:
@@ -74,15 +83,83 @@ class _Documentation(SyntaxElementDocumentation):
         ]
 
     def _relativity_options_paragraph(self) -> ParagraphItem:
-        variants = PathRelativityVariants(RelOptionType, True)
-        return relativity_options_paragraph(self._string_name.name,
-                                            variants)
+        return docs.simple_list_with_space_between_elements_and_content([
+            docs.list_item(
+                self._options_for_directories_in_the(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO),
+                self._options_for_directories_in_the_hds(),
+            ),
+            docs.list_item(
+                self._options_for_directories_in_the(concepts.SANDBOX_CONCEPT_INFO),
+                self._options_for_directories_in_the_sds(),
+            ),
+            docs.list_item(
+                self._parser.format('Option for {cd}'),
+                self._options_for_current_directory(),
+            ),
+            docs.list_item(
+                self._parser.format('Option for a path denoted by a {symbol}'),
+                self._options_for_symbol(),
+            ),
+        ],
+            docs.lists.ListType.ITEMIZED_LIST,
+        )
+
+    @staticmethod
+    def _options_for_directories_in_the(directory_structure: SingularNameAndCrossReferenceId) -> str:
+        return 'Options for directories in the ' + formatting.concept_(directory_structure)
+
+    @staticmethod
+    def _options_for_directories_in_the_hds() -> list:
+        def mk_row(dir_info: RelHomeOptionInfo) -> list:
+            return [
+                docs.text_cell(option_syntax(dir_info.option_name)),
+                docs.text_cell(dir_info.description),
+            ]
+
+        rows = list(map(lambda rel_hds_option_type: mk_row(REL_HOME_OPTIONS_MAP[rel_hds_option_type]),
+                        HDS_DIR_DISPLAY_ORDER))
+        return [
+            docs.first_column_is_header_table(rows)
+        ]
+
+    @staticmethod
+    def _options_for_directories_in_the_sds() -> list:
+        def mk_row(dir_info: RelSdsOptionInfo) -> list:
+            return [
+                docs.text_cell(option_syntax(dir_info.option_name)),
+                docs.text_cell(dir_info.description),
+            ]
+
+        rows = list(map(lambda rel_sds_option_type: mk_row(REL_SDS_OPTIONS_MAP[rel_sds_option_type]),
+                        SDS_DIR_DISPLAY_ORDER))
+        return [
+            docs.first_column_is_header_table(rows)
+        ]
+
+    @staticmethod
+    def _options_for_current_directory() -> list:
+        return [
+            docs.first_row_is_header_table([
+                [docs.text_cell(REL_CWD_OPTION)]
+            ])
+        ]
+
+    def _options_for_symbol(self) -> list:
+        return [
+            docs.first_column_is_header_table([
+                [
+                    docs.text_cell(render_argument(REL_SYMBOL_OPTION)),
+                    docs.cell(self._parser.fnap(_REL_SYMBOL_DESCRIPTION)),
+                ]
+            ])
+        ]
 
 
 DOCUMENTATION = _Documentation()
 
 _MAIN_DESCRIPTION_REST = """\
 If {PATH_STRING} is an absolute path, then {RELATIVITY_OPTION} must not be given.
+
 
 If {PATH_STRING} is a relative path, then if {RELATIVITY_OPTION} is ...
 
@@ -115,5 +192,10 @@ The available relativities depends on the instruction,
 and also on the argument position of the instruction. 
 
 
-Forms:
+Summary of options:
+"""
+
+_REL_SYMBOL_DESCRIPTION = """\
+{SYMBOL_SYNTAX_ELEMENT_NAME} is the plain name of a {symbol},
+and must have type {path_type}.
 """
