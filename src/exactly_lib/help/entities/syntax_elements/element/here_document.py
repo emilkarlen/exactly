@@ -18,7 +18,8 @@ What matters is that the maker at start and end of input
 matches.
 """
 
-DOCUMENTATION = syntax_element_documentation(HERE_DOCUMENT_SYNTAX_ELEMENT,
+DOCUMENTATION = syntax_element_documentation(None,
+                                             HERE_DOCUMENT_SYNTAX_ELEMENT,
                                              normalize_and_parse(_MAIN_DESCRIPTION_REST),
                                              [],
                                              [],

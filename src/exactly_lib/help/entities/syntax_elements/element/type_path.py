@@ -10,6 +10,7 @@ from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import \
     relativity_options_paragraph
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -17,7 +18,8 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
-        super().__init__(syntax_element.PATH_SYNTAX_ELEMENT)
+        super().__init__(TypeCategory.DATA,
+                         syntax_element.PATH_SYNTAX_ELEMENT)
 
         self._string_name = a.Named(STRING_SYNTAX_ELEMENT.singular_name)
         self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT

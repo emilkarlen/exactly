@@ -5,7 +5,8 @@ from exactly_lib.util.textformat.parse import normalize_and_parse
 _MAIN_DESCRIPTION_REST = """\
 """
 
-DOCUMENTATION = syntax_element_documentation(syntax_element.GLOB_PATTERN_SYNTAX_ELEMENT,
+DOCUMENTATION = syntax_element_documentation(None,
+                                             syntax_element.GLOB_PATTERN_SYNTAX_ELEMENT,
                                              normalize_and_parse(_MAIN_DESCRIPTION_REST),
                                              [],
                                              [],

@@ -1,6 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
 from exactly_lib.help.entities.types import all_types
+from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.type_system.value_type import TypeCategory
@@ -17,8 +18,8 @@ class _TypeConcept(PlainConceptDocumentation):
         super().__init__(concepts.TYPE_CONCEPT_INFO)
         self._parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'data': all_types.DATA_TYPE_CATEGORY_NAME,
-            'logic': all_types.LOGIC_TYPE_CATEGORY_NAME,
+            'data': type_system.DATA_TYPE_CATEGORY_NAME,
+            'logic': type_system.LOGIC_TYPE_CATEGORY_NAME,
         })
 
     def purpose(self) -> DescriptionWithSubSections:

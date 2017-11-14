@@ -9,12 +9,14 @@ from exactly_lib.test_case_utils.expression.syntax_documentation import Syntax
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
+from exactly_lib.type_system.value_type import TypeCategory
 
 
-def _for_expression_grammar(type_info: SingularNameAndCrossReferenceId,
-                            grammar: Grammar) -> SyntaxElementDocumentation:
+def _for_logic_type(type_info: SingularNameAndCrossReferenceId,
+                    grammar: Grammar) -> SyntaxElementDocumentation:
     syntax = Syntax(grammar)
-    return syntax_element_documentation(type_info,
+    return syntax_element_documentation(TypeCategory.LOGIC,
+                                        type_info,
                                         [],
                                         syntax.invokation_variants(),
                                         [],
@@ -31,14 +33,14 @@ ALL_SYNTAX_ELEMENT_DOCS = [
     type_list.DOCUMENTATION,
     type_path.DOCUMENTATION,
 
-    _for_expression_grammar(syntax_element.FILE_MATCHER_SYNTAX_ELEMENT,
-                            parse_file_matcher.GRAMMAR),
+    _for_logic_type(syntax_element.FILE_MATCHER_SYNTAX_ELEMENT,
+                    parse_file_matcher.GRAMMAR),
 
-    _for_expression_grammar(syntax_element.LINES_TRANSFORMER_SYNTAX_ELEMENT,
-                            parse_lines_transformer.GRAMMAR),
+    _for_logic_type(syntax_element.LINES_TRANSFORMER_SYNTAX_ELEMENT,
+                    parse_lines_transformer.GRAMMAR),
 
-    _for_expression_grammar(syntax_element.LINE_MATCHER_SYNTAX_ELEMENT,
-                            parse_line_matcher.GRAMMAR),
+    _for_logic_type(syntax_element.LINE_MATCHER_SYNTAX_ELEMENT,
+                    parse_line_matcher.GRAMMAR),
 ]
 
 NAME_2_SYNTAX_ELEMENT_DOC = dict(map(lambda x: (x.singular_name(), x), ALL_SYNTAX_ELEMENT_DOCS))
