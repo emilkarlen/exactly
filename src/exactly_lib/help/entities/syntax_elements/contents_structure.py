@@ -2,6 +2,7 @@ from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocu
 from exactly_lib.help_texts import entity_names
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names.formatting import syntax_element
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util import name
 
 SYNTAX_ELEMENT_ENTITY_TYPE_NAMES = EntityTypeNames(
@@ -12,8 +13,17 @@ SYNTAX_ELEMENT_ENTITY_TYPE_NAMES = EntityTypeNames(
 
 class SyntaxElementDocumentation(EntityDocumentationBase):
     def __init__(self,
+                 type_category: TypeCategory,
                  name_and_cross_ref_target: SingularNameAndCrossReferenceId):
         super().__init__(name_and_cross_ref_target)
+        self._type_category = type_category
+
+    @property
+    def type_category(self) -> TypeCategory:
+        """
+        :rtype: TypeCategory or None
+        """
+        return self._type_category
 
     def main_description_rest(self) -> list:
         """
@@ -42,12 +52,13 @@ class SyntaxElementDocumentation(EntityDocumentationBase):
 
 class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
     def __init__(self,
+                 type_category: TypeCategory,
                  name_and_cross_ref_target: SingularNameAndCrossReferenceId,
                  main_description_rest: list,
                  invokation_variants: list,
                  syntax_element_descriptions: list,
                  see_also_targets: list):
-        super().__init__(name_and_cross_ref_target)
+        super().__init__(type_category, name_and_cross_ref_target)
         self._main_description_rest = main_description_rest
         self._invokation_variants = invokation_variants
         self._syntax_element_descriptions = syntax_element_descriptions
@@ -75,12 +86,14 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
         return self._see_also_targets
 
 
-def syntax_element_documentation(name_and_cross_ref_target: SingularNameAndCrossReferenceId,
+def syntax_element_documentation(type_category: TypeCategory,
+                                 name_and_cross_ref_target: SingularNameAndCrossReferenceId,
                                  main_description_rest: list,
                                  invokation_variants: list,
                                  syntax_element_descriptions: list,
                                  see_also_targets: list) -> SyntaxElementDocumentation:
-    return SyntaxElementDocumentationWithConstantValues(name_and_cross_ref_target,
+    return SyntaxElementDocumentationWithConstantValues(type_category,
+                                                        name_and_cross_ref_target,
                                                         main_description_rest,
                                                         invokation_variants,
                                                         syntax_element_descriptions,

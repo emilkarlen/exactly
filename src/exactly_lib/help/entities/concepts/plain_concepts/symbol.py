@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
-from exactly_lib.help.entities.types import all_types
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions import define_symbol
@@ -29,13 +29,13 @@ class _SymbolConcept(PlainConceptDocumentation):
         self._parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': formatting.concept_(SYMBOL_CONCEPT_INFO),
-            'data': all_types.DATA_TYPE_CATEGORY_NAME,
-            'logic': all_types.LOGIC_TYPE_CATEGORY_NAME,
+            'data': type_system.DATA_TYPE_CATEGORY_NAME,
+            'logic': type_system.LOGIC_TYPE_CATEGORY_NAME,
             'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
             'symbol_name_syntax': define_symbol.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
-            'string_type_in_text': formatting.keyword(TYPE_INFO_DICT[ValueType.STRING].identifier),
+            'string_type_in_text': formatting.keyword(type_system.TYPE_INFO_DICT[ValueType.STRING].identifier),
 
             'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
             'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,

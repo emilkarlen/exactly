@@ -9,7 +9,8 @@ _MAIN_DESCRIPTION_REST = """\
 SEE_ALSO_URL_INFO = SeeAlsoUrlInfo('Python regular expressions',
                                    'https://docs.python.org/3/library/re.html#regular-expression-syntax')
 
-DOCUMENTATION = syntax_element_documentation(syntax_element.REGEX_SYNTAX_ELEMENT,
+DOCUMENTATION = syntax_element_documentation(None,
+                                             syntax_element.REGEX_SYNTAX_ELEMENT,
                                              normalize_and_parse(_MAIN_DESCRIPTION_REST),
                                              [],
                                              [],

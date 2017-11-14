@@ -1,8 +1,8 @@
 from exactly_lib.help_texts.entity import types
 from exactly_lib.type_system.value_type import ValueType, DataValueType, TypeCategory, LogicValueType
 
-DATA_TYPE_CATEGORY = 'data'
-LOGIC_TYPE_CATEGORY = 'logic'
+DATA_TYPE_CATEGORY_NAME = 'data'
+LOGIC_TYPE_CATEGORY_NAME = 'logic'
 
 
 def _type_identifier(type_name: str) -> str:
@@ -52,6 +52,6 @@ TYPE_INFO_DICT = dict([
                       )
 
 TYPE_CATEGORY_NAME = {
-    TypeCategory.DATA: DATA_TYPE_CATEGORY,
-    TypeCategory.LOGIC: LOGIC_TYPE_CATEGORY,
+    TypeCategory.DATA: DATA_TYPE_CATEGORY_NAME,
+    TypeCategory.LOGIC: LOGIC_TYPE_CATEGORY_NAME,
 }
