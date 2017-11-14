@@ -136,23 +136,27 @@ class _Documentation(SyntaxElementDocumentation):
             docs.first_column_is_header_table(rows)
         ]
 
-    @staticmethod
-    def _options_for_current_directory() -> list:
-        return [
-            docs.first_row_is_header_table([
-                [docs.text_cell(REL_CWD_OPTION)]
-            ])
-        ]
+    def _options_for_current_directory(self) -> list:
+        return ([
+                    docs.first_row_is_header_table([
+                        [docs.text_cell(REL_CWD_OPTION)]
+                    ])
+                ]
+                +
+                self._parser.fnap(_REL_CD_DESCRIPTION)
+                )
 
     def _options_for_symbol(self) -> list:
-        return [
-            docs.first_column_is_header_table([
-                [
-                    docs.text_cell(render_argument(REL_SYMBOL_OPTION)),
-                    docs.cell(self._parser.fnap(_REL_SYMBOL_DESCRIPTION)),
+        return ([
+                    docs.first_column_is_header_table([
+                        [
+                            docs.text_cell(render_argument(REL_SYMBOL_OPTION)),
+                        ]
+                    ])
                 ]
-            ])
-        ]
+                +
+                self._parser.fnap(_REL_SYMBOL_DESCRIPTION)
+                )
 
 
 DOCUMENTATION = _Documentation()
@@ -193,6 +197,11 @@ and also on the argument position of the instruction.
 
 
 Summary of options:
+"""
+
+_REL_CD_DESCRIPTION = """\
+This options is needed since many instructions
+have a default relativity other than the {cd}.
 """
 
 _REL_SYMBOL_DESCRIPTION = """\
