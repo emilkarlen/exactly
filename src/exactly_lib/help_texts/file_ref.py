@@ -1,3 +1,4 @@
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelSdsOptionType
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 
@@ -30,3 +31,14 @@ REL_CWD_OPTION = long_option_syntax(REL_CWD_OPTION_NAME.long)
 REL_HOME_CASE_OPTION = long_option_syntax(REL_HOME_CASE_OPTION_NAME.long)
 REL_HOME_ACT_OPTION = long_option_syntax(REL_HOME_ACT_OPTION_NAME.long)
 REL_symbol_OPTION = long_option_syntax(REL_SYMBOL_OPTION_NAME.long)
+
+HDS_DIR_DISPLAY_ORDER = (
+    RelHomeOptionType.REL_HOME_CASE,
+    RelHomeOptionType.REL_HOME_ACT,
+)
+
+SDS_DIR_DISPLAY_ORDER = (
+    RelSdsOptionType.REL_ACT,
+    RelSdsOptionType.REL_TMP,
+    RelSdsOptionType.REL_RESULT,
+)

@@ -1,4 +1,5 @@
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.names import formatting
@@ -57,7 +58,8 @@ LIST_TYPE_INFO = name_and_ref_target(
 
 PATH_TYPE_INFO = name_and_ref_target(
     name_with_plural_s('path'),
-    'A file path, with special support for the test case directories.',
+    'A file path, with special support for directories in the ' + formatting.concept_(
+        concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO),
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
