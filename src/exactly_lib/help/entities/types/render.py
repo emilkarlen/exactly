@@ -56,7 +56,7 @@ def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
                                                    IndividualTypeRenderer)
 
 
-def type_list_render_getter() -> pes.CliListRendererGetter:
+def list_render_getter() -> pes.CliListRendererGetter:
     return pes.PartitionedCliListRendererGetter(
         _PARTITIONS_SETUP,
         single_line_description_as_summary_paragraphs)
