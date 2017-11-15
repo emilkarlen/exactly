@@ -1,10 +1,10 @@
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help.entities.actors.actor.common import \
+from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
+from exactly_lib.help.entities.actors.objects.common import \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, \
     ARGUMENT_SYNTAX_ELEMENT, ActPhaseDocumentationSyntaxBase
-from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help_texts.entity import concepts, conf_params

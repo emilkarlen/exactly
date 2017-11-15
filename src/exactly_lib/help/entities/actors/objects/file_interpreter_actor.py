@@ -1,8 +1,8 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
-from exactly_lib.help.entities.actors.actor.common import ARGUMENT_SYNTAX_ELEMENT, \
-    SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
+from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEMENT, \
+    SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help_texts import instruction_arguments

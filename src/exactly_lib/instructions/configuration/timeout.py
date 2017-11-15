@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.entities.configuration_parameters.configuration_parameters.timeout import DOCUMENTATION, \
+from exactly_lib.help.entities.configuration_parameters.objects.timeout import DOCUMENTATION, \
     WHAT_THE_TIMEOUT_APPLIES_TO
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \

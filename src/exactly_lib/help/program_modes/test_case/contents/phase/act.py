@@ -1,5 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
-from exactly_lib.help.entities.configuration_parameters.configuration_parameters.actor import HOW_TO_SPECIFY_ACTOR
+from exactly_lib.help.entities.configuration_parameters.objects.actor import HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
