@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import conf_params
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType, \
@@ -46,7 +47,21 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
 
 
 class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
-    pass
+    def __init__(self,
+                 configuration_parameter_name: str,
+                 directory_variable_name: str,
+                 option_name: argument.OptionName,
+                 root_resolver: RelHomeRootResolver,
+                 description: str):
+        super().__init__(directory_variable_name,
+                         option_name,
+                         root_resolver,
+                         description)
+        self._configuration_parameter_name = configuration_parameter_name
+
+    @property
+    def configuration_parameter_name(self) -> str:
+        return self._configuration_parameter_name
 
 
 class RelNonHomeOptionInfo(RelOptionInfo):
@@ -58,11 +73,13 @@ class RelSdsOptionInfo(RelNonHomeOptionInfo, RelOptionInfoCorrespondingToTcDir):
 
 
 REL_HOME_OPTIONS_MAP = {
-    RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
+    RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(conf_params.HOME_CASE_DIRECTORY,
+                                                       file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
                                                        file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                        relativity_root.resolver_for_home_case,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE),
-    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_ACT,
+    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(conf_params.HOME_ACT_DIRECTORY,
+                                                      file_ref_texts.EXACTLY_DIR__REL_HOME_ACT,
                                                       file_ref_texts.REL_HOME_ACT_OPTION_NAME,
                                                       relativity_root.resolver_for_home_act,
                                                       file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT),

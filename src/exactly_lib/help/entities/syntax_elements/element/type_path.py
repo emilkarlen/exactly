@@ -8,8 +8,8 @@ from exactly_lib.help_texts.instruction_arguments import REL_SYMBOL_OPTION, SYMB
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text
-from exactly_lib.test_case_file_structure.relative_path_options import RelHomeOptionInfo, REL_HOME_OPTIONS_MAP, \
-    RelSdsOptionInfo, REL_SDS_OPTIONS_MAP
+from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP, \
+    REL_SDS_OPTIONS_MAP, RelOptionInfo
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
@@ -110,31 +110,13 @@ class _Documentation(SyntaxElementDocumentation):
 
     @staticmethod
     def _options_for_directories_in_the_hds() -> list:
-        def mk_row(dir_info: RelHomeOptionInfo) -> list:
-            return [
-                docs.text_cell(option_syntax(dir_info.option_name)),
-                docs.text_cell(dir_info.description),
-            ]
-
-        rows = list(map(lambda rel_hds_option_type: mk_row(REL_HOME_OPTIONS_MAP[rel_hds_option_type]),
-                        HDS_DIR_DISPLAY_ORDER))
-        return [
-            docs.first_column_is_header_table(rows)
-        ]
+        return _options_for_directories_in_the_(REL_HOME_OPTIONS_MAP,
+                                                HDS_DIR_DISPLAY_ORDER)
 
     @staticmethod
     def _options_for_directories_in_the_sds() -> list:
-        def mk_row(dir_info: RelSdsOptionInfo) -> list:
-            return [
-                docs.text_cell(option_syntax(dir_info.option_name)),
-                docs.text_cell(dir_info.description),
-            ]
-
-        rows = list(map(lambda rel_sds_option_type: mk_row(REL_SDS_OPTIONS_MAP[rel_sds_option_type]),
-                        SDS_DIR_DISPLAY_ORDER))
-        return [
-            docs.first_column_is_header_table(rows)
-        ]
+        return _options_for_directories_in_the_(REL_SDS_OPTIONS_MAP,
+                                                SDS_DIR_DISPLAY_ORDER)
 
     def _options_for_current_directory(self) -> list:
         return ([
@@ -160,6 +142,23 @@ class _Documentation(SyntaxElementDocumentation):
 
 
 DOCUMENTATION = _Documentation()
+
+
+def _options_for_directories_in_the_(rel_opt_2_rel_option_info: dict,
+                                     rel_opts_in_display_order: list) -> list:
+    rows = list(map(lambda rel_opt: _mk_dir_info_row(rel_opt_2_rel_option_info[rel_opt]),
+                    rel_opts_in_display_order))
+    return [
+        docs.first_column_is_header_table(rows)
+    ]
+
+
+def _mk_dir_info_row(dir_info: RelOptionInfo) -> list:
+    return [
+        docs.text_cell(option_syntax(dir_info.option_name)),
+        docs.text_cell(dir_info.description),
+    ]
+
 
 _MAIN_DESCRIPTION_REST = """\
 If {PATH_STRING} is an absolute path, then {RELATIVITY_OPTION} must not be given.
