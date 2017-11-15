@@ -78,46 +78,46 @@ def entity_single(entity_type_name: str,
 
 
 def concept_list() -> list:
-    return single_or_list(CONCEPT_ENTITY_TYPE_NAMES)
+    return entity_help(CONCEPT_ENTITY_TYPE_NAMES)
 
 
 def concept_single(concept_name: str) -> list:
-    return single_or_list(CONCEPT_ENTITY_TYPE_NAMES,
-                          concept_name)
+    return entity_help(CONCEPT_ENTITY_TYPE_NAMES,
+                       concept_name)
 
 
 def builtin(symbol_name: str = '') -> list:
-    return single_or_list(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES, symbol_name)
+    return entity_help(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES, symbol_name)
 
 
 def syntax_element(element: str = '') -> list:
-    return single_or_list(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, element)
+    return entity_help(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, element)
 
 
 def symbol_type(type_name: str = '') -> list:
-    return single_or_list(TYPE_ENTITY_TYPE_NAMES, type_name)
+    return entity_help(TYPE_ENTITY_TYPE_NAMES, type_name)
 
 
 def actor_list() -> list:
-    return single_or_list(ACTOR_ENTITY_TYPE_NAMES)
+    return entity_help(ACTOR_ENTITY_TYPE_NAMES)
 
 
 def actor_single(actor_name: str) -> list:
-    return single_or_list(ACTOR_ENTITY_TYPE_NAMES,
-                          actor_name)
+    return entity_help(ACTOR_ENTITY_TYPE_NAMES,
+                       actor_name)
 
 
 def suite_reporter_list() -> list:
-    return single_or_list(SUITE_REPORTER_ENTITY_TYPE_NAMES)
+    return entity_help(SUITE_REPORTER_ENTITY_TYPE_NAMES)
 
 
 def suite_reporter_single(suite_reporter_name: str) -> list:
-    return single_or_list(SUITE_REPORTER_ENTITY_TYPE_NAMES,
-                          suite_reporter_name)
+    return entity_help(SUITE_REPORTER_ENTITY_TYPE_NAMES,
+                       suite_reporter_name)
 
 
-def single_or_list(entity_type_names: EntityTypeNames,
-                   entity_name: str = '') -> list:
+def entity_help(entity_type_names: EntityTypeNames,
+                entity_name: str = '') -> list:
     if entity_name:
         return [entity_type_names.command_line_sub_command] + entity_name.split()
     else:

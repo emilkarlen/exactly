@@ -1,8 +1,15 @@
+import itertools
 import unittest
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import builtin_symbols
+from exactly_lib.help.entities.actors.contents_structure import ACTOR_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.builtin.contents_structure import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.concepts.contents_structure import CONCEPT_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.syntax_elements.contents_structure import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.types.contents_structure import TYPE_ENTITY_TYPE_NAMES
+from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import types, actors, syntax_element
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
@@ -18,7 +25,20 @@ def suite_that_does_require_main_program_runner(main_program_runner: MainProgram
     return test_suite_for_test_cases(_main_program_test_cases(), main_program_runner)
 
 
+_ENTITY_CASES = [
+    (CONCEPT_ENTITY_TYPE_NAMES, concepts.SANDBOX_CONCEPT_INFO.singular_name),
+    (ACTOR_ENTITY_TYPE_NAMES, actors.COMMAND_LINE_ACTOR.singular_name),
+    (TYPE_ENTITY_TYPE_NAMES, types.LINE_MATCHER_TYPE_INFO.name.singular),
+    (BUILTIN_SYMBOL_ENTITY_TYPE_NAMES, builtin_symbols.ALL[0].name),
+    (SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, syntax_element.ALL_SYNTAX_ELEMENTS[0].singular_name),
+]
+
+
 def _main_program_test_cases() -> list:
+    return _non_entities_help() + _entities_help()
+
+
+def _non_entities_help() -> list:
     return [
         ProcessTestCase('WHEN command line arguments are invalid THEN'
                         ' exit code SHOULD indicate this'
@@ -35,45 +55,28 @@ def _main_program_test_cases() -> list:
         ProcessTestCase('help for "help" SHOULD be successful',
                         HelpInvokation(arguments_for.help_help()),
                         RESULT_IS_SUCCESSFUL),
+    ]
 
-        ProcessTestCase('help for "concept list" SHOULD be successful',
-                        HelpInvokation(arguments_for.concept_list()),
-                        RESULT_IS_SUCCESSFUL),
 
-        ProcessTestCase('help for "individual concept" SHOULD be successful',
-                        HelpInvokation(arguments_for.concept_single(concepts.SANDBOX_CONCEPT_INFO.singular_name)),
-                        RESULT_IS_SUCCESSFUL),
+def _entities_help() -> list:
+    return list(itertools.chain.from_iterable(
+        map(lambda entity_info: _entity_help_cases(entity_info[0], entity_info[1]),
+            _ENTITY_CASES)
+    ))
 
-        ProcessTestCase('help for "actor list" SHOULD be successful',
-                        HelpInvokation(arguments_for.actor_list()),
-                        RESULT_IS_SUCCESSFUL),
 
-        ProcessTestCase('help for "actor concept" SHOULD be successful',
-                        HelpInvokation(arguments_for.actor_single(actors.COMMAND_LINE_ACTOR.singular_name)),
-                        RESULT_IS_SUCCESSFUL),
+def _entity_help_cases(entity_type_names: EntityTypeNames,
+                       name_of_existing_entity: str) -> list:
+    return [
+        ProcessTestCase(
+            'help for list of "{entity_name}" SHOULD be successful'.format(entity_name=entity_type_names.name),
+            HelpInvokation(arguments_for.entity_help(entity_type_names)),
+            RESULT_IS_SUCCESSFUL),
 
-        ProcessTestCase('help for "type list" SHOULD be successful',
-                        HelpInvokation(arguments_for.symbol_type()),
-                        RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for single "type" SHOULD be successful',
-                        HelpInvokation(arguments_for.symbol_type(types.LINE_MATCHER_TYPE_INFO.name.singular)),
-                        RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for "builtin list" SHOULD be successful',
-                        HelpInvokation(arguments_for.builtin()),
-                        RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for single "builtin" SHOULD be successful',
-                        HelpInvokation(arguments_for.builtin(builtin_symbols.ALL[0].name)),
-                        RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for "syntax list" SHOULD be successful',
-                        HelpInvokation(arguments_for.syntax_element()),
-                        RESULT_IS_SUCCESSFUL),
-
-        ProcessTestCase('help for single "syntax" SHOULD be successful',
-                        HelpInvokation(
-                            arguments_for.syntax_element(syntax_element.ALL_SYNTAX_ELEMENTS[0].singular_name)),
-                        RESULT_IS_SUCCESSFUL),
+        ProcessTestCase(
+            'help for single "{entity_name}" SHOULD be successful'.format(entity_name=entity_type_names.name),
+            HelpInvokation(
+                arguments_for.entity_help(entity_type_names,
+                                          name_of_existing_entity)),
+            RESULT_IS_SUCCESSFUL),
     ]
