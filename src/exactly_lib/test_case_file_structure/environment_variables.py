@@ -3,12 +3,12 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
-ENV_VAR_HOME_CASE = rpo.REL_HOME_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_CASE].directory_name
-ENV_VAR_HOME_ACT = rpo.REL_HOME_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_ACT].directory_name
+ENV_VAR_HOME_CASE = rpo.REL_HOME_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_CASE].directory_variable_name
+ENV_VAR_HOME_ACT = rpo.REL_HOME_OPTIONS_MAP[rpo.RelHomeOptionType.REL_HOME_ACT].directory_variable_name
 
-ENV_VAR_ACT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_ACT].directory_name
-ENV_VAR_TMP = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_TMP].directory_name
-ENV_VAR_RESULT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_RESULT].directory_name
+ENV_VAR_ACT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_ACT].directory_variable_name
+ENV_VAR_TMP = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_TMP].directory_variable_name
+ENV_VAR_RESULT = rpo.REL_SDS_OPTIONS_MAP[rpo.RelSdsOptionType.REL_RESULT].directory_variable_name
 
 SET_AT_SETUP__ENV_VARS = [ENV_VAR_HOME_CASE,
                           ENV_VAR_HOME_ACT]

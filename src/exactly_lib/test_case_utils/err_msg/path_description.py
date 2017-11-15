@@ -51,10 +51,10 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
         return str(pathlib.PurePosixPath(prefix, path_value.path_suffix().value()))
 
     def rel_home(relativity: rpo.RelHomeOptionType) -> str:
-        return with_prefix(rpo.REL_HOME_OPTIONS_MAP[relativity].directory_name)
+        return with_prefix(rpo.REL_HOME_OPTIONS_MAP[relativity].directory_variable_name)
 
     def rel_sds(relativity: pr.RelSdsOptionType) -> str:
-        return with_prefix(rpo.REL_SDS_OPTIONS_MAP[relativity].directory_name)
+        return with_prefix(rpo.REL_SDS_OPTIONS_MAP[relativity].directory_variable_name)
 
     def absolute() -> str:
         return str(path_value.value_of_any_dependency(home_and_sds))
@@ -71,7 +71,7 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
             try:
                 return value_if_cwd_is_relative_root_dir(
                     rel_sds_option_info.root_resolver.from_home_and_sds(home_and_sds),
-                    rel_sds_option_info.directory_name)
+                    rel_sds_option_info.directory_variable_name)
             except ValueError:
                 continue
 
@@ -79,7 +79,7 @@ def path_value_with_relativity_name_prefix(path_value: FileRef,
             try:
                 return value_if_cwd_is_relative_root_dir(
                     rel_home_option_info.root_resolver.from_home_and_sds(home_and_sds),
-                    rel_home_option_info.directory_name)
+                    rel_home_option_info.directory_variable_name)
             except ValueError:
                 continue
 
