@@ -1,4 +1,4 @@
-from exactly_lib.help.entities.concepts.concept import \
+from exactly_lib.help.entities.concepts.objects import \
     environment_variable, preprocessor, sandbox, shell_syntax, \
     home_directory_structure, test_case_directory_structure, \
     suite_reporter, symbol, type_, configuration_parameter, current_working_directory

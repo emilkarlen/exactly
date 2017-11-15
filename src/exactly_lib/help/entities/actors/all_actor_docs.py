@@ -1,4 +1,4 @@
-from exactly_lib.help.entities.actors.actor import command_line, file_interpreter_actor, source_interpreter_actor, \
+from exactly_lib.help.entities.actors.objects import command_line, file_interpreter_actor, source_interpreter_actor, \
     null_actor
 from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR
 

@@ -40,7 +40,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def syntax_element_descriptions(self) -> list:
-        from exactly_lib.help.entities.configuration_parameters.configuration_parameters.execution_mode import \
+        from exactly_lib.help.entities.configuration_parameters.objects.execution_mode import \
             execution_modes_list
         return [
             SyntaxElementDescription(_ARG_NAME,

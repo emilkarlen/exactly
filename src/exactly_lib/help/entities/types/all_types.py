@@ -1,4 +1,4 @@
-from exactly_lib.help.entities.types.type_ import data_types, logic_types
+from exactly_lib.help.entities.types.objects import data_types, logic_types
 from exactly_lib.type_system.value_type import TypeCategory
 
 

@@ -1,4 +1,4 @@
-from exactly_lib.help.entities.configuration_parameters.configuration_parameters import execution_mode, \
+from exactly_lib.help.entities.configuration_parameters.objects import execution_mode, \
     home_act_directory, home_case_directory, timeout
 
 
