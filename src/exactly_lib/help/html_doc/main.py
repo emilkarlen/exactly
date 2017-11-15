@@ -4,12 +4,14 @@ from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRender
 from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
+from exactly_lib.help.the_application_help import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER
+from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
     SectionRendererNode
 from exactly_lib.help.utils.table_of_contents import toc_list
-from exactly_lib.help_texts import entity_names
+from exactly_lib.help_texts import entity_identifiers
 from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNode
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
@@ -44,49 +46,59 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
     return parent(
         page_setup.PAGE_TITLE,
         [],
-        [
-            (
-                'test-case',
-                test_case.generator('Test Cases',
-                                    application_help.test_case_help,
-                                    )
-            ),
-            (
-                'test-suite',
-                test_suite.generator('Test Suites', application_help.test_suite_help,
-                                     application_help.entity_conf_for(entity_names.SUITE_REPORTER_ENTITY_TYPE_NAME))
-            ),
-            (
-                'concepts',
-                application_help.entity_conf_for(entity_names.CONCEPT_ENTITY_TYPE_NAME).get_hierarchy_generator(
-                    'Concepts'),
-            ),
-            (
-                'types',
-                application_help.entity_conf_for(entity_names.TYPE_ENTITY_TYPE_NAME).get_hierarchy_generator(
-                    'Types'),
-            ),
-            (
-                'actors',
-                application_help.entity_conf_for(entity_names.ACTOR_ENTITY_TYPE_NAME).get_hierarchy_generator('Actors'),
-            ),
-            (
-                'syntax',
-                application_help.entity_conf_for(entity_names.SYNTAX_ELEMENT_ENTITY_TYPE_NAME).get_hierarchy_generator(
-                    'Syntax elements'),
-            ),
-            (
-                'builtin',
-                application_help.entity_conf_for(entity_names.BUILTIN_ENTITY_TYPE_NAME).get_hierarchy_generator(
-                    'Builtin symbols'),
-            ),
-            (
-                'help',
-                help.generator('Getting Help')
-            ),
-        ],
-
+        (
+            _case_and_suite_sections(application_help)
+            +
+            _entity_sections(application_help,
+                             entity_types_to_exclude=[entity_identifiers.SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER])
+            +
+            [
+                (
+                    'help',
+                    help.generator('Getting Help')
+                ),
+            ]
+        ),
     )
+
+
+def _case_and_suite_sections(application_help: ApplicationHelp) -> list:
+    return [
+        (
+            'test-case',
+            test_case.generator('Test Cases',
+                                application_help.test_case_help,
+                                )
+        ),
+        (
+            'test-suite',
+            test_suite.generator('Test Suites',
+                                 application_help.test_suite_help,
+                                 application_help.entity_conf_for(
+                                     entity_identifiers.SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER))
+        ),
+    ]
+
+
+def _entity_sections(application_help: ApplicationHelp,
+                     entity_types_to_exclude: list) -> list:
+    all_entity_type_names = filter(
+        lambda
+            etn: etn.identifier not in entity_types_to_exclude,
+        ALL_ENTITY_TYPES_IN_DISPLAY_ORDER)
+
+    def _section_setup_for_entity(names: EntityTypeNames) -> tuple:
+        return (
+            names.identifier,
+            application_help.entity_conf_for(names.identifier).get_hierarchy_generator(
+                names.name.plural.capitalize()),
+
+        )
+
+    return [
+        _section_setup_for_entity(etn)
+        for etn in all_entity_type_names
+    ]
 
 
 def _section_rendering_node(application_help: ApplicationHelp) -> SectionRendererNode:

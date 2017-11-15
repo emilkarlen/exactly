@@ -5,6 +5,8 @@ from exactly_lib.help.entities.builtin.contents_structure import BUILTIN_SYMBOL_
 from exactly_lib.help.entities.builtin.entity_configuration import builtin_symbols_entity_configuration
 from exactly_lib.help.entities.concepts.contents_structure import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.configuration_parameters.contents_structure import CONF_PARAM_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.configuration_parameters.entity_configuration import CONF_PARAM_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.suite_reporters.contents_structure import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.syntax_elements.contents_structure import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
@@ -42,28 +44,31 @@ def new_application_help(instructions_setup: InstructionsSetup,
 
 def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list):
     return {
-        CONCEPT_ENTITY_TYPE_NAMES.command_line_sub_command: CONCEPT_ENTITY_CONFIGURATION,
+        CONCEPT_ENTITY_TYPE_NAMES.identifier: CONCEPT_ENTITY_CONFIGURATION,
 
-        ACTOR_ENTITY_TYPE_NAMES.command_line_sub_command: ACTOR_ENTITY_CONFIGURATION,
+        CONF_PARAM_ENTITY_TYPE_NAMES.identifier: CONF_PARAM_ENTITY_CONFIGURATION,
 
-        SUITE_REPORTER_ENTITY_TYPE_NAMES.command_line_sub_command: SUITE_REPORTER_ENTITY_CONFIGURATION,
+        ACTOR_ENTITY_TYPE_NAMES.identifier: ACTOR_ENTITY_CONFIGURATION,
 
-        TYPE_ENTITY_TYPE_NAMES.command_line_sub_command: TYPE_ENTITY_CONFIGURATION,
+        SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier: SUITE_REPORTER_ENTITY_CONFIGURATION,
 
-        SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.command_line_sub_command: SYNTAX_ELEMENT_ENTITY_CONFIGURATION,
+        TYPE_ENTITY_TYPE_NAMES.identifier: TYPE_ENTITY_CONFIGURATION,
 
-        BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.command_line_sub_command: builtin_symbols_entity_configuration(
+        SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.identifier: SYNTAX_ELEMENT_ENTITY_CONFIGURATION,
+
+        BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.identifier: builtin_symbols_entity_configuration(
             builtin_symbol_documentation_list),
     }
 
 
-ALL_ENTITY_TYPES = (
+ALL_ENTITY_TYPES_IN_DISPLAY_ORDER = (
     CONCEPT_ENTITY_TYPE_NAMES,
+    CONF_PARAM_ENTITY_TYPE_NAMES,
     TYPE_ENTITY_TYPE_NAMES,
     ACTOR_ENTITY_TYPE_NAMES,
-    SUITE_REPORTER_ENTITY_TYPE_NAMES,
     SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
     BUILTIN_SYMBOL_ENTITY_TYPE_NAMES,
+    SUITE_REPORTER_ENTITY_TYPE_NAMES,
 )
 
 

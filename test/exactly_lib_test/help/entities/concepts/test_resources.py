@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME
+from exactly_lib.help_texts.entity_identifiers import CONCEPT_ENTITY_TYPE_IDENTIFIER
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.name import Name
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as xref_va
@@ -57,5 +57,5 @@ class TestSummaryParagraphs(WithConceptDocumentationBase):
 class TestCrossReferenceTarget(WithConceptDocumentationBase):
     def runTest(self):
         actual = self.documentation.cross_reference_target()
-        assertion = xref_va.is_entity_for_type(CONCEPT_ENTITY_TYPE_NAME)
+        assertion = xref_va.is_entity_for_type(CONCEPT_ENTITY_TYPE_IDENTIFIER)
         assertion.apply_with_message(self, actual, 'cross_reference_target')

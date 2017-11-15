@@ -2,7 +2,7 @@ from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteRe
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.entity.suite_reporters import DEFAULT_REPORTER
-from exactly_lib.help_texts.entity_names import SUITE_REPORTER_ENTITY_TYPE_NAME
+from exactly_lib.help_texts.entity_identifiers import SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
@@ -30,6 +30,6 @@ class IndividualSuiteReporterRenderer(SectionContentsRenderer):
 
     def _default_reporter_info(self) -> list:
         if self.suite_reporter.singular_name() == DEFAULT_REPORTER.singular_name:
-            return docs.paras('This is the default %s.' % SUITE_REPORTER_ENTITY_TYPE_NAME)
+            return docs.paras('This is the default %s.' % SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER)
         else:
             return []

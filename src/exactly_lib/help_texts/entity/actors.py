@@ -1,11 +1,11 @@
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
-from exactly_lib.help_texts.entity_names import ACTOR_ENTITY_TYPE_NAME
+from exactly_lib.help_texts.entity_identifiers import ACTOR_ENTITY_TYPE_IDENTIFIER
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 
 
 def actor_cross_ref(actor_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(ACTOR_ENTITY_TYPE_NAME, actor_name)
+    return EntityCrossReferenceId(ACTOR_ENTITY_TYPE_IDENTIFIER, actor_name)
 
 
 def name_and_ref_target(name: str,

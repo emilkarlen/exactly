@@ -1,13 +1,13 @@
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity_names import TYPE_ENTITY_TYPE_NAME
+from exactly_lib.help_texts.entity_identifiers import TYPE_ENTITY_TYPE_IDENTIFIER
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.name import Name, name_with_plural_s
 
 
 def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(TYPE_ENTITY_TYPE_NAME, type_name)
+    return EntityCrossReferenceId(TYPE_ENTITY_TYPE_IDENTIFIER, type_name)
 
 
 class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
