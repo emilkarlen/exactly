@@ -3,123 +3,58 @@ from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType, \
     RelHomeOptionType
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType, RelRootResolver, \
-    RelSdsRootResolver, RelNonHomeRootResolver, RelHomeRootResolver
+    RelHomeRootResolver
 from exactly_lib.util.cli_syntax.elements import argument
 
 
-class RelOptionInfo(tuple):
-    def __new__(cls,
-                option_name: argument.OptionName,
-                root_resolver: RelRootResolver,
-                description: str):
-        return tuple.__new__(cls, (option_name, root_resolver, description))
+class RelOptionInfo:
+    def __init__(self,
+                 option_name: argument.OptionName,
+                 root_resolver: RelRootResolver,
+                 description: str):
+        self._option_name = option_name
+        self._root_resolver = root_resolver
+        self._description = description
 
     @property
     def option_name(self) -> argument.OptionName:
-        return self[0]
+        return self._option_name
 
     @property
     def root_resolver(self) -> RelRootResolver:
-        return self[1]
+        return self._root_resolver
 
     @property
     def description(self) -> str:
-        return self[2]
+        return self._description
 
 
-class RelHomeOptionInfo(tuple):
-    def __new__(cls,
-                directory_name: str,
-                option_name: argument.OptionName,
-                root_resolver: RelHomeRootResolver,
-                description: str):
-        return tuple.__new__(cls, (directory_name, option_name, root_resolver, description))
+class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
+    def __init__(self,
+                 directory_name: str,
+                 option_name: argument.OptionName,
+                 root_resolver: RelHomeRootResolver,
+                 description: str):
+        super().__init__(option_name,
+                         root_resolver,
+                         description)
+        self._directory_name = directory_name
 
     @property
     def directory_name(self) -> str:
-        return self[0]
-
-    @property
-    def option_name(self) -> argument.OptionName:
-        return self[1]
-
-    @property
-    def root_resolver(self) -> RelHomeRootResolver:
-        return self[2]
-
-    @property
-    def description(self) -> str:
-        return self[3]
-
-    @property
-    def as_rel_any(self) -> RelOptionInfo:
-        return RelOptionInfo(self.option_name,
-                             self.root_resolver,
-                             self.description)
+        return self._directory_name
 
 
-class RelNonHomeOptionInfo(tuple):
-    def __new__(cls,
-                option_name: argument.OptionName,
-                root_resolver: RelNonHomeRootResolver,
-                description: str):
-        return tuple.__new__(cls, (option_name, root_resolver, description))
-
-    @property
-    def option_name(self) -> argument.OptionName:
-        return self[0]
-
-    @property
-    def root_resolver(self) -> RelNonHomeRootResolver:
-        return self[1]
-
-    @property
-    def description(self) -> str:
-        return self[2]
-
-    @property
-    def as_rel_any(self) -> RelOptionInfo:
-        return RelOptionInfo(self.option_name,
-                             self.root_resolver,
-                             self.description)
+class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
+    pass
 
 
-class RelSdsOptionInfo(tuple):
-    def __new__(cls,
-                directory_name: str,
-                option_name: argument.OptionName,
-                root_resolver: RelSdsRootResolver,
-                description: str):
-        return tuple.__new__(cls, (directory_name, option_name, root_resolver, description))
+class RelNonHomeOptionInfo(RelOptionInfo):
+    pass
 
-    @property
-    def directory_name(self) -> str:
-        return self[0]
 
-    @property
-    def option_name(self) -> argument.OptionName:
-        return self[1]
-
-    @property
-    def root_resolver(self) -> RelSdsRootResolver:
-        return self[2]
-
-    @property
-    def description(self) -> str:
-        return self[3]
-
-    @property
-    def as_rel_non_home(self) -> RelNonHomeOptionInfo:
-        return RelNonHomeOptionInfo(self.option_name,
-                                    self.root_resolver,
-                                    self.description)
-
-    @property
-    def as_rel_any(self) -> RelOptionInfo:
-        return RelOptionInfo(self.option_name,
-                             self.root_resolver,
-                             self.description)
-
+class RelSdsOptionInfo(RelNonHomeOptionInfo, RelOptionInfoCorrespondingToTcDir):
+    pass
 
 REL_HOME_OPTIONS_MAP = {
     RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
@@ -154,25 +89,25 @@ REL_NON_HOME_OPTIONS_MAP = {
                                                        relativity_root.resolver_for_cwd,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_CWD),
 
-    RelNonHomeOptionType.REL_ACT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT].as_rel_non_home,
+    RelNonHomeOptionType.REL_ACT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT],
 
-    RelNonHomeOptionType.REL_TMP: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP].as_rel_non_home,
+    RelNonHomeOptionType.REL_TMP: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP],
 
-    RelNonHomeOptionType.REL_RESULT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT].as_rel_non_home,
+    RelNonHomeOptionType.REL_RESULT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT],
 }
 
 REL_OPTIONS_MAP = {
-    RelOptionType.REL_HOME_CASE: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE].as_rel_any,
+    RelOptionType.REL_HOME_CASE: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_CASE],
 
-    RelOptionType.REL_HOME_ACT: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_ACT].as_rel_any,
+    RelOptionType.REL_HOME_ACT: REL_HOME_OPTIONS_MAP[RelHomeOptionType.REL_HOME_ACT],
 
-    RelOptionType.REL_CWD: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_CWD].as_rel_any,
+    RelOptionType.REL_CWD: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_CWD],
 
-    RelOptionType.REL_ACT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_ACT].as_rel_any,
+    RelOptionType.REL_ACT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_ACT],
 
-    RelOptionType.REL_TMP: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_TMP].as_rel_any,
+    RelOptionType.REL_TMP: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_TMP],
 
-    RelOptionType.REL_RESULT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_RESULT].as_rel_any,
+    RelOptionType.REL_RESULT: REL_NON_HOME_OPTIONS_MAP[RelNonHomeOptionType.REL_RESULT],
 }
 
 
