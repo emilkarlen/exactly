@@ -7,11 +7,12 @@ from exactly_lib.default.program_modes.test_case import builtin_symbols
 from exactly_lib.help.entities.actors.contents_structure import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.builtin.contents_structure import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.concepts.contents_structure import CONCEPT_ENTITY_TYPE_NAMES
+from exactly_lib.help.entities.suite_reporters.contents_structure import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.syntax_elements.contents_structure import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.types.contents_structure import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity import types, actors, syntax_element
+from exactly_lib.help_texts.entity import types, actors, syntax_element, suite_reporters
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
@@ -31,6 +32,7 @@ _ENTITY_CASES = [
     (TYPE_ENTITY_TYPE_NAMES, types.LINE_MATCHER_TYPE_INFO.name.singular),
     (BUILTIN_SYMBOL_ENTITY_TYPE_NAMES, builtin_symbols.ALL[0].name),
     (SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, syntax_element.ALL_SYNTAX_ELEMENTS[0].singular_name),
+    (SUITE_REPORTER_ENTITY_TYPE_NAMES, suite_reporters.PROGRESS_REPORTER.singular_name),
 ]
 
 
@@ -69,12 +71,18 @@ def _entity_help_cases(entity_type_names: EntityTypeNames,
                        name_of_existing_entity: str) -> list:
     return [
         ProcessTestCase(
-            'help for list of "{entity_name}" SHOULD be successful'.format(entity_name=entity_type_names.name),
+            'help for list of "{entity_type_name}" SHOULD be successful'.format(
+                entity_type_name=entity_type_names.name.singular
+            ),
             HelpInvokation(arguments_for.entity_help(entity_type_names)),
             RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase(
-            'help for single "{entity_name}" SHOULD be successful'.format(entity_name=entity_type_names.name),
+            'help for single "{entity_type_name}" ("{entity_name}") SHOULD be successful'.format(
+                entity_type_name=entity_type_names.name.singular,
+                entity_name=name_of_existing_entity
+
+            ),
             HelpInvokation(
                 arguments_for.entity_help(entity_type_names,
                                           name_of_existing_entity)),
