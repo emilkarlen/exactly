@@ -31,17 +31,17 @@ class RelOptionInfo:
 
 class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
     def __init__(self,
-                 directory_name: str,
+                 directory_variable_name: str,
                  option_name: argument.OptionName,
                  root_resolver: RelHomeRootResolver,
                  description: str):
         super().__init__(option_name,
                          root_resolver,
                          description)
-        self._directory_name = directory_name
+        self._directory_name = directory_variable_name
 
     @property
-    def directory_name(self) -> str:
+    def directory_variable_name(self) -> str:
         return self._directory_name
 
 
@@ -55,6 +55,7 @@ class RelNonHomeOptionInfo(RelOptionInfo):
 
 class RelSdsOptionInfo(RelNonHomeOptionInfo, RelOptionInfoCorrespondingToTcDir):
     pass
+
 
 REL_HOME_OPTIONS_MAP = {
     RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
