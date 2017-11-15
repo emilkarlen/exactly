@@ -1,6 +1,6 @@
-from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
+from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity.concepts import HOME_CASE_DIRECTORY_CONF_PARAM_INFO
+from exactly_lib.help_texts.entity.conf_params import HOME_CASE_DIRECTORY_CONF_PARAM_INFO
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_CASE_DIRECTORY_INSTRUCTION_NAME
@@ -17,7 +17,7 @@ class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentati
     def purpose(self) -> DescriptionWithSubSections:
         parser = TextParser({
             'phase': phase_name_dictionary(),
-            'the_concept': HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name,
+            'the_concept': formatting.conf_param_(HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'home_dir_env_var': ENV_VAR_HOME_CASE,
             'rel_option': formatting.cli_option(REL_HOME_CASE_OPTION)
         })
@@ -36,7 +36,7 @@ class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentati
         ]
 
 
-HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER = _HomeCaseDirectoryConfigurationParameter()
+DOCUMENTATION = _HomeCaseDirectoryConfigurationParameter()
 
 _REST_DESCRIPTION = """\
 Instructions and phases may use predefined input in terms of files

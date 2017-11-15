@@ -3,13 +3,12 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help.entities.actors.actor.common import ARGUMENT_SYNTAX_ELEMENT, \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import file_interpreter as help_texts
@@ -61,7 +60,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
 
     def _see_also_specific(self) -> list:
         return [
-            SHELL_SYNTAX_CONCEPT.cross_reference_target(),
+            concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    ACTOR_INSTRUCTION_NAME),
             TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,
@@ -79,10 +78,10 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         fm = {
             'FILE': self.file.name,
             'ARGUMENT': self.argument.name,
-            'actor': formatting.concept(concepts.ACTOR_CONF_PARAM_INFO.singular_name),
+            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': ACT_PHASE_NAME.emphasis,
-            'home_directory_concept': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
-            'shell_syntax_concept': formatting.concept(concepts.SHELL_SYNTAX_CONCEPT_INFO.singular_name),
+            'home_directory_concept': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
+            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }
         super().__init__(TextParser(fm))
 

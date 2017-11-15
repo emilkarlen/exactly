@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.entities.concepts.configuration_parameters.timeout import TIMEOUT_CONFIGURATION_PARAMETER, \
+from exactly_lib.help.entities.configuration_parameters.configuration_parameters.timeout import DOCUMENTATION, \
     WHAT_THE_TIMEOUT_APPLIES_TO
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -26,7 +26,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def __init__(self, name: str):
         super().__init__(name, {
-            'default_value_str': TIMEOUT_CONFIGURATION_PARAMETER.default_value_str(),
+            'default_value_str': DOCUMENTATION.default_value_str(),
             'phase': phase_name_dictionary(),
         })
 
@@ -50,7 +50,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def see_also_targets(self) -> list:
-        return [TIMEOUT_CONFIGURATION_PARAMETER.cross_reference_target()]
+        return [DOCUMENTATION.cross_reference_target()]
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):

@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import SectionName
 from exactly_lib.test_case.execution_mode import NAME_SKIP
@@ -11,7 +11,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 _TEXT_PARSER = TextParser({
     'act_dir': sds.SUB_DIRECTORY__ACT,
     'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-    'execution_mode': formatting.concept_(concepts.EXECUTION_MODE_CONF_PARAM_INFO),
+    'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
     'SKIP': NAME_SKIP,
     'result_subdir': sds.SUB_DIRECTORY__RESULT,
     'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),

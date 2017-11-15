@@ -1,5 +1,3 @@
-from exactly_lib.help.entities.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_first_phase_executed_in_the_sandbox, sequence_info__succeeding_phase, \
@@ -7,6 +5,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ACT_PHASE_NAME, CONFIGURATION_PHASE_NAME
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_SETUP_MAIN
 from exactly_lib.util.description import Description
@@ -47,8 +46,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
     @property
     def see_also_targets(self) -> list:
         return [
-            SANDBOX_CONCEPT.cross_reference_target(),
-            ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
+            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseCrossReference(CONFIGURATION_PHASE_NAME.plain),
             TestCasePhaseCrossReference(ACT_PHASE_NAME.plain),
         ]

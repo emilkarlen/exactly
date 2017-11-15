@@ -1,9 +1,8 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity.concepts import SHELL_SYNTAX_CONCEPT_INFO
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
@@ -74,7 +73,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.executable_arg = a.Named('EXECUTABLE')
         format_map = {
             'EXECUTABLE': self.executable_arg.name,
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }
         if additional_format_map:
             format_map.update(additional_format_map)
@@ -179,7 +178,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def see_also_targets(self) -> list:
         name_and_cross_ref_list = rel_path_doc.see_also_name_and_cross_refs(REL_OPTION_ARG_CONF.options)
-        name_and_cross_ref_list += [SHELL_SYNTAX_CONCEPT_INFO]
+        name_and_cross_ref_list += [concepts.SHELL_SYNTAX_CONCEPT_INFO]
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_ref_list)
 

@@ -4,8 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help.entities.concepts.plain_concepts.preprocessor import PREPROCESSOR_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -29,8 +28,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
-            'preprocessor': formatting.concept(PREPROCESSOR_CONCEPT.singular_name()),
-            'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT.singular_name()),
+            'preprocessor': formatting.concept_(concepts.PREPROCESSOR_CONCEPT_INFO),
+            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         })
 
     def single_line_description(self) -> str:
@@ -56,11 +55,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._paragraphs(_DESCRIPTION)
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help.utils.entity_documentation import cross_reference_id_list
-        return cross_reference_id_list([
-            PREPROCESSOR_CONCEPT,
-            SHELL_SYNTAX_CONCEPT,
-        ])
+        return [
+            concepts.PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
+            concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
+        ]
 
 
 _DESCRIPTION = """\

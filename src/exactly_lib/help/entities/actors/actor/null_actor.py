@@ -2,7 +2,7 @@ from exactly_lib.help.entities.actors.contents_structure import ActorDocumentati
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity import actors
-from exactly_lib.help_texts.entity.concepts import ACTOR_CONF_PARAM_INFO
+from exactly_lib.help_texts.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME
 from exactly_lib.help_texts.test_suite import formatted_section_names
@@ -16,7 +16,7 @@ class NullActorDocumentation(ActorDocumentation):
         super().__init__(actors.NULL_ACTOR)
         format_map = {
             'null': actors.NULL_ACTOR.singular_name,
-            'actor': ACTOR_CONF_PARAM_INFO.name.singular,
+            'actor': ACTOR_CONCEPT_INFO.name.singular,
         }
         self._parser = TextParser(format_map)
 

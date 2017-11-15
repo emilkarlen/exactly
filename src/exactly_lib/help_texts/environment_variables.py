@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -41,8 +41,8 @@ class EnvironmentVariableDescription:
     def __init__(self):
         self.text_parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'case_home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
-            'act_home_directory': formatting.concept_(concepts.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
+            'case_home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
+            'act_home_directory': formatting.concept_(conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
             'act_sub_dir': sds.SUB_DIRECTORY__ACT,
             'tmp_sub_dir': sds.PATH__TMP_USER,
             'result_sub_dir': sds.SUB_DIRECTORY__RESULT,

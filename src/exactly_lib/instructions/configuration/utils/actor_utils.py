@@ -43,7 +43,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         super().__init__(name, {
             'EXECUTABLE': self.command_line_syntax.executable.name,
             'ARGUMENT': self.command_line_syntax.argument.name,
-            'actor': formatting.concept_(concepts.ACTOR_CONF_PARAM_INFO),
+            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': ACT_PHASE_NAME.emphasis,
         })
 
@@ -71,7 +71,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
 
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
-        return ([concepts.ACTOR_CONF_PARAM_INFO.cross_reference_target] +
+        return ([concepts.ACTOR_CONCEPT_INFO.cross_reference_target] +
                 all_actor_cross_refs() +
                 command_line_actor_help.see_also_targets())
 

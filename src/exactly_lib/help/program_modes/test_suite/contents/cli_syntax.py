@@ -30,7 +30,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
         self.parser = TextParser({
-            'actor': formatting.concept_(concepts.ACTOR_CONF_PARAM_INFO),
+            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
             'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
@@ -63,7 +63,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=see_also_items_from_cross_refs([
-                                                concepts.ACTOR_CONF_PARAM_INFO.cross_reference_target,
+                                                concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
                                                 concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
                                                 TestSuiteSectionInstructionCrossReference(
                                                     section_names.SECTION_NAME__CONF,

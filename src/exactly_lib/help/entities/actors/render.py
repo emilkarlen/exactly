@@ -15,7 +15,7 @@ class IndividualActorRenderer(SectionContentsRenderer):
         self.actor = actor
         self.rendering_environment = None
         format_map = {
-            'actor_concept': formatting.concept(concepts.ACTOR_CONF_PARAM_INFO.singular_name),
+            'actor_concept': formatting.concept(concepts.ACTOR_CONCEPT_INFO.singular_name),
             'act_phase': ACT_PHASE_NAME.emphasis,
         }
         self._parser = TextParser(format_map)

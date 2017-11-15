@@ -92,7 +92,7 @@ def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
                          help=_ACTOR_OPTION_DESCRIPTION.format(
                              ARGUMENT=opt.ACTOR_OPTION_ARGUMENT,
                              INTERPRETER_ACTOR_TERM=formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
-                             ACTOR_CONCEPT=concepts.ACTOR_CONF_PARAM_INFO.singular_name,
+                             ACTOR_CONCEPT=concepts.ACTOR_CONCEPT_INFO.singular_name,
                              shell_syntax_concept=formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
                          ))
     ret_val.add_argument(long_option_syntax(opt.OPTION_FOR_SUITE__LONG),

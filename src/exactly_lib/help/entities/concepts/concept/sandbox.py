@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import concepts
@@ -16,7 +16,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents, Sect
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class _SandboxConcept(PlainConceptDocumentation):
+class _SandboxConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(concepts.SANDBOX_CONCEPT_INFO)
 
@@ -130,7 +130,6 @@ A directory that {program_name} does not touch.
 The test case can use it as a place where it is safe to put temporary files without
 the risk of clashes with files from other program.
 """
-
 
 _RESULT_DIR_ENV_VARIABLE = """\
 The value of this environment variable

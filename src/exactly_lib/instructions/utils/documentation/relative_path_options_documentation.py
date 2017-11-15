@@ -2,6 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import concepts as ci
+from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
@@ -133,10 +134,10 @@ class RelOptionRenderer:
             'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
             'SYMBOL_NAME': instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME,
             'PATH_SYMBOL_TYPE': PATH_TYPE_INFO.identifier,
-            'cwd': formatting.concept(ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
-            'home_case_directory': formatting.concept(ci.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
-            'home_act_directory': formatting.concept(ci.HOME_ACT_DIRECTORY_CONF_PARAM_INFO.singular_name),
-            'sandbox_concept': formatting.concept(ci.SANDBOX_CONCEPT_INFO.singular_name),
+            'cwd': formatting.concept_(ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+            'home_case_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
+            'home_act_directory': formatting.conf_param_(conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
+            'sandbox_concept': formatting.concept_(ci.SANDBOX_CONCEPT_INFO),
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
 
@@ -225,20 +226,20 @@ _ALL = {
                                                  _REL_RESULT_DESCRIPTION,
                                                  [ci.SANDBOX_CONCEPT_INFO]),
     RelOptionType.REL_CWD: _RelOptionTypeInfo(file_ref_texts.REL_CWD_OPTION_NAME,
-                                              formatting.concept(
-                                                  ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
+                                              formatting.concept_(
+                                                  ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
                                               _REL_CWD_DESCRIPTION,
                                               [ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
     RelOptionType.REL_HOME_CASE: _RelOptionTypeInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
-                                                    formatting.concept(
-                                                        ci.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
+                                                    formatting.conf_param_(
+                                                        conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
                                                     _REL_HOME_CASE_DESCRIPTION,
-                                                    [ci.HOME_CASE_DIRECTORY_CONF_PARAM_INFO]),
+                                                    [conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO]),
     RelOptionType.REL_HOME_ACT: _RelOptionTypeInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
-                                                   formatting.concept(
-                                                       ci.HOME_ACT_DIRECTORY_CONF_PARAM_INFO.singular_name),
+                                                   formatting.conf_param_(
+                                                       conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
                                                    _REL_HOME_ACT_DESCRIPTION,
-                                                   [ci.HOME_ACT_DIRECTORY_CONF_PARAM_INFO]),
+                                                   [conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO]),
 }
 
 _DEFAULT_RELATIVITY = """\

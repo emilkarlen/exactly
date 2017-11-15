@@ -1,21 +1,10 @@
 import unittest
 
-from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME
+from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
+from exactly_lib.help_texts.entity_names import CONFIGURATION_PARAMETER_ENTITY_TYPE_NAME
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.name import Name
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as xref_va
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
-
-
-def suite_for_plain_concept_documentation(
-        documentation: ConfigurationParameterDocumentation) -> unittest.TestSuite:
-    return unittest.TestSuite(tcc(documentation) for tcc in [
-        TestName,
-        TestCrossReferenceTarget,
-        TestPurpose,
-        TestSummaryParagraphs,
-    ])
 
 
 def suite_for_configuration_parameter_documentation(
@@ -30,8 +19,8 @@ def suite_for_configuration_parameter_documentation(
     ])
 
 
-class WithConceptDocumentationBase(unittest.TestCase):
-    def __init__(self, documentation):
+class WithDocumentationBase(unittest.TestCase):
+    def __init__(self, documentation: ConfigurationParameterDocumentation):
         super().__init__()
         self.documentation = documentation
 
@@ -39,16 +28,15 @@ class WithConceptDocumentationBase(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.documentation))
 
 
-class TestName(WithConceptDocumentationBase):
+class TestName(WithDocumentationBase):
     def runTest(self):
         # ACT #
-        name = self.documentation.name()
+        name = self.documentation.singular_name()
         # ASSERT #
-        self.assertIsInstance(name, Name)
-        self.assertIsInstance(name.singular, str)
+        self.assertIsInstance(name, str)
 
 
-class TestPurpose(WithConceptDocumentationBase):
+class TestPurpose(WithDocumentationBase):
     def runTest(self):
         # ACT #
         purpose = self.documentation.purpose()
@@ -58,7 +46,7 @@ class TestPurpose(WithConceptDocumentationBase):
         struct_check.is_section_contents.apply(self, purpose.rest)
 
 
-class TestSummaryParagraphs(WithConceptDocumentationBase):
+class TestSummaryParagraphs(WithDocumentationBase):
     def runTest(self):
         # ACT #
         paragraphs = self.documentation.summary_paragraphs()
@@ -66,18 +54,14 @@ class TestSummaryParagraphs(WithConceptDocumentationBase):
         struct_check.is_paragraph_item_list().apply(self, paragraphs)
 
 
-class TestCrossReferenceTarget(WithConceptDocumentationBase):
+class TestCrossReferenceTarget(WithDocumentationBase):
     def runTest(self):
         actual = self.documentation.cross_reference_target()
-        assertion = xref_va.is_entity_for_type(CONCEPT_ENTITY_TYPE_NAME)
+        assertion = xref_va.is_entity_for_type(CONFIGURATION_PARAMETER_ENTITY_TYPE_NAME)
         assertion.apply_with_message(self, actual, 'cross_reference_target')
 
 
-class WithConfigurationParameterBase(WithConceptDocumentationBase):
-    pass
-
-
-class TestIsConfigurationParameterInstance(WithConfigurationParameterBase):
+class TestIsConfigurationParameterInstance(WithDocumentationBase):
     def runTest(self):
         # ACT #
         actual = self.documentation
@@ -85,7 +69,7 @@ class TestIsConfigurationParameterInstance(WithConfigurationParameterBase):
         self.assertIsInstance(actual, ConfigurationParameterDocumentation)
 
 
-class TestDefaultValue(WithConfigurationParameterBase):
+class TestDefaultValue(WithDocumentationBase):
     def runTest(self):
         # ARRANGE #
         doc = self.documentation

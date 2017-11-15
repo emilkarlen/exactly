@@ -1,10 +1,10 @@
 import operator
 
-from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import environment_variables
+from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
-    SANDBOX_CONCEPT_INFO, \
-    HOME_CASE_DIRECTORY_CONF_PARAM_INFO, HOME_ACT_DIRECTORY_CONF_PARAM_INFO
+    SANDBOX_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
-class _EnvironmentVariableConcept(PlainConceptDocumentation):
+class _EnvironmentVariableConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(ENVIRONMENT_VARIABLE_CONCEPT_INFO)
 
@@ -28,8 +28,8 @@ class _EnvironmentVariableConcept(PlainConceptDocumentation):
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list([
             SANDBOX_CONCEPT_INFO,
-            HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
-            HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
+            conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
+            conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
         ])
 
     def _variables_from_setup(self) -> docs.Section:
