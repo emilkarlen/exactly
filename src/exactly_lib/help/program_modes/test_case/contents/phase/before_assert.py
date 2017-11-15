@@ -1,5 +1,3 @@
-from exactly_lib.help.entities.concepts.plain_concepts.environment_variable import ENVIRONMENT_VARIABLE_CONCEPT
-from exactly_lib.help.entities.concepts.plain_concepts.sandbox import SANDBOX_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
@@ -55,8 +53,8 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
     @property
     def see_also_targets(self) -> list:
         return [
-            SANDBOX_CONCEPT.cross_reference_target(),
-            ENVIRONMENT_VARIABLE_CONCEPT.cross_reference_target(),
+            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseCrossReference(ACT_PHASE_NAME.plain),
             TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
         ]

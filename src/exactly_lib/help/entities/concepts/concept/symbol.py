@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
@@ -17,7 +17,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class _SymbolConcept(PlainConceptDocumentation):
+class _SymbolConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(SYMBOL_CONCEPT_INFO)
         list_symbol_name = 'LIST_SYMBOL'

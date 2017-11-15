@@ -5,7 +5,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ASSERT_PHASE_NAME, \
@@ -26,7 +26,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         self.format_map = {
             'phase': phase_name_dictionary(),
             'SKIP': NAME_SKIP,
-            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONF_PARAM_INFO.singular_name),
+            'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
         }
 
     def purpose(self) -> Description:
@@ -53,7 +53,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            concepts.EXECUTION_MODE_CONF_PARAM_INFO.cross_reference_target,
+            conf_params.EXECUTION_MODE_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    EXECUTION_MODE_INSTRUCTION_NAME),

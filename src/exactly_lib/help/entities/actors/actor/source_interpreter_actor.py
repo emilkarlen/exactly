@@ -1,9 +1,8 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -21,7 +20,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept_(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
+            'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
@@ -42,7 +41,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
 
     def _see_also_specific(self) -> list:
         return [
-            SHELL_SYNTAX_CONCEPT.cross_reference_target(),
+            concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    ACTOR_INSTRUCTION_NAME),
             TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,

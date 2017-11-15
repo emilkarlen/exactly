@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.entities.types import all_types
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity import concepts
@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.structure.lists import ListType
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class _TypeConcept(PlainConceptDocumentation):
+class _TypeConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(concepts.TYPE_CONCEPT_INFO)
         self._parser = TextParser({

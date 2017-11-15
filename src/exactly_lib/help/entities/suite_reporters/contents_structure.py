@@ -41,9 +41,8 @@ class SuiteReporterDocumentation(EntityDocumentationBase):
         """
         :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
-        from exactly_lib.help.entities.concepts.plain_concepts.suite_reporter import SUITE_REPORTER_CONCEPT
         return [
-            SUITE_REPORTER_CONCEPT.cross_reference_target(),
+            SUITE_REPORTER_CONCEPT_INFO.cross_reference_target,
         ]
 
     def _see_also_targets__specific(self) -> list:

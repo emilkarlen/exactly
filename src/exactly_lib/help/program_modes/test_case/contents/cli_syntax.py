@@ -6,7 +6,7 @@ from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering impo
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
 from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
-    PREPROCESSOR_CONCEPT_INFO, ACTOR_CONF_PARAM_INFO
+    PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
 from exactly_lib.util.cli_syntax.elements import argument as arg
@@ -28,7 +28,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
             'phase': phase_name_dictionary(),
-            'actor_concept': formatting.concept(ACTOR_CONF_PARAM_INFO.singular_name),
+            'actor_concept': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
             'shell_syntax_concept': formatting.concept(SHELL_SYNTAX_CONCEPT_INFO.singular_name),
         })
         self.synopsis = synopsis()
@@ -59,7 +59,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=see_also_items_from_cross_refs([
-                                                ACTOR_CONF_PARAM_INFO.cross_reference_target,
+                                                ACTOR_CONCEPT_INFO.cross_reference_target,
                                                 SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target
                                             ]),
                                             )

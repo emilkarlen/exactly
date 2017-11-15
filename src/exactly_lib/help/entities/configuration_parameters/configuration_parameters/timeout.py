@@ -1,6 +1,6 @@
-from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
+from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity.concepts import TIMEOUT_CONF_PARAM_INFO
+from exactly_lib.help_texts.entity.conf_params import TIMEOUT_CONF_PARAM_INFO
 from exactly_lib.help_texts.test_case.instructions.instruction_names import TIMEOUT_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -29,7 +29,7 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
         ]
 
 
-TIMEOUT_CONFIGURATION_PARAMETER = _TimeoutConfigurationParameter()
+DOCUMENTATION = _TimeoutConfigurationParameter()
 
 WHAT_THE_TIMEOUT_APPLIES_TO = """\
 The timeout is per instruction, and for the {phase[act]} phase.

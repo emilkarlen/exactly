@@ -5,12 +5,9 @@ from exactly_lib.help.entities.actors.actor.common import \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, \
     ARGUMENT_SYNTAX_ELEMENT, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.entities.concepts.configuration_parameters.home_case_directory import \
-    HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.shell_syntax import SHELL_SYNTAX_CONCEPT
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
@@ -56,8 +53,8 @@ class CommandLineActorDocumentation(ActorDocumentation):
 
 def see_also_targets() -> list:
     return [
-        HOME_CASE_DIRECTORY_CONFIGURATION_PARAMETER.cross_reference_target(),
-        SHELL_SYNTAX_CONCEPT.cross_reference_target(),
+        conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.cross_reference_target,
+        concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
     ]
 
 
@@ -72,7 +69,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         fm = {
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
-            'actor': formatting.concept_(concepts.ACTOR_CONF_PARAM_INFO),
+            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': ACT_PHASE_NAME.emphasis,
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),

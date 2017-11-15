@@ -1,5 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
-from exactly_lib.help.entities.concepts.configuration_parameters.actor import ACTOR_CONCEPT, HOW_TO_SPECIFY_ACTOR
+from exactly_lib.help.entities.configuration_parameters.configuration_parameters.actor import HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
@@ -10,7 +10,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -33,11 +33,11 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         self.phase_name_dictionary = phase_name_dictionary()
         self._parser = TextParser({
             'phase': phase_name_dictionary(),
-            'home_directory': formatting.concept(concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.singular_name),
-            'sandbox': formatting.concept(concepts.ACTOR_CONF_PARAM_INFO.singular_name),
+            'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
+            'sandbox': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'actor_option': OPTION_FOR_ACTOR,
-            'actor_concept': formatting.concept(ACTOR_CONCEPT.singular_name()),
+            'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
         })
 
@@ -72,10 +72,10 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     @property
     def see_also_targets(self) -> list:
         return [
-                   concepts.ACTOR_CONF_PARAM_INFO.cross_reference_target,
+                   concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
                    concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
                    concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-                   concepts.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.cross_reference_target,
+                   conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.cross_reference_target,
                    TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
                    TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),

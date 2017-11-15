@@ -121,6 +121,14 @@ def concept_(x: SingularNameAndCrossReferenceId) -> str:
     return concept(x.singular_name)
 
 
+def conf_param(s: str) -> str:
+    return '"' + s + '"'
+
+
+def conf_param_(x: SingularNameAndCrossReferenceId) -> str:
+    return conf_param(x.singular_name)
+
+
 def entity(name: str) -> str:
     return '"' + name + '"'
 

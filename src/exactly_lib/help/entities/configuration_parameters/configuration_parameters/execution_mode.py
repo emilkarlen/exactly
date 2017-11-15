@@ -1,6 +1,6 @@
 from exactly_lib.execution.result import FullResultStatus
-from exactly_lib.help.entities.concepts.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts.entity.concepts import EXECUTION_MODE_CONF_PARAM_INFO
+from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
+from exactly_lib.help_texts.entity.conf_params import EXECUTION_MODE_CONF_PARAM_INFO
 from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.test_case import execution_mode
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -23,7 +23,7 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
         return execution_mode.NAME_DEFAULT
 
 
-EXECUTION_MODE_CONFIGURATION_PARAMETER = _ExecutionModeConfigurationParameter()
+DOCUMENTATION = _ExecutionModeConfigurationParameter()
 
 
 def execution_modes_list() -> ParagraphItem:

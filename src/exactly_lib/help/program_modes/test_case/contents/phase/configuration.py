@@ -1,6 +1,3 @@
-from exactly_lib.help.entities.concepts.configuration_parameters.execution_mode import \
-    EXECUTION_MODE_CONFIGURATION_PARAMETER
-from exactly_lib.help.entities.concepts.plain_concepts.configuration_parameter import CONFIGURATION_PARAMETER_CONCEPT
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_configuration_phase, \
@@ -9,7 +6,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestCasePhaseCrossReference
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME
@@ -25,8 +22,8 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
         super().__init__(name, instruction_set)
 
         self._parser = TextParser({
-            'configuration_parameters': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name),
-            'execution_mode': formatting.concept(concepts.EXECUTION_MODE_CONF_PARAM_INFO.singular_name),
+            'configuration_parameters': formatting.concept_(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO),
+            'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
             'SKIP': NAME_SKIP,
             'setup': SETUP_PHASE_NAME,
         })
@@ -54,8 +51,8 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
     @property
     def see_also_targets(self) -> list:
         return [
-            CONFIGURATION_PARAMETER_CONCEPT.cross_reference_target(),
-            EXECUTION_MODE_CONFIGURATION_PARAMETER.cross_reference_target(),
+            concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
+            conf_params.EXECUTION_MODE_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(self.name.plain,
                                                    EXECUTION_MODE_INSTRUCTION_NAME),
             TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),

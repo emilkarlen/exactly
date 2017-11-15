@@ -1,6 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
-from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import InstructionName
@@ -11,7 +11,7 @@ from exactly_lib.util.description import Description, DescriptionWithSubSections
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class _CurrentWorkingDirectoryConcept(PlainConceptDocumentation):
+class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO)
 
