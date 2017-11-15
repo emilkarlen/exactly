@@ -1,0 +1,5 @@
+EXECUTION_MODE = 'mode'
+HOME_CASE_DIRECTORY = 'home'
+HOME_ACT_DIRECTORY = 'act-home'
+ACTOR = 'actor'
+TIMEOUT = 'timeout'
