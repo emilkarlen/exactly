@@ -19,7 +19,7 @@ class Documentation(SectionContentsRenderer):
         self._parser = TextParser({
             'phase': setup.phase_names,
             'cwd': emphasis(CHANGE_DIR_INSTRUCTION_NAME),
-            'CWD': formatting.concept(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
+            'CWD': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'SANDBOX_ACT_DIR': ENV_VAR_ACT,
             'act_subdir': SUB_DIRECTORY__ACT,
             'cli_option_for_keeping_sandbox': OPTION_FOR_KEEPING_SANDBOX_DIRECTORY

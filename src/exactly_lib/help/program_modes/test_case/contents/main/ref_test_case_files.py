@@ -31,7 +31,7 @@ def _text_parser(setup: Setup) -> TextParser:
         'instruction': AnyInstructionNameDictionary(),
         'default_phase': setup.phase_names[DEFAULT_PHASE.identifier].syntax,
         'phase': setup.phase_names,
-        'actor': formatting.concept(ACTOR_CONCEPT_INFO.singular_name),
+        'actor': formatting.concept_(ACTOR_CONCEPT_INFO),
         'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
         'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,
     })

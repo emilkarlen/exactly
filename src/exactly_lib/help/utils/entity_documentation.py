@@ -37,6 +37,10 @@ class EntityDocumentationBase(EntityDocumentation):
     def __init__(self, name_and_cross_ref_target: SingularNameAndCrossReferenceId):
         self._name_and_cross_ref_target = name_and_cross_ref_target
 
+    @property
+    def name_and_cross_ref_target(self) -> SingularNameAndCrossReferenceId:
+        return self._name_and_cross_ref_target
+
     def singular_name(self) -> str:
         return self._name_and_cross_ref_target.singular_name
 

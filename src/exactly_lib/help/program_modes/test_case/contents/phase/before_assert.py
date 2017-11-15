@@ -25,7 +25,7 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
         self.phase_name_dictionary = phase_name_dictionary()
         self.format_map = {
             'phase': phase_name_dictionary(),
-            'CWD': formatting.concept(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.singular_name),
+            'CWD': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
         }
 
     def purpose(self) -> Description:

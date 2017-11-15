@@ -24,7 +24,7 @@ class _SandboxConcept(ConceptDocumentation):
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'phase': phase_name_dictionary(),
             'instruction': AnyInstructionNameDictionary(),
-            'cwd': formatting.concept(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.name.singular),
+            'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
         })
 

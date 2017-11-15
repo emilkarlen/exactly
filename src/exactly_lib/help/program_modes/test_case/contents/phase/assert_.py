@@ -27,7 +27,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
             'PASS': EXECUTION__PASS.exit_identifier,
             'FAIL': EXECUTION__FAIL.exit_identifier,
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
-            'sandbox': formatting.concept(concepts.SANDBOX_CONCEPT_INFO.singular_name),
+            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'ENV_VAR_RESULT': ENV_VAR_RESULT,
         })
 
