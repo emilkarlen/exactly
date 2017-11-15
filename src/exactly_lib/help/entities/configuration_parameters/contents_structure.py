@@ -8,7 +8,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import para
 
 CONF_PARAM_ENTITY_TYPE_NAMES = EntityTypeNames(
-    CONFIGURATION_PARAMETER_CONCEPT_INFO,
+    CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
     'confparam',
     formatting.syntax_element(CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name))
 

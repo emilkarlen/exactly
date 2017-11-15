@@ -63,10 +63,10 @@ class EntityDocumentationBase(EntityDocumentation):
 class EntityTypeNames(tuple):
     def __new__(cls,
                 name: Name,
-                command_line_sub_command: str,
+                identifier: str,
                 command_line_entity_argument: str):
         return tuple.__new__(cls, (name,
-                                   command_line_sub_command,
+                                   identifier,
                                    command_line_entity_argument))
 
     @property
@@ -74,7 +74,7 @@ class EntityTypeNames(tuple):
         return self[0]
 
     @property
-    def command_line_sub_command(self) -> str:
+    def identifier(self) -> str:
         return self[1]
 
     @property
@@ -107,7 +107,7 @@ class EntitiesHelp(tuple):
         """
         Name of entity that is used as command line argument.
         """
-        return self.names.command_line_sub_command
+        return self.names.identifier
 
     @property
     def entity_type_presentation_name(self) -> str:

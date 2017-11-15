@@ -423,7 +423,7 @@ class TestTestSuiteSingleInstructionInSection(unittest.TestCase):
 
 class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
     def __init__(self):
-        super().__init__(actor_doc.ActorDocumentation, ACTOR_ENTITY_TYPE_NAMES.command_line_sub_command)
+        super().__init__(actor_doc.ActorDocumentation, ACTOR_ENTITY_TYPE_NAMES.identifier)
 
     def entity_with_name(self, entity_name: str):
         return actor_doc.ActorTestImpl(entity_name)
@@ -437,7 +437,7 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
     def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
         return application_help_for([],
                                     entity_name_2_entity_configuration={
-                                        ACTOR_ENTITY_TYPE_NAMES.command_line_sub_command:
+                                        ACTOR_ENTITY_TYPE_NAMES.identifier:
                                             EntityConfiguration(
                                                 EntitiesHelp(ACTOR_ENTITY_TYPE_NAMES,
                                                              entities),

@@ -1,6 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
-from exactly_lib.help_texts.entity_names import CONCEPT_ENTITY_TYPE_NAME
+from exactly_lib.help_texts.entity_identifiers import CONCEPT_ENTITY_TYPE_IDENTIFIER
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, phase_name_dictionary
@@ -8,7 +8,7 @@ from exactly_lib.util.name import Name, name_with_plural_s
 
 
 def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(CONCEPT_ENTITY_TYPE_NAME, concept_name)
+    return EntityCrossReferenceId(CONCEPT_ENTITY_TYPE_IDENTIFIER, concept_name)
 
 
 def name_and_ref_target(name: Name,

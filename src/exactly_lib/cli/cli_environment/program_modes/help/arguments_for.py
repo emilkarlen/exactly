@@ -119,6 +119,6 @@ def suite_reporter_single(suite_reporter_name: str) -> list:
 def entity_help(entity_type_names: EntityTypeNames,
                 entity_name: str = '') -> list:
     if entity_name:
-        return [entity_type_names.command_line_sub_command] + entity_name.split()
+        return [entity_type_names.identifier] + entity_name.split()
     else:
-        return [entity_type_names.command_line_sub_command]
+        return [entity_type_names.identifier]
