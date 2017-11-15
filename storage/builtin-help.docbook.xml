@@ -308,7 +308,7 @@ Yes, casting is supported - casting data type -> string-->
               <term>PATH = PATH</term>
 
               <listitem>
-                <para></para>
+                <para/>
               </listitem>
             </varlistentry>
 
@@ -317,15 +317,15 @@ Yes, casting is supported - casting data type -> string-->
               STRING</term>
 
               <listitem>
-                <para></para>
+                <para/>
               </listitem>
             </varlistentry>
 
             <varlistentry>
-              <term></term>
+              <term/>
 
               <listitem>
-                <para></para>
+                <para/>
               </listitem>
             </varlistentry>
           </variablelist>
@@ -334,198 +334,255 @@ Yes, casting is supported - casting data type -> string-->
     </section>
 
     <section>
-      <title>Test Case Directory Structure</title>
+      <title>Directory Structures</title>
+
+      <para>Aspects of directories and files</para>
+
+      <itemizedlist>
+        <listitem>
+          <para>why directories?</para>
+        </listitem>
+
+        <listitem>
+          <para>pre-existing / temporary per tc-execution</para>
+        </listitem>
+
+        <listitem>
+          <para>contains predefined files / empty at start</para>
+        </listitem>
+
+        <listitem>
+          <para>acceptable to modify file/contents of dir </para>
+        </listitem>
+
+        <listitem>
+          <para>can be set to arbitrary directories by instructions /
+          predefined values that cannot be set</para>
+        </listitem>
+
+        <listitem>
+          <para>purpose - typical usage (raison d'etre) (both of directory
+          structure, and individual directory)</para>
+        </listitem>
+
+        <listitem>
+          <para>current directory</para>
+        </listitem>
+
+        <listitem>
+          <para>ways to refer to a directory (special support by options) (the
+          ability to use all these directories)</para>
+        </listitem>
+      </itemizedlist>
 
       <section>
-        <title>Info to provide</title>
+        <title>Test Case Directory Structure</title>
 
-        <itemizedlist>
-          <listitem>
-            <para>contains the HDS</para>
-          </listitem>
+        <section>
+          <title>Info to provide</title>
 
-          <listitem>
-            <para>contains the SDS</para>
-          </listitem>
+          <itemizedlist>
+            <listitem>
+              <para>contains the HDS (preexisting dirs)</para>
+            </listitem>
 
-          <listitem>
-            <para>contains reserved directories that should not be
-            accessed</para>
-          </listitem>
+            <listitem>
+              <para>contains the SDS (temporary dirs)</para>
+            </listitem>
 
-          <listitem>
-            <para>files and directories should preferable only be created in
-            the SDS directories</para>
-          </listitem>
+            <listitem>
+              <para>contains reserved directories that should not be accessed
+              (in the <glossterm>sandbox</glossterm>)</para>
+            </listitem>
 
-          <listitem>
-            <para>PGM has support for referring to all of these
-            directories</para>
-          </listitem>
-        </itemizedlist>
+            <listitem>
+              <para>behaviour of SUT: files and directories should preferable
+              only be created in the SDS directories</para>
+            </listitem>
+
+            <listitem>
+              <para>PGM has support for referring to all of these
+              directories</para>
+            </listitem>
+
+            <listitem>
+              <para>? Purpose of PGM is to</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para><glossterm>sandbox</glossterm> allow the SUT to
+                  pollute CD and other dirs without polluting existing
+                  directories (existing = directories that exist before the
+                  execution of a test case)</para>
+                </listitem>
+
+                <listitem>
+                  <para><glossterm>home</glossterm>: easily access existing
+                  files and directories and use them in a test, either by
+                  referring to them (read-only files) or installing them into
+                  the sandbox (files that may be modified)</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Single line descr</title>
+
+          <para>Preexisting and temporary directories accessed by a test
+          case.</para>
+        </section>
+
+        <section>
+          <title>Rest</title>
+
+          <para/>
+        </section>
       </section>
 
       <section>
-        <title>Single line descr</title>
+        <title>Home Directory Structure</title>
 
-        <para>Preexisting and temporary directories accessed by a test
-        case.</para>
+        <section>
+          <title>Info to provide</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>existing directories</para>
+            </listitem>
+
+            <listitem>
+              <para>default home/case = dir where test case file is
+              located</para>
+            </listitem>
+
+            <listitem>
+              <para>default home/act = dir where test case file is
+              located</para>
+            </listitem>
+
+            <listitem>
+              <para>contains files and directories that typically must not be
+              modified</para>
+            </listitem>
+
+            <listitem>
+              <para>specified in the [conf] phase, and cannot be modified
+              thereafter</para>
+            </listitem>
+
+            <listitem>
+              <para>typlical uses</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>SUT</para>
+                </listitem>
+
+                <listitem>
+                  <para>input</para>
+                </listitem>
+
+                <listitem>
+                  <para>expected output</para>
+                </listitem>
+
+                <listitem>
+                  <para>helper programs</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para>PGM has support for referring to all of these
+              directories</para>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
+          <title>Single line descr</title>
+
+          <para>Preexisting directories accessed by a test case.</para>
+        </section>
+
+        <section>
+          <title>Rest</title>
+
+          <para/>
+        </section>
       </section>
 
       <section>
-        <title>Rest</title>
+        <title>Sandbox Directory Structure</title>
 
-        <para></para>
-      </section>
-    </section>
+        <section>
+          <title>Info to provide</title>
 
-    <section>
-      <title>Home Directory Structure</title>
+          <itemizedlist>
+            <listitem>
+              <para>temporary directories used during a single execution of a
+              test case</para>
 
-      <section>
-        <title>Info to provide</title>
+              <itemizedlist>
+                <listitem>
+                  <para>created when the [setup] phase begins</para>
+                </listitem>
 
-        <itemizedlist>
-          <listitem>
-            <para>existing directories</para>
-          </listitem>
+                <listitem>
+                  <para>deleted after the test case ends (which deletes all
+                  contents in them)</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
 
-          <listitem>
-            <para>default home/case = dir where test case file is
-            located</para>
-          </listitem>
+            <listitem>
+              <para>directory locations cannot be altered (as those in the
+              HDS)</para>
+            </listitem>
 
-          <listitem>
-            <para>default home/act = dir where test case file is
-            located</para>
-          </listitem>
+            <listitem>
+              <para>act/ inside of SDS is CD when [setup] begins</para>
+            </listitem>
 
-          <listitem>
-            <para>contains files that typically must not be modified</para>
-          </listitem>
+            <listitem>
+              <para>typlical uses</para>
 
-          <listitem>
-            <para>specified in the [conf] phase, and cannot be modified
-            thereafter</para>
-          </listitem>
+              <itemizedlist>
+                <listitem>
+                  <para>files that SUT is supposed to
+                  access/modify/delete</para>
+                </listitem>
 
-          <listitem>
-            <para>typlical uses</para>
+                <listitem>
+                  <para>temporary helper files (tmp/)</para>
+                </listitem>
 
-            <itemizedlist>
-              <listitem>
-                <para>SUT</para>
-              </listitem>
+                <listitem>
+                  <para>standard result from [act] (result/)</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
 
-              <listitem>
-                <para>input</para>
-              </listitem>
+            <listitem>
+              <para>PGM has support for referring to all of these
+              directories</para>
+            </listitem>
+          </itemizedlist>
+        </section>
 
-              <listitem>
-                <para>expected output</para>
-              </listitem>
+        <section>
+          <title>Single line descr</title>
 
-              <listitem>
-                <para>helper programs</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
+          <para>T0emporary directories accessed by a test case.</para>
+        </section>
 
-          <listitem>
-            <para>PGM has support for referring to all of these
-            directories</para>
-          </listitem>
-        </itemizedlist>
-      </section>
+        <section>
+          <title>Rest</title>
 
-      <section>
-        <title>Single line descr</title>
-
-        <para>Preexisting and temporary directories accessed by a test
-        case.</para>
-      </section>
-
-      <section>
-        <title>Rest</title>
-
-        <para></para>
-      </section>
-    </section>
-
-    <section>
-      <title>Sandbox Directory Structure</title>
-
-      <section>
-        <title>Info to provide</title>
-
-        <itemizedlist>
-          <listitem>
-            <para>temporary directories used during a single execution of a
-            test case</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>created when the [setup] phase begins</para>
-              </listitem>
-
-              <listitem>
-                <para>deleted after the test case ends (which deletes all
-                contents in them)</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para>directory locations cannot be altered (as those in the
-            HDS)</para>
-          </listitem>
-
-          <listitem>
-            <para>act/ inside of SDS is CD when [setup] begins</para>
-          </listitem>
-
-          <listitem>
-            <para>specified in the [conf] phase, and cannot be modified
-            thereafter</para>
-          </listitem>
-
-          <listitem>
-            <para>typlical uses</para>
-
-            <itemizedlist>
-              <listitem>
-                <para>files that SUT is supposed to
-                access/modify/delete</para>
-              </listitem>
-
-              <listitem>
-                <para>temporary helper files (tmp/)</para>
-              </listitem>
-
-              <listitem>
-                <para>standard result from [act] (result/)</para>
-              </listitem>
-            </itemizedlist>
-          </listitem>
-
-          <listitem>
-            <para>PGM has support for referring to all of these
-            directories</para>
-          </listitem>
-        </itemizedlist>
-      </section>
-
-      <section>
-        <title>Single line descr</title>
-
-        <para>Preexisting and temporary directories accessed by a test
-        case.</para>
-      </section>
-
-      <section>
-        <title>Rest</title>
-
-        <para></para>
+          <para/>
+        </section>
       </section>
     </section>
   </section>
@@ -1119,7 +1176,7 @@ Yes, casting is supported - casting data type -> string-->
                 </listitem>
 
                 <listitem>
-                  <para></para>
+                  <para/>
                 </listitem>
               </itemizedlist>
             </listitem>
