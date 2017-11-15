@@ -1,5 +1,5 @@
-from exactly_lib.help.utils.entity_documentation import EntityDocumentation, EntitiesHelp, \
-    EntityTypeNames
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, \
+    EntityTypeNames, EntityDocumentationBase
 from exactly_lib.help_texts.entity.concepts import CONFIGURATION_PARAMETER_CONCEPT_INFO
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
@@ -14,9 +14,14 @@ CONF_PARAM_ENTITY_TYPE_NAMES = EntityTypeNames(
     formatting.syntax_element(CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name))
 
 
-class ConfigurationParameterDocumentation(EntityDocumentation):
+class ConfigurationParameterDocumentation(EntityDocumentationBase):
     def __init__(self, info: ConfigurationParameterInfo):
+        super().__init__(info)
         self._info = info
+
+    @property
+    def name_and_cross_ref_target(self) -> ConfigurationParameterInfo:
+        return self._info
 
     def single_line_description(self) -> Text:
         return self._info.single_line_description

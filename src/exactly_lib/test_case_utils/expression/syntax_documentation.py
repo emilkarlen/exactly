@@ -113,7 +113,7 @@ class Syntax:
     def _symbol_ref_description(self):
         return normalize_and_parse(
             _SYMBOL_REF_DESCRIPTION.format(
-                symbol_concept=formatting.concept(SYMBOL_CONCEPT_INFO.singular_name),
+                symbol_concept=formatting.concept_(SYMBOL_CONCEPT_INFO),
                 concept_name=self.grammar.concept.name.singular,
 
             ))

@@ -36,7 +36,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                  name: str,
                  phase_is_before_act: bool):
         format_map = {
-            'LINES_TRANSFORMER': formatting.concept(LINES_TRANSFORMER_TYPE_INFO.name.singular),
+            'LINES_TRANSFORMER': formatting.concept_(LINES_TRANSFORMER_TYPE_INFO),
             'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
             'DESTINATION': instruction_arguments.DESTINATION_PATH_ARGUMENT.name,
         }

@@ -1,5 +1,5 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
-from exactly_lib.help.entities.concepts.contents_structure import PlainConceptDocumentation
+from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class _ActorConcept(PlainConceptDocumentation):
+class _ActorConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(ACTOR_CONCEPT_INFO)
 
