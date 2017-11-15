@@ -15,8 +15,8 @@ from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityL
     ReplaceLinesTransformer
 from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 IDENTITY_TRANSFORMER_RESOLVER = resolvers.LinesTransformerConstant(IdentityLinesTransformer())
 
@@ -105,10 +105,7 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_TRANSFORMERS_': types.LINES_TRANSFORMER_TYPE_INFO.name.plural,
 }
 
-
-def _fnap(s: str) -> list:
-    return normalize_and_parse(s.format_map(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS))
-
+_TEXT_PARSER = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
 _REPLACE_TRANSFORMER_SED_DESCRIPTION = """\
 Replaces the contents of a file.
@@ -134,7 +131,7 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  REPLACE_REPLACEMENT_ARGUMENT),
     ],
-    description_rest=_fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION),
+    description_rest=_TEXT_PARSER.fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION),
     see_also_targets=[syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target],
 )
 
@@ -143,12 +140,12 @@ _SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
         a.Single(a.Multiplicity.MANDATORY,
                  instruction_arguments.LINE_MATCHER),
     ],
-    description_rest=_fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION),
+    description_rest=_TEXT_PARSER.fnap(_SELECT_TRANSFORMER_SED_DESCRIPTION),
     see_also_targets=[types.LINE_MATCHER_TYPE_INFO.cross_reference_target],
 )
 
 _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
-    _fnap(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
+    _TEXT_PARSER.fnap(_SEQUENCE_TRANSFORMER_SED_DESCRIPTION)
 )
 
 _CONCEPT = grammar.Concept(
