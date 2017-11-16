@@ -1,11 +1,18 @@
 from exactly_lib import program_info
+from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.help_texts import conf_params
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity.concepts import CONFIGURATION_PARAMETER_CONCEPT_INFO
 from exactly_lib.help_texts.entity_identifiers import CONFIGURATION_PARAMETER_ENTITY_TYPE_IDENTIFIER
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
+
+CONF_PARAM_ENTITY_TYPE_NAMES = EntityTypeNames(
+    CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
+    CONFIGURATION_PARAMETER_ENTITY_TYPE_IDENTIFIER,
+    formatting.syntax_element(CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name))
 
 
 class ConfigurationParameterInfo(SingularNameAndCrossReferenceId):
@@ -25,7 +32,9 @@ class ConfigurationParameterInfo(SingularNameAndCrossReferenceId):
 
 
 def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(CONFIGURATION_PARAMETER_ENTITY_TYPE_IDENTIFIER, concept_name)
+    return EntityCrossReferenceId(CONF_PARAM_ENTITY_TYPE_NAMES.identifier,
+                                  CONF_PARAM_ENTITY_TYPE_NAMES.name.singular,
+                                  concept_name)
 
 
 def conf_param_info(name: str,

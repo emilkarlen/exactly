@@ -82,9 +82,10 @@ class EntityTypeNames(tuple):
         return self[2]
 
 
-def command_line_names_as_singular_name(name: Name) -> EntityTypeNames:
+def command_line_names_as_singular_name(entity_type_identifier: str,
+                                        name: Name) -> EntityTypeNames:
     return EntityTypeNames(name,
-                           name.singular,
+                           entity_type_identifier,
                            syntax_element(name.singular))
 
 

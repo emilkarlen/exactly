@@ -42,7 +42,7 @@ class _TitleRenderer(cross_reference_id.CrossReferenceIdVisitor):
             p=self.suite_section_name_dict[suite_section_name_dict_key_for(x.section_name)].syntax)
 
     def visit_entity(self, x: cross_reference_id.EntityCrossReferenceId):
-        return x.entity_type_name.capitalize() + ' "' + x.entity_name + '"'
+        return x.entity_type_presentation_name.capitalize() + ' "' + x.entity_name + '"'
 
 
 _TITLE_RENDERER = _TitleRenderer()

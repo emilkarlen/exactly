@@ -1,14 +1,7 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, EntityTypeNames
-from exactly_lib.help_texts import entity_identifiers
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help_texts.entity.syntax_element import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help_texts.names.formatting import syntax_element
 from exactly_lib.type_system.value_type import TypeCategory
-from exactly_lib.util import name
-
-SYNTAX_ELEMENT_ENTITY_TYPE_NAMES = EntityTypeNames(
-    name.name_with_plural_s('syntax element'),
-    entity_identifiers.SYNTAX_ELEMENT_ENTITY_TYPE_IDENTIFIER,
-    syntax_element('syntax element'))
 
 
 class SyntaxElementDocumentation(EntityDocumentationBase):

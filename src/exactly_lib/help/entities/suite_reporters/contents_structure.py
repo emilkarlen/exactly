@@ -1,10 +1,6 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, EntityTypeNames
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
-from exactly_lib.help_texts.names import formatting
-
-SUITE_REPORTER_ENTITY_TYPE_NAMES = EntityTypeNames(SUITE_REPORTER_CONCEPT_INFO.name,
-                                                   'reporter',
-                                                   formatting.syntax_element(SUITE_REPORTER_CONCEPT_INFO.singular_name))
+from exactly_lib.help_texts.entity.suite_reporters import SUITE_REPORTER_ENTITY_TYPE_NAMES
 
 
 class SuiteReporterDocumentation(EntityDocumentationBase):

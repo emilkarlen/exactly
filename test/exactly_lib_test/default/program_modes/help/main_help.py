@@ -4,16 +4,16 @@ import unittest
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import builtin_symbols
-from exactly_lib.help.entities.actors.contents_structure import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.help.entities.builtin.contents_structure import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help.entities.concepts.contents_structure import CONCEPT_ENTITY_TYPE_NAMES
-from exactly_lib.help.entities.configuration_parameters.contents_structure import CONF_PARAM_ENTITY_TYPE_NAMES
-from exactly_lib.help.entities.suite_reporters.contents_structure import SUITE_REPORTER_ENTITY_TYPE_NAMES
-from exactly_lib.help.entities.syntax_elements.contents_structure import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
-from exactly_lib.help.entities.types.contents_structure import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import types, actors, syntax_element, suite_reporters, conf_params
+from exactly_lib.help_texts.entity.actors import ACTOR_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.builtin import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.concepts import CONCEPT_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.conf_params import CONF_PARAM_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.suite_reporters import SUITE_REPORTER_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.syntax_element import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases

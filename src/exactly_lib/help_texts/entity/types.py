@@ -1,13 +1,20 @@
+from exactly_lib.help.utils.entity_documentation import command_line_names_as_singular_name
+from exactly_lib.help_texts import entity_identifiers
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity_identifiers import TYPE_ENTITY_TYPE_IDENTIFIER
+from exactly_lib.help_texts.entity.concepts import TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.name import Name, name_with_plural_s
 
+TYPE_ENTITY_TYPE_NAMES = command_line_names_as_singular_name(entity_identifiers.TYPE_ENTITY_TYPE_IDENTIFIER,
+                                                             TYPE_CONCEPT_INFO.name)
+
 
 def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(TYPE_ENTITY_TYPE_IDENTIFIER, type_name)
+    return EntityCrossReferenceId(TYPE_ENTITY_TYPE_NAMES.identifier,
+                                  TYPE_ENTITY_TYPE_NAMES.name.singular,
+                                  type_name)
 
 
 class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):

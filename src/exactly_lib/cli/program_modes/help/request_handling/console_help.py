@@ -72,7 +72,7 @@ class _HelpCommandLineGetterVisitor(cross_reference_id.CrossReferenceIdVisitor):
         return x.url
 
     def visit_entity(self, x: cross_reference_id.EntityCrossReferenceId):
-        return _command_line_display_for_help_arguments(arguments_for.entity_single(x.entity_type_name,
+        return _command_line_display_for_help_arguments(arguments_for.entity_single(x.entity_type_identifier,
                                                                                     x.entity_name))
 
     def visit_test_case_phase(self, x: cross_reference_id.TestCasePhaseCrossReference):

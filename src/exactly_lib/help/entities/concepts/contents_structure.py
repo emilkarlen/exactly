@@ -1,11 +1,10 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, \
-    command_line_names_as_singular_name, EntityDocumentationBase
+    EntityDocumentationBase
+from exactly_lib.help_texts.entity.concepts import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.name import Name, name_with_plural_s
+from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.structures import para
-
-CONCEPT_ENTITY_TYPE_NAMES = command_line_names_as_singular_name(name_with_plural_s('concept'))
 
 
 class ConceptDocumentation(EntityDocumentationBase):

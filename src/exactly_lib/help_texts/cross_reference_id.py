@@ -96,21 +96,28 @@ class TestSuiteSectionInstructionCrossReference(TestSuiteSectionCrossReferenceBa
 
 class EntityCrossReferenceId(CrossReferenceId):
     def __init__(self,
-                 entity_type_name: str,
+                 entity_type_identifier: str,
+                 entity_type_presentation_name: str,
                  entity_name: str):
-        self._entity_type_name = entity_type_name
+        self._entity_type_identifier = entity_type_identifier
+        self._entity_type_presentation_name = entity_type_presentation_name
         self._entity_name = entity_name
 
     @property
-    def entity_type_name(self) -> str:
-        return self._entity_type_name
+    def entity_type_identifier(self) -> str:
+        return self._entity_type_identifier
+
+    @property
+    def entity_type_presentation_name(self) -> str:
+        return self._entity_type_presentation_name
 
     @property
     def entity_name(self) -> str:
         return self._entity_name
 
     def _eq_object_of_same_type(self, other):
-        return self.entity_type_name == other.entity_type_name and \
+        return self.entity_type_identifier == other.entity_type_identifier and \
+               self.entity_type_presentation_name == other.entity_type_presentation_name and \
                self.entity_name == other.entity_name
 
 

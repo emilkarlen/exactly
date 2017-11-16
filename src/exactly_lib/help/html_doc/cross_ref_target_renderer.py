@@ -9,7 +9,7 @@ class HtmlTargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor)
         return self.visit(target)
 
     def visit_entity(self, x: cross_ref.EntityCrossReferenceId):
-        return 'entity' + '.' + x.entity_type_name + '.' + x.entity_name
+        return 'entity' + '.' + x.entity_type_identifier + '.' + x.entity_name
 
     def visit_test_case_phase(self, x: cross_ref.TestCasePhaseCrossReference):
         return 'test-case.phase.' + x.phase_name

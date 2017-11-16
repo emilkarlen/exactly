@@ -57,7 +57,7 @@ test_case_phase_is_valid = _is_str('phase name', TestCasePhaseCrossReference.pha
 test_suite_section_is_valid = _is_str('section name', TestSuiteSectionCrossReference.section_name.fget)
 
 entity_is_valid = asrt.And([
-    _is_str('entity type name', EntityCrossReferenceId.entity_type_name.fget),
+    _is_str('entity type name', EntityCrossReferenceId.entity_type_identifier.fget),
     _is_str('entity name', EntityCrossReferenceId.entity_name.fget),
 ])
 
@@ -66,7 +66,7 @@ def is_entity_for_type(entity_type_name: str) -> asrt.ValueAssertion:
     return asrt.And([
         is_entity,
         asrt.sub_component('entity type name',
-                           EntityCrossReferenceId.entity_type_name.fget,
+                           EntityCrossReferenceId.entity_type_identifier.fget,
                            asrt.Equals(entity_type_name))
     ])
 
@@ -121,8 +121,8 @@ class _CrossReferenceIdEqualsWhenClassIsEqual(CrossReferenceIdVisitor):
 
     def visit_entity(self, x: EntityCrossReferenceId):
         assert isinstance(self.expected, EntityCrossReferenceId)
-        self.put.assertEqual(self.expected.entity_type_name,
-                             x.entity_type_name,
+        self.put.assertEqual(self.expected.entity_type_identifier,
+                             x.entity_type_identifier,
                              self.message_builder.apply('entity_type_name'))
         self.put.assertEqual(self.expected.entity_name,
                              x.entity_name,
