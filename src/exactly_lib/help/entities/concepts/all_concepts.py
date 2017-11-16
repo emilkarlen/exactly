@@ -1,14 +1,15 @@
 from exactly_lib.help.entities.concepts.objects import \
-    environment_variable, preprocessor, sandbox, shell_syntax, \
+    actor, environment_variable, preprocessor, sandbox, shell_syntax, \
     home_directory_structure, test_case_directory_structure, \
     suite_reporter, symbol, type_, configuration_parameter, current_working_directory
 
 
 def all_concepts() -> list:
     """
-    :rtype [PlainConceptDocumentation]
+    :rtype [ConceptDocumentation]
     """
     return [
+        actor.ACTOR_CONCEPT,
         shell_syntax.SHELL_SYNTAX_CONCEPT,
         test_case_directory_structure.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT,
         home_directory_structure.HOME_DIRECTORY_STRUCTURE_CONCEPT,
