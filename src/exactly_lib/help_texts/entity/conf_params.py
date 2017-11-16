@@ -1,6 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.help_texts import conf_params
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity_identifiers import CONFIGURATION_PARAMETER_ENTITY_TYPE_IDENTIFIER
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.names import formatting
@@ -44,7 +45,7 @@ def _format(s: str) -> str:
 ACTOR_CONF_PARAM_INFO = conf_param_info(
     'actor',
     conf_params.ACTOR,
-    _format('Interprets the contents of the {phase[act]} phase, and executes it.')
+    concepts.ACTOR_CONCEPT_INFO.single_line_description_str
 )
 
 EXECUTION_MODE_CONF_PARAM_INFO = conf_param_info(
