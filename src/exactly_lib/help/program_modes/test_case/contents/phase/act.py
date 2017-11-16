@@ -7,17 +7,13 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference, \
-    TestCasePhaseInstructionCrossReference, \
-    TestSuiteSectionInstructionCrossReference
+from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params
-from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, \
     BEFORE_ASSERT_PHASE_NAME, \
-    ASSERT_PHASE_NAME, CONFIGURATION_PHASE_NAME
-from exactly_lib.help_texts.test_suite import formatted_section_names
+    ASSERT_PHASE_NAME
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
@@ -72,18 +68,13 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     @property
     def see_also_targets(self) -> list:
         return [
-                   concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
-                   concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
-                   concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-                   conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.cross_reference_target,
-                   TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
-                   TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
-                   TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
-                   TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
-                                                          ACTOR_INSTRUCTION_NAME),
-                   TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,
-                                                             ACTOR_INSTRUCTION_NAME),
-               ] + all_actor_cross_refs()
+            concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
+            concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
+        ]
 
     def _fnap(self, multi_line_string: str) -> list:
         return self._parser.fnap(multi_line_string)
