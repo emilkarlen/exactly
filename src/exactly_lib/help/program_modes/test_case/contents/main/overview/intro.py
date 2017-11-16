@@ -57,7 +57,7 @@ PASS
 ```
 
 
-"PASS" means that all assertions were satisfied.
+"PASS" means that all assertions are satisfied.
 
 
 It also means that '{action_to_check}'
