@@ -1,11 +1,9 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, \
-    command_line_names_as_singular_name
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity.actors import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.util.textformat.structure.document import SectionContents
-
-ACTOR_ENTITY_TYPE_NAMES = command_line_names_as_singular_name(concepts.ACTOR_CONCEPT_INFO.name)
 
 
 class ActorDocumentation(EntityDocumentationBase):

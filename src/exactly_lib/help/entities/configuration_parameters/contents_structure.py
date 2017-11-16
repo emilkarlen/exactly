@@ -1,16 +1,9 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, \
-    EntityTypeNames, EntityDocumentationBase
-from exactly_lib.help_texts.entity.concepts import CONFIGURATION_PARAMETER_CONCEPT_INFO
-from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
-from exactly_lib.help_texts.names import formatting
+    EntityDocumentationBase
+from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo, CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import para
-
-CONF_PARAM_ENTITY_TYPE_NAMES = EntityTypeNames(
-    CONFIGURATION_PARAMETER_CONCEPT_INFO.name,
-    'confparam',
-    formatting.syntax_element(CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name))
 
 
 class ConfigurationParameterDocumentation(EntityDocumentationBase):

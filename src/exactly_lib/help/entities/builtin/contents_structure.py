@@ -1,17 +1,7 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase, \
-    EntityTypeNames
-from exactly_lib.help_texts.entity.builtin import name_and_ref_target
-from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.help_texts.names import formatting
+from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help_texts.entity.builtin import name_and_ref_target, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.type_system.value_type import ValueType, TypeCategory, VALUE_TYPE_2_TYPE_CATEGORY
-from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
-
-BUILTIN_SYMBOL_ENTITY_TYPE_NAMES = EntityTypeNames(
-    Name('builtin ' + SYMBOL_CONCEPT_INFO.singular_name,
-         'builtin ' + SYMBOL_CONCEPT_INFO.plural_name),
-    'builtin',
-    formatting.syntax_element(SYMBOL_CONCEPT_INFO.singular_name))
 
 
 class BuiltinSymbolDocumentation(EntityDocumentationBase):

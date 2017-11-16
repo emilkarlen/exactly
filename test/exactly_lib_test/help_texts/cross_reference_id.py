@@ -34,7 +34,9 @@ class TestEqualsCustom(unittest.TestCase):
 
 class TestEqualsEntity(unittest.TestCase):
     def test_not_equals_for_every_type(self):
-        expected = sut.EntityCrossReferenceId('expected_type', 'expected_entity')
+        expected = sut.EntityCrossReferenceId('expected_type_identifier',
+                                              'expected presentation name',
+                                              'expected_entity')
         for actual in ACTUAL_CROSS_REF_ID_OF_EVERY_TYPE:
             with self.subTest(actual=actual):
                 self.assertNotEqual(expected, actual)
@@ -42,11 +44,15 @@ class TestEqualsEntity(unittest.TestCase):
     def test_not_equals_of_same_type(self):
         # ARRANGE #
         expected_type = 'expected_type'
+        expected_presentation_name = 'expected_presentation_name'
         expected_entity = 'expected_entity'
-        expected = sut.EntityCrossReferenceId(expected_type, expected_entity)
+        expected = sut.EntityCrossReferenceId(expected_type,
+                                              expected_presentation_name,
+                                              expected_entity)
         actuals = [
-            sut.EntityCrossReferenceId('actual_type', expected_entity),
-            sut.EntityCrossReferenceId(expected_type, 'actual_entity'),
+            sut.EntityCrossReferenceId('actual_type', expected_presentation_name, expected_entity),
+            sut.EntityCrossReferenceId(expected_type, 'actual presentation name', expected_entity),
+            sut.EntityCrossReferenceId(expected_type, expected_presentation_name, 'actual_entity'),
         ]
         for actual in actuals:
             with self.subTest(actual=actual):
@@ -54,11 +60,11 @@ class TestEqualsEntity(unittest.TestCase):
 
     def test_equals(self):
         # ARRANGE #
-        target_name = 'expected'
         entity_type_name = 'expected_type'
+        expected_presentation_name = 'expected_presentation_name'
         entity_name = 'expected_entity'
-        expected = sut.EntityCrossReferenceId(entity_type_name, entity_name)
-        actual = sut.EntityCrossReferenceId(entity_type_name, entity_name)
+        expected = sut.EntityCrossReferenceId(entity_type_name, expected_presentation_name, entity_name)
+        actual = sut.EntityCrossReferenceId(entity_type_name, expected_presentation_name, entity_name)
         # ASSERT #
         self.assertEqual(expected, actual)
 
@@ -157,7 +163,7 @@ class TestEqualsTestSuiteSectionInstruction(unittest.TestCase):
 
 ACTUAL_CROSS_REF_ID_OF_EVERY_TYPE = [
     sut.CustomCrossReferenceId('actual'),
-    sut.EntityCrossReferenceId('actual_entity', 'actual'),
+    sut.EntityCrossReferenceId('actual_entity_identifier', 'entity type presentation name', 'actual'),
     sut.TestCasePhaseCrossReference('actual'),
     sut.TestCasePhaseInstructionCrossReference('actual_phase', 'actual_instruction'),
     sut.TestSuiteSectionCrossReference('actual'),
@@ -168,7 +174,8 @@ ACTUAL_CROSS_REF_ID_OF_EVERY_TYPE = [
 class CrossReferenceIdVisitorTest(unittest.TestCase):
     def test_visit_EntityCrossReferenceId(self):
         # ARRANGE #
-        x = sut.EntityCrossReferenceId('entity type name', 'entity name')
+        x = sut.EntityCrossReferenceId('entity_type_identifier', 'entity type presentation name',
+                                       'entity name')
         visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
         # ACT #
         returned = visitor.visit(x)
