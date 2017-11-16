@@ -2,6 +2,28 @@ from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.core import Text, StringText, CrossReferenceTarget
 
 
+class EntityTypeNames(tuple):
+    def __new__(cls,
+                identifier: str,
+                name: Name,
+                command_line_entity_argument: str):
+        return tuple.__new__(cls, (name,
+                                   identifier,
+                                   command_line_entity_argument))
+
+    @property
+    def name(self) -> Name:
+        return self[0]
+
+    @property
+    def identifier(self) -> str:
+        return self[1]
+
+    @property
+    def command_line_entity_argument(self) -> str:
+        return self[2]
+
+
 class SeeAlsoTarget:
     """
     A target that can be presented as a see-also item

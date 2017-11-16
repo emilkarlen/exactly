@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help_texts.entity_identifiers import SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER
+from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib_test.common.help.test_resources import see_also_assertions as asrt_see_also
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as xref_va
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -90,5 +90,5 @@ class TestSeeAlso(WithSuiteReporterDocumentationBase):
 class TestCrossReferenceTarget(WithSuiteReporterDocumentationBase):
     def runTest(self):
         actual = self.documentation.cross_reference_target()
-        assertion = xref_va.is_entity_for_type(SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER)
+        assertion = xref_va.is_entity_for_type(SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier)
         assertion.apply_with_message(self, actual, 'cross_reference_target')

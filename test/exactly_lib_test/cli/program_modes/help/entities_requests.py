@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help import entities_requests as sut
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
-from exactly_lib.help_texts.entity_identifiers import ACTOR_ENTITY_TYPE_IDENTIFIER
+from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -61,12 +61,13 @@ def help_request_renderer_resolver(entities: list) -> sut.EntityHelpRequestRende
         ACTOR_ENTITY_CONFIGURATION.cli_list_renderer_getter,
         entities)
 
+
 _RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
 
 
 def _actor_help_request(item: sut.EntityHelpItem,
                         individual_actor: ActorDocumentation = None) -> sut.EntityHelpRequest:
-    return sut.EntityHelpRequest(ACTOR_ENTITY_TYPE_IDENTIFIER, item, individual_actor)
+    return sut.EntityHelpRequest(ACTOR_ENTITY_TYPE_NAMES.identifier, item, individual_actor)
 
 
 if __name__ == '__main__':

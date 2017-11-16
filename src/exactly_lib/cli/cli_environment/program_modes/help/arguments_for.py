@@ -1,12 +1,9 @@
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
-from exactly_lib.help.utils.entity_documentation import EntityTypeNames
-from exactly_lib.help_texts.entity.actors import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.builtin import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.concepts import CONCEPT_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.suite_reporters import SUITE_REPORTER_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.syntax_element import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.types import TYPE_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
+    SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, TYPE_ENTITY_TYPE_NAMES, \
+    BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
 from exactly_lib.test_case import phase_identifier
 
 

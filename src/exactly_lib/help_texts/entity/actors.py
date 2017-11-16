@@ -1,17 +1,11 @@
-from exactly_lib.help.utils.entity_documentation import command_line_names_as_singular_name
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity_identifiers import ACTOR_ENTITY_TYPE_IDENTIFIER
+from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 
-ACTOR_ENTITY_TYPE_NAMES = command_line_names_as_singular_name(ACTOR_ENTITY_TYPE_IDENTIFIER,
-                                                              concepts.ACTOR_CONCEPT_INFO.name)
-
 
 def actor_cross_ref(actor_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(ACTOR_ENTITY_TYPE_NAMES.identifier,
-                                  ACTOR_ENTITY_TYPE_NAMES.name.singular,
+    return EntityCrossReferenceId(ACTOR_ENTITY_TYPE_NAMES,
                                   actor_name)
 
 

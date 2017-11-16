@@ -1,20 +1,12 @@
-from exactly_lib.help.utils.entity_documentation import EntityTypeNames
-from exactly_lib.help_texts import instruction_arguments, entity_identifiers
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import types
+from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help_texts.names.formatting import syntax_element
-from exactly_lib.util import name
-
-SYNTAX_ELEMENT_ENTITY_TYPE_NAMES = EntityTypeNames(
-    name.name_with_plural_s('syntax element'),
-    entity_identifiers.SYNTAX_ELEMENT_ENTITY_TYPE_IDENTIFIER,
-    syntax_element('syntax element'))
 
 
 def syntax_element_cross_ref(syntax_element_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.identifier,
-                                  SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.name.singular,
+    return EntityCrossReferenceId(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
                                   syntax_element_name)
 
 

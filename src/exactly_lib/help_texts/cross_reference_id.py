@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
+from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId, EntityTypeNames
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, UrlCrossReferenceTarget
 from exactly_lib.util.textformat.structure.structures import text, anchor_text
@@ -96,20 +96,18 @@ class TestSuiteSectionInstructionCrossReference(TestSuiteSectionCrossReferenceBa
 
 class EntityCrossReferenceId(CrossReferenceId):
     def __init__(self,
-                 entity_type_identifier: str,
-                 entity_type_presentation_name: str,
+                 entity_type_names: EntityTypeNames,
                  entity_name: str):
-        self._entity_type_identifier = entity_type_identifier
-        self._entity_type_presentation_name = entity_type_presentation_name
+        self._entity_type_names = entity_type_names
         self._entity_name = entity_name
 
     @property
     def entity_type_identifier(self) -> str:
-        return self._entity_type_identifier
+        return self._entity_type_names.identifier
 
     @property
     def entity_type_presentation_name(self) -> str:
-        return self._entity_type_presentation_name
+        return self._entity_type_names.name.singular
 
     @property
     def entity_name(self) -> str:

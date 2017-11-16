@@ -1,5 +1,6 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
-from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId, TYPE_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.test_case_utils.expression import syntax_documentation
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.type_system.value_type import TypeCategory

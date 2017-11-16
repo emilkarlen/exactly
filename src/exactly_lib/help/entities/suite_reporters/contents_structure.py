@@ -1,6 +1,6 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
-from exactly_lib.help_texts.entity.suite_reporters import SUITE_REPORTER_ENTITY_TYPE_NAMES
 
 
 class SuiteReporterDocumentation(EntityDocumentationBase):
