@@ -1,5 +1,8 @@
-from exactly_lib.help_texts import conf_params
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import conf_params as cp
+from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
+from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType, \
     RelHomeOptionType
@@ -48,16 +51,21 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
 
 class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
     def __init__(self,
-                 configuration_parameter_name: str,
                  directory_variable_name: str,
                  option_name: argument.OptionName,
                  root_resolver: RelHomeRootResolver,
+                 cross_ref_info: ConfigurationParameterInfo,
                  description: str):
         super().__init__(directory_variable_name,
                          option_name,
                          root_resolver,
                          description)
-        self._configuration_parameter_name = configuration_parameter_name
+        self._cross_ref_info = cross_ref_info
+        self._configuration_parameter_name = cross_ref_info.configuration_parameter_name
+
+    @property
+    def cross_ref_info(self) -> ConfigurationParameterInfo:
+        return self._cross_ref_info
 
     @property
     def configuration_parameter_name(self) -> str:
@@ -68,20 +76,32 @@ class RelNonHomeOptionInfo(RelOptionInfo):
     pass
 
 
+class RelCurrentDirectoryOptionInfo(RelOptionInfo):
+    def __init__(self):
+        super().__init__(
+            file_ref_texts.REL_CWD_OPTION_NAME,
+            relativity_root.resolver_for_cwd,
+            file_ref_texts.RELATIVITY_DESCRIPTION_CWD)
+
+    @property
+    def cross_ref_info(self) -> SingularAndPluralNameAndCrossReferenceId:
+        return concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
+
+
 class RelSdsOptionInfo(RelNonHomeOptionInfo, RelOptionInfoCorrespondingToTcDir):
     pass
 
 
 REL_HOME_OPTIONS_MAP = {
-    RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(conf_params.HOME_CASE_DIRECTORY,
-                                                       file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
+    RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
                                                        file_ref_texts.REL_HOME_CASE_OPTION_NAME,
                                                        relativity_root.resolver_for_home_case,
+                                                       cp.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
                                                        file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE),
-    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(conf_params.HOME_ACT_DIRECTORY,
-                                                      file_ref_texts.EXACTLY_DIR__REL_HOME_ACT,
+    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_ACT,
                                                       file_ref_texts.REL_HOME_ACT_OPTION_NAME,
                                                       relativity_root.resolver_for_home_act,
+                                                      cp.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
                                                       file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT),
 }
 
@@ -103,9 +123,7 @@ REL_SDS_OPTIONS_MAP = {
 }
 
 REL_NON_HOME_OPTIONS_MAP = {
-    RelNonHomeOptionType.REL_CWD: RelNonHomeOptionInfo(file_ref_texts.REL_CWD_OPTION_NAME,
-                                                       relativity_root.resolver_for_cwd,
-                                                       file_ref_texts.RELATIVITY_DESCRIPTION_CWD),
+    RelNonHomeOptionType.REL_CWD: RelCurrentDirectoryOptionInfo(),
 
     RelNonHomeOptionType.REL_ACT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT],
 
