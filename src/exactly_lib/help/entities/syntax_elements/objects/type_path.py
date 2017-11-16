@@ -156,7 +156,7 @@ def _options_for_directories_in_the_(rel_opt_2_rel_option_info: dict,
 def _mk_dir_info_row(dir_info: RelOptionInfo) -> list:
     return [
         docs.text_cell(option_syntax(dir_info.option_name)),
-        docs.text_cell(dir_info.description),
+        docs.text_cell(dir_info.informative_name),
     ]
 
 

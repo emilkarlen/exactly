@@ -17,12 +17,12 @@ def unsatisfied_path_relativity(symbol_name: str,
 
     def option_description_row(rel_opt: RelOptionType) -> list:
         rel_option_info = REL_OPTIONS_MAP[rel_opt]
-        return [rel_option_info.description,
+        return [rel_option_info.informative_name,
                 '(' + long_option_syntax(rel_option_info.option_name.long) + ')']
 
     def option_description(rel_opt: RelOptionType) -> str:
         rel_option_info = REL_OPTIONS_MAP[rel_opt]
-        return '{} ({})'.format(rel_option_info.description,
+        return '{} ({})'.format(rel_option_info.informative_name,
                                 long_option_syntax(rel_option_info.option_name.long))
 
     def _render_actual_relativity() -> str:
