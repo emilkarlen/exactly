@@ -1,5 +1,7 @@
 -*- org -*-
 
+* Make "preprocessor" a configuration parameter
+It is also a conf param, but for suites.
 * new instr to create symlink (complement to "file", "dir")
 <2017-10-06 Fri>
 
