@@ -78,7 +78,7 @@ SUITE_REPORTER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 )
 
 TYPE_CONCEPT_INFO = name_and_ref_target_for_entity_type(
-    all_entity_types.SUITE_REPORTER_ENTITY_TYPE_NAMES,
+    all_entity_types.TYPE_ENTITY_TYPE_NAMES,
     'Type system for symbols and instruction arguments.'
 )
 
