@@ -309,7 +309,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             ]
             for source, token_stream_assertion in source_and_token_stream_assertion_variants:
                 for path_suffix_is_required in [False, True]:
-                    with self.subTest(msg=rel_option_info.description +
+                    with self.subTest(msg=rel_option_info.informative_name +
                             ' / path_suffix_is_required=' + str(path_suffix_is_required)):
                         argument_string = source.format(option_str=option_str,
                                                         file_name_argument=file_name_argument)
@@ -348,7 +348,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
             ]
             for source, token_stream_assertion in source_and_token_stream_assertion_variants:
                 for path_suffix_is_required in [False, True]:
-                    with self.subTest(msg=rel_option_info.description +
+                    with self.subTest(msg=rel_option_info.informative_name +
                             ' / path_suffix_is_required=' + str(path_suffix_is_required)):
                         argument_string = source.format(option_str=option_str,
                                                         file_name_argument=file_name_argument)
@@ -434,7 +434,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
 
     def test_parse_with_option_fails_when_no_file_argument(self):
         for rel_option_info in REL_OPTIONS_MAP.values():
-            with self.subTest(msg=rel_option_info.description):
+            with self.subTest(msg=rel_option_info.informative_name):
                 option_str = _option_string_for(rel_option_info.option_name)
                 ts = TokenStream(option_str)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):

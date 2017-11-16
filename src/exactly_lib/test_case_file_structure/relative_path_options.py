@@ -15,10 +15,10 @@ class RelOptionInfo:
     def __init__(self,
                  option_name: argument.OptionName,
                  root_resolver: RelRootResolver,
-                 description: str):
+                 informative_name: str):
         self._option_name = option_name
         self._root_resolver = root_resolver
-        self._description = description
+        self._informative_name = informative_name
 
     @property
     def option_name(self) -> argument.OptionName:
@@ -29,8 +29,8 @@ class RelOptionInfo:
         return self._root_resolver
 
     @property
-    def description(self) -> str:
-        return self._description
+    def informative_name(self) -> str:
+        return self._informative_name
 
 
 class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
@@ -38,10 +38,10 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
                  directory_variable_name: str,
                  option_name: argument.OptionName,
                  root_resolver: RelHomeRootResolver,
-                 description: str):
+                 informative_name: str):
         super().__init__(option_name,
                          root_resolver,
-                         description)
+                         informative_name)
         self._directory_name = directory_variable_name
 
     @property
@@ -55,11 +55,11 @@ class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
                  option_name: argument.OptionName,
                  root_resolver: RelHomeRootResolver,
                  cross_ref_info: ConfigurationParameterInfo,
-                 description: str):
+                 informative_name: str):
         super().__init__(directory_variable_name,
                          option_name,
                          root_resolver,
-                         description)
+                         informative_name)
         self._cross_ref_info = cross_ref_info
         self._configuration_parameter_name = cross_ref_info.configuration_parameter_name
 
