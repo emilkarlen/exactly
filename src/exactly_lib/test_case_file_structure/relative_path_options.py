@@ -64,7 +64,7 @@ class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):
         self._configuration_parameter_name = cross_ref_info.configuration_parameter_name
 
     @property
-    def cross_ref_info(self) -> ConfigurationParameterInfo:
+    def conf_param_info(self) -> ConfigurationParameterInfo:
         return self._cross_ref_info
 
     @property
@@ -92,38 +92,45 @@ class RelSdsOptionInfo(RelNonHomeOptionInfo, RelOptionInfoCorrespondingToTcDir):
     pass
 
 
+REL_CWD_INFO = RelCurrentDirectoryOptionInfo()
+
+REL_SDS_RESULT_INFO = RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_RESULT, file_ref_texts.REL_RESULT_OPTION_NAME,
+                                       relativity_root.resolver_for_result,
+                                       file_ref_texts.RELATIVITY_DESCRIPTION_RESULT)
+
+REL_SDS_TMP_INFO = RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_TMP, file_ref_texts.REL_TMP_OPTION_NAME,
+                                    relativity_root.resolver_for_tmp_user, file_ref_texts.RELATIVITY_DESCRIPTION_TMP)
+
+REL_SDS_ACT_INFO = RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_ACT, file_ref_texts.REL_ACT_OPTION_NAME,
+                                    relativity_root.resolver_for_act, file_ref_texts.RELATIVITY_DESCRIPTION_ACT)
+
+REL_HOME_ACT_INFO = RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_ACT,
+                                      file_ref_texts.REL_HOME_ACT_OPTION_NAME,
+                                      relativity_root.resolver_for_home_act,
+                                      cp.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
+                                      file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT)
+
+REL_HOME_CASE_INFO = RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
+                                       file_ref_texts.REL_HOME_CASE_OPTION_NAME,
+                                       relativity_root.resolver_for_home_case,
+                                       cp.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
+                                       file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE)
+
 REL_HOME_OPTIONS_MAP = {
-    RelHomeOptionType.REL_HOME_CASE: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_CASE,
-                                                       file_ref_texts.REL_HOME_CASE_OPTION_NAME,
-                                                       relativity_root.resolver_for_home_case,
-                                                       cp.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
-                                                       file_ref_texts.RELATIVITY_DESCRIPTION_HOME_CASE),
-    RelHomeOptionType.REL_HOME_ACT: RelHomeOptionInfo(file_ref_texts.EXACTLY_DIR__REL_HOME_ACT,
-                                                      file_ref_texts.REL_HOME_ACT_OPTION_NAME,
-                                                      relativity_root.resolver_for_home_act,
-                                                      cp.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
-                                                      file_ref_texts.RELATIVITY_DESCRIPTION_HOME_ACT),
+    RelHomeOptionType.REL_HOME_CASE: REL_HOME_CASE_INFO,
+    RelHomeOptionType.REL_HOME_ACT: REL_HOME_ACT_INFO,
 }
 
 REL_SDS_OPTIONS_MAP = {
-    RelSdsOptionType.REL_ACT: RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_ACT,
-                                               file_ref_texts.REL_ACT_OPTION_NAME,
-                                               relativity_root.resolver_for_act,
-                                               file_ref_texts.RELATIVITY_DESCRIPTION_ACT),
+    RelSdsOptionType.REL_ACT: REL_SDS_ACT_INFO,
 
-    RelSdsOptionType.REL_TMP: RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_TMP,
-                                               file_ref_texts.REL_TMP_OPTION_NAME,
-                                               relativity_root.resolver_for_tmp_user,
-                                               file_ref_texts.RELATIVITY_DESCRIPTION_TMP),
+    RelSdsOptionType.REL_TMP: REL_SDS_TMP_INFO,
 
-    RelSdsOptionType.REL_RESULT: RelSdsOptionInfo(file_ref_texts.EXACTLY_DIR__REL_RESULT,
-                                                  file_ref_texts.REL_RESULT_OPTION_NAME,
-                                                  relativity_root.resolver_for_result,
-                                                  file_ref_texts.RELATIVITY_DESCRIPTION_RESULT),
+    RelSdsOptionType.REL_RESULT: REL_SDS_RESULT_INFO,
 }
 
 REL_NON_HOME_OPTIONS_MAP = {
-    RelNonHomeOptionType.REL_CWD: RelCurrentDirectoryOptionInfo(),
+    RelNonHomeOptionType.REL_CWD: REL_CWD_INFO,
 
     RelNonHomeOptionType.REL_ACT: REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT],
 
