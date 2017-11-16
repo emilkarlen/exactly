@@ -1,12 +1,14 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import concepts as ci
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables as env
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
+    RelSdsOptionType, RelHomeOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HOME_OPTIONS_MAP, \
+    REL_CWD_INFO
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
@@ -211,35 +213,49 @@ _DISPLAY_ORDER = (
     RelOptionType.REL_CWD,
 )
 
+
+def _rel_sds(rel: RelSdsOptionType,
+             description: str) -> _RelOptionTypeInfo:
+    ri = REL_SDS_OPTIONS_MAP[rel]
+
+    return _RelOptionTypeInfo(ri.option_name,
+                              ri.directory_variable_name,
+                              description,
+                              [ci.SANDBOX_CONCEPT_INFO],
+                              )
+
+
+def _rel_hds(rel: RelHomeOptionType,
+             description: str) -> _RelOptionTypeInfo:
+    ri = REL_HOME_OPTIONS_MAP[rel]
+
+    return _RelOptionTypeInfo(ri.option_name,
+                              formatting.concept_(ri.conf_param_info),
+                              description,
+                              [ri.conf_param_info],
+                              )
+
+
 _ALL = {
-    RelOptionType.REL_TMP: _RelOptionTypeInfo(file_ref_texts.REL_TMP_OPTION_NAME,
-                                              env.ENV_VAR_TMP,
-                                              _REL_TMP_DESCRIPTION,
-                                              [ci.SANDBOX_CONCEPT_INFO],
-                                              ),
-    RelOptionType.REL_ACT: _RelOptionTypeInfo(file_ref_texts.REL_ACT_OPTION_NAME,
-                                              env.ENV_VAR_ACT,
-                                              _REL_ACT_DESCRIPTION,
-                                              [ci.SANDBOX_CONCEPT_INFO]),
-    RelOptionType.REL_RESULT: _RelOptionTypeInfo(file_ref_texts.REL_RESULT_OPTION_NAME,
-                                                 env.ENV_VAR_RESULT,
-                                                 _REL_RESULT_DESCRIPTION,
-                                                 [ci.SANDBOX_CONCEPT_INFO]),
-    RelOptionType.REL_CWD: _RelOptionTypeInfo(file_ref_texts.REL_CWD_OPTION_NAME,
-                                              formatting.concept_(
-                                                  ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+    RelOptionType.REL_TMP: _rel_sds(RelSdsOptionType.REL_TMP,
+                                    _REL_TMP_DESCRIPTION),
+
+    RelOptionType.REL_ACT: _rel_sds(RelSdsOptionType.REL_ACT,
+                                    _REL_ACT_DESCRIPTION),
+
+    RelOptionType.REL_RESULT: _rel_sds(RelSdsOptionType.REL_RESULT,
+                                       _REL_RESULT_DESCRIPTION),
+
+    RelOptionType.REL_CWD: _RelOptionTypeInfo(REL_CWD_INFO.option_name,
+                                              formatting.concept_(REL_CWD_INFO.cross_ref_info),
                                               _REL_CWD_DESCRIPTION,
-                                              [ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]),
-    RelOptionType.REL_HOME_CASE: _RelOptionTypeInfo(file_ref_texts.REL_HOME_CASE_OPTION_NAME,
-                                                    formatting.conf_param_(
-                                                        conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
-                                                    _REL_HOME_CASE_DESCRIPTION,
-                                                    [conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO]),
-    RelOptionType.REL_HOME_ACT: _RelOptionTypeInfo(file_ref_texts.REL_HOME_ACT_OPTION_NAME,
-                                                   formatting.conf_param_(
-                                                       conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
-                                                   _REL_HOME_ACT_DESCRIPTION,
-                                                   [conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO]),
+                                              [REL_CWD_INFO.cross_ref_info]),
+
+    RelOptionType.REL_HOME_CASE: _rel_hds(RelHomeOptionType.REL_HOME_CASE,
+                                          _REL_HOME_CASE_DESCRIPTION),
+
+    RelOptionType.REL_HOME_ACT: _rel_hds(RelHomeOptionType.REL_HOME_ACT,
+                                         _REL_HOME_ACT_DESCRIPTION),
 }
 
 _DEFAULT_RELATIVITY = """\
