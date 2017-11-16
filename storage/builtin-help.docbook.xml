@@ -352,7 +352,7 @@ Yes, casting is supported - casting data type -> string-->
         </listitem>
 
         <listitem>
-          <para>acceptable to modify file/contents of dir </para>
+          <para>acceptable to modify file/contents of dir</para>
         </listitem>
 
         <listitem>
@@ -423,6 +423,13 @@ Yes, casting is supported - casting data type -> string-->
                   the sandbox (files that may be modified)</para>
                 </listitem>
               </itemizedlist>
+            </listitem>
+
+            <listitem>
+              <para><glossterm>home</glossterm> must exist, partly because a
+              test case is executed in the <glossterm>sandbox</glossterm> - CD
+              is changed to a new directory, so special mechanisms are needed
+              to access preexisting files</para>
             </listitem>
           </itemizedlist>
         </section>
