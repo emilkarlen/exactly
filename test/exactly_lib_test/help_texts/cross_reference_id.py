@@ -1,6 +1,8 @@
 import unittest
 
 from exactly_lib.help_texts import cross_reference_id as sut
+from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
+from exactly_lib.util.name import name_with_plural_s
 
 
 def suite() -> unittest.TestSuite:
@@ -14,6 +16,13 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(CrossReferenceIdVisitorTest),
     ])
+
+
+def entity_type_names(identifier: str,
+                      presentation_name: str) -> EntityTypeNames:
+    return EntityTypeNames(identifier,
+                           name_with_plural_s(presentation_name),
+                           'command line argument')
 
 
 class TestEqualsCustom(unittest.TestCase):
@@ -34,8 +43,8 @@ class TestEqualsCustom(unittest.TestCase):
 
 class TestEqualsEntity(unittest.TestCase):
     def test_not_equals_for_every_type(self):
-        expected = sut.EntityCrossReferenceId('expected_type_identifier',
-                                              'expected presentation name',
+        expected = sut.EntityCrossReferenceId(entity_type_names('expected_type_identifier',
+                                                                'expected presentation name'),
                                               'expected_entity')
         for actual in ACTUAL_CROSS_REF_ID_OF_EVERY_TYPE:
             with self.subTest(actual=actual):
@@ -46,13 +55,13 @@ class TestEqualsEntity(unittest.TestCase):
         expected_type = 'expected_type'
         expected_presentation_name = 'expected_presentation_name'
         expected_entity = 'expected_entity'
-        expected = sut.EntityCrossReferenceId(expected_type,
-                                              expected_presentation_name,
+        expected = sut.EntityCrossReferenceId(entity_type_names(expected_type,
+                                                                expected_presentation_name),
                                               expected_entity)
         actuals = [
-            sut.EntityCrossReferenceId('actual_type', expected_presentation_name, expected_entity),
-            sut.EntityCrossReferenceId(expected_type, 'actual presentation name', expected_entity),
-            sut.EntityCrossReferenceId(expected_type, expected_presentation_name, 'actual_entity'),
+            sut.EntityCrossReferenceId(entity_type_names('actual_type', expected_presentation_name), expected_entity),
+            sut.EntityCrossReferenceId(entity_type_names(expected_type, 'actual presentation name'), expected_entity),
+            sut.EntityCrossReferenceId(entity_type_names(expected_type, expected_presentation_name), 'actual_entity'),
         ]
         for actual in actuals:
             with self.subTest(actual=actual):
@@ -63,8 +72,10 @@ class TestEqualsEntity(unittest.TestCase):
         entity_type_name = 'expected_type'
         expected_presentation_name = 'expected_presentation_name'
         entity_name = 'expected_entity'
-        expected = sut.EntityCrossReferenceId(entity_type_name, expected_presentation_name, entity_name)
-        actual = sut.EntityCrossReferenceId(entity_type_name, expected_presentation_name, entity_name)
+        expected = sut.EntityCrossReferenceId(entity_type_names(entity_type_name, expected_presentation_name),
+                                              entity_name)
+        actual = sut.EntityCrossReferenceId(entity_type_names(entity_type_name, expected_presentation_name),
+                                            entity_name)
         # ASSERT #
         self.assertEqual(expected, actual)
 
@@ -163,7 +174,9 @@ class TestEqualsTestSuiteSectionInstruction(unittest.TestCase):
 
 ACTUAL_CROSS_REF_ID_OF_EVERY_TYPE = [
     sut.CustomCrossReferenceId('actual'),
-    sut.EntityCrossReferenceId('actual_entity_identifier', 'entity type presentation name', 'actual'),
+    sut.EntityCrossReferenceId(entity_type_names('actual_entity_identifier',
+                                                 'actual presentation name'),
+                               'actual'),
     sut.TestCasePhaseCrossReference('actual'),
     sut.TestCasePhaseInstructionCrossReference('actual_phase', 'actual_instruction'),
     sut.TestSuiteSectionCrossReference('actual'),
@@ -174,7 +187,9 @@ ACTUAL_CROSS_REF_ID_OF_EVERY_TYPE = [
 class CrossReferenceIdVisitorTest(unittest.TestCase):
     def test_visit_EntityCrossReferenceId(self):
         # ARRANGE #
-        x = sut.EntityCrossReferenceId('entity_type_identifier', 'entity type presentation name',
+        x = sut.EntityCrossReferenceId(EntityTypeNames('entity_type_identifier',
+                                                       name_with_plural_s('presentation name'),
+                                                       'command line arg'),
                                        'entity name')
         visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
         # ACT #

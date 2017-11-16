@@ -1,18 +1,10 @@
-from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
-from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
-from exactly_lib.help_texts.entity_identifiers import SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER
+from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help_texts.names import formatting
-
-SUITE_REPORTER_ENTITY_TYPE_NAMES = EntityTypeNames(SUITE_REPORTER_CONCEPT_INFO.name,
-                                                   SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER,
-                                                   formatting.syntax_element(SUITE_REPORTER_CONCEPT_INFO.singular_name))
 
 
 def suite_reporter_cross_ref(reporter_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier,
-                                  SUITE_REPORTER_ENTITY_TYPE_NAMES.name.singular,
+    return EntityCrossReferenceId(SUITE_REPORTER_ENTITY_TYPE_NAMES,
                                   reporter_name)
 
 

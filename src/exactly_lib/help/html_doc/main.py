@@ -4,15 +4,15 @@ from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRender
 from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
-from exactly_lib.help.the_application_help import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER
-from exactly_lib.help.utils.entity_documentation import EntityTypeNames
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
     SectionRendererNode
 from exactly_lib.help.utils.table_of_contents import toc_list
-from exactly_lib.help_texts import entity_identifiers
 from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNode
+from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
+    SUITE_REPORTER_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
@@ -50,7 +50,7 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
             _case_and_suite_sections(application_help)
             +
             _entity_sections(application_help,
-                             entity_types_to_exclude=[entity_identifiers.SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER])
+                             entity_types_to_exclude=[SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier])
             +
             [
                 (
@@ -75,7 +75,7 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> list:
             test_suite.generator('Test Suites',
                                  application_help.test_suite_help,
                                  application_help.entity_conf_for(
-                                     entity_identifiers.SUITE_REPORTER_ENTITY_TYPE_IDENTIFIER))
+                                     SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier))
         ),
     ]
 

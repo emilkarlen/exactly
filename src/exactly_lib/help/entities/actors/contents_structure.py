@@ -1,7 +1,7 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity.actors import ACTOR_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.util.textformat.structure.document import SectionContents
 

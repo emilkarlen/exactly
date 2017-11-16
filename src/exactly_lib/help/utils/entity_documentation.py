@@ -4,10 +4,8 @@ Utilities for generating documentation for "entities" - things with a name and s
 Makes it possible to reuse some code for generating documentation.
 """
 
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
+from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId, EntityTypeNames
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.names.formatting import syntax_element
-from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text
 
@@ -60,35 +58,6 @@ class EntityDocumentationBase(EntityDocumentation):
         return formatting.entity(self.singular_name()) + ' - ' + self.single_line_description_str()
 
 
-class EntityTypeNames(tuple):
-    def __new__(cls,
-                name: Name,
-                identifier: str,
-                command_line_entity_argument: str):
-        return tuple.__new__(cls, (name,
-                                   identifier,
-                                   command_line_entity_argument))
-
-    @property
-    def name(self) -> Name:
-        return self[0]
-
-    @property
-    def identifier(self) -> str:
-        return self[1]
-
-    @property
-    def command_line_entity_argument(self) -> str:
-        return self[2]
-
-
-def command_line_names_as_singular_name(entity_type_identifier: str,
-                                        name: Name) -> EntityTypeNames:
-    return EntityTypeNames(name,
-                           entity_type_identifier,
-                           syntax_element(name.singular))
-
-
 class EntitiesHelp(tuple):
     def __new__(cls,
                 names: EntityTypeNames,
@@ -102,20 +71,6 @@ class EntitiesHelp(tuple):
     @property
     def names(self) -> EntityTypeNames:
         return self[0]
-
-    @property
-    def entity_type_name(self) -> str:
-        """
-        Name of entity that is used as command line argument.
-        """
-        return self.names.identifier
-
-    @property
-    def entity_type_presentation_name(self) -> str:
-        """
-        Name of entity for explanations.
-        """
-        return self.names.name.singular
 
     @property
     def all_entities(self) -> list:

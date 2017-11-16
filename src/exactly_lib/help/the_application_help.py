@@ -16,13 +16,9 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
-from exactly_lib.help_texts.entity.actors import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.builtin import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.concepts import CONCEPT_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.conf_params import CONF_PARAM_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.suite_reporters import SUITE_REPORTER_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.syntax_element import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.types import TYPE_ENTITY_TYPE_NAMES
+from exactly_lib.help_texts.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
+    CONF_PARAM_ENTITY_TYPE_NAMES, SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, \
+    TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
@@ -59,17 +55,6 @@ def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list):
         BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.identifier: builtin_symbols_entity_configuration(
             builtin_symbol_documentation_list),
     }
-
-
-ALL_ENTITY_TYPES_IN_DISPLAY_ORDER = (
-    CONCEPT_ENTITY_TYPE_NAMES,
-    CONF_PARAM_ENTITY_TYPE_NAMES,
-    TYPE_ENTITY_TYPE_NAMES,
-    ACTOR_ENTITY_TYPE_NAMES,
-    SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
-    BUILTIN_SYMBOL_ENTITY_TYPE_NAMES,
-    SUITE_REPORTER_ENTITY_TYPE_NAMES,
-)
 
 
 def test_suite_help(configuration_section_instructions: dict) -> TestSuiteHelp:

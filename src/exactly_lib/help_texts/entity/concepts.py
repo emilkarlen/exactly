@@ -1,19 +1,14 @@
 from exactly_lib import program_info
-from exactly_lib.help.utils.entity_documentation import command_line_names_as_singular_name
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
-from exactly_lib.help_texts.entity_identifiers import CONCEPT_ENTITY_TYPE_IDENTIFIER
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
+from exactly_lib.help_texts.entity import all_entity_types
+from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, EntityTypeNames
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, phase_name_dictionary
 from exactly_lib.util.name import Name, name_with_plural_s
 
-CONCEPT_ENTITY_TYPE_NAMES = command_line_names_as_singular_name(CONCEPT_ENTITY_TYPE_IDENTIFIER,
-                                                                name_with_plural_s('concept'))
-
 
 def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
-    return EntityCrossReferenceId(CONCEPT_ENTITY_TYPE_NAMES.identifier,
-                                  CONCEPT_ENTITY_TYPE_NAMES.name.singular,
+    return EntityCrossReferenceId(all_entity_types.CONCEPT_ENTITY_TYPE_NAMES,
                                   concept_name)
 
 
@@ -24,6 +19,11 @@ def name_and_ref_target(name: Name,
                                                     concept_cross_ref(name.singular))
 
 
+def name_and_ref_target_for_entity_type(names: EntityTypeNames,
+                                        single_line_description_str: str) -> SingularAndPluralNameAndCrossReferenceId:
+    return name_and_ref_target(names.name, single_line_description_str)
+
+
 def _format(s: str) -> str:
     return s.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
                     phase=phase_name_dictionary())
@@ -32,8 +32,8 @@ def _format(s: str) -> str:
 _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
 A value set in the {0} phase that determine how the remaining phases are executed."""
 
-CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('configuration parameter'),
+CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
+    all_entity_types.CONF_PARAM_ENTITY_TYPE_NAMES,
     _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)
 )
 
@@ -72,22 +72,22 @@ SHELL_SYNTAX_CONCEPT_INFO = name_and_ref_target(
     'Quoting of strings in command lines.'
 )
 
-SUITE_REPORTER_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('suite reporter'),
+SUITE_REPORTER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
+    all_entity_types.SUITE_REPORTER_ENTITY_TYPE_NAMES,
     'Reports the outcome of a test suite via stdout, stderr and exit code.'
 )
 
-TYPE_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('type'),
+TYPE_CONCEPT_INFO = name_and_ref_target_for_entity_type(
+    all_entity_types.SUITE_REPORTER_ENTITY_TYPE_NAMES,
     'Type system for symbols and instruction arguments.'
 )
 
 SYMBOL_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('symbol'),
+    all_entity_types.SYMBOL_CONCEPT_NAME,
     'A named, constant, value.'
 )
 
-ACTOR_CONCEPT_INFO = name_and_ref_target(
-    name_with_plural_s('actor'),
+ACTOR_CONCEPT_INFO = name_and_ref_target_for_entity_type(
+    all_entity_types.ACTOR_ENTITY_TYPE_NAMES,
     _format('Interprets the contents of the {phase[act]} phase, and executes it.')
 )
