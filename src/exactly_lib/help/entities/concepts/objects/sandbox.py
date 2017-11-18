@@ -6,7 +6,7 @@ from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, SETUP_PHASE_NAME
+from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists
@@ -20,9 +20,9 @@ class _SandboxConcept(ConceptDocumentation):
     def __init__(self):
         super().__init__(concepts.SANDBOX_CONCEPT_INFO)
 
-        self._parser = TextParser({
+        self._tp = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
             'instruction': AnyInstructionNameDictionary(),
             'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
@@ -31,7 +31,7 @@ class _SandboxConcept(ConceptDocumentation):
     def purpose(self) -> DescriptionWithSubSections:
         rest_paragraphs = []
         sub_sections = []
-        rest_paragraphs += self._parser.fnap(_SANDBOX_PRE_DIRECTORY_TREE)
+        rest_paragraphs += self._tp.fnap(_SANDBOX_PRE_DIRECTORY_TREE)
         sub_sections.append(directory_structure_list_section(sds.execution_directories))
         sub_sections += self._sandbox_directories_info_sections()
         return DescriptionWithSubSections(self.single_line_description(),
@@ -62,14 +62,14 @@ class _SandboxConcept(ConceptDocumentation):
 
     def _act_dir_description_paragraphs(self) -> list:
         ret_val = []
-        ret_val.extend(self._fnap(_ACT_DIR_DESCRIPTION))
+        ret_val.extend(self._tp.fnap(_ACT_DIR_DESCRIPTION))
         ret_val.extend(_dir_env_variables_and_rel_options(env_var_name=environment_variables.ENV_VAR_ACT,
                                                           rel_option=file_ref_texts.REL_ACT_OPTION))
         return ret_val
 
     def _result_dir_description_paragraphs(self) -> list:
         ret_val = []
-        ret_val += self._fnap(_RESULT_DIR_DESCRIPTION)
+        ret_val += self._tp.fnap(_RESULT_DIR_DESCRIPTION)
         ret_val.append(docs.simple_header_only_list(sds.RESULT_FILE_ALL,
                                                     lists.ListType.ITEMIZED_LIST))
         ret_val += self._result_dir_env_variable_and_rel_option()
@@ -77,7 +77,7 @@ class _SandboxConcept(ConceptDocumentation):
 
     def _tmp_user_dir_description_paragraphs(self) -> list:
         ret_val = []
-        ret_val += self._fnap(_USR_TMP_DIR_DESCRIPTION)
+        ret_val += self._tp.fnap(_USR_TMP_DIR_DESCRIPTION)
         ret_val += _dir_env_variables_and_rel_options(env_var_name=environment_variables.ENV_VAR_TMP,
                                                       rel_option=file_ref_texts.REL_TMP_OPTION)
         return ret_val
@@ -85,14 +85,11 @@ class _SandboxConcept(ConceptDocumentation):
     def _result_dir_env_variable_and_rel_option(self) -> list:
         return [_dir_info_items_table(environment_variables.ENV_VAR_RESULT,
                                       file_ref_texts.REL_RESULT_OPTION,
-                                      self._parser.format(_RESULT_DIR_ENV_VARIABLE))
+                                      self._tp.format(_RESULT_DIR_ENV_VARIABLE))
                 ]
 
     def _other_directories_than_those_listed(self) -> list:
-        return self._fnap(_OTHER_DIRECTORIES_THAN_THOSE_LISTED)
-
-    def _fnap(self, template: str) -> list:
-        return self._parser.fnap(template)
+        return self._tp.fnap(_OTHER_DIRECTORIES_THAN_THOSE_LISTED)
 
 
 SANDBOX_CONCEPT = _SandboxConcept()

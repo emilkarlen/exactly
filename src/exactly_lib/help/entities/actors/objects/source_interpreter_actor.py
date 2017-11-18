@@ -6,7 +6,8 @@ from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
+from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+    PHASE_NAME_DICTIONARY
 from exactly_lib.help_texts.test_suite import formatted_section_names
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -19,7 +20,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
         super().__init__(SOURCE_INTERPRETER_ACTOR)
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
             'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,

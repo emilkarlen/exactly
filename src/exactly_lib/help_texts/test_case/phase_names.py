@@ -27,3 +27,6 @@ def phase_name_dictionary() -> dict:
 
 def phase_name_dict_key_for(phase_name: str) -> str:
     return phase_name.replace('-', '_')
+
+
+PHASE_NAME_DICTIONARY = phase_name_dictionary()

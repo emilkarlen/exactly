@@ -11,9 +11,9 @@ from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReferenc
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, SETUP_PHASE_NAME, \
+from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, \
     BEFORE_ASSERT_PHASE_NAME, \
-    ASSERT_PHASE_NAME
+    ASSERT_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
@@ -26,9 +26,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     def __init__(self,
                  name: str):
         super().__init__(name)
-        self.phase_name_dictionary = phase_name_dictionary()
-        self._parser = TextParser({
-            'phase': phase_name_dictionary(),
+        self._tp = TextParser({
+            'phase': PHASE_NAME_DICTIONARY,
             'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
@@ -39,26 +38,25 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
     def purpose(self) -> Description:
         from exactly_lib.help.entities.actors.all_actor_docs import DEFAULT_ACTOR_DOC
-        actor_info = (self._fnap(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
+        actor_info = (self._tp.fnap(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
                       docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
-                      self._fnap(HOW_TO_SPECIFY_ACTOR)
+                      self._tp.fnap(HOW_TO_SPECIFY_ACTOR)
                       )
-        return Description(self._parser.text(ONE_LINE_DESCRIPTION),
-                           self._fnap(REST_OF_DESCRIPTION) +
+        return Description(self._tp.text(ONE_LINE_DESCRIPTION),
+                           self._tp.fnap(REST_OF_DESCRIPTION) +
                            [result_sub_dir_files_table()] +
                            actor_info)
 
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo(sequence_info__preceding_phase(SETUP_PHASE_NAME),
-                                 sequence_info__succeeding_phase(self.phase_name_dictionary,
-                                                                 BEFORE_ASSERT_PHASE_NAME),
+                                 sequence_info__succeeding_phase(BEFORE_ASSERT_PHASE_NAME),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def is_mandatory(self) -> bool:
         return True
 
     def contents_description(self) -> doc.SectionContents:
-        initial_paragraphs = self._fnap(_CONTENTS_DESCRIPTION) + [_escape_sequence_table()]
+        initial_paragraphs = self._tp.fnap(_CONTENTS_DESCRIPTION) + [_escape_sequence_table()]
         return docs.section_contents(initial_paragraphs)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
@@ -75,9 +73,6 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
             TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
         ]
-
-    def _fnap(self, multi_line_string: str) -> list:
-        return self._parser.fnap(multi_line_string)
 
 
 ONE_LINE_DESCRIPTION = """\

@@ -1,10 +1,10 @@
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import SectionName
+from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.test_case.execution_mode import NAME_SKIP
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_RESULT
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs, table
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -16,6 +16,7 @@ _TEXT_PARSER = TextParser({
     'result_subdir': sds.SUB_DIRECTORY__RESULT,
     'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
     'ENV_VAR_RESULT': ENV_VAR_RESULT,
+    'phase': PHASE_NAME_DICTIONARY,
 })
 
 
@@ -54,10 +55,10 @@ def sequence_info__not_executed_if_execution_mode_is_skip() -> list:
     return _TEXT_PARSER.fnap(_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP)
 
 
-def sequence_info__succeeding_phase(phase_name_dictionary: dict,
-                                    following_phase: SectionName) -> list:
-    return normalize_and_parse(_SEQUENCE_INFO__SUCCEEDING_PHASE.format(phase=phase_name_dictionary,
-                                                                       following_phase=following_phase))
+def sequence_info__succeeding_phase(following_phase: SectionName) -> list:
+    return _TEXT_PARSER.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE,
+                             {'following_phase': following_phase}
+                             )
 
 
 def sequence_info__preceding_phase(following_phase: SectionName) -> list:

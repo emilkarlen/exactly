@@ -5,7 +5,7 @@ from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
+from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -18,7 +18,7 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
     def purpose(self) -> DescriptionWithSubSections:
         tp = TextParser({
             'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
             'act_dir': SUB_DIRECTORY__ACT,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),

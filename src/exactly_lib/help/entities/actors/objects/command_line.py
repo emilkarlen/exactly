@@ -11,8 +11,7 @@ from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
-from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
+from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -25,7 +24,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
         super().__init__(COMMAND_LINE_ACTOR)
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
         format_map = {
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATE.exit_identifier,

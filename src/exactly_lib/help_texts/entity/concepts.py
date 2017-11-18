@@ -3,7 +3,7 @@ from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import all_entity_types
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, EntityTypeNames
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, phase_name_dictionary
+from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.util.name import Name, name_with_plural_s
 
 
@@ -26,7 +26,7 @@ def name_and_ref_target_for_entity_type(names: EntityTypeNames,
 
 def _format(s: str) -> str:
     return s.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
-                    phase=phase_name_dictionary())
+                    phase=PHASE_NAME_DICTIONARY)
 
 
 _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\

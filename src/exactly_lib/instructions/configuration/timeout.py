@@ -4,7 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.entities.configuration_parameters.objects.timeout import DOCUMENTATION, \
     WHAT_THE_TIMEOUT_APPLIES_TO
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
+from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -27,7 +27,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str):
         super().__init__(name, {
             'default_value_str': DOCUMENTATION.default_value_str(),
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
         })
 
     def single_line_description(self) -> str:
