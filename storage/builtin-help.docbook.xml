@@ -308,7 +308,7 @@ Yes, casting is supported - casting data type -> string-->
               <term>PATH = PATH</term>
 
               <listitem>
-                <para/>
+                <para></para>
               </listitem>
             </varlistentry>
 
@@ -317,15 +317,15 @@ Yes, casting is supported - casting data type -> string-->
               STRING</term>
 
               <listitem>
-                <para/>
+                <para></para>
               </listitem>
             </varlistentry>
 
             <varlistentry>
-              <term/>
+              <term></term>
 
               <listitem>
-                <para/>
+                <para></para>
               </listitem>
             </varlistentry>
           </variablelist>
@@ -444,12 +444,72 @@ Yes, casting is supported - casting data type -> string-->
         <section>
           <title>Rest</title>
 
-          <para/>
+          <para></para>
         </section>
       </section>
 
       <section>
         <title>Home Directory Structure</title>
+
+        <section>
+          <title><emphasis>Predefined directories and files accessed by a test
+          case</emphasis></title>
+
+          <para>Typically, the directories in the HDS exist before the test
+          case is executed. They contain files read by, but not modified by,
+          the test case.</para>
+
+          <para>All of these directories are "configuration parameters", which
+          means that they can be set in [conf]. The values cannot be changed
+          after [conf].</para>
+
+          <para>The HDS consists of the following directories:</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>case home</term>
+
+              <listitem>
+                <para><emphasis>Default location of predefined helper files,
+                that should probably not be modified</emphasis></para>
+
+                <para>Default: the directory that contains the test case
+                file.</para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>act home</term>
+
+              <listitem>
+                <para><emphasis>Location of the SUT file, referenced from
+                [act]</emphasis></para>
+
+                <para>Default: the directory that contains the test case
+                file.</para>
+
+                <itemizedlist>
+                  <listitem>
+                    <para>Default value:</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>Set in [conf] via configuration parameter
+                    &lt;name&gt;</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>env var/builtin symbol</para>
+                  </listitem>
+
+                  <listitem>
+                    <para>relativity options</para>
+                  </listitem>
+                </itemizedlist>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </section>
 
         <section>
           <title>Info to provide</title>
@@ -505,19 +565,61 @@ Yes, casting is supported - casting data type -> string-->
               <para>PGM has support for referring to all of these
               directories</para>
             </listitem>
+
+            <listitem>
+              <para>directories</para>
+
+              <variablelist>
+                <varlistentry>
+                  <term>home</term>
+
+                  <listitem>
+                    <para>Default location of predefined helper files, that
+                    should probably not be modified.</para>
+
+                    <itemizedlist>
+                      <listitem>
+                        <para>input</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>expected output</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>helper programs</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term>act-home</term>
+
+                  <listitem>
+                    <para>Location of the system-under-test file, referenced
+                    from [act]</para>
+
+                    <itemizedlist>
+                      <listitem>
+                        <para>"act-home" configuration parameter</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>set by "act-home" instruction in [act]</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>if [act] is not used (null actor), or SUT is not
+                        a file, this dir is not used (or may be used for other
+                        things)</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
+            </listitem>
           </itemizedlist>
-        </section>
-
-        <section>
-          <title>Single line descr</title>
-
-          <para>Preexisting directories accessed by a test case.</para>
-        </section>
-
-        <section>
-          <title>Rest</title>
-
-          <para/>
         </section>
       </section>
 
@@ -525,47 +627,209 @@ Yes, casting is supported - casting data type -> string-->
         <title>Sandbox Directory Structure</title>
 
         <section>
-          <title>Single line</title>
-
-          <para>Temporary directories used during a single execution of a test
-          case, one of which is the CD when [setup] begins.</para>
-        </section>
-
-        <section>
-          <title>Rest</title>
+          <title><emphasis>Temporary directories used during a single
+          execution of a test case, one of which is the current directory when
+          [setup] begins</emphasis></title>
 
           <itemizedlist>
             <listitem>
-              <para>The sandbox directories are created when [setup] begins,
-              and deleted after the test case ends.</para>
+              <para>The sandbox directory structure is created when [setup]
+              begins, and deleted after the test case ends.</para>
             </listitem>
 
             <listitem>
               <para>Contains the following directories</para>
 
-              <itemizedlist>
-                <listitem>
-                  <para>act</para>
+              <variablelist>
+                <varlistentry>
+                  <term><filename>act</filename></term>
 
-                  <itemizedlist>
-                    <listitem>
-                      <para>this is CD when [setup] begins</para>
-                    </listitem>
+                  <listitem>
+                    <para><emphasis>This is the current directory when [setup]
+                    begins</emphasis></para>
 
-                    <listitem>
-                      <para/>
-                    </listitem>
-                  </itemizedlist>
-                </listitem>
+                    <para>This directory is initially empty.</para>
 
-                <listitem>
-                  <para>result</para>
-                </listitem>
+                    <para>If [act] (is a program that (is expected to))
+                    operates on files, then this directory may be used as an
+                    area for these files.</para>
 
-                <listitem>
-                  <para>tmp</para>
-                </listitem>
-              </itemizedlist>
+                    <para>[setup] may populate the directory with files, and
+                    may also change the current directory.</para>
+
+                    <para>Then [act] may operate on the files, and [assert]
+                    can check the contents of files and directories.</para>
+
+                    <para></para>
+
+                    <para>If [act] operates on files, [setup] may create such
+                    files that should exist before [act] starts. [setup] may
+                    also change the current directory. Then [assert] may check
+                    the contents of this directory. </para>
+
+                    <para>If needed, [setup] may populate this directory with
+                    files that [act] is expected to operate on. [setup] may
+                    also change the current directory.</para>
+
+                    <para>[assert] may check the contents, as a check of side
+                    effects of [act]</para>
+
+                    <para>[setup] is re</para>
+
+                    <itemizedlist>
+                      <listitem>
+                        <para>[setup] may populate this directory with files
+                        that [act] is expected to operate on; and change the
+                        current directory if needed</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>[act] may read and modify files found
+                        here</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>[assert] may checks the contents</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><filename>result</filename></term>
+
+                  <listitem>
+                    <para><emphasis>Stores OS process result of [act], so that
+                    [assert] may check it</emphasis></para>
+
+                    <para>As part of executing [act], PGM populates this
+                    directory with files containing properties of the OS
+                    process result.</para>
+
+                    <para>[assert] has instructions for checking these
+                    properties.</para>
+
+                    <table>
+                      <title></title>
+
+                      <tgroup cols="2">
+                        <thead>
+                          <row>
+                            <entry align="center">File</entry>
+
+                            <entry align="center">[assert] instruction</entry>
+                          </row>
+                        </thead>
+
+                        <tbody>
+                          <row>
+                            <entry>exitcode</entry>
+
+                            <entry>exitcode</entry>
+                          </row>
+
+                          <row>
+                            <entry>stdout</entry>
+
+                            <entry>stdout</entry>
+                          </row>
+
+                          <row>
+                            <entry>stderr</entry>
+
+                            <entry>stderr</entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </table>
+
+                    <para>These files may be accessed by custom code (via the
+                    "run" instruction, e.g."), if custom assertions and
+                    cleanup e.g. is needed.</para>
+
+                    <para>A test case should not modify the contents of this
+                    directory.</para>
+
+                    <para></para>
+
+                    <para></para>
+
+                    <para>As part of executing [act], PGM populates this
+                    directory with files containing</para>
+
+                    <itemizedlist>
+                      <listitem>
+                        <para>exit code,</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>standard output,</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>standard error output</para>
+                      </listitem>
+                    </itemizedlist>
+
+                    <para>from the [act] process. [assert] has instructions
+                    for checking these properties:</para>
+
+                    <table>
+                      <title></title>
+
+                      <tgroup cols="2">
+                        <thead>
+                          <row>
+                            <entry align="center">File</entry>
+
+                            <entry align="center">[assert] instruction</entry>
+                          </row>
+                        </thead>
+
+                        <tbody>
+                          <row>
+                            <entry>exitcode</entry>
+
+                            <entry>exitcode</entry>
+                          </row>
+
+                          <row>
+                            <entry>stdout</entry>
+
+                            <entry>stdout</entry>
+                          </row>
+
+                          <row>
+                            <entry>stderr</entry>
+
+                            <entry>stderr</entry>
+                          </row>
+                        </tbody>
+                      </tgroup>
+                    </table>
+
+                    <para>These files may be accessed by custom code (via the
+                    "run" instruction, e.g."), if custom assertions and
+                    cleanup e.g. is needed.</para>
+
+                    <para>A test case should not modify the contents of this
+                    directory.</para>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><filename>tmp</filename></term>
+
+                  <listitem>
+                    <para><emphasis>Reserved for custom helper files, used by
+                    the test case implementation</emphasis></para>
+
+                    <para>This directory is initially empty.</para>
+
+                    <para>PGM does to touch this directory.</para>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
             </listitem>
           </itemizedlist>
         </section>
@@ -587,36 +851,6 @@ Yes, casting is supported - casting data type -> string-->
                 <listitem>
                   <para>deleted after the test case ends (which deletes all
                   contents in them)</para>
-                </listitem>
-              </itemizedlist>
-
-              <para>Phrasing:</para>
-
-              <itemizedlist>
-                <listitem>
-                  <para>Temporary directories used during a single execution
-                  of a test case, one of which is the CD when [setup]
-                  begins.</para>
-                </listitem>
-
-                <listitem>
-                  <para>Temporary directories used during a single execution
-                  of a test case, of which one is the CD when [setup]
-                  begins.</para>
-                </listitem>
-
-                <listitem>
-                  <para>Temporary directories used during a single execution
-                  of a test case, one of them is the CD when [setup]
-                  begins.</para>
-                </listitem>
-
-                <listitem>
-                  <para>when [setup] begins</para>
-                </listitem>
-
-                <listitem>
-                  <para>at the start of [setup]</para>
                 </listitem>
               </itemizedlist>
             </listitem>
@@ -643,11 +877,6 @@ Yes, casting is supported - casting data type -> string-->
                   <para>temporary helper files (tmp/)</para>
                 </listitem>
               </itemizedlist>
-            </listitem>
-
-            <listitem>
-              <para>Extra: PGM has support for referring to all of these
-              directories</para>
             </listitem>
 
             <listitem>
@@ -782,12 +1011,22 @@ Yes, casting is supported - casting data type -> string-->
               </listitem>
 
               <listitem>
+                <para>PGM has support for referring to all of these
+                directories</para>
+              </listitem>
+
+              <listitem>
                 <para>all dirs have a common sandbox root directory</para>
               </listitem>
 
               <listitem>
                 <para>the exact location of the directories is
-                undefined.</para>
+                undefined</para>
+              </listitem>
+
+              <listitem>
+                <para>relativity options should be used to refer to these
+                directories</para>
               </listitem>
 
               <listitem>
@@ -796,18 +1035,6 @@ Yes, casting is supported - casting data type -> string-->
               </listitem>
             </itemizedlist>
           </section>
-        </section>
-
-        <section>
-          <title>Single line descr</title>
-
-          <para>Temporary directories accessed by a test case.</para>
-        </section>
-
-        <section>
-          <title>Rest</title>
-
-          <para/>
         </section>
       </section>
     </section>
@@ -1402,7 +1629,7 @@ Yes, casting is supported - casting data type -> string-->
                 </listitem>
 
                 <listitem>
-                  <para/>
+                  <para></para>
                 </listitem>
               </itemizedlist>
             </listitem>
