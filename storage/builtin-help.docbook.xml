@@ -525,12 +525,59 @@ Yes, casting is supported - casting data type -> string-->
         <title>Sandbox Directory Structure</title>
 
         <section>
+          <title>Single line</title>
+
+          <para>Temporary directories used during a single execution of a test
+          case, one of which is the CD when [setup] begins.</para>
+        </section>
+
+        <section>
+          <title>Rest</title>
+
+          <itemizedlist>
+            <listitem>
+              <para>The sandbox directories are created when [setup] begins,
+              and deleted after the test case ends.</para>
+            </listitem>
+
+            <listitem>
+              <para>Contains the following directories</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>act</para>
+
+                  <itemizedlist>
+                    <listitem>
+                      <para>this is CD when [setup] begins</para>
+                    </listitem>
+
+                    <listitem>
+                      <para/>
+                    </listitem>
+                  </itemizedlist>
+                </listitem>
+
+                <listitem>
+                  <para>result</para>
+                </listitem>
+
+                <listitem>
+                  <para>tmp</para>
+                </listitem>
+              </itemizedlist>
+            </listitem>
+          </itemizedlist>
+        </section>
+
+        <section>
           <title>Info to provide</title>
 
           <itemizedlist>
             <listitem>
-              <para>temporary directories used during a single execution of a
-              test case</para>
+              <para>(A) temporary directories used during a single execution
+              of a test case, one of which is the CD when [setup]
+              begins.</para>
 
               <itemizedlist>
                 <listitem>
@@ -542,6 +589,36 @@ Yes, casting is supported - casting data type -> string-->
                   contents in them)</para>
                 </listitem>
               </itemizedlist>
+
+              <para>Phrasing:</para>
+
+              <itemizedlist>
+                <listitem>
+                  <para>Temporary directories used during a single execution
+                  of a test case, one of which is the CD when [setup]
+                  begins.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Temporary directories used during a single execution
+                  of a test case, of which one is the CD when [setup]
+                  begins.</para>
+                </listitem>
+
+                <listitem>
+                  <para>Temporary directories used during a single execution
+                  of a test case, one of them is the CD when [setup]
+                  begins.</para>
+                </listitem>
+
+                <listitem>
+                  <para>when [setup] begins</para>
+                </listitem>
+
+                <listitem>
+                  <para>at the start of [setup]</para>
+                </listitem>
+              </itemizedlist>
             </listitem>
 
             <listitem>
@@ -551,11 +628,6 @@ Yes, casting is supported - casting data type -> string-->
 
             <listitem>
               <para>files and dirs created by PGM to support assertions</para>
-            </listitem>
-
-            <listitem>
-              <para>directory locations cannot be altered (as those in the
-              HDS)</para>
             </listitem>
 
             <listitem>
@@ -574,7 +646,7 @@ Yes, casting is supported - casting data type -> string-->
             </listitem>
 
             <listitem>
-              <para>PGM has support for referring to all of these
+              <para>Extra: PGM has support for referring to all of these
               directories</para>
             </listitem>
 
@@ -589,6 +661,29 @@ Yes, casting is supported - casting data type -> string-->
                     <itemizedlist>
                       <listitem>
                         <para>is CD when [setup] begins</para>
+
+                        <para>this information about SDS - that it contains a
+                        directory that is CD when [setup] starts, is paramount
+                        in the information to describe.</para>
+
+                        <para>Many programs use temporary directories for
+                        storing information needed behind the scenes. This is
+                        radically different from PGM: PGM uses temporary
+                        directories to help the test case implementer
+                        preventing the SUT to pollute source code. The way
+                        this is implemented is e.g.</para>
+
+                        <itemizedlist>
+                          <listitem>
+                            <para>setting the CD to a temporary directory</para>
+                          </listitem>
+
+                          <listitem>
+                            <para><emphasis>preventing instructions that may
+                            modify files from referring to the HDS (by not
+                            allowing certain relativities)</emphasis></para>
+                          </listitem>
+                        </itemizedlist>
                       </listitem>
 
                       <listitem>
@@ -675,12 +770,38 @@ Yes, casting is supported - casting data type -> string-->
               </variablelist>
             </listitem>
           </itemizedlist>
+
+          <section>
+            <title>Extra</title>
+
+            <itemizedlist>
+              <listitem>
+                <para>--keep prevents Exactly from deleting the sandbox.
+                Instead of printing the result of the test case, the name of
+                the sandbox root directory is printed on stdout.</para>
+              </listitem>
+
+              <listitem>
+                <para>all dirs have a common sandbox root directory</para>
+              </listitem>
+
+              <listitem>
+                <para>the exact location of the directories is
+                undefined.</para>
+              </listitem>
+
+              <listitem>
+                <para>directory locations cannot be altered (as those in the
+                HDS)</para>
+              </listitem>
+            </itemizedlist>
+          </section>
         </section>
 
         <section>
           <title>Single line descr</title>
 
-          <para>T0emporary directories accessed by a test case.</para>
+          <para>Temporary directories accessed by a test case.</para>
         </section>
 
         <section>
