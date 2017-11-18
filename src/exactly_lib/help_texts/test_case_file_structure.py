@@ -41,7 +41,7 @@ HDS_CASE_INFO = TcDirInfo(
 HDS_ACT_INFO = TcDirInfo(
     'act-home',
     'act-home directory',
-    'Location of the system-under-test file, referenced from {phase[act]:syntax}',
+    _format('Location of the SUT file, referenced from {phase[act]:syntax}'),
 )
 
 SDS_ACT_INFO = TcDirInfo(
@@ -53,8 +53,8 @@ SDS_ACT_INFO = TcDirInfo(
 SDS_RESULT_INFO = TcDirInfo(
     'result',
     'result directory',
-    'Stores OS process result of {phase[act]:syntax}, '
-    'so that {phase[assert]:syntax} may check it',
+    _format('Stores OS process result of {phase[act]:syntax}, '
+            'so that {phase[assert]:syntax} may check it'),
 )
 
 SDS_TMP_INFO = TcDirInfo(
