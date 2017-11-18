@@ -8,13 +8,12 @@ from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReferenc
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, ASSERT_PHASE_NAME, \
-    CONFIGURATION_PHASE_NAME
+from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME, \
+    CONFIGURATION_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.test_case.execution_mode import NAME_SKIP
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.parse import normalize_and_parse
-from exactly_lib.util.textformat.structure.structures import text
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
@@ -22,27 +21,26 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
                  name: str,
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
-        self.phase_name_dictionary = phase_name_dictionary()
-        self.format_map = {
-            'phase': phase_name_dictionary(),
+        self._tp = TextParser({
+            'phase': PHASE_NAME_DICTIONARY,
             'SKIP': NAME_SKIP,
             'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
-        }
+        })
 
     def purpose(self) -> Description:
-        return Description(text(ONE_LINE_DESCRIPTION.format_map(self.format_map)),
-                           self._parse(REST_OF_DESCRIPTION))
+        return Description(self._tp.text(ONE_LINE_DESCRIPTION),
+                           self._tp.fnap(REST_OF_DESCRIPTION))
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo(self._parse(_SEQUENCE_INFO__PRECEDING_PHASE),
-                                 self._parse(_SEQUENCE_INFO__SUCCEEDING_PHASE),
+        return PhaseSequenceInfo(self._tp.fnap(_SEQUENCE_INFO__PRECEDING_PHASE),
+                                 self._tp.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def is_mandatory(self) -> bool:
         return False
 
     def instruction_purpose_description(self) -> list:
-        return self._parse(INSTRUCTION_PURPOSE_DESCRIPTION)
+        return self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_non_first_phases(),
@@ -58,9 +56,6 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                    EXECUTION_MODE_INSTRUCTION_NAME),
         ]
-
-    def _parse(self, multi_line_string: str) -> list:
-        return normalize_and_parse(multi_line_string.format_map(self.format_map))
 
 
 ONE_LINE_DESCRIPTION = """\

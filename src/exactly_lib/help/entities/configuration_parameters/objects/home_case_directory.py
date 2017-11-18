@@ -4,7 +4,8 @@ from exactly_lib.help_texts.entity.conf_params import HOME_CASE_DIRECTORY_CONF_P
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_CASE_DIRECTORY_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
+from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+    PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HOME_CASE
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -16,7 +17,7 @@ class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentati
 
     def purpose(self) -> DescriptionWithSubSections:
         parser = TextParser({
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
             'the_concept': formatting.conf_param_(HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'home_dir_env_var': ENV_VAR_HOME_CASE,
             'rel_option': formatting.cli_option(REL_HOME_CASE_OPTION)

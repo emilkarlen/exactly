@@ -8,7 +8,7 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
 from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary
+from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -27,7 +27,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         self.parser = TextParser({
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
             'actor_concept': formatting.concept_(ACTOR_CONCEPT_INFO),
             'shell_syntax_concept': formatting.concept_(SHELL_SYNTAX_CONCEPT_INFO),
         })

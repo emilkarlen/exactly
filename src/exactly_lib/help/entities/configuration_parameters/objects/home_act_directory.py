@@ -4,7 +4,8 @@ from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.file_ref import REL_HOME_ACT_OPTION
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_ACT_DIRECTORY_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
+from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+    PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HOME_ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -16,7 +17,7 @@ class _HomeActDirectoryConfigurationParameter(ConfigurationParameterDocumentatio
 
     def purpose(self) -> DescriptionWithSubSections:
         parser = TextParser({
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
             'the_concept': formatting.conf_param_(conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
             'home_dir_env_var': ENV_VAR_HOME_ACT,
             'rel_option': formatting.cli_option(REL_HOME_ACT_OPTION)

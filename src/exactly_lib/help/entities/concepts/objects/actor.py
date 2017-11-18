@@ -7,7 +7,8 @@ from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import phase_name_dictionary, CONFIGURATION_PHASE_NAME
+from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+    PHASE_NAME_DICTIONARY
 from exactly_lib.help_texts.test_suite import formatted_section_names
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
@@ -23,7 +24,7 @@ class _ActorConcept(ConceptDocumentation):
             'actor_concept': formatting.concept(self.singular_name()),
             'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
-            'phase': phase_name_dictionary(),
+            'phase': PHASE_NAME_DICTIONARY,
         })
         contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION) + parse.fnap(HOW_TO_SPECIFY_ACTOR)
         return DescriptionWithSubSections(self.single_line_description(),
