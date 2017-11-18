@@ -44,12 +44,13 @@ TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
 
 HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('home directory structure'),
-    'Preexisting directories where source files are located.'
+    'Predefined directories and files accessed by a test case.'
 )
 
 SANDBOX_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('sandbox directory structure'),
-    'Temporary directories used during a single execution of a test case.'
+    _format('Temporary directories used during a single execution of a test case, '
+            'one of which is the current directory when {phase[setup]:syntax} begins'),
 )
 
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
