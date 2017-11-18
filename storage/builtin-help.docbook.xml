@@ -545,12 +545,17 @@ Yes, casting is supported - casting data type -> string-->
             </listitem>
 
             <listitem>
-              <para>directory locations cannot be altered (as those in the
-              HDS)</para>
+              <para>files and dirs created and modified by the actual test
+              case</para>
             </listitem>
 
             <listitem>
-              <para>act/ inside of SDS is CD when [setup] begins</para>
+              <para>files and dirs created by PGM to support assertions</para>
+            </listitem>
+
+            <listitem>
+              <para>directory locations cannot be altered (as those in the
+              HDS)</para>
             </listitem>
 
             <listitem>
@@ -565,16 +570,109 @@ Yes, casting is supported - casting data type -> string-->
                 <listitem>
                   <para>temporary helper files (tmp/)</para>
                 </listitem>
-
-                <listitem>
-                  <para>standard result from [act] (result/)</para>
-                </listitem>
               </itemizedlist>
             </listitem>
 
             <listitem>
               <para>PGM has support for referring to all of these
               directories</para>
+            </listitem>
+
+            <listitem>
+              <para>directories</para>
+
+              <variablelist>
+                <varlistentry>
+                  <term><filename>act</filename></term>
+
+                  <listitem>
+                    <itemizedlist>
+                      <listitem>
+                        <para>is CD when [setup] begins</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>contains arrangement of files expected by the
+                        SUT</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>[setup] is responsible for populating it, and
+                        may set the CD</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>[act] may modify the contents</para>
+                      </listitem>
+
+                      <listitem>
+                        <para>[assert] may checks the contents as part of the
+                        assertion</para>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><filename>result</filename></term>
+
+                  <listitem>
+                    <itemizedlist>
+                      <listitem>
+                        <para>standard process result from [act]</para>
+
+                        <itemizedlist>
+                          <listitem>
+                            <para><filename>exitcode</filename></para>
+                          </listitem>
+
+                          <listitem>
+                            <para><filename>stdout</filename></para>
+                          </listitem>
+
+                          <listitem>
+                            <para><filename>stderr</filename></para>
+                          </listitem>
+                        </itemizedlist>
+                      </listitem>
+
+                      <listitem>
+                        <para>[assert] may check the result</para>
+
+                        <itemizedlist>
+                          <listitem>
+                            <para><command>exitcode</command> instruction</para>
+                          </listitem>
+
+                          <listitem>
+                            <para><command>stdout</command> instruction</para>
+                          </listitem>
+
+                          <listitem>
+                            <para><command>stderr</command> instruction</para>
+                          </listitem>
+
+                          <listitem>
+                            <para>may be checked by custom assertions
+                            (<command>run</command> instruction)</para>
+                          </listitem>
+                        </itemizedlist>
+                      </listitem>
+                    </itemizedlist>
+                  </listitem>
+                </varlistentry>
+
+                <varlistentry>
+                  <term><filename>tmp</filename></term>
+
+                  <listitem>
+                    <para>a place to put temporary helper files, for custom
+                    assertions</para>
+
+                    <para>PGM does not touch the contents of this dir</para>
+                  </listitem>
+                </varlistentry>
+              </variablelist>
             </listitem>
           </itemizedlist>
         </section>
