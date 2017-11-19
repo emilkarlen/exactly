@@ -44,6 +44,11 @@ HDS_ACT_INFO = TcDirInfo(
     _format('Location of the SUT file, referenced from {phase[act]:syntax}'),
 )
 
+HDS_DIR_INFOS_IN_DISPLAY_ORDER = (
+    HDS_CASE_INFO,
+    HDS_ACT_INFO,
+)
+
 SDS_ACT_INFO = TcDirInfo(
     'act',
     'act directory',
@@ -61,4 +66,10 @@ SDS_TMP_INFO = TcDirInfo(
     'tmp',
     'tmp directory',
     'Reserved for custom helper files, used by the test case implementation',
+)
+
+SDS_DIR_INFOS_IN_DISPLAY_ORDER = (
+    SDS_ACT_INFO,
+    SDS_RESULT_INFO,
+    SDS_TMP_INFO,
 )
