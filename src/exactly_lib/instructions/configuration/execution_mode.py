@@ -9,7 +9,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
-from exactly_lib.test_case.execution_mode import ExecutionMode, NAME_2_MODE, NAME_DEFAULT
+from exactly_lib.test_case.execution_mode import ExecutionMode, NAME_2_MODE
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 
@@ -25,7 +25,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         super().__init__(name, {
             'MODE': _ARG_NAME,
             'execution_mode_config_param': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
-            'default_mode': NAME_DEFAULT,
+            'default_mode': conf_params.EXECUTION_MODE_CONF_PARAM_INFO.default_value_single_line_description,
         })
 
     def single_line_description(self) -> str:

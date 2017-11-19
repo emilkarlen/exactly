@@ -23,7 +23,7 @@ class ConfigurationParameterDocumentation(EntityDocumentationBase):
         raise NotImplementedError()
 
     def default_value_str(self) -> str:
-        raise NotImplementedError()
+        return self._info.default_value_single_line_description
 
     def default_value_para(self) -> ParagraphItem:
         return para(self.default_value_str())

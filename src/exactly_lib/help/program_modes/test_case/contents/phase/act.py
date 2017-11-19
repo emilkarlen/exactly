@@ -9,6 +9,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithoutInstructions
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params
+from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR_SINGLE_LINE_VALUE
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, \
@@ -37,9 +38,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         })
 
     def purpose(self) -> Description:
-        from exactly_lib.help.entities.actors.all_actor_docs import DEFAULT_ACTOR_DOC
         actor_info = (self._tp.fnap(_DESCRIPTION__BEFORE_DEFAULT_ACTOR_DESCRIPTION) +
-                      docs.paras(DEFAULT_ACTOR_DOC.name_and_single_line_description()) +
+                      docs.paras(DEFAULT_ACTOR_SINGLE_LINE_VALUE) +
                       self._tp.fnap(HOW_TO_SPECIFY_ACTOR)
                       )
         return Description(self._tp.text(ONE_LINE_DESCRIPTION),

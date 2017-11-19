@@ -8,7 +8,26 @@ from exactly_lib.help_texts.test_case_file_structure import TcDirInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.structure.lists import HeaderContentListItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
+
+
+class _DirInfo:
+    def __init__(self,
+                 dir_info: TcDirInfo,
+                 conf_param: ConfigurationParameterInfo,
+                 default_value_description: str,
+                 relativity_option_type: RelHomeOptionType,
+                 ):
+        self.conf_param = conf_param
+        self.relativity_option_type = relativity_option_type
+        self.default_value_description = default_value_description
+        self.conf_param = conf_param
+        self.dir_info = dir_info
+
+    @property
+    def item_name(self):
+        return self.dir_info.informative_name
 
 
 class _HdsConcept(ConceptDocumentation):
@@ -33,6 +52,10 @@ class _HdsConcept(ConceptDocumentation):
         return [
         ]
 
+    def _dir_item(self, x: _DirInfo) -> HeaderContentListItem:
+        return HeaderContentListItem(self._tp.text(x.item_name),
+                                     [])
+
 
 HOME_DIRECTORY_STRUCTURE_CONCEPT = _HdsConcept()
 
@@ -48,17 +71,3 @@ The values cannot be changed after {phase[conf]:syntax}.
 
 Directories:
 """
-
-
-class DirInfo:
-    def __init__(self,
-                 dir_info: TcDirInfo,
-                 conf_param: ConfigurationParameterInfo,
-                 default_value_description: str,
-                 relativity_option_type: RelHomeOptionType,
-                 ):
-        self.conf_param = conf_param
-        self.relativity_option_type = relativity_option_type
-        self.default_value_description = default_value_description
-        self.conf_param = conf_param
-        self.dir_info = dir_info
