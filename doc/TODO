@@ -1,5 +1,8 @@
 -*- org -*-
 
+* Test of signals (or is this OS specific)?
+<2017-11-19 sön>
+Seem like a reasonable thing for E to test.
 * Make "preprocessor" a configuration parameter
 It is also a conf param, but for suites.
 * new instr to create symlink (complement to "file", "dir")
