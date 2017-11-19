@@ -20,9 +20,6 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
             Description(self.single_line_description(),
                         parse.fnap(WHAT_THE_TIMEOUT_APPLIES_TO)))
 
-    def default_value_str(self) -> str:
-        return 'No timeout.'
-
     def see_also_targets(self) -> list:
         return [
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,

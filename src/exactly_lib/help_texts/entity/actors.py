@@ -1,6 +1,7 @@
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 
 
@@ -50,6 +51,10 @@ ALL_ACTORS = [
 # But do not know where the best place to put it is,
 # so it remains here for some time ...
 DEFAULT_ACTOR = COMMAND_LINE_ACTOR
+
+DEFAULT_ACTOR_SINGLE_LINE_VALUE = (formatting.entity(DEFAULT_ACTOR.singular_name) +
+                                   ' - ' +
+                                   DEFAULT_ACTOR.single_line_description_str)
 
 
 def all_actor_cross_refs() -> list:

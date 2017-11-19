@@ -26,9 +26,6 @@ class _HomeActDirectoryConfigurationParameter(ConfigurationParameterDocumentatio
             Description(self.single_line_description(),
                         parser.fnap(_REST_DESCRIPTION)))
 
-    def default_value_str(self) -> str:
-        return 'The directory where the test case file is located.'
-
     def see_also_targets(self) -> list:
         return [
             TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,

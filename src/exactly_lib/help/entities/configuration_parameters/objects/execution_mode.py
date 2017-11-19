@@ -19,9 +19,6 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
             Description(self.single_line_description(),
                         [execution_modes_list()]))
 
-    def default_value_str(self) -> str:
-        return execution_mode.NAME_DEFAULT
-
 
 DOCUMENTATION = _ExecutionModeConfigurationParameter()
 
