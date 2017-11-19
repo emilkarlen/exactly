@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import test_case_file_structure
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.names.formatting import SectionName
@@ -9,7 +10,7 @@ from exactly_lib.util.textformat.structure import structures as docs, table
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TEXT_PARSER = TextParser({
-    'act_dir': sds.SUB_DIRECTORY__ACT,
+    'act_dir': test_case_file_structure.SDS_ACT_INFO.identifier,
     'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
     'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
     'SKIP': NAME_SKIP,
@@ -92,13 +93,13 @@ def execution_environment_prologue_for_post_act_phase() -> list:
 
 _CWD_AT_START_OF_PHASE_FIRST_PHASE_EXECUTED_IN_THE_SANDBOX = """\
 At the beginning of the phase, the {cwd}
-is the {act_dir}/ sub directory of the sandbox.
+is the {act_dir} directory in the {sandbox}.
 """
 
 _CWD_AT_START_OF_PHASE_IS_SAME_AS_AT_END_OF_THE = """\
 The {cwd} is the same as at the end of the {previous}.
 
-(which is the {act_dir}/ sub directory of the sandbox, if it has not been changed.)
+(which is the {act_dir} directory in the {sandbox}, if it has not been changed.)
 """
 
 _SEQUENCE_INFO__PRECEDING_PHASE = """\

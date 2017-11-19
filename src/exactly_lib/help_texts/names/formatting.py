@@ -133,6 +133,10 @@ def entity(name: str) -> str:
     return '"' + name + '"'
 
 
+def entity_(name: SingularNameAndCrossReferenceId) -> str:
+    return entity(name.singular_name)
+
+
 def program_name(name: str) -> str:
     return name.capitalize()
 

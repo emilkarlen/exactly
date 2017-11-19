@@ -4,7 +4,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
+from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
@@ -51,6 +51,10 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
         if eei.environment_variables:
             paragraphs.extend([docs.para('The following environment variables are set:'),
                                self._environment_variables_list(eei.environment_variables)])
+            if self.doc.name.plain == ACT_PHASE_NAME:
+                # FIXME Remove setting of env vars for the act phase.
+                paragraphs.append(docs.para('NOTE: In future versions, '
+                                            'these environment variables will not be available!'))
         paragraphs.extend(eei.prologue)
         if paragraphs:
             sections.append(docs.section('Environment', paragraphs))
