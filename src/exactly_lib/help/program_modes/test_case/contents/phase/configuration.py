@@ -22,7 +22,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
         super().__init__(name, instruction_set)
 
         self._parser = TextParser({
-            'configuration_parameters': formatting.concept_(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO),
+            'configuration_parameters': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.plural_name),
             'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
             'SKIP': NAME_SKIP,
             'setup': SETUP_PHASE_NAME,
