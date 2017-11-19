@@ -39,7 +39,7 @@ CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 
 TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('test case directory structure'),
-    'Preexisting and temporary directories used during the execution of a test case.'
+    'Predefined and temporary directories used during the execution of a test case.'
 )
 
 HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(

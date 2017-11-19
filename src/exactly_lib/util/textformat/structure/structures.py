@@ -118,6 +118,12 @@ def first_row_is_header_table(rows: list,
                        rows)
 
 
+def plain_table(rows: list,
+                column_separator: str = '  ') -> ParagraphItem:
+    return table.Table(table.TableFormat(column_separator),
+                       rows)
+
+
 def text_from_unknown(str_or_text) -> Text:
     if isinstance(str_or_text, Text):
         return str_or_text
