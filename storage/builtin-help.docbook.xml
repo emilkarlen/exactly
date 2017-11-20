@@ -665,7 +665,7 @@ Yes, casting is supported - casting data type -> string-->
                     <para>If [act] operates on files, [setup] may create such
                     files that should exist before [act] starts. [setup] may
                     also change the current directory. Then [assert] may check
-                    the contents of this directory. </para>
+                    the contents of this directory.</para>
 
                     <para>If needed, [setup] may populate this directory with
                     files that [act] is expected to operate on. [setup] may
@@ -1636,6 +1636,24 @@ Yes, casting is supported - casting data type -> string-->
           </itemizedlist>
         </listitem>
       </itemizedlist>
+
+      <section>
+        <title>See also</title>
+
+        <itemizedlist>
+          <listitem>
+            <para>syntax element STRING</para>
+          </listitem>
+
+          <listitem>
+            <para>Concept SYMBOL</para>
+          </listitem>
+
+          <listitem>
+            <para>Type list</para>
+          </listitem>
+        </itemizedlist>
+      </section>
 
       <section>
         <title>Special syntax for definition of list symbol</title>
