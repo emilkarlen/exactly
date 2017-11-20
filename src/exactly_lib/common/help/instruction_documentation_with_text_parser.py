@@ -22,19 +22,19 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
         super().__init__(instruction_name)
         fm = {'instruction_name': InstructionName(instruction_name)}
         fm.update(format_map)
-        self._parser = TextParser(fm)
+        self._tp = TextParser(fm)
 
     def _format(self, s: str, extra: dict = None) -> str:
-        return self._parser.format(s, extra)
+        return self._tp.format(s, extra)
 
     def _text(self, s: str, extra: dict = None) -> Text:
-        return self._parser.text(s, extra)
+        return self._tp.text(s, extra)
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:
         """
         :rtype: [`ParagraphItem`]
         """
-        return self._parser.fnap(s, extra)
+        return self._tp.fnap(s, extra)
 
 
 class InstructionDocumentationWithCommandLineRenderingBase(InstructionDocumentationWithTextParserBase):
