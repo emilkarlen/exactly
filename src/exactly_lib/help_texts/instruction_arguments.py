@@ -6,6 +6,9 @@ from exactly_lib.util.logic_types import Quantifier
 
 SYMBOL_SYNTAX_ELEMENT_NAME = 'SYMBOL'
 
+SYMBOL_NAME_ARGUMENT = a.Named('SYMBOL-NAME')
+SYMBOL_REFERENCE_ARGUMENT = a.Named('SYMBOL-REFERENCE')
+
 REL_SYMBOL_OPTION = a.Option(REL_SYMBOL_OPTION_NAME,
                              SYMBOL_SYNTAX_ELEMENT_NAME)
 
