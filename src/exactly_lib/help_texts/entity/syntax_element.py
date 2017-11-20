@@ -34,6 +34,16 @@ LINE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINE_MATCHER_TY
 
 LINES_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINES_TRANSFORMER_TYPE_INFO)
 
+SYMBOL_NAME_SYNTAX_ELEMENT = name_and_ref_target(
+    instruction_arguments.SYMBOL_NAME_ARGUMENT.name,
+    'The name of a symbol'
+)
+
+SYMBOL_REFERENCE_SYNTAX_ELEMENT = name_and_ref_target(
+    instruction_arguments.SYMBOL_REFERENCE.name,
+    'A reference to a symbol using special reference syntax'
+)
+
 HERE_DOCUMENT_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.HERE_DOCUMENT.name,
     'A {string} value, given as a sequence of lines, resembling shell "here document" syntax'.format(
@@ -50,8 +60,10 @@ GLOB_PATTERN_SYNTAX_ELEMENT = name_and_ref_target(
     'A shell glob pattern'
 )
 
-ALL_SYNTAX_ELEMENTS = [
+ALL_SYNTAX_ELEMENTS = (
 
+    SYMBOL_NAME_SYNTAX_ELEMENT,
+    SYMBOL_REFERENCE_SYNTAX_ELEMENT,
     HERE_DOCUMENT_SYNTAX_ELEMENT,
     REGEX_SYNTAX_ELEMENT,
     GLOB_PATTERN_SYNTAX_ELEMENT,
@@ -63,7 +75,7 @@ ALL_SYNTAX_ELEMENTS = [
     FILE_MATCHER_SYNTAX_ELEMENT,
     LINE_MATCHER_SYNTAX_ELEMENT,
     LINES_TRANSFORMER_SYNTAX_ELEMENT,
-]
+)
 
 
 def all_syntax_element_cross_refs() -> list:
