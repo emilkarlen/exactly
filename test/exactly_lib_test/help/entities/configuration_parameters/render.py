@@ -1,13 +1,13 @@
 import unittest
 
-from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.configuration_parameters import all_configuration_parameters
 from exactly_lib.help.entities.configuration_parameters import render as sut
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
+from exactly_lib.help.entities.configuration_parameters.entity_configuration import CONF_PARAM_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
-from exactly_lib.help_texts.entity.concepts import name_and_ref_target
+from exactly_lib.help_texts.entity import conf_params
+from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
-from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.structures import text, para
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
 class TestList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = CONCEPT_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
+        renderer = CONF_PARAM_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
             all_configuration_parameters.all_configuration_parameters())
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
@@ -34,11 +34,11 @@ class TestList(unittest.TestCase):
 class TestIndividualConfigurationParameter(unittest.TestCase):
     def test_conf_param_with_only_single_line_description(self):
         # ARRANGE #
-        concept = ConfigurationParameterTestImpl(Name('name', 'names'),
-                                                 Description(text('single line name'),
-                                                             []),
-                                                 'default value')
-        renderer = sut.IndividualConfParamRenderer(concept)
+        doc = ConfigurationParameterTestImpl('conf_param_name',
+                                             Description(text('single line name'),
+                                                         []),
+                                             'default value')
+        renderer = sut.IndividualConfParamRenderer(doc)
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
@@ -46,7 +46,7 @@ class TestIndividualConfigurationParameter(unittest.TestCase):
 
     def test_conf_param_with_complex_description(self):
         # ARRANGE #
-        concept = ConfigurationParameterTestImpl(Name('name', 'names'),
+        concept = ConfigurationParameterTestImpl('conf_param_name',
                                                  Description(text('single line name'),
                                                              [para('rest paragraph')]),
                                                  'default value')
@@ -59,11 +59,14 @@ class TestIndividualConfigurationParameter(unittest.TestCase):
 
 class ConfigurationParameterTestImpl(ConfigurationParameterDocumentation):
     def __init__(self,
-                 name: Name,
+                 conf_param_name: str,
                  description: Description,
                  default_value: str):
-        super().__init__(name_and_ref_target(name,
-                                             'ConfigurationParameterTestImpl single_line_description'))
+        super().__init__(ConfigurationParameterInfo(conf_param_name,
+                                                    conf_param_name,
+                                                    'ConfigurationParameterTestImpl single_line_description',
+                                                    default_value,
+                                                    conf_params.cross_ref(conf_param_name)))
         self.description = description
         self.default_value = default_value
 

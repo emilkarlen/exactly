@@ -33,9 +33,9 @@ class ConfigurationParameterInfo(SingularNameAndCrossReferenceId):
         return self._default_value_single_line_description
 
 
-def _cross_ref(concept_name: str) -> EntityCrossReferenceId:
+def cross_ref(configuration_parameter_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(CONF_PARAM_ENTITY_TYPE_NAMES,
-                                  concept_name)
+                                  configuration_parameter_name)
 
 
 def _conf_param_info(name: str,
@@ -46,7 +46,7 @@ def _conf_param_info(name: str,
                                       configuration_parameter_name,
                                       single_line_description_str,
                                       default_value_single_line_description,
-                                      _cross_ref(configuration_parameter_name))
+                                      cross_ref(configuration_parameter_name))
 
 
 def _format(s: str) -> str:
