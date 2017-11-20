@@ -4,7 +4,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts.entity import conf_params
+from exactly_lib.help_texts.entity import conf_params, concepts
+from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -45,7 +46,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def see_also_targets(self) -> list:
-        return [conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO.cross_reference_target]
+        return cross_reference_id_list([
+            conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
+            concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO,
+        ])
 
 
 _ARG_NAME = 'PATH'
