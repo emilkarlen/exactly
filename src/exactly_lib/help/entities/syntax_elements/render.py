@@ -11,6 +11,7 @@ from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.utils import append_section_if_contents_is_non_empty
 
 
 def _docs_of_type_category(category: TypeCategory, element_doc_list: list) -> list:
@@ -40,15 +41,20 @@ class IndividualSyntaxElementRenderer(SectionContentsRenderer):
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         initial_paragraphs = [docs.para(self.syntax_element.single_line_description())]
-        initial_paragraphs += self.syntax_element.main_description_rest()
         initial_paragraphs += invokation_variants_paragraphs(None,
                                                              self.syntax_element.invokation_variants(),
                                                              self.syntax_element.syntax_element_descriptions())
-        sub_sections = see_also_sections(self.syntax_element.see_also_targets(), environment,
-                                         uppercase_title=False)
-
         return doc.SectionContents(initial_paragraphs,
-                                   sub_sections)
+                                   self._sub_sections(environment))
+
+    def _sub_sections(self, environment: RenderingEnvironment) -> list:
+        ret_val = []
+        append_section_if_contents_is_non_empty(ret_val,
+                                                'Description',
+                                                self.syntax_element.main_description_rest())
+        ret_val += see_also_sections(self.syntax_element.see_also_targets(), environment,
+                                     uppercase_title=False)
+        return ret_val
 
 
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:

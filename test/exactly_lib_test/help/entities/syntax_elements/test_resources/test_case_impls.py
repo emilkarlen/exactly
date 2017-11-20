@@ -73,7 +73,7 @@ class TestNameAndSingleLineDescription(WithSyntaxElementDocumentationBase):
 
 class TestMainDescriptionRest(WithSyntaxElementDocumentationBase):
     def runTest(self):
-        actual = self.documentation.main_description_rest()
+        actual = self.documentation.main_description_rest_paragraphs()
         struct_check.is_paragraph_item_list().apply_without_message(self, actual)
 
 
