@@ -6,7 +6,7 @@ from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossRefere
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
-class SyntaxElementEntity(SingularNameAndCrossReferenceId):
+class SyntaxElementInfo(SingularNameAndCrossReferenceId):
     @property
     def argument(self) -> a.Named:
         return a.Named(self.singular_name)
@@ -18,13 +18,13 @@ def syntax_element_cross_ref(syntax_element_name: str) -> EntityCrossReferenceId
 
 
 def name_and_ref_target(name: str,
-                        single_line_description_str: str) -> SyntaxElementEntity:
-    return SyntaxElementEntity(name,
-                               single_line_description_str,
-                               syntax_element_cross_ref(name))
+                        single_line_description_str: str) -> SyntaxElementInfo:
+    return SyntaxElementInfo(name,
+                             single_line_description_str,
+                             syntax_element_cross_ref(name))
 
 
-def _name_and_ref_target_of_type(type_info: types.TypeNameAndCrossReferenceId) -> SyntaxElementEntity:
+def _name_and_ref_target_of_type(type_info: types.TypeNameAndCrossReferenceId) -> SyntaxElementInfo:
     return name_and_ref_target(type_info.syntax_element_name,
                                type_info.single_line_description_str)
 
