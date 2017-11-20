@@ -1,5 +1,7 @@
 import enum
 
+from exactly_lib.util.name import name_with_plural_s
+
 
 class TokenType(enum.Enum):
     PLAIN = 0
@@ -13,6 +15,10 @@ class QuoteType(enum.Enum):
 
 SOFT_QUOTE_CHAR = '"'
 HARD_QUOTE_CHAR = '\''
+
+SOFT_QUOTE_NAME = name_with_plural_s('soft quote')
+
+HARD_QUOTE_NAME = name_with_plural_s('hard quote')
 
 QUOTE_CHARS = frozenset([SOFT_QUOTE_CHAR,
                          HARD_QUOTE_CHAR])

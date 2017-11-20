@@ -41,8 +41,11 @@ class IndividualSyntaxElementRenderer(SectionContentsRenderer):
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         initial_paragraphs = [docs.para(self.syntax_element.single_line_description())]
+        invokation_variants = self.syntax_element.invokation_variants()
+        if len(invokation_variants) > 1:
+            initial_paragraphs.append(docs.para('Forms:'))
         initial_paragraphs += invokation_variants_paragraphs(None,
-                                                             self.syntax_element.invokation_variants(),
+                                                             invokation_variants,
                                                              self.syntax_element.syntax_element_descriptions())
         return doc.SectionContents(initial_paragraphs,
                                    self._sub_sections(environment))

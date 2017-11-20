@@ -1,6 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_element, types, concepts
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
@@ -15,9 +14,6 @@ class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(TypeCategory.DATA,
                          syntax_element.LIST_SYNTAX_ELEMENT)
-
-        self._string_name = a.Named(syntax_element.STRING_SYNTAX_ELEMENT.singular_name)
-        self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT
 
         self._tp = TextParser({
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
