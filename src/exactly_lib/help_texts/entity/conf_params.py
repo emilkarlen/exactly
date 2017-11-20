@@ -42,7 +42,7 @@ def _conf_param_info(name: str,
                      configuration_parameter_name: str,
                      default_value_single_line_description: str,
                      single_line_description_str: str) -> ConfigurationParameterInfo:
-    return ConfigurationParameterInfo(name,
+    return ConfigurationParameterInfo(configuration_parameter_name,  # FIXME Use/remove name??
                                       configuration_parameter_name,
                                       single_line_description_str,
                                       default_value_single_line_description,
@@ -55,7 +55,7 @@ def _format(s: str) -> str:
 
 
 def _of_tc_dir_info(x: test_case_file_structure.TcDirInfo) -> ConfigurationParameterInfo:
-    return _conf_param_info(x.informative_name,
+    return _conf_param_info(x.identifier,  # FIXME Use/remove informative_name??
                             x.identifier,
                             'The directory where the test case file is located.',
                             x.single_line_description_str)
