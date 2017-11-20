@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib_test.help.entities import actors, suite_reporters, concepts, syntax_elements, configuration_parameters
+from exactly_lib_test.help.entities import actors, suite_reporters, concepts, syntax_elements, \
+    configuration_parameters, types
 
 
 def suite() -> unittest.TestSuite:
@@ -10,6 +11,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(suite_reporters.suite())
     ret_val.addTest(syntax_elements.suite())
     ret_val.addTest(configuration_parameters.suite())
+    ret_val.addTest(types.suite())
     return ret_val
 
 

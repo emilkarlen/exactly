@@ -15,6 +15,7 @@ from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
+from exactly_lib.util.textformat.utils import append_section_if_contents_is_non_empty
 
 LOGIC_TYPES_HEADER = type_system.LOGIC_TYPE_CATEGORY_NAME.capitalize() + ' types'
 
@@ -49,6 +50,9 @@ class IndividualTypeRenderer(SectionContentsRenderer):
                 invokation_variants_content(None,
                                             self.doc.invokation_variants(),
                                             [])))
+        append_section_if_contents_is_non_empty(sub_sections,
+                                                'Description',
+                                                self.doc.main_description_rest())
         sub_sections += see_also_sections(self.doc.see_also_targets(),
                                           environment,
                                           uppercase_title=True)

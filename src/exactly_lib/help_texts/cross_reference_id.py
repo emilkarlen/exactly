@@ -102,6 +102,10 @@ class EntityCrossReferenceId(CrossReferenceId):
         self._entity_name = entity_name
 
     @property
+    def entity_type_names(self) -> EntityTypeNames:
+        return self._entity_type_names
+
+    @property
     def entity_type_identifier(self) -> str:
         return self._entity_type_names.identifier
 
