@@ -3,6 +3,7 @@ import types
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.entity import syntax_element
 from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO, PATH_TYPE_INFO, LIST_TYPE_INFO, \
     LINE_MATCHER_TYPE_INFO, FILE_MATCHER_TYPE_INFO, LINES_TRANSFORMER_TYPE_INFO, TypeNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
@@ -98,7 +99,7 @@ def _def_of(type_info: TypeNameAndCrossReferenceId, value_arguments: list) -> st
 
 
 def _symbol_name() -> a.ArgumentUsage:
-    return a.Single(a.Multiplicity.MANDATORY, a.Named(SYMBOL_NAME))
+    return a.Single(a.Multiplicity.MANDATORY, syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument)
 
 
 def _equals() -> a.ArgumentUsage:

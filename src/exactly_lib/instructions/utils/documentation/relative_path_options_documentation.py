@@ -1,10 +1,10 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity import concepts as ci
+from exactly_lib.help_texts import test_case_file_structure as tc_fs
+from exactly_lib.help_texts.entity import concepts as ci, syntax_element
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelHomeOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HOME_OPTIONS_MAP, \
@@ -131,10 +131,10 @@ class RelOptionRenderer:
         self.argument_name = argument_name
         self.parser = TextParser({
             'PATH': path_name_in_description,
-            'DIR_TMP': sds.PATH__TMP_USER,
-            'DIR_ACT': sds.SUB_DIRECTORY__ACT,
-            'DIR_RESULT': sds.SUB_DIRECTORY__RESULT,
-            'SYMBOL_NAME': instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME,
+            'DIR_TMP': formatting.concept(tc_fs.SDS_TMP_INFO.informative_name),
+            'DIR_ACT': formatting.concept(tc_fs.SDS_ACT_INFO.informative_name),
+            'DIR_RESULT': formatting.concept(tc_fs.SDS_RESULT_INFO.informative_name),
+            'SYMBOL_NAME': syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
             'PATH_SYMBOL_TYPE': PATH_TYPE_INFO.identifier,
             'cwd': formatting.concept_(ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'home_case_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
@@ -176,15 +176,15 @@ class RelOptionRenderer:
 
 
 _REL_TMP_DESCRIPTION = """\
-{PATH} is relative the {DIR_TMP}/ directory in the {sandbox_concept}.
+{PATH} is relative the {DIR_TMP} in the {sandbox_concept}.
 """
 
 _REL_ACT_DESCRIPTION = """\
-{PATH} is relative the {DIR_ACT}/ directory in the {sandbox_concept}.
+{PATH} is relative the {DIR_ACT} in the {sandbox_concept}.
 """
 
 _REL_RESULT_DESCRIPTION = """\
-{PATH} is relative the {DIR_RESULT}/ directory in the {sandbox_concept}.
+{PATH} is relative the {DIR_RESULT} in the {sandbox_concept}.
 """
 
 _REL_CWD_DESCRIPTION = """\

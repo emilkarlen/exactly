@@ -2,9 +2,10 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity import types
+from exactly_lib.help_texts.entity import types, syntax_element, concepts
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
+from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -35,16 +36,17 @@ from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.symbol_table import SymbolTable
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
-        self.name = a.Named('NAME')
-        self.string_value = a.Named('STRING')
+        self.name = syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument
+        self.string_value = syntax_element.STRING_SYNTAX_ELEMENT.argument
         super().__init__(name, {
             'NAME': self.name.name,
+            'current_directory_concept': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+            'PATH_ARG': _PATH_ARGUMENT.name,
         }, is_in_assert_phase)
 
     def single_line_description(self) -> str:
@@ -52,11 +54,16 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def _main_description_rest_body(self) -> list:
         return (
-            self._parser.fnap(_MAIN_DESCRIPTION_REST) +
+            self._tp.fnap(_MAIN_DESCRIPTION_REST)
+            +
             rel_path_doc.default_relativity_for_rel_opt_type(
                 _PATH_ARGUMENT.name,
-                REL_OPTION_ARGUMENT_CONFIGURATION.options.default_option) +
-            dt.paths_uses_posix_syntax())
+                REL_OPTION_ARGUMENT_CONFIGURATION.options.default_option)
+            +
+            self._tp.fnap(_REL_CD_DESCRIPTION)
+            +
+            dt.paths_uses_posix_syntax()
+        )
 
     def invokation_variants(self) -> list:
         return [
@@ -81,9 +88,9 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
+                               syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT,
                                TYPE_CONCEPT_INFO,
                                CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
-        name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(REL_OPTIONS_CONFIGURATION)
         name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
@@ -168,6 +175,14 @@ Defines the symbol {NAME} to be a value of the given type.
 
 
 {NAME} must not have been defined earlier.
+"""
+
+_REL_CD_DESCRIPTION = """\
+NOTE: When a {PATH_ARG} is defined to be relative the {current_directory_concept},
+
+it means that it is relative the directory that is current when the symbol is USED,
+
+not when it is defined!
 """
 
 _STRING_SYNTAX_ELEMENT_DESCRIPTION = """\
