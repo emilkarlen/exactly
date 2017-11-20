@@ -2,6 +2,7 @@ from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocu
 from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class SyntaxElementDocumentation(EntityDocumentationBase):
@@ -18,7 +19,11 @@ class SyntaxElementDocumentation(EntityDocumentationBase):
         """
         return self._type_category
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> SectionContents:
+        return SectionContents(self.main_description_rest_paragraphs(),
+                               [])
+
+    def main_description_rest_paragraphs(self) -> list:
         """
         :rtype [`ParagraphItem`]
         """
@@ -57,7 +62,7 @@ class SyntaxElementDocumentationWithConstantValues(SyntaxElementDocumentation):
         self._syntax_element_descriptions = syntax_element_descriptions
         self._see_also_targets = see_also_targets
 
-    def main_description_rest(self) -> list:
+    def main_description_rest_paragraphs(self) -> list:
         """
         :rtype [`ParagraphItem`]
         """

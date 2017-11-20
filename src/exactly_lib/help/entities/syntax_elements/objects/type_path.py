@@ -52,7 +52,7 @@ class _Documentation(SyntaxElementDocumentation):
             self._relativity_sed(),
         ]
 
-    def main_description_rest(self) -> list:
+    def main_description_rest_paragraphs(self) -> list:
         return self._parser.fnap(_MAIN_DESCRIPTION_REST)
 
     def see_also_targets(self) -> list:

@@ -37,7 +37,7 @@ class _Documentation(SyntaxElementDocumentation):
             self._symbol_reference_sed(),
         ]
 
-    def main_description_rest(self) -> list:
+    def main_description_rest_paragraphs(self) -> list:
         return []
 
     def see_also_targets(self) -> list:
