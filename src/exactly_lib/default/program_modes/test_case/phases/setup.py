@@ -7,7 +7,7 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
         ('dir', new_dir.setup),
         ('env', env.setup),
-        ('run', run.setup),
+        (instruction_names.RUN_INSTRUCTION_NAME, run.setup),
         ('file', new_file.setup),
         ('install', install.setup),
         (instruction_names.CHANGE_DIR_INSTRUCTION_NAME, change_dir.setup),
