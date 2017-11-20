@@ -2,6 +2,7 @@ from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import type_system
+from exactly_lib.help_texts.entity import syntax_element
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions import define_symbol
@@ -29,6 +30,7 @@ class _SymbolConcept(ConceptDocumentation):
         self._parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': formatting.concept_(SYMBOL_CONCEPT_INFO),
+            'symbol_name_syntax_element': syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
             'data': type_system.DATA_TYPE_CATEGORY_NAME,
             'logic': type_system.LOGIC_TYPE_CATEGORY_NAME,
             'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
@@ -69,6 +71,8 @@ class _SymbolConcept(ConceptDocumentation):
         return [
             TYPE_CONCEPT_INFO.cross_reference_target,
             define_symbol.DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE,
+            syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_element.SYMBOL_REFERENCE_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     def _reference_paragraphs(self) -> list:
@@ -125,7 +129,7 @@ A {symbol} corresponds to a named constant, found in most programming languages.
 Every {symbol} has a type according to {program_name}'s type system.
 
 
-A {symbol} name is: {symbol_name_syntax}
+A {symbol} name ({symbol_name_syntax_element}) is: {symbol_name_syntax}
 """
 
 _DEFINITION = """\
@@ -168,12 +172,12 @@ There are two forms of {symbol} references:
 def _symbol_reference_syntax_table() -> ParagraphItem:
     return docs.first_column_is_header_table([
         [
-            docs.text_cell('Plain symbol name'),
-            docs.text_cell('SYMBOL_NAME'),
+            docs.text_cell('Plain name'),
+            docs.text_cell(syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name),
         ],
         [
             docs.text_cell('Special syntax'),
-            docs.text_cell(symbol_reference_syntax_for_name('SYMBOL_NAME')),
+            docs.text_cell(symbol_reference_syntax_for_name(syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name)),
         ],
 
     ],
