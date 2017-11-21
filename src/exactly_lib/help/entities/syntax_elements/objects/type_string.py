@@ -1,6 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.help_texts.entity import syntax_element, types, concepts
+from exactly_lib.help_texts.entity import syntax_elements, types, concepts
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions import define_symbol
@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(TypeCategory.DATA,
-                         syntax_element.STRING_SYNTAX_ELEMENT)
+                         syntax_elements.STRING_SYNTAX_ELEMENT)
 
         self._tp = TextParser({
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
@@ -26,7 +26,7 @@ class _Documentation(SyntaxElementDocumentation):
 
             'soft_quotes': formatting.concept(token.SOFT_QUOTE_NAME.plural),
             'hard_quotes': formatting.concept(token.HARD_QUOTE_NAME.plural),
-            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_element.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name
+            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name
         })
 
     def invokation_variants(self) -> list:
@@ -49,7 +49,7 @@ class _Documentation(SyntaxElementDocumentation):
 
     def see_also_targets(self) -> list:
         info_refs = cross_reference_id_list([
-            syntax_element.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
+            syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT,
             types.STRING_TYPE_INFO,
             types.LIST_TYPE_INFO,
             types.PATH_TYPE_INFO,
@@ -61,7 +61,7 @@ class _Documentation(SyntaxElementDocumentation):
         return info_refs + plain_refs
 
     def _symbol_reference_sed(self) -> SyntaxElementDescription:
-        return SyntaxElementDescription(syntax_element.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument.name,
+        return SyntaxElementDescription(syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument.name,
                                         self._tp.fnap(_SYMBOL_REFERENCE_DESCRIPTION))
 
     @staticmethod
@@ -69,8 +69,8 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             a.Choice(a.Multiplicity.ZERO_OR_MORE,
                      [
-                         syntax_element.STRING_SYNTAX_ELEMENT.argument,
-                         syntax_element.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument,
+                         syntax_elements.STRING_SYNTAX_ELEMENT.argument,
+                         syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument,
                      ]),
         ]
 

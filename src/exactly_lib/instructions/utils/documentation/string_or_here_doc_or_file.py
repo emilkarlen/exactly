@@ -62,8 +62,8 @@ class StringOrHereDocOrFile:
                 )
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help_texts.entity import syntax_element
-        return [syntax_element.HERE_DOCUMENT_SYNTAX_ELEMENT.cross_reference_target]
+        from exactly_lib.help_texts.entity import syntax_elements
+        return [syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.cross_reference_target]
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:
         """

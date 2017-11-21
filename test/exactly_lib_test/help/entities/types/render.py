@@ -5,7 +5,7 @@ from exactly_lib.help.entities.types import render as sut
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
-from exactly_lib.help_texts.entity import syntax_element
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity import types
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.name import name_with_plural_s
@@ -59,10 +59,10 @@ class TestIndividualType(unittest.TestCase):
         struct_check.is_section_contents.apply(self, actual)
 
 
-A_SYNTAX_ELEMENT_INFO = syntax_element.SyntaxElementInfo(
+A_SYNTAX_ELEMENT_INFO = syntax_elements.SyntaxElementInfo(
     'syntax_element_sing_name',
     'syntax element single line description',
-    syntax_element.syntax_element_cross_ref(
+    syntax_elements.syntax_element_cross_ref(
         'syntax_element_sing_name')
 )
 

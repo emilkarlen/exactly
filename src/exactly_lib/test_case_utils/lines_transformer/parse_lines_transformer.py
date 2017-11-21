@@ -1,7 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity import types, syntax_element
+from exactly_lib.help_texts.entity import types, syntax_elements
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
@@ -132,7 +132,7 @@ _REPLACE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  REPLACE_REPLACEMENT_ARGUMENT),
     ],
     description_rest=_TEXT_PARSER.fnap(_REPLACE_TRANSFORMER_SED_DESCRIPTION),
-    see_also_targets=[syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target],
+    see_also_targets=[syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 _SELECT_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(

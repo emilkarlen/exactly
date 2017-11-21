@@ -5,7 +5,7 @@ from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import builtin_symbols
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity import types, actors, syntax_element, suite_reporters, conf_params
+from exactly_lib.help_texts.entity import types, actors, syntax_elements, suite_reporters, conf_params
 from exactly_lib.help_texts.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
     CONF_PARAM_ENTITY_TYPE_NAMES, SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, \
     TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
@@ -29,7 +29,7 @@ _ENTITY_CASES = [
     (ACTOR_ENTITY_TYPE_NAMES, actors.COMMAND_LINE_ACTOR.singular_name),
     (TYPE_ENTITY_TYPE_NAMES, types.LINE_MATCHER_TYPE_INFO.name.singular),
     (BUILTIN_SYMBOL_ENTITY_TYPE_NAMES, builtin_symbols.ALL[0].name),
-    (SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, syntax_element.ALL_SYNTAX_ELEMENTS[0].singular_name),
+    (SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, syntax_elements.ALL_SYNTAX_ELEMENTS[0].singular_name),
     (SUITE_REPORTER_ENTITY_TYPE_NAMES, suite_reporters.PROGRESS_REPORTER.singular_name),
 ]
 

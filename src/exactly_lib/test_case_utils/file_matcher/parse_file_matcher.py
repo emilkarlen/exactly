@@ -2,7 +2,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import expression, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity import syntax_element
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.section_document.parse_source import ParseSource
@@ -172,7 +172,7 @@ NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  NAME_MATCHER_ARGUMENT)
     ],
     description_rest=_fnap(_NAME_MATCHER_SED_DESCRIPTION),
-    see_also_targets=[syntax_element.GLOB_PATTERN_SYNTAX_ELEMENT.cross_reference_target],
+    see_also_targets=[syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(

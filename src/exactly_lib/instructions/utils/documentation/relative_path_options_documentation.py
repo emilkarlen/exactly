@@ -1,7 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts import test_case_file_structure as tc_fs
-from exactly_lib.help_texts.entity import concepts as ci, syntax_element
+from exactly_lib.help_texts.entity import concepts as ci, syntax_elements
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
 from exactly_lib.help_texts.names import formatting
@@ -134,7 +134,7 @@ class RelOptionRenderer:
             'DIR_TMP': formatting.concept(tc_fs.SDS_TMP_INFO.informative_name),
             'DIR_ACT': formatting.concept(tc_fs.SDS_ACT_INFO.informative_name),
             'DIR_RESULT': formatting.concept(tc_fs.SDS_RESULT_INFO.informative_name),
-            'SYMBOL_NAME': syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
+            'SYMBOL_NAME': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
             'PATH_SYMBOL_TYPE': PATH_TYPE_INFO.identifier,
             'cwd': formatting.concept_(ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'home_case_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
