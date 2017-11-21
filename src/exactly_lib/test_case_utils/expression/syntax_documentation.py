@@ -1,12 +1,12 @@
 import itertools
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
-from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.entity.syntax_elements import SYMBOL_NAME_SYNTAX_ELEMENT
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.textformat_parser import TextParser
 from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription
 
 
@@ -19,6 +19,11 @@ class Syntax:
         self.grammar = grammar
         self.concept_argument = a.Single(a.Multiplicity.MANDATORY,
                                          self.grammar.concept.syntax_element)
+
+        self._tp = TextParser({
+            'symbol_concept': formatting.concept_(SYMBOL_CONCEPT_INFO),
+            'concept_name': self.grammar.concept.name.singular,
+        })
 
     def syntax_element_description(self) -> SyntaxElementDescription:
         return cl_syntax.cli_argument_syntax_element_description(
@@ -51,7 +56,7 @@ class Syntax:
 
     def invokation_variants_symbol_ref(self) -> list:
         symbol_argument = a.Single(a.Multiplicity.MANDATORY,
-                                   a.Named(instruction_arguments.SYMBOL_SYNTAX_ELEMENT_NAME))
+                                   SYMBOL_NAME_SYNTAX_ELEMENT.argument)
         iv = InvokationVariant(cl_syntax.cl_syntax_for_args([symbol_argument]),
                                self._symbol_ref_description())
         return [iv]
@@ -93,7 +98,7 @@ class Syntax:
                      a.Constant(')')),
         ]
         iv = InvokationVariant(cl_syntax.cl_syntax_for_args(arguments),
-                               [])
+                               self._tp.fnap(_PARENTHESES_DESCRIPTION))
         return [iv]
 
     def see_also_targets(self) -> list:
@@ -111,21 +116,24 @@ class Syntax:
         ))
 
     def _symbol_ref_description(self):
-        return normalize_and_parse(
-            _SYMBOL_REF_DESCRIPTION.format(
-                symbol_concept=formatting.concept_(SYMBOL_CONCEPT_INFO),
-                concept_name=self.grammar.concept.name.singular,
-
-            ))
+        return self._tp.fnap(_SYMBOL_REF_DESCRIPTION)
 
 
 def _see_also_targets_for_expr(expressions_dict: dict) -> iter:
-    return itertools.chain.from_iterable(
+    from_expressions = list(itertools.chain.from_iterable(
         map(lambda expr: expr.syntax.see_also_targets,
-            expressions_dict.values()))
+            expressions_dict.values())))
+
+    always = [SYMBOL_NAME_SYNTAX_ELEMENT.cross_reference_target]
+
+    return from_expressions + always
 
 
 _SYMBOL_REF_DESCRIPTION = """\
 Reference to a {symbol_concept},
 that must have been defined as a {concept_name}.
+"""
+
+_PARENTHESES_DESCRIPTION = """\
+( and ) must be surrounded by whitespace.
 """
