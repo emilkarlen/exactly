@@ -1,7 +1,7 @@
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation, \
     syntax_element_documentation
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
-    type_string, type_list, type_path, symbol_name, symbol_reference
+    type_string, type_list, type_path, symbol_name, symbol_reference, integer
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.test_case_utils.expression.grammar import Grammar
@@ -25,6 +25,7 @@ def _for_logic_type(type_info: SingularNameAndCrossReferenceId,
 
 ALL_SYNTAX_ELEMENT_DOCS = (
 
+    integer.DOCUMENTATION,
     here_document.DOCUMENTATION,
     regex.DOCUMENTATION,
     glob_pattern.DOCUMENTATION,

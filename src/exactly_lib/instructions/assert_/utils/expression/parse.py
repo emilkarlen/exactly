@@ -1,7 +1,7 @@
 import types
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
 from exactly_lib.instructions.assert_.utils.expression import comparators, integer_resolver
 from exactly_lib.instructions.assert_.utils.expression.integer_resolver import IntegerResolver
@@ -16,7 +16,6 @@ from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 from exactly_lib.util.textformat.structure import structures as docs
 
-INTEGER_ARGUMENT = a.Named('INTEGER')
 OPERATOR_ARGUMENT = a.Named('OPERATOR')
 
 NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
@@ -32,23 +31,13 @@ ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR = [
     MANDATORY_INTEGER_ARGUMENT,
 ]
 
-_EXPRESSION_SYNTAX = """\
-May be any expression that evaluates to an integer (using Python syntax).
 
-May be quoted (to allow space), and may contain {symbol} references.
-"""
-
-
-def syntax_element_descriptions(
-        integer_text: str = 'An integer.') -> list:
+def syntax_element_descriptions(integer_text: str = 'An integer.') -> list:
     operators_list = ' '.join(sorted(comparators.NAME_2_OPERATOR.keys()))
     operator_text = 'One of ' + operators_list
-    expression_syntax_paras = docs.normalize_and_parse(
-        _EXPRESSION_SYNTAX.format(symbol=SYMBOL_CONCEPT_INFO.singular_name)
-    )
     return [
         SyntaxElementDescription(INTEGER_ARGUMENT.name,
-                                 docs.paras(integer_text) + expression_syntax_paras),
+                                 docs.paras(integer_text)),
         SyntaxElementDescription(OPERATOR_ARGUMENT.name,
                                  docs.paras(operator_text))
     ]

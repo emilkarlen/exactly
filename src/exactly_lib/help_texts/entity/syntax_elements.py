@@ -67,6 +67,11 @@ GLOB_PATTERN_SYNTAX_ELEMENT = name_and_ref_target(
     'A shell glob pattern'
 )
 
+INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
+    instruction_arguments.INTEGER_ARGUMENT.name,
+    'An integer expression'
+)
+
 ALL_SYNTAX_ELEMENTS = (
 
     SYMBOL_NAME_SYNTAX_ELEMENT,
@@ -74,6 +79,7 @@ ALL_SYNTAX_ELEMENTS = (
     HERE_DOCUMENT_SYNTAX_ELEMENT,
     REGEX_SYNTAX_ELEMENT,
     GLOB_PATTERN_SYNTAX_ELEMENT,
+    INTEGER_SYNTAX_ELEMENT,
 
     STRING_SYNTAX_ELEMENT,
     LIST_SYNTAX_ELEMENT,
