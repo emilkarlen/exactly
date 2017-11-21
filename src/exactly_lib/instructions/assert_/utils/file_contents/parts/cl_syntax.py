@@ -1,8 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO
+from exactly_lib.help_texts.entity import syntax_elements, concepts
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
@@ -122,11 +121,12 @@ class FileContentsAssertionHelp:
         from exactly_lib.help_texts.entity import types
         name_and_cross_ref_elements = rel_opts.see_also_name_and_cross_refs(
             EXPECTED_FILE_REL_OPT_ARG_CONFIG.options) + [
-            ENVIRONMENT_VARIABLE_CONCEPT_INFO,
+                                          concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO,
                                           syntax_elements.REGEX_SYNTAX_ELEMENT,
+                                          syntax_elements.INTEGER_SYNTAX_ELEMENT,
                                           types.LINES_TRANSFORMER_TYPE_INFO,
                                           types.LINE_MATCHER_TYPE_INFO,
-        ]
+                                      ]
         return cross_reference_id_list(name_and_cross_ref_elements) + \
                self.string_or_here_doc_or_file_arg.see_also_targets()
 

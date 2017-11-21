@@ -3,6 +3,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
@@ -154,7 +155,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         from exactly_lib.help_texts.entity import types
         name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
                                types.LINE_MATCHER_TYPE_INFO,
-                               types.LINES_TRANSFORMER_TYPE_INFO]
+                               types.LINES_TRANSFORMER_TYPE_INFO,
+                               syntax_elements.INTEGER_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
         cross_refs = [DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list

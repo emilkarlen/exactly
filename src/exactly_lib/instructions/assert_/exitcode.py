@@ -2,6 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import instruction
@@ -32,7 +33,7 @@ _PROPERTY_NAME = 'exit code'
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {
-            'INTEGER': parse.INTEGER_ARGUMENT.name,
+            'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
             'OPERATOR': parse.OPERATOR_ARGUMENT.name,
             'EXIT_CODE': _PROPERTY_NAME,
         })
@@ -58,6 +59,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def syntax_element_descriptions(self) -> list:
         return parse.syntax_element_descriptions_with_negation_operator(_OPERAND_DESCRIPTION + '.')
+
+    def see_also_targets(self) -> list:
+        return [
+            syntax_elements.INTEGER_SYNTAX_ELEMENT.cross_reference_target
+        ]
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
