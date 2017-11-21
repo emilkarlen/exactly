@@ -8,7 +8,7 @@ and an `introduction by examples
 <https://github.com/emilkarlen/exactly/wiki/Exactly-by-example>`_.
 
 It also has a `Reference manual
-<http://pythonhosted.org/exactly/>`_.
+<http://htmlpreview.github.io/?https://raw.githubusercontent.com/wiki/emilkarlen/exactly/Reference.html/>`_.
 
 
 .. contents::
