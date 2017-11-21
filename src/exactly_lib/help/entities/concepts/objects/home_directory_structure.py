@@ -2,7 +2,7 @@ from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import test_case_file_structure as tc_fs
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity import concepts, conf_params, syntax_element
+from exactly_lib.help_texts.entity import concepts, conf_params, syntax_elements
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case import phase_names
@@ -44,7 +44,7 @@ class _HdsConcept(ConceptDocumentation):
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
             'symbols': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
             'conf_params': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.plural_name),
-            'PATH': syntax_element.PATH_SYNTAX_ELEMENT.singular_name,
+            'PATH': syntax_elements.PATH_SYNTAX_ELEMENT.singular_name,
         })
 
     def purpose(self) -> DescriptionWithSubSections:

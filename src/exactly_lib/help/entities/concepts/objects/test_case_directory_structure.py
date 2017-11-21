@@ -1,6 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts.entity import concepts, syntax_element
+from exactly_lib.help_texts.entity import concepts, syntax_elements
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case_file_structure import HDS_DIR_INFOS_IN_DISPLAY_ORDER, \
@@ -33,7 +33,7 @@ class _TcdsConcept(ConceptDocumentation):
         return [
             concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
-            syntax_element.PATH_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     def _dir_structure_list(self) -> list:

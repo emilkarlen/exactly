@@ -2,11 +2,11 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity import types, syntax_element, concepts
+from exactly_lib.help_texts.entity import types, syntax_elements, concepts
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax_elements
+from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
@@ -41,8 +41,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
-        self.name = syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT.argument
-        self.string_value = syntax_element.STRING_SYNTAX_ELEMENT.argument
+        self.name = syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument
+        self.string_value = syntax_elements.STRING_SYNTAX_ELEMENT.argument
         super().__init__(name, {
             'NAME': self.name.name,
             'current_directory_concept': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
@@ -67,12 +67,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant(syntax_elements.definition_of_type_string()),
-            InvokationVariant(syntax_elements.definition_of_type_path()),
-            InvokationVariant(syntax_elements.definition_of_type_list()),
-            InvokationVariant(syntax_elements.definition_of_type_line_matcher()),
-            InvokationVariant(syntax_elements.definition_of_type_file_matcher()),
-            InvokationVariant(syntax_elements.definition_of_type_lines_transformer()),
+            InvokationVariant(syntax.definition_of_type_string()),
+            InvokationVariant(syntax.definition_of_type_path()),
+            InvokationVariant(syntax.definition_of_type_list()),
+            InvokationVariant(syntax.definition_of_type_line_matcher()),
+            InvokationVariant(syntax.definition_of_type_file_matcher()),
+            InvokationVariant(syntax.definition_of_type_lines_transformer()),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -83,12 +83,12 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                    SyntaxElementDescription(self.string_value.name,
                                             self._paragraphs(_STRING_SYNTAX_ELEMENT_DESCRIPTION)),
                    SyntaxElementDescription(self.name.name,
-                                            self._paragraphs(syntax_elements.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
+                                            self._paragraphs(syntax.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
                ]
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
-                               syntax_element.SYMBOL_NAME_SYNTAX_ELEMENT,
+                               syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
                                TYPE_CONCEPT_INFO,
                                CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
         name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
@@ -150,8 +150,8 @@ def _parse(source: ParseSource) -> SymbolDefinition:
         err_msg = symbol_syntax.invalid_symbol_name_error(name_str)
         raise SingleInstructionInvalidArgumentException(err_msg)
     token_stream.consume()
-    if token_stream.is_null or token_stream.head.source_string != syntax_elements.EQUALS_ARGUMENT:
-        raise SingleInstructionInvalidArgumentException('Missing ' + syntax_elements.EQUALS_ARGUMENT)
+    if token_stream.is_null or token_stream.head.source_string != syntax.EQUALS_ARGUMENT:
+        raise SingleInstructionInvalidArgumentException('Missing ' + syntax.EQUALS_ARGUMENT)
     token_stream.consume()
     value_resolver = value_parser(token_stream)
     if not token_stream.is_null:
@@ -168,7 +168,7 @@ REL_OPTIONS_CONFIGURATION = RelOptionsConfiguration(
 
 REL_OPTION_ARGUMENT_CONFIGURATION = RelOptionArgumentConfiguration(REL_OPTIONS_CONFIGURATION,
                                                                    instruction_arguments.PATH_ARGUMENT,
-                                                                   syntax_elements.PATH_SUFFIX_IS_REQUIRED)
+                                                                   syntax.PATH_SUFFIX_IS_REQUIRED)
 
 _MAIN_DESCRIPTION_REST = """\
 Defines the symbol {NAME} to be a value of the given type.

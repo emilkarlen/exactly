@@ -1,6 +1,6 @@
 from exactly_lib.help_texts import expression
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity import syntax_element
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.section_document.parse_source import ParseSource
@@ -82,7 +82,7 @@ _REGEX_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
                  REPLACE_REGEX_ARGUMENT),
     ],
     description_rest=_fnap(_REGEX_MATCHER_SED_DESCRIPTION),
-    see_also_targets=[syntax_element.REGEX_SYNTAX_ELEMENT.cross_reference_target],
+    see_also_targets=[syntax_elements.REGEX_SYNTAX_ELEMENT.cross_reference_target],
 )
 
 _CONCEPT = grammar.Concept(

@@ -2,7 +2,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity import syntax_element, types, concepts
+from exactly_lib.help_texts.entity import syntax_elements, types, concepts
 from exactly_lib.help_texts.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_CWD_OPTION
 from exactly_lib.help_texts.instruction_arguments import REL_SYMBOL_OPTION, SYMBOL_SYNTAX_ELEMENT_NAME
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
@@ -22,9 +22,9 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 class _Documentation(SyntaxElementDocumentation):
     def __init__(self):
         super().__init__(TypeCategory.DATA,
-                         syntax_element.PATH_SYNTAX_ELEMENT)
+                         syntax_elements.PATH_SYNTAX_ELEMENT)
 
-        self._string_name = a.Named(syntax_element.STRING_SYNTAX_ELEMENT.singular_name)
+        self._string_name = a.Named(syntax_elements.STRING_SYNTAX_ELEMENT.singular_name)
         self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT
 
         self._parser = TextParser({
@@ -33,7 +33,7 @@ class _Documentation(SyntaxElementDocumentation):
             'posix_syntax': documentation_text.POSIX_SYNTAX,
             'string_type': formatting.keyword(types.STRING_TYPE_INFO.name.singular),
             'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
-            'string_syntax_element': syntax_element.STRING_SYNTAX_ELEMENT.singular_name,
+            'string_syntax_element': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
             'cd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
             'SYMBOL_SYNTAX_ELEMENT_NAME': SYMBOL_SYNTAX_ELEMENT_NAME,
@@ -59,7 +59,7 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
-            syntax_element.STRING_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     def _relativity_sed(self) -> SyntaxElementDescription:

@@ -2,7 +2,7 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxE
     syntax_element_documentation
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, symbol_name, symbol_reference
-from exactly_lib.help_texts.entity import syntax_element
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.test_case_utils.expression.syntax_documentation import Syntax
@@ -35,13 +35,13 @@ ALL_SYNTAX_ELEMENT_DOCS = (
     type_list.DOCUMENTATION,
     type_path.DOCUMENTATION,
 
-    _for_logic_type(syntax_element.FILE_MATCHER_SYNTAX_ELEMENT,
+    _for_logic_type(syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
                     parse_file_matcher.GRAMMAR),
 
-    _for_logic_type(syntax_element.LINES_TRANSFORMER_SYNTAX_ELEMENT,
+    _for_logic_type(syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
                     parse_lines_transformer.GRAMMAR),
 
-    _for_logic_type(syntax_element.LINE_MATCHER_SYNTAX_ELEMENT,
+    _for_logic_type(syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
                     parse_line_matcher.GRAMMAR),
 )
 
