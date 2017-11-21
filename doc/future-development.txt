@@ -1,53 +1,54 @@
 -*- org -*-
 
-* dir-contents file check
-<2017-09-14 tor>
-** Syntax
-dir-contents DIR every file ! empty
+* dir-contents: make FILE-MATCHER able to check contents
+<2017-11-20 mån>
+Dagens E kan inte testa ett scenario från ETI:
+Test av sql-scripten: test att alla script har korrekt filnamn.
+Problem: testet ska validera filnamn - men inte på alla filer, utan enbart på dem
+som heter "*.sql" - ty det är dessa som anses vara SQL-script. Utöver SQL-scripten
+finns fler filer, och dessa måste filtreras bort.
+Vad som behövs är möjligheten att validera fil-namn på ett urval av filer:
+alla-som-heter-.sql-ska-också-heta-valid-ddl-el-dml
 
-dir-contents DIR ! every file ! empty
+--------------------
+dir-contents @[SCRIPT_DIR]@ --selection IS_SQL_SCRIPT every file : HAS_VALID_FILE_NAME
 
-dir-contents DIR any file empty
+where
+def file-matcher HAS_VALID_FILE_NAME = name ...
+--------------------
 
-dir-contents DIR any file empty
-dir-contents DIR any file equals ...
-dir-contents DIR any file num-lines > 2
-dir-contents DIR any file --transformation FT any line matches
+Det enklaste ser ut att vara att en FILE-MATCHER även kan kika på innehållet
+i en fil.  Därmed kan vi köra FILE-MATCHER istället för FILE-CONTENTS-ASSERTION
+för "(any|every) file ..."
 
-dir-contents DIR (any|every) file contents CONTENTS-ASSERTION
+--------------------
+dir-contents PATH [--selection FILE-MATCHER] [!] FILES-ASSERTION
 
-* file-contents: extensions to "line matches"
-<2017-09-14 tor>
-Make matching use "line matcher"
+FILE-MATCHER == name ...
+             =| type ...
+             =| contents [TRANSFORMATION] [!] FILE-CONTENTS-ASSERTION
 
-(any|every) line matches LINE-MATCHER
-* new concept "syntax" for "global" syntax element descriptions?
-<2017-09-14 tor>
+FILES-ASSERTION == empty
+                =| num-files
+                =| (any|every) file : FILE-MATCHER
+--------------------
 
-exactly help syntax SYNTAX
+* null actor: features to set it explicitly
+<2017-08-17 tor>
+** actor intruction
 
-SYNTAX ::= regex
-         = here document
-         = shell syntax
-	 = contents assertion
-	 = symbol reference
-	 = file reference / path
-	 = SYMBOL TYPE ??
+[conf]
 
-Syntax for symbol types is now described under the type doc.
-They could be included in the "syntax" set, as an alternative
-way to get syntax; or the "syntax" description could be the
-definition of the syntax, whereas the "type" element describes
-the meaning of the type.
-Having it under "syntax" could make it easier to find syntax
-description by putting all syntax descriptions in the same place
-so that the user does not need to care about wheter the thing to
-find syntax for is a type or a "plain" "syntax" element.
+actor --null
+
+** command line option
+
+--null-actor
+
+** ge varning om act-fasen innehåller sånt som kan vara avsett för annan actor
+speciellt icke-kommentarer o icke-tom-rader
+ev använda nån form av loggning
 * new line-matcher for line numbers: range INT|INT:[INT]|:INT
-* transform instruction
-<2017-09-14 tor>
-
-transform PATH PATH [TRANSFORMER]
 * Make suites run in a hierarchical way, à la make
 <2016-12-22 tor>
 * Specify python actor executable via --python
