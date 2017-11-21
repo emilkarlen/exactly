@@ -24,8 +24,8 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
-from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -118,9 +118,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return cross_reference_id_list(name_and_cross_refs) + cross_refs
 
     def _type_element_description(self):
-        return self._paragraphs(_TYPE_ELEMENT_DESCRIPTION_INTRO) + [self._file_type_list()]
+        return (self._paragraphs(_TYPE_ELEMENT_DESCRIPTION_INTRO)
+                +
+                [transform_list_to_table(self._file_type_list())])
 
-    def _file_type_list(self) -> core.ParagraphItem:
+    def _file_type_list(self) -> lists.HeaderContentList:
         def type_description(file_type: file_properties.FileType) -> list:
             text = 'Tests if {PATH} is a {file_type}, or a {SYM_LNK} to a {file_type}.'
             if file_type is file_properties.FileType.SYMLINK:
