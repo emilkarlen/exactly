@@ -308,7 +308,7 @@ Yes, casting is supported - casting data type -> string-->
               <term>PATH = PATH</term>
 
               <listitem>
-                <para></para>
+                <para/>
               </listitem>
             </varlistentry>
 
@@ -317,15 +317,15 @@ Yes, casting is supported - casting data type -> string-->
               STRING</term>
 
               <listitem>
-                <para></para>
+                <para/>
               </listitem>
             </varlistentry>
 
             <varlistentry>
-              <term></term>
+              <term/>
 
               <listitem>
-                <para></para>
+                <para/>
               </listitem>
             </varlistentry>
           </variablelist>
@@ -444,7 +444,7 @@ Yes, casting is supported - casting data type -> string-->
         <section>
           <title>Rest</title>
 
-          <para></para>
+          <para/>
         </section>
       </section>
 
@@ -660,7 +660,7 @@ Yes, casting is supported - casting data type -> string-->
                     <para>Then [act] may operate on the files, and [assert]
                     can check the contents of files and directories.</para>
 
-                    <para></para>
+                    <para/>
 
                     <para>If [act] operates on files, [setup] may create such
                     files that should exist before [act] starts. [setup] may
@@ -710,7 +710,7 @@ Yes, casting is supported - casting data type -> string-->
                     properties.</para>
 
                     <table>
-                      <title></title>
+                      <title/>
 
                       <tgroup cols="2">
                         <thead>
@@ -750,9 +750,9 @@ Yes, casting is supported - casting data type -> string-->
                     <para>A test case should not modify the contents of this
                     directory.</para>
 
-                    <para></para>
+                    <para/>
 
-                    <para></para>
+                    <para/>
 
                     <para>As part of executing [act], PGM populates this
                     directory with files containing</para>
@@ -775,7 +775,7 @@ Yes, casting is supported - casting data type -> string-->
                     for checking these properties:</para>
 
                     <table>
-                      <title></title>
+                      <title/>
 
                       <tgroup cols="2">
                         <thead>
@@ -1081,7 +1081,118 @@ Yes, casting is supported - casting data type -> string-->
             <para>String type symbols (using Posix syntax) are used to specify
             relative paths.</para>
           </listitem>
+
+          <listitem>
+            <para>Conversion to string: PATH, LIST</para>
+          </listitem>
+
+          <listitem>
+            <para>References to symbols - as naked expressions and inside
+            quoting, and concatenated</para>
+          </listitem>
+
+          <listitem>
+            <para>Quoting</para>
+          </listitem>
+
+          <listitem>
+            <para>forms</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>hard quoted</para>
+              </listitem>
+
+              <listitem>
+                <para>soft quoted</para>
+              </listitem>
+
+              <listitem>
+                <para>unquoted</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
+
+          <listitem>
+            <para>symbol refs</para>
+
+            <itemizedlist>
+              <listitem>
+                <para>in naked strings</para>
+              </listitem>
+
+              <listitem>
+                <para>in soft quoted strings</para>
+              </listitem>
+
+              <listitem>
+                <para>NOT in hard quoted strings</para>
+              </listitem>
+            </itemizedlist>
+          </listitem>
         </itemizedlist>
+      </section>
+
+      <section>
+        <title>Documentation</title>
+
+        <para>Forms</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>CHARACTER...</term>
+
+            <listitem>
+              <para>A "naked" sequence of characters.</para>
+
+              <para>CHARACTER may not be whitespace.</para>
+
+              <para>Any SYMBOL-REFERENCE appearing in the string is
+              substituted.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>"CHARACTER..."</term>
+
+            <listitem>
+              <para>Characters surrounded by "soft quotes" (').</para>
+
+              <para>Any SYMBOL-REFERENCE appearing in the string is
+              substituted.</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>'CHARACTER...'</term>
+
+            <listitem>
+              <para>Characters surrounded by "hard quotes" (").</para>
+
+              <para>Symbol references are not substituted.</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <section>
+          <title>Symbol references</title>
+
+          <para>Any SYMBOL-REFERENCE must be a symbol of a "data" type:</para>
+
+          <itemizedlist>
+            <listitem>
+              <para>string</para>
+            </listitem>
+
+            <listitem>
+              <para>list</para>
+            </listitem>
+
+            <listitem>
+              <para>path</para>
+            </listitem>
+          </itemizedlist>
+        </section>
       </section>
     </section>
 
@@ -1629,7 +1740,7 @@ Yes, casting is supported - casting data type -> string-->
                 </listitem>
 
                 <listitem>
-                  <para></para>
+                  <para/>
                 </listitem>
               </itemizedlist>
             </listitem>
