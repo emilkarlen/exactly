@@ -65,7 +65,7 @@ def output_location(printer: FilePrinter,
         printer.write_line(error_message_format.source_line(line))
         has_output_header = True
     if description:
-        printer.write_line('Described as `{}\''.format(description))
+        printer.write_line('\nDescribed as "{}"'.format(description))
         has_output_header = True
 
     if has_output_header:
