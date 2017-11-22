@@ -46,5 +46,8 @@ DOCUMENTATION = syntax_element_documentation(
         cl_syntax.cli_argument_syntax_element_description(_IGNORE_CASE_ARGUMENT,
                                                           _TEXT_PARSER.fnap(_DESCRIPTION_OF_IGNORE_CASE_OPTION))
     ],
-    [SEE_ALSO_URL_INFO]
+    [
+        syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
+        SEE_ALSO_URL_INFO,
+    ]
 )
