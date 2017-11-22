@@ -5,6 +5,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
+from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
@@ -35,6 +36,9 @@ NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
 TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
 
 REG_EX_OPTION = a.OptionName(long_name='regex')
+
+REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
+                           syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
@@ -122,13 +126,14 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_MATCHER_': FILE_MATCHER_TYPE_INFO.name.singular,
     '_NAME_MATCHER_': NAME_MATCHER_NAME,
     '_TYPE_MATCHER_': TYPE_MATCHER_NAME,
-    '_PATTERN_': NAME_MATCHER_ARGUMENT.name,
+    '_GLOB_PATTERN_': NAME_MATCHER_ARGUMENT.name,
     '_TYPE_': TYPE_MATCHER_ARGUMENT.name,
     '_SYMLINK_TYPE_': file_properties.TYPE_INFO[FileType.SYMLINK].type_argument,
-    '_GLOB_PATTERN_': 'Unix glob pattern',
+    '_GLOB_PATTERN_INFORMATIVE_NAME_': syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.single_line_description_str.lower(),
+    '_REG_EX_PATTERN_INFORMATIVE_NAME_': syntax_elements.REGEX_SYNTAX_ELEMENT.single_line_description_str.lower(),
 }
 
-_ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_PATTERN_} argument for {_NAME_MATCHER_}'
+_ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'
 
 _SELECTION_DESCRIPTION = """\
 Selects a sub set of files in the directory that the test applies to
@@ -136,7 +141,13 @@ Selects a sub set of files in the directory that the test applies to
 """
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
-Matches files who's name matches the given {_GLOB_PATTERN_}.
+Matches files who's ...
+
+
+  * name : matches {_GLOB_PATTERN_INFORMATIVE_NAME_}, or
+  
+  
+  * base name : matches {_REG_EX_PATTERN_INFORMATIVE_NAME_}
 """
 
 
@@ -182,11 +193,17 @@ def _file_types_table() -> docs.ParagraphItem:
 
 NAME_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
     argument_usage_list=[
-        a.Single(a.Multiplicity.MANDATORY,
-                 NAME_MATCHER_ARGUMENT)
+        a.Choice(a.Multiplicity.MANDATORY,
+                 [
+                     instruction_arguments.GLOB_PATTERN,
+                     REG_EX_ARGUMENT,
+                 ])
     ],
     description_rest=_fnap(_NAME_MATCHER_SED_DESCRIPTION),
-    see_also_targets=[syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT.cross_reference_target],
+    see_also_targets=cross_reference_id_list([
+        syntax_elements.GLOB_PATTERN_SYNTAX_ELEMENT,
+        syntax_elements.REGEX_SYNTAX_ELEMENT,
+    ]),
 )
 
 TYPE_SYNTAX_DESCRIPTION = grammar.SimpleExpressionDescription(
