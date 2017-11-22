@@ -156,7 +156,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
                                types.LINE_MATCHER_TYPE_INFO,
                                types.LINES_TRANSFORMER_TYPE_INFO,
-                               syntax_elements.INTEGER_SYNTAX_ELEMENT]
+                               syntax_elements.INTEGER_SYNTAX_ELEMENT,
+                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
         cross_refs = [DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
