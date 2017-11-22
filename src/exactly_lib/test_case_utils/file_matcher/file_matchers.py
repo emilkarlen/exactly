@@ -40,6 +40,24 @@ class FileMatcherNameGlobPattern(FileMatcher):
         return path.match(self._glob_pattern)
 
 
+class FileMatcherBaseNameRegExPattern(FileMatcher):
+    """Matches the base name of a path on a regular expression."""
+
+    def __init__(self, compiled_reg_ex):
+        self._compiled_reg_ex = compiled_reg_ex
+
+    @property
+    def reg_ex_pattern(self) -> str:
+        return self._compiled_reg_ex.pattern
+
+    @property
+    def option_description(self) -> str:
+        return 'base name matches regular expression ' + self.reg_ex_pattern
+
+    def matches(self, path: pathlib.Path) -> bool:
+        return self._compiled_reg_ex.search(path.name) is not None
+
+
 class FileMatcherType(FileMatcher):
     """Matches the type of file."""
 
@@ -130,6 +148,8 @@ class FileMatcherStructureVisitor:
     def visit(self, matcher: FileMatcher):
         if isinstance(matcher, FileMatcherNameGlobPattern):
             return self.visit_name_glob_pattern(matcher)
+        if isinstance(matcher, FileMatcherBaseNameRegExPattern):
+            return self.visit_name_reg_ex_pattern(matcher)
         if isinstance(matcher, FileMatcherType):
             return self.visit_type(matcher)
         if isinstance(matcher, FileMatcherNot):
@@ -148,6 +168,9 @@ class FileMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_name_glob_pattern(self, matcher: FileMatcherNameGlobPattern):
+        raise NotImplementedError('abstract method')
+
+    def visit_name_reg_ex_pattern(self, matcher: FileMatcherBaseNameRegExPattern):
         raise NotImplementedError('abstract method')
 
     def visit_type(self, matcher: FileMatcherType):

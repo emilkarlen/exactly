@@ -1,4 +1,5 @@
 import pathlib
+import re
 import unittest
 
 from exactly_lib.test_case_utils.file_matcher import file_matchers as sut
@@ -31,6 +32,18 @@ class TestFileMatcherStructureVisitor(unittest.TestCase):
         ret_val = visitor.visit(instance)
         # ASSERT #
         self.assertEqual([sut.FileMatcherNameGlobPattern],
+                         visitor.visited_types)
+        self.assertIs(instance,
+                      ret_val)
+
+    def test_visit_name_reg_ex_pattern(self):
+        # ARRANGE #
+        instance = sut.FileMatcherBaseNameRegExPattern(re.compile('reg-ex pattern'))
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.FileMatcherBaseNameRegExPattern],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
@@ -105,6 +118,10 @@ class AVisitorThatRecordsVisitedMethods(sut.FileMatcherStructureVisitor):
 
     def visit_name_glob_pattern(self, matcher: sut.FileMatcherNameGlobPattern):
         self.visited_types.append(sut.FileMatcherNameGlobPattern)
+        return matcher
+
+    def visit_name_reg_ex_pattern(self, matcher: sut.FileMatcherBaseNameRegExPattern):
+        self.visited_types.append(sut.FileMatcherBaseNameRegExPattern)
         return matcher
 
     def visit_type(self, matcher: sut.FileMatcherType):

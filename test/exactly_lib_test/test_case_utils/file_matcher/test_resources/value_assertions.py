@@ -62,6 +62,13 @@ class _StructureChecker(FileMatcherStructureVisitor):
                              actual.glob_pattern,
                              'glob_pattern')
 
+    def visit_name_reg_ex_pattern(self, actual: file_matchers.FileMatcherBaseNameRegExPattern):
+        self._common(actual)
+        assert isinstance(self.expected, file_matchers.FileMatcherBaseNameRegExPattern)  # Type info for IDE
+        self.put.assertEqual(self.expected.reg_ex_pattern,
+                             actual.reg_ex_pattern,
+                             'reg_ex_pattern')
+
     def visit_constant(self, actual: file_matchers.FileMatcherConstant):
         self._common(actual)
         assert isinstance(self.expected, file_matchers.FileMatcherConstant)  # Type info for IDE
