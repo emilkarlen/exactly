@@ -122,7 +122,6 @@ class FileContentsAssertionHelp:
         name_and_cross_ref_elements = rel_opts.see_also_name_and_cross_refs(
             EXPECTED_FILE_REL_OPT_ARG_CONFIG.options) + [
                                           concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO,
-                                          syntax_elements.REGEX_SYNTAX_ELEMENT,
                                           syntax_elements.INTEGER_SYNTAX_ELEMENT,
                                           types.LINES_TRANSFORMER_TYPE_INFO,
                                           types.LINE_MATCHER_TYPE_INFO,
