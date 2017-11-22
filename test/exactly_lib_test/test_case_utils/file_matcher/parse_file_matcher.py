@@ -1,3 +1,4 @@
+import re
 import unittest
 
 from exactly_lib.section_document.parse_source import ParseSource
@@ -15,7 +16,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
     resolved_value_equals_file_matcher
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_matcher_of, type_matcher_of
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import name_glob_pattern_matcher_of, \
+    type_matcher_of, name_reg_ex_pattern_matcher_of
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -24,7 +26,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParseFileMatcher),
-        unittest.makeSuite(TestNamePattern),
+        unittest.makeSuite(TestNameGlobPattern),
+        unittest.makeSuite(TestBaseNameRegExPattern),
         unittest.makeSuite(TestFileType),
     ])
 
@@ -98,23 +101,23 @@ class TestCaseBase(unittest.TestCase):
         expectation.source.apply_with_message(self, source, 'source after parse')
 
 
-class TestNamePattern(TestCaseBase):
+class TestNameGlobPattern(TestCaseBase):
     def test_parse(self):
         pattern = 'include*'
         space = '   '
         cases = [
             SourceCase('single name argument',
-                       remaining_source(name_matcher_of(pattern)),
+                       remaining_source(name_glob_pattern_matcher_of(pattern)),
                        assert_source(is_at_eof=asrt.is_true),
                        ),
             SourceCase('single name argument followed by space, and following lines',
-                       remaining_source(name_matcher_of(pattern) + space,
+                       remaining_source(name_glob_pattern_matcher_of(pattern) + space,
                                         ['following line']),
                        assert_source(current_line_number=asrt.equals(1),
                                      remaining_part_of_current_line=asrt.equals(space[1:])),
                        ),
             SourceCase('single name argument followed by arguments',
-                       remaining_source(name_matcher_of(pattern) + space + 'following argument',
+                       remaining_source(name_glob_pattern_matcher_of(pattern) + space + 'following argument',
                                         ['following line']),
                        assert_source(current_line_number=asrt.equals(1),
                                      remaining_part_of_current_line=asrt.equals(space[1:] + 'following argument')),
@@ -126,6 +129,45 @@ class TestNamePattern(TestCaseBase):
                     case.source,
                     Expectation(
                         resolved_value_equals_file_matcher(file_matchers.FileMatcherNameGlobPattern(pattern)),
+                        source=case.source_assertion,
+                    )
+                )
+
+
+class TestBaseNameRegExPattern(TestCaseBase):
+    def test_parse(self):
+        pattern = 'include.*'
+        space = '   '
+        cases = [
+            SourceCase('single name reg-ex argument',
+                       remaining_source(name_reg_ex_pattern_matcher_of(pattern)),
+                       assert_source(is_at_eof=asrt.is_true),
+                       ),
+            SourceCase('single name reg-ex argument, including ignore-case option',
+                       remaining_source(name_reg_ex_pattern_matcher_of(pattern,
+                                                                       ignore_case=True)),
+                       assert_source(is_at_eof=asrt.is_true),
+                       ),
+            SourceCase('single name reg-ex argument followed by space, and following lines',
+                       remaining_source(name_reg_ex_pattern_matcher_of(pattern) + space,
+                                        ['following line']),
+                       assert_source(current_line_number=asrt.equals(1),
+                                     remaining_part_of_current_line=asrt.equals(space[1:])),
+                       ),
+            SourceCase('single name reg-ex argument followed by arguments',
+                       remaining_source(name_reg_ex_pattern_matcher_of(pattern) + space + 'following argument',
+                                        ['following line']),
+                       assert_source(current_line_number=asrt.equals(1),
+                                     remaining_part_of_current_line=asrt.equals(space[1:] + 'following argument')),
+                       ),
+        ]
+        expected = file_matchers.FileMatcherBaseNameRegExPattern(re.compile(pattern))
+        for case in cases:
+            with self.subTest(case=case.name):
+                self._check_parse(
+                    case.source,
+                    Expectation(
+                        resolved_value_equals_file_matcher(expected),
                         source=case.source_assertion,
                     )
                 )
@@ -149,11 +191,12 @@ class TestFileType(TestCaseBase):
                                          remaining_part_of_current_line=asrt.equals(space[1:])),
                            ),
                 SourceCase('single name argument followed by arguments',
-                           remaining_source(type_matcher_of(file_type) + space + name_matcher_of('no-matching-file'),
-                                            ['following line']),
+                           remaining_source(
+                               type_matcher_of(file_type) + space + name_glob_pattern_matcher_of('no-matching-file'),
+                               ['following line']),
                            assert_source(current_line_number=asrt.equals(1),
                                          remaining_part_of_current_line=asrt.equals(
-                                             space[1:] + name_matcher_of('no-matching-file'))),
+                                             space[1:] + name_glob_pattern_matcher_of('no-matching-file'))),
                            ),
             ]
 

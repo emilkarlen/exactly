@@ -19,6 +19,7 @@ from exactly_lib.test_case_utils.file_matcher import resolvers
 from exactly_lib.test_case_utils.file_matcher.file_matchers import MATCH_EVERY_FILE
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
@@ -32,6 +33,8 @@ TYPE_MATCHER_NAME = 'type'
 NAME_MATCHER_ARGUMENT = instruction_arguments.GLOB_PATTERN
 
 TYPE_MATCHER_ARGUMENT = a.Named('TYPE')
+
+REG_EX_OPTION = a.OptionName(long_name='regex')
 
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
@@ -87,9 +90,20 @@ def _parse(parser: TokenParserPrime) -> FileMatcherResolver:
 
 
 def _parse_name_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
+    return parser.parse_choice_of_optional_option(_parse_name_reg_ex_matcher,
+                                                  _parse_name_glob_pattern_matcher,
+                                                  REG_EX_OPTION)
+
+
+def _parse_name_glob_pattern_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
     pattern = parser.consume_mandatory_string_argument(
         _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME)
     return _constant(file_matchers.FileMatcherNameGlobPattern(pattern))
+
+
+def _parse_name_reg_ex_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
+    compiled_reg_ex = parse_reg_ex.parse_regex(parser)
+    return _constant(file_matchers.FileMatcherBaseNameRegExPattern(compiled_reg_ex))
 
 
 def _parse_type_matcher(parser: TokenParserPrime) -> FileMatcherResolver:

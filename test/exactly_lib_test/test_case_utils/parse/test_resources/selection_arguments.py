@@ -3,6 +3,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.file_properties import FileType
+from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.parse import token
 
@@ -43,7 +44,7 @@ def file_matcher_arguments(name_pattern: str = '',
     matchers = []
 
     if name_pattern:
-        matchers.append(name_matcher_of(name_pattern))
+        matchers.append(name_glob_pattern_matcher_of(name_pattern))
     if type_match:
         matchers.append(type_matcher_of(type_match))
     if named_matcher:
@@ -53,12 +54,30 @@ def file_matcher_arguments(name_pattern: str = '',
     return and_combinator.join(matchers)
 
 
-def name_matcher_of(pattern: str) -> str:
+def name_glob_pattern_matcher_of(pattern: str) -> str:
     pattern_arg = pattern
     if ' ' in pattern_arg and pattern_arg[0] not in token.QUOTE_CHARS:
         pattern_arg = token.HARD_QUOTE_CHAR + pattern_arg + token.HARD_QUOTE_CHAR
 
     return parse_file_matcher.NAME_MATCHER_NAME + ' ' + pattern_arg
+
+
+def name_reg_ex_pattern_matcher_of(pattern: str,
+                                   ignore_case: bool = False) -> str:
+    pattern_arg = pattern
+    if ' ' in pattern_arg and pattern_arg[0] not in token.QUOTE_CHARS:
+        pattern_arg = token.HARD_QUOTE_CHAR + pattern_arg + token.HARD_QUOTE_CHAR
+
+    args = [
+        parse_file_matcher.NAME_MATCHER_NAME,
+        option_syntax.option_syntax(parse_file_matcher.REG_EX_OPTION),
+    ]
+    if ignore_case:
+        args.append(option_syntax.option_syntax(parse_reg_ex.IGNORE_CASE_OPTION_NAME))
+
+    args.append(pattern_arg)
+
+    return ' '.join(args)
 
 
 def type_matcher_of(file_type: file_properties.FileType) -> str:

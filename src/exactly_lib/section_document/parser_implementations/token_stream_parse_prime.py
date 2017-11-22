@@ -272,6 +272,35 @@ class TokenParserPrime:
         else:
             return return_value_if_no_match
 
+    def parse_choice_of_optional_option(self,
+                                        continuation_if_present: types.FunctionType,
+                                        continuation_if_not_present: types.FunctionType,
+                                        option_name: OptionName,
+                                        ):
+        """
+        Looks at the current argument and checks if it is the given option.
+        Depending on if the option is present:
+        - present: consume it and continue parsing using designated parser
+        - not present: continue parsing using designated parser
+
+        :param option_name: Option to match
+
+        :param continuation_if_present: Is given this parser object as argument,
+         after the option token has been consumed.
+         The return value from this function is returned if the option matches the head token
+
+        :param continuation_if_not_present: Is given this parser object as argument,
+         with unmodified "input stream".
+         The return value from this function is returned if the option does not match the head token
+        """
+        if self.token_stream.is_null:
+            return continuation_if_not_present(self)
+        elif matches(option_name, self.token_stream.head.source_string):
+            self.token_stream.consume()
+            return continuation_if_present(self)
+        else:
+            return continuation_if_not_present(self)
+
     def head_matches(self, option_name: OptionName) -> bool:
         if self.token_stream.is_null:
             return False
