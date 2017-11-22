@@ -51,8 +51,4 @@ There are no syntax requirements.
 _MAIN_DESCRIPTION_REST = """\
 The {null} {actor} is useful when the test case does not test a program,
 but rather properties of the operating system environment.
-
-
-One such case could be to make sure that every file in a directory designated for SQL files
-has a ".sql" suffix.
 """
