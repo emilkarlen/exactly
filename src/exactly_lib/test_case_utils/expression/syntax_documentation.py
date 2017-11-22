@@ -40,6 +40,9 @@ class Syntax:
                 self.invokation_variants_parentheses()
                 )
 
+    def global_description(self) -> list:
+        return self._tp.fnap(_GLOBAL_DESCRIPTION)
+
     def invokation_variants_simple(self) -> list:
         def invokation_variant_of(name: str,
                                   syntax: SimpleExpressionDescription) -> InvokationVariant:
@@ -97,8 +100,7 @@ class Syntax:
             a.Single(a.Multiplicity.MANDATORY,
                      a.Constant(')')),
         ]
-        iv = InvokationVariant(cl_syntax.cl_syntax_for_args(arguments),
-                               self._tp.fnap(_PARENTHESES_DESCRIPTION))
+        iv = InvokationVariant(cl_syntax.cl_syntax_for_args(arguments))
         return [iv]
 
     def see_also_targets(self) -> list:
@@ -134,6 +136,9 @@ Reference to a {symbol_concept},
 that must have been defined as a {concept_name}.
 """
 
-_PARENTHESES_DESCRIPTION = """\
-( and ) must be surrounded by whitespace.
+_GLOBAL_DESCRIPTION = """\
+All operators have the same precedence.
+
+
+Operators and parentheses must be separated by whitespace.
 """
