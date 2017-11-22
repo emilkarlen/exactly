@@ -24,6 +24,9 @@ class TextParser:
     def para(self, s: str, extra: dict = None) -> docs.ParagraphItem:
         return docs.para(self.format(s, extra))
 
+    def paras(self, s: str, extra: dict = None) -> list:
+        return docs.paras(self.format(s, extra))
+
     def fnap(self, s: str, extra: dict = None) -> list:
         """
         1. Text replacements according to `format_map` given to the constructor.

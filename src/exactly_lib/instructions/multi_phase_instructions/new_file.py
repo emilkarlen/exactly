@@ -1,9 +1,9 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.common.help.syntax_elements import here_document
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -23,11 +23,16 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_co
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         super().__init__(name, {})
+
+        self._tp = TextParser({
+            'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument.name
+        })
 
     def single_line_description(self) -> str:
         return 'Creates a file'
@@ -48,20 +53,17 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               docs.paras('Creates an empty file.')),
             InvokationVariant(self._cl_syntax_for_args(arguments + [here_doc_arg]),
-                              docs.paras('Creates a file with contents given by a "here document".')),
+                              self._tp.paras('Creates a file with contents given by a {HERE_DOCUMENT}.')),
         ]
 
     def syntax_element_descriptions(self) -> list:
         return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
-                                                                   REL_OPT_ARG_CONF.options) + \
-               [
-                   here_document.here_document_syntax_element_description(self.instruction_name(),
-                                                                          instruction_arguments.HERE_DOCUMENT),
-               ]
+                                                                   REL_OPT_ARG_CONF.options)
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(REL_OPT_ARG_CONF.options)
-        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
+        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                                syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
 
