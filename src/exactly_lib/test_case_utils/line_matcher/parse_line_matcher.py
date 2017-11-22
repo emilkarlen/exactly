@@ -10,7 +10,7 @@ from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers
-from exactly_lib.test_case_utils.parse.reg_ex import compile_regex
+from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 
@@ -21,8 +21,6 @@ REGEX_MATCHER_NAME = 'regex'
 REPLACE_REGEX_ARGUMENT = instruction_arguments.REG_EX
 
 REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_name)
-
-_MISSING_REGEX_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REGEX_ARGUMENT.name
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
@@ -46,9 +44,7 @@ def parse_line_matcher_from_token_parser(parser: TokenParserPrime) -> LineMatche
 
 
 def parse_regex(parser: TokenParserPrime) -> LineMatcherResolver:
-    parser.require_is_not_at_eol(_MISSING_REGEX_ARGUMENT_ERR_MSG)
-    regex_pattern = parser.consume_mandatory_token(_MISSING_REGEX_ARGUMENT_ERR_MSG)
-    regex = compile_regex(regex_pattern.string)
+    regex = parse_reg_ex.parse_regex(parser)
     return resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherRegex(regex))
 
 
