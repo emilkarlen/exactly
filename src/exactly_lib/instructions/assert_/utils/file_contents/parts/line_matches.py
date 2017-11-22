@@ -108,6 +108,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
             diff_msg_utils.expected_constant(' '.join([
                 self._any_or_every_keyword,
                 instruction_options.LINE_ARGUMENT,
+                instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
                 instruction_options.MATCHES_ARGUMENT,
                 LINE_MATCHER.name])
             ))
