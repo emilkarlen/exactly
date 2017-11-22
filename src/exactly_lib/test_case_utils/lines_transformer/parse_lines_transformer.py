@@ -104,9 +104,20 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
 _TEXT_PARSER = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
 
 _REPLACE_TRANSFORMER_SED_DESCRIPTION = """\
-Replaces the contents of a file.
+Replaces parts of the contents of a file.
 
-Every occurrence of regular expression {_REG_EX_} is replaced with {_STRING_}.
+
+Every occurrence of regular expression {_REG_EX_} - on a single line - is replaced with {_STRING_}.
+
+
+Backslash escapes in {_STRING_} are processed.
+That is, \\n is converted to a single newline character, \\r is converted to a carriage return, and so forth.
+
+
+Unknown escapes such as \\& are left alone.
+
+
+Backreferences, such as \\6, are replaced with the substring matched by group 6 in {_REG_EX_}.
 """
 
 _SELECT_TRANSFORMER_SED_DESCRIPTION = """\
