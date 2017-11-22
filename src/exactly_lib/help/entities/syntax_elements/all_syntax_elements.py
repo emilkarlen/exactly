@@ -17,7 +17,7 @@ def _for_logic_type(type_info: SingularNameAndCrossReferenceId,
     syntax = Syntax(grammar)
     return syntax_element_documentation(TypeCategory.LOGIC,
                                         type_info,
-                                        [],
+                                        syntax.global_description(),
                                         syntax.invokation_variants(),
                                         [],
                                         syntax.see_also_targets())

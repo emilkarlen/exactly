@@ -54,11 +54,14 @@ class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
                  corresponding_syntax_element: SyntaxElementInfo,
                  grammar: Grammar,
                  main_description_rest: SectionContents):
+        self._syntax = syntax_documentation.Syntax(grammar)
+        main_description_rest = SectionContents(self._syntax.global_description() +
+                                                main_description_rest.initial_paragraphs,
+                                                main_description_rest.sections)
         super().__init__(TypeCategory.LOGIC,
                          name_and_cross_ref_target,
                          corresponding_syntax_element,
                          main_description_rest)
-        self._syntax = syntax_documentation.Syntax(grammar)
 
     """
     Documents a type of the type system.
