@@ -96,9 +96,6 @@ class SelectLinesTransformer(LinesTransformer):
 class CustomLinesTransformer(LinesTransformer):
     """
     Base class for built in custom transformers.
-
-    Such a transformer is identified by its name,
-    that must be unique.
     """
 
     def __str__(self):
