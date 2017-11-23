@@ -2,7 +2,9 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
+from exactly_lib.help_texts.entity import concepts, syntax_elements
+from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
@@ -32,6 +34,7 @@ from exactly_lib.test_case_utils.parse.parse_list import parse_list, \
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.textformat.structure import structures as docs
 
 
 def parts_parser(instruction_name: str) -> InstructionPartsParser:
@@ -137,17 +140,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        executable_path_arguments = [self.optional_relativity,
-                                     self.mandatory_path]
+        executable_path_arguments = [self.mandatory_path]
         left_parenthesis = a.Single(a.Multiplicity.MANDATORY, a.Constant('('))
         right_parenthesis = a.Single(a.Multiplicity.MANDATORY, a.Constant(')'))
         executable_in_parenthesis_arguments = ([left_parenthesis] +
                                                executable_path_arguments +
                                                [self.zero_or_more_generic_args,
                                                 right_parenthesis])
-        default_relativity_desc = rel_path_doc.default_relativity_for_rel_opt_type(
-            instruction_arguments.PATH_ARGUMENT.name,
-            REL_OPTION_ARG_CONF.options.default_option)
         python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
                                                a.Option(PYTHON_EXECUTABLE_OPTION_NAME))
         python_interpreter_arguments = [python_interpreter_argument]
@@ -160,12 +159,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                        self.executable_arg.name,
                        self._paragraphs(_DESCRIPTION_OF_EXECUTABLE_ARG),
                        [
-                           InvokationVariant(self._cl_syntax_for_args(executable_path_arguments),
-                                             default_relativity_desc),
+                           InvokationVariant(self._cl_syntax_for_args(executable_path_arguments)),
                            InvokationVariant(self._cl_syntax_for_args(executable_in_parenthesis_arguments),
                                              self._paragraphs('An executable program with arguments. '
-                                                              '(Must be inside parentheses.)') +
-                                             default_relativity_desc),
+                                                              '(Must be inside parentheses.)')),
                            InvokationVariant(self._cl_syntax_for_args(python_interpreter_arguments),
                                              self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM)),
                            InvokationVariant(self._cl_syntax_for_args(python_interpreter_in_parenthesis_arguments),
@@ -173,13 +170,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                               ' (Must be inside literal parentheses.)')),
                        ])
                ] + \
-               rel_path_doc.relativity_syntax_element_descriptions(self.relativity_arg_path,
-                                                                   REL_OPTION_ARG_CONF.options)
+               rel_path_doc.path_elements(self.relativity_arg_path.name,
+                                          REL_OPTION_ARG_CONF.options,
+                                          docs.paras(the_path_of('an executable file.')))
 
     def see_also_targets(self) -> list:
-        name_and_cross_ref_list = rel_path_doc.see_also_name_and_cross_refs(REL_OPTION_ARG_CONF.options)
-        name_and_cross_ref_list += [concepts.SHELL_SYNTAX_CONCEPT_INFO]
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        name_and_cross_ref_list = [
+            syntax_elements.PATH_SYNTAX_ELEMENT,
+            concepts.SHELL_SYNTAX_CONCEPT_INFO,
+        ]
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
