@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
@@ -10,8 +10,8 @@ from exactly_lib.instructions.assert_.utils.expression import parse as expressio
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents.parts import cl_syntax as parts_cl_syntax
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import negation_of_predicate
@@ -19,6 +19,7 @@ from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure import structures as docs
 from . import config
 
 
@@ -72,26 +73,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         selection = parse_file_matcher.selection_syntax_element_description()
 
-        mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
-                                                                     instruction_arguments.PATH_ARGUMENT)
-        actual_file_arg_sed = SyntaxElementDescription(
-            _PATH_ARGUMENT.name,
-            self._paragraphs(
-                _PATH_SYNTAX_ELEMENT_DESCRIPTION_TEXT),
-            [InvokationVariant(
-                self._cl_syntax_for_args(
-                    [self.actual_file_relativity,
-                     mandatory_actual_path]
-                ),
-                rel_opts.default_relativity_for_rel_opt_type(
-                    instruction_arguments.PATH_ARGUMENT.name,
-                    ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
-        )
-
-        relativity_of_actual_file_sed = rel_opts.relativity_syntax_element_description(
-            instruction_arguments.PATH_ARGUMENT,
-            ACTUAL_RELATIVITY_CONFIGURATION.options,
-            self.relativity_of_actual_arg)
+        actual_file_arg_sed = path_element(_PATH_ARGUMENT.name,
+                                           ACTUAL_RELATIVITY_CONFIGURATION.options,
+                                           docs.paras(the_path_of("the directory who's contents is checked.")))
 
         return ([self._files_assertion_sed(),
                  self.file_contents_assertion_help.file_contents_assertion_sed(),
@@ -100,9 +84,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                  negation,
                  ] +
                 expression_parse.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION) +
-                [actual_file_arg_sed,
-                 relativity_of_actual_file_sed,
-                 ] +
+                [actual_file_arg_sed] +
                 self.file_contents_assertion_help.used_syntax_element_descriptions())
 
     def _files_assertion_sed(self) -> SyntaxElementDescription:
@@ -156,6 +138,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
                                types.LINE_MATCHER_TYPE_INFO,
                                types.LINES_TRANSFORMER_TYPE_INFO,
+                               syntax_elements.PATH_SYNTAX_ELEMENT,
                                syntax_elements.INTEGER_SYNTAX_ELEMENT,
                                syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
