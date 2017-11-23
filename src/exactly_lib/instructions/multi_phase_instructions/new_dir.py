@@ -9,7 +9,6 @@ from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CON
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
@@ -35,10 +34,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
             Does nothing if the given directory already exists.
             """
-        return (self._paragraphs(text) +
-                rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
-                                                                 RELATIVITY_VARIANTS.options.default_option) +
-                dt.paths_uses_posix_syntax())
+        return self._paragraphs(text)
 
     def invokation_variants(self) -> list:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
