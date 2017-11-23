@@ -45,7 +45,7 @@ LINE_MATCHER = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
 LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 LINES_TRANSFORMATION_ARGUMENT = a.Named('TRANSFORMATION')
-WITH_TRANSFORMED_CONTENTS_OPTION_NAME = a.OptionName(long_name='transformation')
+WITH_TRANSFORMED_CONTENTS_OPTION_NAME = a.OptionName(long_name='transformed')
 WITH_TRANSFORMED_CONTENTS_OPTION = option_syntax.option_syntax(WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 TRANSFORMATION_OPTION = a.Option(WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
                                  argument=types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)

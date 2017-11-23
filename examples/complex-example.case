@@ -83,7 +83,7 @@ contents a-file.txt empty
 
 contents a-second-file.txt ! empty
 
-contents another-file.txt --transformation REPLACE_TEST_CASE_DIRS equals --file expected-content.txt
+contents another-file.txt --transformed REPLACE_TEST_CASE_DIRS equals --file expected-content.txt
 
 exists --dir actual-file
 
