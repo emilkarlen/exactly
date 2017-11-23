@@ -1,14 +1,12 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
+from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
@@ -54,32 +52,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
 
     def syntax_element_descriptions(self) -> list:
-        mandatory_actual_path = path_syntax.path_or_symbol_reference(a.Multiplicity.MANDATORY,
-                                                                     instruction_arguments.PATH_ARGUMENT)
-        relativity_of_actual_arg = a.Named('RELATIVITY-OF-ACTUAL-PATH')
-        optional_relativity_of_actual = a.Single(a.Multiplicity.OPTIONAL,
-                                                 relativity_of_actual_arg)
-        actual_file_arg_sed = SyntaxElementDescription(
+        actual_file_arg_sed = path_element(
             self.actual_file_arg.name,
-            self._paragraphs(
-                "The file who's contents is checked."),
-            [InvokationVariant(
-                self._cl_syntax_for_args(
-                    [optional_relativity_of_actual,
-                     mandatory_actual_path]),
-                rel_opts.default_relativity_for_rel_opt_type(
-                    instruction_arguments.PATH_ARGUMENT.name,
-                    ACTUAL_RELATIVITY_CONFIGURATION.options.default_option))]
-        )
-
-        relativity_of_actual_file_seds = rel_opts.relativity_syntax_element_descriptions(
-            instruction_arguments.PATH_ARGUMENT,
             ACTUAL_RELATIVITY_CONFIGURATION.options,
-            relativity_of_actual_arg)
+            self._paragraphs(the_path_of("the file who's contents is checked."))
+        )
 
         return (self._help_parts.syntax_element_descriptions_at_top() +
                 [actual_file_arg_sed] +
-                relativity_of_actual_file_seds +
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
     def see_also_targets(self) -> list:

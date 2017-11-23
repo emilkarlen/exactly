@@ -3,6 +3,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -43,7 +44,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             self.path_arg.name,
             instruction_arguments.RELATIVITY_ARGUMENT.name,
             RELATIVITY_OPTIONS_CONFIGURATION,
-            'The file that will be the contents of stdin.'
+            the_path_of('the file that will be the contents of stdin.')
         )
 
     def single_line_description(self) -> str:
