@@ -11,4 +11,4 @@ EOF
 [assert]
 
 
-contents a-file.txt --transformation select regex 'second' num-lines = 3
+contents a-file.txt --transformed select regex 'second' num-lines = 3

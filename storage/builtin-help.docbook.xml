@@ -1,11 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article version="5.0" xmlns="http://docbook.org/ns/docbook"
-         xmlns:xlink="http://www.w3.org/1999/xlink"
-         xmlns:xi="http://www.w3.org/2001/XInclude"
-         xmlns:svg="http://www.w3.org/2000/svg"
-         xmlns:m="http://www.w3.org/1998/Math/MathML"
-         xmlns:html="http://www.w3.org/1999/xhtml"
-         xmlns:db="http://docbook.org/ns/docbook">
+>
   <info>
     <title>Exactly 0.9</title>
   </info>
@@ -119,7 +114,7 @@ exists --file --rel DIR_SYMBOL @[BASE_NAME_SYMBOL]@
 stdout --transformed ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
 
         <note>
-          <para>--TRANSFORMED instead of --TRANSFORMATION</para>
+            <para>--TRANSFORMED instead of --transformed</para>
         </note>
       </section>
     </section>

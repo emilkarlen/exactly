@@ -132,7 +132,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [assert]
 
-    contents log.txt --transformation GET_TIMING_LINES equals <<EOF
+    contents log.txt --transformed GET_TIMING_LINES equals <<EOF
     timing TIMESTAMP begin
     timing TIMESTAMP preprocessing
     timing TIMESTAMP validation
@@ -149,7 +149,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
     def file-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
 
-The ``--transformation`` option does not modify the tested file,
+The ``--transformed`` option does not modify the tested file,
 it just applies the assertion to a transformed version of it.
 
 
@@ -443,7 +443,7 @@ it just displays some of Exactly's features.)
     This is the expected output from the-system-under-test
     EOF
 
-    stdout --transformation REPLACE_TEST_CASE_DIRS any line matches regex 'EXACTLY_ACT:[0-9]+'
+    stdout --transformed REPLACE_TEST_CASE_DIRS any line matches regex 'EXACTLY_ACT:[0-9]+'
 
     stderr empty
 
@@ -451,7 +451,7 @@ it just displays some of Exactly's features.)
 
     contents a-second-file.txt ! empty
 
-    contents another-file.txt --transformation REPLACE_TEST_CASE_DIRS equals --file expected-content.txt
+    contents another-file.txt --transformed REPLACE_TEST_CASE_DIRS equals --file expected-content.txt
 
     contents file.txt any line matches regex 'my .* reg ex'
 

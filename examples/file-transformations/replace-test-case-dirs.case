@@ -25,12 +25,12 @@ $ echo $PWD
 [assert]
 
 
-stdout --transformation REPLACE_TEST_CASE_DIRS equals <<EOF
+stdout --transformed REPLACE_TEST_CASE_DIRS equals <<EOF
 EXACTLY_ACT
 EOF
 
 
-contents my-file-with-abs-paths.txt --transformation REPLACE_TEST_CASE_DIRS equals <<EOF
+contents my-file-with-abs-paths.txt --transformed REPLACE_TEST_CASE_DIRS equals <<EOF
 EXACTLY_ACT
 EXACTLY_TMP
 EXACTLY_HOME

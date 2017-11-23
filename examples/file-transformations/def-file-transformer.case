@@ -20,7 +20,7 @@ bin/print-one-argument-per-line 'now is winter' 'now is spring'
 
 [assert]
 
-stdout  --transformation TURN_WINTER_AND_SPRING_TO_SUMMER equals <<EOF
+stdout  --transformed TURN_WINTER_AND_SPRING_TO_SUMMER equals <<EOF
 now is summer
 now is summer
 EOF

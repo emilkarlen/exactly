@@ -4,7 +4,7 @@ $ python "@[EXACTLY_HOME]@/my-system-under-test.py"
 
 [assert]
 
-contents log.txt --transformation GET_TIMING_LINES equals <<EOF
+contents log.txt --transformed GET_TIMING_LINES equals <<EOF
 timing TIMESTAMP begin
 timing TIMESTAMP preprocessing
 timing TIMESTAMP validation

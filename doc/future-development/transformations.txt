@@ -17,19 +17,19 @@ stderr		[TRANSFORMATION] ...
 
 ** Replace first string of each line that is a auto-gen db id:
 
-stdout --transformation replace ^[0-9]+ ID ...
+stdout --transformed replace ^[0-9]+ ID ...
 
 ** Checking just some interesting lines
 
-stdout --transformation select ^interesting ...
+stdout --transformed select ^interesting ...
 
 or
 
-stdout --transformation delete ^uninteresting ...
+stdout --transformed delete ^uninteresting ...
 
 * Syntax
 
-TRANFORMATION ::= --transformation TRANSFORMER
+TRANFORMATION ::= --transformed TRANSFORMER
 
 TRANSFORMATION ::= replace [--selection LINES_SELECTOR] REGEX STRING
                  = replace-test-case-dirs
