@@ -1,4 +1,5 @@
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 
 
 class TcDirInfo:
@@ -73,3 +74,12 @@ SDS_DIR_INFOS_IN_DISPLAY_ORDER = (
     SDS_RESULT_INFO,
     SDS_TMP_INFO,
 )
+
+TD_DIR_INFO_DICT = {
+    RelOptionType.REL_HOME_ACT: HDS_ACT_INFO,
+    RelOptionType.REL_HOME_CASE: HDS_CASE_INFO,
+
+    RelOptionType.REL_ACT: SDS_ACT_INFO,
+    RelOptionType.REL_RESULT: SDS_RESULT_INFO,
+    RelOptionType.REL_TMP: SDS_TMP_INFO,
+}

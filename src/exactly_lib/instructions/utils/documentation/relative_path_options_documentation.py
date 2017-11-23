@@ -8,8 +8,9 @@ from exactly_lib.help_texts.names import formatting
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelHomeOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HOME_OPTIONS_MAP, \
-    REL_CWD_INFO
+    REL_CWD_INFO, REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
 from exactly_lib.util.textformat.structure import lists
@@ -28,7 +29,7 @@ def default_relativity_for_rel_opt_type(path_arg_name: str,
                                         default_relativity_type: RelOptionType) -> list:
     return docs.paras(_DEFAULT_RELATIVITY
                       .format(path=path_arg_name,
-                              default_relativity_location=_ALL[default_relativity_type].relativity_root_description))
+                              default_relativity_location=REL_OPTIONS_MAP[default_relativity_type].informative_name))
 
 
 def relativity_syntax_element_descriptions(
@@ -47,10 +48,13 @@ def path_element(path_arg_name: str,
                  custom_paragraphs: list = ()) -> SyntaxElementDescription:
     description_rest = []
     description_rest += custom_paragraphs
-    description_rest += default_relativity_for_rel_opt_type(path_arg_name,
-                                                            rel_options_conf.default_option)
-    description_rest += [relativity_options_paragraph(path_arg_name,
-                                                      rel_options_conf.accepted_relativity_variants)]
+    description_rest += [
+        docs.para('Accepted relativities (default is "{}"):'.format(
+            REL_OPTIONS_MAP[rel_options_conf.default_option].informative_name
+        )),
+        sparse_relativity_options_paragraph(path_arg_name,
+                                            rel_options_conf.accepted_relativity_variants),
+    ]
     return SyntaxElementDescription(path_arg_name,
                                     description_rest)
 
@@ -69,6 +73,12 @@ def relativity_options_paragraph(path_that_may_be_relative: str,
                                  variants: PathRelativityVariants) -> ParagraphItem:
     renderer = RelOptionRenderer(path_that_may_be_relative)
     return transform_list_to_table(renderer.list_for(variants))
+
+
+def sparse_relativity_options_paragraph(path_that_may_be_relative: str,
+                                        variants: PathRelativityVariants) -> ParagraphItem:
+    renderer = RelOptionRenderer(path_that_may_be_relative)
+    return transform_list_to_table(renderer.sparse_list_for(variants))
 
 
 def see_also_name_and_cross_refs(rel_options_conf: RelOptionsConfiguration) -> list:
@@ -181,9 +191,23 @@ class RelOptionRenderer:
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
 
+    def sparse_list_for(self, variants: PathRelativityVariants) -> lists.HeaderContentList:
+        items = []
+        for rel_option_type in _DISPLAY_ORDER:
+            if rel_option_type in variants.rel_option_types:
+                items.append(self.sparse_item_for(rel_option_type))
+        return lists.HeaderContentList(items,
+                                       lists.Format(lists.ListType.VARIABLE_LIST,
+                                                    custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
+
     def item_for(self, info: _RelOptionInfo) -> lists.HeaderContentListItem:
         return lists.HeaderContentListItem(docs.text(self.arg_renderer.visit(info.option)),
                                            info.paragraph_items)
+
+    def sparse_item_for(self, rel_option_type: RelOptionType) -> lists.HeaderContentListItem:
+        opt_info = REL_OPTIONS_MAP[rel_option_type]
+        return lists.HeaderContentListItem(docs.text(option_syntax.option_syntax(opt_info.option_name)),
+                                           docs.paras(opt_info.informative_name))
 
     def option_info_for(self, option_type: RelOptionType) -> _RelOptionInfo:
         return self.option_info(_ALL[option_type])
