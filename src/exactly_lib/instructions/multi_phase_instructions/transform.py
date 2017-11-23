@@ -2,6 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_TYPE_INFO
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
@@ -73,9 +74,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
-        return [
-            types.LINES_TRANSFORMER_TYPE_INFO.cross_reference_target
-        ]
+        return ([types.LINES_TRANSFORMER_TYPE_INFO.cross_reference_target]
+                +
+                self._doc_elements.see_also_targets()
+                )
 
 
 class TheInstruction(embryo.InstructionEmbryo):
@@ -183,9 +185,9 @@ _SRC_REL_OPTIONS__AFTER_ACT = set(RelOptionType)
 
 _SINGLE_LINE_DESCRIPTION = 'Transforms an existing file into a new file'
 
-_DESCRIPTION_OF_DST = 'The path of a non-existing file.'
+_DESCRIPTION_OF_DST = the_path_of('a non-existing file.')
 
-_DESCRIPTION_OF_SRC = 'An existing file.'
+_DESCRIPTION_OF_SRC = the_path_of('an existing file.')
 
 _MAIN_DESCRIPTION_REST = """\
 If a {LINES_TRANSFORMER} is not given, then {DESTINATION}

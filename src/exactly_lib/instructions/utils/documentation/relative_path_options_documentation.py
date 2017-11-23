@@ -19,6 +19,11 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
+class PathElementDoc:
+    def __init__(self, sed: SyntaxElementDescription):
+        self.sed = sed
+
+
 def default_relativity_for_rel_opt_type(path_arg_name: str,
                                         default_relativity_type: RelOptionType) -> list:
     return docs.paras(_DEFAULT_RELATIVITY
@@ -35,6 +40,19 @@ def relativity_syntax_element_descriptions(
                                               rel_options_conf,
                                               relativity_argument)
     ]
+
+
+def path_element(path_arg_name: str,
+                 rel_options_conf: RelOptionsConfiguration,
+                 custom_paragraphs: list = ()) -> SyntaxElementDescription:
+    description_rest = []
+    description_rest += custom_paragraphs
+    description_rest += default_relativity_for_rel_opt_type(path_arg_name,
+                                                            rel_options_conf.default_option)
+    description_rest += [relativity_options_paragraph(path_arg_name,
+                                                      rel_options_conf.accepted_relativity_variants)]
+    return SyntaxElementDescription(path_arg_name,
+                                    description_rest)
 
 
 def relativity_syntax_element_description(

@@ -5,10 +5,10 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text as dt
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -68,9 +68,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self._doc_elements = src_dst.DocumentationElements(
             format_map,
             REL_OPTION_ARG_CONF_FOR_SOURCE,
-            'An existing file or directory.',
+            the_path_of('an existing file or directory.'),
             REL_OPTION_ARG_CONF_FOR_DESTINATION,
-            'An existing directory, or the path of a non-existing file.'
+            the_path_of('an existing directory, or a non-existing file.')
         )
 
     def single_line_description(self) -> str:
@@ -93,10 +93,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._doc_elements.syntax_element_descriptions()
 
     def see_also_targets(self) -> list:
-        name_and_cross_refs = rel_opts.see_also_name_and_cross_refs(REL_OPTION_ARG_CONF_FOR_DESTINATION.options)
-        name_and_cross_refs += rel_opts.see_also_name_and_cross_refs(REL_OPTION_ARG_CONF_FOR_SOURCE.options)
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list(name_and_cross_refs)
+        return self._doc_elements.see_also_targets()
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
