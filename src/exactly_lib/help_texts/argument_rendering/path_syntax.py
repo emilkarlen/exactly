@@ -1,3 +1,4 @@
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.instruction_arguments import OPTIONAL_RELATIVITY_ARGUMENT_USAGE
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -14,3 +15,7 @@ def mandatory_path_with_optional_relativity(path_argument: a.Named,
         OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
         path_part,
     ]
+
+
+def the_path_of(a_file_description: str) -> str:
+    return 'The ' + syntax_elements.PATH_SYNTAX_ELEMENT.argument.name + ' of ' + a_file_description
