@@ -3,13 +3,13 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_resolver
@@ -37,12 +37,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def single_line_description(self) -> str:
         return 'Creates a file'
 
-    def main_description_rest(self) -> list:
-        return (
-            rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
-                                                             REL_OPT_ARG_CONF.options.default_option) +
-            dt.paths_uses_posix_syntax())
-
     def invokation_variants(self) -> list:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
@@ -57,13 +51,16 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
-                                                                   REL_OPT_ARG_CONF.options)
+        return [
+            rel_path_doc.path_element(_PATH_ARGUMENT.name,
+                                      REL_OPT_ARG_CONF.options,
+                                      docs.paras(the_path_of('a non-existing file.')))
+        ]
 
     def see_also_targets(self) -> list:
-        name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(REL_OPT_ARG_CONF.options)
-        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
-                                syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
+        name_and_cross_refs = [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                               syntax_elements.PATH_SYNTAX_ELEMENT,
+                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
 
