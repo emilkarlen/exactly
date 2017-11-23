@@ -4,14 +4,13 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, syntax_elements
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
-from exactly_lib.instructions.utils.documentation import documentation_text as dt, relative_path_options_documentation
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
+from exactly_lib.instructions.utils.documentation import relative_path_options_documentation
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
@@ -41,31 +40,27 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return self._format('Sets the {cwd_concept}')
 
     def _main_description_rest_body(self) -> list:
-        return (relative_path_options_documentation.default_relativity_for_rel_opt_type(
-            _DIR_ARGUMENT.name,
-            self.relativity_options.options.default_option) +
-                self._paragraphs(_NO_DIR_ARG_MEANING) +
-                dt.paths_uses_posix_syntax())
+        return self._paragraphs(_NO_DIR_ARG_MEANING)
 
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
-                instruction_arguments.OPTIONAL_RELATIVITY_ARGUMENT_USAGE,
                 a.Single(a.Multiplicity.OPTIONAL,
                          _DIR_ARGUMENT),
             ])),
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return relative_path_options_documentation.relativity_syntax_element_descriptions(
-            _DIR_ARGUMENT,
+        return relative_path_options_documentation.path_elements(
+            _DIR_ARGUMENT.name,
             self.relativity_options.options)
 
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-        name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(self.relativity_options.options)
-        name_and_cross_refs += [concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
-                                concepts.SANDBOX_CONCEPT_INFO]
+        name_and_cross_refs = [
+            syntax_elements.PATH_SYNTAX_ELEMENT,
+            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+        ]
         return cross_reference_id_list(name_and_cross_refs)
 
 
