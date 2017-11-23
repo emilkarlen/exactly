@@ -3,6 +3,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -16,6 +18,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
+from exactly_lib.util.textformat.structure import structures as docs
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -47,12 +50,15 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
-                                                                   RELATIVITY_VARIANTS.options)
+        return [
+            rel_path_doc.path_element(_PATH_ARGUMENT.name,
+                                      RELATIVITY_VARIANTS.options,
+                                      docs.paras(the_path_of('a non-existing file.')))
+        ]
 
     def see_also_targets(self) -> list:
-        name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(RELATIVITY_VARIANTS.options)
-        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
+        name_and_cross_refs = [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                               syntax_elements.PATH_SYNTAX_ELEMENT]
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
 
