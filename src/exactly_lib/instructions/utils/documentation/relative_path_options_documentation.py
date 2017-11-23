@@ -9,7 +9,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
     RelSdsOptionType, RelHomeOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HOME_OPTIONS_MAP, \
     REL_CWD_INFO, REL_OPTIONS_MAP
-from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration
+from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
+    RelOptionArgumentConfiguration
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
@@ -57,6 +58,29 @@ def path_element(path_arg_name: str,
     ]
     return SyntaxElementDescription(path_arg_name,
                                     description_rest)
+
+
+def path_element_2(rel_options_conf: RelOptionArgumentConfiguration,
+                   custom_paragraphs: list = ()) -> SyntaxElementDescription:
+    description_rest = []
+    description_rest += custom_paragraphs
+    description_rest += [
+        docs.para('Accepted relativities (default is "{}"):'.format(
+            REL_OPTIONS_MAP[rel_options_conf.options.default_option].informative_name
+        )),
+        sparse_relativity_options_paragraph(rel_options_conf.argument_syntax_name,
+                                            rel_options_conf.options.accepted_relativity_variants),
+    ]
+    return SyntaxElementDescription(rel_options_conf.argument_syntax_name,
+                                    description_rest)
+
+
+def path_elements(path_arg_name: str,
+                  rel_options_conf: RelOptionsConfiguration,
+                  custom_paragraphs: list = ()) -> list:
+    return [
+        path_element(path_arg_name, rel_options_conf, custom_paragraphs)
+    ]
 
 
 def relativity_syntax_element_description(

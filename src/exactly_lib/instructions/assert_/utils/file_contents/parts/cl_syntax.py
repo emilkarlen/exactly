@@ -1,6 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements, concepts
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
@@ -45,7 +46,7 @@ class FileContentsAssertionHelp:
             EXPECTED_PATH_NAME,
             RELATIVITY_OF_EXPECTED_PATH_NAME,
             EXPECTED_FILE_REL_OPT_ARG_CONFIG,
-            'The file that contains the expected contents.')
+            the_path_of('the file that contains the expected contents.'))
         format_map = {
             'checked_file': checked_file,
             'expected_file_arg': EXPECTED_PATH_NAME,
