@@ -15,6 +15,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.parse import parse_executable_file
 from exactly_lib.instructions.utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
+from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -108,35 +109,19 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 self.mandatory_executable,
                 self.optional_arg_sep,
                 self.zero_or_more_generic_args]),
-                self._paragraphs(
-                    """\
-                    Executes the given executable with the given command line arguments.
-
-                    The arguments are splitted according to {shell_syntax_concept}.
-                    """)),
+                self._paragraphs(_EXECUTABLE_FILE)),
             InvokationVariant(self._cl_syntax_for_args([
                 self.mandatory_executable,
                 a.Single(a.Multiplicity.MANDATORY, a.Option(INTERPRET_OPTION_NAME)),
-                self.optional_relativity,
                 self.mandatory_path,
                 self.optional_arg_sep,
                 self.zero_or_more_generic_args]),
-                self._paragraphs(
-                    """\
-                    Interprets the given file using {EXECUTABLE}.
-
-                    Arguments are splitted according to {shell_syntax_concept}.
-                    """)),
+                self._paragraphs(_SOURCE_FILE)),
             InvokationVariant(self._cl_syntax_for_args([
                 self.mandatory_executable,
                 a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_OPTION_NAME)),
                 a.Single(a.Multiplicity.MANDATORY, a.Named(_SOURCE_SYNTAX_ELEMENT_NAME))]),
-                self._paragraphs(
-                    """\
-                    Interprets the given SOURCE using {EXECUTABLE}.
-
-                    SOURCE is taken literary, and is given as a single argument to {EXECUTABLE}.
-                    """)),
+                self._paragraphs(_SOURCE_STRING)),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -159,20 +144,21 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                        self.executable_arg.name,
                        self._paragraphs(_DESCRIPTION_OF_EXECUTABLE_ARG),
                        [
-                           InvokationVariant(self._cl_syntax_for_args(executable_path_arguments)),
+                           InvokationVariant(self._cl_syntax_for_args(executable_path_arguments),
+                                             self._paragraphs('An executable program.')),
                            InvokationVariant(self._cl_syntax_for_args(executable_in_parenthesis_arguments),
                                              self._paragraphs('An executable program with arguments. '
                                                               '(Must be inside parentheses.)')),
                            InvokationVariant(self._cl_syntax_for_args(python_interpreter_arguments),
-                                             self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM)),
+                                             self._paragraphs(PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM)),
                            InvokationVariant(self._cl_syntax_for_args(python_interpreter_in_parenthesis_arguments),
-                                             self._paragraphs(_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM +
-                                                              ' (Must be inside literal parentheses.)')),
+                                             self._paragraphs(PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM +
+                                                              ' (Must be inside parentheses.)')),
                        ])
                ] + \
                rel_path_doc.path_elements(self.relativity_arg_path.name,
                                           REL_OPTION_ARG_CONF.options,
-                                          docs.paras(the_path_of('an executable file.')))
+                                          docs.paras(the_path_of('an existing file.')))
 
     def see_also_targets(self) -> list:
         name_and_cross_ref_list = [
@@ -292,7 +278,23 @@ Specifies a program by giving the path to an executable file,
 and optionally also arguments to the executable.
 
 
-Elements are parsed using {shell_syntax_concept}.
+Elements uses {shell_syntax_concept}.
 """
 
-_PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM = 'The Python interpreter (Python >= 3.5).'
+_EXECUTABLE_FILE = """\
+Executes the given executable with the given command line arguments.
+
+The arguments are splitted according to {shell_syntax_concept}.
+"""
+
+_SOURCE_FILE = """\
+Interprets the given source file using {EXECUTABLE}.
+
+Arguments are splitted according to {shell_syntax_concept}.
+"""
+
+_SOURCE_STRING = """\
+Interprets the given source string using {EXECUTABLE}.
+
+SOURCE is taken literary, and is given as a single argument to {EXECUTABLE}.
+"""
