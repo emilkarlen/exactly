@@ -46,6 +46,7 @@ class StringOrHereDocOrFile:
         return cross_reference_id_list([
             syntax_elements.PATH_SYNTAX_ELEMENT,
             syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
+            syntax_elements.STRING_SYNTAX_ELEMENT,
         ])
 
     def _paragraphs(self, s: str, extra: dict = None) -> list:

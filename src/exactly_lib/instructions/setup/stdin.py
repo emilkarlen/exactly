@@ -5,8 +5,6 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
-from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
@@ -50,9 +48,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def single_line_description(self) -> str:
         return 'Sets the contents of stdin for the act phase program'
 
-    def main_description_rest(self) -> list:
-        return dt.paths_uses_posix_syntax()
-
     def invokation_variants(self) -> list:
         contents_arg = self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY)
         return [
@@ -64,9 +59,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
     def see_also_targets(self) -> list:
-        concepts = rel_path_doc.see_also_name_and_cross_refs(parse_here_doc_or_file_ref.CONFIGURATION.options)
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list(concepts) + self.string_or_here_doc_or_file_arg.see_also_targets()
+        return self.string_or_here_doc_or_file_arg.see_also_targets()
 
 
 class Parser(InstructionParser):
