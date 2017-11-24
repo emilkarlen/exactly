@@ -4,9 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO
-from exactly_lib.help_texts.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -76,12 +74,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return 'Tests the existence, and optionally type, of a file'
 
     def main_description_rest(self) -> list:
-        specific_for_instruction = self._paragraphs(
-            _PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION)
-        default_relativity = rel_path_doc.default_relativity_for_rel_opt_type(_PATH_ARGUMENT.name,
-                                                                              _REL_OPTION_CONFIG.options.default_option)
-        path_syntax_paragraphs = dt.paths_uses_posix_syntax()
-        return specific_for_instruction + default_relativity + path_syntax_paragraphs
+        return self._paragraphs(_PART_OF_MAIN_DESCRIPTION_REST_THAT_IS_SPECIFIC_FOR_THIS_INSTRUCTION)
 
     def invokation_variants(self) -> list:
         type_arguments = [a.Single(a.Multiplicity.OPTIONAL, self.type_argument)]
@@ -104,18 +97,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             SyntaxElementDescription(self.type_argument.name,
                                      self._type_element_description(), []),
         ]
-        path_elements = rel_path_doc.relativity_syntax_element_descriptions(_PATH_ARGUMENT,
-                                                                            _REL_OPTION_CONFIG.options)
-        all_elements = negation_elements + type_elements + path_elements
+        path_element = rel_path_doc.path_element_2(_REL_OPTION_CONFIG)
+        all_elements = negation_elements + type_elements + [path_element]
 
         return all_elements
 
     def see_also_targets(self) -> list:
-        name_and_cross_refs = rel_path_doc.see_also_name_and_cross_refs(_REL_OPTION_CONFIG.options)
-        name_and_cross_refs += [CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
-        cross_refs = [DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list(name_and_cross_refs) + cross_refs
+        return [
+            syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
+        ]
 
     def _type_element_description(self):
         return (self._paragraphs(_TYPE_ELEMENT_DESCRIPTION_INTRO)
