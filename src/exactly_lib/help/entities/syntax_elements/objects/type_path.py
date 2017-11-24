@@ -4,7 +4,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_elements, types, concepts
 from exactly_lib.help_texts.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_CWD_OPTION
-from exactly_lib.help_texts.instruction_arguments import REL_SYMBOL_OPTION, SYMBOL_SYNTAX_ELEMENT_NAME
+from exactly_lib.help_texts.instruction_arguments import REL_SYMBOL_OPTION
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import documentation_text
@@ -36,7 +36,7 @@ class _Documentation(SyntaxElementDocumentation):
             'string_syntax_element': syntax_elements.STRING_SYNTAX_ELEMENT.singular_name,
             'cd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
-            'SYMBOL_SYNTAX_ELEMENT_NAME': SYMBOL_SYNTAX_ELEMENT_NAME,
+            'SYMBOL_NAME': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
         })
 
     def invokation_variants(self) -> list:
@@ -59,6 +59,7 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
+            concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
             syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
@@ -204,6 +205,6 @@ have a default relativity other than the {cd}.
 """
 
 _REL_SYMBOL_DESCRIPTION = """\
-{SYMBOL_SYNTAX_ELEMENT_NAME} is the plain name of a {symbol},
+{SYMBOL_NAME} is the plain name of a {symbol},
 and must have type {path_type}.
 """
