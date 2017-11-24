@@ -10,7 +10,6 @@ from exactly_lib.help_texts.test_case.instructions import define_symbol as synta
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
-from exactly_lib.instructions.utils.documentation import documentation_text as dt
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -53,17 +52,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         return self._format('Defines a ' + SYMBOL_CONCEPT_INFO.singular_name)
 
     def _main_description_rest_body(self) -> list:
-        return (
-            self._tp.fnap(_MAIN_DESCRIPTION_REST)
-            +
-            rel_path_doc.default_relativity_for_rel_opt_type(
-                _PATH_ARGUMENT.name,
-                REL_OPTION_ARGUMENT_CONFIGURATION.options.default_option)
-            +
-            self._tp.fnap(_REL_CD_DESCRIPTION)
-            +
-            dt.paths_uses_posix_syntax()
-        )
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
         return [
@@ -76,15 +65,16 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return rel_path_doc.relativity_syntax_element_descriptions(
-            _PATH_ARGUMENT,
-            REL_OPTION_ARGUMENT_CONFIGURATION.options) + \
-               [
-                   SyntaxElementDescription(self.string_value.name,
-                                            self._paragraphs(_STRING_SYNTAX_ELEMENT_DESCRIPTION)),
-                   SyntaxElementDescription(self.name.name,
-                                            self._paragraphs(syntax.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
-               ]
+        return (rel_path_doc.path_elements(_PATH_ARGUMENT.name,
+                                           REL_OPTION_ARGUMENT_CONFIGURATION.options,
+                                           self._tp.fnap(_REL_CD_DESCRIPTION))
+                +
+                [
+                    SyntaxElementDescription(self.string_value.name,
+                                             self._paragraphs(_STRING_SYNTAX_ELEMENT_DESCRIPTION)),
+                    SyntaxElementDescription(self.name.name,
+                                             self._paragraphs(syntax.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
+                ])
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
