@@ -2,6 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments, formatting
+from exactly_lib.help_texts import syntax_descriptions
 from exactly_lib.help_texts.entity import types, syntax_elements, concepts
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
@@ -64,16 +65,19 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return (rel_path_doc.path_elements(_PATH_ARGUMENT.name,
-                                           REL_OPTION_ARGUMENT_CONFIGURATION.options,
-                                           self._tp.fnap(_REL_CD_DESCRIPTION))
-                +
-                [
-                    SyntaxElementDescription(self.string_value.name,
-                                             self._paragraphs(_STRING_SYNTAX_ELEMENT_DESCRIPTION)),
-                    SyntaxElementDescription(self.name.name,
-                                             self._paragraphs(syntax.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
-                ])
+        return (
+            rel_path_doc.path_elements(_PATH_ARGUMENT.name,
+                                       REL_OPTION_ARGUMENT_CONFIGURATION.options,
+                                       self._tp.fnap(_REL_CD_DESCRIPTION))
+            +
+            [
+                SyntaxElementDescription(self.string_value.name,
+                                         self._paragraphs(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
+                SyntaxElementDescription(self.name.name,
+                                         self._paragraphs(
+                                             syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
+            ]
+        )
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
@@ -172,10 +176,6 @@ NOTE: When a {PATH_ARG} is defined to be relative the {current_directory_concept
 it means that it is relative the directory that is current when the symbol is USED,
 
 not when it is defined!
-"""
-
-_STRING_SYNTAX_ELEMENT_DESCRIPTION = """\
-A single word, or a single quoted text.
 """
 
 

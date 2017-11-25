@@ -1,6 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import instruction_arguments, formatting
+from exactly_lib.help_texts import syntax_descriptions
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
@@ -33,7 +34,7 @@ class _SymbolConcept(ConceptDocumentation):
             'data': type_system.DATA_TYPE_CATEGORY_NAME,
             'logic': type_system.LOGIC_TYPE_CATEGORY_NAME,
             'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
-            'symbol_name_syntax': define_symbol.SYMBOL_NAME_SYNTAX_DESCRIPTION,
+            'symbol_name_syntax': syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION,
             'def': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
             'string_type_in_text': formatting.keyword(type_system.TYPE_INFO_DICT[ValueType.STRING].identifier),
