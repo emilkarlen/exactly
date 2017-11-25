@@ -1,4 +1,3 @@
-from exactly_lib.help.program_modes.common.renderers import instruction_set_list
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationRendererBase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
@@ -10,7 +9,6 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
 class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
@@ -59,7 +57,7 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
         if paragraphs:
             sections.append(docs.section('Environment', paragraphs))
 
-    def _cross_ref_text(self, instr_name: str) -> docs.Text:
+    def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
         return docs.cross_reference(instr_name,
                                     TestCasePhaseInstructionCrossReference(self.doc.name.plain,
                                                                            instr_name),
@@ -69,15 +67,6 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
     def _environment_variables_list(environment_variable_names: list) -> ParagraphItem:
         return docs.simple_header_only_list(environment_variable_names,
                                             lists.ListType.ITEMIZED_LIST)
-
-    def _add_section_for_instructions(self,
-                                      environment: RenderingEnvironment,
-                                      sections: list):
-        if self.doc.has_instructions:
-            il = instruction_set_list(self.doc.instruction_set, self._cross_ref_text)
-            if environment.render_simple_header_value_lists_as_tables:
-                il = transform_list_to_table(il)
-            sections.append(docs.section('Instructions', [il]))
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
         sections += see_also_sections(self.doc.see_also_targets, environment)

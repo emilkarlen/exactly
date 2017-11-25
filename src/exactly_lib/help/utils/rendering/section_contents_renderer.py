@@ -1,6 +1,8 @@
+import itertools
+
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.structure import document as doc, structures as docs
-from exactly_lib.util.textformat.structure.core import Text
+from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
 
 
 class RenderingEnvironment(tuple):
@@ -19,6 +21,11 @@ class RenderingEnvironment(tuple):
         return self[1]
 
 
+class ParagraphItemsRenderer:
+    def apply(self, environment: RenderingEnvironment) -> list:
+        raise NotImplementedError()
+
+
 class SectionContentsRenderer:
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         raise NotImplementedError()
@@ -27,6 +34,18 @@ class SectionContentsRenderer:
 class SectionRenderer:
     def apply(self, environment: RenderingEnvironment) -> doc.Section:
         raise NotImplementedError()
+
+
+class SectionContentsRendererFromParagraphItemsRenderer(SectionContentsRenderer):
+    def __init__(self, paragraph_item_renderer: list):
+        self._paragraph_item_renderer = paragraph_item_renderer
+
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        initial_paragraphs = list(itertools.chain.from_iterable([
+            renderer.apply(environment)
+            for renderer in self._paragraph_item_renderer
+        ]))
+        return doc.SectionContents(initial_paragraphs)
 
 
 class SectionRendererFromSectionContentsRenderer(SectionRenderer):
