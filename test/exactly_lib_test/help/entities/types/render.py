@@ -7,7 +7,7 @@ from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CON
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity import types
-from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.name import name_with_plural_s
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_contents
@@ -66,7 +66,8 @@ A_SYNTAX_ELEMENT_INFO = syntax_elements.SyntaxElementInfo(
         'syntax_element_sing_name')
 )
 
-A_TYPE_NAME_AND_CROSS_REFERENCE_ID = types.name_and_ref_target(name_with_plural_s('type_name'),
+A_TYPE_NAME_AND_CROSS_REFERENCE_ID = types.name_and_ref_target(ValueType.STRING,
+                                                               name_with_plural_s('type_name'),
                                                                'single line description')
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
