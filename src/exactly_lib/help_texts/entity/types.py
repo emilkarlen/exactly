@@ -3,6 +3,7 @@ from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.name import Name, name_with_plural_s
 
 
@@ -13,14 +14,20 @@ def type_cross_ref(type_name: str) -> EntityCrossReferenceId:
 
 class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
     def __init__(self,
+                 value_type: ValueType,
                  name: Name,
                  single_line_description_str: str,
                  cross_reference_target: CrossReferenceId):
         super().__init__(name,
                          single_line_description_str,
                          cross_reference_target)
+        self._value_type = value_type
         self._name = name
         self._single_string_type_name = self._name.singular.replace(' ', '-')
+
+    @property
+    def value_type(self) -> ValueType:
+        return self._value_type
 
     @property
     def name(self) -> Name:
@@ -40,40 +47,48 @@ class TypeNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
         return formatting.syntax_element(self.singular_name)
 
 
-def name_and_ref_target(name: Name,
+def name_and_ref_target(value_type: ValueType,
+                        name: Name,
                         single_line_description_str: str) -> TypeNameAndCrossReferenceId:
-    return TypeNameAndCrossReferenceId(name,
+    return TypeNameAndCrossReferenceId(value_type,
+                                       name,
                                        single_line_description_str,
                                        type_cross_ref(name.singular))
 
 
 STRING_TYPE_INFO = name_and_ref_target(
+    ValueType.STRING,
     name_with_plural_s('string'),
     'A sequence of characters.',
 )
 
 LIST_TYPE_INFO = name_and_ref_target(
+    ValueType.LIST,
     name_with_plural_s('list'),
     'A sequence of zero or more strings.',
 )
 
 PATH_TYPE_INFO = name_and_ref_target(
+    ValueType.PATH,
     name_with_plural_s('path'),
     'A file path, with special support for directories in the ' + formatting.concept_(
         concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO),
 )
 
 LINE_MATCHER_TYPE_INFO = name_and_ref_target(
+    ValueType.LINE_MATCHER,
     name_with_plural_s('line matcher'),
     'Matches individual text lines.'
 )
 
 FILE_MATCHER_TYPE_INFO = name_and_ref_target(
+    ValueType.FILE_MATCHER,
     name_with_plural_s('file matcher'),
     'Matches properties of a file, like name and type.'
 )
 
 LINES_TRANSFORMER_TYPE_INFO = name_and_ref_target(
+    ValueType.LINES_TRANSFORMER,
     name_with_plural_s('file transformer'),
     'Transforms the lines of a text file.',
 )
