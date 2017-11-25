@@ -1,5 +1,86 @@
 -*- org -*-
 
+* assertions for process result - stdout, err, exitcode
+<2017-11-25 Sat>
+In the test of the git-hook, we wanted to test output of
+> git log
+
+The solution was (the std one) to save the output in a file and then
+use assertions to check the contents of that file.
+
+This creation of tmp-file is clumsy, and shifts focus of the test
+from what to how.
+And this checkig of process result seem like something that could be
+common.
+
+So, want something like
+--------------------
+stdout PROCESS ...
+--------------------
+
+--------------------
+stdout [--of PROCESS] FILE-CONTENTS-ASSERTION
+
+stdout [--from PROCESS] FILE-CONTENTS-ASSERTION
+
+stderr [--of PROCESS] FILE-CONTENTS-ASSERTION
+
+exitcode [--of PROCESS] INTEGER-ASSERTION
+--------------------
+
+Challenge is how to specify PROCESS.
+
+One syntax is to use syntax of "run", "$" inside parentheses.
+
+Would also be nice to be able to have a process in a symbol.
+
+
+----------------------------------------
+stdout --of ( $ git log ) --transformed select line-num 4 equals ...
+----------------------------------------
+
+----------------------------------------
+stdout --of ( run my-prog ) --transformed select line-num 4 equals ...
+----------------------------------------
+
+
+----------------------------------------
+def process GIT_LOG = $ git log
+
+def file-transformer GET_LOG_MSG = select line-num 4
+
+stdout --of GIT_LOG --transformed GET_LOG_MSG equals ...
+----------------------------------------
+
+* define assertion as exec of process (via run / shell instructions)
+<2017-11-25 Sat>
+Exactly has limited functionality for assertions, and exec of external programs
+is a way to overcome this.
+
+The reason for having assertions (and other things) as external programs
+is to make it possible to use parts of Exactly that are usefull, but still
+be able to do the custom things that Exactly cannot.
+
+One such feature of Exactly that it would be good to utilize is
+the "dir-contents" assertion, and it's quantification over files.
+It would be great if custom assertion could be quantified, e.g.
+For example
+
+--------------------
+dir-contents my-dir 
+            --selection S any file :
+            ! --transformed T
+            custom-assertion MY_CUSTOM_ASSERTION
+--------------------
+
+--------------------
+dir-contents my-dir 
+            --selection S any file :
+            custom-assertion MY_CUSTOM_ASSERTION
+--------------------
+
+The program would get the file name as the first/last argument.
+
 * Test of signals (or is this OS specific)?
 <2017-11-19 sön>
 Seem like a reasonable thing for E to test.
