@@ -1,10 +1,9 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions import define_symbol
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.help_texts.type_system import TYPE_INFO_DICT

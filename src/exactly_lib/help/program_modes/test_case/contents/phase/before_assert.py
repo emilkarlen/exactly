@@ -6,9 +6,9 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_is_same_as_at_end_of_the
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME, ASSERT_PHASE_NAME, \
     SETUP_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN

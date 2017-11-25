@@ -1,10 +1,9 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_TYPE_INFO
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \

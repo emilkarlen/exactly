@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.help_texts.names import formatting
+from exactly_lib.help_texts import formatting
 from exactly_lib.util.textformat.parse import normalize_and_parse
 
 

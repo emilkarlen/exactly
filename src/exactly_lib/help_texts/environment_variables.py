@@ -1,6 +1,6 @@
 from exactly_lib import program_info
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts, conf_params
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

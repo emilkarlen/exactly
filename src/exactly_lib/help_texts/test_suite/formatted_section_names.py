@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.names.formatting import SectionName
+from exactly_lib.help_texts.formatting import SectionName
 from exactly_lib.help_texts.test_suite import section_names
 
 CONFIGURATION_SECTION_NAME = SectionName(section_names.SECTION_NAME__CONF)

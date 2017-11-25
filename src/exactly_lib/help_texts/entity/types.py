@@ -1,8 +1,8 @@
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, CrossReferenceId
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.name import Name, name_with_plural_s
 
 

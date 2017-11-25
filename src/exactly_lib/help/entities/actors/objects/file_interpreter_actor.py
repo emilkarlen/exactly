@@ -5,12 +5,11 @@ from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEM
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils import doc_utils
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.actors import file_interpreter as help_texts
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \

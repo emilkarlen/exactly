@@ -4,8 +4,8 @@ Utilities for generating documentation for "entities" - things with a name and s
 Makes it possible to reuse some code for generating documentation.
 """
 
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId, EntityTypeNames
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text
 

@@ -3,7 +3,7 @@ import pathlib
 
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
-from exactly_lib.help_texts.names.formatting import SectionName
+from exactly_lib.help_texts.formatting import SectionName
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description

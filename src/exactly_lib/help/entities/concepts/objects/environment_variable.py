@@ -1,11 +1,10 @@
 import operator
 
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import environment_variables
+from exactly_lib.help_texts import environment_variables, formatting
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
     SANDBOX_CONCEPT_INFO
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, BEFORE_ASSERT_PHASE_NAME
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists

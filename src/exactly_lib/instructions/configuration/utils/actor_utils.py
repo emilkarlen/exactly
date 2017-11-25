@@ -7,10 +7,10 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.entities.actors.objects import command_line as command_line_actor_help
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

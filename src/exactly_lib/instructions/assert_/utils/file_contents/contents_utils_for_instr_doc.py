@@ -2,7 +2,7 @@ from exactly_lib import program_info
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.names.formatting import InstructionName
+from exactly_lib.help_texts.formatting import InstructionName
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents.parts import cl_syntax as parts_cl_syntax
 from exactly_lib.test_case_file_structure import environment_variables

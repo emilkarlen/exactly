@@ -1,10 +1,9 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts import file_ref as file_ref_texts, formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary, InstructionName
+from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables

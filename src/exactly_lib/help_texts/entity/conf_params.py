@@ -1,12 +1,11 @@
 from exactly_lib import program_info
-from exactly_lib.help_texts import conf_params
+from exactly_lib.help_texts import conf_params, formatting
 from exactly_lib.help_texts import test_case_file_structure
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR_SINGLE_LINE_VALUE
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.test_case import execution_mode
 

@@ -7,10 +7,10 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as help_args
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import actors
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import suite_reporters as reporters
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax

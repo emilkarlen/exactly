@@ -5,9 +5,9 @@ from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProg
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax

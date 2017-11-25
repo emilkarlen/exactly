@@ -1,5 +1,5 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help_texts.names import formatting
+from exactly_lib.help_texts import formatting
 from exactly_lib.util.description import Description
 
 

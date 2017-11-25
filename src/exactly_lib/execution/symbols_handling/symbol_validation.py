@@ -66,7 +66,7 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
 
 
 def _undefined_symbol_error_message(reference: su.SymbolReference) -> str:
-    from exactly_lib.help_texts.names.formatting import InstructionName
+    from exactly_lib.help_texts.formatting import InstructionName
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
     lines = [
