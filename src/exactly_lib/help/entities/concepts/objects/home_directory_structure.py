@@ -1,10 +1,9 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import test_case_file_structure as tc_fs
+from exactly_lib.help_texts import test_case_file_structure as tc_fs, formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params, syntax_elements
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.test_case import phase_identifier

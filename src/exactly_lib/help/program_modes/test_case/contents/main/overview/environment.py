@@ -2,9 +2,9 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.names import formatting
-from exactly_lib.help_texts.names.formatting import emphasis
+from exactly_lib.help_texts.formatting import emphasis
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_ACT
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT

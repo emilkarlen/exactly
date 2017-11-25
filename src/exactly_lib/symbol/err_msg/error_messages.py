@@ -49,7 +49,7 @@ def invalid_type_header_lines(expected: list,
 def invalid_type_how_to_fix_lines(expected_value_types: list) -> list:
     from exactly_lib.help_texts.test_case.instructions import define_symbol
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-    from exactly_lib.help_texts.names.formatting import InstructionName
+    from exactly_lib.help_texts.formatting import InstructionName
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
     ret_val = [
         'Define a legal symbol using the {} instruction:'.format(def_name_emphasised),

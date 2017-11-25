@@ -1,8 +1,8 @@
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs

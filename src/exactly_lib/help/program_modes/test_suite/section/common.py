@@ -1,6 +1,6 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
-from exactly_lib.help_texts.names.formatting import SectionName
+from exactly_lib.help_texts.formatting import SectionName
 from exactly_lib.util.textformat.structure import structures as docs
 
 

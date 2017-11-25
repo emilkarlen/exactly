@@ -4,10 +4,9 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import concepts, conf_params
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \

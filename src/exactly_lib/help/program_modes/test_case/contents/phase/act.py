@@ -7,10 +7,9 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
-from exactly_lib.help_texts import test_case_file_structure as tc_fs
+from exactly_lib.help_texts import test_case_file_structure as tc_fs, formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params, actors
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, \
     BEFORE_ASSERT_PHASE_NAME, \

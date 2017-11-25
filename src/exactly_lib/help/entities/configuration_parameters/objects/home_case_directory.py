@@ -1,8 +1,8 @@
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity.conf_params import HOME_CASE_DIRECTORY_CONF_PARAM_INFO
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_CASE_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
     PHASE_NAME_DICTIONARY

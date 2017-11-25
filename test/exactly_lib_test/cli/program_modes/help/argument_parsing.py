@@ -19,8 +19,8 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     FlatListRendererWithSingleLineDescriptionGetter
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.names import formatting
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
 from exactly_lib_test.help.entities.actors.test_resources import documentation as actor_doc
 from exactly_lib_test.help.test_resources import application_help_for

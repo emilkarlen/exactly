@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib import program_info
-from exactly_lib.help_texts.names.formatting import program_name
+from exactly_lib.help_texts.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer

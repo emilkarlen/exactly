@@ -8,9 +8,9 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
     parent, \
     leaf, \
     SectionFromGeneratorAsSectionContentsRenderer
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs

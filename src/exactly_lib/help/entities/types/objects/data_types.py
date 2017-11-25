@@ -1,6 +1,6 @@
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help_texts.entity import types, syntax_elements
-from exactly_lib.help_texts.names.formatting import InstructionName
+from exactly_lib.help_texts.formatting import InstructionName
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.utils.documentation.documentation_text import POSIX_SYNTAX
 from exactly_lib.type_system.value_type import TypeCategory

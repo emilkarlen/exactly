@@ -4,9 +4,9 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.names import formatting
 from exactly_lib.help_texts.test_case.phase_names import BEFORE_ASSERT_PHASE_NAME, \
     CLEANUP_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.processing.exit_values import EXECUTION__PASS, EXECUTION__FAIL

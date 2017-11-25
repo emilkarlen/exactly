@@ -1,5 +1,5 @@
 from exactly_lib.help_texts import cross_reference_id
-from exactly_lib.help_texts.names.formatting import AnyInstructionNameDictionary
+from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary
 from exactly_lib.help_texts.test_case.phase_names import phase_name_dict_key_for, \
     PHASE_NAME_DICTIONARY
 from exactly_lib.help_texts.test_suite.formatted_section_names import suite_section_name_dictionary, \
