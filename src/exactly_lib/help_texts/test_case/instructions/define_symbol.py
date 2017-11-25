@@ -13,10 +13,30 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 EQUALS_ARGUMENT = '='
 
+TYPE_SYNTAX_ELEMENT = 'TYPE'
+
+VALUE_SYNTAX_ELEMENT = 'VALUE'
+
 PATH_SUFFIX_IS_REQUIRED = False
 
 DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE = TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME,
                                                                                    SYMBOL_DEFINITION_INSTRUCTION_NAME)
+
+
+def def_instruction_argument_syntax() -> list:
+    return [
+        a.Single(a.Multiplicity.MANDATORY,
+                 a.Named(TYPE_SYNTAX_ELEMENT)),
+
+        a.Single(a.Multiplicity.MANDATORY,
+                 syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument),
+
+        a.Single(a.Multiplicity.MANDATORY,
+                 a.Constant(EQUALS_ARGUMENT)),
+
+        a.Single(a.Multiplicity.MANDATORY,
+                 a.Named(VALUE_SYNTAX_ELEMENT)),
+    ]
 
 
 class TypeInfo(tuple):
@@ -106,6 +126,7 @@ def def_syntax_table_row(value_type: ValueType) -> list:
     arg_parts = [
         instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
         type_info.identifier,
+        syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
         EQUALS_ARGUMENT,
         cl_syntax.cl_syntax_for_args(type_info.value_arguments),
     ]

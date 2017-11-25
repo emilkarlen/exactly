@@ -7,6 +7,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import types, syntax_elements, concepts
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
+from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -37,6 +38,7 @@ from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.textformat.structure import structures as docs
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
@@ -61,25 +63,26 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(
-                cl_syntax.cl_syntax_for_args(
-                    syntax.ANY_TYPE_INFO_DICT[type_info.value_type].def_instruction_arguments))
-            for type_info in types.ALL_TYPES_INFO_TUPLE
+                cl_syntax.cl_syntax_for_args(syntax.def_instruction_argument_syntax())
+            )
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return (
-            rel_path_doc.path_elements(_PATH_ARGUMENT.name,
-                                       REL_OPTION_ARGUMENT_CONFIGURATION.options,
-                                       self._tp.fnap(_REL_CD_DESCRIPTION))
-            +
-            [
-                SyntaxElementDescription(self.string_value.name,
-                                         self._paragraphs(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
-                SyntaxElementDescription(self.name.name,
-                                         self._paragraphs(
-                                             syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
-            ]
-        )
+        return ([
+                    SyntaxElementDescription(', '.join([syntax.TYPE_SYNTAX_ELEMENT,
+                                                        syntax.VALUE_SYNTAX_ELEMENT]),
+                                             [self._types_table()]),
+                ]
+                + rel_path_doc.path_elements(_PATH_ARGUMENT.name,
+                                             REL_OPTION_ARGUMENT_CONFIGURATION.options,
+                                             self._tp.fnap(_REL_CD_DESCRIPTION))
+                +
+                [
+                    SyntaxElementDescription(self.string_value.name,
+                                             self._paragraphs(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
+                    SyntaxElementDescription(self.name.name,
+                                             self._paragraphs(syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
+                ])
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
@@ -89,6 +92,26 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
+
+    @staticmethod
+    def _types_table() -> docs.ParagraphItem:
+        def type_row(type_info: TypeNameAndCrossReferenceId) -> list:
+            type_syntax_info = syntax.ANY_TYPE_INFO_DICT[type_info.value_type]
+            return [
+                docs.text_cell(type_info.identifier),
+                docs.text_cell(cl_syntax.cl_syntax_for_args(type_syntax_info.value_arguments)),
+            ]
+
+        rows = [
+            [
+                docs.text_cell(syntax.TYPE_SYNTAX_ELEMENT),
+                docs.text_cell(syntax.VALUE_SYNTAX_ELEMENT),
+            ]
+        ]
+
+        rows += map(type_row, types.ALL_TYPES_INFO_TUPLE)
+
+        return docs.first_row_is_header_table(rows)
 
 
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
