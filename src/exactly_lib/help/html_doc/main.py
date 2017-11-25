@@ -4,6 +4,8 @@ from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRender
 from exactly_lib.help.html_doc.parts import help
 from exactly_lib.help.html_doc.parts import test_case
 from exactly_lib.help.html_doc.parts import test_suite
+from exactly_lib.help.program_modes.test_case.contents import cli_syntax as case_cli_syntax
+from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as suite_cli_syntax
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
@@ -19,6 +21,10 @@ from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_i
 from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
+
+_TEST_SUITES_HEADER = 'Test Suites'
+
+_TEST_CASES_HEADER = 'Test Cases'
 
 
 def generate_and_output(output_file,
@@ -52,12 +58,7 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
             _entity_sections(application_help,
                              entity_types_to_exclude=[SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier])
             +
-            [
-                (
-                    'help',
-                    help.generator('Getting Help')
-                ),
-            ]
+            _cli_syntax_sections('cli-syntax')
         ),
     )
 
@@ -66,13 +67,13 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> list:
     return [
         (
             'test-case',
-            test_case.generator('Test Cases',
+            test_case.generator(_TEST_CASES_HEADER,
                                 application_help.test_case_help,
                                 )
         ),
         (
             'test-suite',
-            test_suite.generator('Test Suites',
+            test_suite.generator(_TEST_SUITES_HEADER,
                                  application_help.test_suite_help,
                                  application_help.entity_conf_for(
                                      SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier))
@@ -98,6 +99,28 @@ def _entity_sections(application_help: ApplicationHelp,
     return [
         _section_setup_for_entity(etn)
         for etn in all_entity_type_names
+    ]
+
+
+def _cli_syntax_sections(local_target_name: str) -> list:
+    return [
+        (
+            local_target_name,
+            parent('Command line syntax',
+                   [],
+                   [
+                       ('test-case',
+                        case_cli_syntax.generator(_TEST_CASES_HEADER)
+                        ),
+                       ('test-suite',
+                        suite_cli_syntax.generator(_TEST_SUITES_HEADER)
+                        ),
+                       ('help',
+                        help.generator('Getting Help')
+                        ),
+                   ]
+                   )
+        )
     ]
 
 

@@ -65,7 +65,7 @@ def parent(header: str,
            ) -> SectionHierarchyGenerator:
     """
     A section with ub sections that appear in the TOC/target hierarchy.
-    :param local_target_name__sub_section__list: [(str, SectionGenerator)]
+    :param local_target_name__sub_section__list: [(str, SectionHierarchyGenerator)]
     :param initial_paragraphs: [ParagraphItem]
     """
     return _SectionHierarchyGeneratorWithSubSections(header, initial_paragraphs, local_target_name__sub_section__list)

@@ -1,9 +1,7 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help import header_texts
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.test_case.contents import cli_syntax
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationRenderer
@@ -26,9 +24,6 @@ def generator(header: str,
              ),
             ('phases',
              sections_helper.generator_for_sections('Phases')
-             ),
-            ('cli-syntax',
-             cli_syntax.generator(header_texts.COMMAND_LINE_SYNTAX)
              ),
             ('instructions',
              sections_helper.generator_for_instructions_per_section('Instructions per phase')
