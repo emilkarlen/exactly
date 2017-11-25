@@ -23,7 +23,7 @@ def _test_cases_for_all_case_phases() -> list:
                         HelpInvokation(arguments_for.case_phase(phase)),
                         RESULT_IS_SUCCESSFUL)
         for phase in phase_identifier.ALL
-        ]
+    ]
 
 
 def _global_test_cases() -> list:
@@ -41,7 +41,16 @@ def _global_test_cases() -> list:
                                                                                CHANGE_DIR_INSTRUCTION_NAME)),
                         RESULT_IS_SUCCESSFUL),
 
-        ProcessTestCase('help for "case instructions" SHOULD be successful',
+        ProcessTestCase('help for "phase specification" SHOULD be successful',
+                        HelpInvokation(arguments_for.case_phase(phase_identifier.SETUP)),
+                        RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "phase instruction list" SHOULD be successful',
+                        HelpInvokation(
+                            arguments_for.case_instructions_in_phase(phase_help_name(phase_identifier.SETUP))),
+                        RESULT_IS_SUCCESSFUL),
+
+        ProcessTestCase('help for "case instruction list" SHOULD be successful',
                         HelpInvokation(arguments_for.case_instructions()),
                         RESULT_IS_SUCCESSFUL),
 

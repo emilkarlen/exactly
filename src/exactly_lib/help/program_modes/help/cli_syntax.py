@@ -29,10 +29,15 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                       'Generates a HTML version of all help information available in the program.'),
             _synopsis(_ns(arguments_for.case_cli_syntax()), 'Describes the test case command line syntax.'),
             _synopsis(_ns(arguments_for.case_specification()), 'Specification of the test case functionality.'),
+
             _synopsis(_ns(arguments_for.case_phase_for_name('PHASE')), 'Describes a test case phase.'),
+            _synopsis(_ns(arguments_for.case_instructions_in_phase('PHASE')),
+                      'Lists instructions in PHASE.'),
             _synopsis(_ns(arguments_for.case_instruction_in_phase('PHASE', 'INSTRUCTION')),
                       'Describes an instruction in a test case phase.'),
-            _synopsis(_ns(arguments_for.case_instructions()), 'Lists instructions per test case phase.'),
+
+            _synopsis(_ns(arguments_for.case_instructions()),
+                      'Lists instructions per test case phase.'),
             _synopsis(_ns(arguments_for.case_instruction_search('INSTRUCTION')),
                       'Describes all test case instructions with the given name.'),
             _synopsis(_ns(arguments_for.suite_cli_syntax()), 'Describes the test suite command line syntax.'),
