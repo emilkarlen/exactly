@@ -3,6 +3,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts import syntax_descriptions
+from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import types, syntax_elements, concepts
 from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
     SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
@@ -42,11 +43,14 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def __init__(self, name: str, is_in_assert_phase: bool = False):
         self.name = syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument
         self.string_value = syntax_elements.STRING_SYNTAX_ELEMENT.argument
-        super().__init__(name, {
-            'NAME': self.name.name,
-            'current_directory_concept': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-            'PATH_ARG': _PATH_ARGUMENT.name,
-        }, is_in_assert_phase)
+        super().__init__(name,
+                         {
+                             'NAME': self.name.name,
+                             'current_directory_concept': formatting.concept_(
+                                 concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+                             'PATH_ARG': _PATH_ARGUMENT.name,
+                         },
+                         is_in_assert_phase)
 
     def single_line_description(self) -> str:
         return self._format('Defines a ' + SYMBOL_CONCEPT_INFO.singular_name)
@@ -56,12 +60,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant(syntax.definition_of_type_string()),
-            InvokationVariant(syntax.definition_of_type_path()),
-            InvokationVariant(syntax.definition_of_type_list()),
-            InvokationVariant(syntax.definition_of_type_line_matcher()),
-            InvokationVariant(syntax.definition_of_type_file_matcher()),
-            InvokationVariant(syntax.definition_of_type_lines_transformer()),
+            InvokationVariant(
+                cl_syntax.cl_syntax_for_args(
+                    syntax.ANY_TYPE_INFO_DICT[type_info.value_type].def_instruction_arguments))
+            for type_info in types.ALL_TYPES_INFO_TUPLE
         ]
 
     def syntax_element_descriptions(self) -> list:
