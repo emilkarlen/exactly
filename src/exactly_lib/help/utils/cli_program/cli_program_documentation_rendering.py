@@ -66,6 +66,7 @@ class _ProgramDocumentationRenderer:
         content_paragraph_items = []
         if synopsis.maybe_single_line_description:
             content_paragraph_items.append(docs.para(synopsis.maybe_single_line_description))
+        content_paragraph_items += synopsis.paragraphs
         return lists.HeaderContentListItem(header, content_paragraph_items)
 
     def _list(self, items):

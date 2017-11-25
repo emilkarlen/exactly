@@ -35,7 +35,8 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def description(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(self.synopsis.maybe_single_line_description,
-                                          docs.SectionContents(self.parser.fnap(_DESCRIPTION),
+                                          docs.SectionContents(self.synopsis.paragraphs +
+                                                               self.parser.fnap(_DESCRIPTION),
                                                                []))
 
     def synopsises(self) -> list:
