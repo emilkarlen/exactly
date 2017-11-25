@@ -1,6 +1,6 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.common.renderers import default_section_para
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.help.program_modes.common.renderers import default_section_para, SectionInstructionSetRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -17,8 +17,20 @@ class SectionDocumentationRendererBase(SectionContentsRenderer):
             ret_val.append(default_section_para(self.__section_concept_name))
         return ret_val
 
+    def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
+        raise NotImplementedError('abstract method')
+
     def _mandatory_info_para(self):
         mandatory_or_optional = 'mandatory' if self.__section_documentation.is_mandatory() else 'optional'
         return docs.para('The {} {} is {}.'.format(self.__section_documentation.name,
                                                    self.__section_concept_name,
                                                    mandatory_or_optional))
+
+    def _add_section_for_instructions(self,
+                                      environment: RenderingEnvironment,
+                                      sections: list):
+        if self.__section_documentation.has_instructions:
+            renderer = SectionInstructionSetRenderer(self.__section_documentation.instruction_set,
+                                                     self._instruction_cross_ref_text)
+            sections.append(docs.Section(docs.text('Instructions'),
+                                         renderer.apply(environment)))
