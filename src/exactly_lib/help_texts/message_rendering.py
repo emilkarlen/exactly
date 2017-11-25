@@ -13,6 +13,10 @@ def render_single_text_cell_table_to_lines(str_or_text_cell_rows,
             ]
 
 
+def render_paragraph_item(p: core.ParagraphItem) -> list:
+    return paragraph_formatter().format_paragraph_item(p)
+
+
 def paragraph_formatter(page_width: int = 100) -> paragraph_item.Formatter:
     text_formatter = text.TextFormatter(_HelpCrossReferenceFormatter())
     return paragraph_item.Formatter(text_formatter,

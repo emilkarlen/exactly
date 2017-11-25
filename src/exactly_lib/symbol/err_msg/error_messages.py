@@ -50,24 +50,18 @@ def invalid_type_how_to_fix_lines(expected_value_types: list) -> list:
     from exactly_lib.help_texts.test_case.instructions import define_symbol
     from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
     from exactly_lib.help_texts.formatting import InstructionName
+    from exactly_lib.help_texts.message_rendering import render_paragraph_item
+
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
-    ret_val = [
+
+    header = [
         'Define a legal symbol using the {} instruction:'.format(def_name_emphasised),
         '',
     ]
 
-    def def_instruction_syntax_list_for_type(value_type: ValueType) -> list:
-        return [
-            SYMBOL_DEFINITION_INSTRUCTION_NAME + ' ' + syntax
-            for syntax in define_symbol.ANY_TYPE_INFO_DICT[value_type].def_instruction_syntax_lines_function()
-        ]
+    def_instruction_syntax_table = define_symbol.def_syntax_table(expected_value_types)
 
-    def_instruction_syntax_list = []
-    for expected_type in expected_value_types:
-        def_instruction_syntax_list.extend(def_instruction_syntax_list_for_type(expected_type))
-
-    ret_val.extend(def_instruction_syntax_list)
-    return ret_val
+    return header + render_paragraph_item(def_instruction_syntax_table)
 
 
 def _type_name_of(value_type: ValueType) -> str:
