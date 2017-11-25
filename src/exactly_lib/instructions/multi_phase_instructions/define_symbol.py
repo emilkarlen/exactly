@@ -10,6 +10,7 @@ from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CON
 from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -41,7 +42,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
+class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
+                                  IsAHelperIfInAssertPhase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
         self.name = syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument
         self.string_value = syntax_elements.STRING_SYNTAX_ELEMENT.argument

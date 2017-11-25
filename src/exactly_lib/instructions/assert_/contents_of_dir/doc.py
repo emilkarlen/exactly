@@ -13,6 +13,7 @@ from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.processing import exit_values
+from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
@@ -23,7 +24,8 @@ from exactly_lib.util.textformat.structure import structures as docs
 from . import config
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+                                  WithAssertPhasePurpose):
     FILES_ASSERTION = a.Named('FILES-ASSERTION')
 
     def __init__(self, name: str):

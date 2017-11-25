@@ -1,11 +1,12 @@
+import types
+
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help_texts import formatting
 from exactly_lib.util.description import Description
 
 
 class SectionInstructionSet(tuple):
-    def __new__(cls,
-                instruction_descriptions: iter):
+    def __new__(cls, instruction_descriptions: iter):
         """
         :type instruction_descriptions: [`InstructionDocumentation`]
         """
@@ -14,7 +15,7 @@ class SectionInstructionSet(tuple):
         return tuple.__new__(cls, (description_list,))
 
     @property
-    def instruction_descriptions(self) -> list:
+    def instruction_documentations(self) -> list:
         """
         :type: [`InstructionDocumentation`]
         """
@@ -23,7 +24,37 @@ class SectionInstructionSet(tuple):
     @property
     def name_2_description(self) -> dict:
         return dict(map(lambda description: (description.instruction_name(), description),
-                        self.instruction_descriptions))
+                        self.instruction_documentations))
+
+
+class InstructionGroup(tuple):
+    """A grouping of instructions, to be listed under a common header."""
+
+    def __new__(cls,
+                header: str,
+                identifier: str,
+                description_paragraphs: list,
+                instruction_documentations: list):
+        return tuple.__new__(cls, (header,
+                                   identifier,
+                                   description_paragraphs,
+                                   instruction_documentations))
+
+    @property
+    def header(self) -> str:
+        return self[0]
+
+    @property
+    def identifier(self) -> str:
+        return self[1]
+
+    @property
+    def description_paragraphs(self) -> list:
+        return self[2]
+
+    @property
+    def instruction_documentations(self) -> list:
+        return self[3]
 
 
 class SectionDocumentation:
@@ -53,12 +84,23 @@ class SectionDocumentation:
         """
         :return: None if this phase does not have instructions.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
+
+    @property
+    def instruction_group_by(self) -> types.FunctionType:
+        """
+        A function group instructions for presentation.
+
+        Should return a list with at least one element = one group.
+
+        :rtype: [InstructionDocumentation] -> [InstructionGroup]
+        :return:  None if the instructions have no grouping.
+        """
+        return None
 
     @property
     def see_also_targets(self) -> list:
         """
         :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
-
         return []

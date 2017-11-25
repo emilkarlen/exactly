@@ -7,6 +7,8 @@ from exactly_lib.help_texts.entity import concepts, syntax_elements
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
+from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import \
+    IsBothAssertionAndHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
@@ -66,7 +68,8 @@ It is considered an error if the program exits with a non-zero exit code.
 _SOURCE_SYNTAX_ELEMENT_NAME = 'SOURCE'
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+                                  IsBothAssertionAndHelperIfInAssertPhase):
     def __init__(self,
                  name: str,
                  single_line_description: str = 'Runs a program',

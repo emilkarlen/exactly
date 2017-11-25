@@ -6,6 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.entity import concepts, syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
@@ -22,7 +23,8 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
-class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
+class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
+                                  IsAHelperIfInAssertPhase):
     def __init__(self, name: str,
                  is_after_act_phase: bool,
                  is_in_assert_phase: bool = False):

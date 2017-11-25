@@ -1,11 +1,12 @@
 import types
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
     SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionHierarchyGenerator
 from exactly_lib.help_texts import cross_reference_id as cross_ref
+from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 
 
@@ -71,29 +72,57 @@ class HtmlDocGeneratorForSectionDocumentBase:
             assert isinstance(section, SectionDocumentation)
             if not section.has_instructions:
                 continue
-            section_target_factory = targets_factory.sub_factory(section.name.plain)
-            section_target_info = section_target_factory.root(section.name.syntax)
-            section_nodes.append(self._section_instructions_node(section_target_info,
-                                                                 section))
+            instructions_node_constructor = _SectionInstructionsNodeConstructor(
+                self._instruction_cross_ref_target,
+                targets_factory.sub_factory(section.name.plain),
+                section)
+            section_nodes.append(instructions_node_constructor())
         return SectionRendererNodeWithSubSections(root_target_info,
                                                   [],
                                                   section_nodes)
 
-    def _section_instructions_node(self,
-                                   section_target_info: cross_ref.TargetInfo,
-                                   section: SectionDocumentation) -> SectionRendererNode:
-        instruction_nodes = [
-            self._instruction_node(instruction, section)
-            for instruction in section.instruction_set.instruction_descriptions
-        ]
-        return SectionRendererNodeWithSubSections(section_target_info,
-                                                  [],
-                                                  instruction_nodes)
 
-    def _instruction_node(self,
-                          instruction: InstructionDocumentation,
-                          section: SectionDocumentation) -> SectionRendererNode:
-        cross_ref_target = self._instruction_cross_ref_target(instruction, section)
+class _SectionInstructionsNodeConstructor:
+    def __init__(self,
+                 mk_instruction_cross_ref_target: types.FunctionType,
+                 section_target_factory: CustomTargetInfoFactory,
+                 section: SectionDocumentation
+                 ):
+
+        self.mk_instruction_cross_ref_target = mk_instruction_cross_ref_target
+        self.section_target_factory = section_target_factory
+        self.section = section
+
+    def __call__(self) -> SectionRendererNode:
+        return SectionRendererNodeWithSubSections(self.section_target_factory.root(self.section.name.syntax),
+                                                  [],
+                                                  self._instructions_sub_nodes())
+
+    def _instructions_sub_nodes(self) -> list:
+        instr_docs = self.section.instruction_set.instruction_documentations
+        if self.section.instruction_group_by:
+            return self._instruction_group_nodes(self.section.instruction_group_by.__call__(instr_docs))
+        else:
+            return self._instruction_nodes(instr_docs)
+
+    def _instruction_nodes(self,
+                           instructions: list) -> list:
+        return [
+            self._instruction_node(instruction)
+            for instruction in instructions
+        ]
+
+    def _instruction_group_nodes(self, groups: list) -> list:
+        return list(map(self._instruction_group_node, groups))
+
+    def _instruction_group_node(self, group: InstructionGroup) -> SectionRendererNode:
+        return SectionRendererNodeWithSubSections(
+            self.section_target_factory.sub_factory(group.identifier).root(group.header),
+            group.description_paragraphs,
+            self._instruction_nodes(group.instruction_documentations))
+
+    def _instruction_node(self, instruction: InstructionDocumentation) -> SectionRendererNode:
+        cross_ref_target = self.mk_instruction_cross_ref_target(instruction, self.section)
         target_info = cross_ref.TargetInfo(instruction.instruction_name(),
                                            cross_ref_target)
         return LeafSectionRendererNode(target_info,

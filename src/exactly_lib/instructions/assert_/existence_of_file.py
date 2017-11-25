@@ -13,7 +13,7 @@ from exactly_lib.section_document.parser_implementations.misc_utils import new_t
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils import file_properties, negation_of_predicate
@@ -59,7 +59,8 @@ _REL_OPTION_CONFIG = RelOptionArgumentConfiguration(
     True)
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+                                  WithAssertPhasePurpose):
     def __init__(self, name: str):
         self.type_argument = a.Named(_TYPE_ARGUMENT_STR)
         self.negation_argument = a.Constant(NEGATION_OPERATOR)
