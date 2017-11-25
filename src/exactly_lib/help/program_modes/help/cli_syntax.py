@@ -55,7 +55,28 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     @staticmethod
     def _entities_help() -> list:
-        return list(map(_entity_list_and_describe, ALL_ENTITY_TYPES_IN_DISPLAY_ORDER))
+        def row(names: EntityTypeNames) -> list:
+            return [
+                docs.text_cell(names.identifier),
+                docs.text_cell(names.name.plural.capitalize()),
+            ]
+
+        entities_table = docs.first_column_is_header_table(map(row, ALL_ENTITY_TYPES_IN_DISPLAY_ORDER))
+
+        arguments = [
+            arg.Single(arg.Multiplicity.MANDATORY,
+                       _c(clo.HELP)),
+            arg.Single(arg.Multiplicity.MANDATORY,
+                       _n('ENTITY-TYPE')),
+            arg.Single(arg.Multiplicity.OPTIONAL,
+                       _n('ENTITY-NAME'))
+        ]
+        single_line_description = 'Lists all entities of a type; or describes a given entity.'
+        return [
+            cli_syntax.Synopsis(arg.CommandLine(arguments),
+                                docs.text(single_line_description),
+                                [entities_table])
+        ]
 
 
 def _synopsis(additional_arguments: list,

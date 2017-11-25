@@ -23,8 +23,9 @@ class Synopsis(tuple):
 
     def __new__(cls,
                 command_line: arg.CommandLine,
-                single_line_description: docs.Text = None):
-        return tuple.__new__(cls, (command_line, single_line_description))
+                single_line_description: docs.Text = None,
+                paragraphs: list = ()):
+        return tuple.__new__(cls, (command_line, single_line_description, list(paragraphs)))
 
     @property
     def command_line(self) -> arg.CommandLine:
@@ -36,3 +37,7 @@ class Synopsis(tuple):
         :return: `None` if this isn't needed.
         """
         return self[1]
+
+    @property
+    def paragraphs(self) -> list:
+        return self[2]
