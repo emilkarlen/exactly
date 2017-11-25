@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <article version="5.0" xmlns="http://docbook.org/ns/docbook"
->
+         xmlns:ns5="http://www.w3.org/1998/Math/MathML"
+         xmlns:ns4="http://www.w3.org/1999/xhtml"
+         xmlns:ns3="http://www.w3.org/2000/svg"
+         xmlns:ns2="http://www.w3.org/1999/xlink"
+         xmlns:ns="http://docbook.org/ns/docbook">
   <info>
     <title>Exactly 0.9</title>
   </info>
@@ -114,7 +118,7 @@ exists --file --rel DIR_SYMBOL @[BASE_NAME_SYMBOL]@
 stdout --transformed ( select LINE_MATCHER_SYMBOL ) ! empty</programlisting>
 
         <note>
-            <para>--TRANSFORMED instead of --transformed</para>
+          <para>--TRANSFORMED instead of --transformed</para>
         </note>
       </section>
     </section>
@@ -1795,5 +1799,326 @@ Yes, casting is supported - casting data type -> string-->
       <para>Expression syntax that resembles common syntax of expressions with
       primitives, operators and parentheses.</para>
     </section>
+  </section>
+
+  <section>
+    <title>Instruction doc</title>
+
+    <section>
+      <title>def</title>
+
+      <para>def TYPE SYMBOL-NAME = VALUE</para>
+
+      <para/>
+
+      <table>
+        <title/>
+
+        <tgroup cols="2">
+          <thead>
+            <row>
+              <entry align="center">TYPE</entry>
+
+              <entry align="center">VALUE</entry>
+            </row>
+          </thead>
+
+          <tbody>
+            <row>
+              <entry>string</entry>
+
+              <entry>STRING</entry>
+            </row>
+
+            <row>
+              <entry>type</entry>
+
+              <entry>syntax</entry>
+            </row>
+          </tbody>
+        </tgroup>
+      </table>
+    </section>
+
+    <section>
+      <title>paths</title>
+
+      <section>
+        <title>file</title>
+
+        <para>Creates a file</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>file PATH</term>
+
+            <listitem>
+              <para>...</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>file PATH HERE-DOCUMENT</term>
+
+            <listitem>
+              <para>...</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>where</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>PATH</term>
+
+            <listitem>
+              <para>A PATH.</para>
+
+              <para>Default relativity</para>
+
+              <para>Available relativities</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <simplesect>
+          <title>Documentation</title>
+
+          <para>TA BORT : Uses Posix syntax</para>
+        </simplesect>
+
+        <simplesect>
+          <title>See also</title>
+
+          <para>LÄGG TILL: PATH</para>
+        </simplesect>
+      </section>
+
+      <section>
+        <title>stdin</title>
+
+        <para>Sets the contents of stdin for the act phase program</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>stdin (STRING|HERE-DOCUMENT|--file PATH)</term>
+
+            <listitem>
+              <para>...</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>where</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>PATH</term>
+
+            <listitem>
+              <para>Custom description: A PATH that ...</para>
+
+              <para>Default relativity</para>
+
+              <para>Available relativities</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <simplesect>
+          <title>Documentation</title>
+
+          <para>TA BORT : Uses Posix syntax</para>
+        </simplesect>
+
+        <simplesect>
+          <title>See also</title>
+
+          <para>LÄGG TILL: PATH</para>
+        </simplesect>
+      </section>
+
+      <section>
+        <title>install</title>
+
+        <para>...</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>install SOURCE [DESTINATION]</term>
+
+            <listitem>
+              <para>...</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+
+        <para>where</para>
+
+        <variablelist>
+          <varlistentry>
+            <term>SOURCE</term>
+
+            <listitem>
+              <para>The PATH of an existing file or directory.</para>
+
+              <para>Default relativity</para>
+
+              <para>Available relativities</para>
+            </listitem>
+          </varlistentry>
+
+          <varlistentry>
+            <term>DESTINATION</term>
+
+            <listitem>
+              <para>The PATH of an existing directory, or a non-existing
+              file.</para>
+
+              <para>Default relativity</para>
+
+              <para>Available relativities</para>
+            </listitem>
+          </varlistentry>
+        </variablelist>
+      </section>
+    </section>
+
+    <section>
+      <title>Code</title>
+
+      <para>Funktion:</para>
+
+      <variablelist>
+        <varlistentry>
+          <term>NAME, RELATIVITY-CONF, CUSTOM-INITIAL-PARAS -&gt;
+          PathHelp</term>
+
+          <listitem>
+            <para/>
+          </listitem>
+        </varlistentry>
+
+        <varlistentry>
+          <term/>
+
+          <listitem>
+            <para/>
+          </listitem>
+        </varlistentry>
+      </variablelist>
+
+      <informaltable>
+        <tgroup cols="2">
+          <colspec align="center"/>
+
+          <tbody>
+            <row>
+              <entry>InvokationVariant</entry>
+
+              <entry/>
+            </row>
+
+            <row>
+              <entry>SeeAlsoList</entry>
+
+              <entry/>
+            </row>
+          </tbody>
+        </tgroup>
+      </informaltable>
+    </section>
+  </section>
+
+  <section>
+    <title>Help</title>
+
+    <para/>
+
+    <variablelist>
+      <varlistentry>
+        <term>help suite SECTION</term>
+
+        <listitem>
+          <para/>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>help suite SECTION INSTRUCTION</term>
+
+        <listitem>
+          <para/>
+        </listitem>
+      </varlistentry>
+
+      <varlistentry>
+        <term>help ENTITY-TYPE [ENTITY-NAME]</term>
+
+        <listitem>
+          <para>Lists all entities of a type, or describes a given
+          entity.</para>
+
+          <table>
+            <title/>
+
+            <tgroup cols="2">
+              <thead>
+                <row>
+                  <entry align="center">ENTITY-TYPE</entry>
+
+                  <entry align="center"/>
+                </row>
+              </thead>
+
+              <tbody>
+                <row>
+                  <entry>concept</entry>
+
+                  <entry>Concepts</entry>
+                </row>
+
+                <row>
+                  <entry>confparam</entry>
+
+                  <entry>Cofiguration parameters</entry>
+                </row>
+
+                <row>
+                  <entry>type</entry>
+
+                  <entry>Types</entry>
+                </row>
+
+                <row>
+                  <entry>actor</entry>
+
+                  <entry>Actors</entry>
+                </row>
+
+                <row>
+                  <entry>syntax</entry>
+
+                  <entry>Syntax elements</entry>
+                </row>
+
+                <row>
+                  <entry>builtin</entry>
+
+                  <entry>Builtin symbols</entry>
+                </row>
+
+                <row>
+                  <entry>reporter</entry>
+
+                  <entry>Suite reporters</entry>
+                </row>
+              </tbody>
+            </tgroup>
+          </table>
+        </listitem>
+      </varlistentry>
+    </variablelist>
   </section>
 </article>
