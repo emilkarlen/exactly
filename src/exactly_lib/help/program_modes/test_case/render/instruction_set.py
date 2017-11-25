@@ -11,7 +11,9 @@ class InstructionSetPerPhaseRenderer(TestCaseHelpRendererBase):
         sections = []
         for test_case_phase_help in self.test_case_help.phase_helps_in_order_of_execution:
             if test_case_phase_help.has_instructions:
-                renderer = SectionInstructionSetRenderer(test_case_phase_help.instruction_set)
+                renderer = SectionInstructionSetRenderer(
+                    test_case_phase_help.instruction_set,
+                    instruction_group_by=test_case_phase_help.instruction_group_by)
                 sections.append(docs.Section(text(test_case_phase_help.name.syntax),
                                              renderer.apply(environment)))
         return doc.SectionContents([], sections)

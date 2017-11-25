@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForUnconditionalSuccess
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -22,7 +23,8 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.textformat.structure.structures import paras
 
 
-class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase):
+class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
+                                  IsAHelperIfInAssertPhase):
     def __init__(self, name: str, is_in_assert_phase: bool = False):
         super().__init__(name, _FORMAT_DICT, is_in_assert_phase)
 

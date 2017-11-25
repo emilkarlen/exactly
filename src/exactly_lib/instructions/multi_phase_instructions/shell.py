@@ -3,6 +3,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
+from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import \
+    IsBothAssertionAndHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
@@ -37,7 +39,8 @@ SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION = \
     " and PASS if, and only if, its exit code is 0"
 
 
-class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase):
+class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase,
+                                      IsBothAssertionAndHelperIfInAssertPhase):
     def __init__(self,
                  name: str,
                  single_line_description: str):

@@ -11,7 +11,7 @@ from exactly_lib.instructions.assert_.utils.expression.parse import parse_intege
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import new_token_parser
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.err_msg.property_description import \
@@ -30,7 +30,8 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 _PROPERTY_NAME = 'exit code'
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+                                  WithAssertPhasePurpose):
     def __init__(self, name: str):
         super().__init__(name, {
             'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,

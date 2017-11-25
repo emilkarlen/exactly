@@ -6,6 +6,7 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_TYPE_INFO
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
+from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import src_dst
@@ -31,7 +32,8 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+                                  IsAHelperIfInAssertPhase):
     def __init__(self,
                  name: str,
                  phase_is_before_act: bool):

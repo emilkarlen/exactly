@@ -2,6 +2,7 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.formatting import InstructionName
 from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME
+from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure.core import Text
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -84,7 +85,8 @@ class InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDoc
 
 
 class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
-    InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase):
+    InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase,
+    WithAssertPhasePurpose):
     def __init__(self, instruction_name: str,
                  format_map: dict,
                  is_in_assert_phase: bool):
@@ -95,6 +97,10 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
             the_format_map.update(format_map)
         super().__init__(instruction_name, the_format_map)
         self._is_in_assert_phase = is_in_assert_phase
+
+    @property
+    def assert_phase_purpose(self) -> AssertPhasePurpose:
+        return AssertPhasePurpose.HELPER
 
     def _main_description_rest_prelude(self) -> list:
         if self._is_in_assert_phase:

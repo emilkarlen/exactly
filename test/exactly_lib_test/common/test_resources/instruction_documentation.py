@@ -1,9 +1,10 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.util.textformat import parse as text_parse
 from exactly_lib_test.common.test_resources import syntax_parts
 
 
-class InstructionDocumentationWithConstantValues(InstructionDocumentation):
+class InstructionDocumentationWithConstantValues(InstructionDocumentation, WithAssertPhasePurpose):
     def __init__(self,
                  instruction_name: str,
                  single_line_description: str,

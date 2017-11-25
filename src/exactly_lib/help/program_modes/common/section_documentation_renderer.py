@@ -30,7 +30,9 @@ class SectionDocumentationRendererBase(SectionContentsRenderer):
                                       environment: RenderingEnvironment,
                                       sections: list):
         if self.__section_documentation.has_instructions:
-            renderer = SectionInstructionSetRenderer(self.__section_documentation.instruction_set,
-                                                     self._instruction_cross_ref_text)
+            renderer = SectionInstructionSetRenderer(
+                self.__section_documentation.instruction_set,
+                self._instruction_cross_ref_text,
+                instruction_group_by=self.__section_documentation.instruction_group_by)
             sections.append(docs.Section(docs.text('Instructions'),
                                          renderer.apply(environment)))

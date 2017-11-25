@@ -36,7 +36,8 @@ class TestCaseHelpRendererResolver:
         if item is TestCaseHelpItem.PHASE_INSTRUCTION_LIST:
             section_documentation = request.data
             assert isinstance(section_documentation, SectionDocumentation), 'Must be a SectionDocumentation'
-            return SectionInstructionSetRenderer(section_documentation.instruction_set)
+            return SectionInstructionSetRenderer(section_documentation.instruction_set,
+                                                 instruction_group_by=section_documentation.instruction_group_by)
         if item is TestCaseHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,

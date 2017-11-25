@@ -10,7 +10,7 @@ from exactly_lib.instructions.utils.documentation.relative_path_options_document
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -23,7 +23,8 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
                                   TheInstructionDocumentation(instruction_name))
 
 
-class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
+class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
+                                  WithAssertPhasePurpose):
     def __init__(self, name: str):
         self.actual_file_arg = ACTUAL_PATH_ARGUMENT
         super().__init__(name, {
