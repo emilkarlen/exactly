@@ -2,7 +2,7 @@
 
 * dir-contents: make FILE-MATCHER able to check contents
 <2017-11-20 mån>
-Dagens E kan inte testa ett scenario från ETI:
+Dagens E kan inte testa ett scenario från ETI: (<2017-11-25 Sat> FEL!)
 Test av sql-scripten: test att alla script har korrekt filnamn.
 Problem: testet ska validera filnamn - men inte på alla filer, utan enbart på dem
 som heter "*.sql" - ty det är dessa som anses vara SQL-script. Utöver SQL-scripten

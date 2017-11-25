@@ -80,7 +80,6 @@ dir-contents my-dir
 --------------------
 
 The program would get the file name as the first/last argument.
-
 * Test of signals (or is this OS specific)?
 <2017-11-19 sön>
 Seem like a reasonable thing for E to test.
