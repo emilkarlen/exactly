@@ -6,10 +6,12 @@ from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCr
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO, PATH_TYPE_INFO, LIST_TYPE_INFO, \
     LINE_MATCHER_TYPE_INFO, FILE_MATCHER_TYPE_INFO, LINES_TRANSFORMER_TYPE_INFO, TypeNameAndCrossReferenceId
+from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure import structures as docs
 
 EQUALS_ARGUMENT = '='
 
@@ -172,3 +174,19 @@ ANY_TYPE_INFO_DICT = {
                  _standard_type_value_args(LINES_TRANSFORMER_TYPE_INFO),
                  definition_of_type_lines_transformer),
 }
+
+
+def def_syntax_table_row(value_type: ValueType) -> list:
+    type_info = ANY_TYPE_INFO_DICT[value_type]
+    arg_parts = [
+        instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
+        type_info.identifier,
+        EQUALS_ARGUMENT,
+        cl_syntax.cl_syntax_for_args(type_info.value_arguments),
+    ]
+    return list(map(docs.text_cell, arg_parts))
+
+
+def def_syntax_table(value_types) -> docs.ParagraphItem:
+    return docs.plain_table(map(def_syntax_table_row, value_types),
+                            column_separator=' ')

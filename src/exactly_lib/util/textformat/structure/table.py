@@ -41,7 +41,7 @@ class Table(ParagraphItem):
         :param rows: [[TableCell]]
         """
         self._format = format_
-        self._rows = rows
+        self._rows = list(rows)
 
     @property
     def format(self) -> TableFormat:
