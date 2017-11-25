@@ -48,6 +48,10 @@ def case_instruction_in_phase(phase_name: str,
     return [phase_name, instruction_name]
 
 
+def case_instructions_in_phase(phase_name: str) -> list:
+    return [phase_name, clo.INSTRUCTIONS]
+
+
 def case_instruction_search(instruction_name: str) -> list:
     return [instruction_name]
 

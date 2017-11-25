@@ -22,25 +22,29 @@ from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
+from exactly_lib_test.cli.program_modes.help.test_resources import request_assertions as asrt_request
 from exactly_lib_test.help.entities.actors.test_resources import documentation as actor_doc
+from exactly_lib_test.help.program_modes.common.test_resources import matches_section_documentation
 from exactly_lib_test.help.test_resources import application_help_for
 from exactly_lib_test.help.test_resources import section_documentation, \
     single_line_description_that_identifies_instruction_and_section, \
     SectionDocumentationForSectionWithoutInstructionsTestImpl, application_help_for_suite_sections
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestProgramHelp))
-    ret_val.addTest(unittest.makeSuite(TestHtmlDocHelp))
-    ret_val.addTest(entity_lookup_test_cases.suite_for(TestSetupForActor()))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseCliAndOverviewHelp))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionSet))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseSingleInstructionInPhase))
-    ret_val.addTest(unittest.makeSuite(TestTestCaseInstructionList))
-    ret_val.addTest(unittest.makeSuite(TestTestSuiteHelp))
-    ret_val.addTest(unittest.makeSuite(TestTestSuiteSingleInstructionInSection))
-    return ret_val
+    return unittest.TestSuite([
+        unittest.makeSuite(TestProgramHelp),
+        unittest.makeSuite(TestHtmlDocHelp),
+        entity_lookup_test_cases.suite_for(TestSetupForActor()),
+        unittest.makeSuite(TestTestCaseCliAndOverviewHelp),
+        unittest.makeSuite(TestTestCaseInstructionSet),
+        unittest.makeSuite(TestTestCaseSingleInstructionInPhase),
+        unittest.makeSuite(TestTestCaseInstructionListForPhase),
+        unittest.makeSuite(TestTestCaseInstructionList),
+        unittest.makeSuite(TestTestSuiteHelp),
+        unittest.makeSuite(TestTestSuiteSingleInstructionInSection),
+    ])
 
 
 class TestProgramHelp(unittest.TestCase):
@@ -136,6 +140,15 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
             sut.parse(application_help,
                       arguments_for.case_instruction_in_phase('non-existing-phase', 'instruction-name'))
 
+    def test_phase_without_instructions(self):
+        phase_name = 'phase'
+        application_help = application_help_for([
+            SectionDocumentationForSectionWithoutInstructionsTestImpl(phase_name),
+        ])
+        with self.assertRaises(HelpError):
+            sut.parse(application_help,
+                      arguments_for.case_instruction_in_phase(phase_name, 'instruction'))
+
     def test_unknown_instruction(self):
         application_help = application_help_for([
             section_documentation('phase-1', ['instruction']),
@@ -188,6 +201,46 @@ class TestTestCaseSingleInstructionInPhase(unittest.TestCase):
                               InstructionDocumentation,
                               'The value is expected to be the description of the instruction')
         return value
+
+
+class TestTestCaseInstructionListForPhase(unittest.TestCase):
+    def test_unknown_phase(self):
+        application_help = application_help_for([
+            section_documentation('phase', ['instruction-name'])
+        ])
+        with self.assertRaises(HelpError):
+            sut.parse(application_help,
+                      arguments_for.case_instructions_in_phase('non-existing-phase'))
+
+    def test_existing_phase_without_instructions(self):
+        phase_name = 'the phase name'
+        application_help = application_help_for([
+            SectionDocumentationForSectionWithoutInstructionsTestImpl(phase_name)
+        ])
+        with self.assertRaises(HelpError):
+            sut.parse(application_help,
+                      arguments_for.case_instructions_in_phase(phase_name))
+
+    def test_existing_phase_with_instructions(self):
+        # ARRANGE #
+        phase_name = 'the phase name'
+        instructions = [phase_name, 'name-that-is-not-the-name-of-a-phase']
+        application_help = application_help_for([
+            section_documentation(phase_name, instructions),
+            section_documentation('other phase than ' + phase_name, instructions)
+        ])
+        # ACT #
+        actual = sut.parse(application_help,
+                           arguments_for.case_instructions_in_phase(phase_name))
+
+        # ASSERT #
+        expectation = asrt_request.matches_test_case_help_request(
+            item=asrt.equals(TestCaseHelpItem.PHASE_INSTRUCTION_LIST),
+            name=asrt.equals(phase_name),
+            data=matches_section_documentation(name=asrt.equals(phase_name)),
+            do_include_name_in_output=asrt.is_false)
+
+        expectation.apply_without_message(self, actual)
 
 
 class TestTestCaseInstructionList(unittest.TestCase):

@@ -11,7 +11,6 @@ from exactly_lib.cli.util import argument_value_lookup
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
-from exactly_lib.test_case import phase_identifier
 
 
 def parse(application_help: ApplicationHelp,
@@ -148,10 +147,6 @@ class Parser:
         if arguments:
             raise HelpError('The %s command expects no arguments.' % HTML_DOCUMENTATION)
         return HtmlDocHelpRequest()
-
-
-def _is_name_of_phase(name: str):
-    return name in map(lambda x: x.identifier, phase_identifier.ALL)
 
 
 def lookup_entity(entities: EntitiesHelp, arguments: list) -> argument_value_lookup.Match:

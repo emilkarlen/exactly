@@ -1,8 +1,9 @@
-import exactly_lib.help.program_modes.common.renderers
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpItem, \
     TestCaseHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
 from exactly_lib.help.program_modes.common import render_instruction
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+from exactly_lib.help.program_modes.common.renderers import SectionInstructionSetRenderer
 from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.main import specification as tc_specification
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
@@ -33,7 +34,9 @@ class TestCaseHelpRendererResolver:
             assert isinstance(request.data, TestCasePhaseDocumentation), 'Must be a TestCasePhaseDoc'
             return TestCasePhaseDocumentationRenderer(request.data)
         if item is TestCaseHelpItem.PHASE_INSTRUCTION_LIST:
-            return exactly_lib.help.program_modes.common.renderers.SectionInstructionSetRenderer(request.data)
+            section_documentation = request.data
+            assert isinstance(section_documentation, SectionDocumentation), 'Must be a SectionDocumentation'
+            return SectionInstructionSetRenderer(section_documentation.instruction_set)
         if item is TestCaseHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,
