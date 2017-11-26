@@ -1,5 +1,6 @@
 import types
 
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
 from exactly_lib.instructions.assert_.utils.expression import comparators
@@ -83,7 +84,7 @@ def _string_resolver_of(value_token: Token) -> StringResolver:
         value_token,
         string_made_up_by_just_strings(
             'The {INTEGER} argument must be made up of just {string_type} values.'.format(
-                INTEGER=INTEGER_ARGUMENT.name,
+                INTEGER=syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
                 string_type=help_texts.ANY_TYPE_INFO_DICT[ValueType.STRING].identifier,
             )
         ))
