@@ -2,8 +2,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
-from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_assertion import \
-    FileContentsAssertionHelp
+from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
+    FileContentsCheckerHelp
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
@@ -18,9 +18,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str,
                  name_of_checked_file: str):
         self.file_arg = a.Named(parse_here_doc_or_file_ref.CONFIGURATION.argument_syntax_name)
-        self._help_parts = FileContentsAssertionHelp(name,
-                                                     name_of_checked_file,
-                                                     [])
+        self._help_parts = FileContentsCheckerHelp(name,
+                                                   name_of_checked_file,
+                                                   [])
 
         super().__init__(name, {
             'checked_file': name_of_checked_file,
