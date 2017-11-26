@@ -1,4 +1,3 @@
-import exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_assertion
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -9,7 +8,8 @@ from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
-from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax
+from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax, \
+    file_contents_assertion
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
@@ -118,7 +118,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         file_contents_args = ([quantifier_arg,
                                file_arg,
-                               separator_arg] + exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_assertion.file_contents_assertion_arguments()
+                               separator_arg] + file_contents_assertion.file_contents_assertion_arguments()
                               )
 
         invokation_variants = [
