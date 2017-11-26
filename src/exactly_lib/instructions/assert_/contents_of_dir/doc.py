@@ -38,7 +38,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
         })
-        self.file_contents_assertion_help = parts_cl_syntax.FileContentsMatcherHelp('a file')
+        self.file_contents_assertion_help = parts_cl_syntax.FileContentsMatcherHelp()
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     _PATH_ARGUMENT)
         self.relativity_of_actual_arg = instruction_arguments.RELATIVITY_ARGUMENT

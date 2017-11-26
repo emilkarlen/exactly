@@ -4,7 +4,6 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements, types
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.instructions.assert_.utils.expression.integer import parse as expr_parse, syntax as expr_syntax
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
@@ -21,7 +20,7 @@ _RELATIVITY_OF_EXPECTED_PATH_NAME = 'RELATIVITY-OF-EXPECTED-PATH'
 
 
 class FileContentsMatcherHelp:
-    def __init__(self, checked_file: str):
+    def __init__(self):
         self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
                                           _EXPECTED_PATH_NAME)
         self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
@@ -30,11 +29,11 @@ class FileContentsMatcherHelp:
             EXPECTED_FILE_REL_OPT_ARG_CONFIG,
             the_path_of('the file that contains the expected contents.'))
         self._parser = TextParser({
-            'checked_file': checked_file,
             'expected_file_arg': _EXPECTED_PATH_NAME,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
-            'line_matcher': instruction_arguments.LINE_MATCHER.name,
+            'LINE_MATCHER': instruction_arguments.LINE_MATCHER.name,
+            'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
         })
 
     def _cls(self, additional_argument_usages: list) -> str:
@@ -86,8 +85,7 @@ class FileContentsMatcherHelp:
                               self._paragraphs(_DESCRIPTION_OF_EQUALS_STRING)),
 
             InvokationVariant(_cls([num_lines_arg,
-                                    expr_parse.MANDATORY_OPERATOR_ARGUMENT,
-                                    expr_parse.MANDATORY_INTEGER_ARGUMENT,
+                                    syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
                                     ]),
                               self._paragraphs(_DESCRIPTION_OF_NUM_LINES)),
 
@@ -101,18 +99,14 @@ class FileContentsMatcherHelp:
         ]
 
     def referenced_syntax_element_descriptions(self) -> list:
-        return (
-            expr_syntax.syntax_element_descriptions(expr_parse.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
-            +
-            self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
-        )
+        return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
     def see_also_targets(self) -> list:
         name_and_cross_ref_elements = rel_opts.see_also_name_and_cross_refs(
             EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
 
         name_and_cross_ref_elements += [
-            syntax_elements.INTEGER_SYNTAX_ELEMENT,
+            syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
             types.LINE_MATCHER_TYPE_INFO,
         ]
 
@@ -130,18 +124,18 @@ class FileContentsMatcherHelp:
 
 
 _DESCRIPTION_OF_EMPTY = """\
-Matches if {checked_file} is an empty file.
+Matches if the contents is empty.
 """
 
 _DESCRIPTION_OF_EQUALS_STRING = """\
-Matches if the contents of {checked_file} is equal to a given
+Matches if the contents is equal to a given
 string, "here document" or file.
 """
 
 _DESCRIPTION_OF_LINE_MATCHES = """\
-Matches if {any}/{every} line of {checked_file} matches a {line_matcher}.
+Matches if {any}/{every} line of the contents matches {LINE_MATCHER}.
 """
 
 _DESCRIPTION_OF_NUM_LINES = """\
-Matches if the number of lines of {checked_file} matches a given comparison expression.
+Matches if the number of lines of the contents matches {INTEGER_COMPARISON}.
 """
