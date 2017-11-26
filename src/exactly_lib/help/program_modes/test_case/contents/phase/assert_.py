@@ -16,45 +16,10 @@ from exactly_lib.test_case.phases.assert_ import AssertPhasePurpose, WithAssertP
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN, ENV_VAR_RESULT
 from exactly_lib.util.description import Description
+from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.lists import ListType
 from exactly_lib.util.textformat.textformat_parser import TextParser
-
-
-def _mk_assertions_group(instructions: list) -> InstructionGroup:
-    return InstructionGroup('Assertions',
-                            'assertion',
-                            _TEXT_PARSER.fnap(_ASSERTION_INSTRUCTIONS_DESCRIPTION),
-                            instructions)
-
-
-def _mk_both_group(instructions: list) -> InstructionGroup:
-    return InstructionGroup('Assertions and helpers',
-                            'both',
-                            _TEXT_PARSER.fnap(_BOTH_INSTRUCTIONS_DESCRIPTION),
-                            instructions)
-
-
-def _mk_helpers_group(instructions: list) -> InstructionGroup:
-    return InstructionGroup('Helpers',
-                            'helper',
-                            _TEXT_PARSER.fnap(_HELPER_INSTRUCTIONS_DESCRIPTION),
-                            instructions)
-
-
-_MK_GROUP_DICT = {
-    AssertPhasePurpose.ASSERTION: _mk_assertions_group,
-    AssertPhasePurpose.HELPER: _mk_helpers_group,
-    AssertPhasePurpose.BOTH: _mk_both_group,
-}
-
-_TEXT_PARSER = TextParser({
-    'phase': PHASE_NAME_DICTIONARY,
-    'PASS': exit_values.EXECUTION__PASS.exit_identifier,
-    'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
-    'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
-    'result_subdir': sds.SUB_DIRECTORY__RESULT,
-    'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
-    'ENV_VAR_RESULT': ENV_VAR_RESULT,
-})
 
 
 class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions):
@@ -62,21 +27,32 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
                  name: str,
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
+        self._tp = TextParser({
+            'phase': PHASE_NAME_DICTIONARY,
+            'PASS': exit_values.EXECUTION__PASS.exit_identifier,
+            'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
+            'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
+            'result_subdir': sds.SUB_DIRECTORY__RESULT,
+            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
+            'ENV_VAR_RESULT': ENV_VAR_RESULT,
+        })
 
     def purpose(self) -> Description:
-        return Description(_TEXT_PARSER.text(ONE_LINE_DESCRIPTION),
-                           _TEXT_PARSER.fnap(REST_OF_DESCRIPTION))
+        return Description(self._tp.text(ONE_LINE_DESCRIPTION),
+                           self._tp.fnap(REST_OF_DESCRIPTION))
 
     def sequence_info(self) -> PhaseSequenceInfo:
         return PhaseSequenceInfo(sequence_info__preceding_phase(BEFORE_ASSERT_PHASE_NAME),
-                                 _TEXT_PARSER.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE),
+                                 self._tp.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def is_mandatory(self) -> bool:
         return False
 
     def instruction_purpose_description(self) -> list:
-        return _TEXT_PARSER.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
+        paragraphs = self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
+        paragraphs += self._instruction_groups_list()
+        return paragraphs
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_non_first_phases(),
@@ -85,7 +61,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
 
     @property
     def instruction_group_by(self) -> types.FunctionType:
-        return _instruction_group_by
+        return self._instruction_group_by
 
     @property
     def see_also_targets(self) -> list:
@@ -96,23 +72,41 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
             TestCasePhaseCrossReference(CLEANUP_PHASE_NAME.plain),
         ]
 
+    def _instruction_group_by(self, instr_docs: list) -> list:
+        purpose_2_instructions = dict([
+            (value, [])
+            for value in AssertPhasePurpose
+        ])
+        for doc in instr_docs:
+            assert isinstance(doc, WithAssertPhasePurpose), str(type(doc))
+            purpose_2_instructions[doc.assert_phase_purpose].append(doc)
 
-def _instruction_group_by(instr_docs: list) -> list:
-    purpose_2_instructions = dict([
-        (value, [])
-        for value in AssertPhasePurpose
-    ])
-    for doc in instr_docs:
-        assert isinstance(doc, WithAssertPhasePurpose), str(type(doc))
-        purpose_2_instructions[doc.assert_phase_purpose].append(doc)
+        ret_val = []
+        for p in AssertPhasePurpose:
+            instructions = purpose_2_instructions[p]
+            if instructions:
+                ret_val.append(self._group_of(p, instructions))
 
-    ret_val = []
-    for p in AssertPhasePurpose:
-        instructions = purpose_2_instructions[p]
-        if instructions:
-            ret_val.append(_MK_GROUP_DICT[p](instructions))
+        return ret_val
 
-    return ret_val
+    def _group_of(self, purpose_type: AssertPhasePurpose, instructions: list) -> InstructionGroup:
+        info = _INSTRUCTION_TYPES[purpose_type]
+
+        return InstructionGroup(info[0],
+                                info[1],
+                                self._tp.fnap(info[2]),
+                                instructions)
+
+    def _instruction_groups_list(self) -> list:
+        def item(purpose: AssertPhasePurpose) -> lists.HeaderContentListItem:
+            info = _INSTRUCTION_TYPES[purpose]
+            return lists.HeaderContentListItem(docs.text(info[0]),
+                                               self._tp.fnap(info[2]))
+
+        return [
+            docs.simple_list_with_space_between_elements_and_content(map(item, list(AssertPhasePurpose)),
+                                                                     ListType.ITEMIZED_LIST)
+        ]
 
 
 ONE_LINE_DESCRIPTION = """\
@@ -131,11 +125,16 @@ this unexpected problem instead of {PASS} or {FAIL}.
 """
 
 INSTRUCTION_PURPOSE_DESCRIPTION = """\
-All instructions in the {phase[assert]} phase are assertions that either {PASS} or {FAIL}.
+Every instructions in the {phase[assert]} phase is an assertion that 
+report its outcome as either {PASS} or {FAIL}.
+
+
+If an instruction encounter a problem that prevents it from completing its work,
+it reports this as {HARD_ERROR}.
 
 
 In practice, though, some instructions may have more of a purpose of "preparation"
-for an assertion.
+for an assertion - they are helpers for the assertions.
 
 Such a preparation might be to sort a file that the system under test (SUT) has produced,
 so that it's possible to compare it with a constant file containing the expected sorted output, e.g.
@@ -171,5 +170,17 @@ Typically, if these instructions cannot do their job, they report {HARD_ERROR},
 instead of {FAIL}.
 
 
-Note. This is job that could perhaps be done in {phase[before_assert]:syntax}. 
+Note that the preparation done by such an instruction can perhaps be done in {phase[before_assert]:syntax}. 
 """
+
+_INSTRUCTION_TYPES = {
+    AssertPhasePurpose.ASSERTION: ('Assertions',
+                                   'assertion',
+                                   _ASSERTION_INSTRUCTIONS_DESCRIPTION),
+    AssertPhasePurpose.BOTH: ('Assertions and helpers',
+                              'both',
+                              _BOTH_INSTRUCTIONS_DESCRIPTION),
+    AssertPhasePurpose.HELPER: ('Helpers',
+                                'helper',
+                                _HELPER_INSTRUCTIONS_DESCRIPTION),
+}
