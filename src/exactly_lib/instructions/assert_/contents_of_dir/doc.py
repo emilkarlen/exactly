@@ -5,9 +5,8 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
-from exactly_lib.help_texts.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
+from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
-from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax, \
     file_contents_assertion
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
@@ -80,15 +79,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                            ACTUAL_RELATIVITY_CONFIGURATION.options,
                                            docs.paras(the_path_of("the directory who's contents is checked.")))
 
-        return ([self._files_assertion_sed(),
-                 self.file_contents_assertion_help.syntax_element_description(),
-                 selection,
-                 parse_lines_transformer.selection_syntax_element_description(),
-                 negation,
-                 ] +
-                expression_parse.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION) +
-                [actual_file_arg_sed] +
-                self.file_contents_assertion_help.referenced_syntax_element_descriptions())
+        return (
+            [self._files_assertion_sed(),
+             selection,
+             parse_lines_transformer.selection_syntax_element_description(),
+             negation,
+             ]
+            +
+            expression_parse.syntax_element_descriptions(
+                expression_parse.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
+            +
+            [actual_file_arg_sed]
+        )
 
     def _files_assertion_sed(self) -> SyntaxElementDescription:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -100,7 +102,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         arguments_for_empty_check = [mandatory_empty_arg]
 
         arguments_for_num_files_check = [mandatory_num_files_arg,
-                                         ] + parse_expr.ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
+                                         ] + expression_parse.ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
 
         quantifier_arg = a.Choice(a.Multiplicity.MANDATORY,
                                   [
@@ -139,15 +141,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity import types
         name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
-                               types.LINE_MATCHER_TYPE_INFO,
                                types.LINES_TRANSFORMER_TYPE_INFO,
+                               syntax_elements.FILE_CONTENTS_MATCHER,
                                syntax_elements.PATH_SYNTAX_ELEMENT,
-                               syntax_elements.INTEGER_SYNTAX_ELEMENT,
-                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
+                               syntax_elements.INTEGER_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
-        cross_refs = [DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list(name_and_cross_refs) + cross_refs
+        return cross_reference_id_list(name_and_cross_refs)
 
     def _cls(self, additional_argument_usages: list) -> str:
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
