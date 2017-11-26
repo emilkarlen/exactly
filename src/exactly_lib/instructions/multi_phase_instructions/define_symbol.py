@@ -5,8 +5,6 @@ from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts import syntax_descriptions
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import types, syntax_elements, concepts
-from exactly_lib.help_texts.entity.concepts import CURRENT_WORKING_DIRECTORY_CONCEPT_INFO, \
-    SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -57,7 +55,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                          is_in_assert_phase)
 
     def single_line_description(self) -> str:
-        return self._format('Defines a ' + SYMBOL_CONCEPT_INFO.singular_name)
+        return self._format('Defines a ' + concepts.SYMBOL_CONCEPT_INFO.singular_name)
 
     def _main_description_rest_body(self) -> list:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
@@ -87,10 +85,11 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                 ])
 
     def see_also_targets(self) -> list:
-        name_and_cross_refs = [SYMBOL_CONCEPT_INFO,
+        name_and_cross_refs = [concepts.SYMBOL_CONCEPT_INFO,
                                syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
-                               TYPE_CONCEPT_INFO,
-                               CURRENT_WORKING_DIRECTORY_CONCEPT_INFO]
+                               concepts.TYPE_CONCEPT_INFO,
+                               concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                               ]
         name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
         from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)

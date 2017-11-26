@@ -75,6 +75,7 @@ Asserts that the contents of {checked_file} satisfies {file_contents_matcher}.
 def transformation_syntax_element_description(the_tested_file: str) -> SyntaxElementDescription:
     text_parser = TextParser({
         'the_tested_file': the_tested_file,
+        'transformer': syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
     })
     return cl_syntax.cli_argument_syntax_element_description(
         instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
@@ -86,5 +87,7 @@ def transformation_syntax_element_description(the_tested_file: str) -> SyntaxEle
 
 
 _TRANSFORMATION_DESCRIPTION = """\
-Applies the matcher to a transformed variant of {the_tested_file}.
+Makes the assertion apply to the result of applying {transformer} to
+the contents of {the_tested_file},
+instead of to its original contents.
 """

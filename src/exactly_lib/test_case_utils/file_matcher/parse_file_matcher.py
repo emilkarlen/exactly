@@ -13,7 +13,7 @@ from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.expression import grammar, syntax_documentation
+from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
 from exactly_lib.test_case_utils.file_matcher import resolvers
@@ -24,6 +24,7 @@ from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 SELECTION_OF_ALL_FILES = FileMatcherConstantResolver(MATCH_EVERY_FILE)
 
@@ -40,19 +41,19 @@ REG_EX_OPTION = a.OptionName(long_name='regex')
 REG_EX_ARGUMENT = a.Option(REG_EX_OPTION,
                            syntax_elements.REGEX_SYNTAX_ELEMENT.argument.name)
 
+_TEXT_PARSER = TextParser({
+    'MATCHER': syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT.singular_name,
+})
+
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
     return cl_syntax.cli_argument_syntax_element_description(
         SELECTION,
-        docs.paras(_SELECTION_DESCRIPTION),
+        _TEXT_PARSER.fnap(_SELECTION_DESCRIPTION),
         [
             InvokationVariant(cl_syntax.arg_syntax(SELECTION_OPTION)),
         ]
     )
-
-
-def matcher_syntax_element_description() -> SyntaxElementDescription:
-    return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
 
 
 class FileSelectionDescriptor(property_description.ErrorMessagePartConstructor):
@@ -136,8 +137,8 @@ ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
 _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME = 'Missing {_GLOB_PATTERN_} argument for {_NAME_MATCHER_}'
 
 _SELECTION_DESCRIPTION = """\
-Selects a sub set of files in the directory that the test applies to
-(instead of applying it to all files in the directory).
+Makes the assertion apply to the sub set of files matched by {MATCHER},
+instead of to all files in the directory.
 """
 
 _NAME_MATCHER_SED_DESCRIPTION = """\
