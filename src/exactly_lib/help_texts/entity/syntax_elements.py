@@ -11,6 +11,16 @@ class SyntaxElementInfo(SingularNameAndCrossReferenceId):
     def argument(self) -> a.Named:
         return a.Named(self.singular_name)
 
+    @property
+    def single_mandatory(self) -> a.ArgumentUsage:
+        return a.Single(a.Multiplicity.MANDATORY,
+                        self.argument)
+
+    @property
+    def single_optional(self) -> a.ArgumentUsage:
+        return a.Single(a.Multiplicity.OPTIONAL,
+                        self.argument)
+
 
 def syntax_element_cross_ref(syntax_element_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
