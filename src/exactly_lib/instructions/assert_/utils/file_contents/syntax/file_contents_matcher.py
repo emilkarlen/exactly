@@ -4,7 +4,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements, types
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
+from exactly_lib.instructions.assert_.utils.expression.integer import parse as parse_expr
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \

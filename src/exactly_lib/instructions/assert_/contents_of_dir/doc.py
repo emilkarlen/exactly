@@ -6,7 +6,7 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
+from exactly_lib.instructions.assert_.utils.expression.integer import parse as expression_parse
 from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax, \
     file_contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
