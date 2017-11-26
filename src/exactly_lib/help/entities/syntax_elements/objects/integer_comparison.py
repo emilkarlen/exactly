@@ -3,19 +3,17 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils.expression import comparators
-from exactly_lib.instructions.assert_.utils.expression.integer import syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-_MANDATORY_OPERATOR_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
-                                        syntax.OPERATOR_ARGUMENT)
+_OPERATOR_ARGUMENT = a.Named('OPERATOR')
 
-_MANDATORY_INTEGER_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
-                                       syntax_elements.INTEGER_SYNTAX_ELEMENT.argument)
+_MANDATORY_OPERATOR_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
+                                        _OPERATOR_ARGUMENT)
 
 _TEXT_PARSER = TextParser({
-    'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
+    'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.singular_name,
 })
 
 _DESCRIPTION_OF_IMPLICIT_EQUALS = """\
@@ -33,7 +31,7 @@ The actual value that is matched serves as the left hand side in the comparison.
 def _operator_syntax_element_description() -> SyntaxElementDescription:
     operators_list = ' '.join(sorted(comparators.NAME_2_OPERATOR.keys()))
     operator_text = 'One of ' + operators_list
-    return SyntaxElementDescription(syntax.OPERATOR_ARGUMENT.name,
+    return SyntaxElementDescription(_OPERATOR_ARGUMENT.name,
                                     docs.paras(operator_text))
 
 
@@ -43,13 +41,13 @@ DOCUMENTATION = syntax_element_documentation(
     [],
     invokation_variants=[
         InvokationVariant(cl_syntax.cl_syntax_for_args([
-            _MANDATORY_INTEGER_ARGUMENT,
+            syntax_elements.INTEGER_SYNTAX_ELEMENT.single_mandatory,
         ]),
             _TEXT_PARSER.fnap(_DESCRIPTION_OF_IMPLICIT_EQUALS)),
 
         InvokationVariant(cl_syntax.cl_syntax_for_args([
             _MANDATORY_OPERATOR_ARGUMENT,
-            _MANDATORY_INTEGER_ARGUMENT,
+            syntax_elements.INTEGER_SYNTAX_ELEMENT.single_mandatory,
         ]),
             _TEXT_PARSER.fnap(_DESCRIPTION_OF_COMPARISON_WITH_OPERATOR))
     ]

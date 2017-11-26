@@ -6,33 +6,20 @@ from exactly_lib.help_texts.test_case.instructions import define_symbol as help_
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.instructions.assert_.utils.expression.integer import integer_resolver
 from exactly_lib.instructions.assert_.utils.expression.integer.integer_resolver import IntegerResolver
-from exactly_lib.instructions.assert_.utils.expression.integer.syntax import OPERATOR_ARGUMENT
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 
-NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
-
-MANDATORY_OPERATOR_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
-                                       OPERATOR_ARGUMENT)
-
-MANDATORY_INTEGER_ARGUMENT = a.Single(a.Multiplicity.MANDATORY,
-                                      INTEGER_ARGUMENT)
-
-ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR = [
-    a.Single(a.Multiplicity.OPTIONAL, OPERATOR_ARGUMENT),
-    MANDATORY_INTEGER_ARGUMENT,
-]
+_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION = 'An integer >= 0'
 
 
 def validator_for_non_negative(actual: int) -> str:
     if actual < 0:
-        return expected_found.unexpected_lines(NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
+        return expected_found.unexpected_lines(_NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION,
                                                str(actual))
     return None
 
