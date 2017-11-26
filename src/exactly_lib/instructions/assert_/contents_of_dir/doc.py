@@ -6,7 +6,8 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.instructions.assert_.utils.expression.integer import parse as expression_parse
+from exactly_lib.instructions.assert_.utils.expression.integer import parse as expression_parse, \
+    syntax as expression_syntax
 from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax, \
     file_contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
@@ -85,7 +86,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
              negation,
              ]
             +
-            expression_parse.syntax_element_descriptions(
+            expression_syntax.syntax_element_descriptions(
                 expression_parse.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
             +
             [actual_file_arg_sed]

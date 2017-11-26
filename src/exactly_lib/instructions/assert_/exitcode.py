@@ -6,7 +6,7 @@ from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import instruction
-from exactly_lib.instructions.assert_.utils.expression.integer import parse
+from exactly_lib.instructions.assert_.utils.expression.integer import parse, syntax
 from exactly_lib.instructions.assert_.utils.expression.integer.parse import parse_integer_comparison_operator_and_rhs
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
@@ -35,7 +35,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str):
         super().__init__(name, {
             'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
-            'OPERATOR': parse.OPERATOR_ARGUMENT.name,
+            'OPERATOR': syntax.OPERATOR_ARGUMENT.name,
             'EXIT_CODE': _PROPERTY_NAME,
         })
 
@@ -59,7 +59,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         ]
 
     def syntax_element_descriptions(self) -> list:
-        return parse.syntax_element_descriptions_with_negation_operator(_OPERAND_DESCRIPTION + '.')
+        return syntax.syntax_element_descriptions_with_negation_operator(_OPERAND_DESCRIPTION + '.')
 
     def see_also_targets(self) -> list:
         return [
