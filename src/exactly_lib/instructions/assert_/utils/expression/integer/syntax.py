@@ -1,5 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils.expression import comparators
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -14,7 +14,7 @@ def syntax_element_descriptions(integer_text: str = 'An integer.') -> list:
     return [
         SyntaxElementDescription(OPERATOR_ARGUMENT.name,
                                  docs.paras(operator_text)),
-        SyntaxElementDescription(INTEGER_ARGUMENT.name,
+        SyntaxElementDescription(syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
                                  docs.paras(integer_text)),
     ]
 

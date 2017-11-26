@@ -72,6 +72,11 @@ INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
     'An integer expression'
 )
 
+INTEGER_COMPARISON_SYNTAX_ELEMENT = name_and_ref_target(
+    'INTEGER-COMPARISON',
+    'Matches an integer value using relational comparison with a given ' + INTEGER_SYNTAX_ELEMENT.argument.name
+)
+
 FILE_CONTENTS_MATCHER = name_and_ref_target(
     'FILE-CONTENTS-MATCHER',
     'Matches the contents of a regular file'
@@ -81,10 +86,14 @@ ALL_SYNTAX_ELEMENTS = (
 
     SYMBOL_NAME_SYNTAX_ELEMENT,
     SYMBOL_REFERENCE_SYNTAX_ELEMENT,
+
     HERE_DOCUMENT_SYNTAX_ELEMENT,
+
     REGEX_SYNTAX_ELEMENT,
     GLOB_PATTERN_SYNTAX_ELEMENT,
+
     INTEGER_SYNTAX_ELEMENT,
+    INTEGER_COMPARISON_SYNTAX_ELEMENT,
 
     FILE_CONTENTS_MATCHER,
 
