@@ -2,7 +2,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
-from exactly_lib.instructions.assert_.utils.file_contents.contents_utils_for_instr_doc import FileContentsHelpParts
+from exactly_lib.instructions.assert_.utils.file_contents.syntax.contents_utils_for_instr_doc import \
+    FileContentsHelpParts
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
