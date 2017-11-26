@@ -6,8 +6,6 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.instructions.assert_.utils.expression.integer import parse as expression_parse, \
-    syntax as expression_syntax
 from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax, \
     file_contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
@@ -26,13 +24,13 @@ from . import config
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
                                   WithAssertPhasePurpose):
-    FILES_ASSERTION = a.Named('FILES-ASSERTION')
+    DIR_CONTENTS_MATCHER = a.Named('DIR-CONTENTS-MATCHER')
 
     def __init__(self, name: str):
         super().__init__(name, {
             'checked_file': _PATH_ARGUMENT.name,
             'selection': instruction_arguments.SELECTION.name,
-            'file_assertion': self.FILES_ASSERTION.name,
+            'dir_contents_matcher': self.DIR_CONTENTS_MATCHER.name,
             'file_matcher': FILE_MATCHER_TYPE_INFO.name.singular,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
@@ -55,13 +53,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         negation_argument = negation_of_predicate.optional_negation_argument_usage()
         selection_arg = a.Single(a.Multiplicity.OPTIONAL,
                                  instruction_arguments.SELECTION)
-        file_assertion_arg = a.Single(a.Multiplicity.MANDATORY,
-                                      self.FILES_ASSERTION)
+        dir_contents_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
+                                            self.DIR_CONTENTS_MATCHER)
 
         arguments = [self.actual_file,
                      selection_arg,
                      negation_argument,
-                     file_assertion_arg,
+                     dir_contents_matcher_arg,
                      ]
 
         return [
@@ -79,18 +77,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                            ACTUAL_RELATIVITY_CONFIGURATION.options,
                                            docs.paras(the_path_of("the directory who's contents is checked.")))
 
-        return (
-            [self._files_assertion_sed(),
-             selection,
-             file_contents_checker.transformation_syntax_element_description('each file'),
-             negation,
-             ]
-            +
-            expression_syntax.syntax_element_descriptions(
-                expression_parse.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
-            +
-            [actual_file_arg_sed]
-        )
+        return [
+            self._files_assertion_sed(),
+            selection,
+            actual_file_arg_sed,
+            file_contents_checker.transformation_syntax_element_description('each file'),
+            negation,
+        ]
 
     def _files_assertion_sed(self) -> SyntaxElementDescription:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -102,7 +95,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         arguments_for_empty_check = [mandatory_empty_arg]
 
         arguments_for_num_files_check = [mandatory_num_files_arg,
-                                         ] + expression_parse.ARGUMENTS_FOR_COMPARISON_WITH_OPTIONAL_OPERATOR
+                                         syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory]
 
         quantifier_arg = a.Choice(a.Multiplicity.MANDATORY,
                                   [
@@ -133,7 +126,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                               self._paragraphs(_DESCRIPTION_OF_FILE_QUANTIFICATION))
         ]
         return SyntaxElementDescription(
-            self.FILES_ASSERTION.name,
+            self.DIR_CONTENTS_MATCHER.name,
             [],
             invokation_variants
         )
@@ -144,7 +137,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                types.LINES_TRANSFORMER_TYPE_INFO,
                                syntax_elements.FILE_CONTENTS_MATCHER,
                                syntax_elements.PATH_SYNTAX_ELEMENT,
-                               syntax_elements.INTEGER_SYNTAX_ELEMENT]
+                               syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_path_doc.see_also_name_and_cross_refs(ACTUAL_RELATIVITY_CONFIGURATION.options)
         return cross_reference_id_list(name_and_cross_refs)
 
@@ -174,14 +167,11 @@ FAIL if {checked_file} is not an existing directory
 (even when the assertion is negated).
 
 
-If {selection} is given, then the test applies to the selected files from the directory.
-
-
 Symbolic links are followed.
 """
 
 _MAIN_INVOKATION_SYNTAX_DESCRIPTION = """\
-Applies {file_assertion} to the files in the directory {checked_file},
+Applies {dir_contents_matcher} to the files in the directory {checked_file},
 or to a sub set of files, if {selection} is given.
 """
 
