@@ -59,8 +59,6 @@ SOURCE_OPTION = long_option_syntax(SOURCE_OPTION_NAME.long)
 
 OPTIONS_SEPARATOR_ARGUMENT = '--'
 
-ASSERT_PHASE_DESCRIPTION_REST = "Runs a program and PASS if, and only if, its exit code is 0"
-
 NON_ASSERT_PHASE_DESCRIPTION_REST = """\
 It is considered an error if the program exits with a non-zero exit code.
 """
