@@ -1,6 +1,4 @@
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import types, syntax_elements
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -8,14 +6,13 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import property_description
-from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression, syntax_documentation
+from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     ReplaceLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 IDENTITY_TRANSFORMER_RESOLVER = resolvers.LinesTransformerConstant(IdentityLinesTransformer())
@@ -35,20 +32,6 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 
-def selection_syntax_element_description() -> SyntaxElementDescription:
-    return cl_syntax.cli_argument_syntax_element_description(
-        instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
-        docs.paras(_TRANSFORMATION_DESCRIPTION),
-        [
-            InvokationVariant(cl_syntax.arg_syntax(instruction_arguments.TRANSFORMATION_OPTION)),
-        ]
-    )
-
-
-def transformer_syntax_element_description() -> SyntaxElementDescription:
-    return syntax_documentation.Syntax(GRAMMAR).syntax_element_description()
-
-
 class LinesTransformerDescriptor(property_description.ErrorMessagePartConstructor):
     def __init__(self, resolver: LinesTransformerResolver):
         self.resolver = resolver
@@ -58,11 +41,6 @@ class LinesTransformerDescriptor(property_description.ErrorMessagePartConstructo
         # FIXME
         line = types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
         return [line]
-
-
-_TRANSFORMATION_DESCRIPTION = """\
-Transforms the contents of the tested file using a {transformer} before it is tested.
-""".format(transformer=types.LINES_TRANSFORMER_TYPE_INFO.name.singular)
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:

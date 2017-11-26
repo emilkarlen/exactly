@@ -15,30 +15,27 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_AR
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
+_EXPECTED_PATH_NAME = 'PATH-OF-EXPECTED'
 
-EXPECTED_PATH_NAME = 'PATH-OF-EXPECTED'
-
-RELATIVITY_OF_EXPECTED_PATH_NAME = 'RELATIVITY-OF-EXPECTED-PATH'
+_RELATIVITY_OF_EXPECTED_PATH_NAME = 'RELATIVITY-OF-EXPECTED-PATH'
 
 
 class FileContentsMatcherHelp:
     def __init__(self, checked_file: str):
         self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
-                                          EXPECTED_PATH_NAME)
+                                          _EXPECTED_PATH_NAME)
         self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
-            EXPECTED_PATH_NAME,
-            RELATIVITY_OF_EXPECTED_PATH_NAME,
+            _EXPECTED_PATH_NAME,
+            _RELATIVITY_OF_EXPECTED_PATH_NAME,
             EXPECTED_FILE_REL_OPT_ARG_CONFIG,
             the_path_of('the file that contains the expected contents.'))
-        format_map = {
+        self._parser = TextParser({
             'checked_file': checked_file,
-            'expected_file_arg': EXPECTED_PATH_NAME,
+            'expected_file_arg': _EXPECTED_PATH_NAME,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'line_matcher': instruction_arguments.LINE_MATCHER.name,
-        }
-        self._parser = TextParser(format_map)
+        })
 
     def _cls(self, additional_argument_usages: list) -> str:
         return cl_syntax.cl_syntax_for_args(additional_argument_usages)
@@ -55,7 +52,7 @@ class FileContentsMatcherHelp:
             return cl_syntax.cl_syntax_for_args(args)
 
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
-                                       EMPTY_ARGUMENT_CONSTANT)
+                                       a.Constant(EMPTY_ARGUMENT))
         quantifier_arg = a.Choice(a.Multiplicity.MANDATORY,
                                   [
                                       a.Constant(
@@ -133,18 +130,18 @@ class FileContentsMatcherHelp:
 
 
 _DESCRIPTION_OF_EMPTY = """\
-Asserts that {checked_file} is an empty file.
+Matches if {checked_file} is an empty file.
 """
 
 _DESCRIPTION_OF_EQUALS_STRING = """\
-Asserts that the contents of {checked_file} is equal to a given
+Matches if the contents of {checked_file} is equal to a given
 string, "here document" or file.
 """
 
 _DESCRIPTION_OF_LINE_MATCHES = """\
-Asserts that {any}/{every} line of {checked_file} matches a {line_matcher}.
+Matches if {any}/{every} line of {checked_file} matches a {line_matcher}.
 """
 
 _DESCRIPTION_OF_NUM_LINES = """\
-Asserts that the number of lines of {checked_file} matches a given comparison expression.
+Matches if the number of lines of {checked_file} matches a given comparison expression.
 """

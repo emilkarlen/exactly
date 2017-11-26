@@ -5,8 +5,8 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_assertion import \
-    FileContentsAssertionHelp
+from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
+    FileContentsCheckerHelp
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -33,19 +33,15 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     self.actual_file_arg)
-        self._help_parts = FileContentsAssertionHelp(name,
-                                                     self.actual_file_arg.name,
-                                                     [self.actual_file])
-        self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
-                                               a.Named('ACTUAL-REL'))
+        self._help_parts = FileContentsCheckerHelp(name,
+                                                   self.actual_file_arg.name,
+                                                   [self.actual_file])
 
     def single_line_description(self) -> str:
         return 'Tests the contents of a file'
 
     def main_description_rest(self) -> list:
-        return self._paragraphs("""\
-        FAILs if {checked_file} is not an existing regular file.
-        """)
+        return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
         return self._help_parts.invokation_variants()
@@ -103,3 +99,8 @@ def parse_actual_file_argument_from_token_parser(token_parser: token_stream_pars
     file_ref = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
                                                                token_parser)
     return ActComparisonActualFileForFileRef(file_ref)
+
+
+_MAIN_DESCRIPTION_REST = """\
+FAILs if {checked_file} is not an existing regular file.
+"""
