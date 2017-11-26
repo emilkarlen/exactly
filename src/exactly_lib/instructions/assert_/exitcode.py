@@ -6,8 +6,8 @@ from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
 from exactly_lib.instructions.assert_.utils.expression import instruction
-from exactly_lib.instructions.assert_.utils.expression.integer import parse, syntax
 from exactly_lib.instructions.assert_.utils.expression.integer.parse import parse_integer_comparison_operator_and_rhs
+from exactly_lib.processing import exit_values
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import new_token_parser
@@ -34,36 +34,28 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                   WithAssertPhasePurpose):
     def __init__(self, name: str):
         super().__init__(name, {
-            'INTEGER': syntax_elements.INTEGER_SYNTAX_ELEMENT.argument.name,
-            'OPERATOR': syntax.OPERATOR_ARGUMENT.name,
+            'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.argument.name,
             'EXIT_CODE': _PROPERTY_NAME,
+            'PASS': exit_values.EXECUTION__PASS.exit_identifier,
         })
 
     def single_line_description(self) -> str:
         return 'Tests the ' + _PROPERTY_NAME
 
+    def main_description_rest(self) -> list:
+        return self._tp.fnap(_MAIN_DESCRIPTION)
+
     def invokation_variants(self) -> list:
         return [
             InvokationVariant(self._cl_syntax_for_args([
                 negation_of_predicate.optional_negation_argument_usage(),
-                parse.MANDATORY_INTEGER_ARGUMENT,
-            ]),
-                self._paragraphs(_DESCRIPTION_OF_IMPLICIT_EQUALS)),
-
-            InvokationVariant(self._cl_syntax_for_args([
-                negation_of_predicate.optional_negation_argument_usage(),
-                parse.MANDATORY_OPERATOR_ARGUMENT,
-                parse.MANDATORY_INTEGER_ARGUMENT,
-            ]),
-                self._paragraphs(_DESCRIPTION_OF_COMPARISON_WITH_OPERATOR))
+                syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
+            ])),
         ]
-
-    def syntax_element_descriptions(self) -> list:
-        return syntax.syntax_element_descriptions_with_negation_operator(_OPERAND_DESCRIPTION + '.')
 
     def see_also_targets(self) -> list:
         return [
-            syntax_elements.INTEGER_SYNTAX_ELEMENT.cross_reference_target
+            syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.cross_reference_target
         ]
 
 
@@ -122,12 +114,6 @@ def must_be_within_byte_range(actual: int) -> str:
     return None
 
 
-_DESCRIPTION_OF_IMPLICIT_EQUALS = """\
-PASS if, and only if, the {EXIT_CODE} is exactly {INTEGER}.
-"""
-
-_DESCRIPTION_OF_COMPARISON_WITH_OPERATOR = """\
-PASS if, and only if, the given expression evaluates to True.
-
-The actual {EXIT_CODE} is the left operand.
+_MAIN_DESCRIPTION = """\
+{PASS} if, and only if, the {EXIT_CODE} satisfies {INTEGER_COMPARISON}.
 """
