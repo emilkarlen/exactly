@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.expression import integer_resolver as sut
+from exactly_lib.instructions.assert_.utils.expression.integer import integer_resolver as sut
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -96,7 +96,8 @@ class TestValidateAndResolve(unittest.TestCase):
 
                 actual_symbol_references = resolver_to_check.references
 
-                resolver_to_check.validate_pre_sds(the_instruction_environment)
+                resolver_to_check.validate_pre_sds(
+                    the_instruction_environment.path_resolving_environment_pre_or_post_sds)
 
                 actual = resolver_to_check.resolve(the_instruction_environment)
 

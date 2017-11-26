@@ -1,12 +1,11 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_.utils.expression import instruction, integer
+from exactly_lib_test.instructions.assert_.utils.expression.integer import integer_resolver
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        instruction.suite(),
-        integer.suite(),
+        integer_resolver.suite(),
     ])
 
 

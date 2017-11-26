@@ -1,5 +1,5 @@
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
-from exactly_lib.instructions.assert_.utils.expression.parse import IntegerComparisonOperatorAndRightOperand
+from exactly_lib.instructions.assert_.utils.expression.integer.parse import IntegerComparisonOperatorAndRightOperand
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck

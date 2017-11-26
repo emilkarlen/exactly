@@ -4,7 +4,7 @@ from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils.expression import comparison_structures
-from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
+from exactly_lib.instructions.assert_.utils.expression.integer import parse as parse_expr
 from exactly_lib.instructions.utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
     SvhValidatorViaExceptionsFromPreAndPostSdsValidators
 from exactly_lib.symbol.data.path_resolver import FileRefResolver

@@ -3,8 +3,9 @@ import types
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
-from exactly_lib.instructions.assert_.utils.expression import comparators, integer_resolver
-from exactly_lib.instructions.assert_.utils.expression.integer_resolver import IntegerResolver
+from exactly_lib.instructions.assert_.utils.expression import comparators
+from exactly_lib.instructions.assert_.utils.expression.integer import integer_resolver
+from exactly_lib.instructions.assert_.utils.expression.integer.integer_resolver import IntegerResolver
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_resolver import StringResolver
