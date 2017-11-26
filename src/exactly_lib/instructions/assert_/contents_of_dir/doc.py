@@ -1,3 +1,4 @@
+import exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_assertion
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -8,7 +9,7 @@ from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.instructions.assert_.utils.expression import parse as expression_parse
 from exactly_lib.instructions.assert_.utils.expression import parse as parse_expr
-from exactly_lib.instructions.assert_.utils.file_contents.parts import cl_syntax as parts_cl_syntax
+from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
@@ -38,7 +39,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
         })
-        self.file_contents_assertion_help = parts_cl_syntax.FileContentsAssertionHelp('a file')
+        self.file_contents_assertion_help = parts_cl_syntax.FileContentsMatcherHelp('a file')
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     _PATH_ARGUMENT)
         self.relativity_of_actual_arg = instruction_arguments.RELATIVITY_ARGUMENT
@@ -80,14 +81,14 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                            docs.paras(the_path_of("the directory who's contents is checked.")))
 
         return ([self._files_assertion_sed(),
-                 self.file_contents_assertion_help.file_contents_assertion_sed(),
+                 self.file_contents_assertion_help.syntax_element_description(),
                  selection,
                  parse_lines_transformer.selection_syntax_element_description(),
                  negation,
                  ] +
                 expression_parse.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION) +
                 [actual_file_arg_sed] +
-                self.file_contents_assertion_help.used_syntax_element_descriptions())
+                self.file_contents_assertion_help.referenced_syntax_element_descriptions())
 
     def _files_assertion_sed(self) -> SyntaxElementDescription:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
@@ -117,7 +118,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         file_contents_args = ([quantifier_arg,
                                file_arg,
-                               separator_arg] + parts_cl_syntax.file_contents_assertion_arguments()
+                               separator_arg] + exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_assertion.file_contents_assertion_arguments()
                               )
 
         invokation_variants = [

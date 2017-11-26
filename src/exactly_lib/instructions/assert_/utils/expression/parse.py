@@ -36,10 +36,10 @@ def syntax_element_descriptions(integer_text: str = 'An integer.') -> list:
     operators_list = ' '.join(sorted(comparators.NAME_2_OPERATOR.keys()))
     operator_text = 'One of ' + operators_list
     return [
+        SyntaxElementDescription(OPERATOR_ARGUMENT.name,
+                                 docs.paras(operator_text)),
         SyntaxElementDescription(INTEGER_ARGUMENT.name,
                                  docs.paras(integer_text)),
-        SyntaxElementDescription(OPERATOR_ARGUMENT.name,
-                                 docs.paras(operator_text))
     ]
 
 

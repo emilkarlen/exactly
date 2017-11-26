@@ -108,16 +108,9 @@ def see_also_name_and_cross_refs(rel_options_conf: RelOptionsConfiguration) -> l
     """
     :rtype: [`SingularAndPluralNameAndCrossReferenceId`]
     """
-    relativity_variants = rel_options_conf.accepted_relativity_variants
-    ret_val = []
-    for rel_option_type in relativity_variants.rel_option_types:
-        concepts_for_type = _ALL[rel_option_type].see_also
-        for concept in concepts_for_type:
-            if concept not in ret_val:
-                ret_val.append(concept)
-    if ci.SYMBOL_CONCEPT_INFO not in ret_val:
-        ret_val.append(ci.SYMBOL_CONCEPT_INFO)
-    return ret_val
+    return [
+        syntax_elements.PATH_SYNTAX_ELEMENT,
+    ]
 
 
 class _RelOptionInfo(tuple):

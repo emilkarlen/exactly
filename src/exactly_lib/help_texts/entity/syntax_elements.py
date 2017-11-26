@@ -72,6 +72,11 @@ INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
     'An integer expression'
 )
 
+FILE_CONTENTS_MATCHER = name_and_ref_target(
+    'FILE-CONTENTS-MATCHER',
+    'Matches the contents of a regular file'
+)
+
 ALL_SYNTAX_ELEMENTS = (
 
     SYMBOL_NAME_SYNTAX_ELEMENT,
@@ -80,6 +85,8 @@ ALL_SYNTAX_ELEMENTS = (
     REGEX_SYNTAX_ELEMENT,
     GLOB_PATTERN_SYNTAX_ELEMENT,
     INTEGER_SYNTAX_ELEMENT,
+
+    FILE_CONTENTS_MATCHER,
 
     STRING_SYNTAX_ELEMENT,
     LIST_SYNTAX_ELEMENT,
