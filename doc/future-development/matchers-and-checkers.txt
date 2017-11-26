@@ -1,0 +1,78 @@
+-*- org -*-
+
+
+Grammar anno <2017-11-26 sön>:
+
+----------------------------------------------------------------------
+FILE-MATCHER ::= name | ...
+
+LINE-MATCHER ::= regex | ...
+
+FILE-CONTENTS-MATCHER ::= empty
+                       :| num-lines        INTEGER-COMPARISON
+		       :| (any|every) line LINE-MATCHER
+
+FILE-CONTENTS-CHECKER ::= [TRANSFORMATION] [!] FILE-CONTENTS-MATCHER
+
+DIR-CONTENTS-MATCHER ::= empty
+                      :| num-files        INTEGER-COMPARISON
+                      :| (any|every) file FILE-CONTENTS-CHECKER
+
+DIR-CONTENTS-CHECKER ::= [SELECTION] [!]  DIR-CONTENTS-MATCHER
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+stdout       FILE-CONTENTS-CHECKER
+/
+stdout       [TRANSFORMATION] [!] [FILE-CONTENTS-MATCHER]
+
+
+dir-contents DIR-CONTENTS-CHECKER
+/
+dir-contents [SELECTION]      [!] DIR-CONTENTS-MATCHER
+
+----------------------------------------------------------------------
+
+* Inconsistency regarding structure
+
+There is an "inconsistency" in that a
+DIR-CONTENTS-MATCHER
+contains a
+FILE-CONTENTS-CHECKER
+
+If there is a separation between concepts of "matcher" and "checker",
+it feels that a matcher should not use a checker!
+
+
+One remedy for this would be to combine FILE-CONTENTENTS-MATCHER and -CHECKER,
+but then
+
+ - a new inconsistency would appear, in that the FILE-CONTENTS-MATCHER
+   may transforms the checked item (the file),
+   but the DIR-CONTENTS-MATCHER may not (selection of files)
+
+ - the MATCHER concepts gets more complicted/gets dual purposes of
+   both transforming and checking.
+
+
+* Improvement of names
+
+FILE-MATCHER and DIR-CONTENTS-MATCHER are missleading -
+the tell that what is matched is a file or the contents of a dir.
+What is really tested is text lines (FILE-MATCHER) and files
+(DIR-CONTENTS-MATCHER).  The current names tell from where
+the thing to test comes, instead of telling what is tested.
+
+The current names were chosen because it was thought they were
+more intuitive.  But maybe they are not.
+
+Maybe better names are
+
+LINES-MATCHER		| FILE-MATCHER
+FILES-MATCHER		| DIR-CONTENTS-MATCHER
+LINES-TRANSFORMER	| FILE-TRANSFORMER
+
+Also, these new names indicate that text is processed, and that
+binary files are not supported.
+On the other side, if binary files were to be supported,
+then LINES-MATCHER / LINES-TRANSFORMER would be missleading.
