@@ -4,7 +4,7 @@ from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import syntax_elements, types
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.instructions.assert_.utils.expression.integer import parse as parse_expr
+from exactly_lib.instructions.assert_.utils.expression.integer import parse as expr_parse, syntax as expr_syntax
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
@@ -86,8 +86,8 @@ class FileContentsMatcherHelp:
                               self._paragraphs(_DESCRIPTION_OF_EQUALS_STRING)),
 
             InvokationVariant(_cls([num_lines_arg,
-                                    parse_expr.MANDATORY_OPERATOR_ARGUMENT,
-                                    parse_expr.MANDATORY_INTEGER_ARGUMENT,
+                                    expr_parse.MANDATORY_OPERATOR_ARGUMENT,
+                                    expr_parse.MANDATORY_INTEGER_ARGUMENT,
                                     ]),
                               self._paragraphs(_DESCRIPTION_OF_NUM_LINES)),
 
@@ -102,7 +102,7 @@ class FileContentsMatcherHelp:
 
     def referenced_syntax_element_descriptions(self) -> list:
         return (
-            parse_expr.syntax_element_descriptions(parse_expr.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
+            expr_syntax.syntax_element_descriptions(expr_parse.NON_NEGATIVE_INTEGER_ARGUMENT_DESCRIPTION)
             +
             self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
         )
