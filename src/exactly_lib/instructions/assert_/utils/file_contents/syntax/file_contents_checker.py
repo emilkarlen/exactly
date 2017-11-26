@@ -29,7 +29,7 @@ class FileContentsCheckerHelp:
                  checked_file: str,
                  initial_args_of_invokation_variants: list):
         self._checked_file = checked_file
-        self.contents_matcher_help = parts_cl_syntax.FileContentsMatcherHelp(checked_file)
+        self.contents_matcher_help = parts_cl_syntax.FileContentsMatcherHelp()
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self._tp = TextParser({

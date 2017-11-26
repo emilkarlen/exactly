@@ -3,7 +3,7 @@ from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_matcher import \
     FileContentsMatcherHelp
 
-_HELPER = FileContentsMatcherHelp('the checked file')
+_HELPER = FileContentsMatcherHelp()
 
 DOCUMENTATION = syntax_element_documentation(None,
                                              syntax_elements.FILE_CONTENTS_MATCHER,
