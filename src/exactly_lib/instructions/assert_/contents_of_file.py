@@ -5,8 +5,8 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.syntax.contents_utils_for_instr_doc import \
-    FileContentsHelpParts
+from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_assertion import \
+    FileContentsAssertionHelp
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
@@ -33,9 +33,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         })
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     self.actual_file_arg)
-        self._help_parts = FileContentsHelpParts(name,
-                                                 self.actual_file_arg.name,
-                                                 [self.actual_file])
+        self._help_parts = FileContentsAssertionHelp(name,
+                                                     self.actual_file_arg.name,
+                                                     [self.actual_file])
         self.actual_file_relativity = a.Single(a.Multiplicity.OPTIONAL,
                                                a.Named('ACTUAL-REL'))
 
