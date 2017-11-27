@@ -1,5 +1,5 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.help_texts import instruction_arguments, formatting
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts import test_case_file_structure as tc_fs
 from exactly_lib.help_texts.entity import concepts as ci, syntax_elements
 from exactly_lib.help_texts.entity import conf_params
@@ -23,24 +23,6 @@ from exactly_lib.util.textformat.utils import transform_list_to_table
 class PathElementDoc:
     def __init__(self, sed: SyntaxElementDescription):
         self.sed = sed
-
-
-def default_relativity_for_rel_opt_type(path_arg_name: str,
-                                        default_relativity_type: RelOptionType) -> list:
-    return docs.paras(_DEFAULT_RELATIVITY
-                      .format(path=path_arg_name,
-                              default_relativity_location=REL_OPTIONS_MAP[default_relativity_type].informative_name))
-
-
-def relativity_syntax_element_descriptions(
-        path_that_may_be_relative: a.Named,
-        rel_options_conf: RelOptionsConfiguration,
-        relativity_argument: a.Named = instruction_arguments.RELATIVITY_ARGUMENT) -> list:
-    return [
-        relativity_syntax_element_description(path_that_may_be_relative,
-                                              rel_options_conf,
-                                              relativity_argument)
-    ]
 
 
 def path_element(path_arg_name: str,
@@ -80,22 +62,6 @@ def path_elements(path_arg_name: str,
     return [
         path_element(path_arg_name, rel_options_conf, custom_paragraphs)
     ]
-
-
-def relativity_syntax_element_description(
-        path_that_may_be_relative: a.Named,
-        rel_options_conf: RelOptionsConfiguration,
-        relativity_argument: a.Named = instruction_arguments.RELATIVITY_ARGUMENT) -> SyntaxElementDescription:
-    renderer = RelOptionRenderer(path_that_may_be_relative.name)
-    return SyntaxElementDescription(
-        relativity_argument.name,
-        [transform_list_to_table(renderer.list_for(rel_options_conf.accepted_relativity_variants))])
-
-
-def relativity_options_paragraph(path_that_may_be_relative: str,
-                                 variants: PathRelativityVariants) -> ParagraphItem:
-    renderer = RelOptionRenderer(path_that_may_be_relative)
-    return transform_list_to_table(renderer.list_for(variants))
 
 
 def sparse_relativity_options_paragraph(path_that_may_be_relative: str,
@@ -187,26 +153,6 @@ class RelOptionRenderer:
         })
         self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
 
-    def paragraphs(self, s: str) -> list:
-        return self.parser.fnap(s)
-
-    def option_info(self,
-                    option_type_info: _RelOptionTypeInfo) -> _RelOptionInfo:
-        return _RelOptionInfo(a.Option(option_type_info.option_name,
-                                       argument=self.argument_name),
-                              self.paragraphs(option_type_info.paragraph_items_text),
-                              option_type_info.see_also)
-
-    def list_for(self, variants: PathRelativityVariants) -> lists.HeaderContentList:
-        items = []
-        for rel_option_type in _DISPLAY_ORDER:
-            if rel_option_type in variants.rel_option_types:
-                items.append(self.item_for(self.option_info_for(rel_option_type)))
-        items.append(self._rel_symbol_item())
-        return lists.HeaderContentList(items,
-                                       lists.Format(lists.ListType.VARIABLE_LIST,
-                                                    custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
-
     def sparse_list_for(self, variants: PathRelativityVariants) -> lists.HeaderContentList:
         items = []
         for rel_option_type in _DISPLAY_ORDER:
@@ -216,21 +162,10 @@ class RelOptionRenderer:
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
 
-    def item_for(self, info: _RelOptionInfo) -> lists.HeaderContentListItem:
-        return lists.HeaderContentListItem(docs.text(self.arg_renderer.visit(info.option)),
-                                           info.paragraph_items)
-
     def sparse_item_for(self, rel_option_type: RelOptionType) -> lists.HeaderContentListItem:
         opt_info = REL_OPTIONS_MAP[rel_option_type]
         return lists.HeaderContentListItem(docs.text(option_syntax.option_syntax(opt_info.option_name)),
                                            docs.paras(opt_info.informative_name))
-
-    def option_info_for(self, option_type: RelOptionType) -> _RelOptionInfo:
-        return self.option_info(_ALL[option_type])
-
-    def _rel_symbol_item(self) -> lists.HeaderContentListItem:
-        return lists.HeaderContentListItem(docs.text(self.arg_renderer.visit(instruction_arguments.REL_SYMBOL_OPTION)),
-                                           self.paragraphs(_REL_SYMBOL_DESCRIPTION))
 
 
 _REL_TMP_DESCRIPTION = """\
