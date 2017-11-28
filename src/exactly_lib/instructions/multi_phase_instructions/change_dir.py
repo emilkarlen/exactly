@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.entity import concepts, syntax_elements
+from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -57,12 +58,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             self.relativity_options.options)
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
-        name_and_cross_refs = [
+        return cross_reference_id_list([
             syntax_elements.PATH_SYNTAX_ELEMENT,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
-        ]
-        return cross_reference_id_list(name_and_cross_refs)
+        ])
 
 
 _NO_DIR_ARG_MEANING = """\
