@@ -1,6 +1,7 @@
 from exactly_lib.util.textformat.formatting.text import paragraph_item
 from exactly_lib.util.textformat.formatting.text.wrapper import Indent
-from exactly_lib.util.textformat.structure.document import SectionContents, Section
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, SectionItem, SectionItemVisitor, \
+    Article
 
 
 class Separation(tuple):
@@ -29,7 +30,7 @@ def no_separation() -> Separation:
     return Separation(0, 0, 0)
 
 
-class Formatter:
+class Formatter(SectionItemVisitor):
     def __init__(self,
                  paragraph_item_formatter: paragraph_item.Formatter,
                  separation: Separation = Separation(),
@@ -45,7 +46,7 @@ class Formatter:
                                 prepend_separator_for_contents: bool = False) -> list:
         ret_val = []
         init_para_lines = self.paragraph_item_formatter.format_paragraph_items(section_contents.initial_paragraphs)
-        sections_lines = self.format_sections(section_contents.sections)
+        sections_lines = self.format_section_items(section_contents.sections)
         if prepend_separator_for_contents:
             if init_para_lines or sections_lines:
                 ret_val.extend(self._blanks(self.separation.between_header_and_content))
@@ -55,6 +56,9 @@ class Formatter:
         ret_val.extend(sections_lines)
         return ret_val
 
+    def format_section_item(self, section_item: SectionItem) -> list:
+        return self.visit(section_item)
+
     def format_section(self, section: Section) -> list:
         ret_val = []
         ret_val.extend(self.paragraph_item_formatter.format_text(section.header))
@@ -63,13 +67,25 @@ class Formatter:
         self.wrapper.pop_indent()
         return ret_val
 
-    def format_sections(self, sections: list) -> list:
+    def format_section_items(self, section_items: list) -> list:
         ret_val = []
-        for section in sections:
+        for section in section_items:
             if ret_val:
                 ret_val.extend(self._blanks(self.separation.between_sections))
-            ret_val.extend(self.format_section(section))
+            ret_val.extend(self.format_section_item(section))
         return ret_val
+
+    def visit_section(self, section: Section):
+        return self.format_section(section)
+
+    def visit_article(self, article: Article):
+        contents = article.contents
+        all_initial_paras = article.abstract_paragraphs + contents.initial_paragraphs
+        as_section = Section(article.header,
+                             SectionContents(all_initial_paras,
+                                             contents.sections))
+
+        return self.format_section(as_section)
 
     def _blanks(self, num_lines: int) -> list:
         return self.wrapper.blank_lines(num_lines)
