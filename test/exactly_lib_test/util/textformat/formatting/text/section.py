@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.formatting.text import lists as lf
 from exactly_lib.util.textformat.formatting.text import paragraph_item
 from exactly_lib.util.textformat.formatting.text import section as sut
 from exactly_lib.util.textformat.structure import lists
-from exactly_lib.util.textformat.structure.document import SectionContents, Section, empty_contents
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_contents
 from exactly_lib_test.util.textformat.test_resources.constr import single_text_para, header_only_item, \
     BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
@@ -53,7 +53,7 @@ class TestSectionContents(unittest.TestCase):
                                             sut.Section(text('Section 2'),
                                                         sut.SectionContents(
                                                             [],
-                                                            [empty_section('Section 2.1')]))
+                                                            [empty_article('Section 2.1')]))
                                             ])
         actual = formatter.format_section_contents(section_contents)
         self.assertEqual(['Section 1',
@@ -86,7 +86,8 @@ class TestSectionContents(unittest.TestCase):
 
 
 class TestSection(unittest.TestCase):
-    def test_empty_section(self):
+    def test_empty_section_item(self):
+        # ARRANGE #
         paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
                                                             paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
@@ -94,13 +95,21 @@ class TestSection(unittest.TestCase):
                                   sut.Separation(between_sections=1,
                                                  between_header_and_content=2,
                                                  between_initial_paragraphs_and_sub_sections=3))
-        section = empty_section('Section Header')
-        actual = formatter.format_section(section)
-        self.assertEqual(['Section Header',
-                          ],
-                         actual)
+        header_string = 'Section Header'
+        cases = [
+            ('section', empty_section(header_string)),
+            ('article', empty_article(header_string)),
+        ]
+        for test_case_name, section_item in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section(section_item)
+                # ASSERT #
+                self.assertEqual([header_string],
+                                 actual)
 
     def test_separation_between_header_and_content__with_initial_paragraphs(self):
+        # ARRANGE #
         paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
                                                             paragraph_item.Wrapper(page_width=100),
                                                             num_item_separator_lines=0)
@@ -108,16 +117,23 @@ class TestSection(unittest.TestCase):
                                   sut.Separation(between_sections=1,
                                                  between_header_and_content=2,
                                                  between_initial_paragraphs_and_sub_sections=3))
-        section = Section(text('Section Header'),
-                          SectionContents([single_text_para('initial paragraph')],
-                                          []))
-        actual = formatter.format_section(section)
-        self.assertEqual(['Section Header',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          'initial paragraph',
-                          ],
-                         actual)
+        header = text('Section Header')
+        contents = SectionContents([single_text_para('initial paragraph')], [])
+        cases = [
+            ('section', Section(header, contents)),
+            ('article', Article(header, [], contents)),
+        ]
+        for test_case_name, section_item in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section(section_item)
+                #  ASSERT #
+                self.assertEqual(['Section Header',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  'initial paragraph',
+                                  ],
+                                 actual)
 
     def test_separation_between_header_and_content__with_only_sub_sections(self):
         paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
@@ -127,16 +143,26 @@ class TestSection(unittest.TestCase):
                                   sut.Separation(between_sections=1,
                                                  between_header_and_content=2,
                                                  between_initial_paragraphs_and_sub_sections=3))
-        section = Section(text('Section Header'),
-                          SectionContents([],
-                                          [empty_section('Content Section Header')]))
-        actual = formatter.format_section(section)
-        self.assertEqual(['Section Header',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          'Content Section Header',
-                          ],
-                         actual)
+        header_string = 'Section Header'
+        contents = SectionContents([], [empty_section('Content Section Header')])
+        cases = [
+            ('section', Section(text(header_string),
+                                contents)),
+            ('article', Article(text(header_string),
+                                [],
+                                contents)),
+        ]
+        for test_case_name, section_item in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section(section_item)
+                #  ASSERT #
+                self.assertEqual([header_string,
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  'Content Section Header',
+                                  ],
+                                 actual)
 
     def test_separation_between_header_and_content__with_both_initial_paragraphs_and_sub_sections(self):
         paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
@@ -146,20 +172,31 @@ class TestSection(unittest.TestCase):
                                   sut.Separation(between_sections=1,
                                                  between_header_and_content=2,
                                                  between_initial_paragraphs_and_sub_sections=3))
-        section = Section(text('Section Header'),
-                          SectionContents([single_text_para('initial paragraph')],
-                                          [empty_section('Content Section Header')]))
-        actual = formatter.format_section(section)
-        self.assertEqual(['Section Header',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          'initial paragraph',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          'Content Section Header',
-                          ],
-                         actual)
+        header_string = 'Section Header'
+        contents = SectionContents([single_text_para('initial paragraph')],
+                                   [empty_section('Content Section Header')])
+        cases = [
+            ('section', Section(text(header_string),
+                                contents)),
+            ('article', Article(text(header_string),
+                                [],
+                                contents)),
+        ]
+        for test_case_name, section_item in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section(section_item)
+                #  ASSERT #
+                self.assertEqual([header_string,
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  'initial paragraph',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  'Content Section Header',
+                                  ],
+                                 actual)
 
     def test_section_content_indent(self):
         paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
@@ -171,21 +208,29 @@ class TestSection(unittest.TestCase):
                                   separation=sut.Separation(between_sections=1,
                                                             between_header_and_content=2,
                                                             between_initial_paragraphs_and_sub_sections=3))
-        section = Section(text('Section Header'),
-                          SectionContents([single_text_para('initial paragraph')],
-                                          [Section(text('Section Header'),
-                                                   empty_contents())]))
-        actual = formatter.format_section(section)
-        self.assertEqual(['Section Header',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          content_indent + 'initial paragraph',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          content_indent + 'Section Header',
-                          ],
-                         actual)
+        header = text('Section Header')
+        contents = SectionContents([single_text_para('initial paragraph')],
+                                   [Section(text('Sub Section Header'),
+                                            empty_contents())])
+        cases = [
+            ('section', Section(header, contents)),
+            ('article', Article(header, [], contents)),
+        ]
+        for test_case_name, section_item in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section(section_item)
+                # ASSERT #
+                self.assertEqual(['Section Header',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  content_indent + 'initial paragraph',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  content_indent + 'Sub Section Header',
+                                  ],
+                                 actual)
 
     def test_section_content_indent__for_nested_sections(self):
         paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
@@ -197,34 +242,41 @@ class TestSection(unittest.TestCase):
                                   separation=sut.Separation(between_sections=1,
                                                             between_header_and_content=2,
                                                             between_initial_paragraphs_and_sub_sections=3))
-        section = Section(text('Section 1'),
-                          SectionContents(
-                              [],
-                              [Section(
-                                  text('Section 1.1'),
-                                  SectionContents(
-                                      [single_text_para('paragraph in section 1.1')],
-                                      [Section(text('Section 1.1.1'),
-                                               SectionContents(
-                                                   [single_text_para('paragraph in section 1.1.1')],
-                                                   []))]))]))
-        actual = formatter.format_section(section)
-        self.assertEqual(['Section 1',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          (1 * content_indent) + 'Section 1.1',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          (2 * content_indent) + 'paragraph in section 1.1',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          (2 * content_indent) + 'Section 1.1.1',
-                          BLANK_LINE,
-                          BLANK_LINE,
-                          (3 * content_indent) + 'paragraph in section 1.1.1',
-                          ],
-                         actual)
+        header = text('Section 1')
+        contents = SectionContents([],
+                                   [Section(
+                                       text('Section 1.1'),
+                                       SectionContents(
+                                           [single_text_para('paragraph in section 1.1')],
+                                           [Section(text('Section 1.1.1'),
+                                                    SectionContents(
+                                                        [single_text_para('paragraph in section 1.1.1')],
+                                                        []))]))])
+        cases = [
+            ('section', Section(header, contents)),
+            ('article', Article(header, [], contents)),
+        ]
+        for test_case_name, section_item in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section(section_item)
+                #  ASSERT #
+                self.assertEqual(['Section 1',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  (1 * content_indent) + 'Section 1.1',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  (2 * content_indent) + 'paragraph in section 1.1',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  (2 * content_indent) + 'Section 1.1.1',
+                                  BLANK_LINE,
+                                  BLANK_LINE,
+                                  (3 * content_indent) + 'paragraph in section 1.1.1',
+                                  ],
+                                 actual)
 
 
 def single_para_contents(paragraph_text: str):
@@ -232,9 +284,15 @@ def single_para_contents(paragraph_text: str):
                            [])
 
 
-def empty_section(header: str) -> sut.Section:
-    return sut.Section(text(header),
-                       sut.SectionContents([], []))
+def empty_section(header: str) -> Section:
+    return Section(text(header),
+                   sut.SectionContents([], []))
+
+
+def empty_article(header: str) -> Article:
+    return Article(text(header),
+                   [],
+                   sut.SectionContents([], []))
 
 
 if __name__ == '__main__':
