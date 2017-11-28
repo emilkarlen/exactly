@@ -130,18 +130,23 @@ class SectionAssertion:
         sections_message = asrt.sub_component_builder('sections', message_builder)
         asrt.IsInstance(list).apply(put, value.sections, sections_message)
         for (idx, section) in enumerate(value.sections):
-            self.is_section(put, section,
-                            asrt.sub_component_builder('[%d]' % idx, sections_message))
+            self.is_section_item(put, section,
+                                 asrt.sub_component_builder('[%d]' % idx, sections_message))
 
-    def is_section(self,
-                   put: unittest.TestCase,
-                   value,
-                   message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        asrt.IsInstance(doc.Section).apply(put, value, message_builder)
-        assert isinstance(value, doc.Section)
+    def is_section_item(self,
+                        put: unittest.TestCase,
+                        value,
+                        message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        asrt.IsInstance(doc.SectionItem).apply(put, value, message_builder)
+        assert isinstance(value, doc.SectionItem)
         asrt.sub_component('header',
-                           doc.Section.header.fget,
+                           doc.SectionItem.header.fget,
                            is_text).apply(put, value, message_builder)
+        if isinstance(value, doc.Article):
+            asrt_abstract_paras = is_paragraph_item_list('abstract_paragraph_items')
+            asrt_abstract_paras.apply(put, value.abstract_paragraphs)
+        else:
+            asrt.IsInstance(doc.Section).apply(put, value, message_builder)
         self.is_section_contents(put, value.contents,
                                  asrt.sub_component_builder('contents', message_builder))
 
@@ -150,7 +155,7 @@ SECTION_ASSERTION = SectionAssertion()
 
 is_section_contents = asrt.OfCallable(SECTION_ASSERTION.is_section_contents)
 
-is_section = asrt.OfCallable(SECTION_ASSERTION.is_section)
+is_section_item = asrt.OfCallable(SECTION_ASSERTION.is_section_item)
 
 is_list_item = asrt.And([
     asrt.IsInstance(lists.HeaderContentListItem),
