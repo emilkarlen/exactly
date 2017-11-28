@@ -2,9 +2,9 @@ import types
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
-from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageRenderer
+from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageArticleRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
-    SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionHierarchyGenerator
+    SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionHierarchyGenerator, LeafArticleRendererNode
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
@@ -125,5 +125,5 @@ class _SectionInstructionsNodeConstructor:
         cross_ref_target = self.mk_instruction_cross_ref_target(instruction, self.section)
         target_info = cross_ref.TargetInfo(instruction.instruction_name(),
                                            cross_ref_target)
-        return LeafSectionRendererNode(target_info,
-                                       InstructionManPageRenderer(instruction))
+        return LeafArticleRendererNode(target_info,
+                                       InstructionManPageArticleRenderer(instruction))

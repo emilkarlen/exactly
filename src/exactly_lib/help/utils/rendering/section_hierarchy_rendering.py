@@ -1,5 +1,5 @@
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionRenderer, SectionContentsRenderer, \
-    RenderingEnvironment
+    RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode, TargetInfo
 from exactly_lib.section_document.model import SectionContents
@@ -93,6 +93,35 @@ class LeafSectionRendererNode(SectionRendererNodeWithRoot):
             def apply(self, environment: RenderingEnvironment) -> doc.Section:
                 return doc.Section(super_self._root_target_info.anchor_text(),
                                    super_self._contents_renderer.apply(environment))
+
+        return RetVal()
+
+
+class LeafArticleRendererNode(SectionRendererNodeWithRoot):
+    """
+    An article without sub sections that appear in the target-hierarchy.
+    """
+
+    def __init__(self,
+                 node_target_info: TargetInfo,
+                 contents_renderer: ArticleContentsRenderer,
+                 ):
+        super().__init__(node_target_info)
+        self._contents_renderer = contents_renderer
+
+    def target_info_node(self) -> TargetInfoNode:
+        return cross_ref.target_info_leaf(self._root_target_info)
+
+    def section_renderer(self) -> SectionRenderer:
+        super_self = self
+
+        class RetVal(SectionRenderer):
+            def apply(self, environment: RenderingEnvironment) -> doc.Article:
+                article_contents = super_self._contents_renderer.apply(environment)
+
+                return doc.Article(super_self._root_target_info.anchor_text(),
+                                   article_contents.abstract_paragraphs,
+                                   article_contents.section_contents)
 
         return RetVal()
 

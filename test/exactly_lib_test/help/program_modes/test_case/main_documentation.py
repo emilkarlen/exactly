@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
         # ACT #
         actual = generator.section_renderer_node(CustomTargetInfoFactory('prefix')).section(rendering_environment)
         # ASSERT #
-        struct_check.is_section.apply(self, actual)
+        struct_check.is_section_item.apply(self, actual)
 
     def test_target_info_hierarchy(self):
         # ARRANGE #

@@ -13,7 +13,7 @@ def generator_generates_valid_data(put: unittest.TestCase,
     node = sut.section_renderer_node(_TARGET_FACTORY)
 
     actual_section = node.section(_RENDERING_ENVIRONMENT)
-    struct_check.is_section.apply_with_message(put, actual_section, 'section')
+    struct_check.is_section_item.apply_with_message(put, actual_section, 'section')
 
     actual_target_info_node = node.target_info_node()
     is_target_info_node.apply_with_message(put, actual_target_info_node, 'target-info-node')

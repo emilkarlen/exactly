@@ -31,9 +31,22 @@ class SectionContentsRenderer:
         raise NotImplementedError()
 
 
+class ArticleContentsRenderer:
+    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+        raise NotImplementedError()
+
+
 class SectionRenderer:
     def apply(self, environment: RenderingEnvironment) -> doc.Section:
         raise NotImplementedError()
+
+
+class ParagraphItemsRendererConstant(ParagraphItemsRenderer):
+    def __init__(self, paragraph_items: list):
+        self._paragraph_items = paragraph_items
+
+    def apply(self, environment: RenderingEnvironment) -> list:
+        return self._paragraph_items
 
 
 class SectionContentsRendererFromParagraphItemsRenderer(SectionContentsRenderer):
@@ -46,6 +59,17 @@ class SectionContentsRendererFromParagraphItemsRenderer(SectionContentsRenderer)
             for renderer in self._paragraph_item_renderer
         ]))
         return doc.SectionContents(initial_paragraphs)
+
+
+class SectionContentsRendererFromArticleContentsRenderer(SectionContentsRenderer):
+    def __init__(self, article_contents_renderer: ArticleContentsRenderer):
+        self._article_contents_renderer = article_contents_renderer
+
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+        article = self._article_contents_renderer.apply(environment)
+        initial_paragraphs = article.abstract_paragraphs + article.section_contents.initial_paragraphs
+        sub_sections = article.section_contents.sections
+        return doc.SectionContents(initial_paragraphs, sub_sections)
 
 
 class SectionRendererFromSectionContentsRenderer(SectionRenderer):

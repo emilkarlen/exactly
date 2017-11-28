@@ -18,6 +18,32 @@ h1 {
   padding: 5px;
 }
 
+article h1 {
+    font-size: large;
+    padding: 0px;
+    background-color: transparent;
+}
+
+article h2 {
+    font-size: medium;
+}
+
+article h3 {
+    font-size: medium;
+}
+
+article header h1 {
+    padding: 7px;
+    font-size: x-large;
+    font-family: monospace;
+    background-color: #c0c0c0;
+}
+
+article header p {
+    font-style: italic;
+    font-size: 110%;
+}
+
 table {
   border-collapse: collapse;
 }
