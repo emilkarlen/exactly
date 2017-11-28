@@ -3,7 +3,8 @@ import types
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils.doc_utils import synopsis_section, description_section
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer, \
+    SectionContentsRendererFromArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.util.textformat.structure import document as doc, lists
 from exactly_lib.util.textformat.structure.structures import para
@@ -13,12 +14,11 @@ LIST_INDENT = 2
 BLANK_LINE_BETWEEN_ELEMENTS = lists.Separations(1, 0)
 
 
-class InstructionManPageRenderer(SectionContentsRenderer):
-    def __init__(self,
-                 documentation: InstructionDocumentation):
+class InstructionManPageArticleRenderer(ArticleContentsRenderer):
+    def __init__(self, documentation: InstructionDocumentation):
         self.documentation = documentation
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
         documentation = self.documentation
         sub_sections = []
         if documentation.invokation_variants():
@@ -31,9 +31,15 @@ class InstructionManPageRenderer(SectionContentsRenderer):
             sub_sections.append(description_section(doc.SectionContents(main_description_rest)))
         sub_sections += see_also_sections(documentation.see_also_targets(), environment,
                                           uppercase_title=True)
-        prelude_paragraphs = [para(documentation.single_line_description())]
-        return doc.SectionContents(prelude_paragraphs,
-                                   sub_sections)
+        abstract_paragraphs = [para(self.documentation.single_line_description())]
+        return doc.ArticleContents(abstract_paragraphs,
+                                   doc.SectionContents([], sub_sections))
+
+
+class InstructionManPageRenderer(SectionContentsRendererFromArticleContentsRenderer):
+    def __init__(self,
+                 documentation: InstructionDocumentation):
+        super().__init__(InstructionManPageArticleRenderer(documentation))
 
 
 def instruction_set_list_item(description: InstructionDocumentation,

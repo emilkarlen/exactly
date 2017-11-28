@@ -31,6 +31,32 @@ class SectionContents(tuple):
         return not self.initial_paragraphs and not self.sections
 
 
+class ArticleContents(tuple):
+    def __new__(cls,
+                abstract_paragraphs: list,
+                section_contents: SectionContents):
+        """
+        :type abstract_paragraphs: [core.ParagraphItem]
+        """
+        return tuple.__new__(cls, (abstract_paragraphs,
+                                   section_contents))
+
+    @property
+    def abstract_paragraphs(self) -> list:
+        """
+        :return: [core.ParagraphItem]
+        """
+        return self[0]
+
+    @property
+    def section_contents(self) -> SectionContents:
+        return self[1]
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.abstract_paragraphs and self.section_contents.is_empty
+
+
 def empty_contents() -> SectionContents:
     return SectionContents([], [])
 
