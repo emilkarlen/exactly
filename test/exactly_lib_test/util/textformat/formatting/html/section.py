@@ -5,7 +5,7 @@ from exactly_lib.util.textformat.formatting.html import section as sut
 from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from exactly_lib.util.textformat.formatting.html.text import TextRenderer
 from exactly_lib.util.textformat.structure.core import StringText
-from exactly_lib.util.textformat.structure.document import SectionContents, Section
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_contents
 from exactly_lib.util.textformat.structure.structures import para
 from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import TargetRendererTestImpl, \
     ParaWithSingleStrTextRenderer
@@ -21,6 +21,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSectionContentsWithSingleSection),
         unittest.makeSuite(TestSectionContentsWithMultipleSections),
         unittest.makeSuite(TestSection),
+        unittest.makeSuite(TestArticle),
+        unittest.makeSuite(TestSectionContentsWithSectionsAndArticles),
     ])
 
 
@@ -235,6 +237,35 @@ class TestSectionContentsWithMultipleSections(unittest.TestCase):
             root, ret_val, self)
 
 
+class TestSectionContentsWithSectionsAndArticles(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+        root = Element('root')
+        sc = SectionContents([],
+                             [Section(StringText('section header'),
+                                      SectionContents([], [])),
+                              Article(StringText('article header'),
+                                      [],
+                                      SectionContents([], [])),
+                              ])
+        # ACT #
+        ret_val = TEST_RENDERER.render_section_contents(sut.Environment(2),
+                                                        root,
+                                                        sc)
+        # ASSERT #
+        assert_contents_and_that_last_child_is_returned(
+            '<root>'
+            '<h3>section header</h3>'
+            '<article>'
+            '<header>'
+            '<h1>article header</h1>'
+            '</header>'
+            '</article>'
+            '</root>'
+            ,
+            root, ret_val, self)
+
+
 class TestSection(unittest.TestCase):
     def test(self):
         # ARRANGE #
@@ -249,9 +280,9 @@ class TestSection(unittest.TestCase):
                         [para('para 1/1')], []))])
         )
         # ACT #
-        ret_val = TEST_RENDERER.render_section(sut.Environment(0),
-                                               root,
-                                               s)
+        ret_val = TEST_RENDERER.render_section_item(sut.Environment(0),
+                                                    root,
+                                                    s)
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
@@ -262,6 +293,92 @@ class TestSection(unittest.TestCase):
             '</root>'
             ,
             root, ret_val, self)
+
+
+class TestArticle(unittest.TestCase):
+    def test_simple(self):
+        cases = [
+            ('empty',
+             Article(StringText('header'),
+                     [],
+                     empty_contents()),
+             '<root>'
+             '<article>'
+             '<header>'
+             '<h1>header</h1>'
+             '</header>'
+             '</article>'
+             '</root>'
+             ),
+            ('single abstract paragraph',
+             Article(StringText('header'),
+                     [para('abstract paragraph')],
+                     empty_contents()),
+             '<root>'
+             '<article>'
+             '<header>'
+             '<h1>header</h1>'
+             '<p>abstract paragraph</p>'
+             '</header>'
+             '</article>'
+             '</root>'
+             )
+        ]
+        for test_case_name, article, expected in cases:
+            with self.subTest(test_case_name):
+                root = Element('root')
+                environment = sut.Environment(0)
+                # ACT #
+                ret_val = TEST_RENDERER.render_section_item(environment,
+                                                            root,
+                                                            article)
+                # ASSERT #
+                assert_contents_and_that_last_child_is_returned(
+                    expected,
+                    root, ret_val, self)
+
+    def test_complex_structure_with_reset_of_section_level(self):
+        # ARRANGE #
+        s = Article(
+            StringText('article header'),
+            [para('para in abstract')],
+            SectionContents(
+                [para('initial para in contents')],
+                [Section(
+                    StringText('header 1/1'),
+                    SectionContents(
+                        [para('para 1/1')],
+                        [Section(
+                            StringText('header 1/1/1'),
+                            SectionContents(
+                                [para('para 1/1/1')],
+                                []))]))])
+        )
+        for section_level in range(3):
+            with self.subTest('section level = ' + str(section_level)):
+                root = Element('root')
+                environment = sut.Environment(section_level)
+                # ACT #
+                ret_val = TEST_RENDERER.render_section_item(environment,
+                                                            root,
+                                                            s)
+                # ASSERT #
+                assert_contents_and_that_last_child_is_returned(
+                    '<root>'
+                    '<article>'
+                    '<header>'
+                    '<h1>article header</h1>'
+                    '<p>para in abstract</p>'
+                    '</header>'
+                    '<p>initial para in contents</p>'
+                    '<h1>header 1/1</h1>'
+                    '<p>para 1/1</p>'
+                    '<h2>header 1/1/1</h2>'
+                    '<p>para 1/1/1</p>'
+                    '</article>'
+                    '</root>'
+                    ,
+                    root, ret_val, self)
 
 
 TEST_RENDERER = sut.SectionRenderer(HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl())),
