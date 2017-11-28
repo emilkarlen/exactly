@@ -103,7 +103,7 @@ class TestSection(unittest.TestCase):
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
                 # ACT #
-                actual = formatter.format_section(section_item)
+                actual = formatter.format_section_item(section_item)
                 # ASSERT #
                 self.assertEqual([header_string],
                                  actual)
@@ -126,13 +126,69 @@ class TestSection(unittest.TestCase):
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
                 # ACT #
-                actual = formatter.format_section(section_item)
+                actual = formatter.format_section_item(section_item)
                 #  ASSERT #
                 self.assertEqual(['Section Header',
                                   BLANK_LINE,
                                   BLANK_LINE,
                                   'initial paragraph',
                                   ],
+                                 actual)
+
+    def test_article_separation_between_header_and_content(self):
+        # ARRANGE #
+        paragraph_item_formatter = paragraph_item.Formatter(CROSS_REF_TITLE_ONLY_TEXT_FORMATTER,
+                                                            paragraph_item.Wrapper(page_width=100),
+                                                            num_item_separator_lines=0)
+        formatter = sut.Formatter(paragraph_item_formatter,
+                                  sut.Separation(between_sections=1,
+                                                 between_header_and_content=2,
+                                                 between_initial_paragraphs_and_sub_sections=3))
+        header = text('Article Header')
+        cases = [
+            ('single abstract para / no contents para',
+             Article(header,
+                     [single_text_para('abstract paragraph')],
+                     empty_section_contents()),
+             [
+                 'Article Header',
+                 BLANK_LINE,
+                 BLANK_LINE,
+                 'abstract paragraph',
+             ]),
+            ('single abstract para / single contents para',
+             Article(header,
+                     [single_text_para('abstract paragraph')],
+                     single_para_contents('contents paragraph')),
+             [
+                 'Article Header',
+                 BLANK_LINE,
+                 BLANK_LINE,
+                 'abstract paragraph',
+                 'contents paragraph',
+             ]),
+            ('single abstract para / single contents para',
+             Article(header,
+                     [single_text_para('abstract paragraph')],
+                     SectionContents([],
+                                     [empty_section('Sub Section Header')])),
+             [
+                 'Article Header',
+                 BLANK_LINE,
+                 BLANK_LINE,
+                 'abstract paragraph',
+                 BLANK_LINE,
+                 BLANK_LINE,
+                 BLANK_LINE,
+                 'Sub Section Header',
+             ]),
+        ]
+        for test_case_name, article, expected_lines in cases:
+            with self.subTest(test_case_name):
+                # ACT #
+                actual = formatter.format_section_item(article)
+                #  ASSERT #
+                self.assertEqual(expected_lines,
                                  actual)
 
     def test_separation_between_header_and_content__with_only_sub_sections(self):
@@ -155,7 +211,7 @@ class TestSection(unittest.TestCase):
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
                 # ACT #
-                actual = formatter.format_section(section_item)
+                actual = formatter.format_section_item(section_item)
                 #  ASSERT #
                 self.assertEqual([header_string,
                                   BLANK_LINE,
@@ -185,7 +241,7 @@ class TestSection(unittest.TestCase):
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
                 # ACT #
-                actual = formatter.format_section(section_item)
+                actual = formatter.format_section_item(section_item)
                 #  ASSERT #
                 self.assertEqual([header_string,
                                   BLANK_LINE,
@@ -219,7 +275,7 @@ class TestSection(unittest.TestCase):
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
                 # ACT #
-                actual = formatter.format_section(section_item)
+                actual = formatter.format_section_item(section_item)
                 # ASSERT #
                 self.assertEqual(['Section Header',
                                   BLANK_LINE,
@@ -259,7 +315,7 @@ class TestSection(unittest.TestCase):
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
                 # ACT #
-                actual = formatter.format_section(section_item)
+                actual = formatter.format_section_item(section_item)
                 #  ASSERT #
                 self.assertEqual(['Section 1',
                                   BLANK_LINE,
@@ -279,9 +335,13 @@ class TestSection(unittest.TestCase):
                                  actual)
 
 
-def single_para_contents(paragraph_text: str):
+def single_para_contents(paragraph_text: str) -> SectionContents:
     return SectionContents([single_text_para(paragraph_text)],
                            [])
+
+
+def empty_section_contents() -> SectionContents:
+    return SectionContents([], [])
 
 
 def empty_section(header: str) -> Section:
