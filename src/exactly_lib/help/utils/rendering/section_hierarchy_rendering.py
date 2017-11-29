@@ -1,5 +1,5 @@
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionRenderer, SectionContentsRenderer, \
-    RenderingEnvironment, ArticleContentsRenderer
+    RenderingEnvironment, ArticleContentsRenderer, ArticleRenderer
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode, TargetInfo
 from exactly_lib.section_document.model import SectionContents
@@ -113,10 +113,10 @@ class LeafArticleRendererNode(SectionRendererNodeWithRoot):
     def target_info_node(self) -> TargetInfoNode:
         return cross_ref.target_info_leaf(self._root_target_info)
 
-    def section_renderer(self) -> SectionRenderer:
+    def section_renderer(self) -> ArticleRenderer:
         super_self = self
 
-        class RetVal(SectionRenderer):
+        class RetVal(ArticleRenderer):
             def apply(self, environment: RenderingEnvironment) -> doc.Article:
                 article_contents = super_self._contents_renderer.apply(environment)
 

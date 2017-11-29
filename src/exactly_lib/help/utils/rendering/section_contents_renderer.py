@@ -36,8 +36,18 @@ class ArticleContentsRenderer:
         raise NotImplementedError()
 
 
-class SectionRenderer:
+class SectionItemRenderer:
+    def apply(self, environment: RenderingEnvironment) -> doc.SectionItem:
+        raise NotImplementedError()
+
+
+class SectionRenderer(SectionItemRenderer):
     def apply(self, environment: RenderingEnvironment) -> doc.Section:
+        raise NotImplementedError()
+
+
+class ArticleRenderer(SectionItemRenderer):
+    def apply(self, environment: RenderingEnvironment) -> doc.Article:
         raise NotImplementedError()
 
 
