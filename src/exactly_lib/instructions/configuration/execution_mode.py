@@ -3,7 +3,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import conf_params
+from exactly_lib.help_texts.entity import conf_params, concepts
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -25,11 +25,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         super().__init__(name, {
             'MODE': _ARG_NAME,
             'execution_mode_config_param': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
+            'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name,
             'default_mode': conf_params.EXECUTION_MODE_CONF_PARAM_INFO.default_value_single_line_description,
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {execution_mode_config_param}')
+        return self._format('Sets the {execution_mode_config_param} {conf_param}')
 
     def main_description_rest(self) -> list:
         return self._paragraphs('The default mode (if not changed by this instruction) is {default_mode}.')
