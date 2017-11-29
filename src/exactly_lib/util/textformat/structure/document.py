@@ -64,19 +64,30 @@ class ArticleContents(tuple):
 
 
 class SectionItem:
-    def __init__(self, header: core.Text):
+    def __init__(self,
+                 header: core.Text,
+                 target: core.CrossReferenceTarget):
         self._header = header
+        self._target = target
 
     @property
     def header(self) -> core.Text:
         return self._header
 
+    @property
+    def target(self) -> core.CrossReferenceTarget:
+        """
+        :return: Not None if this item serves as a cross ref target
+        """
+        return self._target
+
 
 class Section(SectionItem):
     def __init__(self,
                  header: core.Text,
-                 contents: SectionContents):
-        super().__init__(header)
+                 contents: SectionContents,
+                 target: core.CrossReferenceTarget = None):
+        super().__init__(header, target)
         self._contents = contents
 
     @property
@@ -92,8 +103,9 @@ class Article(SectionItem):
 
     def __init__(self,
                  header: core.Text,
-                 contents: ArticleContents):
-        super().__init__(header)
+                 contents: ArticleContents,
+                 target: core.CrossReferenceTarget = None):
+        super().__init__(header, target)
         self._contents = contents
 
     @property
