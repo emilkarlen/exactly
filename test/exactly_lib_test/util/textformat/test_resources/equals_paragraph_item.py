@@ -9,6 +9,7 @@ from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.table import Table
 from exactly_lib.util.textformat.structure.utils import ParagraphItemVisitor
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.textformat.test_resources.structure import is_string_text
 
 
 def equals_paragraph_items(expected_items: list) -> asrt.ValueAssertion:
@@ -229,3 +230,12 @@ class _EqualsTextVisitor(TextVisitor):
         self.put.assertIsInstance(self.actual,
                                   expected,
                                   self._msg('Expecting a %s' % expected))
+
+
+def is_string_text_that_equals(expected: str) -> asrt.ValueAssertion:
+    return asrt.And([
+        is_string_text,
+        asrt.sub_component('value',
+                           core.StringText.value.fget,
+                           asrt.equals(expected)),
+    ])

@@ -57,15 +57,6 @@ is_text = asrt.Or([
 ])
 
 
-def is_string_text_that_equals(expected: str) -> asrt.ValueAssertion:
-    return asrt.And([
-        is_string_text,
-        asrt.sub_component('value',
-                           core.StringText.value.fget,
-                           asrt.equals(expected)),
-    ])
-
-
 class _IsParagraphItem(ParagraphItemVisitor, asrt.ValueAssertion):
     def apply(self,
               put: unittest.TestCase,
