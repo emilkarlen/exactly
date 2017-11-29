@@ -31,7 +31,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {home_directory}')
+        return self._format('Sets the {home_directory} directory')
 
     def invokation_variants(self) -> list:
         return [
