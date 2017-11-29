@@ -48,7 +48,7 @@ class HnSectionHeaderRenderer(SectionHeaderRenderer):
         return 'h6'
 
 
-class SectionRenderer:
+class SectionItemRenderer:
     def __init__(self,
                  section_header_renderer: SectionHeaderRenderer,
                  paragraph_item_renderer: ParagraphItemRenderer):
@@ -130,7 +130,7 @@ class SectionRenderer:
 
 class _SectionItemRenderer(SectionItemVisitor):
     def __init__(self,
-                 renderer: SectionRenderer,
+                 renderer: SectionItemRenderer,
                  environment: Environment,
                  parent: Element):
         self.renderer = renderer

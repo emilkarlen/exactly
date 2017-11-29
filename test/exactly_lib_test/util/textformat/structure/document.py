@@ -57,7 +57,8 @@ class SectionItemVisitorTest(unittest.TestCase):
 
 class UnknownSectionItem(sut.SectionItem):
     def __init__(self):
-        super().__init__(StringText('header of unknown item'))
+        super().__init__(StringText('header of unknown item'),
+                         target=None)
 
 
 if __name__ == '__main__':

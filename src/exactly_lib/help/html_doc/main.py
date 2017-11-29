@@ -138,12 +138,12 @@ def _add_toc_as_first_paragraphs(contents: doc.SectionContents,
     contents.initial_paragraphs.insert(0, toc_paragraph)
 
 
-def _section_renderer() -> doc_rendering.SectionRenderer:
+def _section_renderer() -> doc_rendering.SectionItemRenderer:
     target_renderer = HtmlTargetRenderer()
     text_renderer = text.TextRenderer(target_renderer)
     section_header_renderer = HnSectionHeaderRenderer(text_renderer)
     paragraph_item_renderer = FullParagraphItemRenderer(text_renderer)
-    return doc_rendering.SectionRenderer(section_header_renderer, paragraph_item_renderer)
+    return doc_rendering.SectionItemRenderer(section_header_renderer, paragraph_item_renderer)
 
 
 def _page_setup() -> doc_rendering.DocumentSetup:

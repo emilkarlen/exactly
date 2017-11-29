@@ -3,6 +3,7 @@ from xml.etree.ElementTree import Element, tostring
 from xml.etree.ElementTree import SubElement
 
 from exactly_lib.util.textformat.formatting.html import text as sut
+from exactly_lib.util.textformat.formatting.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceText, CrossReferenceTarget
 from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, \
@@ -16,7 +17,7 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_string_text__inside(self):
         # ARRANGE #
-        renderer = sut.TextRenderer(sut.TargetRenderer())
+        renderer = sut.TextRenderer(TargetRenderer())
         root = Element('root')
         source_text = 'source text'
         text = StringText(source_text)
@@ -33,7 +34,7 @@ class Test(unittest.TestCase):
 
     def test_string_text__after(self):
         # ARRANGE #
-        renderer = sut.TextRenderer(sut.TargetRenderer())
+        renderer = sut.TextRenderer(TargetRenderer())
         root = Element('root')
         sub = SubElement(root, 'sub')
         source_text = 'source text'
@@ -90,7 +91,7 @@ class Test(unittest.TestCase):
             self)
 
 
-class _ConstantTargetRenderer(sut.TargetRenderer):
+class _ConstantTargetRenderer(TargetRenderer):
     def __init__(self, target_str: str):
         self.target_str = target_str
 

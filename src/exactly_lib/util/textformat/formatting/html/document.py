@@ -1,6 +1,6 @@
 from xml.etree.ElementTree import Element, SubElement, tostring
 
-from exactly_lib.util.textformat.formatting.html.section import SectionRenderer, Environment
+from exactly_lib.util.textformat.formatting.html.section import SectionItemRenderer, Environment
 from exactly_lib.util.textformat.formatting.html.utils import ElementPopulator
 from exactly_lib.util.textformat.structure.document import SectionContents
 
@@ -23,7 +23,7 @@ class DocumentRenderer:
     """
 
     def __init__(self,
-                 section_renderer: SectionRenderer):
+                 section_renderer: SectionItemRenderer):
         self.section_renderer = section_renderer
 
     def apply(self,
