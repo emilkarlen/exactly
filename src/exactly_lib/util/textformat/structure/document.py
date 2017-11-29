@@ -53,6 +53,12 @@ class ArticleContents(tuple):
         return self[1]
 
     @property
+    def combined_as_section_contents(self) -> SectionContents:
+        initial_paragraphs = self.abstract_paragraphs + self.section_contents.initial_paragraphs
+        return SectionContents(initial_paragraphs,
+                               self.section_contents.sections)
+
+    @property
     def is_empty(self) -> bool:
         return not self.abstract_paragraphs and self.section_contents.is_empty
 

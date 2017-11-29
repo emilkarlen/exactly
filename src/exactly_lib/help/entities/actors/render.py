@@ -1,5 +1,5 @@
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts
@@ -10,7 +10,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
 
 
-class IndividualActorRenderer(SectionContentsRenderer):
+class IndividualActorRenderer(ArticleContentsRenderer):
     def __init__(self, actor: ActorDocumentation):
         self.actor = actor
         self.rendering_environment = None
@@ -20,10 +20,10 @@ class IndividualActorRenderer(SectionContentsRenderer):
         }
         self._parser = TextParser(format_map)
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
         self.rendering_environment = environment
-        initial_paragraphs = [docs.para(self.actor.single_line_description())]
-        initial_paragraphs.extend(self._default_reporter_info())
+
+        initial_paragraphs = self._default_reporter_info()
         initial_paragraphs.extend(self.actor.main_description_rest())
         sub_sections = []
         append_sections_if_contents_is_non_empty(
@@ -31,7 +31,9 @@ class IndividualActorRenderer(SectionContentsRenderer):
             [(self._parser.format('{act_phase} phase contents'), self.actor.act_phase_contents()),
              (self._parser.format('Syntax of {act_phase} phase contents'), self.actor.act_phase_contents_syntax())])
         sub_sections += see_also_sections(self.actor.see_also_targets(), environment)
-        return doc.SectionContents(initial_paragraphs, sub_sections)
+        return doc.ArticleContents(docs.paras(self.actor.single_line_description()),
+                                   doc.SectionContents(initial_paragraphs,
+                                                       sub_sections))
 
     def _default_reporter_info(self) -> list:
         from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR

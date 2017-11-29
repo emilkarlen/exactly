@@ -8,36 +8,37 @@ import types
 from exactly_lib.help.contents_structure import HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import sorted_entity_list
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, \
+    LeafArticleRendererNode
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
-    LeafSectionRendererNode, SectionRendererNodeWithSubSections
+    SectionRendererNodeWithSubSections
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 
 
 class FlatEntityListHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
-    def __init__(self, entity_doc_2_section_contents_renderer):
-        self._entity_doc_2_section_contents_renderer = entity_doc_2_section_contents_renderer
+    def __init__(self, entity_doc_2_article_contents_renderer):
+        self._entity_doc_2_article_contents_renderer = entity_doc_2_article_contents_renderer
 
     def get_hierarchy_generator(self,
                                 header: str,
                                 all_entity_doc_list: list) -> SectionHierarchyGenerator:
         return HtmlDocHierarchyGeneratorForEntitiesHelp(header,
-                                                        self._entity_doc_2_section_contents_renderer,
+                                                        self._entity_doc_2_article_contents_renderer,
                                                         all_entity_doc_list)
 
 
 class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
     def __init__(self,
                  header: str,
-                 entity_2_section_contents_renderer: types.FunctionType,
+                 entity_2_article_contents_renderer: types.FunctionType,
                  all_entities: list):
         """
 
-        :param entity_2_section_contents_renderer: EntityDocumentation -> SectionContentsRenderer
+        :param entity_2_article_contents_renderer: EntityDocumentation -> ArticleContentsRenderer
         :param all_entities: [EntityDocumentation]
         """
         self.header = header
-        self.entity_2_section_contents_renderer = entity_2_section_contents_renderer
+        self.entity_2_article_contents_renderer = entity_2_article_contents_renderer
         self.all_entities = all_entities
 
     def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
@@ -52,5 +53,5 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
     def _entity_node(self, entity: EntityDocumentation) -> SectionRendererNode:
         target_info = cross_ref.TargetInfo(entity.singular_name(),
                                            entity.cross_reference_target())
-        return LeafSectionRendererNode(target_info,
-                                       self.entity_2_section_contents_renderer(entity))
+        return LeafArticleRendererNode(target_info,
+                                       self.entity_2_article_contents_renderer(entity))

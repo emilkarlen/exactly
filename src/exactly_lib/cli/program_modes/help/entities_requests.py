@@ -42,10 +42,10 @@ class EntityHelpRequest(HelpRequest):
 
 class EntityHelpRequestRendererResolver:
     def __init__(self,
-                 individual_entity_renderer_constructor,
+                 entity_doc_2_article_contents_renderer,
                  cli_list_renderer_getter: CliListRendererGetter,
                  all_entities: list):
-        self.individual_entity_renderer_constructor = individual_entity_renderer_constructor
+        self.entity_doc_2_article_contents_renderer = entity_doc_2_article_contents_renderer
         self.cli_list_renderer_getter = cli_list_renderer_getter
         self.all_entities = all_entities
 
@@ -56,5 +56,5 @@ class EntityHelpRequestRendererResolver:
         if item is EntityHelpItem.INDIVIDUAL_ENTITY:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.individual_entity.singular_name(),
-                                        self.individual_entity_renderer_constructor(request.individual_entity))
+                                        self.entity_doc_2_article_contents_renderer(request.individual_entity))
         raise ValueError('Invalid %s: %s' % (str(EntityHelpItem), str(item)))

@@ -66,10 +66,8 @@ class SectionContentsRendererFromArticleContentsRenderer(SectionContentsRenderer
         self._article_contents_renderer = article_contents_renderer
 
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        article = self._article_contents_renderer.apply(environment)
-        initial_paragraphs = article.abstract_paragraphs + article.section_contents.initial_paragraphs
-        sub_sections = article.section_contents.sections
-        return doc.SectionContents(initial_paragraphs, sub_sections)
+        article_contents = self._article_contents_renderer.apply(environment)
+        return article_contents.combined_as_section_contents
 
 
 class SectionRendererFromSectionContentsRenderer(SectionRenderer):

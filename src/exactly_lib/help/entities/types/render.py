@@ -7,7 +7,7 @@ from exactly_lib.help.utils.doc_utils import synopsis_section
 from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
@@ -33,7 +33,7 @@ _PARTITIONS_SETUP = [
 ]
 
 
-class IndividualTypeRenderer(SectionContentsRenderer):
+class IndividualTypeRenderer(ArticleContentsRenderer):
     def __init__(self, type_doc: TypeDocumentation):
         self.doc = type_doc
         format_map = {
@@ -41,8 +41,7 @@ class IndividualTypeRenderer(SectionContentsRenderer):
         }
         self._parser = TextParser(format_map)
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        initial_paragraphs = [docs.para(self.doc.single_line_description())]
+    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
         sub_sections = []
 
         if self.doc.invokation_variants():
@@ -56,7 +55,9 @@ class IndividualTypeRenderer(SectionContentsRenderer):
         sub_sections += see_also_sections(self.doc.see_also_targets(),
                                           environment,
                                           uppercase_title=True)
-        return doc.SectionContents(initial_paragraphs, sub_sections)
+        return doc.ArticleContents(docs.paras(self.doc.single_line_description()),
+                                   doc.SectionContents([],
+                                                       sub_sections))
 
 
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:

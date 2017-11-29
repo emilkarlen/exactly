@@ -58,6 +58,6 @@ def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp
         assert isinstance(entity_conf, EntityConfiguration), ('Must be an ' + str(EntityConfiguration))
     except KeyError:
         raise ValueError('Entity is not found in application help: ' + request.entity_type)
-    return EntityHelpRequestRendererResolver(entity_conf.entity_doc_2_section_contents_renderer,
+    return EntityHelpRequestRendererResolver(entity_conf.entity_doc_2_article_contents_renderer,
                                              entity_conf.cli_list_renderer_getter,
                                              entity_conf.entities_help.all_entities)

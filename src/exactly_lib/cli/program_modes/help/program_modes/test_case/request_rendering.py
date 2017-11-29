@@ -41,7 +41,7 @@ class TestCaseHelpRendererResolver:
         if item is TestCaseHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,
-                                        render_instruction.InstructionManPageRenderer(request.data))
+                                        render_instruction.InstructionManPageArticleRenderer(request.data))
         if item is TestCaseHelpItem.INSTRUCTION_SEARCH:
             return InstructionSearchRenderer(request.name,
                                              request.data)

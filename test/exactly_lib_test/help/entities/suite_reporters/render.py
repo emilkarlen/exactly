@@ -54,7 +54,7 @@ class TestIndividualSuiteReporter(unittest.TestCase):
                 # ACT #
                 actual = renderer.apply(RENDERING_ENVIRONMENT)
                 # ASSERT #
-                struct_check.is_section_contents.apply(self, actual)
+                struct_check.is_article_contents.apply(self, actual)
 
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())

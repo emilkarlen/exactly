@@ -12,16 +12,18 @@ def suite() -> unittest.TestSuite:
 
 class TestWithOrWithoutName(unittest.TestCase):
     def test_without_name(self):
-        renderer = sut.with_or_without_name(False, 'name', SectionContentsRendererTestImpl())
+        renderer = sut.with_or_without_name(False, 'name', ArticleContentsRendererTestImpl())
         rendition = renderer.apply(RENDERING_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, rendition)
 
     def test_with_name(self):
-        renderer = sut.with_or_without_name(True, 'name', SectionContentsRendererTestImpl())
+        renderer = sut.with_or_without_name(True, 'name', ArticleContentsRendererTestImpl())
         rendition = renderer.apply(RENDERING_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, rendition)
 
 
-class SectionContentsRendererTestImpl(sut.SectionContentsRenderer):
-    def apply(self, environment: sut.RenderingEnvironment) -> doc.SectionContents:
-        return doc.SectionContents([docs.para('paragraph')], [])
+class ArticleContentsRendererTestImpl(sut.ArticleContentsRenderer):
+    def apply(self, environment: sut.RenderingEnvironment) -> doc.ArticleContents:
+        return doc.ArticleContents(docs.paras('abstract paragraph'),
+                                   doc.SectionContents(docs.paras('initial paragraph'),
+                                                       []))

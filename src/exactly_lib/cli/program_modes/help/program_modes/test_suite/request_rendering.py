@@ -30,7 +30,7 @@ class TestSuiteHelpRendererResolver:
         if item is TestSuiteHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,
-                                        render_instruction.InstructionManPageRenderer(request.data))
+                                        render_instruction.InstructionManPageArticleRenderer(request.data))
         raise ValueError('Invalid %s: %s' % (str(TestSuiteHelpItem), str(item)))
 
     def render(self, request: TestSuiteHelpRequest,
