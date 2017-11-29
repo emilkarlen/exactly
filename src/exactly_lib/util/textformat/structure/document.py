@@ -63,29 +63,25 @@ class ArticleContents(tuple):
         return not self.abstract_paragraphs and self.section_contents.is_empty
 
 
-def empty_section_contents() -> SectionContents:
-    return SectionContents([], [])
-
-
 class SectionItem:
-    def __init__(self,
-                 header: core.Text,
-                 contents: SectionContents
-                 ):
+    def __init__(self, header: core.Text):
         self._header = header
-        self._contents = contents
 
     @property
     def header(self) -> core.Text:
         return self._header
 
+
+class Section(SectionItem):
+    def __init__(self,
+                 header: core.Text,
+                 contents: SectionContents):
+        super().__init__(header)
+        self._contents = contents
+
     @property
     def contents(self) -> SectionContents:
         return self._contents
-
-
-class Section(SectionItem):
-    pass
 
 
 class Article(SectionItem):
@@ -96,15 +92,29 @@ class Article(SectionItem):
 
     def __init__(self,
                  header: core.Text,
-                 abstract_paragraphs: list,
-                 contents: SectionContents
-                 ):
-        super().__init__(header, contents)
-        self._abstract_paragraphs = abstract_paragraphs
+                 contents: ArticleContents):
+        super().__init__(header)
+        self._contents = contents
 
     @property
-    def abstract_paragraphs(self) -> list:
-        return self._abstract_paragraphs
+    def contents(self) -> ArticleContents:
+        return self._contents
+
+
+def empty_section_contents() -> SectionContents:
+    return SectionContents([], [])
+
+
+def empty_article_contents() -> ArticleContents:
+    return ArticleContents([], empty_section_contents())
+
+
+def empty_section(header: core.Text) -> Section:
+    return Section(header, empty_section_contents())
+
+
+def empty_article(header: core.Text) -> Article:
+    return Article(header, empty_article_contents())
 
 
 class SectionItemVisitor:

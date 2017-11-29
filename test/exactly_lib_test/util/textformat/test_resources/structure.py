@@ -143,12 +143,13 @@ class SectionAssertion:
                            doc.SectionItem.header.fget,
                            is_text).apply(put, value, message_builder)
         if isinstance(value, doc.Article):
-            asrt_abstract_paras = is_paragraph_item_list('abstract_paragraph_items')
-            asrt_abstract_paras.apply(put, value.abstract_paragraphs)
+            is_article_contents.apply(put, value.contents,
+                                      message_builder.for_sub_component('article_contents'))
+        elif isinstance(value, doc.Section):
+            is_section_contents.apply(put, value.contents,
+                                      message_builder.for_sub_component('section_contents'))
         else:
-            asrt.IsInstance(doc.Section).apply(put, value, message_builder)
-        self.is_section_contents(put, value.contents,
-                                 asrt.sub_component_builder('contents', message_builder))
+            asrt.fail('Not a {}: {}'.format(str(doc.SectionItem), str(value)))
 
 
 SECTION_ASSERTION = SectionAssertion()

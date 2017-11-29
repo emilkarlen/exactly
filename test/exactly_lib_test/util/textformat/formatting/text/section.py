@@ -3,8 +3,10 @@ import unittest
 from exactly_lib.util.textformat.formatting.text import lists as lf
 from exactly_lib.util.textformat.formatting.text import paragraph_item
 from exactly_lib.util.textformat.formatting.text import section as sut
+from exactly_lib.util.textformat.structure import document
 from exactly_lib.util.textformat.structure import lists
-from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents, \
+    ArticleContents
 from exactly_lib_test.util.textformat.test_resources.constr import single_text_para, header_only_item, \
     BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
@@ -121,7 +123,7 @@ class TestSection(unittest.TestCase):
         contents = SectionContents([single_text_para('initial paragraph')], [])
         cases = [
             ('section', Section(header, contents)),
-            ('article', Article(header, [], contents)),
+            ('article', Article(header, ArticleContents([], contents))),
         ]
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
@@ -148,8 +150,8 @@ class TestSection(unittest.TestCase):
         cases = [
             ('single abstract para / no contents para',
              Article(header,
-                     [single_text_para('abstract paragraph')],
-                     empty_section_contents()),
+                     ArticleContents([single_text_para('abstract paragraph')],
+                                     empty_section_contents())),
              [
                  'Article Header',
                  BLANK_LINE,
@@ -158,8 +160,8 @@ class TestSection(unittest.TestCase):
              ]),
             ('single abstract para / single contents para',
              Article(header,
-                     [single_text_para('abstract paragraph')],
-                     single_para_contents('contents paragraph')),
+                     ArticleContents([single_text_para('abstract paragraph')],
+                                     single_para_contents('contents paragraph'))),
              [
                  'Article Header',
                  BLANK_LINE,
@@ -169,9 +171,9 @@ class TestSection(unittest.TestCase):
              ]),
             ('single abstract para / single contents para',
              Article(header,
-                     [single_text_para('abstract paragraph')],
-                     SectionContents([],
-                                     [empty_section('Sub Section Header')])),
+                     ArticleContents([single_text_para('abstract paragraph')],
+                                     SectionContents([],
+                                                     [empty_section('Sub Section Header')]))),
              [
                  'Article Header',
                  BLANK_LINE,
@@ -205,8 +207,8 @@ class TestSection(unittest.TestCase):
             ('section', Section(text(header_string),
                                 contents)),
             ('article', Article(text(header_string),
-                                [],
-                                contents)),
+                                ArticleContents([],
+                                                contents))),
         ]
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
@@ -235,8 +237,8 @@ class TestSection(unittest.TestCase):
             ('section', Section(text(header_string),
                                 contents)),
             ('article', Article(text(header_string),
-                                [],
-                                contents)),
+                                ArticleContents([],
+                                                contents))),
         ]
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
@@ -270,7 +272,7 @@ class TestSection(unittest.TestCase):
                                             empty_section_contents())])
         cases = [
             ('section', Section(header, contents)),
-            ('article', Article(header, [], contents)),
+            ('article', Article(header, ArticleContents([], contents))),
         ]
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
@@ -310,7 +312,7 @@ class TestSection(unittest.TestCase):
                                                         []))]))])
         cases = [
             ('section', Section(header, contents)),
-            ('article', Article(header, [], contents)),
+            ('article', Article(header, ArticleContents([], contents))),
         ]
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
@@ -340,19 +342,12 @@ def single_para_contents(paragraph_text: str) -> SectionContents:
                            [])
 
 
-def empty_section_contents() -> SectionContents:
-    return SectionContents([], [])
-
-
 def empty_section(header: str) -> Section:
-    return Section(text(header),
-                   sut.SectionContents([], []))
+    return document.empty_section(text(header))
 
 
 def empty_article(header: str) -> Article:
-    return Article(text(header),
-                   [],
-                   sut.SectionContents([], []))
+    return document.empty_article(text(header))
 
 
 if __name__ == '__main__':

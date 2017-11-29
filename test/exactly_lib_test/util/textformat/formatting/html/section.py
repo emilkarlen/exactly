@@ -5,7 +5,8 @@ from exactly_lib.util.textformat.formatting.html import section as sut
 from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from exactly_lib.util.textformat.formatting.html.text import TextRenderer
 from exactly_lib.util.textformat.structure.core import StringText
-from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents, \
+    ArticleContents
 from exactly_lib.util.textformat.structure.structures import para
 from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import TargetRendererTestImpl, \
     ParaWithSingleStrTextRenderer
@@ -245,8 +246,8 @@ class TestSectionContentsWithSectionsAndArticles(unittest.TestCase):
                              [Section(StringText('section header'),
                                       SectionContents([], [])),
                               Article(StringText('article header'),
-                                      [],
-                                      SectionContents([], [])),
+                                      ArticleContents([],
+                                                      SectionContents([], []))),
                               ])
         # ACT #
         ret_val = TEST_RENDERER.render_section_contents(sut.Environment(2),
@@ -300,8 +301,8 @@ class TestArticle(unittest.TestCase):
         cases = [
             ('empty',
              Article(StringText('header'),
-                     [],
-                     empty_section_contents()),
+                     ArticleContents([],
+                                     empty_section_contents())),
              '<root>'
              '<article>'
              '<header>'
@@ -312,8 +313,8 @@ class TestArticle(unittest.TestCase):
              ),
             ('single abstract paragraph',
              Article(StringText('header'),
-                     [para('abstract paragraph')],
-                     empty_section_contents()),
+                     ArticleContents([para('abstract paragraph')],
+                                     empty_section_contents())),
              '<root>'
              '<article>'
              '<header>'
@@ -341,19 +342,18 @@ class TestArticle(unittest.TestCase):
         # ARRANGE #
         s = Article(
             StringText('article header'),
-            [para('para in abstract')],
-            SectionContents(
-                [para('initial para in contents')],
-                [Section(
-                    StringText('header 1/1'),
-                    SectionContents(
-                        [para('para 1/1')],
-                        [Section(
-                            StringText('header 1/1/1'),
+            ArticleContents([para('para in abstract')],
                             SectionContents(
-                                [para('para 1/1/1')],
-                                []))]))])
-        )
+                                [para('initial para in contents')],
+                                [Section(
+                                    StringText('header 1/1'),
+                                    SectionContents(
+                                        [para('para 1/1')],
+                                        [Section(
+                                            StringText('header 1/1/1'),
+                                            SectionContents(
+                                                [para('para 1/1/1')],
+                                                []))]))])))
         for section_level in range(3):
             with self.subTest('section level = ' + str(section_level)):
                 root = Element('root')
