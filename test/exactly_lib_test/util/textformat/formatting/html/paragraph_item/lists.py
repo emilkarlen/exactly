@@ -5,9 +5,8 @@ from exactly_lib.util.textformat.formatting.html.paragraph_item import lists as 
 from exactly_lib.util.textformat.formatting.html.text import TextRenderer
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.structures import text, paras, para
-from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import ConstantPRenderer, \
-    TargetRendererTestImpl
-from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str
+from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import ConstantPRenderer
+from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, TargetRendererTestImpl
 
 
 def suite() -> unittest.TestSuite:

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.help.utils import table_of_contents as sut
 from exactly_lib.help_texts.cross_reference_id import TargetInfo, TargetInfoNode, target_info_leaf
 from exactly_lib.util.textformat.structure import lists
-from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import CrossReferenceTarget
+from exactly_lib_test.util.textformat.formatting.html.test_resources import CrossReferenceTargetTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -55,7 +55,7 @@ class TestTocList(unittest.TestCase):
 LIST_TYPE = lists.ListType.ITEMIZED_LIST
 
 TI = TargetInfo('presentation',
-                CrossReferenceTarget('target'))
+                CrossReferenceTargetTestImpl('target'))
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

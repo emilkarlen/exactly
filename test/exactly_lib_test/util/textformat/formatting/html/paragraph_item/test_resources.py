@@ -1,20 +1,8 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
-from exactly_lib.util.textformat.formatting.html.text import TargetRenderer
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
-
-
-class CrossReferenceTarget(core.CrossReferenceTarget):
-    def __init__(self, name: str):
-        self.name = name
-
-
-class TargetRendererTestImpl(TargetRenderer):
-    def apply(self, target: core.CrossReferenceTarget) -> str:
-        assert isinstance(target, CrossReferenceTarget)
-        return target.name
 
 
 class ConstantPRenderer(ParagraphItemRenderer):

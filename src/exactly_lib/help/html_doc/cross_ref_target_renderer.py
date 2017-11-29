@@ -1,10 +1,10 @@
 from exactly_lib.help_texts import cross_reference_id as cross_ref
-from exactly_lib.util.textformat.formatting.html import text
+from exactly_lib.util.textformat.formatting.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.structure import core as doc
 from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget
 
 
-class HtmlTargetRenderer(text.TargetRenderer, cross_ref.CrossReferenceIdVisitor):
+class HtmlTargetRenderer(TargetRenderer, cross_ref.CrossReferenceIdVisitor):
     def apply(self, target: doc.CrossReferenceTarget) -> str:
         return self.visit(target)
 

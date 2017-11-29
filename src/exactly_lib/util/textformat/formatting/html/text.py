@@ -1,19 +1,10 @@
 import enum
+import types
 from xml.etree.ElementTree import Element, SubElement
 
-import types
-
+from exactly_lib.util.textformat.formatting.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import Text
-
-
-class TargetRenderer:
-    """
-    Abstract base class for rendering of a cross reference target.
-    """
-
-    def apply(self, target: core.CrossReferenceTarget) -> str:
-        raise NotImplementedError()
 
 
 class Position(enum.Enum):

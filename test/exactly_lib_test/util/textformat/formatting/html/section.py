@@ -8,10 +8,9 @@ from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents, \
     ArticleContents
 from exactly_lib.util.textformat.structure.structures import para
-from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import TargetRendererTestImpl, \
-    ParaWithSingleStrTextRenderer
+from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import ParaWithSingleStrTextRenderer
 from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, \
-    assert_contents_and_that_last_child_is_returned
+    assert_contents_and_that_last_child_is_returned, TargetRendererTestImpl
 
 
 def suite() -> unittest.TestSuite:
@@ -381,8 +380,8 @@ class TestArticle(unittest.TestCase):
                     root, ret_val, self)
 
 
-TEST_RENDERER = sut.SectionRenderer(HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl())),
-                                    ParaWithSingleStrTextRenderer())
+TEST_RENDERER = sut.SectionItemRenderer(HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl())),
+                                        ParaWithSingleStrTextRenderer())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
