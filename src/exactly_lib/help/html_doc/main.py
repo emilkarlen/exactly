@@ -143,7 +143,7 @@ def _section_renderer() -> doc_rendering.SectionItemRenderer:
     text_renderer = text.TextRenderer(target_renderer)
     section_header_renderer = HnSectionHeaderRenderer(text_renderer)
     paragraph_item_renderer = FullParagraphItemRenderer(text_renderer)
-    return doc_rendering.SectionItemRenderer(section_header_renderer, paragraph_item_renderer)
+    return doc_rendering.SectionItemRenderer(target_renderer, section_header_renderer, paragraph_item_renderer)
 
 
 def _page_setup() -> doc_rendering.DocumentSetup:

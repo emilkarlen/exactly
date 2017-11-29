@@ -26,7 +26,8 @@ class SectionHeaderRenderer:
     def apply(self,
               environment: Environment,
               parent: Element,
-              header_text: core.Text) -> Element:
+              header_text: core.Text,
+              header_element_attributes: dict) -> Element:
         raise NotImplementedError()
 
 
@@ -37,8 +38,10 @@ class HnSectionHeaderRenderer(SectionHeaderRenderer):
     def apply(self,
               environment: Environment,
               parent: Element,
-              header_text: core.Text) -> Element:
-        ret_val = SubElement(parent, self._resolve_header_element_tag(environment))
+              header_text: core.Text,
+              header_element_attributes: dict) -> Element:
+        ret_val = SubElement(parent, self._resolve_header_element_tag(environment),
+                             header_element_attributes)
         self.text_renderer.apply(ret_val, ret_val, Position.INSIDE, header_text)
         return ret_val
 
@@ -98,7 +101,8 @@ class SectionItemRenderer:
         """
         :return: The last rendered element, or parent, if no element was rendered.
         """
-        last_header_element = self.section_header_renderer.apply(environment, parent, section.header)
+        last_header_element = self.section_header_renderer.apply(environment, parent, section.header,
+                                                                 self._root_element_attributes(section))
         last_sc_elem = self.render_section_contents(increased_level(environment), parent, section.contents)
         return last_header_element if last_sc_elem is parent else last_sc_elem
 
@@ -111,7 +115,7 @@ class SectionItemRenderer:
         """
         environment = root_level(environment)
 
-        ret_val = SubElement(parent, 'article', self._article_attributes(article))
+        ret_val = SubElement(parent, 'article', self._root_element_attributes(article))
         self._render_article_header(environment, ret_val,
                                     article.header,
                                     article.contents.abstract_paragraphs)
@@ -127,15 +131,15 @@ class SectionItemRenderer:
         :return: The the header element
         """
         ret_val = SubElement(parent, 'header')
-        self.section_header_renderer.apply(environment, ret_val, header)
+        self.section_header_renderer.apply(environment, ret_val, header, {})
         self.render_paragraph_items(environment, ret_val, abstract_paragraphs)
         return ret_val
 
-    def _article_attributes(self, article: Article) -> dict:
-        if not article.target:
+    def _root_element_attributes(self, section_item: SectionItem) -> dict:
+        if not section_item.target:
             return {}
         else:
-            id_value = self.target_renderer.apply(article.target)
+            id_value = self.target_renderer.apply(section_item.target)
             return {'id': id_value}
 
 

@@ -36,11 +36,28 @@ class TestHnSectionHeaderRenderer(unittest.TestCase):
         # ACT #
         ret_val = self.HN_SECTION_HEADER_RENDERER.apply(sut.Environment(0),
                                                         root,
-                                                        StringText('text'))
+                                                        StringText('text'),
+                                                        {})
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
             '<h1>text</h1>'
+            '</root>',
+            root, ret_val, self)
+
+    def test_with_attributes(self):
+        # ARRANGE #
+        root = Element('root')
+        # ACT #
+        ret_val = self.HN_SECTION_HEADER_RENDERER.apply(sut.Environment(3),
+                                                        root,
+                                                        StringText('text'),
+                                                        {'attr1': 'attr1-value',
+                                                         'attr2': 'attr2-value'})
+        # ASSERT #
+        assert_contents_and_that_last_child_is_returned(
+            '<root>'
+            '<h4 attr1="attr1-value" attr2="attr2-value">text</h4>'
             '</root>',
             root, ret_val, self)
 
@@ -50,7 +67,8 @@ class TestHnSectionHeaderRenderer(unittest.TestCase):
         # ACT #
         ret_val = self.HN_SECTION_HEADER_RENDERER.apply(sut.Environment(5),
                                                         root,
-                                                        StringText('text'))
+                                                        StringText('text'),
+                                                        {})
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
@@ -64,7 +82,8 @@ class TestHnSectionHeaderRenderer(unittest.TestCase):
         # ACT #
         ret_val = self.HN_SECTION_HEADER_RENDERER.apply(sut.Environment(6),
                                                         root,
-                                                        StringText('text'))
+                                                        StringText('text'),
+                                                        {})
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
@@ -270,30 +289,53 @@ class TestSectionContentsWithSectionsAndArticles(unittest.TestCase):
 class TestSection(unittest.TestCase):
     def test(self):
         # ARRANGE #
-        root = Element('root')
-        s = Section(
-            StringText('header 1'),
-            SectionContents(
-                [para('para 1')],
-                [Section(
-                    StringText('header 1/1'),
-                    SectionContents(
-                        [para('para 1/1')], []))])
-        )
-        # ACT #
-        ret_val = TEST_RENDERER.render_section_item(sut.Environment(0),
-                                                    root,
-                                                    s)
-        # ASSERT #
-        assert_contents_and_that_last_child_is_returned(
-            '<root>'
-            '<h1>header 1</h1>'
-            '<p>para 1</p>'
-            '<h2>header 1/1</h2>'
-            '<p>para 1/1</p>'
-            '</root>'
-            ,
-            root, ret_val, self)
+        cases = [
+            ('empty',
+             Section(
+                 StringText('header 1'),
+                 empty_section_contents()),
+             '<root>'
+             '<h1>header 1</h1>'
+             '</root>'
+             ),
+            ('empty with target',
+             Section(
+                 StringText('header 1'),
+                 empty_section_contents(),
+                 target=CrossReferenceTargetTestImpl('section-target-name')),
+             '<root>'
+             '<h1 id="section-target-name">header 1</h1>'
+             '</root>'
+             ),
+            ('with contents',
+             Section(
+                 StringText('header 1'),
+                 SectionContents(
+                     [para('para 1')],
+                     [Section(
+                         StringText('header 1/1'),
+                         SectionContents(
+                             [para('para 1/1')], []))])
+             ),
+             '<root>'
+             '<h1>header 1</h1>'
+             '<p>para 1</p>'
+             '<h2>header 1/1</h2>'
+             '<p>para 1/1</p>'
+             '</root>'
+             ),
+        ]
+        for test_case_name, section, expected in cases:
+            with self.subTest(test_case_name):
+                root = Element('root')
+                # ACT #
+                ret_val = TEST_RENDERER.render_section_item(sut.Environment(0),
+                                                            root,
+                                                            section)
+                # ASSERT #
+                assert_contents_and_that_last_child_is_returned(
+                    expected,
+                    root, ret_val, self)
 
 
 class TestArticle(unittest.TestCase):
