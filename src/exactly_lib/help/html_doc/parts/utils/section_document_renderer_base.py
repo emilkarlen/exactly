@@ -2,9 +2,9 @@ import types
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
-from exactly_lib.help.program_modes.common.render_instruction import InstructionManPageArticleRenderer
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
-    SectionRendererNodeWithSubSections, LeafSectionRendererNode, SectionHierarchyGenerator, LeafArticleRendererNode
+from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsRenderer
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionItemRendererNode, \
+    SectionItemRendererNodeWithSubSections, LeafSectionRendererNode, SectionHierarchyGenerator, LeafArticleRendererNode
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
@@ -29,7 +29,8 @@ class HtmlDocGeneratorForSectionDocumentBase:
         super_self = self
 
         class _HierarchyGenerator(SectionHierarchyGenerator):
-            def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
+            def renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory
+                              ) -> SectionItemRendererNode:
                 return super_self._sections_renderer_node(header, target_factory)
 
         return _HierarchyGenerator()
@@ -38,14 +39,15 @@ class HtmlDocGeneratorForSectionDocumentBase:
         super_self = self
 
         class _HierarchyGenerator(SectionHierarchyGenerator):
-            def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
+            def renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory
+                              ) -> SectionItemRendererNode:
                 return super_self._instructions_per_section_node(header, target_factory)
 
         return _HierarchyGenerator()
 
     def _sections_renderer_node(self,
                                 header: str,
-                                targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
+                                targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionItemRendererNode:
         root_target_info = targets_factory.root(header)
         sub_section_nodes = []
         for section in self.sections:
@@ -59,13 +61,13 @@ class HtmlDocGeneratorForSectionDocumentBase:
                 self.get_section_contents_renderer_for_section_document(section))
             sub_section_nodes.append(section_node)
 
-        return SectionRendererNodeWithSubSections(root_target_info,
-                                                  [],
-                                                  sub_section_nodes)
+        return SectionItemRendererNodeWithSubSections(root_target_info,
+                                                      [],
+                                                      sub_section_nodes)
 
     def _instructions_per_section_node(self,
                                        header: str,
-                                       targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
+                                       targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionItemRendererNode:
         root_target_info = targets_factory.root(header)
         section_nodes = []
         for section in self.sections:
@@ -77,9 +79,9 @@ class HtmlDocGeneratorForSectionDocumentBase:
                 targets_factory.sub_factory(section.name.plain),
                 section)
             section_nodes.append(instructions_node_constructor())
-        return SectionRendererNodeWithSubSections(root_target_info,
-                                                  [],
-                                                  section_nodes)
+        return SectionItemRendererNodeWithSubSections(root_target_info,
+                                                      [],
+                                                      section_nodes)
 
 
 class _SectionInstructionsNodeConstructor:
@@ -93,10 +95,10 @@ class _SectionInstructionsNodeConstructor:
         self.section_target_factory = section_target_factory
         self.section = section
 
-    def __call__(self) -> SectionRendererNode:
-        return SectionRendererNodeWithSubSections(self.section_target_factory.root(self.section.name.syntax),
-                                                  [],
-                                                  self._instructions_sub_nodes())
+    def __call__(self) -> SectionItemRendererNode:
+        return SectionItemRendererNodeWithSubSections(self.section_target_factory.root(self.section.name.syntax),
+                                                      [],
+                                                      self._instructions_sub_nodes())
 
     def _instructions_sub_nodes(self) -> list:
         instr_docs = self.section.instruction_set.instruction_documentations
@@ -115,15 +117,15 @@ class _SectionInstructionsNodeConstructor:
     def _instruction_group_nodes(self, groups: list) -> list:
         return list(map(self._instruction_group_node, groups))
 
-    def _instruction_group_node(self, group: InstructionGroup) -> SectionRendererNode:
-        return SectionRendererNodeWithSubSections(
+    def _instruction_group_node(self, group: InstructionGroup) -> SectionItemRendererNode:
+        return SectionItemRendererNodeWithSubSections(
             self.section_target_factory.sub_factory(group.identifier).root(group.header),
             group.description_paragraphs,
             self._instruction_nodes(group.instruction_documentations))
 
-    def _instruction_node(self, instruction: InstructionDocumentation) -> SectionRendererNode:
+    def _instruction_node(self, instruction: InstructionDocumentation) -> SectionItemRendererNode:
         cross_ref_target = self.mk_instruction_cross_ref_target(instruction, self.section)
         target_info = cross_ref.TargetInfo(instruction.instruction_name(),
                                            cross_ref_target)
         return LeafArticleRendererNode(target_info,
-                                       InstructionManPageArticleRenderer(instruction))
+                                       InstructionDocArticleContentsRenderer(instruction))

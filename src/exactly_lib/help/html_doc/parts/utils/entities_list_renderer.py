@@ -10,8 +10,8 @@ from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import sorted_entity_list
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, \
     LeafArticleRendererNode
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionRendererNode, \
-    SectionRendererNodeWithSubSections
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionItemRendererNode, \
+    SectionItemRendererNodeWithSubSections
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 
 
@@ -41,16 +41,16 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
         self.entity_2_article_contents_renderer = entity_2_article_contents_renderer
         self.all_entities = all_entities
 
-    def section_renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionRendererNode:
+    def renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory) -> SectionItemRendererNode:
         entity_nodes = [
             self._entity_node(entity)
             for entity in sorted_entity_list(self.all_entities)
         ]
-        return SectionRendererNodeWithSubSections(target_factory.root(self.header),
-                                                  [],
-                                                  entity_nodes)
+        return SectionItemRendererNodeWithSubSections(target_factory.root(self.header),
+                                                      [],
+                                                      entity_nodes)
 
-    def _entity_node(self, entity: EntityDocumentation) -> SectionRendererNode:
+    def _entity_node(self, entity: EntityDocumentation) -> SectionItemRendererNode:
         target_info = cross_ref.TargetInfo(entity.singular_name(),
                                            entity.cross_reference_target())
         return LeafArticleRendererNode(target_info,

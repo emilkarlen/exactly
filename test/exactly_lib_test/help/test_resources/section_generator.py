@@ -10,9 +10,9 @@ from exactly_lib_test.util.textformat.test_resources import structure as struct_
 
 def generator_generates_valid_data(put: unittest.TestCase,
                                    sut: SectionHierarchyGenerator):
-    node = sut.section_renderer_node(_TARGET_FACTORY)
+    node = sut.renderer_node(_TARGET_FACTORY)
 
-    actual_section = node.section(_RENDERING_ENVIRONMENT)
+    actual_section = node.section_item(_RENDERING_ENVIRONMENT)
     struct_check.is_section_item.apply_with_message(put, actual_section, 'section')
 
     actual_target_info_node = node.target_info_node()

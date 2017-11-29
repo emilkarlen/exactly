@@ -32,7 +32,7 @@ class TestManPage(unittest.TestCase):
                                                                  'single line description',
                                                                  '',
                                                                  [])
-        actual = sut.InstructionManPageRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_main_description_rest(self):
@@ -40,7 +40,7 @@ class TestManPage(unittest.TestCase):
                                                                  'single line description',
                                                                  'main description rest',
                                                                  [])
-        actual = sut.InstructionManPageRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_invokation_variants(self):
@@ -50,7 +50,7 @@ class TestManPage(unittest.TestCase):
             'main description rest',
             [InvokationVariant('invokation variant syntax',
                                paras('invokation variant description rest'))])
-        actual = sut.InstructionManPageRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_without_invokation_variants(self):
@@ -63,7 +63,7 @@ class TestManPage(unittest.TestCase):
             [SyntaxElementDescription('syntax element',
                                       paras('description rest'),
                                       [])])
-        actual = sut.InstructionManPageRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_with_invokation_variants(self):
@@ -77,7 +77,7 @@ class TestManPage(unittest.TestCase):
                                       paras('description rest'),
                                       [InvokationVariant('SED/invokation variant syntax',
                                                          paras('SED/IV description rest'))])])
-        actual = sut.InstructionManPageRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
 

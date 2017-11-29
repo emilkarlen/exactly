@@ -41,7 +41,7 @@ class TestCaseHelpRendererResolver:
         if item is TestCaseHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,
-                                        render_instruction.InstructionManPageArticleRenderer(request.data))
+                                        render_instruction.InstructionDocArticleContentsRenderer(request.data))
         if item is TestCaseHelpItem.INSTRUCTION_SEARCH:
             return InstructionSearchRenderer(request.name,
                                              request.data)
@@ -58,7 +58,8 @@ class InstructionSearchRenderer(SectionContentsRenderer):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
         sections = []
         for phase_and_instruction_description in self.phase_and_instruction_description_list:
-            man_page_renderer = render_instruction.InstructionManPageRenderer(phase_and_instruction_description[1])
+            man_page_renderer = render_instruction.InstructionDocSectionContentsRenderer(
+                phase_and_instruction_description[1])
             phase_section = doc.Section(text(phase_and_instruction_description[0].syntax),
                                         man_page_renderer.apply(environment))
             sections.append(phase_section)
