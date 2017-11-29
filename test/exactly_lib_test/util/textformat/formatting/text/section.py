@@ -5,8 +5,9 @@ from exactly_lib.util.textformat.formatting.text import paragraph_item
 from exactly_lib.util.textformat.formatting.text import section as sut
 from exactly_lib.util.textformat.structure import document
 from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
 from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents, \
-    ArticleContents
+    ArticleContents, empty_article_contents
 from exactly_lib_test.util.textformat.test_resources.constr import single_text_para, header_only_item, \
     BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
@@ -100,7 +101,13 @@ class TestSection(unittest.TestCase):
         header_string = 'Section Header'
         cases = [
             ('section', empty_section(header_string)),
+            ('section with target', Section(text(header_string),
+                                            empty_section_contents(),
+                                            target=CrossReferenceTarget())),
             ('article', empty_article(header_string)),
+            ('article with target', Article(text(header_string),
+                                            empty_article_contents(),
+                                            target=CrossReferenceTarget())),
         ]
         for test_case_name, section_item in cases:
             with self.subTest(test_case_name):
