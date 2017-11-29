@@ -7,7 +7,7 @@ from exactly_lib.help.utils.rendering.section_contents_renderer import Rendering
     SectionContentsRendererFromArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.util.textformat.structure import document as doc, lists
-from exactly_lib.util.textformat.structure.structures import para
+from exactly_lib.util.textformat.structure import structures as docs
 
 LIST_INDENT = 2
 
@@ -31,7 +31,7 @@ class InstructionManPageArticleRenderer(ArticleContentsRenderer):
             sub_sections.append(description_section(doc.SectionContents(main_description_rest)))
         sub_sections += see_also_sections(documentation.see_also_targets(), environment,
                                           uppercase_title=True)
-        abstract_paragraphs = [para(self.documentation.single_line_description())]
+        abstract_paragraphs = docs.paras(self.documentation.single_line_description())
         return doc.ArticleContents(abstract_paragraphs,
                                    doc.SectionContents([], sub_sections))
 
@@ -47,6 +47,6 @@ def instruction_set_list_item(description: InstructionDocumentation,
     """
     :type name_2_name_text_fun: `str` -> `Text`
     """
-    description_para = para(description.single_line_description())
+    description_para = docs.para(description.single_line_description())
     return lists.HeaderContentListItem(name_2_name_text_fun(description.instruction_name()),
                                        [description_para])
