@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
     def test_leaf(self):
         # ARRANGE #
         target_factory = CustomTargetInfoFactory('target_component')
-        expected_section_contents_object = doc.empty_contents()
+        expected_section_contents_object = doc.empty_section_contents()
         object_to_test = sut.leaf('header', section_contents(expected_section_contents_object))
         # EXPECTATION #
         expected_target_info = target_factory.root('header')
@@ -46,7 +46,6 @@ class Test(unittest.TestCase):
     def test_parent_without_sub_sections(self):
         # ARRANGE #
         target_factory = CustomTargetInfoFactory('target_component')
-        expected_section_contents_object = doc.empty_contents()
         object_to_test = sut.parent('top header', [], [])
         # EXPECTATION #
         expected_target_info = target_factory.root('top header')
@@ -66,7 +65,7 @@ class Test(unittest.TestCase):
     def test_parent_with_sub_sections(self):
         # ARRANGE #
         target_factory = CustomTargetInfoFactory('target_component')
-        expected_section_contents_object1 = doc.empty_contents()
+        expected_section_contents_object1 = doc.empty_section_contents()
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
         expected_root_initial_paras = docs.paras('root initial paras')
         object_to_test = sut.parent(

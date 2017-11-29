@@ -25,7 +25,7 @@ class SectionItemVisitorTest(unittest.TestCase):
     def test_section(self):
         # ARRANGE   #
         section = sut.Section(StringText('header'),
-                              sut.empty_contents())
+                              sut.empty_section_contents())
         visitor = SectionItemVisitorThatRecordsExpectedClassAndReturnsArg()
         # ACT #
         ret_val = visitor.visit(section)
@@ -38,7 +38,7 @@ class SectionItemVisitorTest(unittest.TestCase):
         # ARRANGE   #
         article = sut.Article(StringText('header'),
                               [],
-                              sut.empty_contents())
+                              sut.empty_section_contents())
         visitor = SectionItemVisitorThatRecordsExpectedClassAndReturnsArg()
         # ACT #
         ret_val = visitor.visit(article)
@@ -57,7 +57,7 @@ class SectionItemVisitorTest(unittest.TestCase):
 class UnknownSectionItem(sut.SectionItem):
     def __init__(self):
         super().__init__(StringText('header of unknown item'),
-                         sut.empty_contents())
+                         sut.empty_section_contents())
 
 
 if __name__ == '__main__':
