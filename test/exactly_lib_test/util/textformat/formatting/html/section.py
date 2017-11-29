@@ -307,6 +307,25 @@ class TestSection(unittest.TestCase):
              '<h1 id="section-target-name">header 1</h1>'
              '</root>'
              ),
+            ('empty with labels',
+             Section(
+                 StringText('header 1'),
+                 empty_section_contents(),
+                 labels={'first-label', 'second-label'}),
+             '<root>'
+             '<h1 class="first-label second-label">header 1</h1>'
+             '</root>'
+             ),
+            ('empty with target and labels',
+             Section(
+                 StringText('header 1'),
+                 empty_section_contents(),
+                 target=CrossReferenceTargetTestImpl('t'),
+                 labels={'l1', 'l2'}),
+             '<root>'
+             '<h1 class="l1 l2" id="t">header 1</h1>'
+             '</root>'
+             ),
             ('with contents',
              Section(
                  StringText('header 1'),
@@ -360,6 +379,33 @@ class TestArticle(unittest.TestCase):
                      target=CrossReferenceTargetTestImpl('target-name')),
              '<root>'
              '<article id="target-name">'
+             '<header>'
+             '<h1>header</h1>'
+             '</header>'
+             '</article>'
+             '</root>'
+             ),
+            ('empty with labels',
+             Article(StringText('header'),
+                     ArticleContents([],
+                                     empty_section_contents()),
+                     labels={'label1', 'label2'}),
+             '<root>'
+             '<article class="label1 label2">'
+             '<header>'
+             '<h1>header</h1>'
+             '</header>'
+             '</article>'
+             '</root>'
+             ),
+            ('empty with target and labels',
+             Article(StringText('header'),
+                     ArticleContents([],
+                                     empty_section_contents()),
+                     target=CrossReferenceTargetTestImpl('article-target'),
+                     labels={'label1', 'label2'}),
+             '<root>'
+             '<article class="label1 label2" id="article-target">'
              '<header>'
              '<h1>header</h1>'
              '</header>'
