@@ -10,6 +10,7 @@ from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts import type_system
+from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
@@ -61,7 +62,8 @@ class IndividualTypeRenderer(ArticleContentsRenderer):
 
 
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
-    return pes.PartitionedHierarchyGeneratorGetter(_PARTITIONS_SETUP,
+    return pes.PartitionedHierarchyGeneratorGetter(TYPE_ENTITY_TYPE_NAMES.identifier,
+                                                   _PARTITIONS_SETUP,
                                                    IndividualTypeRenderer)
 
 

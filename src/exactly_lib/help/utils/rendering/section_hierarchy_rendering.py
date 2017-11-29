@@ -104,8 +104,10 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
     def __init__(self,
                  node_target_info: TargetInfo,
                  contents_renderer: ArticleContentsRenderer,
+                 labels: set = None,
                  ):
         super().__init__(node_target_info)
+        self._labels = frozenset() if labels is None else labels
         self._contents_renderer = contents_renderer
 
     def target_info_node(self) -> TargetInfoNode:
@@ -121,7 +123,8 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
                 return doc.Article(super_self._root_target_info.presentation_text,
                                    ArticleContents(article_contents.abstract_paragraphs,
                                                    article_contents.section_contents),
-                                   target=super_self._root_target_info.target)
+                                   target=super_self._root_target_info.target,
+                                   labels=super_self._labels)
 
         return RetVal()
 

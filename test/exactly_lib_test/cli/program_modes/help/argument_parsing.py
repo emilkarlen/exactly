@@ -490,13 +490,15 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
     def application_help_for_list_of_entities(self, entities: list) -> ApplicationHelp:
         return application_help_for([],
                                     entity_name_2_entity_configuration={
-                                        ACTOR_ENTITY_TYPE_NAMES.identifier:
+                                        self.entity_type_name:
                                             EntityConfiguration(
                                                 EntitiesHelp(ACTOR_ENTITY_TYPE_NAMES,
                                                              entities),
                                                 IndividualActorRenderer,
                                                 FlatListRendererWithSingleLineDescriptionGetter(),
-                                                FlatEntityListHierarchyGeneratorGetter(IndividualActorRenderer),
+                                                FlatEntityListHierarchyGeneratorGetter(
+                                                    self.entity_type_name,
+                                                    IndividualActorRenderer),
 
                                             )
                                     })
