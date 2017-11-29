@@ -1,7 +1,7 @@
 from exactly_lib.cli.main_program import BuiltinSymbol
 from exactly_lib.test_case_utils.lines_transformer import env_vars_replacement, case_converters
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
-from exactly_lib.util.textformat.structure.document import empty_contents
+from exactly_lib.util.textformat.structure.document import empty_section_contents
 
 EXACTLY_TEST_CASE_DIRS_REPLACEMENT = 'REPLACE_TEST_CASE_DIRS'
 
@@ -16,11 +16,11 @@ ALL = (
     BuiltinSymbol('TO_UPPER_CASE',
                   LinesTransformerConstant(case_converters.ToUpperCaseLinesTransformer()),
                   'Converts all cased characters to uppercase',
-                  empty_contents(),
+                  empty_section_contents(),
                   ),
     BuiltinSymbol('TO_LOWER_CASE',
                   LinesTransformerConstant(case_converters.ToLowerCaseLinesTransformer()),
                   'Converts all cased characters to lowercase',
-                  empty_contents(),
+                  empty_section_contents(),
                   ),
 )

@@ -10,7 +10,7 @@ from exactly_lib.help_texts.entity import types
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.name import name_with_plural_s
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.document import empty_contents
+from exactly_lib.util.textformat.structure.document import empty_section_contents
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
@@ -39,7 +39,7 @@ class TestIndividualType(unittest.TestCase):
         doc = TypeDocumentation(TypeCategory.DATA,
                                 A_TYPE_NAME_AND_CROSS_REFERENCE_ID,
                                 A_SYNTAX_ELEMENT_INFO,
-                                empty_contents())
+                                empty_section_contents())
         renderer = sut.IndividualTypeRenderer(doc)
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)

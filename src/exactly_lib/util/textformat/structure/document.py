@@ -63,7 +63,7 @@ class ArticleContents(tuple):
         return not self.abstract_paragraphs and self.section_contents.is_empty
 
 
-def empty_contents() -> SectionContents:
+def empty_section_contents() -> SectionContents:
     return SectionContents([], [])
 
 

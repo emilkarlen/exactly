@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.formatting.text import lists as lf
 from exactly_lib.util.textformat.formatting.text import paragraph_item
 from exactly_lib.util.textformat.formatting.text import section as sut
 from exactly_lib.util.textformat.structure import lists
-from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_contents
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents
 from exactly_lib_test.util.textformat.test_resources.constr import single_text_para, header_only_item, \
     BLANK_LINE, text, CROSS_REF_TITLE_ONLY_TEXT_FORMATTER
 
@@ -267,7 +267,7 @@ class TestSection(unittest.TestCase):
         header = text('Section Header')
         contents = SectionContents([single_text_para('initial paragraph')],
                                    [Section(text('Sub Section Header'),
-                                            empty_contents())])
+                                            empty_section_contents())])
         cases = [
             ('section', Section(header, contents)),
             ('article', Article(header, [], contents)),

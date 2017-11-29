@@ -5,7 +5,7 @@ from exactly_lib.util.textformat.formatting.html import section as sut
 from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from exactly_lib.util.textformat.formatting.html.text import TextRenderer
 from exactly_lib.util.textformat.structure.core import StringText
-from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_contents
+from exactly_lib.util.textformat.structure.document import SectionContents, Section, Article, empty_section_contents
 from exactly_lib.util.textformat.structure.structures import para
 from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import TargetRendererTestImpl, \
     ParaWithSingleStrTextRenderer
@@ -301,7 +301,7 @@ class TestArticle(unittest.TestCase):
             ('empty',
              Article(StringText('header'),
                      [],
-                     empty_contents()),
+                     empty_section_contents()),
              '<root>'
              '<article>'
              '<header>'
@@ -313,7 +313,7 @@ class TestArticle(unittest.TestCase):
             ('single abstract paragraph',
              Article(StringText('header'),
                      [para('abstract paragraph')],
-                     empty_contents()),
+                     empty_section_contents()),
              '<root>'
              '<article>'
              '<header>'
