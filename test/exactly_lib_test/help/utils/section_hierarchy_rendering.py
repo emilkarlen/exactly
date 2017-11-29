@@ -3,16 +3,16 @@ import unittest
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as sut
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment, \
     ConstantSectionContentsRenderer
-from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfo, \
-    TargetInfoNode
+from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import AnchorText
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import equals_target_info_node
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_id_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.textformat.test_resources.structure import is_anchor_text, is_string_text_that_equals
+from exactly_lib_test.util.textformat.test_resources import equals_paragraph_item as asrt_para
+from exactly_lib_test.util.textformat.test_resources.section_item_assertions import section_matches, \
+    section_contents_matches
 
 
 def suite() -> unittest.TestSuite:
@@ -30,16 +30,14 @@ class Test(unittest.TestCase):
 
         target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
 
-        section_assertion = asrt.And([
-            asrt.sub_component('header',
-                               doc.Section.header.fget,
-                               is_anchor_text_that_corresponds_to(expected_target_info)),
-            asrt.sub_component('contents',
-                               doc.Section.contents.fget,
-                               asrt.Is(expected_section_contents_object))
-        ])
+        section_assertion = section_matches(
+            target=cross_ref_id_asrt.equals(expected_target_info.target),
+            header=asrt_para.equals_text(expected_target_info.presentation_text),
+            contents=asrt.Is(expected_section_contents_object))
+
         # ACT & ASSERT #
-        self._act_and_assert(object_to_test, target_factory,
+        self._act_and_assert(object_to_test,
+                             target_factory,
                              target_info_node_assertion,
                              section_assertion)
 
@@ -52,13 +50,15 @@ class Test(unittest.TestCase):
 
         target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
 
-        section_assertion = assert_section(
-            header=is_anchor_text_that_corresponds_to(expected_target_info),
+        section_assertion = section_matches(
+            target=cross_ref_id_asrt.equals(expected_target_info.target),
+            header=asrt_para.equals_text(expected_target_info.presentation_text),
             contents=asrt.sub_component('is_empty',
                                         doc.SectionContents.is_empty.fget,
                                         asrt.is_true))
         # ACT & ASSERT #
-        self._act_and_assert(object_to_test, target_factory,
+        self._act_and_assert(object_to_test,
+                             target_factory,
                              target_info_node_assertion,
                              section_assertion)
 
@@ -79,79 +79,48 @@ class Test(unittest.TestCase):
         # EXPECTATION #
         expected_root_target_info = target_factory.root('root header')
 
+        sub1_target = target_factory.sub('sub1', 'sub-target1')
+        sub2_target = target_factory.sub('sub2', 'sub-target2')
         target_info_node_assertion = equals_target_info_node(
             TargetInfoNode(expected_root_target_info,
                            [
-                               target_info_leaf(target_factory.sub('sub1', 'sub-target1')),
-                               target_info_leaf(target_factory.sub('sub2', 'sub-target2')),
+                               target_info_leaf(sub1_target),
+                               target_info_leaf(sub2_target),
                            ]))
 
-        section_assertion = asrt.And([
-            asrt.sub_component(
-                'header',
-                doc.Section.header.fget,
-                is_anchor_text_that_corresponds_to(expected_root_target_info)),
-            asrt.sub_component(
-                'contents',
-                doc.Section.contents.fget,
-                asrt.And([
-                    asrt.sub_component(
-                        'initial_paragraphs',
-                        doc.SectionContents.initial_paragraphs.fget,
-                        asrt.Is(expected_root_initial_paras)),
-                    asrt.sub_component(
-                        'sections',
-                        doc.SectionContents.sections.fget,
-                        asrt.matches_sequence([
-                            assert_section(
-                                header=is_anchor_text_that_corresponds_to(target_factory.sub('sub1', 'sub-target1')),
-                                contents=asrt.Is(expected_section_contents_object1)),
-                            assert_section(
-                                header=is_anchor_text_that_corresponds_to(target_factory.sub('sub2', 'sub-target2')),
-                                contents=asrt.Is(expected_section_contents_object2)),
-                        ]))
-                ]))
-        ])
+        section_assertion2 = section_matches(
+            target=cross_ref_id_asrt.equals(expected_root_target_info.target),
+            header=asrt_para.equals_text(expected_root_target_info.presentation_text),
+            contents=section_contents_matches(
+                initial_paragraphs=asrt.Is(expected_root_initial_paras),
+                sections=asrt.matches_sequence([
+                    section_matches(
+                        target=cross_ref_id_asrt.equals(sub1_target.target),
+                        header=asrt_para.equals_text(sub1_target.presentation_text),
+                        contents=asrt.Is(expected_section_contents_object1)),
+                    section_matches(
+                        target=cross_ref_id_asrt.equals(sub2_target.target),
+                        header=asrt_para.equals_text(sub2_target.presentation_text),
+                        contents=asrt.Is(expected_section_contents_object2)),
+                ])))
         # ACT & ASSERT #
-        self._act_and_assert(object_to_test, target_factory,
+        self._act_and_assert(object_to_test,
+                             target_factory,
                              target_info_node_assertion,
-                             section_assertion)
+                             section_assertion2)
 
     def _act_and_assert(self,
                         object_to_test: sut.SectionHierarchyGenerator,
                         target_factory: CustomTargetInfoFactory,
                         target_info_node_assertion: asrt.ValueAssertion,
                         section_assertion: asrt.ValueAssertion):
+        # ACT #
         section_renderer_node = object_to_test.renderer_node(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()
         actual_section = section_renderer_node.section_item_renderer().apply(RENDERING_ENVIRONMENT)
-
+        # ASSERT #
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')
         section_assertion.apply_with_message(self, actual_section, 'Section')
-
-
-def is_anchor_text_that_corresponds_to(expected: TargetInfo) -> asrt.ValueAssertion:
-    return asrt.And([
-        is_anchor_text,
-        asrt.sub_component('anchor',
-                           AnchorText.anchor.fget,
-                           cross_ref_id_asrt.equals(expected.target)),
-        asrt.sub_component('anchored_text',
-                           AnchorText.anchored_text.fget,
-                           is_string_text_that_equals(expected.presentation_str)),
-    ])
-
-
-def assert_section(header: asrt.ValueAssertion,
-                   contents: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    return asrt.And([
-        asrt.sub_component('header',
-                           doc.Section.header.fget,
-                           header),
-        asrt.sub_component('contents',
-                           doc.Section.contents.fget,
-                           contents)
-    ])
 
 
 def section_contents(x: docs.SectionContents) -> SectionContentsRenderer:

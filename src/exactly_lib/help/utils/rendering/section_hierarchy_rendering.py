@@ -64,7 +64,9 @@ def parent(header: str,
     :param local_target_name__sub_section__list: [(str, SectionHierarchyGenerator)]
     :param initial_paragraphs: [ParagraphItem]
     """
-    return _SectionHierarchyGeneratorWithSubSections(header, initial_paragraphs, local_target_name__sub_section__list)
+    return _SectionHierarchyGeneratorWithSubSections(header,
+                                                     initial_paragraphs,
+                                                     local_target_name__sub_section__list)
 
 
 class LeafSectionRendererNode(SectionItemRendererNodeWithRoot):
@@ -87,8 +89,9 @@ class LeafSectionRendererNode(SectionItemRendererNodeWithRoot):
 
         class RetVal(SectionRenderer):
             def apply(self, environment: RenderingEnvironment) -> doc.Section:
-                return doc.Section(super_self._root_target_info.anchor_text(),
-                                   super_self._contents_renderer.apply(environment))
+                return doc.Section(super_self._root_target_info.presentation_text,
+                                   super_self._contents_renderer.apply(environment),
+                                   target=super_self._root_target_info.target)
 
         return RetVal()
 
@@ -115,9 +118,10 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
             def apply(self, environment: RenderingEnvironment) -> doc.Article:
                 article_contents = super_self._contents_renderer.apply(environment)
 
-                return doc.Article(super_self._root_target_info.anchor_text(),
+                return doc.Article(super_self._root_target_info.presentation_text,
                                    ArticleContents(article_contents.abstract_paragraphs,
-                                                   article_contents.section_contents))
+                                                   article_contents.section_contents),
+                                   target=super_self._root_target_info.target)
 
         return RetVal()
 
@@ -153,9 +157,10 @@ class SectionItemRendererNodeWithSubSections(SectionItemRendererNodeWithRoot):
             def apply(self, environment: RenderingEnvironment) -> doc.Section:
                 sub_sections = [ss.section_item_renderer().apply(environment)
                                 for ss in super_self._sub_section_nodes]
-                return doc.Section(super_self._root_target_info.anchor_text(),
+                return doc.Section(super_self._root_target_info.presentation_text,
                                    doc.SectionContents(super_self._initial_paragraphs,
-                                                       sub_sections))
+                                                       sub_sections),
+                                   target=super_self._root_target_info.target)
 
         return RetVal()
 
