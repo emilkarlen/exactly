@@ -5,7 +5,8 @@ from exactly_lib.util.textformat.formatting.html.paragraph_item import paragraph
 from exactly_lib.util.textformat.formatting.html.text import TextRenderer
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
-from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, TargetRendererTestImpl, \
+from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, \
+    TargetRendererAsNameTestImpl, \
     CrossReferenceTargetTestImpl
 
 
@@ -343,7 +344,7 @@ class TestParagraphWithSkippingOfSurroundingPElement(unittest.TestCase):
         self.assertIs(root, ret_val)
 
 
-TARGET_RENDERER = TargetRendererTestImpl()
+TARGET_RENDERER = TargetRendererAsNameTestImpl()
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

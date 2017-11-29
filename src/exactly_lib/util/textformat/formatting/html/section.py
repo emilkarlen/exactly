@@ -1,6 +1,7 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib.util.textformat.formatting.html import text
+from exactly_lib.util.textformat.formatting.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
 from exactly_lib.util.textformat.formatting.html.text import Position
 from exactly_lib.util.textformat.structure import core
@@ -50,8 +51,10 @@ class HnSectionHeaderRenderer(SectionHeaderRenderer):
 
 class SectionItemRenderer:
     def __init__(self,
+                 target_renderer: TargetRenderer,
                  section_header_renderer: SectionHeaderRenderer,
                  paragraph_item_renderer: ParagraphItemRenderer):
+        self.target_renderer = target_renderer
         self.section_header_renderer = section_header_renderer
         self.paragraph_item_renderer = paragraph_item_renderer
 
@@ -107,7 +110,8 @@ class SectionItemRenderer:
         :return: The last rendered element, or parent, if no element was rendered.
         """
         environment = root_level(environment)
-        ret_val = SubElement(parent, 'article')
+
+        ret_val = SubElement(parent, 'article', self._article_attributes(article))
         self._render_article_header(environment, ret_val,
                                     article.header,
                                     article.contents.abstract_paragraphs)
@@ -126,6 +130,13 @@ class SectionItemRenderer:
         self.section_header_renderer.apply(environment, ret_val, header)
         self.render_paragraph_items(environment, ret_val, abstract_paragraphs)
         return ret_val
+
+    def _article_attributes(self, article: Article) -> dict:
+        if not article.target:
+            return {}
+        else:
+            id_value = self.target_renderer.apply(article.target)
+            return {'id': id_value}
 
 
 class _SectionItemRenderer(SectionItemVisitor):

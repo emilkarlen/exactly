@@ -11,7 +11,7 @@ from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.document import SectionContents, Section
 from exactly_lib.util.textformat.structure.structures import para
 from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import ParaWithSingleStrTextRenderer
-from exactly_lib_test.util.textformat.formatting.html.test_resources import TargetRendererTestImpl
+from exactly_lib_test.util.textformat.formatting.html.test_resources import TARGET_RENDERER_AS_NAME
 
 
 def suite() -> unittest.TestSuite:
@@ -212,7 +212,8 @@ class HeadStylePopulator(exactly_lib.util.textformat.formatting.html.utils.Eleme
         SubElement(parent, 'style').text = self.style
 
 
-TEST_SECTION_RENDERER = sut.SectionItemRenderer(HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl())),
+TEST_SECTION_RENDERER = sut.SectionItemRenderer(TARGET_RENDERER_AS_NAME,
+                                                HnSectionHeaderRenderer(TextRenderer(TARGET_RENDERER_AS_NAME)),
                                                 ParaWithSingleStrTextRenderer())
 
 DOCUMENT_RENDERER = sut.DocumentRenderer(TEST_SECTION_RENDERER)

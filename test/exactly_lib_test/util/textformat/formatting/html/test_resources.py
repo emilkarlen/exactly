@@ -26,7 +26,10 @@ class CrossReferenceTargetTestImpl(core.CrossReferenceTarget):
         self.name = name
 
 
-class TargetRendererTestImpl(TargetRenderer):
+class TargetRendererAsNameTestImpl(TargetRenderer):
     def apply(self, target: core.CrossReferenceTarget) -> str:
         assert isinstance(target, CrossReferenceTargetTestImpl)
         return target.name
+
+
+TARGET_RENDERER_AS_NAME = TargetRendererAsNameTestImpl()
