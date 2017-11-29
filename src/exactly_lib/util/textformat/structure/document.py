@@ -66,9 +66,11 @@ class ArticleContents(tuple):
 class SectionItem:
     def __init__(self,
                  header: core.Text,
-                 target: core.CrossReferenceTarget):
+                 target: core.CrossReferenceTarget,
+                 labels: set):
         self._header = header
         self._target = target
+        self._labels = set() if labels is None else labels
 
     @property
     def header(self) -> core.Text:
@@ -81,13 +83,21 @@ class SectionItem:
         """
         return self._target
 
+    @property
+    def labels(self) -> set:
+        """
+        Labels, used for CSS etc.
+        """
+        return self._labels
+
 
 class Section(SectionItem):
     def __init__(self,
                  header: core.Text,
                  contents: SectionContents,
-                 target: core.CrossReferenceTarget = None):
-        super().__init__(header, target)
+                 target: core.CrossReferenceTarget = None,
+                 labels: set = None):
+        super().__init__(header, target, labels)
         self._contents = contents
 
     @property
@@ -104,8 +114,9 @@ class Article(SectionItem):
     def __init__(self,
                  header: core.Text,
                  contents: ArticleContents,
-                 target: core.CrossReferenceTarget = None):
-        super().__init__(header, target)
+                 target: core.CrossReferenceTarget = None,
+                 labels: set = None):
+        super().__init__(header, target, labels)
         self._contents = contents
 
     @property

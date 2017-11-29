@@ -136,11 +136,15 @@ class SectionItemRenderer:
         return ret_val
 
     def _root_element_attributes(self, section_item: SectionItem) -> dict:
-        if not section_item.target:
-            return {}
-        else:
+        ret_val = {}
+
+        if section_item.target:
             id_value = self.target_renderer.apply(section_item.target)
-            return {'id': id_value}
+            ret_val['id'] = id_value
+        if section_item.labels:
+            class_value = ' '.join(sorted(section_item.labels))
+            ret_val['class'] = class_value
+        return ret_val
 
 
 class _SectionItemRenderer(SectionItemVisitor):
