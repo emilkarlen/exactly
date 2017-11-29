@@ -110,8 +110,8 @@ class SectionRenderer:
         ret_val = SubElement(parent, 'article')
         self._render_article_header(environment, ret_val,
                                     article.header,
-                                    article.abstract_paragraphs)
-        self.render_section_contents(environment, ret_val, article.contents)
+                                    article.contents.abstract_paragraphs)
+        self.render_section_contents(environment, ret_val, article.contents.section_contents)
         return ret_val
 
     def _render_article_header(self,

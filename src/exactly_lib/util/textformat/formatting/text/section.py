@@ -79,11 +79,8 @@ class Formatter(SectionItemVisitor):
         return self.format_section(section)
 
     def visit_article(self, article: Article):
-        contents = article.contents
-        all_initial_paras = article.abstract_paragraphs + contents.initial_paragraphs
         as_section = Section(article.header,
-                             SectionContents(all_initial_paras,
-                                             contents.sections))
+                             article.contents.combined_as_section_contents)
 
         return self.format_section(as_section)
 

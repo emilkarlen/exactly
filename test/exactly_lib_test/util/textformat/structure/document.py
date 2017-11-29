@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.util.textformat.structure import document as sut
 from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
 def suite() -> unittest.TestSuite:
@@ -37,8 +38,8 @@ class SectionItemVisitorTest(unittest.TestCase):
     def test_article(self):
         # ARRANGE   #
         article = sut.Article(StringText('header'),
-                              [],
-                              sut.empty_section_contents())
+                              ArticleContents([],
+                                              sut.empty_section_contents()))
         visitor = SectionItemVisitorThatRecordsExpectedClassAndReturnsArg()
         # ACT #
         ret_val = visitor.visit(article)
@@ -56,8 +57,7 @@ class SectionItemVisitorTest(unittest.TestCase):
 
 class UnknownSectionItem(sut.SectionItem):
     def __init__(self):
-        super().__init__(StringText('header of unknown item'),
-                         sut.empty_section_contents())
+        super().__init__(StringText('header of unknown item'))
 
 
 if __name__ == '__main__':

@@ -4,6 +4,7 @@ from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode, TargetInfo
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
 class SectionRendererNode:
@@ -120,8 +121,8 @@ class LeafArticleRendererNode(SectionRendererNodeWithRoot):
                 article_contents = super_self._contents_renderer.apply(environment)
 
                 return doc.Article(super_self._root_target_info.anchor_text(),
-                                   article_contents.abstract_paragraphs,
-                                   article_contents.section_contents)
+                                   ArticleContents(article_contents.abstract_paragraphs,
+                                                   article_contents.section_contents))
 
         return RetVal()
 
