@@ -10,7 +10,8 @@ from exactly_lib.util.textformat.structure.document import SectionContents, Sect
 from exactly_lib.util.textformat.structure.structures import para
 from exactly_lib_test.util.textformat.formatting.html.paragraph_item.test_resources import ParaWithSingleStrTextRenderer
 from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, \
-    assert_contents_and_that_last_child_is_returned, TargetRendererTestImpl
+    assert_contents_and_that_last_child_is_returned, CrossReferenceTargetTestImpl, \
+    TARGET_RENDERER_AS_NAME
 
 
 def suite() -> unittest.TestSuite:
@@ -27,7 +28,7 @@ def suite() -> unittest.TestSuite:
 
 
 class TestHnSectionHeaderRenderer(unittest.TestCase):
-    HN_SECTION_HEADER_RENDERER = HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl()))
+    HN_SECTION_HEADER_RENDERER = HnSectionHeaderRenderer(TextRenderer(TARGET_RENDERER_AS_NAME))
 
     def test_level_0(self):
         # ARRANGE #
@@ -310,6 +311,19 @@ class TestArticle(unittest.TestCase):
              '</article>'
              '</root>'
              ),
+            ('empty with target',
+             Article(StringText('header'),
+                     ArticleContents([],
+                                     empty_section_contents()),
+                     target=CrossReferenceTargetTestImpl('target-name')),
+             '<root>'
+             '<article id="target-name">'
+             '<header>'
+             '<h1>header</h1>'
+             '</header>'
+             '</article>'
+             '</root>'
+             ),
             ('single abstract paragraph',
              Article(StringText('header'),
                      ArticleContents([para('abstract paragraph')],
@@ -380,7 +394,8 @@ class TestArticle(unittest.TestCase):
                     root, ret_val, self)
 
 
-TEST_RENDERER = sut.SectionItemRenderer(HnSectionHeaderRenderer(TextRenderer(TargetRendererTestImpl())),
+TEST_RENDERER = sut.SectionItemRenderer(TARGET_RENDERER_AS_NAME,
+                                        HnSectionHeaderRenderer(TextRenderer(TARGET_RENDERER_AS_NAME)),
                                         ParaWithSingleStrTextRenderer())
 
 if __name__ == '__main__':
