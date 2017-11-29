@@ -39,6 +39,10 @@ article header h1 {
     background-color: #c0c0c0;
 }
 
+article.entity.concept header h1 {
+    font-family: inherit;
+}
+
 article header p {
     font-style: italic;
     font-size: 110%;
