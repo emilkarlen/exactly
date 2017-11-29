@@ -4,10 +4,11 @@ from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, \
     SectionContentsRendererForConstantContents
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, SectionRendererNode, \
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, \
+    SectionItemRendererNode, \
     parent, \
     leaf, \
-    SectionFromGeneratorAsSectionContentsRenderer
+    SectionContentsRendererFromHierarchyGenerator
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.entity import concepts
@@ -17,7 +18,7 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 
 def specification_renderer(suite_help: TestSuiteHelp) -> SectionContentsRenderer:
-    return SectionFromGeneratorAsSectionContentsRenderer(
+    return SectionContentsRendererFromHierarchyGenerator(
         SpecificationHierarchyGenerator('unused section header', suite_help)
     )
 
@@ -35,7 +36,7 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
             'reporter_concept': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
         }
 
-    def section_renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionRendererNode:
+    def renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemRendererNode:
         generator = parent(self.header,
                            [],
                            [
@@ -52,7 +53,7 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                                      self._section_of_parsed(_FILE_SYNTAX))
                                 ),
                            ])
-        return generator.section_renderer_node(target_factory)
+        return generator.renderer_node(target_factory)
 
     def _section_of_parsed(self, contents: str) -> SectionContentsRenderer:
         return SectionContentsRendererForConstantContents(

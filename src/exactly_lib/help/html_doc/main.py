@@ -9,7 +9,7 @@ from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as sui
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
-    SectionRendererNode
+    SectionItemRendererNode
 from exactly_lib.help.utils.table_of_contents import toc_list
 from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNode
 from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
@@ -21,6 +21,7 @@ from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_i
 from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.utils import section_item_contents_as_section_contents
 
 _TEST_SUITES_HEADER = 'Test Suites'
 
@@ -43,7 +44,8 @@ def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
 
     rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
                                                  render_simple_header_value_lists_as_tables=True)
-    ret_val = section_node.section(rendering_environment).contents
+    section_item = section_node.section_item(rendering_environment)
+    ret_val = section_item_contents_as_section_contents(section_item)
     _add_toc_as_first_paragraphs(ret_val, section_node.target_info_node())
     return ret_val
 
@@ -124,9 +126,9 @@ def _cli_syntax_sections(local_target_name: str) -> list:
     ]
 
 
-def _section_rendering_node(application_help: ApplicationHelp) -> SectionRendererNode:
+def _section_rendering_node(application_help: ApplicationHelp) -> SectionItemRendererNode:
     section_generator = _generator(application_help)
-    return section_generator.section_renderer_node(root_factory())
+    return section_generator.renderer_node(root_factory())
 
 
 def _add_toc_as_first_paragraphs(contents: doc.SectionContents,

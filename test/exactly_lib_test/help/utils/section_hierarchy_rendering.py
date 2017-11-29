@@ -122,9 +122,9 @@ class Test(unittest.TestCase):
                         target_factory: CustomTargetInfoFactory,
                         target_info_node_assertion: asrt.ValueAssertion,
                         section_assertion: asrt.ValueAssertion):
-        section_renderer_node = object_to_test.section_renderer_node(target_factory)
+        section_renderer_node = object_to_test.renderer_node(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()
-        actual_section = section_renderer_node.section_renderer().apply(RENDERING_ENVIRONMENT)
+        actual_section = section_renderer_node.section_item_renderer().apply(RENDERING_ENVIRONMENT)
 
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')
         section_assertion.apply_with_message(self, actual_section, 'Section')

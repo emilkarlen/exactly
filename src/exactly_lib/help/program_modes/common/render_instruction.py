@@ -14,7 +14,7 @@ LIST_INDENT = 2
 BLANK_LINE_BETWEEN_ELEMENTS = lists.Separations(1, 0)
 
 
-class InstructionManPageArticleRenderer(ArticleContentsRenderer):
+class InstructionDocArticleContentsRenderer(ArticleContentsRenderer):
     def __init__(self, documentation: InstructionDocumentation):
         self.documentation = documentation
 
@@ -36,10 +36,9 @@ class InstructionManPageArticleRenderer(ArticleContentsRenderer):
                                    doc.SectionContents([], sub_sections))
 
 
-class InstructionManPageRenderer(SectionContentsRendererFromArticleContentsRenderer):
-    def __init__(self,
-                 documentation: InstructionDocumentation):
-        super().__init__(InstructionManPageArticleRenderer(documentation))
+class InstructionDocSectionContentsRenderer(SectionContentsRendererFromArticleContentsRenderer):
+    def __init__(self, documentation: InstructionDocumentation):
+        super().__init__(InstructionDocArticleContentsRenderer(documentation))
 
 
 def instruction_set_list_item(description: InstructionDocumentation,
