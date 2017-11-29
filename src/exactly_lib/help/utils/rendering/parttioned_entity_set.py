@@ -92,9 +92,11 @@ class PartitionedCliListRendererGetter(CliListRendererGetter):
 
 class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
     def __init__(self,
+                 entity_type_identifier: str,
                  partition_setup_list: list,
                  entity_2_article_contents_renderer: types.FunctionType
                  ):
+        self.entity_type_identifier = entity_type_identifier
         self.partition_setup_list = partition_setup_list
         self.entity_2_article_contents_renderer = entity_2_article_contents_renderer
 
@@ -104,6 +106,7 @@ class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
         def section_hierarchy_node(partition: EntitiesPartition) -> tuple:
             return (partition.partition_names_setup.local_target_name,
                     entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(
+                        self.entity_type_identifier,
                         partition.partition_names_setup.header,
                         self.entity_2_article_contents_renderer,
                         partition.entity_doc_list,
