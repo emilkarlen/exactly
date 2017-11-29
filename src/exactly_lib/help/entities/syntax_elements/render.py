@@ -6,7 +6,7 @@ from exactly_lib.help.program_modes.common.render_syntax_contents import invokat
 from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import document as doc
@@ -35,20 +35,21 @@ _PARTITIONS_SETUP = [
 ]
 
 
-class IndividualSyntaxElementRenderer(SectionContentsRenderer):
+class IndividualSyntaxElementRenderer(ArticleContentsRenderer):
     def __init__(self, syntax_element: SyntaxElementDocumentation):
         self.syntax_element = syntax_element
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        initial_paragraphs = [docs.para(self.syntax_element.single_line_description())]
+    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+        initial_paragraphs = []
         invokation_variants = self.syntax_element.invokation_variants()
         if len(invokation_variants) > 1:
             initial_paragraphs.append(docs.para('Forms:'))
         initial_paragraphs += invokation_variants_paragraphs(None,
                                                              invokation_variants,
                                                              self.syntax_element.syntax_element_descriptions())
-        return doc.SectionContents(initial_paragraphs,
-                                   self._sub_sections(environment))
+        return doc.ArticleContents(docs.paras(self.syntax_element.single_line_description()),
+                                   doc.SectionContents(initial_paragraphs,
+                                                       self._sub_sections(environment)))
 
     def _sub_sections(self, environment: RenderingEnvironment) -> list:
         ret_val = []

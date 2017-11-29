@@ -44,7 +44,7 @@ class TestIndividualType(unittest.TestCase):
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
     def test_with_non_empty_main_description(self):
         # ARRANGE #
@@ -56,7 +56,7 @@ class TestIndividualType(unittest.TestCase):
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
 
 A_SYNTAX_ELEMENT_INFO = syntax_elements.SyntaxElementInfo(

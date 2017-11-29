@@ -42,7 +42,7 @@ class TestIndividualConfigurationParameter(unittest.TestCase):
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
     def test_conf_param_with_complex_description(self):
         # ARRANGE #
@@ -54,7 +54,7 @@ class TestIndividualConfigurationParameter(unittest.TestCase):
         # ACT #
         actual = renderer.apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
 
 class ConfigurationParameterTestImpl(ConfigurationParameterDocumentation):

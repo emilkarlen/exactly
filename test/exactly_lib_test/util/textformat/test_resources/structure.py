@@ -155,6 +155,17 @@ SECTION_ASSERTION = SectionAssertion()
 
 is_section_contents = asrt.OfCallable(SECTION_ASSERTION.is_section_contents)
 
+is_article_contents = asrt.is_instance_with(
+    doc.ArticleContents,
+    asrt.and_([
+        asrt.sub_component_list('abstract_paragraphs',
+                                doc.ArticleContents.abstract_paragraphs.fget,
+                                is_paragraph_item),
+        asrt.sub_component('section_contents',
+                           doc.ArticleContents.section_contents.fget,
+                           is_section_contents)
+    ]))
+
 is_section_item = asrt.OfCallable(SECTION_ASSERTION.is_section_item)
 
 is_list_item = asrt.And([

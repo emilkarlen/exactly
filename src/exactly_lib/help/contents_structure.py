@@ -21,11 +21,11 @@ class CliListRendererGetter:
 class EntityConfiguration(tuple):
     def __new__(cls,
                 entities_help: EntitiesHelp,
-                entity_doc_2_section_contents_renderer,
+                entity_doc_2_article_contents_renderer,
                 cli_list_renderer_getter: CliListRendererGetter,
                 html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter):
         return tuple.__new__(cls, (entities_help,
-                                   entity_doc_2_section_contents_renderer,
+                                   entity_doc_2_article_contents_renderer,
                                    cli_list_renderer_getter,
                                    html_doc_generator_getter))
 
@@ -34,9 +34,9 @@ class EntityConfiguration(tuple):
         return self[0]
 
     @property
-    def entity_doc_2_section_contents_renderer(self):
+    def entity_doc_2_article_contents_renderer(self):
         """
-        :rtype: `EntityDocumentation` -> `SectionContentsRenderer`
+        :rtype: `EntityDocumentation` -> `ArticleContentsRenderer`
         """
         return self[1]
 
