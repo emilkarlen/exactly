@@ -1,6 +1,22 @@
 from enum import Enum
 
-from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
+from exactly_lib.util.textformat.structure.core import TaggedItem, Text, ParagraphItem
+
+
+class HeaderItem(TaggedItem):
+    def __init__(self,
+                 header: Text,
+                 tags: set = None):
+        self._header = header
+        self._tags = set() if tags is None else tags
+
+    @property
+    def header(self) -> Text:
+        return self._header
+
+    @property
+    def tags(self) -> set:
+        return self._tags
 
 
 class HeaderContentListItem(tuple):
@@ -11,6 +27,10 @@ class HeaderContentListItem(tuple):
         :type content_paragraph_items: List[ParagraphItem]
         """
         return tuple.__new__(cls, (header, list(content_paragraph_items)))
+
+    @property
+    def header_item(self) -> HeaderItem:
+        return HeaderItem(self.header)
 
     @property
     def header(self) -> Text:

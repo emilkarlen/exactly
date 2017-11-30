@@ -100,8 +100,8 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
     def _instruction_groups_list(self) -> list:
         def item(purpose: AssertPhasePurpose) -> lists.HeaderContentListItem:
             info = _INSTRUCTION_TYPES[purpose]
-            return lists.HeaderContentListItem(docs.text(info[0]),
-                                               self._tp.fnap(info[2]))
+            return docs.list_item(info[0],
+                                  self._tp.fnap(info[2]))
 
         return [
             docs.simple_list_with_space_between_elements_and_content(map(item, list(AssertPhasePurpose)),

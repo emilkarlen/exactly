@@ -1,6 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.util.textformat.structure import document as doc, paragraph, lists
-from exactly_lib.util.textformat.structure.structures import para, text, SEPARATION_OF_HEADER_AND_CONTENTS
+from exactly_lib.util.textformat.structure import structures as docs
 
 LIST_INDENT = 2
 
@@ -15,8 +15,8 @@ def variants_list(instruction_name: str,
     items = []
     for x in invokation_variants:
         assert isinstance(x, InvokationVariant)
-        items.append(lists.HeaderContentListItem(text(title_prefix + x.syntax),
-                                                 x.description_rest))
+        items.append(docs.list_item(title_prefix + x.syntax,
+                                    x.description_rest))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST,
                                                 custom_indent_spaces=_custom_list_indent(indented),
@@ -38,10 +38,10 @@ def invokation_variants_paragraphs(instruction_name_or_none: str,
                                                           True,
                                                           custom_separations=BLANK_LINE_BETWEEN_ELEMENTS)]
             separator_paras = [_FORMS_PARA] if x.invokation_variants and x.description_rest else []
-            items.append(lists.HeaderContentListItem(text(x.element_name),
-                                                     x.description_rest +
-                                                     separator_paras +
-                                                     variants_list_paragraphs))
+            items.append(docs.list_item(x.element_name,
+                                        x.description_rest +
+                                        separator_paras +
+                                        variants_list_paragraphs))
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_indent_spaces=_custom_list_indent(True),
@@ -58,7 +58,7 @@ def invokation_variants_paragraphs(instruction_name_or_none: str,
         return []
     return ([variants_list(instruction_name_or_none,
                            invokation_variants,
-                           custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)] +
+                           custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS)] +
             syntax_element_description_paragraph_items())
 
 
@@ -73,8 +73,8 @@ def invokation_variants_content(instruction_name_or_none: str,
                                [])
 
 
-_WHERE_PARA = para('where')
-_FORMS_PARA = para('Forms:')
+_WHERE_PARA = docs.para('where')
+_FORMS_PARA = docs.para('Forms:')
 
 
 def _custom_list_indent(indented: bool) -> int:

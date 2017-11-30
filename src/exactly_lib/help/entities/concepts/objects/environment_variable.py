@@ -48,9 +48,9 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
                                   ]))
 
     def _item(self, var_name: str) -> lists.HeaderContentListItem:
-        return lists.HeaderContentListItem(docs.text(var_name),
-                                           environment_variables.ENVIRONMENT_VARIABLE_DESCRIPTION.as_description_paragraphs(
-                                               var_name))
+        return docs.list_item(var_name,
+                              environment_variables.ENVIRONMENT_VARIABLE_DESCRIPTION.as_description_paragraphs(
+                                  var_name))
 
 
 def _variables_section(first_phase_name: formatting.SectionName,

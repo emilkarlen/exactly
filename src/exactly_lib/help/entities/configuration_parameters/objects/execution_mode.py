@@ -6,8 +6,8 @@ from exactly_lib.test_case import execution_mode
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.structures import text
 
 
 class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
@@ -24,7 +24,7 @@ DOCUMENTATION = _ExecutionModeConfigurationParameter()
 
 
 def execution_modes_list() -> ParagraphItem:
-    items = [lists.HeaderContentListItem(text(x[0]), x[1])
+    items = [docs.list_item(x[0], x[1])
              for x in _mode_name_and_paragraphs_list()]
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST))

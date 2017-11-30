@@ -47,5 +47,5 @@ def instruction_set_list_item(description: InstructionDocumentation,
     :type name_2_name_text_fun: `str` -> `Text`
     """
     description_para = docs.para(description.single_line_description())
-    return lists.HeaderContentListItem(name_2_name_text_fun(description.instruction_name()),
-                                       [description_para])
+    return docs.list_item(name_2_name_text_fun(description.instruction_name()),
+                          [description_para])

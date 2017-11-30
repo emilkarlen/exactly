@@ -117,8 +117,7 @@ class _HdsConcept(ConceptDocumentation):
             docs.para(x.conf_param.single_line_description_str),
             properties_table,
         ]
-        return HeaderContentListItem(self._tp.text(x.item_name),
-                                     paras)
+        return docs.list_item(self._tp.text(x.item_name), paras)
 
 
 HOME_DIRECTORY_STRUCTURE_CONCEPT = _HdsConcept()

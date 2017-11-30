@@ -164,8 +164,8 @@ class RelOptionRenderer:
 
     def sparse_item_for(self, rel_option_type: RelOptionType) -> lists.HeaderContentListItem:
         opt_info = REL_OPTIONS_MAP[rel_option_type]
-        return lists.HeaderContentListItem(docs.text(option_syntax.option_syntax(opt_info.option_name)),
-                                           docs.paras(opt_info.informative_name))
+        return docs.list_item(option_syntax.option_syntax(opt_info.option_name),
+                              docs.paras(opt_info.informative_name))
 
 
 _REL_TMP_DESCRIPTION = """\

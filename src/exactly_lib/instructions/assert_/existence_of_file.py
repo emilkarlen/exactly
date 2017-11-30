@@ -22,7 +22,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
     RelOptionsConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
-from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure import lists, structures as docs
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
@@ -125,8 +125,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         sort_value__list_items = [
             (file_properties.TYPE_INFO[file_type],
-             lists.HeaderContentListItem(self._text(render_argument(a.Option(option_name))),
-                                         type_description(file_type)))
+             docs.list_item(self._text(render_argument(a.Option(option_name))),
+                            type_description(file_type)))
             for file_type, option_name in FILE_TYPE_OPTIONS]
         sort_value__list_items.sort(key=lambda type_name__list_item: type_name__list_item[0].type_argument)
         list_items = [type_name__list_item[1]
