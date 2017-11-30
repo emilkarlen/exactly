@@ -144,4 +144,5 @@ class _SectionInstructionsNodeConstructor:
         target_info = cross_ref.TargetInfo(instruction.instruction_name(),
                                            cross_ref_target)
         return LeafArticleRendererNode(target_info,
-                                       InstructionDocArticleContentsRenderer(instruction))
+                                       InstructionDocArticleContentsRenderer(instruction),
+                                       tags={section_item_tags.INSTRUCTION})

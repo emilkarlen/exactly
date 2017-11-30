@@ -2,3 +2,4 @@
 
 ENTITY = 'entity'
 SECTION = 'section'
+INSTRUCTION = 'instruction'
