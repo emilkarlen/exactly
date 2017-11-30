@@ -31,5 +31,5 @@ DOCUMENTATION = _TimeoutConfigurationParameter()
 
 WHAT_THE_TIMEOUT_APPLIES_TO = """\
 The timeout is per instruction, and for the {phase[act]} phase.
-It does not apply to the whole test case.
+It does not apply to the test case as a whole.
 """
