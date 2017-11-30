@@ -10,9 +10,9 @@ def toc_list(target_info_hierarchy: list,
         sub_lists = []
         if node.children:
             sub_lists = [toc_list(node.children, list_type)]
-        item = lists.HeaderContentListItem(docs.cross_reference(node.data.presentation_str,
-                                                                node.data.target),
-                                           sub_lists)
+        item = docs.list_item(docs.cross_reference(node.data.presentation_str,
+                                                   node.data.target),
+                              sub_lists)
         items.append(item)
     return lists.HeaderContentList(items,
                                    lists.Format(list_type))

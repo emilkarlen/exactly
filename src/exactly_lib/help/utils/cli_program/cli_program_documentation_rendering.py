@@ -51,7 +51,7 @@ class _ProgramDocumentationRenderer:
 
     def _arg_description_list_item(self, argument: DescribedArgument) -> lists.HeaderContentListItem:
         header = docs.text(self.arg_in_description_renderer.visit(argument.argument))
-        return lists.HeaderContentListItem(header, self._arg_description_list_item_contents(argument))
+        return docs.list_item(header, self._arg_description_list_item_contents(argument))
 
     def _arg_description_list_item_contents(self, argument: DescribedArgument) -> list:
         ret_val = []
@@ -67,7 +67,7 @@ class _ProgramDocumentationRenderer:
         if synopsis.maybe_single_line_description:
             content_paragraph_items.append(docs.para(synopsis.maybe_single_line_description))
         content_paragraph_items += synopsis.paragraphs
-        return lists.HeaderContentListItem(header, content_paragraph_items)
+        return docs.list_item(header, content_paragraph_items)
 
     def _list(self, items):
         return lists.HeaderContentList(items,

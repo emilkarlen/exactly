@@ -21,10 +21,10 @@ class _ConfigurationParameterConcept(ConceptDocumentation):
 def _sorted_conf_params_list() -> ParagraphItem:
     all_cfs = sorted(ALL_CONF_PARAM_INFOS,
                      key=SingularNameAndCrossReferenceId.singular_name.fget)
-    items = [lists.HeaderContentListItem(docs.cross_reference(cf.singular_name,
-                                                              cf.cross_reference_target,
-                                                              allow_rendering_of_visible_extra_target_text=False),
-                                         docs.paras(cf.single_line_description_str))
+    items = [docs.list_item(docs.cross_reference(cf.singular_name,
+                                                 cf.cross_reference_target,
+                                                 allow_rendering_of_visible_extra_target_text=False),
+                            docs.paras(cf.single_line_description_str))
              for cf in all_cfs]
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST,

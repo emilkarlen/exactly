@@ -167,7 +167,7 @@ def _directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
         sub_dirs_items = []
         if dir_wsd.sub_dirs:
             sub_dirs_items = [_directory_structure_list(dir_wsd.sub_dirs)]
-        items.append(lists.HeaderContentListItem(docs.text(dir_wsd.name + '/'), sub_dirs_items))
+        items.append(docs.list_item(docs.text(dir_wsd.name + '/'), sub_dirs_items))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.ITEMIZED_LIST))
 

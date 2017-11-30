@@ -66,15 +66,9 @@ class ContentsRenderer(SectionContentsRendererWithSetup):
 
     def execution_sub_steps_description(self) -> docs.ParagraphItem:
         return lists.HeaderContentList([
-            lists.HeaderContentListItem(
-                self.text_parser.text('execution of {phase[setup]:syntax}'),
-                []),
-            lists.HeaderContentListItem(
-                docs.text(post_setup_validation_step_name(self.setup)),
-                []),
-            lists.HeaderContentListItem(
-                docs.text('execution of remaining phases'),
-                []),
+            docs.list_item(self.text_parser.text('execution of {phase[setup]:syntax}')),
+            docs.list_item(docs.text(post_setup_validation_step_name(self.setup))),
+            docs.list_item(docs.text('execution of remaining phases')),
         ],
             lists.Format(lists.ListType.ORDERED_LIST,
                          custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS)

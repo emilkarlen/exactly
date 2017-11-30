@@ -39,8 +39,8 @@ class AllEntitiesListRenderer(SectionContentsRenderer):
         return doc.SectionContents([transform_list_to_table(self._sorted_entities_list(self.all_entities))], [])
 
     def _sorted_entities_list(self, entities: iter) -> lists.HeaderContentList:
-        items = [lists.HeaderContentListItem(docs.text(entity.singular_name()),
-                                             self.entity_2_summary_paragraphs(entity))
+        items = [docs.list_item(entity.singular_name(),
+                                self.entity_2_summary_paragraphs(entity))
                  for entity in (sorted_entity_list(entities))]
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,

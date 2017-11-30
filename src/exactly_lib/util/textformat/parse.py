@@ -3,6 +3,7 @@ import textwrap
 
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import lists
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text, StringText
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
@@ -144,7 +145,7 @@ class _Parser:
         header = current_line[item_line_prefix_len:].strip()
 
         content_paragraph_items = self.parse_list_content_paragraph_items(len(item_line_prefix))
-        return lists.HeaderContentListItem(StringText(header), content_paragraph_items)
+        return docs.list_item(StringText(header), content_paragraph_items)
 
     def parse_list_content_paragraph_items(self, item_contents_indent_len: int) -> list:
         texts = self.parse_list_content_texts(item_contents_indent_len)
