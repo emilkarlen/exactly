@@ -54,6 +54,7 @@ article.{entity}.{concept_entity} header h1 {{
 
 article.{section} header h1 {{
     font-size: xx-large;
+    background-color: LightGoldenRodYellow;
 }}
 
 article header p {{
