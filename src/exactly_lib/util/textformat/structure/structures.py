@@ -49,7 +49,7 @@ def simple_list_with_space_between_elements_and_content(items: iter,
 
 def list_item(header_str_or_text,
               content: list = None) -> lists.HeaderContentListItem:
-    return lists.HeaderContentListItem(text_from_unknown(header_str_or_text),
+    return lists.HeaderContentListItem(lists.HeaderItem(text_from_unknown(header_str_or_text)),
                                        _empty_list_if_none(content))
 
 

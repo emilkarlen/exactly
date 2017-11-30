@@ -37,7 +37,7 @@ class TestItemizedListType(unittest.TestCase):
     def test_singleton_element_without_contents(self):
         # ARRANGE #
         root = Element('root')
-        l = lists.HeaderContentList([lists.HeaderContentListItem(text('header'))],
+        l = lists.HeaderContentList([lists.HeaderContentListItem(lists.HeaderItem(text('header')))],
                                     lists.Format(lists.ListType.ITEMIZED_LIST))
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER),
@@ -55,8 +55,8 @@ class TestItemizedListType(unittest.TestCase):
     def test_multiple_element_without_contents(self):
         # ARRANGE #
         root = Element('root')
-        l = lists.HeaderContentList([lists.HeaderContentListItem(text('header 1')),
-                                     lists.HeaderContentListItem(text('header 2'))],
+        l = lists.HeaderContentList([lists.HeaderContentListItem(lists.HeaderItem(text('header 1'))),
+                                     lists.HeaderContentListItem(lists.HeaderItem(text('header 2')))],
                                     lists.Format(lists.ListType.ITEMIZED_LIST))
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER),
@@ -77,7 +77,7 @@ class TestItemizedListType(unittest.TestCase):
     def test_single_element_with_single_para_contents(self):
         # ARRANGE #
         root = Element('root')
-        l = lists.HeaderContentList([lists.HeaderContentListItem(text('header'),
+        l = lists.HeaderContentList([lists.HeaderContentListItem(lists.HeaderItem(text('header')),
                                                                  paras('ignored'))],
                                     lists.Format(lists.ListType.ITEMIZED_LIST))
         # ACT #
@@ -98,7 +98,7 @@ class TestItemizedListType(unittest.TestCase):
     def test_single_element_with_multiple_para_contents(self):
         # ARRANGE #
         root = Element('root')
-        l = lists.HeaderContentList([lists.HeaderContentListItem(text('header'),
+        l = lists.HeaderContentList([lists.HeaderContentListItem(lists.HeaderItem(text('header')),
                                                                  [para('ignored'),
                                                                   para('ignored')])],
                                     lists.Format(lists.ListType.ITEMIZED_LIST))
@@ -125,7 +125,7 @@ class TestOrderedListType(unittest.TestCase):
     def test_singleton_element_without_contents(self):
         # ARRANGE #
         root = Element('root')
-        l = lists.HeaderContentList([lists.HeaderContentListItem(text('header'))],
+        l = lists.HeaderContentList([lists.HeaderContentListItem(lists.HeaderItem(text('header')))],
                                     lists.Format(lists.ListType.ORDERED_LIST))
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER),
@@ -147,7 +147,7 @@ class TestVariableListType(unittest.TestCase):
     def test_singleton_element_without_contents(self):
         # ARRANGE #
         root = Element('root')
-        l = lists.HeaderContentList([lists.HeaderContentListItem(text('header'))],
+        l = lists.HeaderContentList([lists.HeaderContentListItem(lists.HeaderItem(text('header')))],
                                     lists.Format(lists.ListType.VARIABLE_LIST))
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER),
@@ -167,7 +167,7 @@ class TestVariableListType(unittest.TestCase):
     def test_singleton_element_with_multiple_content_paragraphs(self):
         # ARRANGE #
         root = Element('root')
-        l = lists.HeaderContentList([lists.HeaderContentListItem(text('header'),
+        l = lists.HeaderContentList([lists.HeaderContentListItem(lists.HeaderItem(text('header')),
                                                                  [para('ignored'),
                                                                   para('ignored')])],
                                     lists.Format(lists.ListType.VARIABLE_LIST))
