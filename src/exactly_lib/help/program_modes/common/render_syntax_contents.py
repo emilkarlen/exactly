@@ -1,6 +1,9 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help import section_item_tags
 from exactly_lib.util.textformat.structure import document as doc, paragraph, lists
 from exactly_lib.util.textformat.structure import structures as docs
+
+_SYNTAX_LINE_TAGS = frozenset([section_item_tags.SYNTAX_LINE])
 
 LIST_INDENT = 2
 
@@ -16,7 +19,8 @@ def variants_list(instruction_name: str,
     for x in invokation_variants:
         assert isinstance(x, InvokationVariant)
         items.append(docs.list_item(title_prefix + x.syntax,
-                                    x.description_rest))
+                                    x.description_rest,
+                                    tags=_SYNTAX_LINE_TAGS))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST,
                                                 custom_indent_spaces=_custom_list_indent(indented),
@@ -38,10 +42,10 @@ def invokation_variants_paragraphs(instruction_name_or_none: str,
                                                           True,
                                                           custom_separations=BLANK_LINE_BETWEEN_ELEMENTS)]
             separator_paras = [_FORMS_PARA] if x.invokation_variants and x.description_rest else []
+            contents = x.description_rest + separator_paras + variants_list_paragraphs
             items.append(docs.list_item(x.element_name,
-                                        x.description_rest +
-                                        separator_paras +
-                                        variants_list_paragraphs))
+                                        contents,
+                                        tags=_SYNTAX_LINE_TAGS))
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.VARIABLE_LIST,
                                                     custom_indent_spaces=_custom_list_indent(True),
