@@ -46,14 +46,24 @@ def _render_definition_list(text_renderer: text.TextRenderer,
     """
     list_root = SubElement(parent, 'dl')
     for item in list_.items:
-        dt = SubElement(list_root, 'dt')
-        text_renderer.apply(dt, dt, Position.INSIDE, item.header)
+        assert isinstance(item, lists.HeaderContentListItem)  # Type info for IDE
+        header_item = item.header_item
+        dt = SubElement(list_root, 'dt', _header_attributes(header_item))
+        text_renderer.apply(dt, dt, Position.INSIDE, header_item.text)
         content_paragraph_items = item.content_paragraph_items
         if content_paragraph_items:
             dd = SubElement(list_root, 'dd')
             for paragraph_item in content_paragraph_items:
                 paragraph_item_renderer.apply(dd, paragraph_item)
     return list_root
+
+
+def _header_attributes(header: lists.HeaderItem) -> dict:
+    if header.tags:
+        classes_str = ' '.join(sorted(header.tags))
+        return {'class': classes_str}
+    else:
+        return {}
 
 
 def list_element_for(parent: Element, list_format: lists.Format) -> Element:
