@@ -12,7 +12,7 @@ TOC_TITLE = 'Table of Contents'
 _CSS_CLASSES = {
     'entity': css_classes.ENTITY,
     'section': css_classes.SECTION,
-    'concept_entity': all_entity_types.CONCEPT_ENTITY_TYPE_NAMES,
+    'concept_entity': all_entity_types.CONCEPT_ENTITY_TYPE_NAMES.identifier,
 }
 
 ELEMENT_STYLES_ = """\
@@ -23,43 +23,44 @@ pre {{
 }}
 
 h1 {{
-  background-color: #80bfff;
   padding: 5px;
+  border-bottom: solid black;
 }}
 
 article h1 {{
-    font-size: large;
-    padding: 0px;
-    background-color: transparent;
+  font-size: large;
+  padding: 0px;
+  background-color: transparent;
+  border-bottom: none;
 }}
 
 article h2 {{
-    font-size: medium;
+  font-size: medium;
 }}
 
 article h3 {{
-    font-size: medium;
+  font-size: medium;
 }}
 
 article header h1 {{
-    padding: 7px;
-    font-size: x-large;
-    font-family: monospace;
-    background-color: #c0c0c0;
+  padding: 7px;
+  font-size: x-large;
+  font-family: monospace;
+  background-color: #c0c0c0;
 }}
 
 article.{entity}.{concept_entity} header h1 {{
-    font-family: inherit;
+  font-family: inherit;
 }}
 
 article.{section} header h1 {{
-    font-size: xx-large;
-    background-color: LightGoldenRodYellow;
+  font-size: xx-large;
+  background-color: LightGoldenRodYellow;
 }}
 
 article header p {{
-    font-style: italic;
-    font-size: 110%;
+  font-style: italic;
+  font-size: 110%;
 }}
 
 table {{
