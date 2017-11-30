@@ -1,3 +1,13 @@
+class TaggedItem:
+    @property
+    def tags(self) -> set:
+        """
+        Tags, used for CSS etc.
+        :rtype: set of strings
+        """
+        raise NotImplementedError('abstract method')
+
+
 class Text:
     pass
 

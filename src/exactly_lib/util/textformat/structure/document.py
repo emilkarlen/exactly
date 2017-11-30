@@ -63,7 +63,7 @@ class ArticleContents(tuple):
         return not self.abstract_paragraphs and self.section_contents.is_empty
 
 
-class SectionItem:
+class SectionItem(core.TaggedItem):
     def __init__(self,
                  header: core.Text,
                  target: core.CrossReferenceTarget,
@@ -85,9 +85,6 @@ class SectionItem:
 
     @property
     def tags(self) -> set:
-        """
-        Tags, used for CSS etc.
-        """
         return self._tags
 
 
