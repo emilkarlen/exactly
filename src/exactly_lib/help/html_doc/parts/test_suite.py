@@ -9,6 +9,7 @@ from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSe
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
+from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.test_suite.section_names import SECTION_CONCEPT_NAME
 
 
@@ -29,7 +30,7 @@ def generator(header: str,
              sections_helper.generator_for_sections('Sections')
              ),
             ('reporters',
-             suite_reporter_conf.get_hierarchy_generator('Reporters')
+             suite_reporter_conf.get_hierarchy_generator(SUITE_REPORTER_ENTITY_TYPE_NAMES.name.plural.capitalize())
              ),
             ('instructions',
              sections_helper.generator_for_instructions_per_section('Instructions per section')
