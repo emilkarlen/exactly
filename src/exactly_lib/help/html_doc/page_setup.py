@@ -1,7 +1,7 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib import program_info
-from exactly_lib.help.html_doc import css_classes
+from exactly_lib.help import section_item_tags
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import all_entity_types
 from exactly_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
@@ -10,8 +10,8 @@ PAGE_TITLE = 'Reference Manual for %s' % formatting.program_name(program_info.PR
 TOC_TITLE = 'Table of Contents'
 
 _CSS_CLASSES = {
-    'entity': css_classes.ENTITY,
-    'section': css_classes.SECTION,
+    'entity': section_item_tags.ENTITY,
+    'section': section_item_tags.SECTION,
     'actor_entity': all_entity_types.ACTOR_ENTITY_TYPE_NAMES.identifier,
     'concept_entity': all_entity_types.CONCEPT_ENTITY_TYPE_NAMES.identifier,
     'type_entity': all_entity_types.TYPE_ENTITY_TYPE_NAMES.identifier,
