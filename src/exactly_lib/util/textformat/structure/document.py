@@ -67,10 +67,10 @@ class SectionItem:
     def __init__(self,
                  header: core.Text,
                  target: core.CrossReferenceTarget,
-                 labels: set):
+                 tags: set):
         self._header = header
         self._target = target
-        self._labels = set() if labels is None else labels
+        self._tags = set() if tags is None else tags
 
     @property
     def header(self) -> core.Text:
@@ -84,11 +84,11 @@ class SectionItem:
         return self._target
 
     @property
-    def labels(self) -> set:
+    def tags(self) -> set:
         """
-        Labels, used for CSS etc.
+        Tags, used for CSS etc.
         """
-        return self._labels
+        return self._tags
 
 
 class Section(SectionItem):
@@ -96,8 +96,8 @@ class Section(SectionItem):
                  header: core.Text,
                  contents: SectionContents,
                  target: core.CrossReferenceTarget = None,
-                 labels: set = None):
-        super().__init__(header, target, labels)
+                 tags: set = None):
+        super().__init__(header, target, tags)
         self._contents = contents
 
     @property
@@ -115,8 +115,8 @@ class Article(SectionItem):
                  header: core.Text,
                  contents: ArticleContents,
                  target: core.CrossReferenceTarget = None,
-                 labels: set = None):
-        super().__init__(header, target, labels)
+                 tags: set = None):
+        super().__init__(header, target, tags)
         self._contents = contents
 
     @property

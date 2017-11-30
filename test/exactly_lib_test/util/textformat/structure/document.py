@@ -59,7 +59,7 @@ class UnknownSectionItem(sut.SectionItem):
     def __init__(self):
         super().__init__(StringText('header of unknown item'),
                          target=None,
-                         labels=set())
+                         tags=set())
 
 
 if __name__ == '__main__':

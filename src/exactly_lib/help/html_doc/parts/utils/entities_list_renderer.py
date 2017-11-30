@@ -39,7 +39,6 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
                  entity_2_article_contents_renderer: types.FunctionType,
                  all_entities: list):
         """
-
         :param entity_2_article_contents_renderer: EntityDocumentation -> ArticleContentsRenderer
         :param all_entities: [EntityDocumentation]
         """
@@ -60,10 +59,10 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
     def _entity_node(self, entity: EntityDocumentation) -> SectionItemRendererNode:
         target_info = cross_ref.TargetInfo(entity.singular_name(),
                                            entity.cross_reference_target())
-        labels = {
+        tags = {
             css_classes.ENTITY,
             self.entity_type_identifier,
         }
         return LeafArticleRendererNode(target_info,
                                        self.entity_2_article_contents_renderer(entity),
-                                       labels=labels)
+                                       tags=tags)

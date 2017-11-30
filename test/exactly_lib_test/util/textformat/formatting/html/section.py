@@ -307,21 +307,21 @@ class TestSection(unittest.TestCase):
              '<h1 id="section-target-name">header 1</h1>'
              '</root>'
              ),
-            ('empty with labels',
+            ('empty with tags',
              Section(
                  StringText('header 1'),
                  empty_section_contents(),
-                 labels={'first-label', 'second-label'}),
+                 tags={'first-label', 'second-label'}),
              '<root>'
              '<h1 class="first-label second-label">header 1</h1>'
              '</root>'
              ),
-            ('empty with target and labels',
+            ('empty with target and tags',
              Section(
                  StringText('header 1'),
                  empty_section_contents(),
                  target=CrossReferenceTargetTestImpl('t'),
-                 labels={'l1', 'l2'}),
+                 tags={'l1', 'l2'}),
              '<root>'
              '<h1 class="l1 l2" id="t">header 1</h1>'
              '</root>'
@@ -385,11 +385,11 @@ class TestArticle(unittest.TestCase):
              '</article>'
              '</root>'
              ),
-            ('empty with labels',
+            ('empty with tags',
              Article(StringText('header'),
                      ArticleContents([],
                                      empty_section_contents()),
-                     labels={'label1', 'label2'}),
+                     tags={'label1', 'label2'}),
              '<root>'
              '<article class="label1 label2">'
              '<header>'
@@ -398,12 +398,12 @@ class TestArticle(unittest.TestCase):
              '</article>'
              '</root>'
              ),
-            ('empty with target and labels',
+            ('empty with target and tags',
              Article(StringText('header'),
                      ArticleContents([],
                                      empty_section_contents()),
                      target=CrossReferenceTargetTestImpl('article-target'),
-                     labels={'label1', 'label2'}),
+                     tags={'label1', 'label2'}),
              '<root>'
              '<article class="label1 label2" id="article-target">'
              '<header>'
