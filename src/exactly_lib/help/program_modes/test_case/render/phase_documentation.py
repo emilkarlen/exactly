@@ -16,11 +16,19 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
         super().__init__(tcp_doc, SECTION_CONCEPT_NAME)
         self.doc = tcp_doc
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
         purpose = self.doc.purpose()
+        abstract_paras = docs.paras(purpose.single_line_description)
+
+        return doc.ArticleContents(abstract_paras,
+                                   self._section_contents(environment,
+                                                          purpose.rest))
+
+    def _section_contents(self,
+                          environment: RenderingEnvironment,
+                          purpose_rest_paras: list) -> doc.SectionContents:
         mandatory_info = self._mandatory_info_para()
-        paras = ([docs.para(purpose.single_line_description)] +
-                 purpose.rest +
+        paras = (purpose_rest_paras +
                  [mandatory_info] +
                  self._default_section_info(DEFAULT_PHASE.section_name))
         sections = []
@@ -34,7 +42,8 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
 
     def _add_section_for_contents_description(self, sections: list):
         section_contents = self.doc.contents_description()
-        sections.append(doc.Section(docs.text('Contents'), section_contents))
+        sections.append(doc.Section(self.CONTENTS_HEADER,
+                                    section_contents))
 
     def _add_section_for_phase_sequence_description(self, sections: list):
         si = self.doc.sequence_info()

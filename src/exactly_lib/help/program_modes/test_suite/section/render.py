@@ -14,11 +14,18 @@ class TestSuiteSectionDocumentationRenderer(SectionDocumentationRendererBase):
         super().__init__(tss_doc, SECTION_CONCEPT_NAME)
         self._doc = tss_doc
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
         purpose = self._doc.purpose()
+        abstract_paras = docs.paras(purpose.single_line_description)
+        return doc.ArticleContents(abstract_paras,
+                                   self._section_contents(environment,
+                                                          purpose.rest))
+
+    def _section_contents(self,
+                          environment: RenderingEnvironment,
+                          purpose_rest: list) -> doc.SectionContents:
         mandatory_info = self._mandatory_info_para()
-        paras = ([docs.para(purpose.single_line_description)] +
-                 purpose.rest +
+        paras = (purpose_rest +
                  [mandatory_info] +
                  self._default_section_info(DEFAULT_SECTION_NAME))
         sections = []
@@ -29,7 +36,7 @@ class TestSuiteSectionDocumentationRenderer(SectionDocumentationRendererBase):
         return doc.SectionContents(paras, sections)
 
     def _add_section_for_contents_description(self, output: list):
-        output.append(docs.section('Contents',
+        output.append(docs.section(self.CONTENTS_HEADER,
                                    self._doc.contents_description()))
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):

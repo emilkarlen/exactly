@@ -9,7 +9,8 @@ from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSe
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationRenderer
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer, \
+    SectionContentsRendererFromArticleContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 
 
@@ -25,7 +26,8 @@ class TestSuiteHelpRendererResolver:
             return specification.specification_renderer(self._contents)
         if item is TestSuiteHelpItem.SECTION:
             assert isinstance(request.data, TestSuiteSectionDocumentation), 'Must be a TestSuiteSectionDoc'
-            return TestSuiteSectionDocumentationRenderer(request.data)
+            return SectionContentsRendererFromArticleContentsRenderer(
+                TestSuiteSectionDocumentationRenderer(request.data))
 
         if item is TestSuiteHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,

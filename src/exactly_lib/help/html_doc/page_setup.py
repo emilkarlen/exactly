@@ -11,6 +11,7 @@ TOC_TITLE = 'Table of Contents'
 
 _CSS_CLASSES = {
     'entity': css_classes.ENTITY,
+    'section': css_classes.SECTION,
     'concept_entity': all_entity_types.CONCEPT_ENTITY_TYPE_NAMES,
 }
 
@@ -49,6 +50,10 @@ article header h1 {{
 
 article.{entity}.{concept_entity} header h1 {{
     font-family: inherit;
+}}
+
+article.{section} header h1 {{
+    font-size: xx-large;
 }}
 
 article header p {{

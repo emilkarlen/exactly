@@ -12,7 +12,8 @@ from exactly_lib.help.program_modes.test_case.render import instruction_set
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationRenderer
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer, \
+    SectionContentsRendererFromArticleContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para, text
 
@@ -32,7 +33,8 @@ class TestCaseHelpRendererResolver:
             return instruction_set.InstructionSetPerPhaseRenderer(self._contents)
         if item is TestCaseHelpItem.PHASE:
             assert isinstance(request.data, TestCasePhaseDocumentation), 'Must be a TestCasePhaseDoc'
-            return TestCasePhaseDocumentationRenderer(request.data)
+            return SectionContentsRendererFromArticleContentsRenderer(
+                TestCasePhaseDocumentationRenderer(request.data))
         if item is TestCaseHelpItem.PHASE_INSTRUCTION_LIST:
             section_documentation = request.data
             assert isinstance(section_documentation, SectionDocumentation), 'Must be a SectionDocumentation'
