@@ -11,7 +11,7 @@ class HeaderItem(TaggedItem):
         self._tags = set() if tags is None else tags
 
     @property
-    def header(self) -> Text:
+    def text(self) -> Text:
         return self._header
 
     @property
@@ -21,7 +21,7 @@ class HeaderItem(TaggedItem):
 
 class HeaderContentListItem(tuple):
     def __new__(cls,
-                header: Text,
+                header: HeaderItem,
                 content_paragraph_items: iter = ()):
         """
         :type content_paragraph_items: List[ParagraphItem]
@@ -30,11 +30,11 @@ class HeaderContentListItem(tuple):
 
     @property
     def header_item(self) -> HeaderItem:
-        return HeaderItem(self.header)
+        return self[0]
 
     @property
     def header(self) -> Text:
-        return self[0]
+        return self.header_item.text
 
     @property
     def content_paragraph_items(self) -> iter:

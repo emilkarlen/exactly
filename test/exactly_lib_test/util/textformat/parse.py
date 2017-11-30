@@ -370,7 +370,7 @@ def _single_string_para(text: str) -> Paragraph:
 
 def _list_item(header: str,
                content_paragraphs=()) -> lists.HeaderContentListItem:
-    return lists.HeaderContentListItem(_text(header),
+    return lists.HeaderContentListItem(lists.HeaderItem(_text(header)),
                                        list(content_paragraphs))
 
 
