@@ -12,7 +12,9 @@ TOC_TITLE = 'Table of Contents'
 _CSS_CLASSES = {
     'entity': css_classes.ENTITY,
     'section': css_classes.SECTION,
+    'actor_entity': all_entity_types.ACTOR_ENTITY_TYPE_NAMES.identifier,
     'concept_entity': all_entity_types.CONCEPT_ENTITY_TYPE_NAMES.identifier,
+    'type_entity': all_entity_types.TYPE_ENTITY_TYPE_NAMES.identifier,
 }
 
 ELEMENT_STYLES_ = """\
@@ -49,7 +51,15 @@ article header h1 {{
   background-color: #c0c0c0;
 }}
 
+article.{entity}.{actor_entity} header h1 {{
+  font-family: inherit;
+}}
+
 article.{entity}.{concept_entity} header h1 {{
+  font-family: inherit;
+}}
+
+article.{entity}.{type_entity} header h1 {{
   font-family: inherit;
 }}
 
