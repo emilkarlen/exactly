@@ -12,6 +12,7 @@ TOC_TITLE = 'Table of Contents'
 _CSS_CLASSES = {
     'entity': section_item_tags.ENTITY,
     'section': section_item_tags.SECTION,
+    'syntax_line': section_item_tags.SYNTAX_LINE,
     'actor_entity': all_entity_types.ACTOR_ENTITY_TYPE_NAMES.identifier,
     'concept_entity': all_entity_types.CONCEPT_ENTITY_TYPE_NAMES.identifier,
     'type_entity': all_entity_types.TYPE_ENTITY_TYPE_NAMES.identifier,
@@ -23,6 +24,11 @@ pre {{
   padding: 7px;
   border: 1px solid #cEdFaC;
 }}
+
+.{syntax_line} {{
+  font-family: monospace;
+}}
+
 
 h1 {{
   padding: 5px;
