@@ -8,6 +8,7 @@ from exactly_lib.help.program_modes.test_case.render.phase_documentation import 
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
+from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
 
 
 def generator(header: str,
@@ -34,7 +35,8 @@ def generator(header: str,
 
 class _HtmlDocGeneratorForTestCaseHelp(HtmlDocGeneratorForSectionDocumentBase):
     def __init__(self, test_case_help: TestCaseHelp):
-        super().__init__(test_case_help.phase_helps_in_order_of_execution,
+        super().__init__(SECTION_CONCEPT_NAME,
+                         test_case_help.phase_helps_in_order_of_execution,
                          TestCasePhaseDocumentationRenderer)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:

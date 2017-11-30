@@ -9,6 +9,7 @@ from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSe
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
+from exactly_lib.help_texts.test_suite.section_names import SECTION_CONCEPT_NAME
 
 
 def generator(header: str,
@@ -39,7 +40,8 @@ def generator(header: str,
 
 class _HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
     def __init__(self, test_suite_help: TestSuiteHelp):
-        super().__init__(test_suite_help.section_helps,
+        super().__init__(SECTION_CONCEPT_NAME,
+                         test_suite_help.section_helps,
                          TestSuiteSectionDocumentationRenderer)
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
