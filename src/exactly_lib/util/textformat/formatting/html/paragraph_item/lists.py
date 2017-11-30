@@ -30,10 +30,24 @@ def _render_standard_list(text_renderer: text.TextRenderer,
     """
     list_root = list_element_for(parent, list_.list_format)
     for item in list_.items:
-        li = SubElement(list_root, 'li')
-        text_renderer.apply(li, li, Position.INSIDE, item.header)
-        for paragraph_item in item.content_paragraph_items:
-            paragraph_item_renderer.apply(li, paragraph_item)
+        assert isinstance(item, lists.HeaderContentListItem)  # Type info for IDE
+        header_item = item.header_item
+        header_attributes = _header_attributes(header_item)
+        if header_attributes and not item.content_paragraph_items:
+            li = SubElement(list_root, 'li', header_attributes)
+            text_renderer.apply(li, li, Position.INSIDE, header_item.text)
+        else:
+            li = SubElement(list_root, 'li')
+
+            if header_attributes:
+                header_element = SubElement(li, 'span', header_attributes)
+                text_renderer.apply(header_element, header_element, Position.INSIDE, header_item.text)
+            else:
+                text_renderer.apply(li, li, Position.INSIDE, header_item.text)
+
+            for paragraph_item in item.content_paragraph_items:
+                paragraph_item_renderer.apply(li, paragraph_item)
+
     return list_root
 
 

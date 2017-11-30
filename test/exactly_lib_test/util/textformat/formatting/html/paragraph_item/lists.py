@@ -60,6 +60,15 @@ class TestItemizedAndOrderedListType(unittest.TestCase):
                  '<{L}><li>header</li></{L}>'
                  '</root>',
                  ),
+            Case('test_singleton_element/with tags/without contents',
+                 items=
+                 [HeaderContentListItem(HeaderItem(text('header'),
+                                                   tags={'1st'}))],
+                 expected=
+                 '<root>'
+                 '<{L}><li class="1st">header</li></{L}>'
+                 '</root>',
+                 ),
             Case('test_multiple_element_without_contents',
                  items=
                  [HeaderContentListItem(HeaderItem(text('header 1'))),
@@ -80,6 +89,20 @@ class TestItemizedAndOrderedListType(unittest.TestCase):
                  '<root>'
                  '<{L}>'
                  '<li>header<p>every para text</p></li>'
+                 '</{L}>'
+                 '</root>',
+                 ),
+            Case('test_single_element/with tags/with single_para_contents',
+                 items=
+                 [HeaderContentListItem(HeaderItem(text('header'),
+                                                   tags={'1st', '2nd'}),
+                                        paras('ignored'))],
+                 expected=
+                 '<root>'
+                 '<{L}>'
+                 '<li>'
+                 '<span class="1st 2nd">header</span>'
+                 '<p>every para text</p></li>'
                  '</{L}>'
                  '</root>',
                  ),
