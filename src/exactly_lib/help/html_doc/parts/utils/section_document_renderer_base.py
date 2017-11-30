@@ -1,10 +1,11 @@
 import types
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.help.html_doc import css_classes
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionItemRendererNode, \
-    SectionItemRendererNodeWithSubSections, LeafSectionRendererNode, SectionHierarchyGenerator, LeafArticleRendererNode
+    SectionItemRendererNodeWithSubSections, SectionHierarchyGenerator, LeafArticleRendererNode
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
@@ -13,9 +14,9 @@ from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 class HtmlDocGeneratorForSectionDocumentBase:
     def __init__(self,
                  sections: list,
-                 get_section_contents_renderer_for_section_document: types.FunctionType):
+                 get_article_contents_renderer_for_section_document: types.FunctionType):
         self.sections = sections
-        self.get_section_contents_renderer_for_section_document = get_section_contents_renderer_for_section_document
+        self.get_article_contents_renderer_for_section_document = get_article_contents_renderer_for_section_document
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
@@ -56,9 +57,10 @@ class HtmlDocGeneratorForSectionDocumentBase:
             cross_reference_target = self._section_cross_ref_target(section)
             section_target_info = cross_ref.TargetInfo(phase_presentation_str,
                                                        cross_reference_target)
-            section_node = LeafSectionRendererNode(
+            section_node = LeafArticleRendererNode(
                 section_target_info,
-                self.get_section_contents_renderer_for_section_document(section))
+                self.get_article_contents_renderer_for_section_document(section),
+                labels={css_classes.SECTION})
             sub_section_nodes.append(section_node)
 
         return SectionItemRendererNodeWithSubSections(root_target_info,

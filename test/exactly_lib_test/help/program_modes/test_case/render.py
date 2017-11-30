@@ -25,7 +25,7 @@ class TestCase(unittest.TestCase):
         # ACT #
         actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
     def test_setup(self):
         # ARRANGE #
@@ -37,7 +37,7 @@ class TestCase(unittest.TestCase):
         # ACT #
         actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
     def test_act(self):
         # ARRANGE #
@@ -45,7 +45,7 @@ class TestCase(unittest.TestCase):
         # ACT #
         actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
     def test_before_assert(self):
         # ARRANGE #
@@ -57,7 +57,7 @@ class TestCase(unittest.TestCase):
         # ACT #
         actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
     def test_assert(self):
         # ARRANGE #
@@ -69,7 +69,7 @@ class TestCase(unittest.TestCase):
         # ACT #
         actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
     def test_cleanup(self):
         # ARRANGE
@@ -81,7 +81,7 @@ class TestCase(unittest.TestCase):
         # ACT #
         actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
         # ASSERT #
-        struct_check.is_section_contents.apply(self, actual)
+        struct_check.is_article_contents.apply(self, actual)
 
 
 RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())

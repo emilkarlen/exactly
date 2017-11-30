@@ -1,1 +1,2 @@
 ENTITY = 'entity'
+SECTION = 'section'
