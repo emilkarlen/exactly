@@ -1,7 +1,7 @@
 import types
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.html_doc import css_classes
+from exactly_lib.help import section_item_tags
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionItemRendererNode, \
@@ -65,7 +65,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
             section_node = LeafArticleRendererNode(
                 section_target_info,
                 self.get_article_contents_renderer_for_section_document(section),
-                tags={css_classes.SECTION})
+                tags={section_item_tags.SECTION})
             sub_section_nodes.append(section_node)
 
         return SectionItemRendererNodeWithSubSections(root_target_info,
