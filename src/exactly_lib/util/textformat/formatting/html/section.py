@@ -141,8 +141,8 @@ class SectionItemRenderer:
         if section_item.target:
             id_value = self.target_renderer.apply(section_item.target)
             ret_val['id'] = id_value
-        if section_item.labels:
-            class_value = ' '.join(sorted(section_item.labels))
+        if section_item.tags:
+            class_value = ' '.join(sorted(section_item.tags))
             ret_val['class'] = class_value
         return ret_val
 

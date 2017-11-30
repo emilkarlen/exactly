@@ -65,7 +65,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
             section_node = LeafArticleRendererNode(
                 section_target_info,
                 self.get_article_contents_renderer_for_section_document(section),
-                labels={css_classes.SECTION})
+                tags={css_classes.SECTION})
             sub_section_nodes.append(section_node)
 
         return SectionItemRendererNodeWithSubSections(root_target_info,
