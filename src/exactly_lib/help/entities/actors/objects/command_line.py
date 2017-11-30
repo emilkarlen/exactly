@@ -10,10 +10,10 @@ from exactly_lib.help.utils import doc_utils
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
+from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.test_case.actors import command_line as command_line_actor
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -22,22 +22,17 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 class CommandLineActorDocumentation(ActorDocumentation):
     def __init__(self):
         super().__init__(COMMAND_LINE_ACTOR)
-        from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
-        format_map = {
+        self._tp = TextParser({
             'phase': PHASE_NAME_DICTIONARY,
-            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
-            'result_subdir': sds.SUB_DIRECTORY__RESULT,
-            'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
             'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
-        }
-        self._parser = TextParser(format_map)
+        })
 
     def act_phase_contents(self) -> doc.SectionContents:
-        return doc.SectionContents(self._parser.fnap(_ACT_PHASE_CONTENTS))
+        return doc.SectionContents(self._tp.fnap(_ACT_PHASE_CONTENTS))
 
     def act_phase_contents_syntax(self) -> doc.SectionContents:
         documentation = ActPhaseDocumentationSyntax()
-        initial_paragraphs = self._parser.fnap(SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
+        initial_paragraphs = self._tp.fnap(SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
         sub_sections = []
         synopsis_section = doc_utils.synopsis_section(
             invokation_variants_content(None,
@@ -47,14 +42,10 @@ class CommandLineActorDocumentation(ActorDocumentation):
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
     def _see_also_specific(self) -> list:
-        return see_also_targets()
-
-
-def see_also_targets() -> list:
-    return [
-        conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO.cross_reference_target,
-        concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-    ]
+        return cross_reference_id_list([
+            conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
+            concepts.SHELL_SYNTAX_CONCEPT_INFO,
+        ])
 
 
 DOCUMENTATION = CommandLineActorDocumentation()

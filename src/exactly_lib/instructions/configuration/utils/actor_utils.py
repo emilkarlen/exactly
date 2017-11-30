@@ -8,7 +8,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.entities.actors.objects import command_line as command_line_actor_help
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.help_texts.entity import concepts, actors
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
@@ -35,20 +35,21 @@ FILE_INTERPRETER_OPTION = long_option_syntax(FILE_INTERPRETER_OPTION_NAME.long)
 
 class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str,
-                 single_line_description_unformatted: str,
-                 main_description_rest_unformatted: str = None):
+                 single_line_description_un_formatted: str,
+                 main_description_rest_un_formatted: str = None):
         self.command_line_syntax = command_line_actor_help.ActPhaseDocumentationSyntax()
-        self.single_line_description_unformatted = single_line_description_unformatted
-        self.main_description_rest_unformatted = main_description_rest_unformatted
+        self.single_line_description_un_formatted = single_line_description_un_formatted
+        self.main_description_rest_un_formatted = main_description_rest_un_formatted
         super().__init__(name, {
             'EXECUTABLE': self.command_line_syntax.executable.name,
             'ARGUMENT': self.command_line_syntax.argument.name,
             'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
             'act_phase': ACT_PHASE_NAME.emphasis,
+            'command_line_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR)
         })
 
     def single_line_description(self) -> str:
-        return self._format(self.single_line_description_unformatted)
+        return self._format(self.single_line_description_un_formatted)
 
     def invokation_variants(self) -> list:
         from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
@@ -64,16 +65,18 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self.command_line_syntax.syntax_element_descriptions()
 
     def main_description_rest(self) -> list:
-        if self.main_description_rest_unformatted:
-            return self._paragraphs(self.main_description_rest_unformatted)
+        if self.main_description_rest_un_formatted:
+            return self._paragraphs(self.main_description_rest_un_formatted)
         else:
             return []
 
     def see_also_targets(self) -> list:
         from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
-        return ([concepts.ACTOR_CONCEPT_INFO.cross_reference_target] +
-                all_actor_cross_refs() +
-                command_line_actor_help.see_also_targets())
+        return ([concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
+                 concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target]
+                +
+                all_actor_cross_refs()
+                )
 
     def _command_line_invokation_variants(self) -> list:
         command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
@@ -118,10 +121,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         })
 
     def _description_of_command_line(self) -> list:
-        from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR
-        return self._paragraphs(_DESCRIPTION_OF_SHELL, {
-            'command_line_actor': formatting.entity(COMMAND_LINE_ACTOR.singular_name)
-        })
+        return self._paragraphs(_DESCRIPTION_OF_SHELL)
 
 
 def parse(instruction_argument: str) -> ActPhaseHandling:
@@ -174,7 +174,7 @@ def _parse_interpreter_command(arg: str) -> Command:
 def shlex_split(s: str) -> list:
     try:
         return shlex.split(s)
-    except:
+    except Exception:
         raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + s)
 
 
