@@ -9,12 +9,17 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
+from exactly_lib.util.textformat.structure import structures as docs
+
+_INSTRUCTIONS_IN = 'The instructions in the {section} {section_concept}.'
 
 
 class HtmlDocGeneratorForSectionDocumentBase:
     def __init__(self,
+                 section_concept_name: str,
                  sections: list,
                  get_article_contents_renderer_for_section_document: types.FunctionType):
+        self.section_concept_name = section_concept_name
         self.sections = sections
         self.get_article_contents_renderer_for_section_document = get_article_contents_renderer_for_section_document
 
@@ -77,6 +82,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
             if not section.has_instructions:
                 continue
             instructions_node_constructor = _SectionInstructionsNodeConstructor(
+                self.section_concept_name,
                 self._instruction_cross_ref_target,
                 targets_factory.sub_factory(section.name.plain),
                 section)
@@ -88,19 +94,27 @@ class HtmlDocGeneratorForSectionDocumentBase:
 
 class _SectionInstructionsNodeConstructor:
     def __init__(self,
+                 section_concept_name: str,
                  mk_instruction_cross_ref_target: types.FunctionType,
                  section_target_factory: CustomTargetInfoFactory,
                  section: SectionDocumentation
                  ):
 
+        self.section_concept_name = section_concept_name
         self.mk_instruction_cross_ref_target = mk_instruction_cross_ref_target
         self.section_target_factory = section_target_factory
         self.section = section
 
     def __call__(self) -> SectionItemRendererNode:
         return SectionItemRendererNodeWithSubSections(self.section_target_factory.root(self.section.name.syntax),
-                                                      [],
+                                                      self._initial_paras(),
                                                       self._instructions_sub_nodes())
+
+    def _initial_paras(self) -> list:
+        return docs.paras(_INSTRUCTIONS_IN.format(
+            section_concept=self.section_concept_name,
+            section=self.section.name)
+        )
 
     def _instructions_sub_nodes(self) -> list:
         instr_docs = self.section.instruction_set.instruction_documentations
