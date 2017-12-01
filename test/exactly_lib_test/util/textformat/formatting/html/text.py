@@ -5,7 +5,8 @@ from xml.etree.ElementTree import SubElement
 from exactly_lib.util.textformat.formatting.html import text as sut
 from exactly_lib.util.textformat.formatting.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.structure import core
-from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceText, CrossReferenceTarget, Text
+from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceText, CrossReferenceTarget, Text, \
+    AnchorText
 from exactly_lib_test.util.textformat.formatting.html.test_resources import \
     assert_contents_and_that_last_child_is_returned, as_unicode_str
 
@@ -126,6 +127,18 @@ class Test(unittest.TestCase):
                                                 target_is_id_in_same_document=False)
                         ,
                         expected='<a href="{target_name}">title text</a>'.format(target_name=_CONSTANT_TARGET_STR),
+                        ),
+               ])
+
+    def test_anchor(self):
+        _cases(self,
+               [
+                   Case('anchor',
+                        text=AnchorText(CrossReferenceTarget(),
+                                        StringText('anchor text'),
+                                        )
+                        ,
+                        expected='<span id="{target_name}">anchor text</span>'.format(target_name=_CONSTANT_TARGET_STR),
                         ),
                ])
 
