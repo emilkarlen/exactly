@@ -134,9 +134,8 @@ class Test(unittest.TestCase):
         _cases(self,
                [
                    Case('anchor',
-                        text=AnchorText(CrossReferenceTarget(),
-                                        StringText('anchor text'),
-                                        )
+                        text=AnchorText(StringText('anchor text'),
+                                        CrossReferenceTarget())
                         ,
                         expected='<span id="{target_name}">anchor text</span>'.format(target_name=_CONSTANT_TARGET_STR),
                         ),
