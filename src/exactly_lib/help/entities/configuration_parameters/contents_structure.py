@@ -4,7 +4,7 @@ from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.structure.core import ParagraphItem, StringText
+from exactly_lib.util.textformat.structure.core import ParagraphItem, StringText, Text
 from exactly_lib.util.textformat.structure.structures import para
 
 
@@ -30,8 +30,11 @@ class ConfigurationParameterDocumentation(EntityDocumentationBase):
     def default_value_str(self) -> str:
         return self._info.default_value_single_line_description
 
+    def default_value_text(self) -> Text:
+        return StringText(self.default_value_str())
+
     def default_value_para(self) -> ParagraphItem:
-        return para(self.default_value_str())
+        return para(self.default_value_text())
 
     def summary_paragraphs(self) -> list:
         return [para(self.purpose().single_line_description),

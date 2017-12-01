@@ -8,12 +8,15 @@ from exactly_lib.util.description import Description, DescriptionWithSubSections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 
 
 class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
         super().__init__(EXECUTION_MODE_CONF_PARAM_INFO)
+
+    def default_value_text(self) -> Text:
+        return syntax_text(self.default_value_str())
 
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(
