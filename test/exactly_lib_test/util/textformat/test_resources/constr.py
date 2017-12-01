@@ -23,7 +23,7 @@ def single_text_cell(string: str) -> table.TableCell:
 
 def item(header: str,
          content: list) -> lists.HeaderContentListItem:
-    return lists.HeaderContentListItem(lists.HeaderItem(text(header)),
+    return lists.HeaderContentListItem(text(header),
                                        content)
 
 
