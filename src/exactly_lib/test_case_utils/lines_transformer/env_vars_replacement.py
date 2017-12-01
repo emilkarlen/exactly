@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib import program_info
+from exactly_lib.help_texts.doc_format import directory_variable_name_text
 from exactly_lib.help_texts.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -62,8 +63,9 @@ def with_replaced_env_vars_help() -> SectionContents:
         'home_env_var_with_replacement_precedence': HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE,
     })
     prologue = text_parser.fnap(_WITH_REPLACED_ENV_VARS_PROLOGUE)
-    variables_list = [docs.simple_header_only_list(sorted(environment_variables.ALL_REPLACED_ENV_VARS),
-                                                   docs.lists.ListType.VARIABLE_LIST)]
+    variables_list = [docs.simple_header_only_list(map(directory_variable_name_text,
+                                                       sorted(environment_variables.ALL_REPLACED_ENV_VARS)),
+                                                   docs.lists.ListType.ITEMIZED_LIST)]
     return SectionContents(prologue + variables_list)
 
 
