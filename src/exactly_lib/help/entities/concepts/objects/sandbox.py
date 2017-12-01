@@ -2,6 +2,7 @@ from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.doc_format import file_name_text
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
@@ -72,7 +73,7 @@ class _SandboxConcept(ConceptDocumentation):
     def _result_dir_description_paragraphs(self) -> list:
         ret_val = []
         ret_val += self._tp.fnap(_RESULT_DIR_DESCRIPTION)
-        ret_val.append(docs.simple_header_only_list(sds.RESULT_FILE_ALL,
+        ret_val.append(docs.simple_header_only_list(map(file_name_text, sds.RESULT_FILE_ALL),
                                                     lists.ListType.ITEMIZED_LIST))
         ret_val += self._result_dir_env_variable_and_rel_option()
         return ret_val
@@ -172,7 +173,7 @@ def _directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
         sub_dirs_items = []
         if dir_wsd.sub_dirs:
             sub_dirs_items = [_directory_structure_list(dir_wsd.sub_dirs)]
-        items.append(docs.list_item(docs.text(dir_wsd.name + '/'), sub_dirs_items))
+        items.append(docs.list_item(file_name_text(dir_wsd.name + '/'), sub_dirs_items))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.ITEMIZED_LIST))
 

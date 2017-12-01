@@ -2,6 +2,7 @@ from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import test_case_file_structure as tc_fs, formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.doc_format import instruction_name_text
 from exactly_lib.help_texts.entity import concepts, conf_params, syntax_elements
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.help_texts.test_case import phase_names
@@ -91,25 +92,24 @@ class _HdsConcept(ConceptDocumentation):
         ]
 
     def _dir_item(self, x: _DirInfo) -> HeaderContentListItem:
-        def prop_row(header: str, value: str) -> list:
+        def prop_row(header: str, value_str_or_text) -> list:
             return [docs.text_cell(header),
-                    docs.text_cell(value),
+                    docs.text_cell(value_str_or_text),
                     ]
 
-        from exactly_lib.util.cli_syntax.option_syntax import option_syntax
         from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP
         properties_table = docs.first_column_is_header_table(
             [
                 prop_row('Default value',
                          x.default_value_description),
                 prop_row(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name.capitalize(),
-                         x.conf_param.configuration_parameter_name),
+                         x.conf_param.configuration_parameter_name_text),
                 prop_row('Set by instruction',
-                         x.instruction_name),
+                         instruction_name_text(x.instruction_name)),
                 prop_row('Variable name',
-                         REL_HOME_OPTIONS_MAP[x.relativity_option_type].directory_variable_name),
+                         REL_HOME_OPTIONS_MAP[x.relativity_option_type].directory_variable_name_text),
                 prop_row('Relativity option',
-                         option_syntax(REL_HOME_OPTIONS_MAP[x.relativity_option_type].option_name)),
+                         REL_HOME_OPTIONS_MAP[x.relativity_option_type].option_name_text),
             ]
         )
 

@@ -2,12 +2,14 @@ from exactly_lib import program_info
 from exactly_lib.help_texts import conf_params, formatting
 from exactly_lib.help_texts import test_case_file_structure
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR_SINGLE_LINE_VALUE
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.test_case import execution_mode
+from exactly_lib.util.textformat.structure.core import StringText
 
 
 class ConfigurationParameterInfo(SingularNameAndCrossReferenceId):
@@ -24,8 +26,16 @@ class ConfigurationParameterInfo(SingularNameAndCrossReferenceId):
         self._configuration_parameter_name = configuration_parameter_name
 
     @property
+    def singular_name_text(self) -> StringText:
+        return syntax_text(self._singular_name)
+
+    @property
     def configuration_parameter_name(self) -> str:
         return self._configuration_parameter_name
+
+    @property
+    def configuration_parameter_name_text(self) -> StringText:
+        return syntax_text(self._configuration_parameter_name)
 
     @property
     def default_value_single_line_description(self) -> str:

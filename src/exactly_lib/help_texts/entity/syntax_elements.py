@@ -1,12 +1,18 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import StringText
 
 
 class SyntaxElementInfo(SingularNameAndCrossReferenceId):
+    @property
+    def singular_name_text(self) -> StringText:
+        return syntax_text(self._singular_name)
+
     @property
     def argument(self) -> a.Named:
         return a.Named(self.singular_name)
