@@ -2,16 +2,16 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import syntax_elements, types, concepts
-from exactly_lib.help_texts.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_CWD_OPTION
+from exactly_lib.help_texts.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER
 from exactly_lib.help_texts.instruction_arguments import REL_SYMBOL_OPTION
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, cross_reference_id_list
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP, \
-    REL_SDS_OPTIONS_MAP, RelOptionInfo
+    REL_SDS_OPTIONS_MAP, RelOptionInfo, REL_CWD_INFO
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -49,18 +49,21 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             self._string_sed(),
             self._relativity_sed(),
+            self._symbol_name_sed(),
         ]
 
     def main_description_rest_paragraphs(self) -> list:
         return self._parser.fnap(_MAIN_DESCRIPTION_REST)
 
     def see_also_targets(self) -> list:
-        return [
-            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
-            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
-            concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
-            syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
-        ]
+        return cross_reference_id_list([
+            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO,
+            concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+            concepts.SYMBOL_CONCEPT_INFO,
+            syntax_elements.STRING_SYNTAX_ELEMENT,
+            syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
+            types.PATH_TYPE_INFO,
+        ])
 
     def _relativity_sed(self) -> SyntaxElementDescription:
         description_rest = self._parser.fnap(_RELATIVITY_DESCRIPTION_REST)
@@ -72,6 +75,10 @@ class _Documentation(SyntaxElementDocumentation):
     def _string_sed(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(self._string_name.name,
                                         self._parser.fnap(_STRING_DESCRIPTION_REST))
+
+    def _symbol_name_sed(self) -> SyntaxElementDescription:
+        return SyntaxElementDescription(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.singular_name,
+                                        self._parser.fnap(_SYMBOL_NAME_DESCRIPTION))
 
     def _cl_arguments(self) -> list:
         return [
@@ -121,7 +128,7 @@ class _Documentation(SyntaxElementDocumentation):
     def _options_for_current_directory(self) -> list:
         return ([
                     docs.first_row_is_header_table([
-                        [docs.text_cell(REL_CWD_OPTION)]
+                        [docs.text_cell(REL_CWD_INFO.option_name_text)]
                     ])
                 ]
                 +
@@ -132,7 +139,7 @@ class _Documentation(SyntaxElementDocumentation):
         return ([
                     docs.first_column_is_header_table([
                         [
-                            docs.text_cell(render_argument(REL_SYMBOL_OPTION)),
+                            docs.text_cell(syntax_text(render_argument(REL_SYMBOL_OPTION))),
                         ]
                     ])
                 ]
@@ -155,7 +162,7 @@ def _options_for_directories_in_the_(rel_opt_2_rel_option_info: dict,
 
 def _mk_dir_info_row(dir_info: RelOptionInfo) -> list:
     return [
-        docs.text_cell(option_syntax(dir_info.option_name)),
+        docs.text_cell(dir_info.option_name_text),
         docs.text_cell(dir_info.informative_name),
     ]
 
@@ -204,6 +211,9 @@ have a default relativity other than the {cd}.
 """
 
 _REL_SYMBOL_DESCRIPTION = """\
-{SYMBOL_NAME} is the plain name of a {symbol},
-and must have type {path_type}.
+This option is always available.
+"""
+
+_SYMBOL_NAME_DESCRIPTION = """\
+A {symbol} with type {path_type}.
 """
