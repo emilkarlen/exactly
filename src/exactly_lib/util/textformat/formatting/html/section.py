@@ -4,6 +4,7 @@ from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.formatting.html.paragraph_item.interfaces import ParagraphItemRenderer
 from exactly_lib.util.textformat.formatting.html.text import Position
+from exactly_lib.util.textformat.formatting.html.utils import set_class_attribute
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.document import SectionContents, Section, SectionItemVisitor, SectionItem, \
     Article
@@ -141,9 +142,7 @@ class SectionItemRenderer:
         if section_item.target:
             id_value = self.target_renderer.apply(section_item.target)
             ret_val['id'] = id_value
-        if section_item.tags:
-            class_value = ' '.join(sorted(section_item.tags))
-            ret_val['class'] = class_value
+        set_class_attribute(ret_val, section_item)
         return ret_val
 
 

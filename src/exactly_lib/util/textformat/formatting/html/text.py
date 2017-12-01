@@ -3,6 +3,7 @@ import types
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib.util.textformat.formatting.html.cross_ref import TargetRenderer
+from exactly_lib.util.textformat.formatting.html.utils import set_class_attribute_on_element
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import Text
 
@@ -36,26 +37,38 @@ class ContentSetter(core.TextVisitor):
         self.content_root = content_root
         self.str_setter = str_setter
 
-    def visit_string(self, text: core.StringText):
-        self.str_setter(text.value)
-        return self.content_root
+    def visit_string(self, text: core.StringText) -> Element:
+        if text.tags:
+            a = SubElement(self.content_root, 'span')
+            a.text = text.value
+            set_class_attribute_on_element(a, text)
+            return a
+        else:
+            self.str_setter(text.value)
+            return self.content_root
 
-    def visit_cross_reference(self, text: core.CrossReferenceText):
+    def visit_cross_reference(self, text: core.CrossReferenceText) -> Element:
         a = SubElement(self.content_root, 'a')
-        target_str = self.target_renderer.apply(text.target)
-        if text.target_is_id_in_same_document:
-            target_str = '#' + target_str
+        target_str = self._target_str(text)
         a.set('href', target_str)
         a.text = text.title
+        set_class_attribute_on_element(a, text)
         return a
 
-    def visit_anchor(self, text: core.AnchorText):
+    def visit_anchor(self, text: core.AnchorText) -> Element:
         a = SubElement(self.content_root, 'span')
         a.set('id', self.target_renderer.apply(text.anchor))
         anchor_content_setter = ContentSetter(self.target_renderer,
                                               a,
                                               set_text_inside(a))
-        return anchor_content_setter.visit(text.anchored_text)
+        anchor_content_setter.visit(text.anchored_text)
+        return a
+
+    def _target_str(self, text: core.CrossReferenceText) -> str:
+        ret_val = self.target_renderer.apply(text.target)
+        if text.target_is_id_in_same_document:
+            ret_val = '#' + ret_val
+        return ret_val
 
 
 def set_text_inside(e: Element):

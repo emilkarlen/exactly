@@ -8,23 +8,6 @@ class TaggedItem:
         raise NotImplementedError('abstract method')
 
 
-class Text:
-    pass
-
-
-class ConcreteText(Text):
-    pass
-
-
-class StringText(ConcreteText):
-    def __init__(self, value: str):
-        self._value = value
-
-    @property
-    def value(self) -> str:
-        return self._value
-
-
 class CrossReferenceTarget:
     """
     A target used by anchors and cross references.
@@ -48,12 +31,39 @@ class UrlCrossReferenceTarget(CrossReferenceTarget):
         return self._url
 
 
+class Text(TaggedItem):
+    pass
+
+
+class ConcreteText(Text):
+    def __init__(self, tags: set = None):
+        self._tags = set() if tags is None else tags
+
+    @property
+    def tags(self) -> set:
+        return self._tags
+
+
+class StringText(ConcreteText):
+    def __init__(self,
+                 value: str,
+                 tags: set = None):
+        super().__init__(tags)
+        self._value = value
+
+    @property
+    def value(self) -> str:
+        return self._value
+
+
 class CrossReferenceText(ConcreteText):
     def __init__(self,
                  title: str,
                  target: CrossReferenceTarget,
                  target_is_id_in_same_document: bool = True,
-                 allow_rendering_of_visible_extra_target_text: bool = True):
+                 allow_rendering_of_visible_extra_target_text: bool = True,
+                 tags: set = None):
+        super().__init__(tags)
         self._title = title
         self._target = target
         self._target_is_id_in_same_document = target_is_id_in_same_document
@@ -94,6 +104,10 @@ class AnchorText(Text):
     @property
     def anchored_text(self) -> ConcreteText:
         return self._anchored_text
+
+    @property
+    def tags(self) -> set:
+        return self._anchored_text.tags
 
 
 class TextVisitor:
