@@ -5,7 +5,7 @@ Makes it possible to reuse some code for generating documentation.
 """
 import types
 
-from exactly_lib.help import section_item_tags
+from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure import HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import sorted_entity_list
@@ -60,7 +60,7 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
         target_info = cross_ref.TargetInfo(entity.singular_name(),
                                            entity.cross_reference_target())
         tags = {
-            section_item_tags.ENTITY,
+            std_tags.ENTITY,
             self.entity_type_identifier,
         }
         return LeafArticleRendererNode(target_info,
