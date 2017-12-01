@@ -36,14 +36,14 @@ class EntitiesPartition:
         self.entity_doc_list = entity_doc_list
 
 
-def partition_entities(partitions_setup: list, type_doc_list: list) -> list:
+def partition_entities(partitions_setup: list, entity_doc_list: list) -> list:
     """
     :type partitions_setup: list of :class:`PartitionSetup`
     :rtype: list of :class:`EntitiesPartition`
     """
     ret_val = []
     for partition_setup in partitions_setup:
-        entity_docs_in_partition = partition_setup.filter_entity_docs(type_doc_list)
+        entity_docs_in_partition = partition_setup.filter_entity_docs(entity_doc_list)
         if entity_docs_in_partition:
             ret_val.append(EntitiesPartition(partition_setup.partition_names_setup,
                                              entity_docs_in_partition))

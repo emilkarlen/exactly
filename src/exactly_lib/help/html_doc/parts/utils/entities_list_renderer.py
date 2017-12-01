@@ -58,7 +58,8 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
 
     def _entity_node(self, entity: EntityDocumentation) -> SectionItemRendererNode:
         target_info = cross_ref.TargetInfo(entity.singular_name(),
-                                           entity.cross_reference_target())
+                                           entity.cross_reference_target(),
+                                           entity.singular_name_text)
         tags = {
             std_tags.ENTITY,
             self.entity_type_identifier,

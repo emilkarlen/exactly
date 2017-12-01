@@ -168,8 +168,10 @@ class CrossReferenceIdVisitor:
 class TargetInfo(tuple):
     def __new__(cls,
                 presentation: str,
-                target: core.CrossReferenceTarget):
-        return tuple.__new__(cls, (presentation, target))
+                target: core.CrossReferenceTarget,
+                presentation_text: core.ConcreteText = None):
+        return tuple.__new__(cls, (presentation, target,
+                                   text(presentation) if presentation_text is None else presentation_text))
 
     @property
     def presentation_str(self) -> str:
@@ -177,7 +179,7 @@ class TargetInfo(tuple):
 
     @property
     def presentation_text(self) -> core.ConcreteText:
-        return text(self[0])
+        return self[2]
 
     @property
     def target(self) -> core.CrossReferenceTarget:
