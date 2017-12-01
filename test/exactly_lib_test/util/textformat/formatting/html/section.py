@@ -160,7 +160,13 @@ class TestSectionContentsWithSingleSection(unittest.TestCase):
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
+            '<section>'
+
+            '<header>'
             '<h1>section header</h1>'
+            '</header>'
+
+            '</section>'
             '</root>'
             ,
             root, ret_val, self)
@@ -179,8 +185,15 @@ class TestSectionContentsWithSingleSection(unittest.TestCase):
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
+            '<section>'
+
+            '<header>'
             '<h1>section header</h1>'
+            '</header>'
+
             '<p>initial para</p>'
+
+            '</section>'
             '</root>'
             ,
             root, ret_val, self)
@@ -201,8 +214,21 @@ class TestSectionContentsWithSingleSection(unittest.TestCase):
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
+            '<section>'
+
+            '<header>'
             '<h1>header 1</h1>'
+            '</header>'
+
+            '<section>'
+
+            '<header>'
             '<h2>header 1/1</h2>'
+            '</header>'
+
+            '</section>'
+
+            '</section>'
             '</root>'
             ,
             root, ret_val, self)
@@ -224,10 +250,25 @@ class TestSectionContentsWithSingleSection(unittest.TestCase):
         assert_contents_and_that_last_child_is_returned(
             '<root>'
             '<p>para 0</p>'
+
+            '<section>'
+
+            '<header>'
             '<h1>header 1</h1>'
+            '</header>'
+
             '<p>para 1</p>'
+            '<section>'
+
+            '<header>'
             '<h2>header 1/1</h2>'
+            '</header>'
+
             '<p>para 2</p>'
+
+            '</section>'
+
+            '</section>'
             '</root>'
             ,
             root, ret_val, self)
@@ -250,8 +291,21 @@ class TestSectionContentsWithMultipleSections(unittest.TestCase):
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
+            '<section>'
+
+            '<header>'
             '<h1>header 1</h1>'
+            '</header>'
+
+            '</section>'
+
+            '<section>'
+
+            '<header>'
             '<h1>header 2</h1>'
+            '</header>'
+
+            '</section>'
             '</root>'
             ,
             root, ret_val, self)
@@ -275,11 +329,20 @@ class TestSectionContentsWithSectionsAndArticles(unittest.TestCase):
         # ASSERT #
         assert_contents_and_that_last_child_is_returned(
             '<root>'
+            '<section>'
+
+            '<header>'
             '<h3>section header</h3>'
+            '</header>'
+
+            '</section>'
+
             '<article>'
+
             '<header>'
             '<h1>article header</h1>'
             '</header>'
+
             '</article>'
             '</root>'
             ,
@@ -295,7 +358,13 @@ class TestSection(unittest.TestCase):
                  StringText('header 1'),
                  empty_section_contents()),
              '<root>'
+             '<section>'
+
+             '<header>'
              '<h1>header 1</h1>'
+             '</header>'
+
+             '</section>'
              '</root>'
              ),
             ('empty with target',
@@ -304,7 +373,13 @@ class TestSection(unittest.TestCase):
                  empty_section_contents(),
                  target=CrossReferenceTargetTestImpl('section-target-name')),
              '<root>'
-             '<h1 id="section-target-name">header 1</h1>'
+             '<section id="section-target-name">'
+
+             '<header>'
+             '<h1>header 1</h1>'
+             '</header>'
+
+             '</section>'
              '</root>'
              ),
             ('empty with tags',
@@ -313,7 +388,13 @@ class TestSection(unittest.TestCase):
                  empty_section_contents(),
                  tags={'first-label', 'second-label'}),
              '<root>'
-             '<h1 class="first-label second-label">header 1</h1>'
+             '<section class="first-label second-label">'
+
+             '<header>'
+             '<h1>header 1</h1>'
+             '</header>'
+
+             '</section>'
              '</root>'
              ),
             ('empty with target and tags',
@@ -323,7 +404,13 @@ class TestSection(unittest.TestCase):
                  target=CrossReferenceTargetTestImpl('t'),
                  tags={'l1', 'l2'}),
              '<root>'
-             '<h1 class="l1 l2" id="t">header 1</h1>'
+             '<section class="l1 l2" id="t">'
+
+             '<header>'
+             '<h1>header 1</h1>'
+             '</header>'
+
+             '</section>'
              '</root>'
              ),
             ('with contents',
@@ -337,10 +424,24 @@ class TestSection(unittest.TestCase):
                              [para('para 1/1')], []))])
              ),
              '<root>'
+             '<section>'
+
+             '<header>'
              '<h1>header 1</h1>'
+             '</header>'
+
              '<p>para 1</p>'
+
+             '<section>'
+
+             '<header>'
              '<h2>header 1/1</h2>'
+             '</header>'
+
              '<p>para 1/1</p>'
+
+             '</section>'
+             '</section>'
              '</root>'
              ),
         ]
@@ -366,9 +467,11 @@ class TestArticle(unittest.TestCase):
                                      empty_section_contents())),
              '<root>'
              '<article>'
+
              '<header>'
              '<h1>header</h1>'
              '</header>'
+
              '</article>'
              '</root>'
              ),
@@ -379,9 +482,11 @@ class TestArticle(unittest.TestCase):
                      target=CrossReferenceTargetTestImpl('target-name')),
              '<root>'
              '<article id="target-name">'
+
              '<header>'
              '<h1>header</h1>'
              '</header>'
+
              '</article>'
              '</root>'
              ),
@@ -392,9 +497,11 @@ class TestArticle(unittest.TestCase):
                      tags={'label1', 'label2'}),
              '<root>'
              '<article class="label1 label2">'
+
              '<header>'
              '<h1>header</h1>'
              '</header>'
+
              '</article>'
              '</root>'
              ),
@@ -406,9 +513,11 @@ class TestArticle(unittest.TestCase):
                      tags={'label1', 'label2'}),
              '<root>'
              '<article class="label1 label2" id="article-target">'
+
              '<header>'
              '<h1>header</h1>'
              '</header>'
+
              '</article>'
              '</root>'
              ),
@@ -418,10 +527,12 @@ class TestArticle(unittest.TestCase):
                                      empty_section_contents())),
              '<root>'
              '<article>'
+
              '<header>'
              '<h1>header</h1>'
              '<p>abstract paragraph</p>'
              '</header>'
+
              '</article>'
              '</root>'
              )
@@ -467,15 +578,31 @@ class TestArticle(unittest.TestCase):
                 assert_contents_and_that_last_child_is_returned(
                     '<root>'
                     '<article>'
+
                     '<header>'
                     '<h1>article header</h1>'
                     '<p>para in abstract</p>'
                     '</header>'
+
                     '<p>initial para in contents</p>'
+
+                    '<section>'
+
+                    '<header>'
                     '<h1>header 1/1</h1>'
+                    '</header>'
+
                     '<p>para 1/1</p>'
+
+                    '<section>'
+
+                    '<header>'
                     '<h2>header 1/1/1</h2>'
+                    '</header>'
+
                     '<p>para 1/1/1</p>'
+                    '</section>'
+                    '</section>'
                     '</article>'
                     '</root>'
                     ,

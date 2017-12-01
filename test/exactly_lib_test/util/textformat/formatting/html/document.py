@@ -2,8 +2,8 @@ import io
 import unittest
 from xml.etree.ElementTree import Element, SubElement
 
-import exactly_lib.util.textformat.formatting.html.utils
 from exactly_lib.util.textformat.formatting.html import document as sut
+from exactly_lib.util.textformat.formatting.html import utils
 from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
 from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
 from exactly_lib.util.textformat.formatting.html.text import TextRenderer
@@ -19,39 +19,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestDocument),
         unittest.makeSuite(TestHeaderAndFooterPopulator),
         unittest.makeSuite(TestHeadPopulator),
+        unittest.makeSuite(TestComplexElementPopulator),
     ])
-
-
-class TestComplexElementPopulator(unittest.TestCase):
-    def test_simple_document(self):
-        # ARRANGE #
-        root = Element('root')
-        section_contents = SectionContents(
-            [para('para 0')],
-            [Section(StringText('header 1'),
-                     SectionContents([para('para 1'),
-                                      para('')],
-                                     []))])
-        document_setup = sut.DocumentSetup('page title')
-        # ACT #
-        output_file = io.StringIO()
-        DOCUMENT_RENDERER.apply(output_file, document_setup, section_contents)
-        actual = output_file.getvalue()
-        # ASSERT #
-        expected = (DOCTYPE_XHTML1_0 +
-                    '<html>'
-                    '<head>'
-                    '<title>page title</title>'
-                    '</head>'
-                    '<body>'
-                    '<p>para 0</p>'
-                    '<h1>header 1</h1>'
-                    '<p>para 1</p>'
-                    '<p />'
-                    '</body>'
-                    '</html>')
-        self.assertEqual(expected,
-                         actual)
 
 
 class TestDocument(unittest.TestCase):
@@ -76,9 +45,16 @@ class TestDocument(unittest.TestCase):
                     '</head>'
                     '<body>'
                     '<p>para 0</p>'
+
+                    '<section>'
+
+                    '<header>'
                     '<h1>header 1</h1>'
+                    '</header>'
+
                     '<p>para 1</p>'
                     '<p />'
+                    '</section>'
                     '</body>'
                     '</html>')
         self.assertEqual(expected,
@@ -196,7 +172,42 @@ class TestHeadPopulator(unittest.TestCase):
                          actual)
 
 
-class SingleParaPopulator(exactly_lib.util.textformat.formatting.html.utils.ElementPopulator):
+class TestComplexElementPopulator(unittest.TestCase):
+    def test_simple_document(self):
+        # ARRANGE #
+        section_contents = SectionContents(
+            [para('para in contents')],
+            [])
+        populator = utils.ComplexElementPopulator([SingleParaPopulator('para from pop 1'),
+                                                   SingleParaPopulator('para from pop 2')])
+        document_setup = sut.DocumentSetup('page title',
+                                           footer_populator=populator)
+        # ACT #
+        output_file = io.StringIO()
+        DOCUMENT_RENDERER.apply(output_file, document_setup, section_contents)
+        actual = output_file.getvalue()
+        # ASSERT #
+        expected = (DOCTYPE_XHTML1_0 +
+                    '<html>'
+
+                    '<head>'
+                    '<title>page title</title>'
+                    '</head>'
+
+                    '<body>'
+
+                    '<p>para in contents</p>'
+
+                    '<p>para from pop 1</p>'
+                    '<p>para from pop 2</p>'
+
+                    '</body>'
+                    '</html>')
+        self.assertEqual(expected,
+                         actual)
+
+
+class SingleParaPopulator(utils.ElementPopulator):
     def __init__(self, para_text: str):
         self.para_text = para_text
 
@@ -204,7 +215,7 @@ class SingleParaPopulator(exactly_lib.util.textformat.formatting.html.utils.Elem
         SubElement(parent, 'p').text = self.para_text
 
 
-class HeadStylePopulator(exactly_lib.util.textformat.formatting.html.utils.ElementPopulator):
+class HeadStylePopulator(utils.ElementPopulator):
     def __init__(self, style: str):
         self.style = style
 
