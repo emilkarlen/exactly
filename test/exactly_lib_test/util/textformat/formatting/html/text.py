@@ -26,9 +26,9 @@ class Test(unittest.TestCase):
         # ASSERT #
         expected_html = '<root>{}</root>'.format(source_text)
         actual_html = tostring(root, encoding='unicode')
-        self.assertEquals(source_text, actual.text)
-        self.assertEquals(expected_html,
-                          actual_html)
+        self.assertEqual(source_text, actual.text)
+        self.assertEqual(expected_html,
+                         actual_html)
 
         self.assertIs(root, actual, 'Returned Element')
 
@@ -42,7 +42,7 @@ class Test(unittest.TestCase):
         # ACT #
         actual = renderer.apply(root, sub, sut.Position.AFTER, text)
         # ASSERT #
-        self.assertEquals(source_text, sub.tail)
+        self.assertEqual(source_text, sub.tail)
         s = as_unicode_str(root)
 
         self.assertIs(root, actual, 'Returned Element')
