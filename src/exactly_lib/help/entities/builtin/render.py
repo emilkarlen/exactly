@@ -7,6 +7,7 @@ from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.parttioned_entity_set import PartitionNamesSetup
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
+from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.type_system import TYPE_INFO_DICT
@@ -46,12 +47,18 @@ class IndividualBuiltinSymbolRenderer(ArticleContentsRenderer):
             self._type_paragraph(),
         ]
         sub_sections = description_section_if_non_empty(self.builtin_doc.description)
+        sub_sections += self._see_also_sections(environment)
         return doc.ArticleContents(docs.paras(self.builtin_doc.single_line_description()),
                                    doc.SectionContents(initial_paragraphs,
                                                        sub_sections))
 
     def _type_paragraph(self) -> docs.ParagraphItem:
         return docs.para('Type: ' + TYPE_INFO_DICT[self.builtin_doc.value_type].name.singular)
+
+    def _see_also_sections(self, environment: RenderingEnvironment) -> list:
+        type_info = TYPE_INFO_DICT[self.builtin_doc.value_type]
+        return see_also_sections([type_info.cross_reference_target],
+                                 environment)
 
 
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
