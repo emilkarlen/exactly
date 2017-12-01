@@ -53,20 +53,7 @@ article h3 {{
 article header h1 {{
   padding: 7px;
   font-size: x-large;
-  font-family: monospace;
   background-color: #c0c0c0;
-}}
-
-article.{entity}.{actor_entity} header h1 {{
-  font-family: inherit;
-}}
-
-article.{entity}.{concept_entity} header h1 {{
-  font-family: inherit;
-}}
-
-article.{entity}.{type_entity} header h1 {{
-  font-family: inherit;
 }}
 
 article.{section} header h1 {{

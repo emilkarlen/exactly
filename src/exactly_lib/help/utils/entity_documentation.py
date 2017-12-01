@@ -7,7 +7,7 @@ Makes it possible to reuse some code for generating documentation.
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId, EntityTypeNames
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import Text
+from exactly_lib.util.textformat.structure.core import Text, ConcreteText
 
 
 class EntityDocumentation:
@@ -20,6 +20,10 @@ class EntityDocumentation:
         Name of the entity in singular.
         """
         raise NotImplementedError()
+
+    @property
+    def singular_name_text(self) -> ConcreteText:
+        return docs.text(self.singular_name())
 
     def single_line_description(self) -> Text:
         """
