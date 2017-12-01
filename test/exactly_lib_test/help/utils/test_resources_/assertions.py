@@ -14,5 +14,5 @@ def is_anchor_text_that_corresponds_to(expected: TargetInfo) -> asrt.ValueAssert
                            cross_ref_id_asrt.equals(expected.target)),
         asrt.sub_component('anchored_text',
                            AnchorText.anchored_text.fget,
-                           is_string_text_that_equals(expected.presentation_str)),
+                           is_string_text_that_equals(expected.presentation_text.value)),
     ])

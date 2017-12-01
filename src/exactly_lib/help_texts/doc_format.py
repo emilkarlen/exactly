@@ -1,7 +1,12 @@
 from exactly_lib.help import std_tags as std_tags
-from exactly_lib.util.textformat.structure.core import StringText, ConcreteText
+from exactly_lib.help_texts import formatting
+from exactly_lib.util.textformat.structure.core import StringText
 
 
-def syntax_text(text: str) -> ConcreteText:
+def syntax_text(text: str) -> StringText:
     return StringText(text,
                       tags={std_tags.SYNTAX_TEXT})
+
+
+def section_name_text(name: formatting.SectionName) -> StringText:
+    return syntax_text(name.syntax)

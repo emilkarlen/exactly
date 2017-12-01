@@ -14,6 +14,7 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionItemRendererNode, \
     SectionItemRendererNodeWithSubSections
 from exactly_lib.help_texts import cross_reference_id as cross_ref
+from exactly_lib.util.textformat.structure.core import StringText
 
 
 class FlatEntityListHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
@@ -52,14 +53,13 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
             self._entity_node(entity)
             for entity in sorted_entity_list(self.all_entities)
         ]
-        return SectionItemRendererNodeWithSubSections(target_factory.root(self.header),
+        return SectionItemRendererNodeWithSubSections(target_factory.root(StringText(self.header)),
                                                       [],
                                                       entity_nodes)
 
     def _entity_node(self, entity: EntityDocumentation) -> SectionItemRendererNode:
-        target_info = cross_ref.TargetInfo(entity.singular_name(),
-                                           entity.cross_reference_target(),
-                                           entity.singular_name_text)
+        target_info = cross_ref.TargetInfo(entity.singular_name_text,
+                                           entity.cross_reference_target())
         tags = {
             std_tags.ENTITY,
             self.entity_type_identifier,

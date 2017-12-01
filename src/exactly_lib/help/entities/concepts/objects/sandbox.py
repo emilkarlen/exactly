@@ -1,16 +1,18 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import file_ref as file_ref_texts, formatting
+from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, PHASE_NAME_DICTIONARY
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
+from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 from exactly_lib.util.textformat.structure.document import SectionContents, Section
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -60,10 +62,11 @@ class _SandboxConcept(ConceptDocumentation):
         ]
 
     def _act_dir_description_paragraphs(self) -> list:
+        rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT]
         ret_val = []
         ret_val.extend(self._tp.fnap(_ACT_DIR_DESCRIPTION))
-        ret_val.extend(_dir_env_variables_and_rel_options(env_var_name=environment_variables.ENV_VAR_ACT,
-                                                          rel_option=file_ref_texts.REL_ACT_OPTION))
+        ret_val.extend(_dir_env_variables_and_rel_options(env_var_name=rel_opt_info.directory_variable_name_text,
+                                                          rel_option=rel_opt_info.option_name_text))
         return ret_val
 
     def _result_dir_description_paragraphs(self) -> list:
@@ -75,15 +78,17 @@ class _SandboxConcept(ConceptDocumentation):
         return ret_val
 
     def _tmp_user_dir_description_paragraphs(self) -> list:
+        rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP]
         ret_val = []
         ret_val += self._tp.fnap(_USR_TMP_DIR_DESCRIPTION)
-        ret_val += _dir_env_variables_and_rel_options(env_var_name=environment_variables.ENV_VAR_TMP,
-                                                      rel_option=file_ref_texts.REL_TMP_OPTION)
+        ret_val += _dir_env_variables_and_rel_options(env_var_name=rel_opt_info.directory_variable_name_text,
+                                                      rel_option=rel_opt_info.option_name_text)
         return ret_val
 
     def _result_dir_env_variable_and_rel_option(self) -> list:
-        return [_dir_info_items_table(environment_variables.ENV_VAR_RESULT,
-                                      file_ref_texts.REL_RESULT_OPTION,
+        rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT]
+        return [_dir_info_items_table(rel_opt_info.directory_variable_name_text,
+                                      rel_opt_info.option_name_text,
                                       self._tp.format(_RESULT_DIR_ENV_VARIABLE))
                 ]
 
@@ -133,16 +138,16 @@ is the absolute path of this directory
 (after the {phase[act]} phase has been executed)."""
 
 
-def _dir_env_variables_and_rel_options(env_var_name: str,
-                                       rel_option: str) -> list:
+def _dir_env_variables_and_rel_options(env_var_name: Text,
+                                       rel_option: Text) -> list:
     return [_dir_info_items_table(env_var_name,
                                   rel_option,
                                   'The value of this environment variable is the absolute path of this directory.')
             ]
 
 
-def _dir_info_items_table(env_var_name: str,
-                          rel_option: str,
+def _dir_info_items_table(env_var_name: Text,
+                          rel_option: Text,
                           env_var_description: str) -> ParagraphItem:
     return docs.first_column_is_header_table([
         [

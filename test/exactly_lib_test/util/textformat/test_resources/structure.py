@@ -13,10 +13,19 @@ def is_paragraph_item_list(name: str = '') -> asrt.ValueAssertion:
     return asrt.every_element(name, is_paragraph_item)
 
 
+is_tags_set = asrt.is_instance_with(set,
+                                    asrt.every_element('set of tags', asrt.is_instance(str)))
+
 is_string_text = asrt.is_instance_with(core.StringText,
-                                       asrt.sub_component('value',
-                                                          core.StringText.value.fget,
-                                                          asrt.IsInstance(str)))
+                                       asrt.and_([
+                                           asrt.sub_component('value',
+                                                              core.StringText.value.fget,
+                                                              asrt.IsInstance(str)),
+
+                                           asrt.sub_component('tags',
+                                                              core.StringText.tags.fget,
+                                                              is_tags_set),
+                                       ]))
 
 is_cross_reference_text = asrt.is_instance_with(core.CrossReferenceText,
                                                 asrt.And([
@@ -25,7 +34,11 @@ is_cross_reference_text = asrt.is_instance_with(core.CrossReferenceText,
                                                                        asrt.IsInstance(core.CrossReferenceTarget)),
                                                     asrt.sub_component('title',
                                                                        core.CrossReferenceText.title_text.fget,
-                                                                       is_string_text)
+                                                                       is_string_text),
+
+                                                    asrt.sub_component('tags',
+                                                                       core.CrossReferenceText.tags.fget,
+                                                                       is_tags_set),
                                                 ]))
 
 
@@ -48,7 +61,10 @@ is_anchor_text = asrt.is_instance_with(
                            asrt.IsInstance(core.CrossReferenceTarget)),
         asrt.sub_component('anchored_text',
                            core.AnchorText.anchored_text.fget,
-                           is_concrete_text)
+                           is_concrete_text),
+        asrt.sub_component('tags',
+                           core.AnchorText.tags.fget,
+                           is_tags_set),
     ]))
 
 is_text = asrt.Or([
