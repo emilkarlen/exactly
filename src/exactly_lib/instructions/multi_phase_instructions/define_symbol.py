@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts import syntax_descriptions
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import types, syntax_elements, concepts
 from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax
@@ -99,8 +100,8 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
         def type_row(type_info: TypeNameAndCrossReferenceId) -> list:
             type_syntax_info = syntax.ANY_TYPE_INFO_DICT[type_info.value_type]
             return [
-                docs.text_cell(type_info.identifier),
-                docs.text_cell(cl_syntax.cl_syntax_for_args(type_syntax_info.value_arguments)),
+                docs.text_cell(syntax_text(type_info.identifier)),
+                docs.text_cell(syntax_text(cl_syntax.cl_syntax_for_args(type_syntax_info.value_arguments))),
             ]
 
         rows = [
