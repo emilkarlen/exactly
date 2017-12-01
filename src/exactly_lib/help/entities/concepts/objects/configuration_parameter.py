@@ -21,7 +21,7 @@ class _ConfigurationParameterConcept(ConceptDocumentation):
 def _sorted_conf_params_list() -> ParagraphItem:
     all_cfs = sorted(ALL_CONF_PARAM_INFOS,
                      key=SingularNameAndCrossReferenceId.singular_name.fget)
-    items = [docs.list_item(docs.cross_reference(cf.singular_name,
+    items = [docs.list_item(docs.cross_reference(cf.configuration_parameter_name_text,
                                                  cf.cross_reference_target,
                                                  allow_rendering_of_visible_extra_target_text=False),
                             docs.paras(cf.single_line_description_str))
