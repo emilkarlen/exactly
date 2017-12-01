@@ -192,20 +192,21 @@ class _EqualsTextVisitor(TextVisitor):
         actual = self.actual
         assert isinstance(actual, core.CrossReferenceText)
 
-        asrt.equals(expected.title).apply(
-            self.put,
-            actual.title,
-            self.message_builder.for_sub_component('title'))
+        assertion = asrt.is_instance_with(
+            core.CrossReferenceText,
+            asrt.and_([
+                asrt.sub_component('title_text',
+                                   core.CrossReferenceText.title_text.fget,
+                                   equals_text(expected.title_text)),
+                asrt.sub_component('target_is_id_in_same_document',
+                                   core.CrossReferenceText.target_is_id_in_same_document.fget,
+                                   asrt.equals(expected.target_is_id_in_same_document)),
+                asrt.sub_component('target',
+                                   core.CrossReferenceText.target.fget,
+                                   equals_cross_reference_target(expected.target)),
+            ]))
 
-        asrt.equals(expected.target_is_id_in_same_document).apply(
-            self.put,
-            actual.target_is_id_in_same_document,
-            self.message_builder.for_sub_component('target_is_id_in_same_document'))
-
-        equals_cross_reference_target(expected.target).apply(
-            self.put,
-            actual.target,
-            self.message_builder.for_sub_component('target'))
+        assertion.apply(self.put, self.actual, self.message_builder)
 
     def visit_anchor(self, expected: core.AnchorText):
         self._assert_is_type(core.AnchorText)

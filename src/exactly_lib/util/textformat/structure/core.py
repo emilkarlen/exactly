@@ -58,7 +58,7 @@ class StringText(ConcreteText):
 
 class CrossReferenceText(ConcreteText):
     def __init__(self,
-                 title: str,
+                 title: StringText,
                  target: CrossReferenceTarget,
                  target_is_id_in_same_document: bool = True,
                  allow_rendering_of_visible_extra_target_text: bool = True,
@@ -70,7 +70,7 @@ class CrossReferenceText(ConcreteText):
         self._allow_rendering_of_visible_extra_target_text = allow_rendering_of_visible_extra_target_text
 
     @property
-    def title(self) -> str:
+    def title_text(self) -> StringText:
         return self._title
 
     @property

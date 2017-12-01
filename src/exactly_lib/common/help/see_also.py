@@ -1,6 +1,6 @@
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId, SeeAlsoTarget
 from exactly_lib.util.collection import FrozenSetBasedOnEquality
-from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget
+from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget, StringText
 
 
 class SeeAlsoItem:
@@ -41,7 +41,7 @@ class SeeAlsoUrlInfo(tuple, SeeAlsoTarget):
 
 def see_also_url(url_info: SeeAlsoUrlInfo) -> SeeAlsoItem:
     return TextSeeAlsoItem(
-        CrossReferenceText(url_info.title,
+        CrossReferenceText(StringText(url_info.title),
                            UrlCrossReferenceTarget(url_info.url),
                            target_is_id_in_same_document=False,
                            allow_rendering_of_visible_extra_target_text=True))

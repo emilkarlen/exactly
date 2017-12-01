@@ -24,8 +24,8 @@ is_cross_reference_text = asrt.is_instance_with(core.CrossReferenceText,
                                                                        core.CrossReferenceText.target.fget,
                                                                        asrt.IsInstance(core.CrossReferenceTarget)),
                                                     asrt.sub_component('title',
-                                                                       core.CrossReferenceText.title.fget,
-                                                                       asrt.IsInstance(str))
+                                                                       core.CrossReferenceText.title_text.fget,
+                                                                       is_string_text)
                                                 ]))
 
 

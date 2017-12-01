@@ -33,7 +33,7 @@ def header_only_item(header: str) -> lists.HeaderContentListItem:
 
 class TitleOnlyCrossReferenceFormatter(CrossReferenceFormatter):
     def apply(self, cross_reference: core.CrossReferenceText) -> str:
-        return cross_reference.title
+        return cross_reference.title_text.value
 
 
 def formatter_with_page_width(page_width: int) -> sut.Formatter:

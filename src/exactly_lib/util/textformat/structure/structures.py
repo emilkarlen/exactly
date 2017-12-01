@@ -84,10 +84,14 @@ def text(s: str) -> ConcreteText:
     return StringText(s)
 
 
-def cross_reference(title: str,
+def cross_reference(title_str_or_string_text,
                     target: CrossReferenceTarget,
                     target_is_id_in_same_document: bool = True,
                     allow_rendering_of_visible_extra_target_text: bool = True) -> ConcreteText:
+    title = title_str_or_string_text
+    if isinstance(title_str_or_string_text, str):
+        title = StringText(title_str_or_string_text)
+
     return CrossReferenceText(
         title,
         target,
