@@ -3,6 +3,7 @@ from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumen
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts import syntax_descriptions
 from exactly_lib.help_texts import type_system
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions import define_symbol
@@ -173,11 +174,12 @@ def _symbol_reference_syntax_table() -> ParagraphItem:
     return docs.first_column_is_header_table([
         [
             docs.text_cell('Plain name'),
-            docs.text_cell(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name),
+            docs.text_cell(syntax_text(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name)),
         ],
         [
             docs.text_cell('Special syntax'),
-            docs.text_cell(symbol_reference_syntax_for_name(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name)),
+            docs.text_cell(syntax_text(
+                symbol_reference_syntax_for_name(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name))),
         ],
 
     ],
