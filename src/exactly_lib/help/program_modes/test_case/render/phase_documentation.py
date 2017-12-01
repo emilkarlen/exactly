@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.doc_format import syntax_text
+from exactly_lib.help_texts.doc_format import syntax_text, instruction_name_text
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import document as doc
@@ -68,7 +68,7 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
             sections.append(docs.section('Environment', paragraphs))
 
     def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
-        return docs.cross_reference(instr_name,
+        return docs.cross_reference(instruction_name_text(instr_name),
                                     TestCasePhaseInstructionCrossReference(self.doc.name.plain,
                                                                            instr_name),
                                     allow_rendering_of_visible_extra_target_text=False)
