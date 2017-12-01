@@ -35,6 +35,12 @@ h1 {{
   border-bottom: solid black;
 }}
 
+article header h1 {{
+  padding: 3px;
+  font-size: x-large;
+  background-color: #c0c0c0;
+}}
+
 article h1 {{
   font-size: large;
   padding: 0px;
@@ -48,12 +54,6 @@ article h2 {{
 
 article h3 {{
   font-size: medium;
-}}
-
-article header h1 {{
-  padding: 7px;
-  font-size: x-large;
-  background-color: #c0c0c0;
 }}
 
 article.{section} header h1 {{
