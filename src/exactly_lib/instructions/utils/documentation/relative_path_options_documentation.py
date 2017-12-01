@@ -1,6 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts import test_case_file_structure as tc_fs
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import concepts as ci, syntax_elements
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
@@ -43,17 +44,9 @@ def path_element(path_arg_name: str,
 
 def path_element_2(rel_options_conf: RelOptionArgumentConfiguration,
                    custom_paragraphs: list = ()) -> SyntaxElementDescription:
-    description_rest = []
-    description_rest += custom_paragraphs
-    description_rest += [
-        docs.para('Accepted relativities (default is "{}"):'.format(
-            REL_OPTIONS_MAP[rel_options_conf.options.default_option].informative_name
-        )),
-        sparse_relativity_options_paragraph(rel_options_conf.argument_syntax_name,
-                                            rel_options_conf.options.accepted_relativity_variants),
-    ]
-    return SyntaxElementDescription(rel_options_conf.argument_syntax_name,
-                                    description_rest)
+    return path_element(rel_options_conf.argument_syntax_name,
+                        rel_options_conf.options,
+                        custom_paragraphs)
 
 
 def path_elements(path_arg_name: str,
@@ -164,7 +157,7 @@ class RelOptionRenderer:
 
     def sparse_item_for(self, rel_option_type: RelOptionType) -> lists.HeaderContentListItem:
         opt_info = REL_OPTIONS_MAP[rel_option_type]
-        return docs.list_item(option_syntax.option_syntax(opt_info.option_name),
+        return docs.list_item(syntax_text(option_syntax.option_syntax(opt_info.option_name)),
                               docs.paras(opt_info.informative_name))
 
 
