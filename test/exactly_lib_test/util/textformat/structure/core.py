@@ -22,8 +22,8 @@ class TestTextVisitor(unittest.TestCase):
 
     def test_anchor(self):
         # ARRANGE #
-        item = sut.AnchorText(sut.CrossReferenceTarget(),
-                              sut.StringText('concrete string text'))
+        item = sut.AnchorText(sut.StringText('concrete string text'),
+                              sut.CrossReferenceTarget())
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(item)

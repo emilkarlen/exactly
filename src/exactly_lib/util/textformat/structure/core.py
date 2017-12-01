@@ -82,10 +82,10 @@ class AnchorText(Text):
     """
 
     def __init__(self,
-                 anchor: CrossReferenceTarget,
-                 anchored_text: ConcreteText):
-        self._anchor = anchor
+                 anchored_text: ConcreteText,
+                 anchor: CrossReferenceTarget):
         self._anchored_text = anchored_text
+        self._anchor = anchor
 
     @property
     def anchor(self) -> CrossReferenceTarget:

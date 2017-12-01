@@ -99,7 +99,7 @@ def anchor_text(anchored_text: ConcreteText,
                 anchor: CrossReferenceTarget = None) -> Text:
     if anchor is None:
         return anchored_text
-    return AnchorText(anchor, anchored_text)
+    return AnchorText(anchored_text, anchor)
 
 
 def literal_layout(s: str) -> ParagraphItem:
