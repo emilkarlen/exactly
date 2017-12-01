@@ -93,20 +93,20 @@ class Test(unittest.TestCase):
         _cases(self,
                [
                    Case('target in same doc',
-                        text=CrossReferenceText('title text',
+                        text=CrossReferenceText(StringText('title text'),
                                                 _CrossReferenceString('the-target'))
                         ,
                         expected='<a href="#the-target">title text</a>',
                         ),
                    Case('target in other doc',
-                        text=CrossReferenceText('title text',
+                        text=CrossReferenceText(StringText('title text'),
                                                 _CrossReferenceString('the-target'),
                                                 target_is_id_in_same_document=False)
                         ,
                         expected='<a href="the-target">title text</a>',
                         ),
                    Case('with tags',
-                        text=CrossReferenceText('title text',
+                        text=CrossReferenceText(StringText('title text'),
                                                 _CrossReferenceString('the-target'),
                                                 tags={'1st', '2nd'})
                         ,
@@ -134,7 +134,7 @@ class Test(unittest.TestCase):
                                  '</span>',
                         ),
                    Case('anchor with tagged cross-ref text',
-                        text=AnchorText(CrossReferenceText('title text',
+                        text=AnchorText(CrossReferenceText(StringText('title text'),
                                                            _CrossReferenceString('target-of-anchored'),
                                                            tags={'tag1', 'tag2'}),
                                         _CrossReferenceString('target-of-anchor'))

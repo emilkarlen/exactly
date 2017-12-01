@@ -10,7 +10,8 @@ def suite() -> unittest.TestSuite:
 class TestTextVisitor(unittest.TestCase):
     def test_visit_cross_reference(self):
         # ARRANGE #
-        item = sut.CrossReferenceText('cross ref title', sut.CrossReferenceTarget())
+        item = sut.CrossReferenceText(sut.StringText('cross ref title'),
+                                      sut.CrossReferenceTarget())
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(item)

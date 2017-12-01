@@ -4,6 +4,7 @@ from xml.etree.ElementTree import Element
 from exactly_lib.util.textformat.formatting.html.paragraph_item import paragraph as sut
 from exactly_lib.util.textformat.formatting.html.text import TextRenderer
 from exactly_lib.util.textformat.structure import core
+from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib_test.util.textformat.formatting.html.test_resources import as_unicode_str, \
     TargetRendererAsNameTestImpl, \
@@ -68,7 +69,7 @@ class TestParagraph(unittest.TestCase):
     def test_single_cross_reference_to_id_in_same_document(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title',
+        para = Paragraph([core.CrossReferenceText(StringText('title'),
                                                   CrossReferenceTargetTestImpl('target'),
                                                   target_is_id_in_same_document=True),
                           ])
@@ -87,7 +88,7 @@ class TestParagraph(unittest.TestCase):
     def test_single_cross_reference_to_not_id_in_same_document(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title',
+        para = Paragraph([core.CrossReferenceText(StringText('title'),
                                                   CrossReferenceTargetTestImpl('target'),
                                                   target_is_id_in_same_document=False),
                           ])
@@ -106,9 +107,9 @@ class TestParagraph(unittest.TestCase):
     def test_two_cross_reference(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title 1',
+        para = Paragraph([core.CrossReferenceText(StringText('title 1'),
                                                   CrossReferenceTargetTestImpl('target 1')),
-                          core.CrossReferenceText('title 2',
+                          core.CrossReferenceText(StringText('title 2'),
                                                   CrossReferenceTargetTestImpl('target 2'))])
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para)
@@ -127,7 +128,7 @@ class TestParagraph(unittest.TestCase):
     def test_cross_reference_and_string(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title',
+        para = Paragraph([core.CrossReferenceText(StringText('title'),
                                                   CrossReferenceTargetTestImpl('target'),
                                                   target_is_id_in_same_document=True),
                           core.StringText('string')])
@@ -165,7 +166,7 @@ class TestParagraph(unittest.TestCase):
         # ARRANGE #
         root = Element('root')
         para = Paragraph([
-            core.AnchorText(core.CrossReferenceText('cross ref title',
+            core.AnchorText(core.CrossReferenceText(StringText('cross ref title'),
                                                     CrossReferenceTargetTestImpl('cross ref target'),
                                                     target_is_id_in_same_document=True),
                             CrossReferenceTargetTestImpl('anchor target')),
@@ -233,7 +234,7 @@ class TestParagraphWithSkippingOfSurroundingPElement(unittest.TestCase):
     def test_single_cross_reference_to_id_in_same_document(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title',
+        para = Paragraph([core.CrossReferenceText(StringText('title'),
                                                   CrossReferenceTargetTestImpl('target'),
                                                   target_is_id_in_same_document=True),
                           ])
@@ -251,7 +252,7 @@ class TestParagraphWithSkippingOfSurroundingPElement(unittest.TestCase):
     def test_single_cross_reference_to_not_id_in_same_document(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title',
+        para = Paragraph([core.CrossReferenceText(StringText('title'),
                                                   CrossReferenceTargetTestImpl('target'),
                                                   target_is_id_in_same_document=False),
                           ])
@@ -269,9 +270,9 @@ class TestParagraphWithSkippingOfSurroundingPElement(unittest.TestCase):
     def test_two_cross_reference(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title 1',
+        para = Paragraph([core.CrossReferenceText(StringText('title 1'),
                                                   CrossReferenceTargetTestImpl('target 1')),
-                          core.CrossReferenceText('title 2',
+                          core.CrossReferenceText(StringText('title 2'),
                                                   CrossReferenceTargetTestImpl('target 2'))])
         # ACT #
         ret_val = sut.render(TextRenderer(TARGET_RENDERER), root, para,
@@ -289,7 +290,7 @@ class TestParagraphWithSkippingOfSurroundingPElement(unittest.TestCase):
     def test_cross_reference_and_string(self):
         # ARRANGE #
         root = Element('root')
-        para = Paragraph([core.CrossReferenceText('title',
+        para = Paragraph([core.CrossReferenceText(StringText('title'),
                                                   CrossReferenceTargetTestImpl('target'),
                                                   target_is_id_in_same_document=True),
                           core.StringText('string')])
@@ -325,7 +326,7 @@ class TestParagraphWithSkippingOfSurroundingPElement(unittest.TestCase):
         # ARRANGE #
         root = Element('root')
         para = Paragraph([
-            core.AnchorText(core.CrossReferenceText('cross ref title',
+            core.AnchorText(core.CrossReferenceText(StringText('cross ref title'),
                                                     CrossReferenceTargetTestImpl('cross ref target'),
                                                     target_is_id_in_same_document=True),
                             CrossReferenceTargetTestImpl('anchor target')),

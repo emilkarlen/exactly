@@ -1,3 +1,4 @@
+from exactly_lib.help_texts.cross_reference_id import TargetInfoNode
 from exactly_lib.util.textformat.structure import core as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -7,6 +8,7 @@ def toc_list(target_info_hierarchy: list,
              list_type: lists.ListType) -> doc.ParagraphItem:
     items = []
     for node in target_info_hierarchy:
+        assert isinstance(node, TargetInfoNode)
         sub_lists = []
         if node.children:
             sub_lists = [toc_list(node.children, list_type)]
