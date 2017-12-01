@@ -1,6 +1,5 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -80,12 +79,6 @@ class TestCasePhaseDocumentation(SectionDocumentation):
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         raise NotImplementedError()
-
-    def render(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return self.renderer().apply(environment)
-
-    def renderer(self) -> SectionContentsRenderer:
-        return TestCasePhaseDocumentationRenderer(self)
 
 
 class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentation):
