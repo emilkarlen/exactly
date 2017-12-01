@@ -12,7 +12,7 @@ def toc_list(target_info_hierarchy: list,
         sub_lists = []
         if node.children:
             sub_lists = [toc_list(node.children, list_type)]
-        item = docs.list_item(docs.cross_reference(node.data.presentation_str,
+        item = docs.list_item(docs.cross_reference(node.data.presentation_text,
                                                    node.data.target),
                               sub_lists)
         items.append(item)

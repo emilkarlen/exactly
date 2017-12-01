@@ -4,12 +4,13 @@ from exactly_lib.help_texts.cross_reference_id import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import core
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.textformat.test_resources.structure import is_string_text
 
 is_target_info = asrt.And([
     asrt.IsInstance(TargetInfo),
     asrt.sub_component('presentation',
-                       TargetInfo.presentation_str.fget,
-                       asrt.IsInstance(str)),
+                       TargetInfo.presentation_text.fget,
+                       is_string_text),
     asrt.sub_component('target',
                        TargetInfo.target.fget,
                        asrt.IsInstance(core.CrossReferenceTarget)),
@@ -33,8 +34,8 @@ class _IsTargetInfoAndEquals(asrt.ValueAssertion):
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         is_target_info.apply(put, value, message_builder)
         assert isinstance(value, TargetInfo)
-        put.assertEqual(self.expected.presentation_str,
-                        value.presentation_str,
+        put.assertEqual(self.expected.presentation_text.value,
+                        value.presentation_text.value,
                         message_builder.apply('presentation_str'))
         put.assertIsInstance(value.target, CrossReferenceId,
                              'Actual value is not a ' + str(CrossReferenceId))
@@ -58,8 +59,8 @@ class _IsTargetInfoNode(asrt.ValueAssertion):
 _is_TargetInfoNodeObject_shallow = asrt.And([
     asrt.IsInstance(TargetInfoNode),
     asrt.sub_component('data',
-                     TargetInfoNode.data.fget,
-                     is_target_info),
+                       TargetInfoNode.data.fget,
+                       is_target_info),
     asrt.sub_component('children',
                        TargetInfoNode.children.fget,
                        asrt.IsInstance(list)),

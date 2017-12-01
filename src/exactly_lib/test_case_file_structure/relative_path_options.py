@@ -1,4 +1,5 @@
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import conf_params as cp
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
@@ -9,6 +10,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType, RelRootResolver, \
     RelHomeRootResolver
 from exactly_lib.util.cli_syntax.elements import argument
+from exactly_lib.util.cli_syntax.option_syntax import option_syntax
+from exactly_lib.util.textformat.structure.core import StringText
 
 
 class RelOptionInfo:
@@ -23,6 +26,10 @@ class RelOptionInfo:
     @property
     def option_name(self) -> argument.OptionName:
         return self._option_name
+
+    @property
+    def option_name_text(self) -> StringText:
+        return syntax_text(option_syntax(self._option_name))
 
     @property
     def root_resolver(self) -> RelRootResolver:
@@ -47,6 +54,10 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
     @property
     def directory_variable_name(self) -> str:
         return self._directory_name
+
+    @property
+    def directory_variable_name_text(self) -> StringText:
+        return syntax_text(self._directory_name)
 
 
 class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):

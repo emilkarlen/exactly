@@ -4,6 +4,7 @@ from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode, TargetInfo
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.document import ArticleContents
 from exactly_lib.util.textformat.utils import section_item_contents_as_section_contents
 
@@ -52,7 +53,7 @@ class SectionHierarchyGenerator:
 def leaf(header: str,
          contents_renderer: SectionContentsRenderer) -> SectionHierarchyGenerator:
     """A section without sub sections that appear in the TOC/target hierarchy"""
-    return _SectionLeafGenerator(header, contents_renderer)
+    return _SectionLeafGenerator(StringText(header), contents_renderer)
 
 
 def parent(header: str,
@@ -64,7 +65,7 @@ def parent(header: str,
     :param local_target_name__sub_section__list: [(str, SectionHierarchyGenerator)]
     :param initial_paragraphs: [ParagraphItem]
     """
-    return _SectionHierarchyGeneratorWithSubSections(header,
+    return _SectionHierarchyGeneratorWithSubSections(StringText(header),
                                                      initial_paragraphs,
                                                      local_target_name__sub_section__list)
 
@@ -174,7 +175,7 @@ class _SectionLeafGenerator(SectionHierarchyGenerator):
     """
 
     def __init__(self,
-                 header: str,
+                 header: StringText,
                  contents_renderer: SectionContentsRenderer,
                  ):
         self._header = header
@@ -191,7 +192,7 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
     """
 
     def __init__(self,
-                 header: str,
+                 header: StringText,
                  initial_paragraphs: list,
                  local_target_name__sub_section__list: list,
                  ):

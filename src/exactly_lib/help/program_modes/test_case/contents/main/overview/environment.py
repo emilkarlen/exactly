@@ -6,7 +6,6 @@ from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.formatting import emphasis
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_ACT
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -20,7 +19,6 @@ class Documentation(SectionContentsRenderer):
             'phase': setup.phase_names,
             'cwd': emphasis(CHANGE_DIR_INSTRUCTION_NAME),
             'CWD': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-            'SANDBOX_ACT_DIR': ENV_VAR_ACT,
             'act_subdir': SUB_DIRECTORY__ACT,
             'cli_option_for_keeping_sandbox': OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
         })

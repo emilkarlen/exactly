@@ -1,7 +1,7 @@
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId, EntityTypeNames
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, UrlCrossReferenceTarget
-from exactly_lib.util.textformat.structure.structures import text, anchor_text
+from exactly_lib.util.textformat.structure.structures import anchor_text
 
 
 class CustomCrossReferenceId(CrossReferenceId):
@@ -167,19 +167,13 @@ class CrossReferenceIdVisitor:
 
 class TargetInfo(tuple):
     def __new__(cls,
-                presentation: str,
-                target: core.CrossReferenceTarget,
-                presentation_text: core.ConcreteText = None):
-        return tuple.__new__(cls, (presentation, target,
-                                   text(presentation) if presentation_text is None else presentation_text))
+                presentation: core.StringText,
+                target: core.CrossReferenceTarget):
+        return tuple.__new__(cls, (presentation, target))
 
     @property
-    def presentation_str(self) -> str:
+    def presentation_text(self) -> core.StringText:
         return self[0]
-
-    @property
-    def presentation_text(self) -> core.ConcreteText:
-        return self[2]
 
     @property
     def target(self) -> core.CrossReferenceTarget:
@@ -222,10 +216,10 @@ class CustomTargetInfoFactory:
     def sub(self,
             presentation: str,
             local_target_name: str) -> TargetInfo:
-        return TargetInfo(presentation,
+        return TargetInfo(core.StringText(presentation),
                           CustomCrossReferenceId(self.prefix + _COMPONENT_SEPARATOR + local_target_name))
 
-    def root(self, presentation: str) -> TargetInfo:
+    def root(self, presentation: core.StringText) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceId(self.prefix))
 

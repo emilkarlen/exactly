@@ -1,7 +1,9 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
@@ -18,6 +20,10 @@ class SyntaxElementDocumentation(EntityDocumentationBase):
         :rtype: TypeCategory or None
         """
         return self._type_category
+
+    @property
+    def singular_name_text(self) -> StringText:
+        return syntax_text(self.singular_name())
 
     def main_description_rest(self) -> SectionContents:
         return SectionContents(self.main_description_rest_paragraphs(),

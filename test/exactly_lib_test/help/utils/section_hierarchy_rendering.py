@@ -6,6 +6,7 @@ from exactly_lib.help.utils.rendering.section_contents_renderer import SectionCo
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import equals_target_info_node
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_id_asrt
@@ -26,7 +27,7 @@ class Test(unittest.TestCase):
         expected_section_contents_object = doc.empty_section_contents()
         object_to_test = sut.leaf('header', section_contents(expected_section_contents_object))
         # EXPECTATION #
-        expected_target_info = target_factory.root('header')
+        expected_target_info = target_factory.root(StringText('header'))
 
         target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
 
@@ -46,7 +47,7 @@ class Test(unittest.TestCase):
         target_factory = CustomTargetInfoFactory('target_component')
         object_to_test = sut.parent('top header', [], [])
         # EXPECTATION #
-        expected_target_info = target_factory.root('top header')
+        expected_target_info = target_factory.root(StringText('top header'))
 
         target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
 
@@ -77,7 +78,7 @@ class Test(unittest.TestCase):
                                       section_contents(expected_section_contents_object2)))
              ])
         # EXPECTATION #
-        expected_root_target_info = target_factory.root('root header')
+        expected_root_target_info = target_factory.root(StringText('root header'))
 
         sub1_target = target_factory.sub('sub1', 'sub-target1')
         sub2_target = target_factory.sub('sub2', 'sub-target2')

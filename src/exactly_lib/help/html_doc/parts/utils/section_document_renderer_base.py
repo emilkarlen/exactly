@@ -8,8 +8,10 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
     SectionItemRendererNodeWithSubSections, SectionHierarchyGenerator, LeafArticleRendererNode
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
+from exactly_lib.help_texts.doc_format import section_name_text
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import StringText
 
 _INSTRUCTIONS_IN = 'The instructions in the {section} {section_concept}.'
 
@@ -54,13 +56,12 @@ class HtmlDocGeneratorForSectionDocumentBase:
     def _sections_renderer_node(self,
                                 header: str,
                                 targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionItemRendererNode:
-        root_target_info = targets_factory.root(header)
+        root_target_info = targets_factory.root(StringText(header))
         sub_section_nodes = []
         for section in self.sections:
             assert isinstance(section, SectionDocumentation)
-            phase_presentation_str = section.name.syntax
             cross_reference_target = self._section_cross_ref_target(section)
-            section_target_info = cross_ref.TargetInfo(phase_presentation_str,
+            section_target_info = cross_ref.TargetInfo(section_name_text(section.name),
                                                        cross_reference_target)
             section_node = LeafArticleRendererNode(
                 section_target_info,
@@ -75,7 +76,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
     def _instructions_per_section_node(self,
                                        header: str,
                                        targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionItemRendererNode:
-        root_target_info = targets_factory.root(header)
+        root_target_info = targets_factory.root(StringText(header))
         section_nodes = []
         for section in self.sections:
             assert isinstance(section, SectionDocumentation)
@@ -106,9 +107,10 @@ class _SectionInstructionsNodeConstructor:
         self.section = section
 
     def __call__(self) -> SectionItemRendererNode:
-        return SectionItemRendererNodeWithSubSections(self.section_target_factory.root(self.section.name.syntax),
-                                                      self._initial_paras(),
-                                                      self._instructions_sub_nodes())
+        return SectionItemRendererNodeWithSubSections(
+            self.section_target_factory.root(section_name_text(self.section.name)),
+            self._initial_paras(),
+            self._instructions_sub_nodes())
 
     def _initial_paras(self) -> list:
         return docs.paras(_INSTRUCTIONS_IN.format(
@@ -135,13 +137,13 @@ class _SectionInstructionsNodeConstructor:
 
     def _instruction_group_node(self, group: InstructionGroup) -> SectionItemRendererNode:
         return SectionItemRendererNodeWithSubSections(
-            self.section_target_factory.sub_factory(group.identifier).root(group.header),
+            self.section_target_factory.sub_factory(group.identifier).root(StringText(group.header)),
             group.description_paragraphs,
             self._instruction_nodes(group.instruction_documentations))
 
     def _instruction_node(self, instruction: InstructionDocumentation) -> SectionItemRendererNode:
         cross_ref_target = self.mk_instruction_cross_ref_target(instruction, self.section)
-        target_info = cross_ref.TargetInfo(instruction.instruction_name(),
+        target_info = cross_ref.TargetInfo(instruction.instruction_name_text,
                                            cross_ref_target)
         return LeafArticleRendererNode(target_info,
                                        InstructionDocArticleContentsRenderer(instruction),
