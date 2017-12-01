@@ -154,6 +154,4 @@ def _page_setup() -> doc_rendering.DocumentSetup:
 
 
 def _html_doc_renderer() -> doc_rendering.DocumentRenderer:
-    html_section_renderer = _section_renderer()
-    html_doc_renderer = doc_rendering.DocumentRenderer(html_section_renderer)
-    return html_doc_renderer
+    return doc_rendering.DocumentRenderer(_section_renderer())
