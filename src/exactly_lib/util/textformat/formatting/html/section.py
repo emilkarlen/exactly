@@ -102,10 +102,12 @@ class SectionItemRenderer:
         """
         :return: The last rendered element, or parent, if no element was rendered.
         """
-        last_header_element = self.section_header_renderer.apply(environment, parent, section.header,
-                                                                 self._root_element_attributes(section))
-        last_sc_elem = self.render_section_contents(increased_level(environment), parent, section.contents)
-        return last_header_element if last_sc_elem is parent else last_sc_elem
+        ret_val = SubElement(parent, 'section', self._root_element_attributes(section))
+        self._render_header(environment, ret_val,
+                            section.header,
+                            [])
+        self.render_section_contents(increased_level(environment), ret_val, section.contents)
+        return ret_val
 
     def render_article(self,
                        environment: Environment,
@@ -117,23 +119,23 @@ class SectionItemRenderer:
         environment = root_level(environment)
 
         ret_val = SubElement(parent, 'article', self._root_element_attributes(article))
-        self._render_article_header(environment, ret_val,
-                                    article.header,
-                                    article.contents.abstract_paragraphs)
+        self._render_header(environment, ret_val,
+                            article.header,
+                            article.contents.abstract_paragraphs)
         self.render_section_contents(environment, ret_val, article.contents.section_contents)
         return ret_val
 
-    def _render_article_header(self,
-                               environment: Environment,
-                               parent: Element,
-                               header: core.Text,
-                               abstract_paragraphs: list) -> Element:
+    def _render_header(self,
+                       environment: Environment,
+                       parent: Element,
+                       header: core.Text,
+                       paragraphs: list) -> Element:
         """
         :return: The the header element
         """
         ret_val = SubElement(parent, 'header')
         self.section_header_renderer.apply(environment, ret_val, header, {})
-        self.render_paragraph_items(environment, ret_val, abstract_paragraphs)
+        self.render_paragraph_items(environment, ret_val, paragraphs)
         return ret_val
 
     def _root_element_attributes(self, section_item: SectionItem) -> dict:
