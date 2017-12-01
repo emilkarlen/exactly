@@ -39,6 +39,14 @@ class RelOptionInfo:
     def informative_name(self) -> str:
         return self._informative_name
 
+    @property
+    def directory_variable_name(self) -> str:
+        raise ValueError('There is no directory that corresponds to this option: ' + self.option_name_text.value)
+
+    @property
+    def directory_variable_name_text(self) -> StringText:
+        return syntax_text(self.directory_variable_name)
+
 
 class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
     def __init__(self,
@@ -54,10 +62,6 @@ class RelOptionInfoCorrespondingToTcDir(RelOptionInfo):
     @property
     def directory_variable_name(self) -> str:
         return self._directory_name
-
-    @property
-    def directory_variable_name_text(self) -> StringText:
-        return syntax_text(self._directory_name)
 
 
 class RelHomeOptionInfo(RelOptionInfoCorrespondingToTcDir):

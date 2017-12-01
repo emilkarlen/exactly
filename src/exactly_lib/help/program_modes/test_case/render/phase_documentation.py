@@ -3,6 +3,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.structure import document as doc
@@ -74,7 +75,7 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
 
     @staticmethod
     def _environment_variables_list(environment_variable_names: list) -> ParagraphItem:
-        return docs.simple_header_only_list(environment_variable_names,
+        return docs.simple_header_only_list(map(syntax_text, environment_variable_names),
                                             lists.ListType.ITEMIZED_LIST)
 
     def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
