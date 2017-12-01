@@ -2,6 +2,7 @@ import operator
 
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import environment_variables, formatting
+from exactly_lib.help_texts.doc_format import directory_variable_name_text
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
     SANDBOX_CONCEPT_INFO
@@ -48,7 +49,7 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
                                   ]))
 
     def _item(self, var_name: str) -> lists.HeaderContentListItem:
-        return docs.list_item(var_name,
+        return docs.list_item(directory_variable_name_text(var_name),
                               environment_variables.ENVIRONMENT_VARIABLE_DESCRIPTION.as_description_paragraphs(
                                   var_name))
 

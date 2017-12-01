@@ -63,6 +63,10 @@ class SingularNameAndCrossReferenceId:
         return self._singular_name
 
     @property
+    def singular_name_text(self) -> StringText:
+        return StringText(self._singular_name)
+
+    @property
     def single_line_description_str(self) -> str:
         return self._single_line_description_str
 
