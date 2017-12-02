@@ -1,12 +1,11 @@
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode, TargetInfo
-from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionConstructor, \
     SectionContentsConstructor, \
     ConstructionEnvironment, ArticleContentsConstructor, ArticleConstructor, SectionItemConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import StringText
-from exactly_lib.util.textformat.structure.document import ArticleContents
+from exactly_lib.util.textformat.structure.document import ArticleContents, SectionContents
 from exactly_lib.util.textformat.utils import section_item_contents_as_section_contents
 
 
