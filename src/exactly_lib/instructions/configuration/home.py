@@ -2,19 +2,19 @@ import pathlib
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import conf_params, concepts
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
+    extract_argument_string
 from exactly_lib.instructions.utils.documentation import documentation_text
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -34,9 +34,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._format('Sets the {home_directory} directory')
 
     def invokation_variants(self) -> list:
-        return [
-            InvokationVariant(_ARG_NAME, []),
-        ]
+        return single_eq_invokation_variants(a.Named(_ARG_NAME))
 
     def syntax_element_descriptions(self) -> list:
         return [
@@ -64,11 +62,8 @@ If {PATH} is relative, then it's relative to the current {home_directory}.
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        arguments = split_arguments_list_string(rest_of_line)
-        if len(arguments) != 1:
-            msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
-            raise SingleInstructionInvalidArgumentException(msg)
-        return _Instruction(arguments[0])
+        argument = extract_argument_string(rest_of_line)
+        return _Instruction(argument)
 
 
 class _Instruction(ConfigurationPhaseInstruction):
