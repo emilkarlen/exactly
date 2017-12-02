@@ -8,6 +8,7 @@ from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR_SINGLE_LINE_VALUE
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
+from exactly_lib.processing import exit_values
 from exactly_lib.test_case import execution_mode
 from exactly_lib.util.textformat.structure.core import StringText
 
@@ -58,9 +59,16 @@ def _conf_param_info(name: str,
                                       cross_ref(configuration_parameter_name))
 
 
+_FORMAT_MAP = {
+    'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+    'phase': PHASE_NAME_DICTIONARY,
+    'PASS': exit_values.EXECUTION__PASS.exit_identifier,
+    'FAIL': exit_values.EXECUTION__FAIL.exit_identifier,
+}
+
+
 def _format(s: str) -> str:
-    return s.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
-                    phase=PHASE_NAME_DICTIONARY)
+    return s.format_map(_FORMAT_MAP)
 
 
 def _of_tc_dir_info(x: test_case_file_structure.TcDirInfo) -> ConfigurationParameterInfo:
@@ -77,12 +85,11 @@ ACTOR_CONF_PARAM_INFO = _conf_param_info(
     concepts.ACTOR_CONCEPT_INFO.single_line_description_str,
 )
 
-EXECUTION_MODE_CONF_PARAM_INFO = _conf_param_info(
-    'execution mode',
-    conf_params.EXECUTION_MODE,
+TEST_CASE_STATUS_CONF_PARAM_INFO = _conf_param_info(
+    'test case status',
+    conf_params.TEST_CASE_STATUS,
     execution_mode.NAME_DEFAULT,
-    _format('Determines how the outcome of the {phase[assert]} phase is interpreted, '
-            'or if the test case should be skipped.'),
+    _format('The status of the test case - if it is expected to {PASS} or {FAIL}, or should be skipped.'),
 )
 
 HOME_CASE_DIRECTORY_CONF_PARAM_INFO = _of_tc_dir_info(test_case_file_structure.HDS_CASE_INFO)
@@ -98,7 +105,7 @@ TIMEOUT_CONF_PARAM_INFO = _conf_param_info(
 
 ALL_CONF_PARAM_INFOS = (
     ACTOR_CONF_PARAM_INFO,
-    EXECUTION_MODE_CONF_PARAM_INFO,
+    TEST_CASE_STATUS_CONF_PARAM_INFO,
     HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
     HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
     TIMEOUT_CONF_PARAM_INFO,

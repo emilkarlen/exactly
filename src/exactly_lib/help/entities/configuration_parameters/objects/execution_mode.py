@@ -1,7 +1,7 @@
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help_texts import doc_format
-from exactly_lib.help_texts.entity.conf_params import EXECUTION_MODE_CONF_PARAM_INFO
+from exactly_lib.help_texts.entity.conf_params import TEST_CASE_STATUS_CONF_PARAM_INFO
 from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.test_case import execution_mode
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -13,7 +13,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 
 class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
     def __init__(self):
-        super().__init__(EXECUTION_MODE_CONF_PARAM_INFO)
+        super().__init__(TEST_CASE_STATUS_CONF_PARAM_INFO)
 
     def default_value_text(self) -> Text:
         return doc_format.enum_name_text(self.default_value_str())

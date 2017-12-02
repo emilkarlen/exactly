@@ -23,7 +23,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
 
         self._parser = TextParser({
             'configuration_parameters': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.plural_name),
-            'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
+            'execution_mode': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
             'SKIP': NAME_SKIP,
             'setup': SETUP_PHASE_NAME,
         })
@@ -52,7 +52,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
     def see_also_targets(self) -> list:
         return [
             concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
-            conf_params.EXECUTION_MODE_CONF_PARAM_INFO.cross_reference_target,
+            conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(self.name.plain,
                                                    EXECUTION_MODE_INSTRUCTION_NAME),
             TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),

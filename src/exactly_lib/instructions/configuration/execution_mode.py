@@ -24,9 +24,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
             'MODE': _ARG_NAME,
-            'execution_mode_config_param': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
+            'execution_mode_config_param': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name,
-            'default_mode': conf_params.EXECUTION_MODE_CONF_PARAM_INFO.default_value_single_line_description,
+            'default_mode': conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.default_value_single_line_description,
         })
 
     def single_line_description(self) -> str:
@@ -49,7 +49,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         ]
 
     def see_also_targets(self) -> list:
-        return [conf_params.EXECUTION_MODE_CONF_PARAM_INFO.cross_reference_target]
+        return [conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target]
 
 
 _ARG_NAME = 'MODE'

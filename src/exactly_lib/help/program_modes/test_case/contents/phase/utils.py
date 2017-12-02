@@ -11,7 +11,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 _TEXT_PARSER = TextParser({
     'act_dir': test_case_file_structure.SDS_ACT_INFO.identifier,
     'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-    'execution_mode': formatting.conf_param_(conf_params.EXECUTION_MODE_CONF_PARAM_INFO),
+    'execution_mode': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
     'SKIP': NAME_SKIP,
     'result_subdir': sds.SUB_DIRECTORY__RESULT,
     'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
