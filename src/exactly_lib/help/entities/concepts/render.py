@@ -1,17 +1,18 @@
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.utils.rendering import see_also_section as render_utils
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class IndividualConceptRenderer(ArticleContentsRenderer):
+class IndividualConceptConstructor(ArticleContentsConstructor):
     def __init__(self, concept: ConceptDocumentation):
         self.concept = concept
         self.rendering_environment = None
 
-    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:
         purpose = self.concept.purpose()
         sub_sections = []
         sub_sections += self._rest_section(purpose)
@@ -31,6 +32,6 @@ class IndividualConceptRenderer(ArticleContentsRenderer):
                             rest.sections)
         return [sect]
 
-    def _see_also_sections(self, environment: RenderingEnvironment) -> list:
+    def _see_also_sections(self, environment: ConstructionEnvironment) -> list:
         return render_utils.see_also_sections(self.concept.see_also_targets(),
                                               environment)

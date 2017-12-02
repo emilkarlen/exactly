@@ -1,28 +1,28 @@
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, \
-    SectionContentsRenderer, \
-    ArticleContentsRenderer, SectionContentsRendererFromArticleContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor, \
+    ArticleContentsConstructor, SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import text, Text
 
 
 def with_or_without_name(do_include_name: bool,
                          name: str,
-                         contents_renderer: ArticleContentsRenderer) -> SectionContentsRenderer:
+                         contents_renderer: ArticleContentsConstructor) -> SectionContentsConstructor:
     if do_include_name:
-        return _WithElementNameRenderer(text(name), contents_renderer)
+        return _WithElementNameConstructor(text(name), contents_renderer)
     else:
-        return SectionContentsRendererFromArticleContentsRenderer(contents_renderer)
+        return SectionContentsConstructorFromArticleContentsConstructor(contents_renderer)
 
 
-class _WithElementNameRenderer(SectionContentsRenderer):
+class _WithElementNameConstructor(SectionContentsConstructor):
     def __init__(self,
                  header: Text,
-                 contents_render: ArticleContentsRenderer):
+                 contents_constructor: ArticleContentsConstructor):
         self.header = header
-        self.contents_render = contents_render
+        self.contents_constructor = contents_constructor
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        article_contents = self.contents_render.apply(environment)
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
+        article_contents = self.contents_constructor.apply(environment)
         return doc.SectionContents([],
                                    [doc.Section(self.header,
                                                 article_contents.combined_as_section_contents)])

@@ -4,12 +4,12 @@ from exactly_lib.help.entities.configuration_parameters import render
 from exactly_lib.help.entities.configuration_parameters.contents_structure import configuration_parameters_help
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
-    FlatListRendererWithSingleLineDescriptionGetter
+    FlatListConstructorWithSingleLineDescriptionGetter
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 
 CONF_PARAM_ENTITY_CONFIGURATION = EntityConfiguration(
     configuration_parameters_help(all_configuration_parameters.all_configuration_parameters()),
-    render.IndividualConfParamRenderer,
-    FlatListRendererWithSingleLineDescriptionGetter(),
+    render.IndividualConfParamConstructor,
+    FlatListConstructorWithSingleLineDescriptionGetter(),
     FlatEntityListHierarchyGeneratorGetter(CONF_PARAM_ENTITY_TYPE_NAMES.identifier,
-                                           render.IndividualConfParamRenderer))
+                                           render.IndividualConfParamConstructor))

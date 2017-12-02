@@ -1,7 +1,7 @@
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, TextSeeAlsoItem, SeeAlsoItemVisitor, \
     SeeAlsoSet
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
@@ -12,7 +12,7 @@ SEE_ALSO_TITLE__UPPERCASE = docs.text('SEE ALSO')
 
 
 def see_also_items_paragraph(see_also_items: list,
-                             environment: RenderingEnvironment) -> ParagraphItem:
+                             environment: ConstructionEnvironment) -> ParagraphItem:
     """
     :type see_also_items: [`SeeAlsoItem`]
     :return: A ParagraphItem that displays a list of `SeeAlsoItem`s.
@@ -24,7 +24,7 @@ def see_also_items_paragraph(see_also_items: list,
 
 
 def see_also_items_paragraphs(see_also_items: list,
-                              environment: RenderingEnvironment) -> list:
+                              environment: ConstructionEnvironment) -> list:
     """
     :type see_also_items: [`SeeAlsoItem`]
     :return: [] if no `SeeAlsoItem`s, else a list of a single `ParagraphItem`
@@ -35,7 +35,7 @@ def see_also_items_paragraphs(see_also_items: list,
 
 
 def see_also_sections(see_also_targets: list,
-                      rendering_environment: RenderingEnvironment,
+                      rendering_environment: ConstructionEnvironment,
                       uppercase_title: bool = False) -> list:
     """
     :return: An empty list if no :class:`SeeAlsoTarget`s, otherwise a singleton list.

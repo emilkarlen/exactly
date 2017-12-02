@@ -6,7 +6,8 @@ from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -44,28 +45,28 @@ def _text_parser(setup: Setup) -> TextParser:
     })
 
 
-class _RendererBase(SectionContentsRenderer):
+class _ConstructorBase(SectionContentsConstructor):
     def __init__(self, parser: TextParser):
         self.parser = parser
 
 
-class _PhaseRenderer(_RendererBase):
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+class _PhaseRenderer(_ConstructorBase):
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return docs.section_contents(self.parser.fnap(PHASES_DOC))
 
 
-class _PhaseContentsRenderer(_RendererBase):
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+class _PhaseContentsRenderer(_ConstructorBase):
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return docs.section_contents(self.parser.fnap(PHASES_CONTENTS_DOC))
 
 
-class _InstructionsRenderer(_RendererBase):
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+class _InstructionsRenderer(_ConstructorBase):
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return docs.section_contents(self.parser.fnap(INSTRUCTIONS_DESCRIPTION_DOC))
 
 
-class _OtherContentsRenderer(_RendererBase):
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+class _OtherContentsRenderer(_ConstructorBase):
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return docs.section_contents(self.parser.fnap(OTHER_DOC))
 
 

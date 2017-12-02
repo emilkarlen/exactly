@@ -4,7 +4,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase import act
 from exactly_lib.help.program_modes.test_case.contents.phase import \
     assert_, configuration, before_assert, cleanup, setup
 from exactly_lib.help.program_modes.test_case.render import phase_documentation as sut
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib_test.help.test_resources import section_instruction_set, \
     CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -23,7 +23,7 @@ class TestCase(unittest.TestCase):
                                     ['instr 1',
                                      'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationConstructor(tcp_help).apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -35,7 +35,7 @@ class TestCase(unittest.TestCase):
                                     ['instr 1',
                                      'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationConstructor(tcp_help).apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -43,7 +43,7 @@ class TestCase(unittest.TestCase):
         # ARRANGE #
         tcp_help = act.ActPhaseDocumentation('phase name')
         # ACT #
-        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationConstructor(tcp_help).apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -55,7 +55,7 @@ class TestCase(unittest.TestCase):
                                     ['instr 1',
                                      'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationConstructor(tcp_help).apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -67,7 +67,7 @@ class TestCase(unittest.TestCase):
                                     ['instr 1',
                                      'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationConstructor(tcp_help).apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -79,12 +79,12 @@ class TestCase(unittest.TestCase):
                                     ['instr 1',
                                      'instr 2']))
         # ACT #
-        actual = sut.TestCasePhaseDocumentationRenderer(tcp_help).apply(RENDERING_ENVIRONMENT)
+        actual = sut.TestCasePhaseDocumentationConstructor(tcp_help).apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
 
-RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

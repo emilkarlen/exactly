@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.help.program_modes.test_case.contents.main import specification as sut
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases, \
     TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -19,7 +19,7 @@ class Test(unittest.TestCase):
 
     def test_document_structure(self):
         # ARRANGE #
-        rendering_environment = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+        rendering_environment = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
         generator = sut.generator('header', self.test_case_help)
         # ACT #
         actual = generator.renderer_node(CustomTargetInfoFactory('prefix')).section_item(TEST_HIERARCHY_ENVIRONMENT,

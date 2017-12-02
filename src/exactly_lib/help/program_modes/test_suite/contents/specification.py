@@ -6,19 +6,19 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
     SectionItemRendererNode, \
     parent, \
     leaf, \
-    SectionContentsRendererFromHierarchyGenerator
+    SectionContentsConstructorFromHierarchyGenerator
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.test_suite.section_names import DEFAULT_SECTION_NAME
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, \
-    SectionContentsRendererForConstantContents
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    SectionContentsConstructorForConstantContents
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-def specification_renderer(suite_help: TestSuiteHelp) -> SectionContentsRenderer:
-    return SectionContentsRendererFromHierarchyGenerator(
+def specification_renderer(suite_help: TestSuiteHelp) -> SectionContentsConstructor:
+    return SectionContentsConstructorFromHierarchyGenerator(
         SpecificationHierarchyGenerator('unused section header', suite_help)
     )
 
@@ -55,8 +55,8 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                            ])
         return generator.renderer_node(target_factory)
 
-    def _section_of_parsed(self, contents: str) -> SectionContentsRenderer:
-        return SectionContentsRendererForConstantContents(
+    def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:
+        return SectionContentsConstructorForConstantContents(
             docs.section_contents(self._parse(contents)))
 
     def _parse(self, s: str) -> list:
@@ -70,8 +70,8 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                                            section_concept_name='section'))
         return ret_val
 
-    def _suite_structure_contents(self) -> SectionContentsRenderer:
-        return SectionContentsRendererForConstantContents(
+    def _suite_structure_contents(self) -> SectionContentsConstructor:
+        return SectionContentsConstructorForConstantContents(
             docs.section_contents(self._suite_structure_paragraphs()))
 
 

@@ -1,23 +1,23 @@
-from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationRendererBase
+from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationConstructorBase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentation
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.doc_format import syntax_text, instruction_name_text
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
+class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase):
     def __init__(self, tcp_doc: TestCasePhaseDocumentation):
         super().__init__(tcp_doc, SECTION_CONCEPT_NAME)
         self.doc = tcp_doc
 
-    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:
         purpose = self.doc.purpose()
         abstract_paras = docs.paras(purpose.single_line_description)
 
@@ -26,7 +26,7 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
                                                           purpose.rest))
 
     def _section_contents(self,
-                          environment: RenderingEnvironment,
+                          environment: ConstructionEnvironment,
                           purpose_rest_paras: list) -> doc.SectionContents:
         mandatory_info = self._mandatory_info_para()
         paras = (purpose_rest_paras +
@@ -78,5 +78,5 @@ class TestCasePhaseDocumentationRenderer(SectionDocumentationRendererBase):
         return docs.simple_header_only_list(map(syntax_text, environment_variable_names),
                                             lists.ListType.ITEMIZED_LIST)
 
-    def _add_section_for_see_also(self, environment: RenderingEnvironment, sections: list):
+    def _add_section_for_see_also(self, environment: ConstructionEnvironment, sections: list):
         sections += see_also_sections(self.doc.see_also_targets, environment)

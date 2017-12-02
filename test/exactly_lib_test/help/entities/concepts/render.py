@@ -7,7 +7,7 @@ from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTI
 from exactly_lib.help_texts.entity.concepts import name_and_ref_target
 from exactly_lib.util.description import Description, DescriptionWithSubSections
 from exactly_lib.util.name import Name
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import text, para
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -24,9 +24,9 @@ def suite() -> unittest.TestSuite:
 class TestList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = CONCEPT_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(all_concepts())
+        renderer = CONCEPT_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(all_concepts())
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -37,9 +37,9 @@ class TestIndividualConcept(unittest.TestCase):
         concept = PlainConceptTestImpl(Name('name', 'names'),
                                        Description(text('single line name'),
                                                    []))
-        renderer = sut.IndividualConceptRenderer(concept)
+        renderer = sut.IndividualConceptConstructor(concept)
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -48,9 +48,9 @@ class TestIndividualConcept(unittest.TestCase):
         concept = PlainConceptTestImpl(Name('name', 'names'),
                                        Description(text('single line name'),
                                                    [para('rest paragraph')]))
-        renderer = sut.IndividualConceptRenderer(concept)
+        renderer = sut.IndividualConceptConstructor(concept)
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -68,7 +68,7 @@ class PlainConceptTestImpl(ConceptDocumentation):
                                           SectionContents(self.description.rest, []))
 
 
-RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

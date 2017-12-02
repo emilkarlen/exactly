@@ -1,11 +1,12 @@
 import types
 
-from exactly_lib.help.contents_structure import HtmlDocHierarchyGeneratorGetter, CliListRendererGetter
+from exactly_lib.help.contents_structure import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.html_doc.parts.utils import entities_list_renderer
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as shr
-from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, SectionRenderer, \
-    SectionRendererFromSectionContentsRenderer, section_contents_renderer_with_sub_sections
+from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListConstructor
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    SectionConstructor, \
+    SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -52,22 +53,22 @@ def partition_entities(partitions_setup: list, entity_doc_list: list) -> list:
 
 def list_render(partition_setup_list: list,
                 entity_2_summary_paragraphs: types.FunctionType,
-                type_doc_list: list) -> SectionContentsRenderer:
+                type_doc_list: list) -> SectionContentsConstructor:
     partitions = partition_entities(partition_setup_list, type_doc_list)
 
-    def section_renderer(partition: EntitiesPartition) -> SectionRenderer:
-        return SectionRendererFromSectionContentsRenderer(
+    def section_renderer(partition: EntitiesPartition) -> SectionConstructor:
+        return SectionConstructorFromSectionContentsConstructor(
             docs.text(partition.partition_names_setup.header),
-            AllEntitiesListRenderer(
+            AllEntitiesListConstructor(
                 entity_2_summary_paragraphs,
                 partition.entity_doc_list))
 
-    return section_contents_renderer_with_sub_sections(list(
+    return section_contents_constructor_with_sub_sections(list(
         map(section_renderer, partitions)
     ))
 
 
-class PartitionedCliListRendererGetter(CliListRendererGetter):
+class PartitionedCliListConstructorGetter(CliListConstructorGetter):
     def __init__(self,
                  partition_setup_list: list,
                  entity_2_summary_paragraphs: types.FunctionType
@@ -75,17 +76,17 @@ class PartitionedCliListRendererGetter(CliListRendererGetter):
         self.partition_setup_list = partition_setup_list
         self.entity_2_summary_paragraphs = entity_2_summary_paragraphs
 
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsRenderer:
+    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
         partitions = partition_entities(self.partition_setup_list, all_entity_doc_list)
 
-        def section_renderer(partition: EntitiesPartition) -> SectionRenderer:
-            return SectionRendererFromSectionContentsRenderer(
+        def section_renderer(partition: EntitiesPartition) -> SectionConstructor:
+            return SectionConstructorFromSectionContentsConstructor(
                 docs.text(partition.partition_names_setup.header),
-                AllEntitiesListRenderer(
+                AllEntitiesListConstructor(
                     self.entity_2_summary_paragraphs,
                     partition.entity_doc_list))
 
-        return section_contents_renderer_with_sub_sections(list(
+        return section_contents_constructor_with_sub_sections(list(
             map(section_renderer, partitions)
         ))
 

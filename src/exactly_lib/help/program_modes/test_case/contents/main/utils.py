@@ -3,12 +3,12 @@ from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import first_column_is_header_table, para, cell
 
 
-class TestCaseHelpRendererBase(SectionContentsRenderer):
+class TestCaseHelpConstructorBase(SectionContentsConstructor):
     def __init__(self, test_case_help: TestCaseHelp):
         self.test_case_help = test_case_help
 

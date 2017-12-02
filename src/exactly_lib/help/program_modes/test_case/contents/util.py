@@ -1,9 +1,9 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class SectionContentsRendererWithSetup(SectionContentsRenderer):
+class SectionContentsConstructorWithSetup(SectionContentsConstructor):
     def __init__(self, setup: Setup,
                  format_map: dict):
         self.setup = setup

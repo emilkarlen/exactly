@@ -5,6 +5,6 @@ from exactly_lib.help.entities.builtin.contents_structure import builtin_symbols
 
 def builtin_symbols_entity_configuration(all_builtin_symbols_docs: list) -> EntityConfiguration:
     return EntityConfiguration(builtin_symbols_help(all_builtin_symbols_docs),
-                               render.IndividualBuiltinSymbolRenderer,
+                               render.IndividualBuiltinSymbolConstructor,
                                render.list_renderer_getter(),
                                render.hierarchy_generator_getter())

@@ -1,16 +1,17 @@
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.utils.rendering import see_also_section as render_utils
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class IndividualConfParamRenderer(ArticleContentsRenderer):
+class IndividualConfParamConstructor(ArticleContentsConstructor):
     def __init__(self, conf_param: ConfigurationParameterDocumentation):
         self.conf_param = conf_param
 
-    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:
         purpose = self.conf_param.purpose()
         sub_sections = [
             docs.section('Default Value',
@@ -33,6 +34,6 @@ class IndividualConfParamRenderer(ArticleContentsRenderer):
                             rest.sections)
         return [sect]
 
-    def _see_also_sections(self, environment: RenderingEnvironment) -> list:
+    def _see_also_sections(self, environment: ConstructionEnvironment) -> list:
         return render_utils.see_also_sections(self.conf_param.see_also_targets(),
                                               environment)

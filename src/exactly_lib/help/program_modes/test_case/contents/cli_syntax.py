@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
-    ProgramDocumentationSectionContentsRenderer
+    ProgramDocumentationSectionContentsConstructor
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, leaf
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
@@ -17,7 +17,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def generator(header: str) -> SectionHierarchyGenerator:
-    return leaf(header, ProgramDocumentationSectionContentsRenderer(TestCaseCliSyntaxDocumentation()))
+    return leaf(header, ProgramDocumentationSectionContentsConstructor(TestCaseCliSyntaxDocumentation()))
 
 
 class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):

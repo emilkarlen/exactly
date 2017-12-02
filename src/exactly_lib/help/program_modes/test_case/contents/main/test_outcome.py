@@ -12,7 +12,7 @@ from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hier
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.processing import exit_values
-from exactly_lib.util.textformat.building.section_contents_renderer import ConstantSectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 
@@ -22,7 +22,7 @@ def hierarchy_generator(header: str, setup: Setup) -> hierarchy_rendering.Sectio
 
     def const_contents(header: str, paragraphs: list) -> hierarchy_rendering.SectionHierarchyGenerator:
         return hierarchy_rendering.leaf(header,
-                                        ConstantSectionContentsRenderer(section_contents(paragraphs)))
+                                        ConstantSectionContentsConstructor(section_contents(paragraphs)))
 
     return hierarchy_rendering.parent(
         header,

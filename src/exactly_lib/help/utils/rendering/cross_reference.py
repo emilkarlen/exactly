@@ -4,7 +4,7 @@ from exactly_lib.help_texts.test_case.phase_names import phase_name_dict_key_for
     PHASE_NAME_DICTIONARY
 from exactly_lib.help_texts.test_suite.formatted_section_names import suite_section_name_dictionary, \
     suite_section_name_dict_key_for
-from exactly_lib.util.textformat.building import x
+from exactly_lib.util.textformat.construction import x
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget, StringText, \
     CrossReferenceTarget
 

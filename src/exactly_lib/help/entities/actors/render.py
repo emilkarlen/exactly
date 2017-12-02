@@ -3,14 +3,15 @@ from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
 
 
-class IndividualActorRenderer(ArticleContentsRenderer):
+class IndividualActorConstructor(ArticleContentsConstructor):
     def __init__(self, actor: ActorDocumentation):
         self.actor = actor
         self.rendering_environment = None
@@ -20,7 +21,7 @@ class IndividualActorRenderer(ArticleContentsRenderer):
         }
         self._parser = TextParser(format_map)
 
-    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:
         self.rendering_environment = environment
 
         initial_paragraphs = self._default_reporter_info()

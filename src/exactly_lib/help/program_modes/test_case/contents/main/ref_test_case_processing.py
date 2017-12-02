@@ -2,18 +2,18 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value
-from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsRendererWithSetup
+from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsConstructorWithSetup
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.formatting import cli_option, program_name
 from exactly_lib.processing import exit_values
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
-class ContentsRenderer(SectionContentsRendererWithSetup):
+class ContentsConstructor(SectionContentsConstructorWithSetup):
     def __init__(self, setup: Setup):
         super().__init__(setup, {
             'phase': setup.phase_names,
@@ -23,7 +23,7 @@ class ContentsRenderer(SectionContentsRendererWithSetup):
             'cli_option_for_preprocessor': cli_option(OPTION_FOR_PREPROCESSOR),
         })
 
-    def apply(self, environment: RenderingEnvironment) -> SectionContents:
+    def apply(self, environment: ConstructionEnvironment) -> SectionContents:
         preamble_paragraphs = self.fnap(BEFORE_STEP_LIST)
         paragraphs = (
             preamble_paragraphs +

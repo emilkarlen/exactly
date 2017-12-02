@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.help.entities.suite_reporters import render as sut
 from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.entities.suite_reporters.test_resources.documentation import SuiteReporterDocTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -19,11 +19,11 @@ def suite() -> unittest.TestSuite:
 class TestAllSuiteReportersList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = SUITE_REPORTER_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
+        constructor = SUITE_REPORTER_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(
             [SuiteReporterDocTestImpl('reporter 1'),
              SuiteReporterDocTestImpl('reporter 2')])
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = constructor.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -50,14 +50,14 @@ class TestIndividualSuiteReporter(unittest.TestCase):
         ]
         for doc in document_variants:
             with self.subTest(doc_name=doc.singular_name()):
-                renderer = sut.IndividualSuiteReporterRenderer(doc)
+                constructor = sut.IndividualSuiteReporterConstructor(doc)
                 # ACT #
-                actual = renderer.apply(RENDERING_ENVIRONMENT)
+                actual = constructor.apply(CONSTRUCTION_ENVIRONMENT)
                 # ASSERT #
                 struct_check.is_article_contents.apply(self, actual)
 
 
-RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

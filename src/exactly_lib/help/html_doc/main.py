@@ -15,7 +15,7 @@ from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNo
 from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
     SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
@@ -43,8 +43,8 @@ def generate_and_output(output_file,
 def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
     section_node = _section_rendering_node(application_help)
     hierarchy_environment = HierarchyRenderingEnvironment({std_tags.TOC_SECTION})
-    rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
-                                                 render_simple_header_value_lists_as_tables=True)
+    rendering_environment = ConstructionEnvironment(CrossReferenceTextConstructor(),
+                                                    construct_simple_header_value_lists_as_tables=True)
     section_item = section_node.section_item(hierarchy_environment, rendering_environment)
     ret_val = section_item_contents_as_section_contents(section_item)
     _add_toc_as_first_paragraphs(ret_val, section_node.target_info_node())

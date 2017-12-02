@@ -9,7 +9,8 @@ from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.type_system.value_type import TypeCategory
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.utils import append_section_if_contents_is_non_empty
@@ -36,11 +37,11 @@ _PARTITIONS_SETUP = [
 ]
 
 
-class IndividualSyntaxElementRenderer(ArticleContentsRenderer):
+class IndividualSyntaxElementConstructor(ArticleContentsConstructor):
     def __init__(self, syntax_element: SyntaxElementDocumentation):
         self.syntax_element = syntax_element
 
-    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:
         initial_paragraphs = []
         invokation_variants = self.syntax_element.invokation_variants()
         if len(invokation_variants) > 1:
@@ -52,7 +53,7 @@ class IndividualSyntaxElementRenderer(ArticleContentsRenderer):
                                    doc.SectionContents(initial_paragraphs,
                                                        self._sub_sections(environment)))
 
-    def _sub_sections(self, environment: RenderingEnvironment) -> list:
+    def _sub_sections(self, environment: ConstructionEnvironment) -> list:
         ret_val = []
         append_section_if_contents_is_non_empty(ret_val,
                                                 'Description',
@@ -65,10 +66,10 @@ class IndividualSyntaxElementRenderer(ArticleContentsRenderer):
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
     return pes.PartitionedHierarchyGeneratorGetter(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.identifier,
                                                    _PARTITIONS_SETUP,
-                                                   IndividualSyntaxElementRenderer)
+                                                   IndividualSyntaxElementConstructor)
 
 
-def list_render_getter() -> pes.CliListRendererGetter:
-    return pes.PartitionedCliListRendererGetter(
+def list_render_getter() -> pes.CliListConstructorGetter:
+    return pes.PartitionedCliListConstructorGetter(
         _PARTITIONS_SETUP,
         single_line_description_as_summary_paragraphs)

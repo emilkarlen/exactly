@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as sut
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfoNode
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, \
-    RenderingEnvironment, \
-    ConstantSectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    ConstructionEnvironment, \
+    ConstantSectionContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
@@ -121,14 +121,14 @@ class Test(unittest.TestCase):
         section_renderer_node = object_to_test.renderer_node(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()
         actual_section = section_renderer_node.section_item_renderer(TEST_HIERARCHY_ENVIRONMENT).apply(
-            RENDERING_ENVIRONMENT)
+            CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')
         section_assertion.apply_with_message(self, actual_section, 'Section')
 
 
-def section_contents(x: docs.SectionContents) -> SectionContentsRenderer:
-    return ConstantSectionContentsRenderer(x)
+def section_contents(x: docs.SectionContents) -> SectionContentsConstructor:
+    return ConstantSectionContentsConstructor(x)
 
 
-RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())

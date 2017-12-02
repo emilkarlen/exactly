@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.program_modes.common import render_instruction as sut
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure.structures import paras, text
 from exactly_lib_test.common.test_resources.instruction_documentation import InstructionDocumentationWithConstantValues
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -32,7 +32,7 @@ class TestManPage(unittest.TestCase):
                                                                  'single line description',
                                                                  '',
                                                                  [])
-        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsConstructor(description).apply(CONSTRUCTION_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_main_description_rest(self):
@@ -40,7 +40,7 @@ class TestManPage(unittest.TestCase):
                                                                  'single line description',
                                                                  'main description rest',
                                                                  [])
-        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsConstructor(description).apply(CONSTRUCTION_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_invokation_variants(self):
@@ -50,7 +50,7 @@ class TestManPage(unittest.TestCase):
             'main description rest',
             [InvokationVariant('invokation variant syntax',
                                paras('invokation variant description rest'))])
-        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsConstructor(description).apply(CONSTRUCTION_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_without_invokation_variants(self):
@@ -63,7 +63,7 @@ class TestManPage(unittest.TestCase):
             [SyntaxElementDescription('syntax element',
                                       paras('description rest'),
                                       [])])
-        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsConstructor(description).apply(CONSTRUCTION_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
     def test_with_syntax_elements_with_invokation_variants(self):
@@ -77,11 +77,11 @@ class TestManPage(unittest.TestCase):
                                       paras('description rest'),
                                       [InvokationVariant('SED/invokation variant syntax',
                                                          paras('SED/IV description rest'))])])
-        actual = sut.InstructionDocSectionContentsRenderer(description).apply(RENDERING_ENVIRONMENT)
+        actual = sut.InstructionDocSectionContentsConstructor(description).apply(CONSTRUCTION_ENVIRONMENT)
         struct_check.is_section_contents.apply(self, actual)
 
 
-RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

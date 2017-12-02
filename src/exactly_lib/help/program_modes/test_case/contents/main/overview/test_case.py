@@ -1,14 +1,15 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    ConstructionEnvironment
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
 
 
-class Documentation(SectionContentsRenderer):
+class Documentation(SectionContentsConstructor):
     def __init__(self, setup: Setup):
         self.setup = setup
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return test_case_intro_documentation(self.setup)
 
 

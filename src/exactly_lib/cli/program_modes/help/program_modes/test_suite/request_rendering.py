@@ -6,36 +6,36 @@ from exactly_lib.help.program_modes.test_suite.contents import specification
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationRenderer
+from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
-    ProgramDocumentationSectionContentsRenderer
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, \
-    SectionContentsRenderer, \
-    SectionContentsRendererFromArticleContentsRenderer
+    ProgramDocumentationSectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor, \
+    SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 
 
-class TestSuiteHelpRendererResolver:
+class TestSuiteHelpConstructorResolver:
     def __init__(self, contents: TestSuiteHelp):
         self._contents = contents
 
-    def resolve(self, request: TestSuiteHelpRequest) -> SectionContentsRenderer:
+    def resolve(self, request: TestSuiteHelpRequest) -> SectionContentsConstructor:
         item = request.item
         if item is TestSuiteHelpItem.CLI_SYNTAX:
-            return ProgramDocumentationSectionContentsRenderer(SuiteCliSyntaxDocumentation())
+            return ProgramDocumentationSectionContentsConstructor(SuiteCliSyntaxDocumentation())
         if item is TestSuiteHelpItem.SPECIFICATION:
             return specification.specification_renderer(self._contents)
         if item is TestSuiteHelpItem.SECTION:
             assert isinstance(request.data, TestSuiteSectionDocumentation), 'Must be a TestSuiteSectionDoc'
-            return SectionContentsRendererFromArticleContentsRenderer(
-                TestSuiteSectionDocumentationRenderer(request.data))
+            return SectionContentsConstructorFromArticleContentsConstructor(
+                TestSuiteSectionDocumentationConstructor(request.data))
 
         if item is TestSuiteHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,
-                                        render_instruction.InstructionDocArticleContentsRenderer(request.data))
+                                        render_instruction.InstructionDocArticleContentsConstructor(request.data))
         raise ValueError('Invalid %s: %s' % (str(TestSuiteHelpItem), str(item)))
 
     def render(self, request: TestSuiteHelpRequest,
-               environment: RenderingEnvironment) -> doc.SectionContents:
+               environment: ConstructionEnvironment) -> doc.SectionContents:
         return self.resolve(request).apply(environment)
