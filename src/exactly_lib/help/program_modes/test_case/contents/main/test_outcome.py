@@ -10,7 +10,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, 
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.processing import exit_values
-from exactly_lib.test_case import execution_mode
+from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -91,7 +91,7 @@ def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
     items = [
         list_item("""The "execution mode" set by the {phase[conf]} phase""".format(phase=setup.phase_names),
                   [para('The default mode is {default_mode}.'.format(
-                      default_mode=execution_mode.NAME_NORMAL))]),
+                      default_mode=test_case_status.NAME_NORMAL))]),
         list_item("""The outcome of the {phase[assert]} phase""".format(phase=setup.phase_names),
                   []),
     ]
@@ -113,13 +113,13 @@ def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
             cell(paras('{phase[assert]:syntax}'.format(phase=setup.phase_names))),
             cell(paras('Test Case')),
         ],
-        _row(execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
-        _row(execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
+        _row(test_case_status.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
+        _row(test_case_status.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
 
-        _row(execution_mode.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
-        _row(execution_mode.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
+        _row(test_case_status.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
+        _row(test_case_status.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
 
-        _row(execution_mode.NAME_SKIP, None, FullResultStatus.SKIPPED),
+        _row(test_case_status.NAME_SKIP, None, FullResultStatus.SKIPPED),
     ],
         '  ')
 

@@ -3,7 +3,7 @@ from exactly_lib.help.entities.configuration_parameters.contents_structure impor
 from exactly_lib.help_texts import doc_format
 from exactly_lib.help_texts.entity.conf_params import TEST_CASE_STATUS_CONF_PARAM_INFO
 from exactly_lib.help_texts.test_case import phase_names
-from exactly_lib.test_case import execution_mode
+from exactly_lib.test_case import test_case_status
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
@@ -36,16 +36,16 @@ def execution_modes_list() -> ParagraphItem:
 
 def _mode_name_and_paragraphs_list() -> list:
     return [
-        (execution_mode.NAME_NORMAL,
+        (test_case_status.NAME_NORMAL,
          normalize_and_parse("""\
 The test case is executed and the {0} phase is expected to PASS.""".format(phase_names.ASSERT_PHASE_NAME))),
-        (execution_mode.NAME_SKIP,
+        (test_case_status.NAME_SKIP,
          normalize_and_parse("""\
 The test case is not executed.
 
 
 Result of the test case is %s.""" % FullResultStatus.SKIPPED.name)),
-        (execution_mode.NAME_XFAIL,
+        (test_case_status.NAME_XFAIL,
          normalize_and_parse("""\
 The test case is executed and the {assert_} phase is expected to FAIL.
 

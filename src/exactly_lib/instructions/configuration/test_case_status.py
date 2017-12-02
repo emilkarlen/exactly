@@ -9,9 +9,9 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
-from exactly_lib.test_case.execution_mode import ExecutionMode, NAME_2_MODE
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.test_case_status import ExecutionMode, NAME_2_MODE
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

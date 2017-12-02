@@ -6,9 +6,9 @@ from exactly_lib import program_info
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
-from exactly_lib.test_case.execution_mode import ExecutionMode
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib_test.execution.partial_execution.test_resources.basic import dummy_act_phase_handling
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
