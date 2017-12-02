@@ -24,25 +24,17 @@ def suite() -> unittest.TestSuite:
 
 
 class TestParse(unittest.TestCase):
-    def test_fail_when_there_is_no_arguments(self):
-        for source in equivalent_source_variants(self, '   '):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
-
-    def test_fail_when_eq_not_followed_by_arg(self):
-        for source in equivalent_source_variants(self, '  = '):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
-
-    def test_fail_when_too_many_arguments(self):
-        for source in equivalent_source_variants(self, ' '.join(['=', tcs.NAME_SKIP, tcs.NAME_PASS])):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
-
-    def test_fail_when_the_argument_is_invalid(self):
-        for source in equivalent_source_variants(self, 'invalid-argument'):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
+    def test_invalid_syntax(self):
+        cases = [
+            '   ',
+            '= ',
+            ' '.join(['=', tcs.NAME_SKIP, tcs.NAME_PASS]),
+        ]
+        for argument_str in cases:
+            with self.subTest(argument_str):
+                for source in equivalent_source_variants(self, argument_str):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        sut.Parser().parse(source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
