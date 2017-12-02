@@ -4,7 +4,7 @@ from exactly_lib.help.contents_structure import HtmlDocHierarchyGeneratorGetter,
 from exactly_lib.help.html_doc.parts.utils import entities_list_renderer
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as shr
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import AllEntitiesListRenderer
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, SectionRenderer, \
+from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, SectionRenderer, \
     SectionRendererFromSectionContentsRenderer, section_contents_renderer_with_sub_sections
 from exactly_lib.util.textformat.structure import structures as docs
 

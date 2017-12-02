@@ -1,9 +1,10 @@
 import unittest
 
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as sut
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment, \
-    ConstantSectionContentsRenderer
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfoNode
+from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, \
+    RenderingEnvironment, \
+    ConstantSectionContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText

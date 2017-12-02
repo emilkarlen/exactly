@@ -8,7 +8,6 @@ from exactly_lib.help.html_doc.parts import test_suite
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as suite_cli_syntax
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
     SectionItemRendererNode, HierarchyRenderingEnvironment
 from exactly_lib.help.utils.table_of_contents import toc_list
@@ -16,6 +15,7 @@ from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNo
 from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
     SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer

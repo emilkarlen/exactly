@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.help.entities.actors import render as sut
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.cross_reference_id import CustomCrossReferenceId
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl

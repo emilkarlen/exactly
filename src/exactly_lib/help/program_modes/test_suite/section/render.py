@@ -1,11 +1,11 @@
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationRendererBase
 from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.doc_format import instruction_name_text
 from exactly_lib.help_texts.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.help_texts.test_suite.section_names import SECTION_CONCEPT_NAME
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 

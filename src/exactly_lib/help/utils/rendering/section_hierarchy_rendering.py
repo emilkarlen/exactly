@@ -1,8 +1,8 @@
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionRenderer, SectionContentsRenderer, \
-    RenderingEnvironment, ArticleContentsRenderer, ArticleRenderer, SectionItemRenderer
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode, TargetInfo
 from exactly_lib.section_document.model import SectionContents
+from exactly_lib.util.textformat.building.section_contents_renderer import SectionRenderer, SectionContentsRenderer, \
+    RenderingEnvironment, ArticleContentsRenderer, ArticleRenderer, SectionItemRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.document import ArticleContents

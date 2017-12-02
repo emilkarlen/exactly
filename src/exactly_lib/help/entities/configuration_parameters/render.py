@@ -1,7 +1,7 @@
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.utils.rendering import see_also_section as render_utils
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.util.description import DescriptionWithSubSections
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 

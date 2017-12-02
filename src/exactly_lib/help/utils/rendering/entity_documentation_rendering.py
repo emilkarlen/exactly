@@ -1,6 +1,6 @@
 from exactly_lib.help.contents_structure import CliListRendererGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc, lists, structures as docs
 from exactly_lib.util.textformat.structure.structures import SEPARATION_OF_HEADER_AND_CONTENTS
 from exactly_lib.util.textformat.utils import transform_list_to_table

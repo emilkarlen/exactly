@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help.program_modes.help_request import HelpRe
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
 from exactly_lib.help.contents_structure import CliListRendererGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
 
 
 class EntityHelpItem(Enum):

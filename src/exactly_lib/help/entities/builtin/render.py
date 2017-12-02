@@ -6,12 +6,12 @@ from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.parttioned_entity_set import PartitionNamesSetup
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.type_system import TYPE_INFO_DICT
 from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 

@@ -1,12 +1,12 @@
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.doc_utils import synopsis_section, description_section
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
 from exactly_lib.help_texts import doc_format
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \
     ArgumentInArgumentDescriptionRenderer
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.util.textformat.structure import structures as docs, lists
 
 

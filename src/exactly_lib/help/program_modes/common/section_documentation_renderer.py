@@ -1,6 +1,6 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import default_section_para, SectionInstructionSetRenderer
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, \
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, \
     ArticleContentsRenderer
 from exactly_lib.util.textformat.structure import structures as docs
 
