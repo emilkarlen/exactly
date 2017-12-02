@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.cli.program_modes.help.program_modes import utils as sut
 from exactly_lib.util.textformat.structure import document as doc, structures as docs
-from exactly_lib_test.help.test_resources.rendering_environment import CONSTRUCTION_ENVIRONMENT
+from exactly_lib_test.util.textformat.construction.test_resources import CONSTRUCTION_ENVIRONMENT
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

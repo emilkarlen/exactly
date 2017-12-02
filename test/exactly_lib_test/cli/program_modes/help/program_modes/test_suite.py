@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite import request_
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import TestSuiteHelpItem
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
-from exactly_lib_test.help.test_resources.rendering_environment import CONSTRUCTION_ENVIRONMENT
+from exactly_lib_test.util.textformat.construction.test_resources import CONSTRUCTION_ENVIRONMENT
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

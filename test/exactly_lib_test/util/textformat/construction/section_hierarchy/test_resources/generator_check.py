@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionHierarchyGenerator
-from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_HIERARCHY_ENVIRONMENT
-from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
+    CrossReferenceTextConstructorTestImpl, TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     is_target_info_node
 from exactly_lib_test.util.textformat.construction.test_resources import CustomTargetInfoFactoryTestImpl

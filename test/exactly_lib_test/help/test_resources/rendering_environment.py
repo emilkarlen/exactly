@@ -1,4 +1,0 @@
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
-from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
-
-CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())

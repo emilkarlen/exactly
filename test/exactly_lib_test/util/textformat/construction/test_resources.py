@@ -1,6 +1,9 @@
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceTarget
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
+    CrossReferenceTextConstructorTestImpl
 
 
 class CustomCrossReferenceTargetTestImpl(CrossReferenceTarget):
@@ -29,3 +32,6 @@ class CustomTargetInfoFactoryTestImpl(CustomTargetInfoFactory):
     def root(self, presentation: StringText) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceTargetTestImpl('.'.join(self._components)))
+
+
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())

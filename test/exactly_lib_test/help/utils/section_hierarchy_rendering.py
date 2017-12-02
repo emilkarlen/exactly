@@ -9,9 +9,9 @@ from exactly_lib.util.textformat.construction.section_hierarchy.targets import T
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
-from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_HIERARCHY_ENVIRONMENT
-from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
+    CrossReferenceTextConstructorTestImpl, TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     equals_target_info_node
 from exactly_lib_test.util.textformat.construction.test_resources import CustomTargetInfoFactoryTestImpl, \

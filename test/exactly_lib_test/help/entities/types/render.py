@@ -11,7 +11,8 @@ from exactly_lib.util.name import name_with_plural_s
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_section_contents
-from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
+    CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

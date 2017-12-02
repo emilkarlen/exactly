@@ -4,13 +4,9 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
-    HierarchyGeneratorEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.test_resources import section_instruction_set
-
-TEST_HIERARCHY_ENVIRONMENT = HierarchyGeneratorEnvironment(set())
 
 
 def test_case_help_with_production_phases() -> TestCaseHelp:
