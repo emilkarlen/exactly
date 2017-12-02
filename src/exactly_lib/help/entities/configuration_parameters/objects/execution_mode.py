@@ -1,6 +1,6 @@
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts.doc_format import syntax_text
+from exactly_lib.help_texts import doc_format
 from exactly_lib.help_texts.entity.conf_params import EXECUTION_MODE_CONF_PARAM_INFO
 from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.test_case import execution_mode
@@ -16,7 +16,7 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
         super().__init__(EXECUTION_MODE_CONF_PARAM_INFO)
 
     def default_value_text(self) -> Text:
-        return syntax_text(self.default_value_str())
+        return doc_format.enum_name_text(self.default_value_str())
 
     def purpose(self) -> DescriptionWithSubSections:
         return from_simple_description(
@@ -28,7 +28,7 @@ DOCUMENTATION = _ExecutionModeConfigurationParameter()
 
 
 def execution_modes_list() -> ParagraphItem:
-    items = [docs.list_item(syntax_text(x[0]), x[1])
+    items = [docs.list_item(doc_format.enum_name_text(x[0]), x[1])
              for x in _mode_name_and_paragraphs_list()]
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.VARIABLE_LIST))

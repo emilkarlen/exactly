@@ -6,4 +6,6 @@ INSTRUCTION = 'instruction'
 
 SYNTAX_TEXT = 'syntax-text'
 
+ENUM_CONSTANT = 'enum-constant'
+
 TOC_SECTION = 'toc'
