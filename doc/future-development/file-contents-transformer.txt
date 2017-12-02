@@ -2,48 +2,12 @@
 
 <2017-08-17 tor>
 
-Transforms the contents of a file, before an assertion on it is made.
-
-Transformations should resemble those of sed
-
-Example syntax:
-
---------------------
-
-contents my_file --transformed replace my_reg_ex constant empty
-
---------------------
-
-* Complex transformation
-
-It should be possible to combine transformations:
-
-replace REG_EX CONSTANT | select --range 1 : 10 | delete --range 3 : 4
-
-* Definition of named transformations
-
-It should be possible to define and refer to transformations in the same way
-as symbols:
-
---------------------
-
-[setup]
-
-def transformation my_first_trans = replace REG_EX CONST
-
-def transformation my_secondtrans = my_first_trans | delete --range : -10
-
-[assert]
-
-contents my_file --transformed my_second_trans every line matches MY_REGEX
-
-* Predefined transformations
-
-** select ADDRESS
-
-** delete ADDRESS
-
-** replace [ADDRESS] REG-EX STRING
+* atoms to build transformers from
+** selection of line numbers à la Py N :N N: N:M :-N
+** limitation of lines to operate on: --on/in LINE-MATCHER
+* Builtin transformers
+** split lines (producing more lines than original)
+** join lines (join all lines, and remove final nl, if there)
 
 ** ADDRESS
 
@@ -55,16 +19,3 @@ ADDRESS ::= --range FROM : TO
 
           = --reg-ex REG_EX
 
-* Combination of transformations
-
-TRANSFORMATION = TRANSFORMATION | TRANSFORMATION
-
-* Implementation
-
-Definition of transformations should use the infrastructure for
-symbols, and make it possible for the symbol table to contain both
-symbols and transformations
-
-They should use the same name space, so that names cannot clash.
-
-They would be defined by the "def" instruction.
