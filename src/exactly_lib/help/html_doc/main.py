@@ -19,10 +19,10 @@ from exactly_lib.util.textformat.construction.section_hierarchy.structures impor
     HierarchyGeneratorEnvironment, \
     SectionItemGeneratorNode, SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
-from exactly_lib.util.textformat.formatting.html import document as doc_rendering
-from exactly_lib.util.textformat.formatting.html import text
-from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
-from exactly_lib.util.textformat.formatting.html.section import HnSectionHeaderRenderer
+from exactly_lib.util.textformat.rendering.html import document as doc_rendering
+from exactly_lib.util.textformat.rendering.html import text
+from exactly_lib.util.textformat.rendering.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
+from exactly_lib.util.textformat.rendering.html.section import HnSectionHeaderRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.utils import section_item_contents_as_section_contents

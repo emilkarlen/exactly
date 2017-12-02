@@ -1,5 +1,5 @@
-from exactly_lib.util.textformat.formatting.text import paragraph_item as sut
-from exactly_lib.util.textformat.formatting.text.text import CrossReferenceFormatter, TextFormatter
+from exactly_lib.util.textformat.rendering.text import paragraph_item as sut
+from exactly_lib.util.textformat.rendering.text.text import CrossReferenceFormatter, TextFormatter
 from exactly_lib.util.textformat.structure import core, paragraph, lists, table
 
 BLANK_LINE = ''

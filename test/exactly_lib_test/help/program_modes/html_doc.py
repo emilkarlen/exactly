@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.help.html_doc import main as sut
 from exactly_lib.help.the_application_help import new_application_help
-from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
+from exactly_lib.util.textformat.rendering.html.document import DOCTYPE_XHTML1_0
 from exactly_lib_test.processing.test_resources.instruction_set import instruction_set
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion_str import begins_with

@@ -1,7 +1,7 @@
-from exactly_lib.util.textformat.formatting.text import section, paragraph_item
-from exactly_lib.util.textformat.formatting.text import text
-from exactly_lib.util.textformat.formatting.text.lists import list_formats_with
-from exactly_lib.util.textformat.formatting.text.wrapper import Wrapper
+from exactly_lib.util.textformat.rendering.text import section, paragraph_item
+from exactly_lib.util.textformat.rendering.text import text
+from exactly_lib.util.textformat.rendering.text.lists import list_formats_with
+from exactly_lib.util.textformat.rendering.text.wrapper import Wrapper
 from exactly_lib.util.textformat.structure import structures as docs, core
 
 

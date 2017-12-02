@@ -7,7 +7,7 @@ from exactly_lib.default.program_modes.test_case import default_instructions_set
 from exactly_lib.default.program_modes.test_suite import CONFIGURATION_SECTION_INSTRUCTIONS
 from exactly_lib.help.html_doc import main as sut
 from exactly_lib.help.the_application_help import new_application_help
-from exactly_lib.util.textformat.formatting.html.document import DOCTYPE_XHTML1_0
+from exactly_lib.util.textformat.rendering.html.document import DOCTYPE_XHTML1_0
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase, PlainArrangement
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner

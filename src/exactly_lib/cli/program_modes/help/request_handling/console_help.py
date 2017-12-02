@@ -10,10 +10,10 @@ from exactly_lib.help_texts import cross_reference_id
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor
-from exactly_lib.util.textformat.formatting.text import section, paragraph_item
-from exactly_lib.util.textformat.formatting.text import text
-from exactly_lib.util.textformat.formatting.text.lists import list_formats_with
-from exactly_lib.util.textformat.formatting.text.wrapper import Wrapper
+from exactly_lib.util.textformat.rendering.text import section, paragraph_item
+from exactly_lib.util.textformat.rendering.text import text
+from exactly_lib.util.textformat.rendering.text.lists import list_formats_with
+from exactly_lib.util.textformat.rendering.text.wrapper import Wrapper
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget
 

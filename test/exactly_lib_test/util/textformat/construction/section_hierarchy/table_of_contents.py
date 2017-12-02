@@ -5,7 +5,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy.targets import T
     target_info_leaf
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure.core import StringText
-from exactly_lib_test.util.textformat.formatting.html.test_resources import CrossReferenceTargetTestImpl
+from exactly_lib_test.util.textformat.rendering.html.test_resources import CrossReferenceTargetTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
