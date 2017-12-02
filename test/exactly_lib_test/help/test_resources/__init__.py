@@ -8,7 +8,8 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import Text
 from exactly_lib.util.textformat.structure.structures import para, text
@@ -104,11 +105,11 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
         return self._instruction_set
 
 
-class _SectionDocumentationRenderer(SectionContentsRenderer):
+class _SectionDocumentationConstructor(SectionContentsConstructor):
     def __init__(self, name):
         self.name = name
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return doc.SectionContents([para('Rendition of section {0:emphasis}'.format(self.name))],
                                    [])
 

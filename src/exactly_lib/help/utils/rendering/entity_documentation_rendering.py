@@ -1,6 +1,7 @@
-from exactly_lib.help.contents_structure import CliListRendererGetter
+from exactly_lib.help.contents_structure import CliListConstructorGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc, lists, structures as docs
 from exactly_lib.util.textformat.structure.structures import SEPARATION_OF_HEADER_AND_CONTENTS
 from exactly_lib.util.textformat.utils import transform_list_to_table
@@ -10,22 +11,23 @@ def sorted_entity_list(entities: list) -> list:
     return sorted(entities, key=lambda ed: ed.singular_name())
 
 
-def entity_doc_list_renderer_as_flat_list_of_single_line_description(entity_doc_list: list) -> SectionContentsRenderer:
-    return AllEntitiesListRenderer(single_line_description_as_summary_paragraphs,
-                                   entity_doc_list)
+def entity_doc_list_renderer_as_flat_list_of_single_line_description(
+        entity_doc_list: list) -> SectionContentsConstructor:
+    return AllEntitiesListConstructor(single_line_description_as_summary_paragraphs,
+                                      entity_doc_list)
 
 
-class FlatListRendererWithSingleLineDescriptionGetter(CliListRendererGetter):
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsRenderer:
-        return AllEntitiesListRenderer(single_line_description_as_summary_paragraphs,
-                                       all_entity_doc_list)
+class FlatListConstructorWithSingleLineDescriptionGetter(CliListConstructorGetter):
+    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
+        return AllEntitiesListConstructor(single_line_description_as_summary_paragraphs,
+                                          all_entity_doc_list)
 
 
 def single_line_description_as_summary_paragraphs(entity_doc: EntityDocumentation) -> list:
     return docs.paras(entity_doc.single_line_description())
 
 
-class AllEntitiesListRenderer(SectionContentsRenderer):
+class AllEntitiesListConstructor(SectionContentsConstructor):
     def __init__(self,
                  entity_2_summary_paragraphs,
                  all_entities: list):
@@ -35,7 +37,7 @@ class AllEntitiesListRenderer(SectionContentsRenderer):
         self.entity_2_summary_paragraphs = entity_2_summary_paragraphs
         self.all_entities = all_entities
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return doc.SectionContents([transform_list_to_table(self._sorted_entities_list(self.all_entities))], [])
 
     def _sorted_entities_list(self, entities: iter) -> lists.HeaderContentList:

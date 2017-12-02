@@ -6,7 +6,7 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_
 from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
 from exactly_lib.help_texts.cross_reference_id import CustomCrossReferenceId
 from exactly_lib.help_texts.entity.syntax_elements import name_and_ref_target
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.common.test_resources import syntax_parts
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -20,13 +20,13 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
 
 class TestAllSyntaxElementsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = SYNTAX_ELEMENT_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
+        constructor = SYNTAX_ELEMENT_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(
             [
                 syntax_element_documentation(None,
                                              name_and_ref_target('SE1', 'single line description of SE1'),
@@ -36,7 +36,7 @@ class TestAllSyntaxElementsList(unittest.TestCase):
                                              [], [], [], []),
             ])
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = constructor.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -81,9 +81,9 @@ class TestIndividualSyntaxElement(unittest.TestCase):
         for test_case_name, documentation in test_cases:
             with self.subTest(test_case_name=test_case_name):
                 # ARRANGE #
-                renderer = sut.IndividualSyntaxElementRenderer(documentation)
+                renderer = sut.IndividualSyntaxElementConstructor(documentation)
                 # ACT #
-                actual = renderer.apply(RENDERING_ENVIRONMENT)
+                actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)
                 # ASSERT #
                 struct_check.is_article_contents.apply(self, actual)
 

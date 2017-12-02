@@ -12,7 +12,8 @@ from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.type_system.value_type import TypeCategory
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -34,7 +35,7 @@ _PARTITIONS_SETUP = [
 ]
 
 
-class IndividualTypeRenderer(ArticleContentsRenderer):
+class IndividualTypeConstructor(ArticleContentsConstructor):
     def __init__(self, type_doc: TypeDocumentation):
         self.doc = type_doc
         format_map = {
@@ -42,7 +43,7 @@ class IndividualTypeRenderer(ArticleContentsRenderer):
         }
         self._parser = TextParser(format_map)
 
-    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:
         sub_sections = []
 
         if self.doc.invokation_variants():
@@ -64,10 +65,10 @@ class IndividualTypeRenderer(ArticleContentsRenderer):
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
     return pes.PartitionedHierarchyGeneratorGetter(TYPE_ENTITY_TYPE_NAMES.identifier,
                                                    _PARTITIONS_SETUP,
-                                                   IndividualTypeRenderer)
+                                                   IndividualTypeConstructor)
 
 
-def list_render_getter() -> pes.CliListRendererGetter:
-    return pes.PartitionedCliListRendererGetter(
+def list_render_getter() -> pes.CliListConstructorGetter:
+    return pes.PartitionedCliListConstructorGetter(
         _PARTITIONS_SETUP,
         single_line_description_as_summary_paragraphs)

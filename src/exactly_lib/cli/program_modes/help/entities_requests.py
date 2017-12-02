@@ -2,9 +2,9 @@ from enum import Enum
 
 from exactly_lib.cli.program_modes.help.program_modes.help_request import HelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
-from exactly_lib.help.contents_structure import CliListRendererGetter
+from exactly_lib.help.contents_structure import CliListConstructorGetter
 from exactly_lib.help.utils.entity_documentation import EntityDocumentation
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 
 
 class EntityHelpItem(Enum):
@@ -43,13 +43,13 @@ class EntityHelpRequest(HelpRequest):
 class EntityHelpRequestRendererResolver:
     def __init__(self,
                  entity_doc_2_article_contents_renderer,
-                 cli_list_renderer_getter: CliListRendererGetter,
+                 cli_list_renderer_getter: CliListConstructorGetter,
                  all_entities: list):
         self.entity_doc_2_article_contents_renderer = entity_doc_2_article_contents_renderer
         self.cli_list_renderer_getter = cli_list_renderer_getter
         self.all_entities = all_entities
 
-    def renderer_for(self, request: EntityHelpRequest) -> SectionContentsRenderer:
+    def renderer_for(self, request: EntityHelpRequest) -> SectionContentsConstructor:
         item = request.item
         if item is EntityHelpItem.ALL_ENTITIES_LIST:
             return self.cli_list_renderer_getter.get_render(self.all_entities)

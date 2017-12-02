@@ -4,13 +4,13 @@ from exactly_lib.help.entities.suite_reporters.contents_structure import suite_r
 from exactly_lib.help.entities.suite_reporters.objects.all_suite_reporters import ALL_SUITE_REPORTERS
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
-    FlatListRendererWithSingleLineDescriptionGetter
+    FlatListConstructorWithSingleLineDescriptionGetter
 from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 
 SUITE_REPORTER_ENTITY_CONFIGURATION = EntityConfiguration(
     suite_reporters_help(ALL_SUITE_REPORTERS),
-    render.IndividualSuiteReporterRenderer,
-    FlatListRendererWithSingleLineDescriptionGetter(),
+    render.IndividualSuiteReporterConstructor,
+    FlatListConstructorWithSingleLineDescriptionGetter(),
     FlatEntityListHierarchyGeneratorGetter(SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier,
-                                           render.IndividualSuiteReporterRenderer),
+                                           render.IndividualSuiteReporterConstructor),
 )

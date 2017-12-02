@@ -6,15 +6,15 @@ from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request 
 from exactly_lib.cli.program_modes.help.program_modes.main_program.request_rendering import \
     MainProgramHelpRendererResolver
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import TestCaseHelpRequest
-from exactly_lib.cli.program_modes.help.program_modes.test_case.request_rendering import TestCaseHelpRendererResolver
+from exactly_lib.cli.program_modes.help.program_modes.test_case.request_rendering import TestCaseHelpConstructorResolver
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import TestSuiteHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.request_rendering import \
-    TestSuiteHelpRendererResolver
+    TestSuiteHelpConstructorResolver
 from exactly_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.help.contents_structure import ApplicationHelp, EntityConfiguration
 from exactly_lib.util.std import StdOutputFiles
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 
 
 def handle_help_request(output: StdOutputFiles,
@@ -35,15 +35,15 @@ def _resolve_handler(application_help: ApplicationHelp,
 
 
 def _renderer(application_help: ApplicationHelp,
-              request: HelpRequest) -> SectionContentsRenderer:
+              request: HelpRequest) -> SectionContentsConstructor:
     if isinstance(request, MainProgramHelpRequest):
         resolver = MainProgramHelpRendererResolver(application_help.main_program_help)
         return resolver.renderer_for(request)
     if isinstance(request, TestCaseHelpRequest):
-        resolver = TestCaseHelpRendererResolver(application_help.test_case_help)
+        resolver = TestCaseHelpConstructorResolver(application_help.test_case_help)
         return resolver.resolve(request)
     if isinstance(request, TestSuiteHelpRequest):
-        resolver = TestSuiteHelpRendererResolver(application_help.test_suite_help)
+        resolver = TestSuiteHelpConstructorResolver(application_help.test_suite_help)
         return resolver.resolve(request)
     if isinstance(request, EntityHelpRequest):
         resolver = _entity_help_request_renderer_resolver_for(application_help, request)
@@ -59,5 +59,5 @@ def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp
     except KeyError:
         raise ValueError('Entity is not found in application help: ' + request.entity_type)
     return EntityHelpRequestRendererResolver(entity_conf.entity_doc_2_article_contents_renderer,
-                                             entity_conf.cli_list_renderer_getter,
+                                             entity_conf.cli_list_constructor_getter,
                                              entity_conf.entities_help.all_entities)

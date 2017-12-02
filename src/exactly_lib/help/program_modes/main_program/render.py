@@ -1,11 +1,12 @@
 from exactly_lib.help.program_modes.main_program.contents import MainCliSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
-    ProgramDocumentationSectionContentsRenderer
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+    ProgramDocumentationSectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 
 
-class OverviewRenderer(SectionContentsRenderer):
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        renderer = ProgramDocumentationSectionContentsRenderer(MainCliSyntaxDocumentation())
+class OverviewConstructor(SectionContentsConstructor):
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
+        renderer = ProgramDocumentationSectionContentsConstructor(MainCliSyntaxDocumentation())
         return renderer.apply(environment)

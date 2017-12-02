@@ -4,7 +4,8 @@ from exactly_lib.cli.program_modes.help import entities_requests as sut
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
 from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor
 from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -32,9 +33,9 @@ class TestHelpRequestRendererResolver(unittest.TestCase):
         # ACT #
         actual = resolver.renderer_for(_actor_help_request(sut.EntityHelpItem.ALL_ENTITIES_LIST))
         # ASSERT #
-        self.assertIsInstance(actual, SectionContentsRenderer)
+        self.assertIsInstance(actual, SectionContentsConstructor)
         # ACT #
-        actual_rendition = actual.apply(_RENDERING_ENVIRONMENT)
+        actual_rendition = actual.apply(_CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual_rendition)
 
@@ -48,9 +49,9 @@ class TestHelpRequestRendererResolver(unittest.TestCase):
         # ACT #
         actual = resolver.renderer_for(_actor_help_request(sut.EntityHelpItem.INDIVIDUAL_ENTITY, first_actor))
         # ASSERT #
-        self.assertIsInstance(actual, SectionContentsRenderer)
+        self.assertIsInstance(actual, SectionContentsConstructor)
         # ACT #
-        actual_rendition = actual.apply(_RENDERING_ENVIRONMENT)
+        actual_rendition = actual.apply(_CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual_rendition)
 
@@ -58,11 +59,11 @@ class TestHelpRequestRendererResolver(unittest.TestCase):
 def help_request_renderer_resolver(entities: list) -> sut.EntityHelpRequestRendererResolver:
     return sut.EntityHelpRequestRendererResolver(
         ACTOR_ENTITY_CONFIGURATION.entity_doc_2_article_contents_renderer,
-        ACTOR_ENTITY_CONFIGURATION.cli_list_renderer_getter,
+        ACTOR_ENTITY_CONFIGURATION.cli_list_constructor_getter,
         entities)
 
 
-_RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+_CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
 
 def _actor_help_request(item: sut.EntityHelpItem,

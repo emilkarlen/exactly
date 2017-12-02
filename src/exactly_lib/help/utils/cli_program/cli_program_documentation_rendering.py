@@ -6,20 +6,21 @@ from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArg
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \
     ArgumentInArgumentDescriptionRenderer
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor
 from exactly_lib.util.textformat.structure import structures as docs, lists
 
 
-class ProgramDocumentationSectionContentsRenderer(SectionContentsRenderer):
+class ProgramDocumentationSectionContentsConstructor(SectionContentsConstructor):
     def __init__(self, program: CliProgramSyntaxDocumentation):
         self.program = program
 
-    def apply(self, environment: RenderingEnvironment) -> docs.SectionContents:
+    def apply(self, environment: ConstructionEnvironment) -> docs.SectionContents:
         return _ProgramDocumentationRenderer(environment).apply(self.program)
 
 
 class _ProgramDocumentationRenderer:
-    def __init__(self, environment: RenderingEnvironment):
+    def __init__(self, environment: ConstructionEnvironment):
         self.environment = environment
         self.cmd_line_syntax_renderer = CommandLineSyntaxRenderer()
         self.arg_in_description_renderer = ArgumentInArgumentDescriptionRenderer()

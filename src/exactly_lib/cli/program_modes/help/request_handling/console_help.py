@@ -8,7 +8,8 @@ from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help_texts import cross_reference_id
 from exactly_lib.util.std import StdOutputFiles
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor
 from exactly_lib.util.textformat.formatting.text import section, paragraph_item
 from exactly_lib.util.textformat.formatting.text import text
 from exactly_lib.util.textformat.formatting.text.lists import list_formats_with
@@ -20,16 +21,16 @@ from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget
 class ConsoleHelpRequestHandler(RequestHandler):
     def __init__(self,
                  application_help: ApplicationHelp,
-                 section_contents_renderer: SectionContentsRenderer):
+                 section_contents_constructor: SectionContentsConstructor):
         self.application_help = application_help
-        self.section_contents_renderer = section_contents_renderer
+        self.section_contents_constructor = section_contents_constructor
 
     def handle(self, output: StdOutputFiles):
         page_width = shutil.get_terminal_size().columns
         formatter = _formatter(page_width)
-        environment = RenderingEnvironment(_cross_ref_text_constructor(),
-                                           render_simple_header_value_lists_as_tables=True)
-        lines = formatter.format_section_contents(self.section_contents_renderer.apply(environment))
+        environment = ConstructionEnvironment(_cross_ref_text_constructor(),
+                                              construct_simple_header_value_lists_as_tables=True)
+        lines = formatter.format_section_contents(self.section_contents_constructor.apply(environment))
         file = output.out
         for line in lines:
             file.write(line)
@@ -57,8 +58,8 @@ class HelpCrossReferenceFormatter(text.CrossReferenceFormatter):
             return title
 
 
-def rendering_environment() -> RenderingEnvironment:
-    return RenderingEnvironment(_cross_ref_text_constructor())
+def construction_environment() -> ConstructionEnvironment:
+    return ConstructionEnvironment(_cross_ref_text_constructor())
 
 
 def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:

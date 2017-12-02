@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 
 
 class HtmlDocHierarchyGeneratorGetter:
@@ -13,8 +13,8 @@ class HtmlDocHierarchyGeneratorGetter:
         raise NotImplementedError('abstract method')
 
 
-class CliListRendererGetter:
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsRenderer:
+class CliListConstructorGetter:
+    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
         raise NotImplementedError('abstract method')
 
 
@@ -22,7 +22,7 @@ class EntityConfiguration(tuple):
     def __new__(cls,
                 entities_help: EntitiesHelp,
                 entity_doc_2_article_contents_renderer,
-                cli_list_renderer_getter: CliListRendererGetter,
+                cli_list_renderer_getter: CliListConstructorGetter,
                 html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter):
         return tuple.__new__(cls, (entities_help,
                                    entity_doc_2_article_contents_renderer,
@@ -41,7 +41,7 @@ class EntityConfiguration(tuple):
         return self[1]
 
     @property
-    def cli_list_renderer_getter(self) -> CliListRendererGetter:
+    def cli_list_constructor_getter(self) -> CliListConstructorGetter:
         return self[2]
 
     @property

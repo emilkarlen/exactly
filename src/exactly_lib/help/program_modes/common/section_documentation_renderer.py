@@ -1,11 +1,11 @@
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.common.renderers import default_section_para, SectionInstructionSetRenderer
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, \
-    ArticleContentsRenderer
+from exactly_lib.help.program_modes.common.renderers import default_section_para, SectionInstructionSetConstructor
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import structures as docs
 
 
-class SectionDocumentationRendererBase(ArticleContentsRenderer):
+class SectionDocumentationConstructorBase(ArticleContentsConstructor):
     CONTENTS_HEADER = docs.text('Contents')
 
     def __init__(self,
@@ -30,10 +30,10 @@ class SectionDocumentationRendererBase(ArticleContentsRenderer):
                                                    mandatory_or_optional))
 
     def _add_section_for_instructions(self,
-                                      environment: RenderingEnvironment,
+                                      environment: ConstructionEnvironment,
                                       sections: list):
         if self.__section_documentation.has_instructions:
-            renderer = SectionInstructionSetRenderer(
+            renderer = SectionInstructionSetConstructor(
                 self.__section_documentation.instruction_set,
                 self._instruction_cross_ref_text,
                 instruction_group_by=self.__section_documentation.instruction_group_by)

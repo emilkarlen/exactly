@@ -8,7 +8,7 @@ from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity import types
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.name import name_with_plural_s
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_section_contents
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
@@ -25,10 +25,10 @@ def suite() -> unittest.TestSuite:
 class TestList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = TYPE_ENTITY_CONFIGURATION.cli_list_renderer_getter.get_render(
+        renderer = TYPE_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(
             all_types.all_types())
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_section_contents.apply(self, actual)
 
@@ -40,9 +40,9 @@ class TestIndividualType(unittest.TestCase):
                                 A_TYPE_NAME_AND_CROSS_REFERENCE_ID,
                                 A_SYNTAX_ELEMENT_INFO,
                                 empty_section_contents())
-        renderer = sut.IndividualTypeRenderer(doc)
+        renderer = sut.IndividualTypeConstructor(doc)
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -52,9 +52,9 @@ class TestIndividualType(unittest.TestCase):
                                 A_TYPE_NAME_AND_CROSS_REFERENCE_ID,
                                 A_SYNTAX_ELEMENT_INFO,
                                 docs.section_contents(docs.paras('initial paragraphs of main description')))
-        renderer = sut.IndividualTypeRenderer(doc)
+        renderer = sut.IndividualTypeConstructor(doc)
         # ACT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         struct_check.is_article_contents.apply(self, actual)
 
@@ -70,7 +70,7 @@ A_TYPE_NAME_AND_CROSS_REFERENCE_ID = types.name_and_ref_target(ValueType.STRING,
                                                                name_with_plural_s('type_name'),
                                                                'single line description')
 
-RENDERING_ENVIRONMENT = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
+CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

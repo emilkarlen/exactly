@@ -11,7 +11,8 @@ from exactly_lib.help_texts.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.type_system import TYPE_INFO_DICT
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -38,11 +39,11 @@ _PARTITIONS_SETUP = [
 ]
 
 
-class IndividualBuiltinSymbolRenderer(ArticleContentsRenderer):
+class IndividualBuiltinSymbolConstructor(ArticleContentsConstructor):
     def __init__(self, builtin_doc: BuiltinSymbolDocumentation):
         self.builtin_doc = builtin_doc
 
-    def apply(self, environment: RenderingEnvironment) -> doc.ArticleContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:
         initial_paragraphs = [
             self._type_paragraph(),
         ]
@@ -55,7 +56,7 @@ class IndividualBuiltinSymbolRenderer(ArticleContentsRenderer):
     def _type_paragraph(self) -> docs.ParagraphItem:
         return docs.para('Type: ' + TYPE_INFO_DICT[self.builtin_doc.value_type].name.singular)
 
-    def _see_also_sections(self, environment: RenderingEnvironment) -> list:
+    def _see_also_sections(self, environment: ConstructionEnvironment) -> list:
         type_info = TYPE_INFO_DICT[self.builtin_doc.value_type]
         return see_also_sections([type_info.cross_reference_target],
                                  environment)
@@ -64,10 +65,10 @@ class IndividualBuiltinSymbolRenderer(ArticleContentsRenderer):
 def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
     return pes.PartitionedHierarchyGeneratorGetter(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.identifier,
                                                    _PARTITIONS_SETUP,
-                                                   IndividualBuiltinSymbolRenderer)
+                                                   IndividualBuiltinSymbolConstructor)
 
 
-def list_renderer_getter() -> pes.CliListRendererGetter:
-    return pes.PartitionedCliListRendererGetter(
+def list_renderer_getter() -> pes.CliListConstructorGetter:
+    return pes.PartitionedCliListConstructorGetter(
         _PARTITIONS_SETUP,
         single_line_description_as_summary_paragraphs)

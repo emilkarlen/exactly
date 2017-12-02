@@ -10,7 +10,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.contents_structure import ApplicationHelp, EntityConfiguration
-from exactly_lib.help.entities.actors.render import IndividualActorRenderer
+from exactly_lib.help.entities.actors.render import IndividualActorConstructor
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
@@ -18,7 +18,7 @@ from exactly_lib.help.program_modes.test_case.contents_structure import TestCase
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
-    FlatListRendererWithSingleLineDescriptionGetter
+    FlatListConstructorWithSingleLineDescriptionGetter
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
@@ -494,11 +494,11 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
                                             EntityConfiguration(
                                                 EntitiesHelp(ACTOR_ENTITY_TYPE_NAMES,
                                                              entities),
-                                                IndividualActorRenderer,
-                                                FlatListRendererWithSingleLineDescriptionGetter(),
+                                                IndividualActorConstructor,
+                                                FlatListConstructorWithSingleLineDescriptionGetter(),
                                                 FlatEntityListHierarchyGeneratorGetter(
                                                     self.entity_type_name,
-                                                    IndividualActorRenderer),
+                                                    IndividualActorConstructor),
 
                                             )
                                     })

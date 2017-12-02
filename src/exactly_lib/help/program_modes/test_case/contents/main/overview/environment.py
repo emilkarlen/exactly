@@ -6,12 +6,13 @@ from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.formatting import emphasis
 from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
-from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer, RenderingEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class Documentation(SectionContentsRenderer):
+class Documentation(SectionContentsConstructor):
     def __init__(self, setup: Setup):
         self.setup = setup
 
@@ -23,7 +24,7 @@ class Documentation(SectionContentsRenderer):
             'cli_option_for_keeping_sandbox': OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
         })
 
-    def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return self._parser.section_contents(_DESCRIPTION)
 
 

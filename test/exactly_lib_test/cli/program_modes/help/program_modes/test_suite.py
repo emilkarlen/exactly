@@ -4,7 +4,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite import request_
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import TestSuiteHelpItem
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
-from exactly_lib_test.help.test_resources.rendering_environment import RENDERING_ENVIRONMENT
+from exactly_lib_test.help.test_resources.rendering_environment import CONSTRUCTION_ENVIRONMENT
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -29,10 +29,10 @@ class TestRenderInstruction(unittest.TestCase):
     def _check_resolver_gives_renderer_that_produces_section_contents(self,
                                                                       request: sut.TestSuiteHelpRequest):
         # ARRANGE #
-        renderer_resolver = sut.TestSuiteHelpRendererResolver(TestCaseHelp(()))
+        constructor_resolver = sut.TestSuiteHelpConstructorResolver(TestCaseHelp(()))
         # ACT #
-        renderer = renderer_resolver.resolve(request)
+        constructor = constructor_resolver.resolve(request)
         # ASSERT #
-        actual = renderer.apply(RENDERING_ENVIRONMENT)
+        actual = constructor.apply(CONSTRUCTION_ENVIRONMENT)
         struct_check.is_section_contents.apply_with_message(self, actual,
                                                             'result of rendering')
