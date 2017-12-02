@@ -6,9 +6,9 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsConstructor
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionItemRendererNode, \
     SectionItemRendererNodeWithSubSections, SectionHierarchyGenerator, LeafArticleRendererNode
-from exactly_lib.help_texts import cross_reference_id as cross_ref
-from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
+from exactly_lib.util.textformat.construction import section_hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
 
@@ -36,7 +36,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
         super_self = self
 
         class _HierarchyGenerator(SectionHierarchyGenerator):
-            def renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory
+            def renderer_node(self, target_factory: section_hierarchy.CustomTargetInfoFactory
                               ) -> SectionItemRendererNode:
                 return super_self._sections_renderer_node(header, target_factory)
 
@@ -46,7 +46,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
         super_self = self
 
         class _HierarchyGenerator(SectionHierarchyGenerator):
-            def renderer_node(self, target_factory: cross_ref.CustomTargetInfoFactory
+            def renderer_node(self, target_factory: section_hierarchy.CustomTargetInfoFactory
                               ) -> SectionItemRendererNode:
                 return super_self._instructions_per_section_node(header, target_factory)
 
@@ -54,14 +54,15 @@ class HtmlDocGeneratorForSectionDocumentBase:
 
     def _sections_renderer_node(self,
                                 header: str,
-                                targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionItemRendererNode:
+                                targets_factory: section_hierarchy.CustomTargetInfoFactory
+                                ) -> SectionItemRendererNode:
         root_target_info = targets_factory.root(StringText(header))
         sub_section_nodes = []
         for section in self.sections:
             assert isinstance(section, SectionDocumentation)
             cross_reference_target = self._section_cross_ref_target(section)
-            section_target_info = cross_ref.TargetInfo(section.syntax_name_text,
-                                                       cross_reference_target)
+            section_target_info = section_hierarchy.TargetInfo(section.syntax_name_text,
+                                                               cross_reference_target)
             section_node = LeafArticleRendererNode(
                 section_target_info,
                 self.get_article_contents_constructor_for_section_document(section),
@@ -74,7 +75,8 @@ class HtmlDocGeneratorForSectionDocumentBase:
 
     def _instructions_per_section_node(self,
                                        header: str,
-                                       targets_factory: cross_ref.CustomTargetInfoFactory) -> SectionItemRendererNode:
+                                       targets_factory: section_hierarchy.CustomTargetInfoFactory
+                                       ) -> SectionItemRendererNode:
         root_target_info = targets_factory.root(StringText(header))
         section_nodes = []
         for section in self.sections:
@@ -142,8 +144,8 @@ class _SectionInstructionsNodeConstructor:
 
     def _instruction_node(self, instruction: InstructionDocumentation) -> SectionItemRendererNode:
         cross_ref_target = self.mk_instruction_cross_ref_target(instruction, self.section)
-        target_info = cross_ref.TargetInfo(instruction.instruction_name_text,
-                                           cross_ref_target)
+        target_info = section_hierarchy.TargetInfo(instruction.instruction_name_text,
+                                                   cross_ref_target)
         return LeafArticleRendererNode(target_info,
                                        InstructionDocArticleContentsConstructor(instruction),
                                        tags={std_tags.INSTRUCTION})

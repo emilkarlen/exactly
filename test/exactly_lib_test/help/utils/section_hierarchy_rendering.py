@@ -1,18 +1,20 @@
 import unittest
 
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as sut
-from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, target_info_leaf, TargetInfoNode
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment, \
     ConstantSectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfoNode, target_info_leaf, \
+    CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import equals_target_info_node
-from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_id_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.textformat.construction.test_resources import CustomTargetInfoFactoryTestImpl, \
+    equals_custom_cross_ref_test_impl
 from exactly_lib_test.util.textformat.test_resources import equals_paragraph_item as asrt_para
 from exactly_lib_test.util.textformat.test_resources.section_item_assertions import section_matches, \
     section_contents_matches
@@ -25,16 +27,18 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_leaf(self):
         # ARRANGE #
-        target_factory = CustomTargetInfoFactory('target_component')
+        target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object = doc.empty_section_contents()
         object_to_test = sut.leaf('header', section_contents(expected_section_contents_object))
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('header'))
 
-        target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
+        target_info_node_assertion = equals_target_info_node(
+            target_info_leaf(expected_target_info),
+            mk_equals_cross_ref_id=equals_custom_cross_ref_test_impl)
 
         section_assertion = section_matches(
-            target=cross_ref_id_asrt.equals(expected_target_info.target),
+            target=equals_custom_cross_ref_test_impl(expected_target_info.target),
             header=asrt_para.equals_text(expected_target_info.presentation_text),
             contents=asrt.Is(expected_section_contents_object))
 
@@ -46,15 +50,17 @@ class Test(unittest.TestCase):
 
     def test_parent_without_sub_sections(self):
         # ARRANGE #
-        target_factory = CustomTargetInfoFactory('target_component')
+        target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
         object_to_test = sut.parent('top header', [], [])
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('top header'))
 
-        target_info_node_assertion = equals_target_info_node(target_info_leaf(expected_target_info))
+        target_info_node_assertion = equals_target_info_node(
+            target_info_leaf(expected_target_info),
+            mk_equals_cross_ref_id=equals_custom_cross_ref_test_impl)
 
         section_assertion = section_matches(
-            target=cross_ref_id_asrt.equals(expected_target_info.target),
+            target=equals_custom_cross_ref_test_impl(expected_target_info.target),
             header=asrt_para.equals_text(expected_target_info.presentation_text),
             contents=asrt.sub_component('is_empty',
                                         doc.SectionContents.is_empty.fget,
@@ -67,7 +73,7 @@ class Test(unittest.TestCase):
 
     def test_parent_with_sub_sections(self):
         # ARRANGE #
-        target_factory = CustomTargetInfoFactory('target_component')
+        target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object1 = doc.empty_section_contents()
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
         expected_root_initial_paras = docs.paras('root initial paras')
@@ -89,20 +95,21 @@ class Test(unittest.TestCase):
                            [
                                target_info_leaf(sub1_target),
                                target_info_leaf(sub2_target),
-                           ]))
+                           ]),
+            mk_equals_cross_ref_id=equals_custom_cross_ref_test_impl)
 
         section_assertion2 = section_matches(
-            target=cross_ref_id_asrt.equals(expected_root_target_info.target),
+            target=equals_custom_cross_ref_test_impl(expected_root_target_info.target),
             header=asrt_para.equals_text(expected_root_target_info.presentation_text),
             contents=section_contents_matches(
                 initial_paragraphs=asrt.Is(expected_root_initial_paras),
                 sections=asrt.matches_sequence([
                     section_matches(
-                        target=cross_ref_id_asrt.equals(sub1_target.target),
+                        target=equals_custom_cross_ref_test_impl(sub1_target.target),
                         header=asrt_para.equals_text(sub1_target.presentation_text),
                         contents=asrt.Is(expected_section_contents_object1)),
                     section_matches(
-                        target=cross_ref_id_asrt.equals(sub2_target.target),
+                        target=equals_custom_cross_ref_test_impl(sub2_target.target),
                         header=asrt_para.equals_text(sub2_target.presentation_text),
                         contents=asrt.Is(expected_section_contents_object2)),
                 ])))

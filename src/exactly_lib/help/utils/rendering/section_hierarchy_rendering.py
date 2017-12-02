@@ -1,8 +1,10 @@
-from exactly_lib.help_texts import cross_reference_id as cross_ref
-from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, TargetInfoNode, TargetInfo
+from exactly_lib.help_texts.cross_reference_id import TheCustomTargetInfoFactory
+from exactly_lib.util.textformat.construction import section_hierarchy
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionConstructor, \
     SectionContentsConstructor, \
     ConstructionEnvironment, ArticleContentsConstructor, ArticleConstructor, SectionItemConstructor
+from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfo, TargetInfoNode, \
+    CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.document import ArticleContents, SectionContents
@@ -96,7 +98,7 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
         self._contents_renderer = contents_renderer
 
     def target_info_node(self) -> TargetInfoNode:
-        return cross_ref.target_info_leaf(self._root_target_info)
+        return section_hierarchy.target_info_leaf(self._root_target_info)
 
     def section_item_renderer(self, hierarchy_environment: HierarchyRenderingEnvironment) -> ArticleConstructor:
         super_self = self
@@ -217,7 +219,7 @@ class _LeafSectionRendererNode(SectionItemRendererNodeWithRoot):
         self._contents_renderer = contents_renderer
 
     def target_info_node(self) -> TargetInfoNode:
-        return cross_ref.target_info_leaf(self._root_target_info)
+        return section_hierarchy.target_info_leaf(self._root_target_info)
 
     def section_item_renderer(self, hierarchy_environment: HierarchyRenderingEnvironment) -> SectionConstructor:
         super_self = self
@@ -242,7 +244,7 @@ class SectionContentsConstructorFromHierarchyGenerator(SectionContentsConstructo
         self.generator = generator
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
-        target_factory = CustomTargetInfoFactory('ignored')
+        target_factory = TheCustomTargetInfoFactory('ignored')
         section_item = self.generator.renderer_node(target_factory).section_item(HierarchyRenderingEnvironment(set()),
                                                                                  environment)
         return section_item_contents_as_section_contents(section_item)

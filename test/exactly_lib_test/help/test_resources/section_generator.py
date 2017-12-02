@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator
-from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_node
+from exactly_lib_test.util.textformat.construction.test_resources import CustomTargetInfoFactoryTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
@@ -22,4 +22,4 @@ def generator_generates_valid_data(put: unittest.TestCase,
 
 _CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
 
-_TARGET_FACTORY = CustomTargetInfoFactory('target-prefix')
+_TARGET_FACTORY = CustomTargetInfoFactoryTestImpl(['target-prefix'])
