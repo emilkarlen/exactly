@@ -3,9 +3,9 @@ import unittest
 from exactly_lib.help.program_modes.test_case.contents.main import specification as sut
 from exactly_lib.help_texts.cross_reference_id import TheCustomTargetInfoFactory
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
-from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases, \
-    TEST_HIERARCHY_ENVIRONMENT
-from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases
+from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
+    CrossReferenceTextConstructorTestImpl, TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     is_target_info_node
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check

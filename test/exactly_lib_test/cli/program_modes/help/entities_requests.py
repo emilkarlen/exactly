@@ -7,7 +7,8 @@ from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAM
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor
 from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl
-from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
+    CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 
