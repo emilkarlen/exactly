@@ -25,6 +25,8 @@ class TestFailingParse(unittest.TestCase):
     def test_fail_when_invalid_syntax(self):
         test_cases = [
             '   ',
+            '  =  ',
+            '= "argument-2',
             'argument-1 "argument-2',
         ]
         parser = sut.Parser()
@@ -54,14 +56,14 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
                              actual_preprocessor.external_program)
 
     def test_single_command(self):
-        self._check('executable', ['executable'])
+        self._check('= executable', ['executable'])
 
     def test_command_with_arguments(self):
-        self._check('executable arg1 --arg2',
+        self._check(' = executable arg1 --arg2',
                     ['executable', 'arg1', '--arg2'])
 
     def test_quoting(self):
-        self._check("'executable with space' arg2 \"arg 3\"",
+        self._check("= 'executable with space' arg2 \"arg 3\"",
                     ['executable with space', 'arg2', 'arg 3'])
 
 

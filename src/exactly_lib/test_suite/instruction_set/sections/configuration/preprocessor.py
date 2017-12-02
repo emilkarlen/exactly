@@ -1,14 +1,12 @@
-import shlex
-
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts
+from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG, \
+    extract_mandatory_arguments_after_eq
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
@@ -41,7 +39,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE,
                                           self.argument)
         return [
-            InvokationVariant(self._cl_syntax_for_args([executable_arg,
+            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG,
+                                                        executable_arg,
                                                         optional_arguments_arg])),
         ]
 
@@ -75,13 +74,7 @@ not in sub suites.
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationSectionInstruction:
-        arg = rest_of_line.strip()
-        if arg == '':
-            raise SingleInstructionInvalidArgumentException('A preprocessor program must be given.')
-        try:
-            command_and_arguments = shlex.split(arg)
-        except:
-            raise SingleInstructionInvalidArgumentException('Invalid quoting: ' + arg)
+        command_and_arguments = extract_mandatory_arguments_after_eq(rest_of_line)
         return Instruction(command_and_arguments)
 
 
