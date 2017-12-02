@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.cross_reference_id import TargetInfo
+from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfo
 from exactly_lib.util.textformat.structure.core import AnchorText
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_id_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

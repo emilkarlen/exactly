@@ -1,7 +1,7 @@
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId, EntityTypeNames
+from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfo, CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, UrlCrossReferenceTarget
-from exactly_lib.util.textformat.structure.structures import anchor_text
 
 
 class CustomCrossReferenceId(CrossReferenceId):
@@ -165,79 +165,29 @@ class CrossReferenceIdVisitor:
         raise NotImplementedError()
 
 
-class TargetInfo(tuple):
-    def __new__(cls,
-                presentation: core.StringText,
-                target: core.CrossReferenceTarget):
-        return tuple.__new__(cls, (presentation, target))
-
-    @property
-    def presentation_text(self) -> core.StringText:
-        return self[0]
-
-    @property
-    def target(self) -> core.CrossReferenceTarget:
-        return self[1]
-
-    def anchor_text(self) -> core.Text:
-        return anchor_text(self.presentation_text,
-                           self.target)
-
-
-class TargetInfoNode(tuple):
-    def __new__(cls,
-                data: TargetInfo,
-                children: list):
-        """
-        :type children: [TargetInfoNode]
-        """
-        return tuple.__new__(cls, (data, children))
-
-    @property
-    def data(self) -> TargetInfo:
-        return self[0]
-
-    @property
-    def children(self) -> list:
-        """
-        :rtype [TargetInfoNode]
-        """
-        return self[1]
-
-
-def target_info_leaf(ti: TargetInfo) -> TargetInfoNode:
-    return TargetInfoNode(ti, [])
-
-
-class CustomTargetInfoFactory:
+class TheCustomTargetInfoFactory(CustomTargetInfoFactory):
     def __init__(self, prefix: str):
         self.prefix = prefix
-
-    def sub(self,
-            presentation: str,
-            local_target_name: str) -> TargetInfo:
-        return TargetInfo(core.StringText(presentation),
-                          CustomCrossReferenceId(self.prefix + _COMPONENT_SEPARATOR + local_target_name))
 
     def root(self, presentation: core.StringText) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceId(self.prefix))
 
-    def sub_factory(self, local_name: str):
+    def sub_factory(self, local_name: str) -> CustomTargetInfoFactory:
         return sub_component_factory(local_name, self)
 
 
 def root_factory() -> CustomTargetInfoFactory:
-    return CustomTargetInfoFactory('')
+    return TheCustomTargetInfoFactory('')
 
 
 def sub_component_factory(local_name: str,
-                          root: CustomTargetInfoFactory) -> CustomTargetInfoFactory:
+                          root: TheCustomTargetInfoFactory) -> CustomTargetInfoFactory:
     if not root.prefix:
         prefix = local_name
     else:
         prefix = root.prefix + _COMPONENT_SEPARATOR + local_name
-    return CustomTargetInfoFactory(prefix)
+    return TheCustomTargetInfoFactory(prefix)
 
 
 _COMPONENT_SEPARATOR = '.'
