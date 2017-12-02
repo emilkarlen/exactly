@@ -1,4 +1,4 @@
-from exactly_lib.util.textformat.construction.section_hierarchy import CustomTargetInfoFactory, TargetInfo
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceTarget
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

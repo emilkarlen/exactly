@@ -5,31 +5,30 @@ from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
-from exactly_lib.util.textformat.construction import section_hierarchy_con
-from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def generator(header: str, setup: Setup) -> section_hierarchy_constructor.SectionHierarchyGenerator:
+def generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator:
     text_parser = _text_parser(setup)
-    return section_hierarchy_con.parent(
+    return hierarchy.parent(
         header, [],
         [
-            ('phases', section_hierarchy_con.leaf('Phases', _PhaseRenderer(text_parser))),
-            ('phase-contents', section_hierarchy_con.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            ('instructions', section_hierarchy_con.parent(
+            ('phases', hierarchy.leaf('Phases', _PhaseRenderer(text_parser))),
+            ('phase-contents', hierarchy.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
+            ('instructions', hierarchy.parent(
                 'Instructions',
                 text_parser.fnap(INSTRUCTIONS_DOC),
                 [('description',
-                  section_hierarchy_con.leaf('Instruction descriptions',
-                                             _InstructionsRenderer(
+                  hierarchy.leaf('Instruction descriptions',
+                                 _InstructionsRenderer(
                                                  text_parser)))])
              ),
-            ('com-empty', section_hierarchy_con.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
+            ('com-empty', hierarchy.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
 

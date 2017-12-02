@@ -17,8 +17,9 @@ from exactly_lib.help_texts.test_suite.instruction_names import INSTRUCTION_NAME
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.construction.section_hierarchy_con import leaf
-from exactly_lib.util.textformat.construction.section_hierarchy_constructor import SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import leaf
+from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
+    SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

@@ -6,24 +6,23 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.rendering.hierarchy_utils import \
     SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction import section_hierarchy_con
-from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
 def generator(header: str, test_case_help: TestCaseHelp
-              ) -> section_hierarchy_constructor.SectionHierarchyGenerator:
+              ) -> structures.SectionHierarchyGenerator:
     setup = Setup(test_case_help)
-    return section_hierarchy_con.parent(
+    return hierarchy.parent(
         header,
         [],
         [
             ('overview', overview.generator('Overview', setup)),
             ('file-syntax', tc.generator('Test case file syntax', setup)),
             ('processing',
-             section_hierarchy_con.leaf('Test case processing steps', processing.ContentsConstructor(setup))),
+             hierarchy.leaf('Test case processing steps', processing.ContentsConstructor(setup))),
             ('outcome', test_outcome.hierarchy_generator('Test outcome', setup)),
         ])
 

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfo, TargetInfoNode
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfo, TargetInfoNode
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
