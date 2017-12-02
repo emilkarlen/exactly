@@ -23,9 +23,9 @@
 [conf]
 
 
-act-home ../bin
+act-home = ../bin
 
-home     ..
+home     = ..
 
 
 [setup]

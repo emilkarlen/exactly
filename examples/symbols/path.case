@@ -88,4 +88,4 @@ dir-contents @[OUTPUT_BAD_DIR]@ num-files = 1
 [conf]
 
 
-act-home bin
+act-home = bin

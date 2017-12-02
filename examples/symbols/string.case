@@ -31,4 +31,4 @@ EOF
 [conf]
 
 
-act-home bin
+act-home = bin
