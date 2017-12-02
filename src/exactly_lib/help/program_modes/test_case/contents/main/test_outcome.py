@@ -3,6 +3,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.result import PartialResultStatus, FullResultStatus
+from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
@@ -10,6 +11,7 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, 
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help.utils.rendering.section_contents_renderer import ConstantSectionContentsRenderer
 from exactly_lib.help_texts import formatting
+from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
@@ -191,15 +193,15 @@ def _exit_value_table_for(setup: Setup,
                           exit_value_list: list) -> ParagraphItem:
     def _row(exit_value: ExitValue) -> list:
         return [
-            cell(paras(exit_value.exit_identifier)),
+            cell(paras(exit_value_text(exit_value))),
             cell(paras(str(exit_value.exit_code))),
         ]
 
     return first_row_is_header_table(
         [
             [
-                cell(paras('Exit identifier')),
-                cell(paras('Exit code'))
+                cell(paras(texts.EXIT_IDENTIFIER_TITLE)),
+                cell(paras(texts.EXIT_CODE_TITLE))
             ]] +
         [_row(exit_value) for exit_value in exit_value_list],
         '  ')
@@ -210,7 +212,7 @@ def _outcome_and_exit_value_table_for(setup: Setup,
     def _row(exit_value: ExitValue) -> list:
         return [
             cell(paras(exit_value.exit_identifier)),
-            cell(paras(exit_value.exit_identifier)),
+            cell(paras(exit_value_text(exit_value))),
             cell(paras(str(exit_value.exit_code))),
         ]
 
@@ -218,8 +220,8 @@ def _outcome_and_exit_value_table_for(setup: Setup,
         [
             [
                 cell(paras('Test Case')),
-                cell(paras('Exit identifier')),
-                cell(paras('Exit code')),
+                cell(paras(texts.EXIT_IDENTIFIER_TITLE)),
+                cell(paras(texts.EXIT_CODE_TITLE)),
             ]] +
         [_row(exit_value) for exit_value in exit_value_list],
         '  ')
