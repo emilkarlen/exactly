@@ -1,4 +1,4 @@
-EXECUTION_MODE = 'mode'
+TEST_CASE_STATUS = 'status'
 HOME_CASE_DIRECTORY = 'home'
 HOME_ACT_DIRECTORY = 'act-home'
 ACTOR = 'actor'
