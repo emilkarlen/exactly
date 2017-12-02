@@ -1,6 +1,8 @@
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import first_column_is_header_table, para, cell
@@ -28,12 +30,12 @@ class Setup(tuple):
 def singe_exit_value_display(exit_value_on_error) -> ParagraphItem:
     return first_column_is_header_table([
         [
-            cell([para('Exit code')]),
+            cell([para(texts.EXIT_CODE_TITLE)]),
             cell([para(str(exit_value_on_error.exit_code))]),
         ],
         [
-            cell([para('Exit identifier')]),
-            cell([para(exit_value_on_error.exit_identifier)]),
+            cell([para(texts.EXIT_IDENTIFIER_TITLE)]),
+            cell([para(exit_value_text(exit_value_on_error))]),
         ],
     ])
 
