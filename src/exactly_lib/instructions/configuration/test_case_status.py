@@ -1,17 +1,19 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import conf_params, concepts
+from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
+    extract_argument_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.test_case_status import ExecutionMode, NAME_2_STATUS
+from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -36,9 +38,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
-        return [
-            InvokationVariant('= ' + _ARG_NAME, []),
-        ]
+        return single_eq_invokation_variants(a.Named(_ARG_NAME))
 
     def syntax_element_descriptions(self) -> list:
         from exactly_lib.help.entities.configuration_parameters.objects.test_case_status import \
@@ -57,14 +57,7 @@ _ARG_NAME = formatting.syntax_element(conf_params.TEST_CASE_STATUS_CONF_PARAM_IN
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        arguments = split_arguments_list_string(rest_of_line)
-        if len(arguments) != 2:
-            msg = 'Invalid number of arguments, expected 2, found {}'.format(str(len(arguments)))
-            raise SingleInstructionInvalidArgumentException(msg)
-        if arguments[0] != '=':
-            raise SingleInstructionInvalidArgumentException('Missing =')
-
-        status_element_arg = arguments[1]
+        status_element_arg = extract_argument_string(rest_of_line)
         argument = status_element_arg.upper()
         try:
             target = NAME_2_STATUS[argument]
