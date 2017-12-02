@@ -116,11 +116,6 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
         return RetVal()
 
 
-HIERARCHY_SECTION_TAG = 'toc'
-
-_HIERARCHY_SECTION_TAGS = {HIERARCHY_SECTION_TAG}
-
-
 class SectionItemRendererNodeWithSubSections(SectionItemRendererNodeWithRoot):
     """
     A section with sub sections that appear in the target-hierarchy.
