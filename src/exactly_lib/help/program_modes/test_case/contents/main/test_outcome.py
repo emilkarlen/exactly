@@ -11,21 +11,20 @@ from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import execution_mode
-from  exactly_lib.util.textformat.construction import section_hierarchy_con
-from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 
 
-def hierarchy_generator(header: str, setup: Setup) -> section_hierarchy_constructor.SectionHierarchyGenerator:
+def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator:
     preamble_paragraphs = normalize_and_parse(PREAMBLE)
 
-    def const_contents(header: str, paragraphs: list) -> section_hierarchy_constructor.SectionHierarchyGenerator:
-        return section_hierarchy_con.leaf(header,
-                                          ConstantSectionContentsConstructor(section_contents(paragraphs)))
+    def const_contents(header: str, paragraphs: list) -> structures.SectionHierarchyGenerator:
+        return hierarchy.leaf(header,
+                              ConstantSectionContentsConstructor(section_contents(paragraphs)))
 
-    return section_hierarchy_con.parent(
+    return hierarchy.parent(
         header,
         preamble_paragraphs,
         [

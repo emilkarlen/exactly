@@ -22,8 +22,8 @@ class Test(unittest.TestCase):
         rendering_environment = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
         generator = sut.generator('header', self.test_case_help)
         # ACT #
-        actual = generator.renderer_node(TheCustomTargetInfoFactory('prefix')).section_item(TEST_HIERARCHY_ENVIRONMENT,
-                                                                                            rendering_environment)
+        actual = generator.generator_node(TheCustomTargetInfoFactory('prefix')).section_item(TEST_HIERARCHY_ENVIRONMENT,
+                                                                                             rendering_environment)
         # ASSERT #
         struct_check.is_section_item.apply(self, actual)
 
@@ -31,7 +31,7 @@ class Test(unittest.TestCase):
         # ARRANGE #
         generator = sut.generator('header', self.test_case_help)
         # ACT #
-        actual = generator.renderer_node(TheCustomTargetInfoFactory('prefix')).target_info_node()
+        actual = generator.generator_node(TheCustomTargetInfoFactory('prefix')).target_info_node()
         # ASSERT #
         is_target_info_node.apply(self, actual)
 

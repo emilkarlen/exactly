@@ -1,11 +1,10 @@
 import unittest
 
-from exactly_lib.util.textformat.construction import section_hierarchy_con
-from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment, \
     ConstantSectionContentsConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfoNode, target_info_leaf, \
+from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, target_info_leaf, \
     CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
@@ -30,7 +29,7 @@ class Test(unittest.TestCase):
         # ARRANGE #
         target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object = doc.empty_section_contents()
-        object_to_test = section_hierarchy_con.leaf('header', section_contents(expected_section_contents_object))
+        object_to_test = hierarchy.leaf('header', section_contents(expected_section_contents_object))
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('header'))
 
@@ -52,7 +51,7 @@ class Test(unittest.TestCase):
     def test_parent_without_sub_sections(self):
         # ARRANGE #
         target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
-        object_to_test = section_hierarchy_con.parent('top header', [], [])
+        object_to_test = hierarchy.parent('top header', [], [])
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('top header'))
 
@@ -78,13 +77,13 @@ class Test(unittest.TestCase):
         expected_section_contents_object1 = doc.empty_section_contents()
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
         expected_root_initial_paras = docs.paras('root initial paras')
-        object_to_test = section_hierarchy_con.parent(
+        object_to_test = hierarchy.parent(
             'root header',
             expected_root_initial_paras,
-            [('sub-target1', section_hierarchy_con.leaf('sub1',
-                                                        section_contents(expected_section_contents_object1))),
-             ('sub-target2', section_hierarchy_con.leaf('sub2',
-                                                        section_contents(expected_section_contents_object2)))
+            [('sub-target1', hierarchy.leaf('sub1',
+                                            section_contents(expected_section_contents_object1))),
+             ('sub-target2', hierarchy.leaf('sub2',
+                                            section_contents(expected_section_contents_object2)))
              ])
         # EXPECTATION #
         expected_root_target_info = target_factory.root(StringText('root header'))
@@ -121,14 +120,14 @@ class Test(unittest.TestCase):
                              section_assertion2)
 
     def _act_and_assert(self,
-                        object_to_test: section_hierarchy_constructor.SectionHierarchyGenerator,
+                        object_to_test: structures.SectionHierarchyGenerator,
                         target_factory: CustomTargetInfoFactory,
                         target_info_node_assertion: asrt.ValueAssertion,
                         section_assertion: asrt.ValueAssertion):
         # ACT #
-        section_renderer_node = object_to_test.renderer_node(target_factory)
+        section_renderer_node = object_to_test.generator_node(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()
-        actual_section = section_renderer_node.section_item_renderer(TEST_HIERARCHY_ENVIRONMENT).apply(
+        actual_section = section_renderer_node.section_item_constructor(TEST_HIERARCHY_ENVIRONMENT).apply(
             CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')

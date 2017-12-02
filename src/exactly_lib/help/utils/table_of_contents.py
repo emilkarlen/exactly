@@ -1,4 +1,4 @@
-from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfoNode
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
 from exactly_lib.util.textformat.structure import core as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

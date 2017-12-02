@@ -9,10 +9,11 @@ from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionContentsConstructorForConstantContents
-from exactly_lib.util.textformat.construction.section_hierarchy import CustomTargetInfoFactory
-from exactly_lib.util.textformat.construction.section_hierarchy_con import leaf, parent
-from exactly_lib.util.textformat.construction.section_hierarchy_constructor import SectionItemRendererNode, \
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import leaf, parent
+from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
+    SectionItemGeneratorNode, \
     SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -36,7 +37,7 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
             'reporter_concept': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
         }
 
-    def renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemRendererNode:
+    def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
         generator = parent(self.header,
                            [],
                            [
@@ -53,7 +54,7 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                                      self._section_of_parsed(_FILE_SYNTAX))
                                 ),
                            ])
-        return generator.renderer_node(target_factory)
+        return generator.generator_node(target_factory)
 
     def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:
         return SectionContentsConstructorForConstantContents(

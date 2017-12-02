@@ -1,5 +1,5 @@
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId, EntityTypeNames
-from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfo, CustomTargetInfoFactory
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfo, CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, UrlCrossReferenceTarget
 

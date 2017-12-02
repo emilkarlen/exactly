@@ -14,10 +14,11 @@ from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_D
     SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy import TargetInfoNode
-from exactly_lib.util.textformat.construction.section_hierarchy_con import parent
-from exactly_lib.util.textformat.construction.section_hierarchy_constructor import HierarchyRenderingEnvironment, \
-    SectionItemRendererNode, SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent
+from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
+    HierarchyGeneratorEnvironment, \
+    SectionItemGeneratorNode, SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
 from exactly_lib.util.textformat.formatting.html import document as doc_rendering
 from exactly_lib.util.textformat.formatting.html import text
 from exactly_lib.util.textformat.formatting.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
@@ -44,7 +45,7 @@ def generate_and_output(output_file,
 
 def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
     section_node = _section_rendering_node(application_help)
-    hierarchy_environment = HierarchyRenderingEnvironment({std_tags.TOC_SECTION})
+    hierarchy_environment = HierarchyGeneratorEnvironment({std_tags.TOC_SECTION})
     rendering_environment = ConstructionEnvironment(CrossReferenceTextConstructor(),
                                                     construct_simple_header_value_lists_as_tables=True)
     section_item = section_node.section_item(hierarchy_environment, rendering_environment)
@@ -129,9 +130,9 @@ def _cli_syntax_sections(local_target_name: str) -> list:
     ]
 
 
-def _section_rendering_node(application_help: ApplicationHelp) -> SectionItemRendererNode:
+def _section_rendering_node(application_help: ApplicationHelp) -> SectionItemGeneratorNode:
     section_generator = _generator(application_help)
-    return section_generator.renderer_node(root_factory())
+    return section_generator.generator_node(root_factory())
 
 
 def _add_toc_as_first_paragraphs(contents: doc.SectionContents,
