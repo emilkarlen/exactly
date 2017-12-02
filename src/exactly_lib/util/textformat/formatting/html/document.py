@@ -32,8 +32,8 @@ class DocumentRenderer:
               section_contents: SectionContents):
         html = self._element_tree(document_setup, section_contents)
         us_ascii_bytes = tostring(html,
-                                  encoding='us-ascii',
-                                  short_empty_elements=True)
+                                  method='html',
+                                  encoding='us-ascii')
         s = us_ascii_bytes.decode(encoding='us-ascii')
         output_file.write(DOCTYPE_XHTML1_0)
         output_file.write(s)

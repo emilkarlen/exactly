@@ -10,6 +10,7 @@ PAGE_TITLE = 'Reference Manual for %s' % formatting.program_name(program_info.PR
 TOC_TITLE = 'Table of Contents'
 
 _CSS_CLASSES = {
+    'toc': 'toc',
     'entity': std_tags.ENTITY,
     'section': std_tags.SECTION,
     'syntax_text': std_tags.SYNTAX_TEXT,
@@ -30,40 +31,43 @@ pre {{
 }}
 
 
-h1 {{
+section.{toc} > header > h1 {{
   padding: 5px;
-  border-bottom: solid black;
+  border-bottom: thick solid black;
 }}
 
-article header h1 {{
+section.{toc} > header > h2 {{
+  padding: 2px;
+  border-bottom: medium solid black;
+}}
+
+section.{toc} > header > h3 {{
+  padding: 2px;
+  border-bottom: thin solid black;
+}}
+
+article > header > h1 {{
   padding: 3px;
   font-size: x-large;
   background-color: #c0c0c0;
 }}
 
-article h1 {{
-  font-size: large;
-  padding: 0px;
-  background-color: transparent;
-  border-bottom: none;
-}}
-
-article h2 {{
-  font-size: medium;
-}}
-
-article h3 {{
-  font-size: medium;
-}}
-
-article.{section} header h1 {{
-  font-size: xx-large;
-  background-color: LightGoldenRodYellow;
-}}
-
-article header p {{
+article > header > p {{
   font-style: italic;
   font-size: 110%;
+}}
+
+article section > header > h1 {{
+    font-size: large;
+}}
+
+article section > header > h2 {{
+    font-size: medium;
+}}
+
+article.{section} > header > h1 {{
+  font-size: xx-large;
+  background-color: LightGoldenRodYellow;
 }}
 
 table {{
