@@ -8,6 +8,12 @@ class CliProgramSyntaxDocumentation:
     def description(self) -> DescriptionWithSubSections:
         raise NotImplementedError()
 
+    def initial_paragraphs(self) -> list:
+        """
+        :rtype: [`ParagraphItem`]
+        """
+        return []
+
     def synopsises(self) -> list:
         """
         :rtype: [`Synopsis`]

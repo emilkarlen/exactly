@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import doc_format
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import short_option_syntax
@@ -9,7 +10,7 @@ class CommandLineSyntaxRenderer:
         self.arg_usage_renderer = ArgumentUsageOnCommandLineRenderer()
 
     def apply(self, command_line: arg.CommandLine) -> docs.Text:
-        return docs.text(self.as_str(command_line))
+        return doc_format.syntax_text(self.as_str(command_line))
 
     def as_str(self, command_line: arg.CommandLine) -> str:
         components = []
