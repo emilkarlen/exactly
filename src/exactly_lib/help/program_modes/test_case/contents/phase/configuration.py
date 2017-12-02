@@ -8,7 +8,7 @@ from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params
-from exactly_lib.help_texts.test_case.instructions.instruction_names import EXECUTION_MODE_INSTRUCTION_NAME
+from exactly_lib.help_texts.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME
 from exactly_lib.test_case.execution_mode import NAME_SKIP
 from exactly_lib.util.description import Description
@@ -54,7 +54,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
             concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(self.name.plain,
-                                                   EXECUTION_MODE_INSTRUCTION_NAME),
+                                                   TEST_CASE_STATUS_INSTRUCTION_NAME),
             TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
         ]
 

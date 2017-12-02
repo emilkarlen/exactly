@@ -50,7 +50,7 @@ class _SymbolConcept(ConceptDocumentation):
             'max_symbol_name_width': max(map(len, symbol_names)),
             'ref_syntax_of_symbol_name': symbol_reference_syntax_for_name('symbol_name'),
 
-            'exists_file': instruction_names.EXECUTION_MODE_INSTRUCTION_NAME,
+            'exists_file': instruction_names.TEST_CASE_STATUS_INSTRUCTION_NAME,
 
             'stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
             'transformed': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
