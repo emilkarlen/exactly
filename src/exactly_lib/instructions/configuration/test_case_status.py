@@ -66,8 +66,8 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         try:
             target = NAME_2_STATUS[argument]
         except KeyError:
-            raise SingleInstructionInvalidArgumentException('Invalid {mode}: `{actual}`'.format(
-                mode=conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.configuration_parameter_name,
+            raise SingleInstructionInvalidArgumentException('Invalid {status}: `{actual}`'.format(
+                status=conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.configuration_parameter_name,
                 actual=arguments[0]))
         return _Instruction(target)
 

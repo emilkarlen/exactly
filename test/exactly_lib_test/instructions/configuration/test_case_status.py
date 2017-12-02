@@ -50,7 +50,7 @@ class TestCaseBaseForParser(TestCaseBase):
 
 
 class TestChangeMode(TestCaseBaseForParser):
-    def test_NORMAL(self):
+    def test_PASS(self):
         self._run(expected=ExecutionMode.PASS,
                   initial=ExecutionMode.SKIP,
                   argument=exactly_lib.test_case.test_case_status.NAME_PASS)
@@ -60,7 +60,7 @@ class TestChangeMode(TestCaseBaseForParser):
                   initial=ExecutionMode.PASS,
                   argument=exactly_lib.test_case.test_case_status.NAME_SKIP)
 
-    def test_XFAIL(self):
+    def test_FAIL(self):
         self._run(expected=ExecutionMode.FAIL,
                   initial=ExecutionMode.PASS,
                   argument=exactly_lib.test_case.test_case_status.NAME_FAIL)
