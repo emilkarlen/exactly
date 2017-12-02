@@ -70,33 +70,6 @@ def parent(header: str,
                                                      local_target_name__sub_section__list)
 
 
-class LeafSectionRendererNode(SectionItemRendererNodeWithRoot):
-    """
-    A section without sub sections that appear in the target-hierarchy.
-    """
-
-    def __init__(self,
-                 node_target_info: TargetInfo,
-                 contents_renderer: SectionContentsRenderer,
-                 ):
-        super().__init__(node_target_info)
-        self._contents_renderer = contents_renderer
-
-    def target_info_node(self) -> TargetInfoNode:
-        return cross_ref.target_info_leaf(self._root_target_info)
-
-    def section_item_renderer(self) -> SectionRenderer:
-        super_self = self
-
-        class RetVal(SectionRenderer):
-            def apply(self, environment: RenderingEnvironment) -> doc.Section:
-                return doc.Section(super_self._root_target_info.presentation_text,
-                                   super_self._contents_renderer.apply(environment),
-                                   target=super_self._root_target_info.target)
-
-        return RetVal()
-
-
 class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
     """
     An article without sub sections that appear in the target-hierarchy.
@@ -128,6 +101,9 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
                                    tags=super_self._tags)
 
         return RetVal()
+
+
+_HIERARCHY_SECTION_TAGS = {'toc'}
 
 
 class SectionItemRendererNodeWithSubSections(SectionItemRendererNodeWithRoot):
@@ -164,7 +140,8 @@ class SectionItemRendererNodeWithSubSections(SectionItemRendererNodeWithRoot):
                 return doc.Section(super_self._root_target_info.presentation_text,
                                    doc.SectionContents(super_self._initial_paragraphs,
                                                        sub_sections),
-                                   target=super_self._root_target_info.target)
+                                   target=super_self._root_target_info.target,
+                                   tags=_HIERARCHY_SECTION_TAGS)
 
         return RetVal()
 
@@ -182,8 +159,8 @@ class _SectionLeafGenerator(SectionHierarchyGenerator):
         self._contents_renderer = contents_renderer
 
     def renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemRendererNode:
-        return LeafSectionRendererNode(target_factory.root(self._header),
-                                       self._contents_renderer)
+        return _LeafSectionRendererNode(target_factory.root(self._header),
+                                        self._contents_renderer)
 
 
 class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
@@ -215,6 +192,34 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
         return SectionItemRendererNodeWithSubSections(target_factory.root(self._header),
                                                       self._initial_paragraphs,
                                                       sub_sections)
+
+
+class _LeafSectionRendererNode(SectionItemRendererNodeWithRoot):
+    """
+    A section without sub sections that appear in the target-hierarchy.
+    """
+
+    def __init__(self,
+                 node_target_info: TargetInfo,
+                 contents_renderer: SectionContentsRenderer,
+                 ):
+        super().__init__(node_target_info)
+        self._contents_renderer = contents_renderer
+
+    def target_info_node(self) -> TargetInfoNode:
+        return cross_ref.target_info_leaf(self._root_target_info)
+
+    def section_item_renderer(self) -> SectionRenderer:
+        super_self = self
+
+        class RetVal(SectionRenderer):
+            def apply(self, environment: RenderingEnvironment) -> doc.Section:
+                return doc.Section(super_self._root_target_info.presentation_text,
+                                   super_self._contents_renderer.apply(environment),
+                                   target=super_self._root_target_info.target,
+                                   tags=_HIERARCHY_SECTION_TAGS)
+
+        return RetVal()
 
 
 class SectionContentsRendererFromHierarchyGenerator(SectionContentsRenderer):

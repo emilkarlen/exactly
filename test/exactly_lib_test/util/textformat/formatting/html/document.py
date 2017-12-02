@@ -53,7 +53,7 @@ class TestDocument(unittest.TestCase):
                     '</header>'
 
                     '<p>para 1</p>'
-                    '<p />'
+                    '<p></p>'
                     '</section>'
                     '</body>'
                     '</html>')
