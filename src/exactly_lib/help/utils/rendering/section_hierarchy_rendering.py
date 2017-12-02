@@ -46,7 +46,7 @@ class SectionItemRendererNodeWithRoot(SectionItemRendererNode):
     def __init__(self, root_target_info: TargetInfo):
         self._root_target_info = root_target_info
 
-    def target_info_node(self, ) -> TargetInfoNode:
+    def target_info_node(self) -> TargetInfoNode:
         raise NotImplementedError()
 
 
