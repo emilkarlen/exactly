@@ -11,7 +11,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parsers imp
 from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.test_case_status import ExecutionMode, NAME_2_MODE
+from exactly_lib.test_case.test_case_status import ExecutionMode, NAME_2_STATUS
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
@@ -24,16 +24,17 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
             'MODE': _ARG_NAME,
-            'execution_mode_config_param': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
+            'status_config_param': formatting.conf_param(
+                conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name,
             'default_mode': conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.default_value_single_line_description,
         })
 
     def single_line_description(self) -> str:
-        return self._format('Sets the {execution_mode_config_param} {conf_param}')
+        return self._format('Sets the {status_config_param} {conf_param}')
 
     def main_description_rest(self) -> list:
-        return self._paragraphs('The default mode (if not changed by this instruction) is {default_mode}.')
+        return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
         return [
@@ -52,7 +53,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
         return [conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target]
 
 
-_ARG_NAME = 'MODE'
+_ARG_NAME = formatting.syntax_element(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.configuration_parameter_name)
 
 
 class Parser(InstructionParserThatConsumesCurrentLine):
@@ -63,9 +64,11 @@ class Parser(InstructionParserThatConsumesCurrentLine):
             raise SingleInstructionInvalidArgumentException(msg)
         argument = arguments[0].upper()
         try:
-            target = NAME_2_MODE[argument]
+            target = NAME_2_STATUS[argument]
         except KeyError:
-            raise SingleInstructionInvalidArgumentException('Invalid mode: `%s`' % arguments[0])
+            raise SingleInstructionInvalidArgumentException('Invalid {mode}: `{actual}`'.format(
+                mode=conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.configuration_parameter_name,
+                actual=arguments[0]))
         return _Instruction(target)
 
 
@@ -77,3 +80,8 @@ class _Instruction(ConfigurationPhaseInstruction):
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
         configuration_builder.set_execution_mode(self.mode_to_set)
         return sh.new_sh_success()
+
+
+_MAIN_DESCRIPTION_REST = """\
+The default {status_config_param} (if not changed by this instruction) is {default_mode}.
+"""

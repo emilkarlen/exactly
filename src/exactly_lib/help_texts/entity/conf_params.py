@@ -17,6 +17,7 @@ class ConfigurationParameterInfo(SingularNameAndCrossReferenceId):
     def __init__(self,
                  singular_name: str,
                  configuration_parameter_name: str,
+                 informative_name: str,
                  single_line_description_str: str,
                  default_value_single_line_description: str,
                  cross_reference_target: CrossReferenceId):
@@ -25,6 +26,11 @@ class ConfigurationParameterInfo(SingularNameAndCrossReferenceId):
                          cross_reference_target)
         self._default_value_single_line_description = default_value_single_line_description
         self._configuration_parameter_name = configuration_parameter_name
+        self._informative_name = informative_name
+
+    @property
+    def informative_name(self) -> str:
+        return self._informative_name
 
     @property
     def singular_name_text(self) -> StringText:
@@ -52,8 +58,9 @@ def _conf_param_info(name: str,
                      configuration_parameter_name: str,
                      default_value_single_line_description: str,
                      single_line_description_str: str) -> ConfigurationParameterInfo:
-    return ConfigurationParameterInfo(configuration_parameter_name,  # FIXME Use/remove name??
+    return ConfigurationParameterInfo(configuration_parameter_name,
                                       configuration_parameter_name,
+                                      name,
                                       single_line_description_str,
                                       default_value_single_line_description,
                                       cross_ref(configuration_parameter_name))
@@ -72,7 +79,7 @@ def _format(s: str) -> str:
 
 
 def _of_tc_dir_info(x: test_case_file_structure.TcDirInfo) -> ConfigurationParameterInfo:
-    return _conf_param_info(x.identifier,  # FIXME Use/remove informative_name??
+    return _conf_param_info(x.informative_name,
                             x.identifier,
                             'The directory where the test case file is located.',
                             x.single_line_description_str)
