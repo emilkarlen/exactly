@@ -1,7 +1,8 @@
 import unittest
 
 from exactly_lib_test.help import program_modes, html_doc, entities
-from exactly_lib_test.help.utils import table_of_contents, section_hierarchy_rendering
+from exactly_lib_test.help.utils import section_hierarchy_rendering
+from exactly_lib_test.util.textformat.construction.section_hierarchy import table_of_contents
 
 
 def suite() -> unittest.TestSuite:
