@@ -10,7 +10,7 @@ from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCr
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME
-from exactly_lib.test_case.execution_mode import NAME_SKIP
+from exactly_lib.test_case.test_case_status import NAME_SKIP
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

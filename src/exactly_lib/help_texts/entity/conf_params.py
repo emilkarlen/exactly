@@ -9,7 +9,7 @@ from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYP
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.processing import exit_values
-from exactly_lib.test_case import execution_mode
+from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.structure.core import StringText
 
 
@@ -88,7 +88,7 @@ ACTOR_CONF_PARAM_INFO = _conf_param_info(
 TEST_CASE_STATUS_CONF_PARAM_INFO = _conf_param_info(
     'test case status',
     conf_params.TEST_CASE_STATUS,
-    execution_mode.NAME_DEFAULT,
+    test_case_status.NAME_DEFAULT,
     _format('The status of the test case - if it is expected to {PASS} or {FAIL}, or should be skipped.'),
 )
 

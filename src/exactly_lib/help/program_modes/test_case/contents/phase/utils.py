@@ -2,7 +2,7 @@ from exactly_lib.help_texts import test_case_file_structure, formatting
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.formatting import SectionName
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
-from exactly_lib.test_case.execution_mode import NAME_SKIP
+from exactly_lib.test_case.test_case_status import NAME_SKIP
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_RESULT
 from exactly_lib.util.textformat.structure import structures as docs, table
