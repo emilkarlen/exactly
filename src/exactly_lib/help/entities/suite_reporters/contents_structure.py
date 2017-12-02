@@ -1,18 +1,12 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
-from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
-from exactly_lib.util.textformat.structure.core import StringText
 
 
 class SuiteReporterDocumentation(EntityDocumentationBase):
     """
     Documents a suite reporter.
     """
-
-    @property
-    def singular_name_text(self) -> StringText:
-        return syntax_text(self.singular_name())
 
     def main_description_rest(self) -> list:
         """

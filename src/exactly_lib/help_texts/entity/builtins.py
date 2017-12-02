@@ -1,6 +1,22 @@
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
+from exactly_lib.util.textformat.structure.core import StringText
+
+
+class BuiltinSymbolInfo(SingularNameAndCrossReferenceId):
+    def __init__(self,
+                 singular_name: str,
+                 single_line_description_str: str,
+                 cross_reference_target: CrossReferenceId):
+        super().__init__(singular_name,
+                         single_line_description_str,
+                         cross_reference_target)
+
+    @property
+    def singular_name_text(self) -> StringText:
+        return syntax_text(self._singular_name)
 
 
 def type_cross_ref(symbol_name: str) -> EntityCrossReferenceId:
@@ -10,6 +26,6 @@ def type_cross_ref(symbol_name: str) -> EntityCrossReferenceId:
 
 def name_and_ref_target(symbol_name: str,
                         single_line_description_str: str) -> SingularNameAndCrossReferenceId:
-    return SingularNameAndCrossReferenceId(symbol_name,
-                                           single_line_description_str,
-                                           type_cross_ref(symbol_name))
+    return BuiltinSymbolInfo(symbol_name,
+                             single_line_description_str,
+                             type_cross_ref(symbol_name))

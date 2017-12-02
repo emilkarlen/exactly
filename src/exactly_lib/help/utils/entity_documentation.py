@@ -23,16 +23,20 @@ class EntityDocumentation:
 
     @property
     def singular_name_text(self) -> StringText:
-        return StringText(self.singular_name())
+        return self.name_and_cross_ref_target.singular_name_text
+
+    @property
+    def name_and_cross_ref_target(self) -> SingularNameAndCrossReferenceId:
+        raise NotImplementedError('abstract method')
 
     def single_line_description(self) -> Text:
         """
         A short description of the entity.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def cross_reference_target(self) -> CrossReferenceId:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class EntityDocumentationBase(EntityDocumentation):
