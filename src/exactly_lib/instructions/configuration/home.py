@@ -8,7 +8,7 @@ from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import conf_params, concepts
 from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
-    extract_argument_string
+    extract_single_eq_argument_string
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
@@ -62,8 +62,7 @@ If {PATH} is relative, then it's relative to the current {home_directory}.
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        argument = extract_argument_string(rest_of_line)
-        return _Instruction(argument)
+        return _Instruction(extract_single_eq_argument_string(rest_of_line))
 
 
 class _Instruction(ConfigurationPhaseInstruction):

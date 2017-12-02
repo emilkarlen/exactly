@@ -19,7 +19,7 @@ def single_eq_invokation_variants(mandatory_arg: a.Argument) -> list:
     ]
 
 
-def extract_argument_string(rest_of_line: str) -> str:
+def extract_single_eq_argument_string(rest_of_line: str) -> str:
     arguments = split_arguments_list_string(rest_of_line)
     if len(arguments) != 2:
         msg = 'Invalid number of arguments, expected 2, found {}'.format(str(len(arguments)))
