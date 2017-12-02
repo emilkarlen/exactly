@@ -1,5 +1,8 @@
 Tests a command line program by executing it in a temporary sandbox directory and inspecting its result.
 
+Or tests properties of existing files, directories etc.
+
+
 Supports individual test cases and test suites.
 
 Exactly has a `Wiki
@@ -7,7 +10,9 @@ Exactly has a `Wiki
 and an `introduction by examples
 <https://github.com/emilkarlen/exactly/wiki/Exactly-by-example>`_.
 
-It also has a `Reference manual
+It also has a built in help system,
+which can, among other things,
+generate this `Reference manual
 <http://htmlpreview.github.io/?https://raw.githubusercontent.com/wiki/emilkarlen/exactly/Reference.html>`_.
 
 
