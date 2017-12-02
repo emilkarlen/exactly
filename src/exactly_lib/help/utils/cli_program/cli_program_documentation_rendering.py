@@ -2,6 +2,7 @@ from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProg
 from exactly_lib.help.utils.doc_utils import synopsis_section, description_section
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
+from exactly_lib.help_texts import doc_format
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \
@@ -24,11 +25,14 @@ class _ProgramDocumentationRenderer:
         self.arg_in_description_renderer = ArgumentInArgumentDescriptionRenderer()
 
     def apply(self, program: CliProgramSyntaxDocumentation) -> docs.SectionContents:
-        sections = []
-        sections.append(self._synopsis_section(program))
-        sections.extend(self._description_sections(program))
-        sections.extend(self._options_sections(program.argument_descriptions()))
-        return docs.SectionContents([docs.para(program.description().single_line_description)],
+        initial_paragraphs = [docs.para(program.description().single_line_description)]
+        initial_paragraphs += program.initial_paragraphs()
+
+        sections = [self._synopsis_section(program)]
+        sections += self._description_sections(program)
+        sections += self._options_sections(program.argument_descriptions())
+
+        return docs.SectionContents(initial_paragraphs,
                                     sections)
 
     def _synopsis_section(self, program: CliProgramSyntaxDocumentation) -> docs.Section:
@@ -50,7 +54,7 @@ class _ProgramDocumentationRenderer:
         return [docs.section('OPTIONS', [l])]
 
     def _arg_description_list_item(self, argument: DescribedArgument) -> lists.HeaderContentListItem:
-        header = docs.text(self.arg_in_description_renderer.visit(argument.argument))
+        header = doc_format.syntax_text(self.arg_in_description_renderer.visit(argument.argument))
         return docs.list_item(header, self._arg_description_list_item_contents(argument))
 
     def _arg_description_list_item_contents(self, argument: DescribedArgument) -> list:

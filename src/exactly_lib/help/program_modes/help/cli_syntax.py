@@ -1,14 +1,16 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
+from exactly_lib.help_texts import doc_format, formatting
 from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER
 from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.document import empty_section_contents
 
 
 class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
@@ -16,10 +18,20 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         super().__init__(program_info.PROGRAM_NAME)
 
     def description(self) -> DescriptionWithSubSections:
-        cmd_line_description = ' '.join([self.program_name, HELP_COMMAND, 'ARGUMENT...'])
-        text = '"%s" %s' % (cmd_line_description, 'is able to display help about some topics.')
+        text = '{}s help system.'.format(formatting.program_name(program_info.PROGRAM_NAME))
         return DescriptionWithSubSections(docs.text(text),
-                                          docs.SectionContents([], []))
+                                          empty_section_contents())
+
+    def initial_paragraphs(self) -> list:
+        command_line = arg.CommandLine([
+            arg.Single(arg.Multiplicity.MANDATORY,
+                       _c(clo.HELP)),
+            arg.Single(arg.Multiplicity.ZERO_OR_MORE,
+                       _n('ARGUMENT'))],
+            prefix=program_info.PROGRAM_NAME)
+
+        command_line_syntax_text = CommandLineSyntaxRenderer().apply(command_line)
+        return docs.paras(command_line_syntax_text)
 
     def synopsises(self) -> list:
         non_entities_help = [
@@ -57,11 +69,11 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def _entities_help() -> list:
         def row(names: EntityTypeNames) -> list:
             return [
-                docs.text_cell(names.identifier),
+                docs.text_cell(doc_format.syntax_text(names.identifier)),
                 docs.text_cell(names.name.plural.capitalize()),
             ]
 
-        entities_table = docs.first_column_is_header_table(map(row, ALL_ENTITY_TYPES_IN_DISPLAY_ORDER))
+        entities_table = docs.plain_table(map(row, ALL_ENTITY_TYPES_IN_DISPLAY_ORDER))
 
         arguments = [
             arg.Single(arg.Multiplicity.MANDATORY,
