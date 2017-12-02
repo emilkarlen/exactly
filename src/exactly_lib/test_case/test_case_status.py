@@ -10,7 +10,7 @@ class ExecutionMode(Enum):
 NAME_PASS = 'PASS'
 NAME_SKIP = 'SKIP'
 NAME_FAIL = 'FAIL'
-NAME_2_MODE = {
+NAME_2_STATUS = {
     NAME_PASS: ExecutionMode.PASS,
     NAME_SKIP: ExecutionMode.SKIP,
     NAME_FAIL: ExecutionMode.FAIL,
