@@ -1,6 +1,5 @@
 from exactly_lib.help.utils.entity_documentation import EntitiesHelp, \
     EntityDocumentationBase
-from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -12,10 +11,6 @@ class ConfigurationParameterDocumentation(EntityDocumentationBase):
     def __init__(self, info: ConfigurationParameterInfo):
         super().__init__(info)
         self._info = info
-
-    @property
-    def singular_name_text(self) -> StringText:
-        return syntax_text(self.singular_name())
 
     @property
     def name_and_cross_ref_target(self) -> ConfigurationParameterInfo:

@@ -1,6 +1,22 @@
 from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId
+from exactly_lib.util.textformat.structure.core import StringText
+
+
+class SuiteReporterInfo(SingularNameAndCrossReferenceId):
+    def __init__(self,
+                 singular_name: str,
+                 single_line_description_str: str,
+                 cross_reference_target: CrossReferenceId):
+        super().__init__(singular_name,
+                         single_line_description_str,
+                         cross_reference_target)
+
+    @property
+    def singular_name_text(self) -> StringText:
+        return syntax_text(self._singular_name)
 
 
 def suite_reporter_cross_ref(reporter_name: str) -> EntityCrossReferenceId:
@@ -10,9 +26,9 @@ def suite_reporter_cross_ref(reporter_name: str) -> EntityCrossReferenceId:
 
 def _name_and_ref(name: str,
                   single_line_description_str: str) -> SingularNameAndCrossReferenceId:
-    return SingularNameAndCrossReferenceId(name,
-                                           single_line_description_str,
-                                           suite_reporter_cross_ref(name))
+    return SuiteReporterInfo(name,
+                             single_line_description_str,
+                             suite_reporter_cross_ref(name))
 
 
 PROGRESS_REPORTER = _name_and_ref('progress',
