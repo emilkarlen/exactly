@@ -86,7 +86,7 @@ def _description_of_complete_execution(setup: Setup) -> list:
     ret_val.extend(_TEXT_PARSER.fnap(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
     ret_val.append(_what_outcome_depends_on(_TEXT_PARSER))
     ret_val.extend(_TEXT_PARSER.fnap(TABLE_INTRO))
-    ret_val.append(_outcomes_per_mode_and_assert(setup))
+    ret_val.append(_outcomes_per_status_and_assert(setup))
     ret_val.append(para(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
     ret_val.append(_exit_value_table_for_full_execution(setup))
     return ret_val
@@ -125,9 +125,9 @@ The outcome of the {phase[assert]} phase.
 """
 
 
-def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
-    def _row(mode: str, assert_outcome: PartialResultStatus, test_outcome: FullResultStatus) -> list:
-        return [cell(paras(mode)),
+def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
+    def _row(tc_status: str, assert_outcome: PartialResultStatus, test_outcome: FullResultStatus) -> list:
+        return [cell(paras(tc_status)),
                 cell(paras(assert_outcome.name if assert_outcome is not None else '')),
                 cell(paras(test_outcome.name)),
                 ]

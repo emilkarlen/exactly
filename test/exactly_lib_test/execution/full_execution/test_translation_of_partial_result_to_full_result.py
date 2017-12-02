@@ -6,7 +6,7 @@ from exactly_lib.test_case.test_case_status import ExecutionMode
 
 
 class Test(unittest.TestCase):
-    def test_normal(self):
+    def test_PASS(self):
         self.assertEqual(FullResultStatus.PASS,
                          translate_status(ExecutionMode.PASS,
                                           PartialResultStatus.PASS))
@@ -23,7 +23,7 @@ class Test(unittest.TestCase):
                          translate_status(ExecutionMode.PASS,
                                           PartialResultStatus.IMPLEMENTATION_ERROR))
 
-    def test_xfail(self):
+    def test_FAIL(self):
         self.assertEqual(FullResultStatus.XPASS,
                          translate_status(ExecutionMode.FAIL,
                                           PartialResultStatus.PASS))
