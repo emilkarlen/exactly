@@ -16,32 +16,26 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestSetTimeout),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
 
-class TestParse(unittest.TestCase):
-    def test_fail_when_there_is_no_arguments(self):
-        for source in equivalent_source_variants(self, '   '):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
-
-    def test_fail_when_more_than_one_argument(self):
-        for source in equivalent_source_variants(self, 'arg1 arg2'):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
-
-    def test_fail_when_a_single_argument_but_that_argument_is_not_an_integer(self):
-        for source in equivalent_source_variants(self, 'notAnInteger'):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
-
-    def test_fail_when_a_single_argument_which_is_an_integer_but_the_value_is_negative(self):
-        for source in equivalent_source_variants(self, '-1'):
-            with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(source)
+class TestFailingParse(unittest.TestCase):
+    def test(self):
+        cases = [
+            '   ',
+            'arg1 arg2',
+            'notAnInteger',
+            '-1',
+            '=5',
+        ]
+        for argument_str in cases:
+            with self.subTest(argument_str):
+                for source in equivalent_source_variants(self, argument_str):
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        sut.Parser().parse(source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
@@ -61,11 +55,11 @@ class TestCaseBaseForParser(TestCaseBase):
 class TestSetTimeout(TestCaseBaseForParser):
     def test_5(self):
         self._run(expected=5,
-                  argument='5')
+                  argument='= 5')
 
     def test_75(self):
         self._run(expected=75,
-                  argument='75')
+                  argument='  = 75')
 
 
 class AssertTimeout(config_check.Assertion):

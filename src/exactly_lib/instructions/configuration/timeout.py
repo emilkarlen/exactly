@@ -1,15 +1,16 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.entities.configuration_parameters.objects.timeout import WHAT_THE_TIMEOUT_APPLIES_TO
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
+from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
+    extract_argument_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -37,11 +38,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._paragraphs(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
-        integer_arg = a.Single(a.Multiplicity.MANDATORY,
-                               self._INTEGER_ARG_NAME)
-        return [
-            InvokationVariant(self._cl_syntax_for_args([integer_arg])),
-        ]
+        return single_eq_invokation_variants(self._INTEGER_ARG_NAME)
 
     def syntax_element_descriptions(self) -> list:
         return [
@@ -55,11 +52,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        arguments = split_arguments_list_string(rest_of_line)
-        if len(arguments) != 1:
-            msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
-            raise SingleInstructionInvalidArgumentException(msg)
-        argument = arguments[0]
+        argument = extract_argument_string(rest_of_line)
         try:
             value = int(argument)
         except ValueError:
