@@ -1,11 +1,11 @@
 import unittest
 
-from exactly_lib_test.util.textformat import formatting, structure, parse, utils, construction
+from exactly_lib_test.util.textformat import rendering, structure, parse, utils, construction
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        formatting.suite(),
+        rendering.suite(),
         structure.suite(),
         parse.suite(),
         utils.suite(),

@@ -14,7 +14,7 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
 
     The format_map of the `TextParser` always contains a key
     "instruction_name" which is the name of the instruction as a `InstructionName` object
-    (which gives access to some formatting using the ":fmt" syntax).
+    (which gives access to some rendering using the ":fmt" syntax).
     """
 
     def __init__(self,
