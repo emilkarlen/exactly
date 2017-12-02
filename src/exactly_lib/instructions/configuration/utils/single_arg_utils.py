@@ -5,12 +5,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.misc_utils import split_arguments_list_string
 from exactly_lib.util.cli_syntax.elements import argument as a
 
-_MANDATORY_EQ_ARG = a.Single(a.Multiplicity.MANDATORY,
-                             a.Named('='))
+MANDATORY_EQ_ARG = a.Single(a.Multiplicity.MANDATORY,
+                            a.Named('='))
 
 
 def single_eq_invokation_variants(mandatory_arg: a.Argument) -> list:
-    args = [_MANDATORY_EQ_ARG,
+    args = [MANDATORY_EQ_ARG,
             a.Single(a.Multiplicity.MANDATORY,
                      mandatory_arg),
             ]

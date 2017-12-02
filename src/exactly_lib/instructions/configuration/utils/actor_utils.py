@@ -12,6 +12,7 @@ from exactly_lib.help_texts.entity import concepts, actors
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
+from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -79,9 +80,10 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
                 )
 
     def _command_line_invokation_variants(self) -> list:
-        command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
+        command_line_actor_arg = a.Single(a.Multiplicity.MANDATORY,
+                                          a.Option(COMMAND_LINE_ACTOR_OPTION_NAME))
         return [
-            InvokationVariant(self._cl_syntax_for_args([command_line_actor_arg]),
+            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG, command_line_actor_arg]),
                               self._description_of_command_line()),
         ]
 
@@ -94,11 +96,13 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.command_line_syntax.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.command_line_syntax.argument)
         return [
-            InvokationVariant(self._cl_syntax_for_args([cli_option,
+            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG,
+                                                        cli_option,
                                                         executable_arg,
                                                         optional_arguments_arg]),
                               self._description_of_executable_program_interpreter(actor)),
-            InvokationVariant(self._cl_syntax_for_args([cli_option,
+            InvokationVariant(self._cl_syntax_for_args([MANDATORY_EQ_ARG,
+                                                        cli_option,
                                                         shell_interpreter_argument,
                                                         command_argument]),
                               self._description_of_shell_command_interpreter(actor)),
@@ -132,9 +136,14 @@ def parse(instruction_argument: str) -> ActPhaseHandling:
     if not arg:
         raise SingleInstructionInvalidArgumentException('An actor must be given')
     try:
-        args = arg.split(maxsplit=1)
+        args = arg.split(maxsplit=2)
     except Exception as ex:
         raise SingleInstructionInvalidArgumentException(str(ex))
+    if args[0] != '=':
+        raise SingleInstructionInvalidArgumentException('Missing =')
+    del args[0]
+    if not args:
+        raise SingleInstructionInvalidArgumentException('Missing arguments after =')
     if matches(COMMAND_LINE_ACTOR_OPTION_NAME, args[0]):
         if len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments to ' + args[0])

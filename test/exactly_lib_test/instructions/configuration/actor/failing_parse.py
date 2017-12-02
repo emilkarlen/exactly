@@ -21,6 +21,11 @@ class TestFailingParseForAnyActor(unittest.TestCase):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             sut.Parser().parse(source)
 
+    def test_fail_when_missing_arg_to_eq_token(self):
+        source = source4(' =  ')
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            sut.Parser().parse(source)
+
     def test_fail_when_the_quoting_is_invalid(self):
         source = source4('argument-1 "argument-2')
         with self.assertRaises(SingleInstructionInvalidArgumentException):

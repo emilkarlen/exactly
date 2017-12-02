@@ -34,6 +34,7 @@ class TestParse(unittest.TestCase):
         test_cases = [
             '   ',
             'argument-1 "argument-2',
+            '=',
         ]
         parser = sut.Parser()
         for instruction_argument in test_cases:
@@ -44,7 +45,7 @@ class TestParse(unittest.TestCase):
 
     def test_success_when_argument_is_valid(self):
         parser = sut.Parser()
-        for source in equivalent_source_variants__with_source_check(self, COMMAND_LINE_ACTOR_OPTION):
+        for source in equivalent_source_variants__with_source_check(self, '= ' + COMMAND_LINE_ACTOR_OPTION):
             parser.parse(source)
 
 
@@ -59,7 +60,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
     def test_act_phase_source_is_single_shell_command(self):
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        source = remaining_source(COMMAND_LINE_ACTOR_OPTION)
+        source = remaining_source(' = ' + COMMAND_LINE_ACTOR_OPTION)
         instruction = sut.Parser().parse(source)
         assert isinstance(instruction, ConfigurationSectionInstruction)
         environment = configuration_section_environment()
