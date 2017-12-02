@@ -1,8 +1,8 @@
 """Functionality for accessing a subset of the files in a directory."""
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
+from exactly_lib.help_texts import doc_format
 from exactly_lib.help_texts import expression, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
@@ -182,11 +182,11 @@ def _fnap(s: str) -> list:
 def _file_types_table() -> docs.ParagraphItem:
     def row(type_name: str, description: str) -> list:
         return [
-            docs.cell(docs.paras(syntax_text(type_name))),
+            docs.cell(docs.paras(doc_format.enum_name_text(type_name))),
             docs.cell(_fnap(description)),
         ]
 
-    return docs.first_column_is_header_table([
+    return docs.plain_table([
         row(type_info.type_argument, 'File must be a ' + type_info.description)
         for type_info in sorted(file_properties.TYPE_INFO.values(),
                                 key=lambda ti: ti.type_argument)

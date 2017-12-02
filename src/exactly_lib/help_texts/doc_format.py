@@ -9,6 +9,12 @@ def syntax_text(text: str) -> StringText:
                       tags={std_tags.SYNTAX_TEXT})
 
 
+def enum_name_text(name: str) -> StringText:
+    return StringText(name,
+                      tags={std_tags.SYNTAX_TEXT,
+                            std_tags.ENUM_CONSTANT})
+
+
 def directory_variable_name_text(name: str) -> StringText:
     return syntax_text(name)
 

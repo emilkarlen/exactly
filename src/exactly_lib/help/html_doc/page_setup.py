@@ -15,6 +15,7 @@ _CSS_CLASSES = {
     'entity': std_tags.ENTITY,
     'section': std_tags.SECTION,
     'syntax_text': std_tags.SYNTAX_TEXT,
+    'enum_constant': std_tags.ENUM_CONSTANT,
     'actor_entity': all_entity_types.ACTOR_ENTITY_TYPE_NAMES.identifier,
     'concept_entity': all_entity_types.CONCEPT_ENTITY_TYPE_NAMES.identifier,
     'type_entity': all_entity_types.TYPE_ENTITY_TYPE_NAMES.identifier,
@@ -29,6 +30,11 @@ pre {{
 
 .{syntax_text} {{
   font-family: monospace;
+}}
+
+
+.{enum_constant} {{
+  font-weight: bold;
 }}
 
 
