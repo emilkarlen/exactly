@@ -1,15 +1,16 @@
 import unittest
 
-from exactly_lib_test.util.textformat import formatting, structure, parse, utils
+from exactly_lib_test.util.textformat import formatting, structure, parse, utils, construction
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(formatting.suite())
-    ret_val.addTest(structure.suite())
-    ret_val.addTest(parse.suite())
-    ret_val.addTest(utils.suite())
-    return ret_val
+    return unittest.TestSuite([
+        formatting.suite(),
+        structure.suite(),
+        parse.suite(),
+        utils.suite(),
+        construction.suite(),
+    ])
 
 
 if __name__ == '__main__':
