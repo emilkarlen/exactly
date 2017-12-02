@@ -2,18 +2,18 @@ from enum import Enum
 
 
 class ExecutionMode(Enum):
-    NORMAL = 0
+    PASS = 0
     SKIP = 1
-    XFAIL = 2
+    FAIL = 2
 
 
-NAME_NORMAL = 'NORMAL'
+NAME_PASS = 'PASS'
 NAME_SKIP = 'SKIP'
-NAME_XFAIL = 'XFAIL'
+NAME_FAIL = 'FAIL'
 NAME_2_MODE = {
-    NAME_NORMAL: ExecutionMode.NORMAL,
+    NAME_PASS: ExecutionMode.PASS,
     NAME_SKIP: ExecutionMode.SKIP,
-    NAME_XFAIL: ExecutionMode.XFAIL,
+    NAME_FAIL: ExecutionMode.FAIL,
 }
 
-NAME_DEFAULT = NAME_NORMAL
+NAME_DEFAULT = NAME_PASS

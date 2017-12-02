@@ -27,7 +27,7 @@ class Test(TestCaseBase):
     def test_with_assert_phase_that_fails(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.FAIL)) \
             .add(phase_identifier.ASSERT,
                  test.assert_phase_instruction_that(
                      main=do_return(pfh.new_pfh_fail('fail message'))))
@@ -67,7 +67,7 @@ class Test(TestCaseBase):
     def test_with_assert_phase_that_passes(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL))
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.FAIL))
         self._check(
             Arrangement(test_case),
             Expectation(FullResultStatus.XPASS,
@@ -103,7 +103,7 @@ class Test(TestCaseBase):
     def test_with_configuration_phase_with_hard_error(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.FAIL)) \
             .add(phase_identifier.CONFIGURATION,
                  test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
@@ -119,7 +119,7 @@ class Test(TestCaseBase):
     def test_with_implementation_error(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
-                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.XFAIL)) \
+                 test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.FAIL)) \
             .add(phase_identifier.CLEANUP,
                  test.cleanup_phase_instruction_that(
                      main=do_raise(test.ImplementationErrorTestException())))

@@ -22,7 +22,7 @@ class Arrangement(ArrangementBase):
     def __init__(self,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  act_phase_handling: ActPhaseHandling = dummy_act_phase_handling(),
-                 execution_mode: ExecutionMode = ExecutionMode.NORMAL,
+                 execution_mode: ExecutionMode = ExecutionMode.PASS,
                  timeout_in_seconds: int = None):
         super().__init__(hds_contents=hds_contents)
         self.act_phase_handling = act_phase_handling
