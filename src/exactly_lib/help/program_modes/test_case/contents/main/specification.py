@@ -5,8 +5,8 @@ from exactly_lib.help.program_modes.test_case.contents.main.overview import rend
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionContentsRendererFromHierarchyGenerator
+from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 

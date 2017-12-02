@@ -3,10 +3,10 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value
 from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsRendererWithSetup
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.formatting import cli_option, program_name
 from exactly_lib.processing import exit_values
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

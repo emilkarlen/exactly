@@ -9,10 +9,10 @@ from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_proces
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
 from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
-from exactly_lib.help.utils.rendering.section_contents_renderer import ConstantSectionContentsRenderer
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.processing import exit_values
+from exactly_lib.util.textformat.building.section_contents_renderer import ConstantSectionContentsRenderer
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 

@@ -1,11 +1,11 @@
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationRendererBase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentation
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.doc_format import syntax_text, instruction_name_text
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

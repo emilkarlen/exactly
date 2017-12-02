@@ -3,9 +3,10 @@ import types
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils.doc_utils import synopsis_section, description_section
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer, \
-    SectionContentsRendererFromArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, \
+    ArticleContentsRenderer, \
+    SectionContentsRendererFromArticleContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc, lists
 from exactly_lib.util.textformat.structure import structures as docs
 

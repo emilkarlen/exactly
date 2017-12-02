@@ -4,10 +4,10 @@ from exactly_lib.help.entities.configuration_parameters import all_configuration
 from exactly_lib.help.entities.configuration_parameters import render as sut
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.entities.configuration_parameters.entity_configuration import CONF_PARAM_ENTITY_CONFIGURATION
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
 from exactly_lib.util.textformat.structure.structures import text, para
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check

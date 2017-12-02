@@ -4,7 +4,7 @@ from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocument
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsRenderer
-from exactly_lib.help.utils.rendering.section_contents_renderer import SectionContentsRenderer
+from exactly_lib.util.textformat.building.section_contents_renderer import SectionContentsRenderer
 
 
 class MainProgramHelpRendererResolver:

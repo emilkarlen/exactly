@@ -1,4 +1,5 @@
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, SectionContentsRenderer, \
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, \
+    SectionContentsRenderer, \
     ArticleContentsRenderer, SectionContentsRendererFromArticleContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import text, Text

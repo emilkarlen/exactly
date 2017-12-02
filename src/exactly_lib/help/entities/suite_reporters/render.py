@@ -1,9 +1,9 @@
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 from exactly_lib.help_texts.entity.suite_reporters import DEFAULT_REPORTER
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ArticleContentsRenderer
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty

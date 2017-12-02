@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.help.program_modes.test_case.contents.main import specification as sut
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases, \
     TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl

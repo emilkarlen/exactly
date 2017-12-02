@@ -1,6 +1,6 @@
 import itertools
 
-from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
+from exactly_lib.util.textformat.building.x import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.structure import document as doc, structures as docs
 from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
 

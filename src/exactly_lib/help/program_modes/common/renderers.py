@@ -3,7 +3,7 @@ import types
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet, \
     InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import instruction_set_list_item
-from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment, ParagraphItemsRenderer, \
+from exactly_lib.util.textformat.building.section_contents_renderer import RenderingEnvironment, ParagraphItemsRenderer, \
     SectionContentsRendererFromParagraphItemsRenderer
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
