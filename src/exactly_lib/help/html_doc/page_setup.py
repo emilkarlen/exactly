@@ -2,6 +2,7 @@ from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib import program_info
 from exactly_lib.help import std_tags
+from exactly_lib.help.utils.rendering.section_hierarchy_rendering import HIERARCHY_SECTION_TAG
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import all_entity_types
 from exactly_lib.util.textformat.formatting.html.utils import ElementPopulator, ComplexElementPopulator
@@ -10,7 +11,7 @@ PAGE_TITLE = 'Reference Manual for %s' % formatting.program_name(program_info.PR
 TOC_TITLE = 'Table of Contents'
 
 _CSS_CLASSES = {
-    'toc': 'toc',
+    'toc': HIERARCHY_SECTION_TAG,
     'entity': std_tags.ENTITY,
     'section': std_tags.SECTION,
     'syntax_text': std_tags.SYNTAX_TEXT,
@@ -46,6 +47,7 @@ section.{toc} > header > h3 {{
   border-bottom: thin solid black;
 }}
 
+
 article > header > h1 {{
   padding: 3px;
   font-size: x-large;
@@ -70,6 +72,7 @@ article.{section} > header > h1 {{
   background-color: LightGoldenRodYellow;
 }}
 
+
 table {{
   border-collapse: collapse;
 }}
@@ -85,6 +88,7 @@ th {{
 td {{
   vertical-align: top;
 }}
+
 
 a:link {{
   text-decoration: none;

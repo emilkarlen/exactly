@@ -103,7 +103,9 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
         return RetVal()
 
 
-_HIERARCHY_SECTION_TAGS = {'toc'}
+HIERARCHY_SECTION_TAG = 'toc'
+
+_HIERARCHY_SECTION_TAGS = {HIERARCHY_SECTION_TAG}
 
 
 class SectionItemRendererNodeWithSubSections(SectionItemRendererNodeWithRoot):
