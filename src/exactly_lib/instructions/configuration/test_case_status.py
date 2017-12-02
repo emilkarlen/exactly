@@ -23,7 +23,6 @@ def setup(instruction_name: str) -> SingleInstructionSetup:
 class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
     def __init__(self, name: str):
         super().__init__(name, {
-            'MODE': _ARG_NAME,
             'status_config_param': formatting.conf_param(
                 conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
             'conf_param': concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.singular_name,
@@ -38,7 +37,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithTextParserBase):
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant(_ARG_NAME, []),
+            InvokationVariant('= ' + _ARG_NAME, []),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -59,16 +58,20 @@ _ARG_NAME = formatting.syntax_element(conf_params.TEST_CASE_STATUS_CONF_PARAM_IN
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
         arguments = split_arguments_list_string(rest_of_line)
-        if len(arguments) != 1:
-            msg = 'Invalid number of arguments (exactly one expected), found {}'.format(str(len(arguments)))
+        if len(arguments) != 2:
+            msg = 'Invalid number of arguments, expected 2, found {}'.format(str(len(arguments)))
             raise SingleInstructionInvalidArgumentException(msg)
-        argument = arguments[0].upper()
+        if arguments[0] != '=':
+            raise SingleInstructionInvalidArgumentException('Missing =')
+
+        status_element_arg = arguments[1]
+        argument = status_element_arg.upper()
         try:
             target = NAME_2_STATUS[argument]
         except KeyError:
             raise SingleInstructionInvalidArgumentException('Invalid {status}: `{actual}`'.format(
                 status=conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.configuration_parameter_name,
-                actual=arguments[0]))
+                actual=status_element_arg))
         return _Instruction(target)
 
 
