@@ -107,15 +107,15 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShel
                           expected_command_except_final_file_name_part)
 
     def test_single_command(self):
-        self._check('{actor_option} {shell_option} arg',
+        self._check('= {actor_option} {shell_option} arg',
                     initial_part_of_command_without_file_argument_is('arg'))
 
     def test_command_with_arguments(self):
-        self._check('{actor_option} {shell_option} arg arg1 --arg2',
+        self._check(' = {actor_option} {shell_option} arg arg1 --arg2',
                     initial_part_of_command_without_file_argument_is('arg arg1 --arg2'))
 
     def test_quoting(self):
-        self._check("{actor_option} {shell_option} 'arg with space' arg2 \"arg 3\"",
+        self._check("  =  {actor_option} {shell_option} 'arg with space' arg2 \"arg 3\"",
                     initial_part_of_command_without_file_argument_is("'arg with space' arg2 \"arg 3\""))
 
 
@@ -134,19 +134,19 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
                           hds_contents)
 
     def test_single_command(self):
-        self._check('{actor_option} {shell_option} interpreter',
+        self._check('= {actor_option} {shell_option} interpreter',
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is('interpreter'),
                     hds_contents=file_in_home_act_dir('file.src'))
 
     def test_command_with_arguments(self):
-        self._check('{actor_option} {shell_option} interpreter with --arg2',
+        self._check(' = {actor_option} {shell_option} interpreter with --arg2',
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is('interpreter with --arg2'),
                     hds_contents=file_in_home_act_dir('file.src'))
 
     def test_quoting(self):
-        self._check("{actor_option} {shell_option} 'interpreter with quoting' arg2 \"arg 3\"",
+        self._check(" = {actor_option} {shell_option} 'interpreter with quoting' arg2 \"arg 3\"",
                     ['file.src'],
                     initial_part_of_command_without_file_argument_is("'interpreter with quoting' arg2 \"arg 3\""),
                     hds_contents=file_in_home_act_dir('file.src'))
@@ -157,7 +157,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForShellComma
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = Arrangement(
-            source=remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
+            source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
             act_phase_source_lines=[shell_command_syntax_for('act phase source')],
             act_phase_process_executor=os_process_executor)
         expectation = Expectation()
@@ -179,7 +179,7 @@ class TestShellHandlingViaExecution(unittest.TestCase):
             shell_commands.command_that_prints_line_to_stdout('output on stdout'))
         check(self,
               Arrangement(
-                  source=remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
+                  source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
                   act_phase_source_lines=[act_phase_source_line]),
               Expectation(
                   sub_process_result_from_execute=pr.stdout(asrt.Equals('output on stdout\n',

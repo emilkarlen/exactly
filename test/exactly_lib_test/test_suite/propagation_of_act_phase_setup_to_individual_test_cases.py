@@ -101,7 +101,7 @@ class ActorIsNotPropagatedToSubSuites(SetupForSuccessfulExecution):
 
 
 def _set_actor_for_running(quoted_name_of_executable) -> str:
-    return '{actor_instruction} {actor_option} {actor_executable}'.format(
+    return '{actor_instruction} = {actor_option} {actor_executable}'.format(
         actor_instruction=INSTRUCTION_NAME__ACTOR,
         actor_option=SOURCE_INTERPRETER_OPTION,
         actor_executable=quoted_name_of_executable)

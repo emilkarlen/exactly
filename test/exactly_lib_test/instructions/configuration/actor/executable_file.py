@@ -83,16 +83,16 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExec
 
     def test_single_command(self):
         self._check_both_single_and_multiple_line_source(
-            '{actor_option} executable', ['executable'])
+            ' = {actor_option} executable', ['executable'])
 
     def test_command_with_arguments(self):
         self._check_both_single_and_multiple_line_source(
-            '{actor_option} executable arg1 --arg2',
+            '=  {actor_option} executable arg1 --arg2',
             ['executable', 'arg1', '--arg2'])
 
     def test_quoting(self):
         self._check_both_single_and_multiple_line_source(
-            "{actor_option} 'executable with space' arg2 \"arg 3\"",
+            "= {actor_option} 'executable with space' arg2 \"arg 3\"",
             ['executable with space', 'arg2', 'arg 3'])
 
 
@@ -114,7 +114,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 
     def test_single_command(self):
         self._check_both_single_and_multiple_line_source(
-            '{actor_option} interpreter',
+            '= {actor_option} interpreter',
             ['file.src'],
             is_interpreter_with_source_file_and_arguments('interpreter',
                                                           'file.src',
@@ -123,7 +123,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 
     def test_command_with_arguments(self):
         self._check_both_single_and_multiple_line_source(
-            '{actor_option}   interpreter   arg1     --arg2   ',
+            ' = {actor_option}   interpreter   arg1     --arg2   ',
             ['file.src'],
             is_interpreter_with_source_file_and_arguments('interpreter',
                                                           'file.src',
@@ -134,7 +134,7 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 
     def test_quoting(self):
         self._check_both_single_and_multiple_line_source(
-            "{actor_option} 'interpreter with space' arg2 \"arg 3\"",
+            "= {actor_option} 'interpreter with space' arg2 \"arg 3\"",
             ['file.src'],
             is_interpreter_with_source_file_and_arguments(
                 'interpreter with space',
@@ -167,7 +167,7 @@ class TestSuccessfulParseAndInstructionExecutionForCommandLineActorForExecutable
         # ARRANGE #
         executable_file = sys.executable
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
-        arrangement = Arrangement(source=remaining_source(actor_utils.COMMAND_LINE_ACTOR_OPTION),
+        arrangement = Arrangement(source=remaining_source('= ' + actor_utils.COMMAND_LINE_ACTOR_OPTION),
                                   act_phase_source_lines=[executable_file],
                                   act_phase_process_executor=os_process_executor)
         expectation = Expectation()
