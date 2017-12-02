@@ -6,19 +6,20 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationHierarchyGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
-from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
 from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.test_suite.section_names import SECTION_CONCEPT_NAME
+from exactly_lib.util.textformat.construction import section_hierarchy_con
+from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 
 
 def generator(header: str,
               test_suite_help: TestSuiteHelp,
               suite_reporter_conf: EntityConfiguration,
-              ) -> section_hierarchy_rendering.SectionHierarchyGenerator:
+              ) -> section_hierarchy_constructor.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestSuiteHelp(test_suite_help)
-    return section_hierarchy_rendering.parent(
+    return section_hierarchy_con.parent(
         header,
         [],
         [

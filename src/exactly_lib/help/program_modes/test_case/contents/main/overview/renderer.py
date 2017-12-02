@@ -1,5 +1,6 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import parent, leaf, SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy_con import leaf, parent
+from exactly_lib.util.textformat.construction.section_hierarchy_constructor import SectionHierarchyGenerator
 from . import intro, environment as env_doc, phases, test_case
 
 

@@ -5,7 +5,7 @@ from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.utils.doc_utils import synopsis_section
 from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
-from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
+from exactly_lib.help.utils.rendering.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
 from exactly_lib.help_texts import type_system

@@ -1,4 +1,3 @@
-import exactly_lib.test_case.execution_mode
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.common.exit_value import ExitValue
@@ -8,23 +7,25 @@ from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_proces
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
-from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.processing import exit_values
+from exactly_lib.test_case import execution_mode
+from  exactly_lib.util.textformat.construction import section_hierarchy_con
+from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 
 
-def hierarchy_generator(header: str, setup: Setup) -> hierarchy_rendering.SectionHierarchyGenerator:
+def hierarchy_generator(header: str, setup: Setup) -> section_hierarchy_constructor.SectionHierarchyGenerator:
     preamble_paragraphs = normalize_and_parse(PREAMBLE)
 
-    def const_contents(header: str, paragraphs: list) -> hierarchy_rendering.SectionHierarchyGenerator:
-        return hierarchy_rendering.leaf(header,
-                                        ConstantSectionContentsConstructor(section_contents(paragraphs)))
+    def const_contents(header: str, paragraphs: list) -> section_hierarchy_constructor.SectionHierarchyGenerator:
+        return section_hierarchy_con.leaf(header,
+                                          ConstantSectionContentsConstructor(section_contents(paragraphs)))
 
-    return hierarchy_rendering.parent(
+    return section_hierarchy_con.parent(
         header,
         preamble_paragraphs,
         [
@@ -91,7 +92,7 @@ def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
     items = [
         list_item("""The "execution mode" set by the {phase[conf]} phase""".format(phase=setup.phase_names),
                   [para('The default mode is {default_mode}.'.format(
-                      default_mode=exactly_lib.test_case.execution_mode.NAME_NORMAL))]),
+                      default_mode=execution_mode.NAME_NORMAL))]),
         list_item("""The outcome of the {phase[assert]} phase""".format(phase=setup.phase_names),
                   []),
     ]
@@ -113,13 +114,13 @@ def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
             cell(paras('{phase[assert]:syntax}'.format(phase=setup.phase_names))),
             cell(paras('Test Case')),
         ],
-        _row(exactly_lib.test_case.execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
-        _row(exactly_lib.test_case.execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
+        _row(execution_mode.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
+        _row(execution_mode.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
 
-        _row(exactly_lib.test_case.execution_mode.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
-        _row(exactly_lib.test_case.execution_mode.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
+        _row(execution_mode.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
+        _row(execution_mode.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
 
-        _row(exactly_lib.test_case.execution_mode.NAME_SKIP, None, FullResultStatus.SKIPPED),
+        _row(execution_mode.NAME_SKIP, None, FullResultStatus.SKIPPED),
     ],
         '  ')
 
