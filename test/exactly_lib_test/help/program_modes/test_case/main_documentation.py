@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.help.program_modes.test_case.contents.main import specification as sut
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
-from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases
+from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases, \
+    TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_node
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -21,7 +22,8 @@ class Test(unittest.TestCase):
         rendering_environment = RenderingEnvironment(CrossReferenceTextConstructorTestImpl())
         generator = sut.generator('header', self.test_case_help)
         # ACT #
-        actual = generator.renderer_node(CustomTargetInfoFactory('prefix')).section_item(rendering_environment)
+        actual = generator.renderer_node(CustomTargetInfoFactory('prefix')).section_item(TEST_HIERARCHY_ENVIRONMENT,
+                                                                                         rendering_environment)
         # ASSERT #
         struct_check.is_section_item.apply(self, actual)
 

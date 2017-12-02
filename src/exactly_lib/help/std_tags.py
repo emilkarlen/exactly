@@ -5,3 +5,5 @@ SECTION = 'section'
 INSTRUCTION = 'instruction'
 
 SYNTAX_TEXT = 'syntax-text'
+
+TOC_SECTION = 'toc'

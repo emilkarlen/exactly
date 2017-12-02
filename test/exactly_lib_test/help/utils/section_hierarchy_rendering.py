@@ -7,6 +7,7 @@ from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory, t
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import equals_target_info_node
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as cross_ref_id_asrt
@@ -118,7 +119,8 @@ class Test(unittest.TestCase):
         # ACT #
         section_renderer_node = object_to_test.renderer_node(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()
-        actual_section = section_renderer_node.section_item_renderer().apply(RENDERING_ENVIRONMENT)
+        actual_section = section_renderer_node.section_item_renderer(TEST_HIERARCHY_ENVIRONMENT).apply(
+            RENDERING_ENVIRONMENT)
         # ASSERT #
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')
         section_assertion.apply_with_message(self, actual_section, 'Section')

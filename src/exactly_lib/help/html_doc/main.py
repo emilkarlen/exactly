@@ -1,3 +1,4 @@
+from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
@@ -9,7 +10,7 @@ from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as sui
 from exactly_lib.help.utils.rendering.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.help.utils.rendering.section_contents_renderer import RenderingEnvironment
 from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator, parent, \
-    SectionItemRendererNode
+    SectionItemRendererNode, HierarchyRenderingEnvironment
 from exactly_lib.help.utils.table_of_contents import toc_list
 from exactly_lib.help_texts.cross_reference_id import root_factory, TargetInfoNode
 from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
@@ -41,10 +42,10 @@ def generate_and_output(output_file,
 
 def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
     section_node = _section_rendering_node(application_help)
-
+    hierarchy_environment = HierarchyRenderingEnvironment({std_tags.TOC_SECTION})
     rendering_environment = RenderingEnvironment(CrossReferenceTextConstructor(),
                                                  render_simple_header_value_lists_as_tables=True)
-    section_item = section_node.section_item(rendering_environment)
+    section_item = section_node.section_item(hierarchy_environment, rendering_environment)
     ret_val = section_item_contents_as_section_contents(section_item)
     _add_toc_as_first_paragraphs(ret_val, section_node.target_info_node())
     return ret_val

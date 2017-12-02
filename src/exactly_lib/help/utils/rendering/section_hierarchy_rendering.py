@@ -9,6 +9,15 @@ from exactly_lib.util.textformat.structure.document import ArticleContents
 from exactly_lib.util.textformat.utils import section_item_contents_as_section_contents
 
 
+class HierarchyRenderingEnvironment:
+    def __init__(self, toc_section_item_tags: set):
+        self._toc_section_item_tags = toc_section_item_tags
+
+    @property
+    def toc_section_item_tags(self) -> set:
+        return self._toc_section_item_tags
+
+
 class SectionItemRendererNode:
     """
     A node in the tree of sections with corresponding targets.
@@ -20,11 +29,13 @@ class SectionItemRendererNode:
     def target_info_node(self, ) -> TargetInfoNode:
         raise NotImplementedError()
 
-    def section_item_renderer(self) -> SectionItemRenderer:
+    def section_item_renderer(self, hierarchy_environment: HierarchyRenderingEnvironment) -> SectionItemRenderer:
         raise NotImplementedError()
 
-    def section_item(self, environment: RenderingEnvironment) -> doc.SectionItem:
-        return self.section_item_renderer().apply(environment)
+    def section_item(self,
+                     hierarchy_environment: HierarchyRenderingEnvironment,
+                     environment: RenderingEnvironment) -> doc.SectionItem:
+        return self.section_item_renderer(hierarchy_environment).apply(environment)
 
 
 class SectionItemRendererNodeWithRoot(SectionItemRendererNode):
@@ -87,18 +98,18 @@ class LeafArticleRendererNode(SectionItemRendererNodeWithRoot):
     def target_info_node(self) -> TargetInfoNode:
         return cross_ref.target_info_leaf(self._root_target_info)
 
-    def section_item_renderer(self) -> ArticleRenderer:
+    def section_item_renderer(self, hierarchy_environment: HierarchyRenderingEnvironment) -> ArticleRenderer:
         super_self = self
+        tags = self._tags.union(hierarchy_environment.toc_section_item_tags)
 
         class RetVal(ArticleRenderer):
             def apply(self, environment: RenderingEnvironment) -> doc.Article:
                 article_contents = super_self._contents_renderer.apply(environment)
-
                 return doc.Article(super_self._root_target_info.presentation_text,
                                    ArticleContents(article_contents.abstract_paragraphs,
                                                    article_contents.section_contents),
                                    target=super_self._root_target_info.target,
-                                   tags=super_self._tags)
+                                   tags=tags)
 
         return RetVal()
 
@@ -132,18 +143,18 @@ class SectionItemRendererNodeWithSubSections(SectionItemRendererNodeWithRoot):
                               [ss.target_info_node()
                                for ss in self._sub_section_nodes])
 
-    def section_item_renderer(self) -> SectionItemRenderer:
+    def section_item_renderer(self, hierarchy_environment: HierarchyRenderingEnvironment) -> SectionItemRenderer:
         super_self = self
 
         class RetVal(SectionRenderer):
             def apply(self, environment: RenderingEnvironment) -> doc.Section:
-                sub_sections = [ss.section_item_renderer().apply(environment)
+                sub_sections = [ss.section_item_renderer(hierarchy_environment).apply(environment)
                                 for ss in super_self._sub_section_nodes]
                 return doc.Section(super_self._root_target_info.presentation_text,
                                    doc.SectionContents(super_self._initial_paragraphs,
                                                        sub_sections),
                                    target=super_self._root_target_info.target,
-                                   tags=_HIERARCHY_SECTION_TAGS)
+                                   tags=hierarchy_environment.toc_section_item_tags)
 
         return RetVal()
 
@@ -185,10 +196,7 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
         self._initial_paragraphs = initial_paragraphs
 
     def renderer_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemRendererNode:
-        def sub_factory(local_target_name: str) -> CustomTargetInfoFactory:
-            return cross_ref.sub_component_factory(local_target_name, target_factory)
-
-        sub_sections = [section_generator.renderer_node(sub_factory(local_target_name))
+        sub_sections = [section_generator.renderer_node(target_factory.sub_factory(local_target_name))
                         for (local_target_name, section_generator)
                         in self._local_target_name__sub_section__list]
         return SectionItemRendererNodeWithSubSections(target_factory.root(self._header),
@@ -211,7 +219,7 @@ class _LeafSectionRendererNode(SectionItemRendererNodeWithRoot):
     def target_info_node(self) -> TargetInfoNode:
         return cross_ref.target_info_leaf(self._root_target_info)
 
-    def section_item_renderer(self) -> SectionRenderer:
+    def section_item_renderer(self, hierarchy_environment: HierarchyRenderingEnvironment) -> SectionRenderer:
         super_self = self
 
         class RetVal(SectionRenderer):
@@ -219,7 +227,7 @@ class _LeafSectionRendererNode(SectionItemRendererNodeWithRoot):
                 return doc.Section(super_self._root_target_info.presentation_text,
                                    super_self._contents_renderer.apply(environment),
                                    target=super_self._root_target_info.target,
-                                   tags=_HIERARCHY_SECTION_TAGS)
+                                   tags=hierarchy_environment.toc_section_item_tags)
 
         return RetVal()
 
@@ -235,5 +243,6 @@ class SectionContentsRendererFromHierarchyGenerator(SectionContentsRenderer):
 
     def apply(self, environment: RenderingEnvironment) -> SectionContents:
         target_factory = CustomTargetInfoFactory('ignored')
-        section_item = self.generator.renderer_node(target_factory).section_item(environment)
+        section_item = self.generator.renderer_node(target_factory).section_item(HierarchyRenderingEnvironment(set()),
+                                                                                 environment)
         return section_item_contents_as_section_contents(section_item)
