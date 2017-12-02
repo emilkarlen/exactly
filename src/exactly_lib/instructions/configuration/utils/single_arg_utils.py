@@ -27,3 +27,15 @@ def extract_single_eq_argument_string(rest_of_line: str) -> str:
     if arguments[0] != '=':
         raise SingleInstructionInvalidArgumentException('Missing =')
     return arguments[1]
+
+
+def extract_mandatory_arguments_after_eq(rest_of_line: str) -> list:
+    arguments = split_arguments_list_string(rest_of_line)
+    if not arguments:
+        raise SingleInstructionInvalidArgumentException('Missing arguments')
+    if arguments[0] != '=':
+        raise SingleInstructionInvalidArgumentException('Missing =')
+    del arguments[0]
+    if not arguments:
+        raise SingleInstructionInvalidArgumentException('Missing arguments')
+    return arguments

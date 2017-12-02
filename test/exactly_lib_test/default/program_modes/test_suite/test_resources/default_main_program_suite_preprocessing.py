@@ -41,7 +41,7 @@ else:
         return DirContents([
             File('main.suite',
                  lines_content(['[conf]',
-                                'preprocessor ' + preprocessor,
+                                'preprocessor = ' + preprocessor,
                                 '[cases]',
                                 'pass',
                                 'syntax-error'])),
