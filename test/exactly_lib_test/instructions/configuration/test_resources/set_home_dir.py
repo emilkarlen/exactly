@@ -37,6 +37,7 @@ class Configuration:
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
     test_cases = [
         TestParse_fail_when_there_is_no_arguments,
+        TestParse_fail_when_just_eq_argument,
         TestParse_fail_when_there_is_more_than_one_argument,
         TestFailingExecution_hard_error_WHEN_path_does_not_exist,
         TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file,
@@ -77,9 +78,16 @@ class TestParse_fail_when_there_is_no_arguments(TestCaseForConfigurationBase):
                 self.conf.parser().parse(source)
 
 
+class TestParse_fail_when_just_eq_argument(TestCaseForConfigurationBase):
+    def runTest(self):
+        for source in equivalent_source_variants(self, '  = '):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                self.conf.parser().parse(source)
+
+
 class TestParse_fail_when_there_is_more_than_one_argument(TestCaseForConfigurationBase):
     def runTest(self):
-        for source in equivalent_source_variants(self, 'argument-1 argument-2'):
+        for source in equivalent_source_variants(self, ' = argument-1 argument-2'):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
                 self.conf.parser().parse(source)
 
@@ -87,7 +95,7 @@ class TestParse_fail_when_there_is_more_than_one_argument(TestCaseForConfigurati
 class TestFailingExecution_hard_error_WHEN_path_does_not_exist(TestCaseForConfigurationBase):
     def runTest(self):
         self._check(
-            'non-existing-path',
+            '= non-existing-path',
             Arrangement(),
             Expectation(main_result=sh_assertions.is_hard_error()))
 
@@ -96,7 +104,7 @@ class TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file(TestCaseFor
     def runTest(self):
         file_name = 'existing-plain-file'
         self._check(
-            file_name,
+            '= ' + file_name,
             Arrangement(
                 hds_contents=contents_in(self.conf.target_directory, DirContents([
                     empty_file(file_name)]))),
@@ -109,7 +117,7 @@ class TestSuccessfulExecution_change_to_direct_sub_dir(TestCaseForConfigurationB
     def runTest(self):
         directory_name = 'existing-directory'
         self._check(
-            directory_name,
+            ' = ' + directory_name,
             Arrangement(
                 hds_contents=contents_in(self.conf.target_directory, DirContents([
                     empty_dir(directory_name)]))),
@@ -124,7 +132,7 @@ class TestSuccessfulExecution_change_to_2_level_sub_dir(TestCaseForConfiguration
         first_dir = 'first_dir'
         second_dir = 'second_dir'
         self._check(
-            '{}/{}'.format(first_dir, second_dir),
+            ' =  {}/{}'.format(first_dir, second_dir),
             Arrangement(
                 hds_contents=contents_in(self.conf.target_directory, DirContents([
                     Dir(first_dir,
@@ -139,7 +147,7 @@ class TestSuccessfulExecution_change_to_2_level_sub_dir(TestCaseForConfiguration
 class TestSuccessfulExecution_change_to_parent_dir(TestCaseForConfigurationBase):
     def runTest(self):
         self._check(
-            '..',
+            ' = ..',
             Arrangement(),
             Expectation(configuration=AssertActualHomeDirIsParentOfOriginalHomeDir(self.conf))
         )
