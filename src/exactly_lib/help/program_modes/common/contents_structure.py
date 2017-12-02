@@ -1,8 +1,10 @@
 import types
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.help_texts import doc_format
 from exactly_lib.help_texts import formatting
 from exactly_lib.util.description import Description
+from exactly_lib.util.textformat.structure.core import StringText
 
 
 class SectionInstructionSet(tuple):
@@ -68,6 +70,10 @@ class SectionDocumentation:
     @property
     def name(self) -> formatting.SectionName:
         return self._name_formats
+
+    @property
+    def syntax_name_text(self) -> StringText:
+        return doc_format.section_name_text(self.name)
 
     def purpose(self) -> Description:
         raise NotImplementedError()

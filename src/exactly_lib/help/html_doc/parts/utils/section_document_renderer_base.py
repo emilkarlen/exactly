@@ -8,7 +8,6 @@ from exactly_lib.help.utils.rendering.section_hierarchy_rendering import Section
     SectionItemRendererNodeWithSubSections, SectionHierarchyGenerator, LeafArticleRendererNode
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CustomTargetInfoFactory
-from exactly_lib.help_texts.doc_format import section_name_text
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
@@ -61,7 +60,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
         for section in self.sections:
             assert isinstance(section, SectionDocumentation)
             cross_reference_target = self._section_cross_ref_target(section)
-            section_target_info = cross_ref.TargetInfo(section_name_text(section.name),
+            section_target_info = cross_ref.TargetInfo(section.syntax_name_text,
                                                        cross_reference_target)
             section_node = LeafArticleRendererNode(
                 section_target_info,
@@ -108,7 +107,7 @@ class _SectionInstructionsNodeConstructor:
 
     def __call__(self) -> SectionItemRendererNode:
         return SectionItemRendererNodeWithSubSections(
-            self.section_target_factory.root(section_name_text(self.section.name)),
+            self.section_target_factory.root(self.section.syntax_name_text),
             self._initial_paras(),
             self._instructions_sub_nodes())
 
