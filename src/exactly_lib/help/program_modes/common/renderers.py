@@ -8,7 +8,7 @@ from exactly_lib.help.utils.rendering.section_contents_renderer import Rendering
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.lists import ListType
+from exactly_lib.util.textformat.structure.lists import ListType, HeaderContentListItem
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
@@ -74,16 +74,16 @@ def sections_short_list(sections: list,
     :param sections: List[`SectionDocumentation`]
     """
 
-    def add_default_info(section: SectionDocumentation, output: list):
-        if section.name.plain == default_section_name:
+    def add_default_info(doc: SectionDocumentation, output: list):
+        if doc.name.plain == default_section_name:
             output.append(default_section_para(section_concept_name))
 
-    items = []
-    for section in sections:
-        assert isinstance(section, SectionDocumentation)
-        paras = [docs.para(section.purpose().single_line_description)]
-        add_default_info(section, paras)
-        items.append(docs.list_item(section.name.syntax, paras))
+    def list_item(doc: SectionDocumentation) -> HeaderContentListItem:
+        paras = [docs.para(doc.purpose().single_line_description)]
+        add_default_info(doc, paras)
+        return docs.list_item(doc.syntax_name_text, paras)
+
+    items = map(list_item, sections)
     return docs.simple_list_with_space_between_elements_and_content(
         items,
         lists.ListType.VARIABLE_LIST)
