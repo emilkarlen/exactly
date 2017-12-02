@@ -6,7 +6,7 @@ from exactly_lib.help.entities.configuration_parameters.objects.timeout import W
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
-    extract_argument_string
+    extract_single_eq_argument_string
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -52,7 +52,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> ConfigurationPhaseInstruction:
-        argument = extract_argument_string(rest_of_line)
+        argument = extract_single_eq_argument_string(rest_of_line)
         try:
             value = int(argument)
         except ValueError:

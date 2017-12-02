@@ -28,10 +28,5 @@ class TheConfiguration(set_home_dir.Configuration):
         return sut.TheInstructionDocumentation('instruction mame')
 
 
-# class Test(setting_of_home_dirs.TestSuccessfulExecution_change_to_parent_dir):
-#     def __init__(self, methodName):
-#         super().__init__(TheConfiguration())
-#
-#
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
