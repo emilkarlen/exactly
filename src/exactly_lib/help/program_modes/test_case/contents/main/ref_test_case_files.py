@@ -19,7 +19,14 @@ def generator(header: str, setup: Setup) -> hierarchy_rendering.SectionHierarchy
         [
             ('phases', hierarchy_rendering.leaf('Phases', _PhaseRenderer(text_parser))),
             ('phase-contents', hierarchy_rendering.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            ('instructions', hierarchy_rendering.leaf('Instructions', _InstructionsRenderer(text_parser))),
+            ('instructions', hierarchy_rendering.parent(
+                'Instructions',
+                text_parser.fnap(INSTRUCTIONS_DOC),
+                [('description',
+                  hierarchy_rendering.leaf('Instruction descriptions',
+                                           _InstructionsRenderer(
+                                               text_parser)))])
+             ),
             ('com-empty', hierarchy_rendering.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
@@ -54,10 +61,7 @@ class _PhaseContentsRenderer(_RendererBase):
 
 class _InstructionsRenderer(_RendererBase):
     def apply(self, environment: RenderingEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(INSTRUCTIONS_DOC),
-                                     [self.parser.section('Instruction descriptions',
-                                                          INSTRUCTIONS_DESCRIPTION_DOC)]
-                                     )
+        return docs.section_contents(self.parser.fnap(INSTRUCTIONS_DESCRIPTION_DOC))
 
 
 class _OtherContentsRenderer(_RendererBase):
@@ -141,7 +145,7 @@ EOF
 """
 
 INSTRUCTIONS_DESCRIPTION_DOC = """\
-The instruction name may optionally be preceded by a "description" -
+An instruction may optionally be preceded by a "description" -
 a free text within quotes that is
 displayed together with the instruction source line in error messages.
 
@@ -155,8 +159,11 @@ For example, a free text may be easier to understand than a shell command:
 
 
 ```
-'my-dir should be empty'
-$ test $(ls my-dir | wc -l) -eq 0
+{phase[assert]:syntax}
+
+'PATH should contain /usr/local/bin'
+
+$ tr ':' '\\n' < ../result/stdout | grep '^/usr/local/bin$'
 ```
 
 
