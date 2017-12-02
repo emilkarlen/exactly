@@ -36,7 +36,7 @@ def execution_modes_list() -> ParagraphItem:
 
 def _mode_name_and_paragraphs_list() -> list:
     return [
-        (test_case_status.NAME_NORMAL,
+        (test_case_status.NAME_PASS,
          normalize_and_parse("""\
 The test case is executed and the {0} phase is expected to PASS.""".format(phase_names.ASSERT_PHASE_NAME))),
         (test_case_status.NAME_SKIP,
@@ -45,7 +45,7 @@ The test case is not executed.
 
 
 Result of the test case is %s.""" % FullResultStatus.SKIPPED.name)),
-        (test_case_status.NAME_XFAIL,
+        (test_case_status.NAME_FAIL,
          normalize_and_parse("""\
 The test case is executed and the {assert_} phase is expected to FAIL.
 

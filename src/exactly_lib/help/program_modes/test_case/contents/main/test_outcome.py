@@ -91,7 +91,7 @@ def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
     items = [
         list_item("""The "execution mode" set by the {phase[conf]} phase""".format(phase=setup.phase_names),
                   [para('The default mode is {default_mode}.'.format(
-                      default_mode=test_case_status.NAME_NORMAL))]),
+                      default_mode=test_case_status.NAME_PASS))]),
         list_item("""The outcome of the {phase[assert]} phase""".format(phase=setup.phase_names),
                   []),
     ]
@@ -113,11 +113,11 @@ def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
             cell(paras('{phase[assert]:syntax}'.format(phase=setup.phase_names))),
             cell(paras('Test Case')),
         ],
-        _row(test_case_status.NAME_NORMAL, PartialResultStatus.PASS, FullResultStatus.PASS),
-        _row(test_case_status.NAME_NORMAL, PartialResultStatus.FAIL, FullResultStatus.FAIL),
+        _row(test_case_status.NAME_PASS, PartialResultStatus.PASS, FullResultStatus.PASS),
+        _row(test_case_status.NAME_PASS, PartialResultStatus.FAIL, FullResultStatus.FAIL),
 
-        _row(test_case_status.NAME_XFAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
-        _row(test_case_status.NAME_XFAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
+        _row(test_case_status.NAME_FAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
+        _row(test_case_status.NAME_FAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
 
         _row(test_case_status.NAME_SKIP, None, FullResultStatus.SKIPPED),
     ],

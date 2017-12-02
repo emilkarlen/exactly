@@ -51,19 +51,19 @@ class TestCaseBaseForParser(TestCaseBase):
 
 class TestChangeMode(TestCaseBaseForParser):
     def test_NORMAL(self):
-        self._run(expected=ExecutionMode.NORMAL,
+        self._run(expected=ExecutionMode.PASS,
                   initial=ExecutionMode.SKIP,
-                  argument=exactly_lib.test_case.test_case_status.NAME_NORMAL)
+                  argument=exactly_lib.test_case.test_case_status.NAME_PASS)
 
     def test_SKIP(self):
         self._run(expected=ExecutionMode.SKIP,
-                  initial=ExecutionMode.NORMAL,
+                  initial=ExecutionMode.PASS,
                   argument=exactly_lib.test_case.test_case_status.NAME_SKIP)
 
     def test_XFAIL(self):
-        self._run(expected=ExecutionMode.XFAIL,
-                  initial=ExecutionMode.NORMAL,
-                  argument=exactly_lib.test_case.test_case_status.NAME_XFAIL)
+        self._run(expected=ExecutionMode.FAIL,
+                  initial=ExecutionMode.PASS,
+                  argument=exactly_lib.test_case.test_case_status.NAME_FAIL)
 
 
 class AssertExecutionMode(config_check.Assertion):

@@ -85,7 +85,7 @@ def translate_status(execution_mode: ExecutionMode,
     """
     :param execution_mode: Must not be ExecutionMode.SKIPPED
     """
-    if execution_mode is ExecutionMode.XFAIL:
+    if execution_mode is ExecutionMode.FAIL:
         if ps is PartialResultStatus.FAIL:
             return FullResultStatus.XFAIL
         elif ps is PartialResultStatus.PASS:

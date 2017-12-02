@@ -17,7 +17,7 @@ class ConfigurationBuilder:
         self.__home_case_dir_path = home_case_dir_path
         self.__home_act_dir_path = home_act_dir_path
         self.__act_phase_handling = act_phase_handling
-        self.__execution_mode = ExecutionMode.NORMAL
+        self.__execution_mode = ExecutionMode.PASS
         self.__timeout_in_seconds = timeout_in_seconds
 
     @property
