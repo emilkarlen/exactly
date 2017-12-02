@@ -65,6 +65,7 @@ class ConfigurationParameterTestImpl(ConfigurationParameterDocumentation):
                  default_value: str):
         super().__init__(ConfigurationParameterInfo(conf_param_name,
                                                     conf_param_name,
+                                                    'Informative name of ' + conf_param_name,
                                                     'ConfigurationParameterTestImpl single_line_description',
                                                     default_value,
                                                     conf_params.cross_ref(conf_param_name)))

@@ -9,12 +9,14 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, 
     step_with_single_exit_value, singe_exit_value_display
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.doc_format import exit_value_text
+from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator:
@@ -74,9 +76,16 @@ line on stdout.
 
 
 def _description_of_complete_execution(setup: Setup) -> list:
+    _TEXT_PARSER = TextParser({
+        'phase': setup.phase_names,
+        'test_case_status': formatting.conf_param(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
+        'default_status': test_case_status.NAME_DEFAULT,
+    })
+
     ret_val = []
-    ret_val.extend(normalize_and_parse(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
-    ret_val.append(_what_outcome_depends_on(setup))
+    ret_val.extend(_TEXT_PARSER.fnap(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
+    ret_val.append(_what_outcome_depends_on(_TEXT_PARSER))
+    ret_val.extend(_TEXT_PARSER.fnap(TABLE_INTRO))
     ret_val.append(_outcomes_per_mode_and_assert(setup))
     ret_val.append(para(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
     ret_val.append(_exit_value_table_for_full_execution(setup))
@@ -84,20 +93,36 @@ def _description_of_complete_execution(setup: Setup) -> list:
 
 
 COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS = """\
-The outcome of a completely executed test case depends on two things:"""
+The outcome of a completely executed test case depends on two things:
+"""
+
+TABLE_INTRO = """\
+Together, these determine the outcome of the test case as a whole:
+"""
 
 
-def _what_outcome_depends_on(setup: Setup) -> ParagraphItem:
+def _what_outcome_depends_on(tp: TextParser) -> ParagraphItem:
     items = [
-        list_item("""The "execution mode" set by the {phase[conf]} phase""".format(phase=setup.phase_names),
-                  [para('The default mode is {default_mode}.'.format(
-                      default_mode=test_case_status.NAME_PASS))]),
-        list_item("""The outcome of the {phase[assert]} phase""".format(phase=setup.phase_names),
-                  []),
+        list_item(tp.text(_OUTCOME_DEPENDENCE__STATUS),
+                  tp.fnap(_OUTCOME_DEFAULT_STATUS)),
+        list_item(tp.text(_OUTCOME_DEPENDENCE__ASSERT_PHASE)),
     ]
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.ORDERED_LIST,
                                                 custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS))
+
+
+_OUTCOME_DEPENDENCE__STATUS = """\
+The {test_case_status} set by the {phase[conf]} phase.
+"""
+
+_OUTCOME_DEFAULT_STATUS = """\
+The default is {default_status}.
+"""
+
+_OUTCOME_DEPENDENCE__ASSERT_PHASE = """\
+The outcome of the {phase[assert]} phase.
+"""
 
 
 def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
@@ -109,7 +134,7 @@ def _outcomes_per_mode_and_assert(setup: Setup) -> ParagraphItem:
 
     return first_row_is_header_table([
         [
-            cell(paras('Mode')),
+            cell(paras(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.singular_name.capitalize())),
             cell(paras('{phase[assert]:syntax}'.format(phase=setup.phase_names))),
             cell(paras('Test Case')),
         ],
@@ -256,9 +281,10 @@ def _program_name():
     return formatting.program_name(program_info.PROGRAM_NAME)
 
 
-OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = (
-    'The outcome is reported by an exitcode and an identifier printed as a single '
-    'line on stdout.')
+OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = """\
+The outcome is reported by an exit code and an identifier printed as a single
+line on stdout.
+"""
 
 
 def _other_errors(setup: Setup) -> list:
