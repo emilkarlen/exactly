@@ -1,7 +1,7 @@
 import unittest
 
 import exactly_lib.test_case.execution_mode
-from exactly_lib.instructions.configuration import execution_mode as sut
+from exactly_lib.instructions.configuration import test_case_status as sut
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.execution_mode import ExecutionMode
