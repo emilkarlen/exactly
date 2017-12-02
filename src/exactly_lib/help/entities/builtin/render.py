@@ -3,7 +3,7 @@ import functools
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.help.utils.doc_utils import description_section_if_non_empty
 from exactly_lib.help.utils.rendering import parttioned_entity_set as pes
-from exactly_lib.help.utils.rendering.entity_documentation_rendering import \
+from exactly_lib.help.utils.rendering.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.utils.rendering.parttioned_entity_set import PartitionNamesSetup
 from exactly_lib.help.utils.rendering.see_also_section import see_also_sections

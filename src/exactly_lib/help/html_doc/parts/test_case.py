@@ -5,16 +5,17 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
-from exactly_lib.help.utils.rendering import section_hierarchy_rendering
 from exactly_lib.help_texts import cross_reference_id as cross_ref
 from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
+from exactly_lib.util.textformat.construction import section_hierarchy_con
+from  exactly_lib.util.textformat.construction import section_hierarchy_constructor
 
 
 def generator(header: str,
-              test_case_help: TestCaseHelp) -> section_hierarchy_rendering.SectionHierarchyGenerator:
+              test_case_help: TestCaseHelp) -> section_hierarchy_constructor.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help)
-    return section_hierarchy_rendering.parent(
+    return section_hierarchy_con.parent(
         header,
         [],
         [

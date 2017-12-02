@@ -4,11 +4,11 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help import std_tags
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsConstructor
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionItemRendererNode, \
-    SectionItemRendererNodeWithSubSections, SectionHierarchyGenerator, LeafArticleRendererNode
 from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId
 from exactly_lib.util.textformat.construction import section_hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy import CustomTargetInfoFactory
+from exactly_lib.util.textformat.construction.section_hierarchy_constructor import SectionItemRendererNode, \
+    SectionHierarchyGenerator, LeafArticleRendererNode, SectionItemRendererNodeWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
 

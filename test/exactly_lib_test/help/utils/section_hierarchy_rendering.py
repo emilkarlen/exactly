@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.help.utils.rendering import section_hierarchy_rendering as sut
+from exactly_lib.util.textformat.construction import section_hierarchy_con
+from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment, \
     ConstantSectionContentsConstructor
@@ -29,7 +30,7 @@ class Test(unittest.TestCase):
         # ARRANGE #
         target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object = doc.empty_section_contents()
-        object_to_test = sut.leaf('header', section_contents(expected_section_contents_object))
+        object_to_test = section_hierarchy_con.leaf('header', section_contents(expected_section_contents_object))
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('header'))
 
@@ -51,7 +52,7 @@ class Test(unittest.TestCase):
     def test_parent_without_sub_sections(self):
         # ARRANGE #
         target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
-        object_to_test = sut.parent('top header', [], [])
+        object_to_test = section_hierarchy_con.parent('top header', [], [])
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('top header'))
 
@@ -77,13 +78,13 @@ class Test(unittest.TestCase):
         expected_section_contents_object1 = doc.empty_section_contents()
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
         expected_root_initial_paras = docs.paras('root initial paras')
-        object_to_test = sut.parent(
+        object_to_test = section_hierarchy_con.parent(
             'root header',
             expected_root_initial_paras,
-            [('sub-target1', sut.leaf('sub1',
-                                      section_contents(expected_section_contents_object1))),
-             ('sub-target2', sut.leaf('sub2',
-                                      section_contents(expected_section_contents_object2)))
+            [('sub-target1', section_hierarchy_con.leaf('sub1',
+                                                        section_contents(expected_section_contents_object1))),
+             ('sub-target2', section_hierarchy_con.leaf('sub2',
+                                                        section_contents(expected_section_contents_object2)))
              ])
         # EXPECTATION #
         expected_root_target_info = target_factory.root(StringText('root header'))
@@ -120,7 +121,7 @@ class Test(unittest.TestCase):
                              section_assertion2)
 
     def _act_and_assert(self,
-                        object_to_test: sut.SectionHierarchyGenerator,
+                        object_to_test: section_hierarchy_constructor.SectionHierarchyGenerator,
                         target_factory: CustomTargetInfoFactory,
                         target_info_node_assertion: asrt.ValueAssertion,
                         section_assertion: asrt.ValueAssertion):

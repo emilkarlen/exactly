@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.help.utils.rendering.section_hierarchy_rendering import SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_hierarchy_constructor import SectionHierarchyGenerator
 from exactly_lib_test.help.program_modes.test_case.test_resources import TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.help.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.help.utils.test_resources_.table_of_contents import is_target_info_node

@@ -1,11 +1,12 @@
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.help.utils.rendering import section_hierarchy_rendering as hierarchy_rendering
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
+from exactly_lib.util.textformat.construction import section_hierarchy_con
+from exactly_lib.util.textformat.construction import section_hierarchy_constructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
@@ -13,22 +14,22 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def generator(header: str, setup: Setup) -> hierarchy_rendering.SectionHierarchyGenerator:
+def generator(header: str, setup: Setup) -> section_hierarchy_constructor.SectionHierarchyGenerator:
     text_parser = _text_parser(setup)
-    return hierarchy_rendering.parent(
+    return section_hierarchy_con.parent(
         header, [],
         [
-            ('phases', hierarchy_rendering.leaf('Phases', _PhaseRenderer(text_parser))),
-            ('phase-contents', hierarchy_rendering.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            ('instructions', hierarchy_rendering.parent(
+            ('phases', section_hierarchy_con.leaf('Phases', _PhaseRenderer(text_parser))),
+            ('phase-contents', section_hierarchy_con.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
+            ('instructions', section_hierarchy_con.parent(
                 'Instructions',
                 text_parser.fnap(INSTRUCTIONS_DOC),
                 [('description',
-                  hierarchy_rendering.leaf('Instruction descriptions',
-                                           _InstructionsRenderer(
-                                               text_parser)))])
+                  section_hierarchy_con.leaf('Instruction descriptions',
+                                             _InstructionsRenderer(
+                                                 text_parser)))])
              ),
-            ('com-empty', hierarchy_rendering.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
+            ('com-empty', section_hierarchy_con.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
 
