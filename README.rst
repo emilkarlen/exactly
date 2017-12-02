@@ -184,7 +184,7 @@ The ``actor`` instruction can specify an interpreter to test a source code file:
 
     [conf]
 
-    actor --file python
+    actor = --file python
 
     [act]
 
@@ -206,7 +206,7 @@ It's probably most useful as a tool for experimenting::
 
     [conf]
 
-    actor --source bash
+    actor = --source bash
 
     [act]
 
@@ -381,7 +381,7 @@ it just displays some of Exactly's features.)
     [conf]
 
 
-    mode SKIP
+    status = SKIP
     # This will cause the test case to not be executed.
 
 
