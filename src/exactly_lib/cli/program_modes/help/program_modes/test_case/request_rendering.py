@@ -29,7 +29,7 @@ class TestCaseHelpConstructorResolver:
         if item is TestCaseHelpItem.CLI_SYNTAX:
             return ProgramDocumentationSectionContentsConstructor(TestCaseCliSyntaxDocumentation())
         if item is TestCaseHelpItem.SPECIFICATION:
-            return tc_specification.as_section_contents_renderer(self._contents)
+            return tc_specification.as_section_contents_constructor(self._contents)
         if item is TestCaseHelpItem.INSTRUCTION_SET:
             return instruction_set.InstructionSetPerPhaseRenderer(self._contents)
         if item is TestCaseHelpItem.PHASE:

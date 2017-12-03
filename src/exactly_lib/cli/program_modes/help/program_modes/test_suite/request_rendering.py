@@ -24,7 +24,7 @@ class TestSuiteHelpConstructorResolver:
         if item is TestSuiteHelpItem.CLI_SYNTAX:
             return ProgramDocumentationSectionContentsConstructor(SuiteCliSyntaxDocumentation())
         if item is TestSuiteHelpItem.SPECIFICATION:
-            return specification.specification_renderer(self._contents)
+            return specification.specification_constructor(self._contents)
         if item is TestSuiteHelpItem.SECTION:
             assert isinstance(request.data, TestSuiteSectionDocumentation), 'Must be a TestSuiteSectionDoc'
             return SectionContentsConstructorFromArticleContentsConstructor(
