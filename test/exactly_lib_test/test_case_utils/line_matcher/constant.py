@@ -16,25 +16,25 @@ class TestConstant(unittest.TestCase):
             NameAndValue('constant true should match non-empty line',
                          (
                              True,
-                             'abc abc',
+                             (1, 'abc abc'),
                              True,
                          )),
             NameAndValue('constant true should match empty line',
                          (
                              True,
-                             '',
+                             (2, ''),
                              True,
                          )),
             NameAndValue('constant false should match non-empty line',
                          (
                              False,
-                             'abc abc',
+                             (3, 'abc abc'),
                              False,
                          )),
             NameAndValue('constant false should match empty line',
                          (
                              False,
-                             '',
+                             (3, ''),
                              False,
                          )),
         ]
