@@ -3,8 +3,8 @@ from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help_texts import doc_format, formatting
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER
-from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer

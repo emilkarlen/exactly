@@ -1,7 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.entity import syntax_elements, concepts
-from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 
 _MAIN_DESCRIPTION_REST = symbol_reference_syntax_for_name(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name)

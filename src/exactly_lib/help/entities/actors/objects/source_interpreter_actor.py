@@ -1,7 +1,7 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR

@@ -1,5 +1,5 @@
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity.conf_params import TIMEOUT_CONF_PARAM_INFO
 from exactly_lib.help_texts.test_case.instructions.instruction_names import TIMEOUT_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \

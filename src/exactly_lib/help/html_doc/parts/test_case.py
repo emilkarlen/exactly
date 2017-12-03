@@ -5,8 +5,8 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
-from exactly_lib.help_texts import cross_reference_id as cross_ref
-from exactly_lib.help_texts.cross_reference_id import CrossReferenceId
+from exactly_lib.help_texts.cross_ref import concrete_cross_refs as cross_ref
+from exactly_lib.help_texts.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 

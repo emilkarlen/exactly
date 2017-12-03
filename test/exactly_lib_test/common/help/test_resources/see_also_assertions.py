@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.common.help import see_also as struct
 from exactly_lib.common.help.see_also import SeeAlsoSet
+from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
@@ -43,18 +44,17 @@ class _IsSeeAlsoTarget(asrt.ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        if isinstance(value, struct.CrossReferenceId):
+        if isinstance(value, CrossReferenceId):
             cross_reference_id_va.is_any.apply_with_message(put,
                                                             value,
-                                                            str(struct.CrossReferenceId))
+                                                            str(CrossReferenceId))
         elif isinstance(value, struct.SeeAlsoUrlInfo):
             is_see_also_url_info.apply_with_message(put, value,
                                                     str(struct.SeeAlsoUrlInfo))
         else:
-            put.fail('Not a {}: {}'.format(
-                struct.SeeAlsoTarget,
-                value
-            ))
+            put.fail('Not a {}: {}'.format(SeeAlsoTarget,
+                                           value
+                                           ))
 
 
 is_see_also_url_info = asrt.is_instance_with(struct.SeeAlsoUrlInfo,

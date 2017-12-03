@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import cross_reference_id as cross_ref
+from exactly_lib.help_texts.cross_ref import concrete_cross_refs as cross_ref
 from exactly_lib.util.textformat.rendering.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.structure import core as doc
 from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget

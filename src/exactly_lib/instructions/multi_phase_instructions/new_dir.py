@@ -55,7 +55,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT]
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
 
 

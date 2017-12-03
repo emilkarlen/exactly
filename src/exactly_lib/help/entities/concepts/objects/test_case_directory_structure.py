@@ -1,8 +1,8 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import formatting
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.entity import concepts, syntax_elements
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case_file_structure import HDS_DIR_INFOS_IN_DISPLAY_ORDER, \
     SDS_DIR_INFOS_IN_DISPLAY_ORDER, TcDirInfo
 from exactly_lib.util.description import DescriptionWithSubSections

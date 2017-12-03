@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from exactly_lib.help_texts.cross_reference_id import *
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import *
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

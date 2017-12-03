@@ -6,7 +6,7 @@ from exactly_lib.cli.cli_environment.program_modes.help import command_line_opti
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help_texts import cross_reference_id
+from exactly_lib.help_texts.cross_ref import concrete_cross_refs
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor
@@ -66,28 +66,28 @@ def _cross_ref_text_constructor() -> CrossReferenceTextConstructor:
     return CrossReferenceTextConstructor()
 
 
-class _HelpCommandLineGetterVisitor(cross_reference_id.CrossReferenceIdVisitor):
-    def visit_custom(self, x: cross_reference_id.CustomCrossReferenceId):
+class _HelpCommandLineGetterVisitor(concrete_cross_refs.CrossReferenceIdVisitor):
+    def visit_custom(self, x: concrete_cross_refs.CustomCrossReferenceId):
         raise ValueError('A Custom Cross Reference IDs cannot be displayed as a command line')
 
     def visit_url(self, x: UrlCrossReferenceTarget):
         return x.url
 
-    def visit_entity(self, x: cross_reference_id.EntityCrossReferenceId):
+    def visit_entity(self, x: concrete_cross_refs.EntityCrossReferenceId):
         return _command_line_display_for_help_arguments(arguments_for.entity_single(x.entity_type_identifier,
                                                                                     x.entity_name))
 
-    def visit_test_case_phase(self, x: cross_reference_id.TestCasePhaseCrossReference):
+    def visit_test_case_phase(self, x: concrete_cross_refs.TestCasePhaseCrossReference):
         return _command_line_display_for_help_arguments(arguments_for.case_phase_for_name(x.phase_name))
 
-    def visit_test_case_phase_instruction(self, x: cross_reference_id.TestCasePhaseInstructionCrossReference):
+    def visit_test_case_phase_instruction(self, x: concrete_cross_refs.TestCasePhaseInstructionCrossReference):
         return _command_line_display_for_help_arguments(arguments_for.case_instruction_in_phase(x.phase_name,
                                                                                                 x.instruction_name))
 
-    def visit_test_suite_section(self, x: cross_reference_id.TestSuiteSectionCrossReference):
+    def visit_test_suite_section(self, x: concrete_cross_refs.TestSuiteSectionCrossReference):
         return _command_line_display_for_help_arguments(arguments_for.suite_section_for_name(x.section_name))
 
-    def visit_test_suite_section_instruction(self, x: cross_reference_id.TestSuiteSectionInstructionCrossReference):
+    def visit_test_suite_section_instruction(self, x: concrete_cross_refs.TestSuiteSectionInstructionCrossReference):
         return _command_line_display_for_help_arguments(arguments_for.suite_instruction_in_section(x.section_name,
                                                                                                    x.instruction_name))
 

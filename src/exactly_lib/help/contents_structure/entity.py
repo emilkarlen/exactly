@@ -5,7 +5,8 @@ Makes it possible to reuse some code for generating documentation.
 """
 
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId, EntityTypeNames
+from exactly_lib.help_texts.cross_ref.app_cross_ref import CrossReferenceId
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, EntityTypeNames
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs

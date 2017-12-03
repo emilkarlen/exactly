@@ -1,5 +1,5 @@
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.entity import actors
 from exactly_lib.help_texts.entity import concepts

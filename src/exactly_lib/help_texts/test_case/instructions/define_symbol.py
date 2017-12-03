@@ -1,6 +1,6 @@
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO, PATH_TYPE_INFO, LIST_TYPE_INFO, \
     LINE_MATCHER_TYPE_INFO, FILE_MATCHER_TYPE_INFO, LINES_TRANSFORMER_TYPE_INFO, TypeNameAndCrossReferenceId

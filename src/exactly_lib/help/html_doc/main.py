@@ -8,10 +8,10 @@ from exactly_lib.help.html_doc.parts import test_suite
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as suite_cli_syntax
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.help_texts.cross_reference_id import root_factory
+from exactly_lib.help_texts.cross_ref.custom_target_info_factory import root_factory
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.help_texts.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
     SUITE_REPORTER_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \

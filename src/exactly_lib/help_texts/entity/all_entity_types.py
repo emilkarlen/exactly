@@ -1,5 +1,5 @@
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.name import name_with_plural_s, Name
 
 

@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.section_document.syntax import section_header
 
 

@@ -5,8 +5,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import formatting
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.entity import conf_params, concepts
-from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
     extract_single_eq_argument_string
 from exactly_lib.instructions.utils.documentation import documentation_text

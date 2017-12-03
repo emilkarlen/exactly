@@ -4,12 +4,12 @@ import unittest
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import builtin_symbols
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import types, actors, syntax_elements, suite_reporters, conf_params
 from exactly_lib.help_texts.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
     CONF_PARAM_ENTITY_TYPE_NAMES, SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, \
     TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
 from exactly_lib_test.test_resources.main_program.constant_arguments_check_execution import test_suite_for_test_cases

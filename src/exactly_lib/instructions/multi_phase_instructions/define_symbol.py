@@ -92,7 +92,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
                                ]
         name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list(name_and_cross_refs)
 
     @staticmethod
