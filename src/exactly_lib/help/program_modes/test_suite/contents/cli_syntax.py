@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
-from exactly_lib.help.utils.cli_program.cli_program_documentation import CliProgramSyntaxDocumentation
+from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.help_texts import formatting
