@@ -17,13 +17,30 @@ def leaf(header: str,
     return _SectionLeafGenerator(StringText(header), contents_constructor)
 
 
+class Node(tuple):
+    """A SectionHierarchyGenerator with a local target name."""
+
+    def __new__(cls,
+                local_target_name: str,
+                generator: SectionHierarchyGenerator):
+        return tuple.__new__(cls, (local_target_name, generator))
+
+    @property
+    def local_target_name(self) -> str:
+        return self[0]
+
+    @property
+    def generator(self) -> SectionHierarchyGenerator:
+        return self[1]
+
+
 def parent(header: str,
            initial_paragraphs: list,
            local_target_name__sub_section__list: list,
            ) -> SectionHierarchyGenerator:
     """
     A section with sub sections that appear in the TOC/target hierarchy.
-    :param local_target_name__sub_section__list: [(str, SectionHierarchyGenerator)]
+    :param local_target_name__sub_section__list: [(str, SectionHierarchyGenerator)] or list of `Node`
     :param initial_paragraphs: [ParagraphItem]
     """
     return _SectionHierarchyGeneratorWithSubSections(StringText(header),
