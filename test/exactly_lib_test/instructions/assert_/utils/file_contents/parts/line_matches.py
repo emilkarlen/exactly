@@ -1,4 +1,3 @@
-import types
 import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matches as sut
@@ -16,6 +15,7 @@ from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources im
     destination_file_path_getter_that_gives_seq_of_unique_paths
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing
+from exactly_lib_test.type_system.logic.test_resources.values import is_identical_to, LineMatcherFromPredicates
 
 
 def suite() -> unittest.TestSuite:
@@ -156,24 +156,3 @@ class TestAnyLineMatches(TestCaseBase):
         self._check_cases_with_non_empty_file(sut.assertion_part_for_any_line_matches,
                                               file_contents,
                                               matcher_cases)
-
-
-def is_identical_to(line_num: int, line_contents: str) -> LineMatcher:
-    return LineMatcherFromPredicates(lambda x: x == line_num,
-                                     lambda x: x == line_contents)
-
-
-class LineMatcherFromPredicates(LineMatcher):
-    def __init__(self,
-                 line_num: types.FunctionType,
-                 line_contents: types.FunctionType):
-        self.line_num = line_num
-        self.line_contents = line_contents
-
-    def matches(self, line: tuple) -> bool:
-        return self.line_num(line[0]) and \
-               self.line_contents(line[1])
-
-    @property
-    def option_description(self) -> str:
-        return str(type(self))

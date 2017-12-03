@@ -28,3 +28,18 @@ def model_iter_from_file_line_iter(lines: iter) -> iter:
     """
     return enumerate((l.rstrip('\n') for l in lines),
                      1)
+
+
+def original_and_model_iter_from_file_line_iter(lines: iter) -> iter:
+    """
+    Gives a sequence of pairs, corresponding to each element in lines.
+    (original line, line-matcher-model-for-line).
+
+    See also docs of model_iter_from_file_line_iter.
+
+    @:param strings: lines from an input source
+    """
+    return (
+        (original, (line_num, original.rstrip('\n')))
+        for line_num, original in enumerate(lines, 1)
+    )

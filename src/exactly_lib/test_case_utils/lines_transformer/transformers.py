@@ -1,7 +1,7 @@
 import functools
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, original_and_model_iter_from_file_line_iter
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.functional import compose_first_and_second
 
@@ -84,8 +84,8 @@ class SelectLinesTransformer(LinesTransformer):
     def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
         return (
             line
-            for line in lines
-            if self._line_matcher.matches(line)
+            for line, line_matcher_model in original_and_model_iter_from_file_line_iter(lines)
+            if self._line_matcher.matches(line_matcher_model)
         )
 
     def __str__(self):
