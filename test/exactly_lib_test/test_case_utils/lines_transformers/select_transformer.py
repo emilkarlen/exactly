@@ -14,6 +14,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.test_resources.values import LineMatcherFromPredicates, is_identical_to
 
 
 def suite() -> unittest.TestSuite:
@@ -25,13 +26,13 @@ def suite() -> unittest.TestSuite:
 
 class TestSelectTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.SelectLinesTransformer(SubStringLineMatcher('MATCH'))
+        transformer = sut.SelectLinesTransformer(sub_string_line_matcher('MATCH'))
         self.assertFalse(transformer.is_identity_transformer)
 
-    def test_select(self):
+    def test_select_with_sub_string_matcher(self):
         home_and_sds = fake_home_and_sds()
 
-        transformer = sut.SelectLinesTransformer(SubStringLineMatcher('MATCH'))
+        transformer = sut.SelectLinesTransformer(sub_string_line_matcher('MATCH'))
         cases = [
             NameAndValue('no lines',
                          ([],
@@ -61,6 +62,56 @@ class TestSelectTransformer(unittest.TestCase):
         for case in cases:
             input_lines, expected_output_lines = case.value
             with self.subTest(case_name=case.name):
+                # ACT #
+                actual = transformer.transform(home_and_sds, iter(input_lines))
+                # ASSERT #
+                actual_lines = list(actual)
+                self.assertEqual(expected_output_lines,
+                                 actual_lines)
+
+    def test_other_scenarios(self):
+        home_and_sds = fake_home_and_sds()
+
+        cases = [
+            NameAndValue(
+                'trailing new lines should be removed from line matcher model, but not from transformer output',
+                (LineMatcherFromPredicates(line_contents_predicate=lambda x: x == 'X'),
+                 ['X\n'],
+                 ['X\n'])
+            ),
+            NameAndValue(
+                'line numbers should be paired with lines in order of iterator (1)',
+                (is_identical_to(1, 'i'),
+                 ['i',
+                  'ii'],
+                 ['i'])
+            ),
+            NameAndValue(
+                'line numbers should be paired with lines in order of iterator (2)',
+                (is_identical_to(2, 'ii'),
+                 ['i',
+                  'ii'],
+                 ['ii'])
+            ),
+            NameAndValue(
+                'line numbers should be propagated to line matcher',
+                (LineMatcherFromPredicates(line_num_predicate=lambda x: x in {1, 3}),
+                 [
+                     'i',
+                     'ii',
+                     'iii',
+                     'iv',
+                 ],
+                 [
+                     'i',
+                     'iii',
+                 ])
+            ),
+        ]
+        for case in cases:
+            line_matcher, input_lines, expected_output_lines = case.value
+            with self.subTest(case_name=case.name):
+                transformer = sut.SelectLinesTransformer(line_matcher)
                 # ACT #
                 actual = transformer.transform(home_and_sds, iter(input_lines))
                 # ASSERT #
@@ -108,9 +159,5 @@ class TestSelectTransformerResolver(unittest.TestCase):
                                                     actual_resolver)
 
 
-class SubStringLineMatcher(LineMatcher):
-    def __init__(self, sub_string: str):
-        self.sub_string = sub_string
-
-    def matches(self, line: str) -> bool:
-        return self.sub_string in line
+def sub_string_line_matcher(sub_string: str) -> LineMatcher:
+    return LineMatcherFromPredicates(line_contents_predicate=lambda actual: sub_string in actual)
