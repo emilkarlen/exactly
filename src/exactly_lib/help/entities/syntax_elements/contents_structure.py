@@ -1,4 +1,4 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help.contents_structure.entity import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.type_system.value_type import TypeCategory
