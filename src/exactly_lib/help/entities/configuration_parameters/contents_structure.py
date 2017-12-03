@@ -1,5 +1,5 @@
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
-    EntityDocumentationBase
+    EntityDocumentation
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -7,7 +7,7 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem, StringText
 from exactly_lib.util.textformat.structure.structures import para
 
 
-class ConfigurationParameterDocumentation(EntityDocumentationBase):
+class ConfigurationParameterDocumentation(EntityDocumentation):
     def __init__(self, info: ConfigurationParameterInfo):
         super().__init__(info)
         self._info = info

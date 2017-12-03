@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentationBase
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
 from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
@@ -9,7 +9,7 @@ from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
-class TypeDocumentation(EntityDocumentationBase):
+class TypeDocumentation(EntityDocumentation):
     def __init__(self,
                  type_category: TypeCategory,
                  name_and_cross_ref_target: TypeNameAndCrossReferenceId,
