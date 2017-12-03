@@ -1,7 +1,7 @@
+from exactly_lib.help.contents_structure.entity import EntitiesHelp
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionHierarchyGenerator

@@ -7,7 +7,7 @@ import types
 
 from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure.application import HtmlDocHierarchyGeneratorGetter
-from exactly_lib.help.utils.entity_documentation import EntityDocumentation
+from exactly_lib.help.contents_structure.entity import EntityDocumentation
 from exactly_lib.help.utils.rendering.entity_docs import sorted_entity_list
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \

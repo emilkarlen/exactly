@@ -1,4 +1,4 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help.contents_structure.entity import EntitiesHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId

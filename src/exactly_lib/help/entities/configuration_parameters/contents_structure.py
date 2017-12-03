@@ -1,4 +1,4 @@
-from exactly_lib.help.utils.entity_documentation import EntitiesHelp, \
+from exactly_lib.help.contents_structure.entity import EntitiesHelp, \
     EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
