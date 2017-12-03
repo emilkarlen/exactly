@@ -24,7 +24,7 @@ CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructor
 class TestAllActorsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = ACTOR_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(
+        renderer = ACTOR_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_constructor(
             [ActorTestImpl('actor 1'),
              ActorTestImpl('actor 2')])
         # ACT #

@@ -26,7 +26,7 @@ def suite() -> unittest.TestSuite:
 class TestList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        renderer = TYPE_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(
+        renderer = TYPE_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_constructor(
             all_types.all_types())
         # ACT #
         actual = renderer.apply(CONSTRUCTION_ENVIRONMENT)

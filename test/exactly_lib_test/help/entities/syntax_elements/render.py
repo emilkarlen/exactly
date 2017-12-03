@@ -27,7 +27,7 @@ CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructor
 class TestAllSyntaxElementsList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        constructor = SYNTAX_ELEMENT_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(
+        constructor = SYNTAX_ELEMENT_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_constructor(
             [
                 syntax_element_documentation(None,
                                              name_and_ref_target('SE1', 'single line description of SE1'),

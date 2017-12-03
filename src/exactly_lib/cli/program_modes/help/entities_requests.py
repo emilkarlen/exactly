@@ -51,7 +51,7 @@ class EntityHelpRequestRendererResolver:
     def renderer_for(self, request: EntityHelpRequest) -> SectionContentsConstructor:
         item = request.item
         if item is EntityHelpItem.ALL_ENTITIES_LIST:
-            return self.cli_list_renderer_getter.get_render(self.all_entities)
+            return self.cli_list_renderer_getter.get_constructor(self.all_entities)
         if item is EntityHelpItem.INDIVIDUAL_ENTITY:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.individual_entity.singular_name(),

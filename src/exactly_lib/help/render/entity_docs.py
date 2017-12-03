@@ -17,7 +17,7 @@ def entity_doc_list_renderer_as_flat_list_of_single_line_description(
 
 
 class FlatListConstructorWithSingleLineDescriptionGetter(CliListConstructorGetter):
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
+    def get_constructor(self, all_entity_doc_list: list) -> SectionContentsConstructor:
         return EntitiesListConstructor(single_line_description_as_summary_paragraphs,
                                        all_entity_doc_list)
 

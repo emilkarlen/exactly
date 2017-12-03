@@ -24,7 +24,7 @@ def suite() -> unittest.TestSuite:
 class TestList(unittest.TestCase):
     def runTest(self):
         # ARRANGE #
-        constructor = CONF_PARAM_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_render(
+        constructor = CONF_PARAM_ENTITY_CONFIGURATION.cli_list_constructor_getter.get_constructor(
             all_configuration_parameters.all_configuration_parameters())
         # ACT #
         actual = constructor.apply(CONSTRUCTION_ENVIRONMENT)
