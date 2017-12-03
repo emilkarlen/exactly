@@ -6,11 +6,9 @@ from exactly_lib.util.textformat.structure.core import Text, StringText
 class EntityTypeNames(tuple):
     def __new__(cls,
                 identifier: str,
-                name: Name,
-                command_line_entity_argument: str):
+                name: Name):
         return tuple.__new__(cls, (name,
-                                   identifier,
-                                   command_line_entity_argument))
+                                   identifier))
 
     @property
     def name(self) -> Name:
@@ -19,10 +17,6 @@ class EntityTypeNames(tuple):
     @property
     def identifier(self) -> str:
         return self[1]
-
-    @property
-    def command_line_entity_argument(self) -> str:
-        return self[2]
 
 
 class SingularNameAndCrossReferenceId:

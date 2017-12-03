@@ -41,8 +41,4 @@ def equals_entity_type_names(entity_type_names: EntityTypeNames) -> asrt.ValueAs
                                                         EntityTypeNames.name.fget,
                                                         equals_name(entity_type_names.name)
                                                         ),
-                                     asrt.sub_component('command_line_entity_argument',
-                                                        EntityTypeNames.command_line_entity_argument.fget,
-                                                        asrt.equals(entity_type_names.command_line_entity_argument)
-                                                        ),
                                  ]))
