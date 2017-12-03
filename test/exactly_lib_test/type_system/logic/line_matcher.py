@@ -19,7 +19,7 @@ class Case:
 
 class Test(unittest.TestCase):
     def test(self):
-        # ARRANGE 3
+        # ARRANGE #
         cases = [
             Case('empty input should give empty list of models',
                  input_source_lines=[],
@@ -31,9 +31,24 @@ class Test(unittest.TestCase):
                  expected=[(1, 'a')]
                  ),
 
-            Case('trailing newline should be preserved',
+            Case('trailing newline should be removed',
                  input_source_lines=['a\n'],
-                 expected=[(1, 'a\n')]
+                 expected=[(1, 'a')]
+                 ),
+
+            Case('trailing newline should be removed, but not space before it',
+                 input_source_lines=['a \n'],
+                 expected=[(1, 'a ')]
+                 ),
+
+            Case('trailing non-newline space should be removed',
+                 input_source_lines=['a  '],
+                 expected=[(1, 'a  ')]
+                 ),
+
+            Case('space at start of line should be preserved',
+                 input_source_lines=[' a'],
+                 expected=[(1, ' a')]
                  ),
 
             Case('lines should be numbered 1,2,3, ...',
@@ -41,9 +56,9 @@ class Test(unittest.TestCase):
                                      'b\n',
                                      'c\n',
                                      'd'],
-                 expected=[(1, 'a\n'),
-                           (2, 'b\n'),
-                           (3, 'c\n'),
+                 expected=[(1, 'a'),
+                           (2, 'b'),
+                           (3, 'c'),
                            (4, 'd'),
                            ]
                  ),
@@ -51,7 +66,7 @@ class Test(unittest.TestCase):
         for case in cases:
             with self.subTest(case.name):
                 # ACT #
-                actual = sut.model_iter_from_string_iter(case.input_source_lines)
+                actual = sut.model_iter_from_file_line_iter(case.input_source_lines)
                 # ASSERT #
                 actual_list = list(actual)
                 self.assertEqual(case.expected,

@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, model_iter_from_file_line_iter
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -69,7 +69,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
-               file_to_check: FileToCheck) -> FileToCheck:
+               file_to_check: FileToCheck):
         raise NotImplementedError('abstract method')
 
     def _report_fail(self,
@@ -87,16 +87,15 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
     def _report_fail_with_line(self,
                                environment: InstructionEnvironmentForPostSdsStep,
                                checked_file_describer: FilePropertyDescriptorConstructor,
-                               line_number: int,
                                cause: str,
-                               line_contents: str):
-        single_line_actual_value = 'Line {} {}'.format(line_number, cause)
+                               number__contents: str):
+        single_line_actual_value = 'Line {} {}'.format(number__contents[0], cause)
 
         failure_info_resolver = self._diff_failure_info_resolver(checked_file_describer)
         failure_info = failure_info_resolver.resolve(environment,
                                                      diff_msg.actual_with_single_line_value(
                                                          single_line_actual_value,
-                                                         [line_contents]))
+                                                         [number__contents[1]]))
         raise PfhFailException(failure_info.render())
 
     def _diff_failure_info_resolver(self,
@@ -118,11 +117,11 @@ class _AnyLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
-               file_to_check: FileToCheck) -> FileToCheck:
-        with file_to_check.lines() as lines:
-            for line in lines:
-                if line_matcher.matches(line.rstrip('\n')):
-                    return file_to_check
+               file_to_check: FileToCheck):
+        with file_to_check.lines() as file_lines:
+            for line in model_iter_from_file_line_iter(file_lines):
+                if line_matcher.matches(line):
+                    return
         self._report_fail(environment,
                           file_to_check.describer,
                           'no line matches')
@@ -132,51 +131,39 @@ class _AnyLineMatchesAssertionPartForNegativeMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
-               file_to_check: FileToCheck) -> FileToCheck:
-        with file_to_check.lines() as lines:
-            line_num = 1
-            for line in lines:
-                plain_line = line.rstrip('\n')
-                if line_matcher.matches(plain_line):
+               file_to_check: FileToCheck):
+        with file_to_check.lines() as file_lines:
+            for line in model_iter_from_file_line_iter(file_lines):
+                if line_matcher.matches(line):
                     self._report_fail_with_line(environment,
                                                 file_to_check.describer,
-                                                line_num,
                                                 'matches',
                                                 line)
-                line_num += 1
-        return file_to_check
 
 
 class _EveryLineMatchesAssertionPartForPositiveMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
-               file_to_check: FileToCheck) -> FileToCheck:
-        with file_to_check.lines() as lines:
-            line_num = 1
-            for line in lines:
-                if not line_matcher.matches(line.rstrip('\n')):
+               file_to_check: FileToCheck):
+        with file_to_check.lines() as file_lines:
+            for line in model_iter_from_file_line_iter(file_lines):
+                if not line_matcher.matches(line):
                     self._report_fail_with_line(environment,
                                                 file_to_check.describer,
-                                                line_num,
                                                 'does not match',
                                                 line)
-                line_num += 1
-        return file_to_check
 
 
 class _EveryLineMatchesAssertionPartForNegativeMatch(FileContentsAssertionPart):
     def _check(self,
                environment: InstructionEnvironmentForPostSdsStep,
                line_matcher: LineMatcher,
-               file_to_check: FileToCheck) -> FileToCheck:
-        with file_to_check.lines() as lines:
-            line_num = 1
-            for line in lines:
-                plain_line = line.rstrip('\n')
-                if not line_matcher.matches(plain_line):
-                    return file_to_check
-                line_num += 1
+               file_to_check: FileToCheck):
+        with file_to_check.lines() as file_lines:
+            for line in model_iter_from_file_line_iter(file_lines):
+                if not line_matcher.matches(line):
+                    return
         self._report_fail(environment,
                           file_to_check.describer,
                           'every line matches')
