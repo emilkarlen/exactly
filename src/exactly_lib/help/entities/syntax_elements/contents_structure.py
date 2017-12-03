@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure.entity import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.type_system.value_type import TypeCategory
@@ -98,9 +98,9 @@ def syntax_element_documentation(type_category: TypeCategory,
                                                         see_also_targets)
 
 
-def syntax_elements_help(syntax_elements: iter) -> EntitiesHelp:
+def syntax_elements_help(syntax_elements: iter) -> EntityTypeHelp:
     """
     :param syntax_elements: [SyntaxElementDocumentation]
     """
-    return EntitiesHelp(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
-                        syntax_elements)
+    return EntityTypeHelp(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES,
+                          syntax_elements)

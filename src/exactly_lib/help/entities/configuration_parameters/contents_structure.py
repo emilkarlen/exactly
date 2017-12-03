@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure.entity import EntitiesHelp, \
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
     EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
@@ -42,9 +42,9 @@ class ConfigurationParameterDocumentation(EntityDocumentationBase):
         return []
 
 
-def configuration_parameters_help(conf_param_docs: iter) -> EntitiesHelp:
+def configuration_parameters_help(conf_param_docs: iter) -> EntityTypeHelp:
     """
     :param conf_param_docs: [ConfigurationParameterDocumentation]
     """
-    return EntitiesHelp(CONF_PARAM_ENTITY_TYPE_NAMES,
-                        conf_param_docs)
+    return EntityTypeHelp(CONF_PARAM_ENTITY_TYPE_NAMES,
+                          conf_param_docs)

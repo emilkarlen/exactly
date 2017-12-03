@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure.entity import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 
@@ -48,9 +48,9 @@ class SuiteReporterDocumentation(EntityDocumentationBase):
         return []
 
 
-def suite_reporters_help(suite_reporters: iter) -> EntitiesHelp:
+def suite_reporters_help(suite_reporters: iter) -> EntityTypeHelp:
     """
     :param suite_reporters: [SuiteReporterDocumentation]
     """
-    return EntitiesHelp(SUITE_REPORTER_ENTITY_TYPE_NAMES,
-                        suite_reporters)
+    return EntityTypeHelp(SUITE_REPORTER_ENTITY_TYPE_NAMES,
+                          suite_reporters)

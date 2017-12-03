@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure.entity import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.entity.syntax_elements import SyntaxElementInfo
 from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
@@ -74,9 +74,9 @@ class LogicTypeWithExpressionGrammarDocumentation(TypeDocumentation):
         return super().see_also_targets() + self._syntax.see_also_targets()
 
 
-def types_help(types: iter) -> EntitiesHelp:
+def types_help(types: iter) -> EntityTypeHelp:
     """
     :param types: [TypeDocumentation]
     """
-    return EntitiesHelp(TYPE_ENTITY_TYPE_NAMES,
-                        types)
+    return EntityTypeHelp(TYPE_ENTITY_TYPE_NAMES,
+                          types)

@@ -10,7 +10,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.contents_structure.application import ApplicationHelp
-from exactly_lib.help.contents_structure.entity import EntitiesHelp, EntityConfiguration
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityTypeConfiguration
 from exactly_lib.help.entities.actors.render import IndividualActorConstructor
 from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
@@ -491,9 +491,9 @@ class TestSetupForActor(entity_lookup_test_cases.EntityTestSetup):
         return application_help_for([],
                                     entity_name_2_entity_configuration={
                                         self.entity_type_name:
-                                            EntityConfiguration(
-                                                EntitiesHelp(ACTOR_ENTITY_TYPE_NAMES,
-                                                             entities),
+                                            EntityTypeConfiguration(
+                                                EntityTypeHelp(ACTOR_ENTITY_TYPE_NAMES,
+                                                               entities),
                                                 IndividualActorConstructor,
                                                 FlatListConstructorWithSingleLineDescriptionGetter(),
                                                 FlatEntityListHierarchyGeneratorGetter(

@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure.entity import EntitiesHelp, \
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
     EntityDocumentationBase
 from exactly_lib.help_texts.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
@@ -39,9 +39,9 @@ class ConceptDocumentation(EntityDocumentationBase):
         return []
 
 
-def concepts_help(concepts: iter) -> EntitiesHelp:
+def concepts_help(concepts: iter) -> EntityTypeHelp:
     """
     :param concepts: [ConceptDocumentation]
     """
-    return EntitiesHelp(CONCEPT_ENTITY_TYPE_NAMES,
-                        concepts)
+    return EntityTypeHelp(CONCEPT_ENTITY_TYPE_NAMES,
+                          concepts)

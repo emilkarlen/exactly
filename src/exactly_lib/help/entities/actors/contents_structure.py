@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure.entity import EntitiesHelp, EntityDocumentationBase
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentationBase
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
@@ -45,9 +45,9 @@ class ActorDocumentation(EntityDocumentationBase):
         return []
 
 
-def actors_help(actors: iter) -> EntitiesHelp:
+def actors_help(actors: iter) -> EntityTypeHelp:
     """
     :param actors: [ActorDocumentation]
     """
-    return EntitiesHelp(ACTOR_ENTITY_TYPE_NAMES,
-                        actors)
+    return EntityTypeHelp(ACTOR_ENTITY_TYPE_NAMES,
+                          actors)
