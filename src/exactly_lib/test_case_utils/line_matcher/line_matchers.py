@@ -33,8 +33,8 @@ class LineMatcherRegex(LineMatcher):
     def regex_pattern_string(self) -> str:
         return self._compiled_regular_expression.pattern
 
-    def matches(self, line: str) -> bool:
-        return bool(self._compiled_regular_expression.search(line))
+    def matches(self, line: tuple) -> bool:
+        return bool(self._compiled_regular_expression.search(line[1]))
 
 
 class LineMatcherNot(LineMatcher):
