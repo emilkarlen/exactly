@@ -18,31 +18,6 @@ class EntityDocumentation:
     Base class for documentation of "entities" with a name and single-line-description.
     """
 
-    def singular_name(self) -> str:
-        """
-        Name of the entity in singular.
-        """
-        raise NotImplementedError()
-
-    @property
-    def singular_name_text(self) -> StringText:
-        return self.name_and_cross_ref_target.singular_name_text
-
-    @property
-    def name_and_cross_ref_target(self) -> SingularNameAndCrossReferenceId:
-        raise NotImplementedError('abstract method')
-
-    def single_line_description(self) -> Text:
-        """
-        A short description of the entity.
-        """
-        raise NotImplementedError('abstract method')
-
-    def cross_reference_target(self) -> CrossReferenceId:
-        raise NotImplementedError('abstract method')
-
-
-class EntityDocumentationBase(EntityDocumentation):
     def __init__(self, name_and_cross_ref_target: SingularNameAndCrossReferenceId):
         self._name_and_cross_ref_target = name_and_cross_ref_target
 
@@ -52,6 +27,10 @@ class EntityDocumentationBase(EntityDocumentation):
 
     def singular_name(self) -> str:
         return self._name_and_cross_ref_target.singular_name
+
+    @property
+    def singular_name_text(self) -> StringText:
+        return self.name_and_cross_ref_target.singular_name_text
 
     def single_line_description_str(self) -> str:
         return self._name_and_cross_ref_target.single_line_description_str
