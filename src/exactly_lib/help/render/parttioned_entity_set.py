@@ -61,7 +61,7 @@ class PartitionedCliListConstructorGetter(CliListConstructorGetter):
         self.partition_setup_list = partition_setup_list
         self.entity_2_summary_paragraphs = entity_2_summary_paragraphs
 
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
+    def get_constructor(self, all_entity_doc_list: list) -> SectionContentsConstructor:
         partitions = partition_entities(self.partition_setup_list, all_entity_doc_list)
 
         def section_constructor(partition: EntitiesPartition) -> SectionConstructor:

@@ -78,7 +78,7 @@ class HtmlDocHierarchyGeneratorGetter:
 
 
 class CliListConstructorGetter:
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
+    def get_constructor(self, all_entity_doc_list: list) -> SectionContentsConstructor:
         raise NotImplementedError('abstract method')
 
 
