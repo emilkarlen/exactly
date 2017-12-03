@@ -52,7 +52,7 @@ class TestRegex(unittest.TestCase):
                 # ACT #
                 actual_pattern_str = matcher.regex_pattern_string
 
-                actual_result = matcher.matches(line)
+                actual_result = matcher.matches((1, line))
 
                 # ASSERT #
 
