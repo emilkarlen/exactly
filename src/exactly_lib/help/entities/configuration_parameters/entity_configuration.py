@@ -2,7 +2,7 @@ from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.entities.configuration_parameters import all_configuration_parameters
 from exactly_lib.help.entities.configuration_parameters import render
 from exactly_lib.help.entities.configuration_parameters.contents_structure import configuration_parameters_help
-from exactly_lib.help.html_doc.parts.utils.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
+from exactly_lib.help.render.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
 from exactly_lib.help.render.entity_docs import \
     FlatListConstructorWithSingleLineDescriptionGetter
 from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
