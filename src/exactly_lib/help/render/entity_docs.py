@@ -1,5 +1,4 @@
-from exactly_lib.help.contents_structure.application import CliListConstructorGetter
-from exactly_lib.help.contents_structure.entity import EntityDocumentation
+from exactly_lib.help.contents_structure.entity import EntityDocumentation, CliListConstructorGetter
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc, lists, structures as docs

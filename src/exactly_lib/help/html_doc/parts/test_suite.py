@@ -1,5 +1,5 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.contents_structure.application import EntityConfiguration
+from exactly_lib.help.contents_structure.entity import EntityConfiguration
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation

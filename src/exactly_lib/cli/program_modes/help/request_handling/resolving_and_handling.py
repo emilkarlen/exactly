@@ -12,7 +12,8 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.request_renderi
     TestSuiteHelpConstructorResolver
 from exactly_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
-from exactly_lib.help.contents_structure.application import ApplicationHelp, EntityConfiguration
+from exactly_lib.help.contents_structure.application import ApplicationHelp
+from exactly_lib.help.contents_structure.entity import EntityConfiguration
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 

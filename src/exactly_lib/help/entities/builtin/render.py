@@ -1,5 +1,6 @@
 import functools
 
+from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.help.render import parttioned_entity_set as pes
 from exactly_lib.help.render.doc_utils import description_section_if_non_empty
@@ -61,13 +62,13 @@ class IndividualBuiltinSymbolConstructor(ArticleContentsConstructor):
                                  environment)
 
 
-def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
+def hierarchy_generator_getter() -> HtmlDocHierarchyGeneratorGetter:
     return pes.PartitionedHierarchyGeneratorGetter(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.identifier,
                                                    _PARTITIONS_SETUP,
                                                    IndividualBuiltinSymbolConstructor)
 
 
-def list_renderer_getter() -> pes.CliListConstructorGetter:
+def list_renderer_getter() -> CliListConstructorGetter:
     return pes.PartitionedCliListConstructorGetter(
         _PARTITIONS_SETUP,
         single_line_description_as_summary_paragraphs)

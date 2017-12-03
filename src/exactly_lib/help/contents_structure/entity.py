@@ -6,6 +6,8 @@ Makes it possible to reuse some code for generating documentation.
 
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, CrossReferenceId, EntityTypeNames
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_hierarchy.structures import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text, StringText
 
@@ -88,6 +90,47 @@ class EntitiesHelp(tuple):
         return self[1]
 
 
-def cross_reference_id_list(entity_documentation_iterable) -> list:
-    return [x.cross_reference_target()
-            for x in entity_documentation_iterable]
+class HtmlDocHierarchyGeneratorGetter:
+    def get_hierarchy_generator(self,
+                                header: str,
+                                all_entity_doc_list: list) -> SectionHierarchyGenerator:
+        raise NotImplementedError('abstract method')
+
+
+class CliListConstructorGetter:
+    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
+        raise NotImplementedError('abstract method')
+
+
+class EntityConfiguration(tuple):
+    def __new__(cls,
+                entities_help: EntitiesHelp,
+                entity_doc_2_article_contents_renderer,
+                cli_list_renderer_getter: CliListConstructorGetter,
+                html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter):
+        return tuple.__new__(cls, (entities_help,
+                                   entity_doc_2_article_contents_renderer,
+                                   cli_list_renderer_getter,
+                                   html_doc_generator_getter))
+
+    @property
+    def entities_help(self) -> EntitiesHelp:
+        return self[0]
+
+    @property
+    def entity_doc_2_article_contents_renderer(self):
+        """
+        :rtype: `EntityDocumentation` -> `ArticleContentsRenderer`
+        """
+        return self[1]
+
+    @property
+    def cli_list_constructor_getter(self) -> CliListConstructorGetter:
+        return self[2]
+
+    @property
+    def html_doc_generator_getter(self) -> HtmlDocHierarchyGeneratorGetter:
+        return self[3]
+
+    def get_hierarchy_generator(self, header: str) -> SectionHierarchyGenerator:
+        return self.html_doc_generator_getter.get_hierarchy_generator(header, self.entities_help.all_entities)
