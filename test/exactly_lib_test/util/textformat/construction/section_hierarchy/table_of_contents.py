@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.utils import table_of_contents as sut
+from exactly_lib.util.textformat.construction.section_hierarchy import table_of_contents as sut
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfo, TargetInfoNode, \
     target_info_leaf
 from exactly_lib.util.textformat.structure import lists
