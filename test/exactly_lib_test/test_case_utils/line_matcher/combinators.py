@@ -14,7 +14,7 @@ def suite() -> unittest.TestSuite:
 
 class LineMatcherConfiguration(matcher_combinators_check.MatcherConfiguration):
     def irrelevant_model(self):
-        return 'irrelevant line model'
+        return 69, 'irrelevant line model'
 
     def matcher_with_constant_result(self, result: bool):
         return sut.LineMatcherConstant(result)
