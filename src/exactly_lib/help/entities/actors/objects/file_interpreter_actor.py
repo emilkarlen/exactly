@@ -4,7 +4,7 @@ from exactly_lib.help.entities.actors.contents_structure import ActorDocumentati
 from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEMENT, \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
-from exactly_lib.help.utils import doc_utils
+from exactly_lib.help.render import doc_utils
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference

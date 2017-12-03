@@ -1,5 +1,5 @@
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
+from exactly_lib.help.render.see_also_section import see_also_sections
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 from exactly_lib.help_texts.entity.suite_reporters import DEFAULT_REPORTER

@@ -1,5 +1,5 @@
 from exactly_lib.help.program_modes.main_program.contents import MainCliSyntaxDocumentation
-from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
+from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor

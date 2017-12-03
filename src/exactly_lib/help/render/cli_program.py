@@ -1,6 +1,6 @@
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
-from exactly_lib.help.utils.doc_utils import synopsis_section, description_section
-from exactly_lib.help.utils.rendering.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
+from exactly_lib.help.render.doc_utils import synopsis_section, description_section
+from exactly_lib.help.render.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
 from exactly_lib.help_texts import doc_format
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis
