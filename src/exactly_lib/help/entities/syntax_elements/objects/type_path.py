@@ -2,11 +2,11 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, cross_reference_id_list
 from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import syntax_elements, types, concepts
 from exactly_lib.help_texts.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER
 from exactly_lib.help_texts.instruction_arguments import REL_SYMBOL_OPTION
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId, cross_reference_id_list
 from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP, \
     REL_SDS_OPTIONS_MAP, RelOptionInfo, REL_CWD_INFO

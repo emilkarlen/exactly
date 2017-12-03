@@ -1,7 +1,7 @@
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO
-from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _MAIN_DESCRIPTION_REST = """\

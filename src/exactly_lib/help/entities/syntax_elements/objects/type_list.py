@@ -2,8 +2,8 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.entity import syntax_elements, types, concepts
-from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.test_case.instructions import define_symbol
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.cli_syntax.elements import argument as a

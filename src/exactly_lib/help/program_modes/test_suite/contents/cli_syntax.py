@@ -7,11 +7,11 @@ from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocu
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import suite_reporters as reporters
 from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.test_suite import section_names
 from exactly_lib.help_texts.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.util.cli_syntax.elements import argument as arg

@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.name_and_cross_ref import CrossReferenceId, SeeAlsoTarget
+from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
 from exactly_lib.util.collection import FrozenSetBasedOnEquality
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget, StringText
 

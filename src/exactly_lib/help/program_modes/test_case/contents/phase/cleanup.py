@@ -4,7 +4,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseCrossReference, \
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME

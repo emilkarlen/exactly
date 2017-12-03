@@ -1,9 +1,9 @@
 from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity import conf_params as cp
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelNonHomeOptionType, \
     RelHomeOptionType

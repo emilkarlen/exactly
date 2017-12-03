@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import test_case_file_structure as tc_fs, formatting
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.doc_format import instruction_name_text
 from exactly_lib.help_texts.entity import concepts, conf_params, syntax_elements
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo

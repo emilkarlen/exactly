@@ -1,9 +1,9 @@
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import EntityCrossReferenceId
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import StringText
 

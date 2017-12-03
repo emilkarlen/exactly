@@ -3,10 +3,10 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.help_texts import doc_format
 from exactly_lib.help_texts import expression, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
-from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime

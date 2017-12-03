@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_reference_id import TestCasePhaseInstructionCrossReference
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.doc_format import file_name_text
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.formatting import AnyInstructionNameDictionary, InstructionName

@@ -1,7 +1,7 @@
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help_texts.cross_reference_id import CustomCrossReferenceId
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import CustomCrossReferenceId
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.entity.suite_reporters import suite_reporter_cross_ref
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 
 
 class SuiteReporterDocTestImpl(SuiteReporterDocumentation):

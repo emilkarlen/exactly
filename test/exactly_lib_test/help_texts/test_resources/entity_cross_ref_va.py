@@ -1,5 +1,5 @@
-from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
-from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import EntityCrossReferenceId
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import EntityTypeNames
 
 from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as asrt_cross_ref
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

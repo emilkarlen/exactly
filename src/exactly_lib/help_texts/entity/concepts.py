@@ -1,8 +1,9 @@
 from exactly_lib import program_info
 from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_reference_id import EntityCrossReferenceId
+from exactly_lib.help_texts.cross_ref.concrete_cross_refs import EntityCrossReferenceId
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, \
+    EntityTypeNames
 from exactly_lib.help_texts.entity import all_entity_types
-from exactly_lib.help_texts.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, EntityTypeNames
 from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.util.name import Name, name_with_plural_s
 

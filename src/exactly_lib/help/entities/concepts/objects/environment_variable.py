@@ -25,7 +25,7 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
                              self._variables_from_before_assert()]))
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help_texts.name_and_cross_ref import cross_reference_id_list
+        from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
         return cross_reference_id_list([
             SANDBOX_CONCEPT_INFO,
             conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,

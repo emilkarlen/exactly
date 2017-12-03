@@ -3,8 +3,8 @@ from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxE
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
     type_string, type_list, type_path, symbol_name, symbol_reference, file_contents_matcher, \
     integer, integer_comparison
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.test_case_utils.expression.syntax_documentation import Syntax
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher

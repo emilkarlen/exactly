@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.help_texts import cross_reference_id as sut
-from exactly_lib.help_texts.name_and_cross_ref import EntityTypeNames
+from exactly_lib.help_texts.cross_ref import concrete_cross_refs as sut
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.name import name_with_plural_s
 
 
