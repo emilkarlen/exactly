@@ -23,5 +23,5 @@ def parse_instruction(actual_file: ComparisonActualFile,
             FileExistenceAssertionPart(actual_file),
             actual_file_assertion_part,
         ]),
-        lambda env: 'initial assertion part argument not used'
+        lambda env: 'initial assertion part argument - not used'
     )
