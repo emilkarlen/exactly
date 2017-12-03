@@ -16,3 +16,12 @@ class LineMatcher(Matcher):
         :return: If the line matches the condition represented by the matcher
         """
         raise NotImplementedError('abstract method')
+
+
+def model_iter_from_string_iter(strings: iter) -> iter:
+    """
+    Gives a sequence of line matcher models, corresponding to input lines.
+
+    @:param strings: lines from an input source
+    """
+    return enumerate(strings, 1)
