@@ -2,12 +2,13 @@ import types
 
 from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.html_doc.parts.utils import entities_list_renderer
-from exactly_lib.help.render.entity_docs import AllEntitiesListConstructor
+from exactly_lib.help.render.entity_docs import EntitiesListConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionConstructor, \
     SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy import structures
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -52,23 +53,6 @@ def partition_entities(partitions_setup: list, entity_doc_list: list) -> list:
     return ret_val
 
 
-def list_render(partition_setup_list: list,
-                entity_2_summary_paragraphs: types.FunctionType,
-                type_doc_list: list) -> SectionContentsConstructor:
-    partitions = partition_entities(partition_setup_list, type_doc_list)
-
-    def section_renderer(partition: EntitiesPartition) -> SectionConstructor:
-        return SectionConstructorFromSectionContentsConstructor(
-            docs.text(partition.partition_names_setup.header),
-            AllEntitiesListConstructor(
-                entity_2_summary_paragraphs,
-                partition.entity_doc_list))
-
-    return section_contents_constructor_with_sub_sections(list(
-        map(section_renderer, partitions)
-    ))
-
-
 class PartitionedCliListConstructorGetter(CliListConstructorGetter):
     def __init__(self,
                  partition_setup_list: list,
@@ -80,15 +64,14 @@ class PartitionedCliListConstructorGetter(CliListConstructorGetter):
     def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
         partitions = partition_entities(self.partition_setup_list, all_entity_doc_list)
 
-        def section_renderer(partition: EntitiesPartition) -> SectionConstructor:
+        def section_constructor(partition: EntitiesPartition) -> SectionConstructor:
             return SectionConstructorFromSectionContentsConstructor(
                 docs.text(partition.partition_names_setup.header),
-                AllEntitiesListConstructor(
-                    self.entity_2_summary_paragraphs,
-                    partition.entity_doc_list))
+                EntitiesListConstructor(self.entity_2_summary_paragraphs,
+                                        partition.entity_doc_list))
 
         return section_contents_constructor_with_sub_sections(list(
-            map(section_renderer, partitions)
+            map(section_constructor, partitions)
         ))
 
 
@@ -106,14 +89,14 @@ class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
                                 header: str,
                                 all_entity_doc_list: list
                                 ) -> structures.SectionHierarchyGenerator:
-        def section_hierarchy_node(partition: EntitiesPartition) -> tuple:
-            return (partition.partition_names_setup.local_target_name,
-                    entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(
-                        self.entity_type_identifier,
-                        partition.partition_names_setup.header,
-                        self.entity_2_article_contents_renderer,
-                        partition.entity_doc_list,
-                    ))
+        def section_hierarchy_node(partition: EntitiesPartition) -> Node:
+            return Node(partition.partition_names_setup.local_target_name,
+                        entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(
+                            self.entity_type_identifier,
+                            partition.partition_names_setup.header,
+                            self.entity_2_article_contents_renderer,
+                            partition.entity_doc_list,
+                        ))
 
         partitions = partition_entities(self.partition_setup_list, all_entity_doc_list)
 
