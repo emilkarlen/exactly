@@ -1,7 +1,6 @@
 import types
 
-from exactly_lib.help.contents_structure.application import HtmlDocHierarchyGeneratorGetter, \
-    CliListConstructorGetter
+from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.html_doc.parts.utils import entities_list_renderer
 from exactly_lib.help.render.entity_docs import AllEntitiesListConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \

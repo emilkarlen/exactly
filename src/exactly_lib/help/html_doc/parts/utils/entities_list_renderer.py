@@ -6,8 +6,7 @@ Makes it possible to reuse some code for generating documentation.
 import types
 
 from exactly_lib.help import std_tags
-from exactly_lib.help.contents_structure.application import HtmlDocHierarchyGeneratorGetter
-from exactly_lib.help.contents_structure.entity import EntityDocumentation
+from exactly_lib.help.contents_structure.entity import EntityDocumentation, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.render.entity_docs import sorted_entity_list
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \

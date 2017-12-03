@@ -1,5 +1,6 @@
 import functools
 
+from exactly_lib.help.contents_structure.entity import CliListConstructorGetter, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.types.render import LOGIC_TYPES_HEADER, DATA_TYPES_HEADER
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_paragraphs
@@ -63,13 +64,13 @@ class IndividualSyntaxElementConstructor(ArticleContentsConstructor):
         return ret_val
 
 
-def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
+def hierarchy_generator_getter() -> HtmlDocHierarchyGeneratorGetter:
     return pes.PartitionedHierarchyGeneratorGetter(SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.identifier,
                                                    _PARTITIONS_SETUP,
                                                    IndividualSyntaxElementConstructor)
 
 
-def list_render_getter() -> pes.CliListConstructorGetter:
+def list_render_getter() -> CliListConstructorGetter:
     return pes.PartitionedCliListConstructorGetter(
         _PARTITIONS_SETUP,
         single_line_description_as_summary_paragraphs)

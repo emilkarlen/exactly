@@ -1,5 +1,6 @@
 import functools
 
+from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
@@ -62,13 +63,13 @@ class IndividualTypeConstructor(ArticleContentsConstructor):
                                                        sub_sections))
 
 
-def hierarchy_generator_getter() -> pes.HtmlDocHierarchyGeneratorGetter:
+def hierarchy_generator_getter() -> HtmlDocHierarchyGeneratorGetter:
     return pes.PartitionedHierarchyGeneratorGetter(TYPE_ENTITY_TYPE_NAMES.identifier,
                                                    _PARTITIONS_SETUP,
                                                    IndividualTypeConstructor)
 
 
-def list_render_getter() -> pes.CliListConstructorGetter:
+def list_render_getter() -> CliListConstructorGetter:
     return pes.PartitionedCliListConstructorGetter(
         _PARTITIONS_SETUP,
         single_line_description_as_summary_paragraphs)

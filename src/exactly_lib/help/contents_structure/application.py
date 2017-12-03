@@ -1,56 +1,7 @@
-from exactly_lib.help.contents_structure.entity import EntitiesHelp
+from exactly_lib.help.contents_structure.entity import EntityConfiguration
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
-    SectionHierarchyGenerator
-
-
-class HtmlDocHierarchyGeneratorGetter:
-    def get_hierarchy_generator(self,
-                                header: str,
-                                all_entity_doc_list: list) -> SectionHierarchyGenerator:
-        raise NotImplementedError('abstract method')
-
-
-class CliListConstructorGetter:
-    def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
-        raise NotImplementedError('abstract method')
-
-
-class EntityConfiguration(tuple):
-    def __new__(cls,
-                entities_help: EntitiesHelp,
-                entity_doc_2_article_contents_renderer,
-                cli_list_renderer_getter: CliListConstructorGetter,
-                html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter):
-        return tuple.__new__(cls, (entities_help,
-                                   entity_doc_2_article_contents_renderer,
-                                   cli_list_renderer_getter,
-                                   html_doc_generator_getter))
-
-    @property
-    def entities_help(self) -> EntitiesHelp:
-        return self[0]
-
-    @property
-    def entity_doc_2_article_contents_renderer(self):
-        """
-        :rtype: `EntityDocumentation` -> `ArticleContentsRenderer`
-        """
-        return self[1]
-
-    @property
-    def cli_list_constructor_getter(self) -> CliListConstructorGetter:
-        return self[2]
-
-    @property
-    def html_doc_generator_getter(self) -> HtmlDocHierarchyGeneratorGetter:
-        return self[3]
-
-    def get_hierarchy_generator(self, header: str) -> SectionHierarchyGenerator:
-        return self.html_doc_generator_getter.get_hierarchy_generator(header, self.entities_help.all_entities)
 
 
 class ApplicationHelp(tuple):
