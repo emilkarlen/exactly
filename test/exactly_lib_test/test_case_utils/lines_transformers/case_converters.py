@@ -21,9 +21,9 @@ class TestToUpper(unittest.TestCase):
     def test_every_line_SHOULD_be_transformed(self):
         # ARRANGE #
         input_lines = [
-            'Unidentified FLYING Object',
-            'Object Oriented',
             'I object!',
+            'Object Oriented',
+            'Unidentified FLYING Object',
         ]
         input_lines_iter = iter(input_lines)
         transformer = sut.ToUpperCaseLinesTransformer()
@@ -36,9 +36,9 @@ class TestToUpper(unittest.TestCase):
         actual_lines = list(actual)
 
         expected_lines = [
-            'UNIDENTIFIED FLYING OBJECT',
-            'OBJECT ORIENTED',
             'I OBJECT!',
+            'OBJECT ORIENTED',
+            'UNIDENTIFIED FLYING OBJECT',
         ]
 
         self.assertEqual(expected_lines,
@@ -73,9 +73,9 @@ class TestToLower(unittest.TestCase):
     def test_every_line_SHOULD_be_transformed(self):
         # ARRANGE #
         input_lines = [
-            'Unidentified FLYING Object',
-            'Object Oriented',
             'I object!',
+            'Object Oriented',
+            'Unidentified FLYING Object',
         ]
         input_lines_iter = iter(input_lines)
         transformer = sut.ToLowerCaseLinesTransformer()
@@ -88,9 +88,9 @@ class TestToLower(unittest.TestCase):
         actual_lines = list(actual)
 
         expected_lines = [
-            'unidentified flying object',
-            'object oriented',
             'i object!',
+            'object oriented',
+            'unidentified flying object',
         ]
 
         self.assertEqual(expected_lines,
