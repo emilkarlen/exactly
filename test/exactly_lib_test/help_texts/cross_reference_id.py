@@ -21,8 +21,7 @@ def suite() -> unittest.TestSuite:
 def entity_type_names(identifier: str,
                       presentation_name: str) -> EntityTypeNames:
     return EntityTypeNames(identifier,
-                           name_with_plural_s(presentation_name),
-                           'command line argument')
+                           name_with_plural_s(presentation_name))
 
 
 class TestEqualsCustom(unittest.TestCase):
@@ -188,8 +187,7 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
     def test_visit_EntityCrossReferenceId(self):
         # ARRANGE #
         x = sut.EntityCrossReferenceId(EntityTypeNames('entity_type_identifier',
-                                                       name_with_plural_s('presentation name'),
-                                                       'command line arg'),
+                                                       name_with_plural_s('presentation name')),
                                        'entity name')
         visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
         # ACT #

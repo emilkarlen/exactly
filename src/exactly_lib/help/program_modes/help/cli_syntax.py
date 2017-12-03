@@ -98,23 +98,6 @@ def _synopsis(additional_arguments: list,
                                docs.text(single_line_description))
 
 
-def _entity_list_and_describe(names: EntityTypeNames) -> cli_syntax.Synopsis:
-    arguments = [
-        arg.Single(arg.Multiplicity.MANDATORY,
-                   _c(clo.HELP)),
-        arg.Single(arg.Multiplicity.MANDATORY,
-                   _c(names.identifier)),
-        arg.Single(arg.Multiplicity.OPTIONAL,
-                   _n(names.command_line_entity_argument))
-    ]
-    single_line_description = 'Lists all {entities}; or describes a given {entity}.'.format(
-        entity=names.name.singular,
-        entities=names.name.plural,
-    )
-    return cli_syntax.Synopsis(arg.CommandLine(arguments),
-                               docs.text(single_line_description))
-
-
 def _ns(names: list) -> list:
     return list(map(_n, names))
 

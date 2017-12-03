@@ -1,4 +1,3 @@
-from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.name import name_with_plural_s, Name
 
@@ -6,16 +5,14 @@ from exactly_lib.util.name import name_with_plural_s, Name
 def _command_line_names_as_singular_name(entity_type_identifier: str,
                                          name: Name) -> EntityTypeNames:
     return EntityTypeNames(entity_type_identifier,
-                           name,
-                           formatting.syntax_element(name.singular))
+                           name)
 
 
 def _entity_arg_is_singular_name(entity_type_identifier: str,
                                  name: Name,
                                  ) -> EntityTypeNames:
     return EntityTypeNames(entity_type_identifier,
-                           name,
-                           formatting.syntax_element(name.singular))
+                           name)
 
 
 SYMBOL_CONCEPT_NAME = name_with_plural_s('symbol')
@@ -40,8 +37,7 @@ TYPE_ENTITY_TYPE_NAMES = _command_line_names_as_singular_name('type',
 
 BUILTIN_SYMBOL_ENTITY_TYPE_NAMES = EntityTypeNames('builtin',
                                                    Name('builtin ' + SYMBOL_CONCEPT_NAME.singular,
-                                                        'builtin ' + SYMBOL_CONCEPT_NAME.plural),
-                                                   formatting.syntax_element(SYMBOL_CONCEPT_NAME.singular))
+                                                        'builtin ' + SYMBOL_CONCEPT_NAME.plural))
 
 ALL_ENTITY_TYPES_IN_DISPLAY_ORDER = (
     CONCEPT_ENTITY_TYPE_NAMES,
