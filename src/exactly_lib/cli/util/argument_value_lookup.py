@@ -3,10 +3,10 @@ import os
 from exactly_lib.cli.program_modes.help.error import HelpError
 from exactly_lib.cli.util import value_lookup
 from exactly_lib.cli.util.value_lookup import Match
-from exactly_lib.help.contents_structure.entity import EntitiesHelp
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp
 
 
-def entities_key_value_iter(entities_help: EntitiesHelp) -> iter:
+def entities_key_value_iter(entities_help: EntityTypeHelp) -> iter:
     return map(lambda entity_doc: (entity_doc.singular_name(), entity_doc),
                entities_help.all_entities)
 

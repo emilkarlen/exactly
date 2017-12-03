@@ -68,7 +68,7 @@ class EntityDocumentationBase(EntityDocumentation):
         return formatting.entity(self.singular_name()) + ' - ' + self.single_line_description_str()
 
 
-class EntitiesHelp(tuple):
+class EntityTypeHelp(tuple):
     def __new__(cls,
                 names: EntityTypeNames,
                 entities: iter):
@@ -102,9 +102,9 @@ class CliListConstructorGetter:
         raise NotImplementedError('abstract method')
 
 
-class EntityConfiguration(tuple):
+class EntityTypeConfiguration(tuple):
     def __new__(cls,
-                entities_help: EntitiesHelp,
+                entities_help: EntityTypeHelp,
                 entity_doc_2_article_contents_renderer,
                 cli_list_renderer_getter: CliListConstructorGetter,
                 html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter):
@@ -114,7 +114,7 @@ class EntityConfiguration(tuple):
                                    html_doc_generator_getter))
 
     @property
-    def entities_help(self) -> EntitiesHelp:
+    def entities_help(self) -> EntityTypeHelp:
         return self[0]
 
     @property

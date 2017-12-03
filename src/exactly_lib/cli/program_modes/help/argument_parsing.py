@@ -9,7 +9,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.cli.util import argument_value_lookup
 from exactly_lib.help.contents_structure.application import ApplicationHelp
-from exactly_lib.help.contents_structure.entity import EntitiesHelp
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 
 
@@ -35,7 +35,7 @@ class Parser:
         command_argument = help_command_arguments[0].lower()
         if command_argument == HELP:
             return MainProgramHelpRequest(MainProgramHelpItem.HELP)
-        if command_argument in self.application_help.entity_name_2_entity_configuration:
+        if command_argument in self.application_help.entity_type_id_2_entity_type_conf:
             return self._parse_entity_help(command_argument, help_command_arguments[1:])
         if command_argument == HTML_DOCUMENTATION:
             return self._parse_html_doc_help(help_command_arguments[1:])
@@ -135,7 +135,7 @@ class Parser:
     def _parse_entity_help(self, entity_type_name: str, arguments: list) -> EntityHelpRequest:
         if not arguments:
             return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
-        entities_help = self.application_help.entity_name_2_entity_configuration[entity_type_name].entities_help
+        entities_help = self.application_help.entity_type_id_2_entity_type_conf[entity_type_name].entities_help
         match = lookup_entity(entities_help, arguments)
         return EntityHelpRequest(entity_type_name,
                                  EntityHelpItem.INDIVIDUAL_ENTITY,
@@ -149,7 +149,7 @@ class Parser:
         return HtmlDocHelpRequest()
 
 
-def lookup_entity(entities: EntitiesHelp, arguments: list) -> argument_value_lookup.Match:
+def lookup_entity(entities: EntityTypeHelp, arguments: list) -> argument_value_lookup.Match:
     return argument_value_lookup.lookup_argument(entities.names.name.singular,
                                                  ' '.join(arguments),
                                                  argument_value_lookup.entities_key_value_iter(entities))

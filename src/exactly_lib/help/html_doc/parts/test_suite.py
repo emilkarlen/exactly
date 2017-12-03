@@ -1,5 +1,5 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.contents_structure.entity import EntityConfiguration
+from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy import structure
 
 def generator(header: str,
               test_suite_help: TestSuiteHelp,
-              suite_reporter_conf: EntityConfiguration,
+              suite_reporter_conf: EntityTypeConfiguration,
               ) -> structures.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestSuiteHelp(test_suite_help)
     return hierarchy.parent(

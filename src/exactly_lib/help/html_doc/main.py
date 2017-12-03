@@ -81,7 +81,7 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> list:
             'test-suite',
             test_suite.generator(_TEST_SUITES_HEADER,
                                  application_help.test_suite_help,
-                                 application_help.entity_conf_for(
+                                 application_help.entity_type_conf_for(
                                      SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier))
         ),
     ]
@@ -97,7 +97,7 @@ def _entity_sections(application_help: ApplicationHelp,
     def _section_setup_for_entity(names: EntityTypeNames) -> tuple:
         return (
             names.identifier,
-            application_help.entity_conf_for(names.identifier).get_hierarchy_generator(
+            application_help.entity_type_conf_for(names.identifier).get_hierarchy_generator(
                 names.name.plural.capitalize()),
 
         )

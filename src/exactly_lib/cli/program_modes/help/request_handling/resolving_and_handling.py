@@ -13,7 +13,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.request_renderi
 from exactly_lib.cli.program_modes.help.request_handling.console_help import ConsoleHelpRequestHandler
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.help.contents_structure.application import ApplicationHelp
-from exactly_lib.help.contents_structure.entity import EntityConfiguration
+from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 
@@ -55,8 +55,8 @@ def _renderer(application_help: ApplicationHelp,
 def _entity_help_request_renderer_resolver_for(application_help: ApplicationHelp,
                                                request: EntityHelpRequest) -> EntityHelpRequestRendererResolver:
     try:
-        entity_conf = application_help.entity_name_2_entity_configuration[request.entity_type]
-        assert isinstance(entity_conf, EntityConfiguration), ('Must be an ' + str(EntityConfiguration))
+        entity_conf = application_help.entity_type_id_2_entity_type_conf[request.entity_type]
+        assert isinstance(entity_conf, EntityTypeConfiguration), ('Must be an ' + str(EntityTypeConfiguration))
     except KeyError:
         raise ValueError('Entity is not found in application help: ' + request.entity_type)
     return EntityHelpRequestRendererResolver(entity_conf.entity_doc_2_article_contents_renderer,
