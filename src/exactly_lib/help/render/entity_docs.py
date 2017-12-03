@@ -12,21 +12,21 @@ def sorted_entity_list(entities: list) -> list:
 
 def entity_doc_list_renderer_as_flat_list_of_single_line_description(
         entity_doc_list: list) -> SectionContentsConstructor:
-    return AllEntitiesListConstructor(single_line_description_as_summary_paragraphs,
-                                      entity_doc_list)
+    return EntitiesListConstructor(single_line_description_as_summary_paragraphs,
+                                   entity_doc_list)
 
 
 class FlatListConstructorWithSingleLineDescriptionGetter(CliListConstructorGetter):
     def get_render(self, all_entity_doc_list: list) -> SectionContentsConstructor:
-        return AllEntitiesListConstructor(single_line_description_as_summary_paragraphs,
-                                          all_entity_doc_list)
+        return EntitiesListConstructor(single_line_description_as_summary_paragraphs,
+                                       all_entity_doc_list)
 
 
 def single_line_description_as_summary_paragraphs(entity_doc: EntityDocumentation) -> list:
     return docs.paras(entity_doc.single_line_description())
 
 
-class AllEntitiesListConstructor(SectionContentsConstructor):
+class EntitiesListConstructor(SectionContentsConstructor):
     def __init__(self,
                  entity_2_summary_paragraphs,
                  all_entities: list):
