@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure import EntityConfiguration
+from exactly_lib.help.contents_structure.application import EntityConfiguration
 from exactly_lib.help.entities.syntax_elements import contents_structure, render, all_syntax_elements
 
 SYNTAX_ELEMENT_ENTITY_CONFIGURATION = EntityConfiguration(

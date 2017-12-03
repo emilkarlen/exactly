@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure import EntityConfiguration
+from exactly_lib.help.contents_structure.application import EntityConfiguration
 from exactly_lib.help.entities.suite_reporters import render
 from exactly_lib.help.entities.suite_reporters.contents_structure import suite_reporters_help
 from exactly_lib.help.entities.suite_reporters.objects.all_suite_reporters import ALL_SUITE_REPORTERS

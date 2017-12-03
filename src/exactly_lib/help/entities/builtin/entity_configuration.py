@@ -1,4 +1,4 @@
-from exactly_lib.help.contents_structure import EntityConfiguration
+from exactly_lib.help.contents_structure.application import EntityConfiguration
 from exactly_lib.help.entities.builtin import render
 from exactly_lib.help.entities.builtin.contents_structure import builtin_symbols_help
 
