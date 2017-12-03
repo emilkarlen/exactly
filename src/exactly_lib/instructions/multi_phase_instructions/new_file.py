@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
+from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -61,8 +62,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def see_also_targets(self) -> list:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT,
                                syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
-        from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list(name_and_cross_refs)
+        return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
 
 class FileInfo(tuple):
