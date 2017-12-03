@@ -1,5 +1,5 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp

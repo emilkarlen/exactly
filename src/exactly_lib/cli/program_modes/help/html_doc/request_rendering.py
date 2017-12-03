@@ -1,5 +1,5 @@
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
-from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.html_doc import main as html_doc
 from exactly_lib.util.std import StdOutputFiles
 

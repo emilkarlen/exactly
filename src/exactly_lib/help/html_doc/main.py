@@ -1,5 +1,5 @@
 from exactly_lib.help import std_tags
-from exactly_lib.help.contents_structure import ApplicationHelp
+from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.html_doc import page_setup
 from exactly_lib.help.html_doc.cross_ref_target_renderer import HtmlTargetRenderer
 from exactly_lib.help.html_doc.parts import help
