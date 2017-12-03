@@ -2,7 +2,7 @@ from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request 
     MainProgramHelpItem
 from exactly_lib.help.program_modes.help.cli_syntax import HelpCliSyntaxDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
+from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 

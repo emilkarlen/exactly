@@ -1,6 +1,6 @@
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationConstructorBase
 from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
-from exactly_lib.help.utils.rendering.see_also_section import see_also_sections
+from exactly_lib.help.render.see_also_section import see_also_sections
 from exactly_lib.help_texts.cross_reference_id import TestSuiteSectionInstructionCrossReference
 from exactly_lib.help_texts.doc_format import instruction_name_text
 from exactly_lib.help_texts.test_suite.section_names import DEFAULT_SECTION_NAME

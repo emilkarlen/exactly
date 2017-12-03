@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
-from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
+from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \

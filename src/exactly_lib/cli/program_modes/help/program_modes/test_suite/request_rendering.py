@@ -7,7 +7,7 @@ from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteC
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
-from exactly_lib.help.utils.cli_program.cli_program_documentation_rendering import \
+from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor, \

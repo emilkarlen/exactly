@@ -6,7 +6,7 @@ from exactly_lib.help.entities.actors.objects.common import \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, \
     ARGUMENT_SYNTAX_ELEMENT, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
-from exactly_lib.help.utils import doc_utils
+from exactly_lib.help.render import doc_utils
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity import concepts, conf_params
 from exactly_lib.help_texts.entity.actors import COMMAND_LINE_ACTOR

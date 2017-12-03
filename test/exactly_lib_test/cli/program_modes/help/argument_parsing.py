@@ -17,7 +17,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.utils.rendering.entity_docs import \
+from exactly_lib.help.render.entity_docs import \
     FlatListConstructorWithSingleLineDescriptionGetter
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
