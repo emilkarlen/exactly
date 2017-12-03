@@ -2,6 +2,7 @@ import operator
 
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help_texts import environment_variables, formatting
+from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.doc_format import directory_variable_name_text
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.concepts import ENVIRONMENT_VARIABLE_CONCEPT_INFO, \
@@ -25,8 +26,7 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
                              self._variables_from_before_assert()]))
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list([
+        return name_and_cross_ref.cross_reference_id_list([
             SANDBOX_CONCEPT_INFO,
             conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO,
             conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,

@@ -1,5 +1,6 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
@@ -41,8 +42,7 @@ class DocumentationElements:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT]
         name_and_cross_refs += rel_opts.see_also_name_and_cross_refs(self._dst_rel_opt_conf.options)
         name_and_cross_refs += rel_opts.see_also_name_and_cross_refs(self._src_rel_opt_conf.options)
-        from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list(name_and_cross_refs)
+        return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
     def _cl_syntax_for_args(self, argument_usages: list) -> str:
         return cl_syntax.cl_syntax_for_args(argument_usages)

@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts import syntax_descriptions
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import types, syntax_elements, concepts
 from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
@@ -92,8 +93,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
                                ]
         name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
-        from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-        return cross_reference_id_list(name_and_cross_refs)
+        return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
     @staticmethod
     def _types_table() -> docs.ParagraphItem:
