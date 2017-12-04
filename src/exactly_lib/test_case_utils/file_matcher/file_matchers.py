@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.help_texts import expression
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 
@@ -89,7 +90,7 @@ class FileMatcherNot(FileMatcher):
 
     @property
     def option_description(self) -> str:
-        return self._matcher.option_description
+        return expression.NOT_OPERATOR_NAME + ' ' + self._matcher.option_description
 
     def matches(self, path: pathlib.Path) -> bool:
         return not self._matcher.matches(path)
@@ -107,7 +108,8 @@ class FileMatcherAnd(FileMatcher):
 
     @property
     def option_description(self) -> str:
-        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+        op = ' ' + expression.AND_OPERATOR_NAME + ' '
+        return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
     def matches(self, path: pathlib.Path) -> bool:
         return all([matcher.matches(path)
@@ -122,7 +124,8 @@ class FileMatcherOr(FileMatcher):
 
     @property
     def option_description(self) -> str:
-        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+        op = ' ' + expression.OR_OPERATOR_NAME + ' '
+        return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
     def matchers(self) -> list:

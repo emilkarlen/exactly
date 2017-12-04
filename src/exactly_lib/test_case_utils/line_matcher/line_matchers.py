@@ -1,3 +1,4 @@
+from exactly_lib.help_texts import expression
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 
 
@@ -45,13 +46,13 @@ class LineMatcherNot(LineMatcher):
 
     @property
     def option_description(self) -> str:
-        return self._matcher.option_description
+        return expression.NOT_OPERATOR_NAME + ' ' + self._matcher.option_description
 
     @property
     def negated_matcher(self) -> LineMatcher:
         return self._matcher
 
-    def matches(self, line: str) -> bool:
+    def matches(self, line: tuple) -> bool:
         return not self._matcher.matches(line)
 
 
@@ -63,7 +64,8 @@ class LineMatcherAnd(LineMatcher):
 
     @property
     def option_description(self) -> str:
-        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+        op = ' ' + expression.AND_OPERATOR_NAME + ' '
+        return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
     def matchers(self) -> list:
@@ -82,7 +84,8 @@ class LineMatcherOr(LineMatcher):
 
     @property
     def option_description(self) -> str:
-        return '({})'.format(','.join(map(lambda fm: fm.option_description, self.matchers)))
+        op = ' ' + expression.OR_OPERATOR_NAME + ' '
+        return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
     def matchers(self) -> list:
