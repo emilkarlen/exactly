@@ -2,6 +2,7 @@
 
 * https://packaging.python.org/
 
+
 ** Set version number in src/exactly_lib/program_info.py
 
 ** 0. Remove existing distributables
@@ -18,16 +19,11 @@ Distribute source and wheel
 
 > twine upload dist/*
 
-* Documentation on pythonhosted
+** wiki: Generate new Reference.html
 
-Log in to PyPI, select the package, and upload a zip file via the UI.
-
-The zip-file must contain an index.html.
-
-> python3 src/default-main-program-runner.py help htmldoc > FILE
-> zip doc.zip FILE
 
 * http://peterdowns.com/posts/first-time-with-pypi.html
+
 
 ** Upload your package to PyPI Test
 
