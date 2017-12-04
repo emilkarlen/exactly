@@ -1,12 +1,11 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.condition import comparators
-from exactly_lib.instructions.assert_.utils.condition import instruction as sut
-from exactly_lib.instructions.assert_.utils.condition.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case import os_services
+from exactly_lib.test_case_utils.condition import comparators, instruction as sut
+from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.util.logic_types import ExpectationType

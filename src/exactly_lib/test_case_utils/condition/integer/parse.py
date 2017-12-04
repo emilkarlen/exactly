@@ -3,12 +3,12 @@ import types
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
-from exactly_lib.instructions.assert_.utils.condition import comparators
-from exactly_lib.instructions.assert_.utils.condition.integer import integer_resolver
-from exactly_lib.instructions.assert_.utils.condition.integer.integer_resolver import IntegerResolver
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.condition.integer import integer_resolver
+from exactly_lib.test_case_utils.condition.integer.integer_resolver import IntegerResolver
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.messages import expected_found

@@ -1,14 +1,14 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCooperativeAssertionParts, \
     AssertionPart
-from exactly_lib.instructions.assert_.utils.condition.integer import parse as parse_cmp_op
-from exactly_lib.instructions.assert_.utils.condition.integer.parse import validator_for_non_negative
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
+from exactly_lib.test_case_utils.condition.integer import parse as parse_cmp_op
+from exactly_lib.test_case_utils.condition.integer.parse import validator_for_non_negative
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref

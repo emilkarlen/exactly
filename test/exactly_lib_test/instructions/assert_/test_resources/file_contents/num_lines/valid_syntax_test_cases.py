@@ -1,8 +1,8 @@
 import itertools
 import unittest
 
-from exactly_lib.instructions.assert_.utils.condition import comparators
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.string import lines_content, line_separated
