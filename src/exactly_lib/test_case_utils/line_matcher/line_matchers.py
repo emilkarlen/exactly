@@ -1,4 +1,5 @@
 from exactly_lib.help_texts import expression
+from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 
 
@@ -21,7 +22,7 @@ class LineMatcherConstant(LineMatcher):
 
 
 class LineMatcherRegex(LineMatcher):
-    """Matches lines that matches a given regex."""
+    """Matches lines who's contents matches a given regex."""
 
     def __init__(self, compiled_regular_expression):
         self._compiled_regular_expression = compiled_regular_expression
@@ -36,6 +37,20 @@ class LineMatcherRegex(LineMatcher):
 
     def matches(self, line: tuple) -> bool:
         return bool(self._compiled_regular_expression.search(line[1]))
+
+
+class LineMatcherLineNumber(LineMatcher):
+    """Matches lines who's line number satisfy a given condition."""
+
+    def __init__(self, integer_matcher: IntegerMatcher):
+        self._integer_matcher = integer_matcher
+
+    @property
+    def option_description(self) -> str:
+        return self._integer_matcher.option_description
+
+    def matches(self, line: tuple) -> bool:
+        return self._integer_matcher.matches(line[0])
 
 
 class LineMatcherNot(LineMatcher):
@@ -108,6 +123,8 @@ class LineMatcherStructureVisitor:
     def visit(self, line_matcher: LineMatcher):
         if isinstance(line_matcher, LineMatcherRegex):
             return self.visit_regex(line_matcher)
+        if isinstance(line_matcher, LineMatcherLineNumber):
+            return self.visit_line_number(line_matcher)
         if isinstance(line_matcher, LineMatcherConstant):
             return self.visit_constant(line_matcher)
         if isinstance(line_matcher, LineMatcherNot):
@@ -124,6 +141,9 @@ class LineMatcherStructureVisitor:
         raise NotImplementedError('abstract method')
 
     def visit_regex(self, matcher: LineMatcherRegex):
+        raise NotImplementedError('abstract method')
+
+    def visit_line_number(self, matcher: LineMatcherLineNumber):
         raise NotImplementedError('abstract method')
 
     def visit_not(self, matcher: LineMatcherNot):
