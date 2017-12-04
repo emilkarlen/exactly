@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_.utils.expression import instruction, integer
+from exactly_lib_test.instructions.assert_.utils.condition import instruction, integer
 
 
 def suite() -> unittest.TestSuite:

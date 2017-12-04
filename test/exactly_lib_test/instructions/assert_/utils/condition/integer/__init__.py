@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.assert_.utils.expression.integer import integer_resolver
+from exactly_lib_test.instructions.assert_.utils.condition.integer import integer_resolver
 
 
 def suite() -> unittest.TestSuite:

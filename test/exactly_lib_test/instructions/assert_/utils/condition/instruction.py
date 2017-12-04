@@ -10,7 +10,7 @@ from exactly_lib.test_case import os_services
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.instructions.assert_.utils.expression.test_resources.operand_resolver import operand_resolver_that
+from exactly_lib_test.instructions.assert_.utils.condition.test_resources.operand_resolver import operand_resolver_that
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, \
     symbol_reference_assertions as asrt_sym_ref
