@@ -8,7 +8,15 @@
 * Builtin transformers
 ** split lines (producing more lines than original)
 ** join lines (join all lines, and remove final nl, if there)
+JOIN_LINES
+** strip white space on each line
+STRIP_SPACE
+But perhaps this should be a "primitive", so that it is possible to have options for
+where to strip.
+strip-space [--left|--right]
 
+Note that this is just a short cut for "replace", but it may be motivated, since it is
+probably a common task.
 ** ADDRESS
 
 ADDRESS ::= --range FROM : TO
