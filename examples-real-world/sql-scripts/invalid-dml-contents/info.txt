@@ -1,0 +1,2 @@
+A text file that should be ignored by the tests
+
