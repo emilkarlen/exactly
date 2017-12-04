@@ -18,6 +18,9 @@ class LineMatcher(Matcher):
         raise NotImplementedError('abstract method')
 
 
+FIRST_LINE_NUMBER = 1
+
+
 def model_iter_from_file_line_iter(lines: iter) -> iter:
     """
     Gives a sequence of line matcher models, corresponding to input lines read from file.
