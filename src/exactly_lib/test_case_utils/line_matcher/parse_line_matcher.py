@@ -7,6 +7,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
+from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import parse_integer_matcher
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import line_matchers
 from exactly_lib.test_case_utils.line_matcher import resolvers
@@ -25,6 +26,8 @@ REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_nam
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
 LINE_MATCHER_ARGUMENT = a.Named(types.LINE_MATCHER_TYPE_INFO.syntax_element_name)
+
+LINE_NUMBER_PROPERTY = 'line number'
 
 
 def parse_line_matcher(source: ParseSource) -> LineMatcherResolver:
@@ -46,6 +49,12 @@ def parse_line_matcher_from_token_parser(parser: TokenParserPrime) -> LineMatche
 def parse_regex(parser: TokenParserPrime) -> LineMatcherResolver:
     regex = parse_reg_ex.parse_regex(parser)
     return resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherRegex(regex))
+
+
+def parse_line_number_matcher(parser: TokenParserPrime) -> LineMatcherResolver:
+    integer_matcher = parse_integer_matcher(parser,
+                                            name_of_lhs=LINE_NUMBER_PROPERTY)
+    return resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherLineNumber(integer_matcher))
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {

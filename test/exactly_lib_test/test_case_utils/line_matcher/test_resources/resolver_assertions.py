@@ -13,9 +13,20 @@ def resolved_value_equals_line_matcher(value: LineMatcher,
     """
     :return: A assertion on a :class:`LineMatcherResolver`
     """
+    return resolved_value_matches_line_matcher(equals_line_matcher(value),
+                                               references,
+                                               symbols)
+
+
+def resolved_value_matches_line_matcher(line_matcher: asrt.ValueAssertion,
+                                        references: asrt.ValueAssertion = asrt.is_empty_list,
+                                        symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
+    """
+    :return: A assertion on a :class:`LineMatcherResolver`
+    """
     return matches_resolver_of_logic_type(LineMatcherResolver,
                                           LogicValueType.LINE_MATCHER,
                                           ValueType.LINE_MATCHER,
-                                          equals_line_matcher(value),
+                                          line_matcher,
                                           references,
                                           symbols)

@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.condition.integer import integer_resolver, parse
+from exactly_lib_test.test_case_utils.condition.integer import integer_resolver, parse_integer_condition
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         integer_resolver.suite(),
-        parse.suite(),
+        parse_integer_condition.suite(),
     ])
 
 

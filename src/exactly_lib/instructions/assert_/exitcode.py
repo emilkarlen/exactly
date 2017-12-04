@@ -12,7 +12,8 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAss
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.test_case_utils.condition import comparison_structures, instruction
-from exactly_lib.test_case_utils.condition.integer.parse import parse_integer_comparison_operator_and_rhs
+from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
+    parse_integer_comparison_operator_and_rhs
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.util.messages import expected_found
