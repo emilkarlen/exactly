@@ -3,12 +3,17 @@ import types
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer import integer_resolver
+from exactly_lib.test_case_utils.condition.integer.evaluate_integer import python_evaluate, NotAnIntegerException
+from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
+    IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.condition.integer.integer_resolver import IntegerResolver
 from exactly_lib.test_case_utils.condition.parse import parse_comparison_operator
 from exactly_lib.test_case_utils.parse import parse_string
@@ -32,6 +37,23 @@ class IntegerComparisonOperatorAndRightOperand:
                  rhs_resolver: IntegerResolver):
         self.right_operand = rhs_resolver
         self.operator = operator
+
+
+_MISSING_INTEGER_ARGUMENT = 'Missing ' + INTEGER_ARGUMENT.name
+
+
+def parse_integer_matcher(parser: TokenParserPrime,
+                          name_of_lhs: str = 'LHS') -> IntegerMatcher:
+    comparison_operator = parse_comparison_operator(parser)
+    parser.require_is_not_at_eol(_MISSING_INTEGER_ARGUMENT)
+    token = parser.consume_mandatory_token(_MISSING_INTEGER_ARGUMENT)
+    try:
+        integer_arg = python_evaluate(token.string)
+        return IntegerMatcherFromComparisonOperator(name_of_lhs,
+                                                    comparison_operator,
+                                                    integer_arg)
+    except NotAnIntegerException as ex:
+        raise SingleInstructionInvalidArgumentException('Not an integer: ' + ex.value_string)
 
 
 def parse_integer_comparison_operator_and_rhs(
