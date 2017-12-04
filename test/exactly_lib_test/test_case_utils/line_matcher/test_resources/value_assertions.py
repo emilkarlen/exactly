@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherStructureVisitor, LineMatcherConstant, \
-    LineMatcherRegex, LineMatcherNot, LineMatcherAnd, LineMatcherOr
+    LineMatcherRegex, LineMatcherNot, LineMatcherAnd, LineMatcherOr, LineMatcherLineNumber
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -65,6 +65,9 @@ class _EqualityChecker(LineMatcherStructureVisitor):
         self.put.assertEqual(expected.regex_pattern_string,
                              self.actual.regex_pattern_string,
                              'regex pattern string')
+
+    def visit_line_number(self, matcher: LineMatcherLineNumber):
+        raise ValueError('Line number matcher is unsupported at the moment')
 
     def visit_not(self, expected: LineMatcherNot):
         self._common(expected)

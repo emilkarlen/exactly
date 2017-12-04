@@ -1,6 +1,8 @@
 import re
 import unittest
 
+from exactly_lib.test_case_utils.condition import comparators
+from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.line_matcher import line_matchers as sut
 
 
@@ -31,6 +33,20 @@ class TestLineMatcherStructureVisitor(unittest.TestCase):
         ret_val = visitor.visit(instance)
         # ASSERT #
         self.assertEqual([sut.LineMatcherRegex],
+                         visitor.visited_types)
+        self.assertIs(instance,
+                      ret_val)
+
+    def test_visit_line_number(self):
+        # ARRANGE #
+        instance = sut.LineMatcherLineNumber(IntegerMatcherFromComparisonOperator('name of lhs',
+                                                                                  comparators.EQ,
+                                                                                  72))
+        visitor = AVisitorThatRecordsVisitedMethods()
+        # ACT #
+        ret_val = visitor.visit(instance)
+        # ASSERT #
+        self.assertEqual([sut.LineMatcherLineNumber],
                          visitor.visited_types)
         self.assertIs(instance,
                       ret_val)
@@ -95,6 +111,10 @@ class AVisitorThatRecordsVisitedMethods(sut.LineMatcherStructureVisitor):
 
     def visit_regex(self, matcher: sut.LineMatcherRegex):
         self.visited_types.append(sut.LineMatcherRegex)
+        return matcher
+
+    def visit_line_number(self, matcher: sut.LineMatcherLineNumber):
+        self.visited_types.append(sut.LineMatcherLineNumber)
         return matcher
 
     def visit_not(self, matcher: sut.LineMatcherNot):
