@@ -38,7 +38,7 @@ classify-files-by-moving-to-appropriate-dir GOOD .
 [assert]
 
 
-exitcode 0
+exitcode = 0
 
 
 'All files should have been processed'

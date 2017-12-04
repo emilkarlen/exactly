@@ -10,7 +10,7 @@ remove-all-files-in-the-current-directory
 
 [assert]
 
-exitcode 0
+exitcode = 0
 
 stdout equals <<EOF
 All files in current directory removed successfully!

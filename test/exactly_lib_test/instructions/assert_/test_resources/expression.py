@@ -77,8 +77,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
     def test_invalid_arguments_without_symbol_references(self):
         test_cases = [
             ' = a',
-            'a',
-            '1.5',
+            '> 1.5',
         ]
         for condition_str in test_cases:
             with self.subTest(msg=condition_str):
@@ -97,7 +96,6 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
         symbol = SymbolWithReferenceSyntax('symbol_name')
         operand_arg_with_symbol_ref_list = [
             ' = {}'.format(symbol),
-            '{}'.format(symbol),
         ]
         invalid_symbol_values = [
             'not_a_number',

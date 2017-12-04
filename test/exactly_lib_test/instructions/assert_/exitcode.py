@@ -52,7 +52,7 @@ class TestParse(unittest.TestCase):
 
     def test_valid_syntax(self):
         parser = sut.Parser()
-        actual_instruction = parser.parse(remaining_source('1'))
+        actual_instruction = parser.parse(remaining_source('= 1'))
         self.assertIsInstance(actual_instruction,
                               AssertPhaseInstruction)
 
@@ -90,20 +90,6 @@ class TestArgumentWithSymbolReferences(TestBase):
         symbol_2_name = 'symbol_2_name'
 
         test_cases = [
-            CaseWithSymbols(
-                'single argument form with a symbol that is a single integer',
-                argument='{}'.format(symbol_reference_syntax_for_name(symbol_1_name)),
-                symbol_name_and_value_list=[NameAndValue(symbol_1_name, '72')],
-                actual_value_for_pass=72,
-                actual_value_for_fail=87,
-            ),
-            CaseWithSymbols(
-                'single argument form with a symbol that is the last digit of expected value',
-                argument='7{}'.format(symbol_reference_syntax_for_name(symbol_1_name)),
-                symbol_name_and_value_list=[NameAndValue(symbol_1_name, '2')],
-                actual_value_for_pass=72,
-                actual_value_for_fail=87,
-            ),
             CaseWithSymbols(
                 'two argument form with a symbol that is a single integer',
                 argument=' = {}'.format(symbol_reference_syntax_for_name(symbol_1_name)),
@@ -147,27 +133,13 @@ class TestArgumentWithSymbolReferences(TestBase):
 
 
 class TestConstantArguments(TestBase):
-    def test_one_argument_for(self):
-        test_cases = [
-            (_actual_exitcode(0), ' 72 ', _IS_FAIL),
-            (_actual_exitcode(72), ' 72 ', _IS_PASS),
-        ]
-        for arrangement, instr_arg, expectation in test_cases:
-            with self.subTest(msg=instr_arg):
-                for source in equivalent_source_variants__with_source_check(self, instr_arg):
-                    self._run(
-                        source,
-                        arrangement,
-                        expectation,
-                    )
-
     def test_two_argument_form(self):
         test_cases = [
             (_actual_exitcode(0), ' =  72', _IS_FAIL),
             (_actual_exitcode(72), ' =  72', _IS_PASS),
 
-            (_actual_exitcode(72), ' !  72', _IS_FAIL),
-            (_actual_exitcode(72), ' !  73', _IS_PASS),
+            (_actual_exitcode(72), ' ! = 72', _IS_FAIL),
+            (_actual_exitcode(72), ' ! = 73', _IS_PASS),
 
             (_actual_exitcode(72), ' !=  72', _IS_FAIL),
             (_actual_exitcode(72), ' !=  73', _IS_PASS),
