@@ -1,6 +1,6 @@
 import types
 
-from exactly_lib.instructions.assert_.utils.expression.comparison_structures import OperandResolver
+from exactly_lib.instructions.assert_.utils.condition.comparison_structures import OperandResolver
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.instructions.utils.validators import SvhPreSdsValidatorViaExceptions
 from exactly_lib.symbol.data.string_resolver import StringResolver

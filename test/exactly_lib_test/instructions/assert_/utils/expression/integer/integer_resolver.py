@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.expression.integer import integer_resolver as sut
+from exactly_lib.instructions.assert_.utils.condition.integer import integer_resolver as sut
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name

@@ -1,8 +1,8 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCooperativeAssertionParts, \
     AssertionPart
-from exactly_lib.instructions.assert_.utils.expression.integer import parse as parse_cmp_op
-from exactly_lib.instructions.assert_.utils.expression.integer.parse import validator_for_non_negative
+from exactly_lib.instructions.assert_.utils.condition.integer import parse as parse_cmp_op
+from exactly_lib.instructions.assert_.utils.condition.integer.parse import validator_for_non_negative
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
