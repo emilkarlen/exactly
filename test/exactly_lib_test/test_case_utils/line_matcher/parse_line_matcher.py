@@ -197,7 +197,7 @@ class TestLineNumberParser(unittest.TestCase):
                source: TokenParserPrime,
                expectation: Expectation):
         # ACT #
-        actual_resolver = sut.parse_line_number_matcher(source)
+        actual_resolver = sut.parse_line_number(source)
         # ASSERT #
         expectation.resolver.apply_with_message(self, actual_resolver,
                                                 'resolver')
@@ -228,7 +228,7 @@ class TestLineNumberParser(unittest.TestCase):
         for name, source in cases:
             with self.subTest(case_name=name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_line_number_matcher(source)
+                    sut.parse_line_number(source)
 
     def test_successful_parse(self):
         # ARRANGE #
@@ -295,6 +295,32 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
             remaining_source(argument_syntax.syntax_for_regex_matcher(regex_str)),
             Expectation(
                 resolver=resolved_value_is_regex_matcher(regex_str)),
+        )
+
+    def test_line_number(self):
+        # ARRANGE #
+        def model_of(rhs: int) -> ModelInfo:
+            return ModelInfo((rhs, 'irrelevant line contents'))
+
+        comparator = comparators.LT
+        rhs = 72
+        expected_integer_matcher = IntegerMatcherFromComparisonOperator(sut.LINE_NUMBER_PROPERTY,
+                                                                        comparator,
+                                                                        rhs)
+        expected_resolver = resolved_value_is_line_number_matcher(expected_integer_matcher,
+                                                                  [
+                                                                      model_of(69),
+                                                                      model_of(72),
+                                                                      model_of(80),
+
+                                                                  ])
+
+        # ACT & ASSERT #
+        self._check(
+            remaining_source(argument_syntax.syntax_for_line_number_matcher(comparator,
+                                                                            str(rhs))),
+            Expectation(
+                resolver=expected_resolver),
         )
 
 
