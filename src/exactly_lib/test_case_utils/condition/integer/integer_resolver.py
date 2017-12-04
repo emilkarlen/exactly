@@ -6,6 +6,7 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition.comparison_structures import OperandResolver
+from exactly_lib.test_case_utils.condition.integer.evaluate_integer import NotAnIntegerException, python_evaluate
 
 
 class _IntResolver:
@@ -17,18 +18,7 @@ class _IntResolver:
         :raises NotAnIntegerException
         """
         value_string = self.value_resolver.resolve(environment.symbols).value_when_no_dir_dependencies()
-        try:
-            val = eval(value_string)
-            if isinstance(val, int):
-                return val
-            else:
-                raise NotAnIntegerException(value_string)
-        except SyntaxError:
-            raise NotAnIntegerException(value_string)
-        except ValueError:
-            raise NotAnIntegerException(value_string)
-        except NameError:
-            raise NotAnIntegerException(value_string)
+        return python_evaluate(value_string)
 
 
 class _Validator(SvhPreSdsValidatorViaExceptions):
@@ -91,8 +81,3 @@ class IntegerResolver(OperandResolver):
             msg = ('Argument is not an integer,'
                    ' even though this should have been checked by the validation: `{}\''.format(ex.value_string))
             raise return_svh_via_exceptions.SvhHardErrorException(msg)
-
-
-class NotAnIntegerException(Exception):
-    def __init__(self, value_string: str):
-        self.value_string = value_string
