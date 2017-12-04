@@ -1,0 +1,56 @@
+[setup]
+
+
+# Utils
+
+def file-transformer GET_FIRST_LOG_MESSAGE = select line-num = 5 | replace '^\s*' ''
+
+
+# Initialize repo with single file
+
+
+$ git init
+
+file file-in-repo
+
+$ git add file-in-repo
+
+$ git commit -m 'file already in repo'
+
+
+# Install git hook,
+# Checkout branch with issue number in name and,
+# add a file to index
+
+
+install prepare-commit-msg .git/hooks
+
+$ git checkout -b "AB-123-branch-with-issue-number"
+
+file file-to-add
+
+$ git add file-to-add
+
+
+[act]
+
+
+$ git commit -m "AB-123: commit message with issue number"
+
+
+[before-assert]
+
+
+$ git log > log.txt
+
+transform log.txt actual-commit-msg.txt GET_FIRST_LOG_MESSAGE
+
+
+[assert]
+
+
+exitcode = 0
+
+contents actual-commit-msg.txt equals <<EOF
+AB-123: commit message with issue number
+EOF
