@@ -1,0 +1,48 @@
+[conf]
+
+
+# Use different act-home to test the different properties
+
+act-home = file-name-structure
+
+# act-home = file-is-directory
+
+# act-home = invalid-dml-contents
+
+
+[setup]
+
+
+def path SCRIPTS_DIR  =  --rel-act-home
+
+
+def file-matcher IS_SQL_FILE    = name *.sql
+
+
+def file-matcher FILE_NAME_HAS_EXPECTED_STRUCTURE = name --regex '^[0-9]{3}-.*-(DDL|DML)-[0-9]{3}\.sql$'
+
+
+def file-matcher IS_DDL_FILE    = name --regex 'DDL-...\.sql$'
+
+def file-matcher IS_DML_FILE    = name --regex 'DML-...\.sql$'
+
+
+def line-matcher IS_DDL_STATEMENT_LINE = regex --ignore-case '^\s*(CREATE|ALTER|DROP)\b'
+
+
+[assert]
+
+
+'A SQL file must be a regular file'
+
+dir-contents @[SCRIPTS_DIR]@ --selection ( IS_SQL_FILE && ! type file ) empty
+
+
+'A SQL file name must have structure NNN-informative_name-(DDL|DML)-NNN.sql'
+
+dir-contents @[SCRIPTS_DIR]@ --selection ( IS_SQL_FILE && ! FILE_NAME_HAS_EXPECTED_STRUCTURE ) empty
+
+
+'A DML script must NOT contain DDL statements'
+
+dir-contents @[SCRIPTS_DIR]@ --selection ( IS_DML_FILE ) every file : ! any line : matches IS_DDL_STATEMENT_LINE
