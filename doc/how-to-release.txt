@@ -2,6 +2,8 @@
 
 * https://packaging.python.org/
 
+** Set version number in src/exactly_lib/program_info.py
+
 ** 0. Remove existing distributables
 
 > rm -rf dist
