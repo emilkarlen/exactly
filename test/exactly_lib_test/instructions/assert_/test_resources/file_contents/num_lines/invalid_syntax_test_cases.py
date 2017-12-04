@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.expression import comparators
+from exactly_lib.instructions.assert_.utils.condition import comparators
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.logic_types import ExpectationType

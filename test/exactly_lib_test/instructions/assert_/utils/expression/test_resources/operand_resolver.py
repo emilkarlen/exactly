@@ -1,4 +1,4 @@
-from exactly_lib.instructions.assert_.utils.expression.comparison_structures import OperandResolver
+from exactly_lib.instructions.assert_.utils.condition.comparison_structures import OperandResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib_test.test_resources import actions

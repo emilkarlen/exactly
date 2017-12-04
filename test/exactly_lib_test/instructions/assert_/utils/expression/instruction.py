@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.expression import comparators
-from exactly_lib.instructions.assert_.utils.expression import instruction as sut
-from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonHandler, OperandResolver
+from exactly_lib.instructions.assert_.utils.condition import comparators
+from exactly_lib.instructions.assert_.utils.condition import instruction as sut
+from exactly_lib.instructions.assert_.utils.condition.comparison_structures import ComparisonHandler, OperandResolver
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException, SvhHardErrorException
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction

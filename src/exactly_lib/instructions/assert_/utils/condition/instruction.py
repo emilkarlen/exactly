@@ -1,5 +1,5 @@
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
-from exactly_lib.instructions.assert_.utils.expression.comparison_structures import ComparisonHandler
+from exactly_lib.instructions.assert_.utils.condition.comparison_structures import ComparisonHandler
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i

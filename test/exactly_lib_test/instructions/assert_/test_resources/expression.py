@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.assert_.utils.expression import comparators
+from exactly_lib.instructions.assert_.utils.condition import comparators
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
