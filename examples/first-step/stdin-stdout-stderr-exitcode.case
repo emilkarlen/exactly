@@ -23,7 +23,7 @@ filter-lines "good"
 [assert]
 
 
-exitcode 0
+exitcode = 0
 
 stdout equals <<EOF
 first good line

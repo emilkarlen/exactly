@@ -38,7 +38,7 @@ class SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(
             File('the.case', lines_content(['[act]',
                                             'system-under-test',
                                             '[assert]',
-                                            'exitcode 0'])),
+                                            'exitcode = 0'])),
             python_executable_file('system-under-test',
                                    PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0)
         ])

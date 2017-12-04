@@ -4,6 +4,6 @@ hello-world some unaccepted arguments
 
 [assert]
 
-exitcode ! 0
+exitcode != 0
 
 stdout empty

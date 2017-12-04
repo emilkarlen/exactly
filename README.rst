@@ -41,7 +41,7 @@ and is able to find the email of a person::
 
     [assert]
 
-    exitcode 0
+    exitcode = 0
 
     stdout equals <<EOF
     pablo@gauss.org
@@ -289,7 +289,7 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 
     [assert]
 
-    exitcode 0
+    exitcode = 0
 
 ::
 
@@ -492,7 +492,7 @@ INSTALLING
 ========================================
 
 
-Exactly is written entirely in Python and does not require any external libraries.
+Exactly is written in Python and does not require any external libraries.
 
 Exactly requires Python >= 3.5 (not tested on earlier version of Python 3).
 

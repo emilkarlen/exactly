@@ -13,7 +13,7 @@ hello-world -o output.txt
 
 [assert]
 
-exitcode 0
+exitcode = 0
 
 contents output.txt equals <<EOF
 Hello, World!
