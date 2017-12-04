@@ -1,0 +1,7 @@
+[cases]
+
+python-interpreter-is-runnable.case
+
+issue-number-should-not-be-added-when-commit-has-issue-number.case
+
+issue-number-should-be-added-to-commit-message.case

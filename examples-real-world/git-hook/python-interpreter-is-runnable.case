@@ -1,0 +1,9 @@
+[act]
+
+prepare-commit-msg
+
+[assert]
+
+'hook is executable program, that should fail when given no arguments'
+
+exitcode = 1
