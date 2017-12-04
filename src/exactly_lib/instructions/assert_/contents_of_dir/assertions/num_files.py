@@ -10,7 +10,7 @@ from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparison_structures
-from exactly_lib.test_case_utils.condition.integer import parse as parse_expr
+from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_expr
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 
 

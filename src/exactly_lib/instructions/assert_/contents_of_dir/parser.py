@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations import token_stream_par
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case_utils.condition.integer import parse as expression_parse
+from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.util.logic_types import Quantifier

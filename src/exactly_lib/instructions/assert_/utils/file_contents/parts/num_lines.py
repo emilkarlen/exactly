@@ -8,7 +8,8 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparison_structures
-from exactly_lib.test_case_utils.condition.integer.parse import IntegerComparisonOperatorAndRightOperand
+from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
+    IntegerComparisonOperatorAndRightOperand
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.logic_types import ExpectationType
 
