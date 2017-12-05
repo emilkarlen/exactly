@@ -1,0 +1,84 @@
+-*- org -*-
+
+Store output from programs in files
+
+<2017-12-05 tis>
+
+Exactly uses Files as a substitute for variables.
+This means that it should/must be possible to store a lot of things in a file:
+ - nothing (an empty file)
+ - hard coded contents
+ - copy of existing file (perhaps transformed)
+ - output from program
+
+file PATH
+
+file PATH = CONTENTS
+
+CONTENTS ::= HERE-DOCUMENT
+         ::| STRING
+         ::| [TRANSFORMATION] --file PATH-OF-EXISTING-FILE
+         ::| [TRANSFORMATION] [--stdout|--stderr|--exitcode] PROGRAM
+
+PROGRAM ::= run ...
+        ::= $ ...
+
+
+TRANSFORMATION ::= --transformed LINES-TRANSFORMER
+
+* Changes of current setup
+
+The "transform" instruction can be replaced with
+
+file PATH = [TRANSFORMATION] EXISTING-FILE
+
+* Examples
+
+The "git-hook" example
+
+Current:
+----------------------------------------
+[before-assert]
+
+
+$ git log > log.txt
+
+transform log.txt actual-commit-msg.txt GET_FIRST_LOG_MESSAGE
+
+
+[assert]
+
+
+exitcode = 0
+
+contents actual-commit-msg.txt equals <<EOF
+AB-123 : commit message without issue number
+EOF
+----------------------------------------
+
+Using new "file":
+
+----------------------------------------
+file log.txt = $ git log
+
+transform log.txt actual-commit-msg.txt GET_FIRST_LOG_MESSAGE
+
+...
+----------------------------------------
+
+or
+
+----------------------------------------
+file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE $ git log
+
+...
+----------------------------------------
+
+alt
+
+----------------------------------------
+file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
+                      --stdout $ git log
+
+...
+----------------------------------------
