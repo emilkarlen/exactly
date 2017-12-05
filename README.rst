@@ -471,12 +471,17 @@ it just displays some of Exactly's features.)
     run --python --interpret custom-assertion.py
 
 
-    cd --rel-result
-    # Changes to the directory where the result of the act phase is stored (exitcode, stdout, stderr)
+    transform  --rel-result stdout  --rel-tmp modified-stdout.txt  select line-num >= 10
 
-    $ sed '1,10d' stdout > modified-stdout.txt
-    contents modified-stdout.txt equals <<EOF
-    this should be the single line of modified-stdout.txt
+    contents  --rel-tmp modified-stdout.txt  equals <<EOF
+    this should be line 10 of original stdout.txt
+    this should be line 11 of original stdout.txt
+    EOF
+
+
+    stdout  --transformed ( select line-num >= 10 )  equals <<EOF
+    this should be line 10 of original stdout.txt
+    this should be line 11 of original stdout.txt
     EOF
 
 
