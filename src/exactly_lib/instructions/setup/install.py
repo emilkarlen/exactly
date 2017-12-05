@@ -6,7 +6,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
-from exactly_lib.help_texts.entity import concepts, conf_params
+from exactly_lib.help_texts.entity import concepts
 from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
 from exactly_lib.section_document.parser_implementations.instruction_parsers import \
@@ -56,7 +56,6 @@ REL_OPTION_ARG_CONF_FOR_DESTINATION = rel_opts_configuration.RelOptionArgumentCo
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase):
     def __init__(self, name: str):
         format_map = {
-            'home_dir': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'current_dir': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'SOURCE': instruction_arguments.SOURCE_PATH_ARGUMENT.name,
@@ -72,7 +71,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         )
 
     def single_line_description(self) -> str:
-        return self._format('Installs files and directories from the {home_dir} into the {sandbox}')
+        return self._format('Installs files and directories into the {sandbox}')
 
     def main_description_rest(self) -> list:
         return self._paragraphs(_MAIN_DESCRIPTION_REST)
