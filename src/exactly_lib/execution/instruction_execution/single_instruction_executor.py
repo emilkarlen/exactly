@@ -1,7 +1,7 @@
 from enum import Enum
 
 from exactly_lib.execution import result
-from exactly_lib.section_document.model import SectionContentElement
+from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
 from exactly_lib.util import line_source
@@ -92,14 +92,15 @@ class SingleInstructionExecutionFailure(tuple):
 
 
 def execute_element(executor: ControlledInstructionExecutor,
-                    element: SectionContentElement) -> SingleInstructionExecutionFailure:
+                    element: SectionContentElement,
+                    instruction_info: InstructionInfo) -> SingleInstructionExecutionFailure:
     """
     :param element: Must be an instruction (i.e., element.is_instruction is True)
     :return: If None, then the execution was successful.
     """
 
     try:
-        instruction = element.instruction
+        instruction = instruction_info.instruction
         assert isinstance(instruction, TestCaseInstruction), _INSTRUCTION_TYPE_ERROR_MESSAGE
         fail_info = executor.apply(instruction)
         if fail_info is None:

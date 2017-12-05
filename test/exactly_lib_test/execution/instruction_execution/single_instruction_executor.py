@@ -69,8 +69,10 @@ class ExceptionRaisingExecutor(ControlledInstructionExecutor):
 
 class Test(unittest.TestCase):
     def test_when_the_executor_is_successful_than_the_result_should_be_success(self):
+        element = new_dummy_instruction_element()
         result = execute_element(SuccessfulExecutor(NameRecorder().new_function_that_records('s')),
-                                 new_dummy_instruction_element())
+                                 element,
+                                 element.instruction_info)
         self.assertIsNone(result)
 
     def test_when_the_executor_returns__fail__then_this_failure_should_be_returned(self):
@@ -87,7 +89,8 @@ class Test(unittest.TestCase):
         result = execute_element(
             ExceptionRaisingExecutor(NameRecorder().new_function_that_records('s'),
                                      exception),
-            element)
+            element,
+            element.instruction_info)
         self._check_failure_result(PartialResultStatus.IMPLEMENTATION_ERROR,
                                    result,
                                    new_failure_details_from_exception(exception))
@@ -100,7 +103,8 @@ class Test(unittest.TestCase):
             FailingExecutor(NameRecorder().new_function_that_records('s'),
                             PartialInstructionControlledFailureInfo(failure_status_of_executor,
                                                                     'error message')),
-            element)
+            element,
+            element.instruction_info)
         self._check_failure_result(expected_status,
                                    result,
                                    new_failure_details_from_message('error message'))

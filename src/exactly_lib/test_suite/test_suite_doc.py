@@ -36,4 +36,4 @@ class TestSuiteDocument(tuple):
                                    instruction_class):
         for element in phase_contents.elements:
             if element.element_type is ElementType.INSTRUCTION:
-                assert isinstance(element.instruction, instruction_class)
+                assert isinstance(element.instruction_info.instruction, instruction_class)

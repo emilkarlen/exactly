@@ -123,7 +123,7 @@ class TestParse(unittest.TestCase):
         self.assertIsInstance(element, model.SectionContentElement,
                               'Expecting the parser to have returned a ' + str(model.SectionContentElement))
         assert isinstance(element, model.SectionContentElement)
-        instruction = element.instruction
+        instruction = element.instruction_info.instruction
         self.assertIsInstance(instruction, ActPhaseInstruction,
                               'Expecting the instruction to be a ' + str(ActPhaseInstruction))
         assert isinstance(instruction, SourceCodeInstruction)

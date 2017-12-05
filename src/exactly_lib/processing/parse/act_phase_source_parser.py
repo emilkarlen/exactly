@@ -21,9 +21,8 @@ class ActPhaseParser(document_parser.SectionElementParser):
 
         line_sequence = LineSequence(first_line_number,
                                      tuple(lines_read))
-        return model.SectionContentElement(model.ElementType.INSTRUCTION,
-                                           line_sequence,
-                                           SourceCodeInstruction(line_sequence), None)
+        return model.new_instruction_e(line_sequence,
+                                       SourceCodeInstruction(line_sequence), None)
 
 
 def _un_escape(s: str) -> str:

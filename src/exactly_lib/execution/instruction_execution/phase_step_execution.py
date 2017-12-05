@@ -119,11 +119,13 @@ def execute_phase_prim(phase_contents: SectionContents,
             header_executor_for_comment.apply(element.first_line)
         elif element.element_type is ElementType.INSTRUCTION:
             header_executor_for_instruction.apply(element.first_line)
+            instruction_info = element.instruction_info
             failure_info = execute_element(instruction_executor,
-                                           element)
+                                           element,
+                                           instruction_info)
             if failure_info is not None:
                 return Failure(failure_info.status,
                                failure_info.source_line,
                                failure_info.failure_details,
-                               element.description)
+                               instruction_info.description)
     return None

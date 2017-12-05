@@ -40,7 +40,7 @@ def resolve_test_case_handling_setup(
                                                               default_handling_setup.act_phase_setup)
     for section_element in test_suite.configuration_section.elements:
         if section_element.element_type is ElementType.INSTRUCTION:
-            section_element.instruction.execute(instruction_environment)
+            section_element.instruction_info.instruction.execute(instruction_environment)
     return TestCaseHandlingSetup(instruction_environment.act_phase_setup,
                                  instruction_environment.preprocessor)
 

@@ -267,15 +267,16 @@ class Expectation(tuple):
         return self[2]
 
     def apply(self, put: unittest.TestCase,
-              instruction_and_description: InstructionAndDescription,
+              actual_instruction_and_description,
               source: ParseSource):
-        put.assertIsInstance(instruction_and_description, InstructionAndDescription,
+        put.assertIsInstance(actual_instruction_and_description, InstructionAndDescription,
                              'instruction_and_description')
-        put.assertIsInstance(instruction_and_description.instruction, Instruction,
+        assert isinstance(actual_instruction_and_description, InstructionAndDescription)  # Type info for IDE
+        put.assertIsInstance(actual_instruction_and_description.instruction, Instruction,
                              'instruction')
-        self.description.apply_with_message(put, instruction_and_description.description,
+        self.description.apply_with_message(put, actual_instruction_and_description.description,
                                             'description')
-        self.instruction.apply_with_message(put, instruction_and_description.instruction,
+        self.instruction.apply_with_message(put, actual_instruction_and_description.instruction,
                                             'instruction')
         self.source.apply_with_message(put, source,
                                        'source')

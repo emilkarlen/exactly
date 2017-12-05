@@ -16,6 +16,25 @@ class ElementType(enum.Enum):
     INSTRUCTION = 3
 
 
+class InstructionInfo(tuple):
+    """
+    Information about an instruction in a SectionContentElement.
+    """
+
+    def __new__(cls,
+                instruction: Instruction,
+                description: str):
+        return tuple.__new__(cls, (instruction, description))
+
+    @property
+    def instruction(self) -> Instruction:
+        return self[0]
+
+    @property
+    def description(self) -> str:
+        return self[1]
+
+
 class SectionContentElement:
     """
     Element of the contents of a section: either a comment or an instruction.
@@ -26,12 +45,10 @@ class SectionContentElement:
     def __init__(self,
                  element_type: ElementType,
                  source: line_source.LineSequence,
-                 instruction: Instruction,
-                 description: str):
+                 instruction_info: InstructionInfo):
         self._element_type = element_type
         self._source = source
-        self._instruction = instruction
-        self._description = description
+        self._instruction_info = instruction_info
 
     @property
     def source(self) -> line_source.LineSequence:
@@ -46,30 +63,23 @@ class SectionContentElement:
         return self._element_type
 
     @property
-    def instruction(self) -> Instruction:
+    def instruction_info(self) -> InstructionInfo:
         """
         Precondition: Element type is INSTRUCTION.
         """
-        return self._instruction
-
-    @property
-    def description(self) -> str:
-        """
-        Precondition: Element type is INSTRUCTION.
-        """
-        return self._description
+        return self._instruction_info
 
 
 def new_empty_e(source: line_source.LineSequence) -> SectionContentElement:
     return SectionContentElement(ElementType.EMPTY,
                                  source,
-                                 None, None)
+                                 None)
 
 
 def new_comment_e(source: line_source.LineSequence) -> SectionContentElement:
     return SectionContentElement(ElementType.COMMENT,
                                  source,
-                                 None, None)
+                                 None)
 
 
 def new_instruction_e(source: line_source.LineSequence,
@@ -77,8 +87,8 @@ def new_instruction_e(source: line_source.LineSequence,
                       description: str = None) -> SectionContentElement:
     return SectionContentElement(ElementType.INSTRUCTION,
                                  source,
-                                 instruction,
-                                 description)
+                                 InstructionInfo(instruction,
+                                                 description))
 
 
 class SectionContents:
