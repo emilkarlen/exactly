@@ -85,7 +85,7 @@ class _SingleFileReader:
             for element in section_contents.elements:
                 if element.element_type is ElementType.INSTRUCTION:
                     try:
-                        paths = element.instruction.resolve_paths(env)
+                        paths = element.instruction_info.instruction.resolve_paths(env)
                         if check_visited:
                             for path in paths:
                                 if path in self._visited:

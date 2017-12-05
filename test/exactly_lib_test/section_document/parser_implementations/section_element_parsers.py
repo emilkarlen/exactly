@@ -76,15 +76,38 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 self.assertEqual(ElementType.INSTRUCTION,
                                  element.element_type,
                                  'Element type')
-                self.assertIsInstance(element.instruction,
+                self.assertIsInstance(element.instruction_info.instruction,
                                       Instruction,
                                       'Instruction class')
                 assert_equals_line(self,
                                    Line(1, source_lines[0]),
                                    element.first_line)
+                self.assertIsNone(element.instruction_info.description,
+                                  'description')
                 self.assertEqual(remaining_source,
                                  source.remaining_source,
                                  'Remaining source')
+
+    def test_element_from_instruction_parser_SHOULD_be_assigned_to_section_contents_element(self):
+        expected = sut.InstructionAndDescription(Instruction(),
+                                                 line_source.LineSequence(1,
+                                                                          ('first line text',)),
+                                                 'description')
+        parser = sut.StandardSyntaxElementParser(_InstructionParserThatGivesConstant(expected))
+        source = _source_for_lines(['ignored', 'source', 'lines'])
+        element = parser.parse(source)
+        self.assertEqual(ElementType.INSTRUCTION,
+                         element.element_type,
+                         'Element type')
+        self.assertIs(expected.instruction,
+                      element.instruction_info.instruction,
+                      'Instruction object')
+        self.assertIs(expected.source,
+                      element.source,
+                      'source')
+        self.assertIs(expected.description,
+                      element.instruction_info.description,
+                      'description')
 
 
 class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescriptionParser):
@@ -101,6 +124,14 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescr
         if not is_instruction:
             raise ValueError('Not an instruction')
         return sut.InstructionAndDescription(Instruction(), dummy_source, None)
+
+
+class _InstructionParserThatGivesConstant(sut.InstructionAndDescriptionParser):
+    def __init__(self, return_value: sut.InstructionAndDescription):
+        self.return_value = return_value
+
+    def parse(self, source: ParseSource) -> sut.InstructionAndDescription:
+        return self.return_value
 
 
 class Instruction(model.Instruction):

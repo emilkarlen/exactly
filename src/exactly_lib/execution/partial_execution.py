@@ -491,7 +491,7 @@ class _PartialExecutor:
         instructions = []
         for element in section_contents.elements:
             if element.element_type is ElementType.INSTRUCTION:
-                instruction = element.instruction
+                instruction = element.instruction_info.instruction
                 if not isinstance(instruction, ActPhaseInstruction):
                     msg = 'Instruction is not an instance of ' + str(ActPhaseInstruction)
                     return failure_con.implementation_error_msg(msg)

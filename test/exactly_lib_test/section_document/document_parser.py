@@ -681,15 +681,15 @@ class ElementChecker(TestCaseWithMessageHeader):
         #                     actual_element.source_line,
         #                     self.msg('Source lines should be equal'))
         if expected_element.element_type is ElementType.INSTRUCTION:
-            self.tc.assertEqual(expected_element.instruction.__class__,
-                                actual_element.instruction.__class__, )
-            if isinstance(expected_element.instruction, InstructionInSection):
-                self.tc.assertIsInstance(actual_element.instruction, InstructionInSection)
-                self.tc.assertEqual(expected_element.instruction.section_name,
-                                    actual_element.instruction.section_name,
+            self.tc.assertEqual(expected_element.instruction_info.instruction.__class__,
+                                actual_element.instruction_info.instruction.__class__, )
+            if isinstance(expected_element.instruction_info.instruction, InstructionInSection):
+                self.tc.assertIsInstance(actual_element.instruction_info.instruction, InstructionInSection)
+                self.tc.assertEqual(expected_element.instruction_info.instruction.section_name,
+                                    actual_element.instruction_info.instruction.section_name,
                                     self.msg('Recorded phase name of instruction'))
         else:
-            self.tc.assertIsNone(expected_element.instruction,
+            self.tc.assertIsNone(expected_element.instruction_info,
                                  'Instruction should not be present for non-instruction elements')
 
 
