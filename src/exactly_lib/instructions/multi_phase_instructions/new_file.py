@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
@@ -10,6 +12,8 @@ from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
+    SubProcessExecutionSetup
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
@@ -18,7 +22,6 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
     TokenParserPrime
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_here_document
@@ -31,6 +34,8 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONTENTS_ASSIGNMENT_TOKEN = '='
 SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
+
+CONTENTS_ARGUMENT = 'CONTENTS'
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
@@ -73,73 +78,83 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
 
-class FileInfo(tuple):
-    def __new__(cls,
-                path_resolver: FileRefResolver,
-                contents: string_resolver.StringResolver):
-        return tuple.__new__(cls, (path_resolver, contents))
-
-    @property
-    def file_ref(self) -> FileRefResolver:
-        return self[0]
-
-    @property
-    def contents(self) -> string_resolver.StringResolver:
-        return self[1]
-
-    @property
-    def references(self) -> list:
-        return self.file_ref.references + self.contents.references
-
-
-class TheInstructionEmbryo(embryo.InstructionEmbryo):
-    def __init__(self, file_info: FileInfo):
-        self.file_info = file_info
+class InstructionEmbryoForConstantContents(embryo.InstructionEmbryo):
+    def __init__(self,
+                 path_to_create: FileRefResolver,
+                 contents: string_resolver.StringResolver):
+        self._path_to_create = path_to_create
+        self._contents = contents
 
     @property
     def symbol_usages(self) -> list:
-        return self.file_info.references
+        return self._path_to_create.references + self._contents.references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
-             os_services: OsServices):
-        return self.custom_main(environment.path_resolving_environment_pre_or_post_sds)
+             os_services: OsServices) -> str:
+        path_to_create = self._path_to_create.resolve(environment.symbols).value_post_sds(environment.sds)
+        contents_str = self._contents.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        return create_file(path_to_create, contents_str)
 
-    def custom_main(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
-        return create_file(self.file_info, environment)
+
+class InstructionEmbryoForContentsFromSubProcess(embryo.InstructionEmbryo):
+    def __init__(self,
+                 path_to_create: FileRefResolver,
+                 sub_process: SubProcessExecutionSetup):
+        self._path_to_create = path_to_create
+        self._sub_process = sub_process
+
+    @property
+    def symbol_usages(self) -> list:
+        return self._path_to_create.references + self._sub_process.symbol_usages
+
+    def main(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             logging_paths: PhaseLoggingPaths,
+             os_services: OsServices) -> str:
+        raise NotImplementedError('todo')
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
-    def parse(self, source: ParseSource) -> TheInstructionEmbryo:
+    def parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             assert isinstance(parser, TokenParserPrime)  # Type info for IDE
             file_ref = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
-            contents = string_resolver.string_constant('')
             if not parser.is_at_eol:
                 parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
-                contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
-            file_info = FileInfo(file_ref, contents)
-            return TheInstructionEmbryo(file_info)
+                parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)
+
+                parser.require_head_token_has_valid_syntax()
+
+                if parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+                    contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
+                    return InstructionEmbryoForConstantContents(file_ref, contents)
+                else:
+                    sub_process = self._parse_sub_process_setup(parser)
+                    return InstructionEmbryoForContentsFromSubProcess(file_ref, sub_process)
+            else:
+                return InstructionEmbryoForConstantContents(file_ref, string_resolver.string_constant(''))
+
+    def _parse_sub_process_setup(self, parser: TokenParserPrime) -> SubProcessExecutionSetup:
+        raise NotImplementedError('todo')
 
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
-def create_file(file_info: FileInfo,
-                environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+def create_file(path_to_create: pathlib.Path,
+                contents_str: str) -> str:
     """
     :return: None iff success. Otherwise an error message.
     """
 
     def write_file(f):
-        contents_str = file_info.contents.resolve_value_of_any_dependency(environment)
         f.write(contents_str)
 
-    return file_creation.create_file(file_info.file_ref,
-                                     environment,
+    return file_creation.create_file(path_to_create,
                                      write_file)
 
 

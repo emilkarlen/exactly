@@ -122,9 +122,9 @@ class TheInstruction(embryo.InstructionEmbryo):
                 for line in transformer.transform(path_resolving_env.home_and_sds, in_file):
                     output_file.write(line)
 
-        return file_creation.create_file(self._dst_path,
-                                         path_resolving_env,
-                                         write_file)
+        return file_creation.resolve_and_create_file(self._dst_path,
+                                                     path_resolving_env,
+                                                     write_file)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):

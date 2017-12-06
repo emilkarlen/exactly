@@ -19,6 +19,10 @@ class SubProcessExecutionSetup:
         self.cmd_and_args_resolver = cmd_and_args_resolver
         self.is_shell = is_shell
 
+    @property
+    def symbol_usages(self) -> list:
+        return self.cmd_and_args_resolver.symbol_usages
+
 
 class ValidationAndSubProcessExecutionSetup(SubProcessExecutionSetup):
     def __init__(self,
@@ -38,7 +42,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
 
     @property
     def symbol_usages(self) -> list:
-        return self.setup.cmd_and_args_resolver.symbol_usages
+        return self.setup.symbol_usages
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
