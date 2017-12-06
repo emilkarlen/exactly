@@ -14,6 +14,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
@@ -265,9 +266,9 @@ class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
               sds: SandboxDirectoryStructure,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
         logging_paths = PhaseLoggingPaths(sds.log_dir, self.phase.identifier)
-        instruction_log_dir = spe.instruction_log_dir(logging_paths, self.source_info)
+        the_instruction_log_dir = instruction_log_dir(logging_paths, self.source_info)
         assert_dir_contains_at_least_result_files(self.expected_files_contents).apply(put,
-                                                                                      instruction_log_dir,
+                                                                                      the_instruction_log_dir,
                                                                                       message_builder)
 
 

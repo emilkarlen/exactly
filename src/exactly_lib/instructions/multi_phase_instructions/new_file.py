@@ -14,6 +14,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils import instruction_
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
@@ -21,13 +22,16 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
+    InstructionSourceInfo, instruction_log_dir
 from exactly_lib.test_case_utils.parse import parse_here_document
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecutionSetup
 from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
+    execute_and_read_stderr_if_non_zero_exitcode
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -100,8 +104,10 @@ class InstructionEmbryoForConstantContents(embryo.InstructionEmbryo):
 
 class InstructionEmbryoForContentsFromSubProcess(embryo.InstructionEmbryo):
     def __init__(self,
+                 source_info: InstructionSourceInfo,
                  path_to_create: FileRefResolver,
                  sub_process: SubProcessExecutionSetup):
+        self._source_info = source_info
         self._path_to_create = path_to_create
         self._sub_process = sub_process
 
@@ -113,11 +119,32 @@ class InstructionEmbryoForContentsFromSubProcess(embryo.InstructionEmbryo):
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> str:
-        raise NotImplementedError('todo')
+        executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
+        command = self._sub_process.resolve_command(environment.path_resolving_environment_pre_or_post_sds)
+        storage_dir = instruction_log_dir(logging_paths, self._source_info)
+
+        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
+
+        if not result_and_std_err.result.is_success:
+            return result_and_std_err.stderr_contents
+
+        path_to_create = self._path_to_create.resolve_value_of_any_dependency(
+            environment.path_resolving_environment_pre_or_post_sds)
+
+        path_to_copy = storage_dir / result_and_std_err.result.file_names.stdout
+
+        os_services.copy_file_preserve_as_much_as_possible__detect_ex(
+            str(path_to_copy),
+            str(path_to_create))
+        return None
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
+    def __init__(self, instruction_name: str):
+        self._instruction_name = instruction_name
+
     def parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
+        first_line_number = source.current_line_number
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             assert isinstance(parser, TokenParserPrime)  # Type info for IDE
@@ -133,7 +160,9 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
                     return InstructionEmbryoForConstantContents(file_ref, contents)
                 else:
                     sub_process = self._parse_sub_process_setup(parser)
-                    return InstructionEmbryoForContentsFromSubProcess(file_ref, sub_process)
+                    source_info = InstructionSourceInfo(first_line_number,
+                                                        self._instruction_name)
+                    return InstructionEmbryoForContentsFromSubProcess(source_info, file_ref, sub_process)
             else:
                 return InstructionEmbryoForConstantContents(file_ref, string_resolver.string_constant(''))
 
@@ -143,8 +172,9 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         return setup_parser.parse_from_token_parser(parser)
 
 
-PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
-                                           MainStepResultTranslatorForErrorMessageStringResultAsHardError())
+def parts_parser(instruction_name: str) -> InstructionPartsParser:
+    return PartsParserFromEmbryoParser(EmbryoParser(instruction_name),
+                                       MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
 def create_file(path_to_create: pathlib.Path,

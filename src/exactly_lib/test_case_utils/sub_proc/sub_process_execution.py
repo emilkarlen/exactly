@@ -3,7 +3,7 @@ import pathlib
 import subprocess
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSourceInfo, instruction_log_dir
+from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_utils import file_services
@@ -150,11 +150,9 @@ class ExecuteInfo:
         self.command = command
 
 
-def execute_and_read_stderr_if_non_zero_exitcode(source_info: InstructionSourceInfo,
-                                                 command: Command,
+def execute_and_read_stderr_if_non_zero_exitcode(command: Command,
                                                  executor: ExecutorThatStoresResultInFilesInDir,
-                                                 phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
-    storage_dir = instruction_log_dir(phase_logging_paths, source_info)
+                                                 storage_dir: pathlib.Path) -> ResultAndStderr:
     result = executor.apply(storage_dir, command)
     return read_stderr_if_non_zero_exitcode(result)
 
