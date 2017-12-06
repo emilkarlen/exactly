@@ -1,3 +1,6 @@
+from exactly_lib.help_texts.argument_rendering import cl_syntax
+
+
 class InvokationVariant(tuple):
     def __new__(cls,
                 syntax: str,
@@ -14,6 +17,18 @@ class InvokationVariant(tuple):
     @property
     def description_rest(self) -> list:
         return self[1]
+
+
+def invokation_variant_from_string(syntax: str,
+                                   description_rest: list = None) -> InvokationVariant:
+    return InvokationVariant(syntax,
+                             description_rest)
+
+
+def invokation_variant_from_args(argument_usages: list,
+                                 description_rest: list = None) -> InvokationVariant:
+    return InvokationVariant(cl_syntax.cl_syntax_for_args(argument_usages),
+                             description_rest)
 
 
 class SyntaxElementDescription(tuple):

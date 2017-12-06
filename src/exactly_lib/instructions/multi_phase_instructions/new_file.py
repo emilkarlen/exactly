@@ -2,12 +2,15 @@ import pathlib
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
+from exactly_lib.help_texts.instruction_arguments import PROGRAM_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
@@ -38,6 +41,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONTENTS_ASSIGNMENT_TOKEN = '='
 SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
+RUN_PROGRAM_TOKEN = instruction_names.RUN_INSTRUCTION_NAME
 
 CONTENTS_ARGUMENT = 'CONTENTS'
 
@@ -48,7 +52,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         super().__init__(name, {})
 
         self._tp = TextParser({
-            'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument.name
+            'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument.name,
+            'CONTENTS': CONTENTS_ARGUMENT,
+            'SHELL_COMMAND_LINE': instruction_arguments.COMMAND_ARGUMENT.name,
         })
 
     def single_line_description(self) -> str:
@@ -58,27 +64,60 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         arguments = path_syntax.mandatory_path_with_optional_relativity(
             _PATH_ARGUMENT,
             REL_OPT_ARG_CONF.path_suffix_is_required)
-        here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
-                                instruction_arguments.HERE_DOCUMENT)
+        contents_arg = a.Single(a.Multiplicity.MANDATORY,
+                                a.Named(CONTENTS_ARGUMENT))
         assignment_arg = a.Single(a.Multiplicity.MANDATORY,
                                   a.Constant(CONTENTS_ASSIGNMENT_TOKEN))
         return [
-            InvokationVariant(self._cl_syntax_for_args(arguments),
-                              docs.paras('Creates an empty file.')),
-            InvokationVariant(self._cl_syntax_for_args(arguments + [assignment_arg, here_doc_arg]),
-                              self._tp.paras('Creates a file with contents given by a {HERE_DOCUMENT}.')),
+            invokation_variant_from_args(arguments,
+                                         docs.paras('Creates an empty file.')),
+            invokation_variant_from_args(arguments + [assignment_arg, contents_arg],
+                                         self._tp.paras('Creates a file with contents given by a {CONTENTS}.')),
         ]
 
     def syntax_element_descriptions(self) -> list:
         return [
+            self._contents_sed(),
             rel_path_doc.path_element(_PATH_ARGUMENT.name,
                                       REL_OPT_ARG_CONF.options,
-                                      docs.paras(the_path_of('a non-existing file.')))
+                                      docs.paras(the_path_of('a non-existing file.'))),
+            transformation_syntax_element_description()
         ]
+
+    def _contents_sed(self) -> SyntaxElementDescription:
+        optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
+                                                  instruction_arguments.LINES_TRANSFORMATION_ARGUMENT)
+
+        here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
+                                instruction_arguments.HERE_DOCUMENT)
+
+        shell_command_token = a.Single(a.Multiplicity.MANDATORY,
+                                       a.Named(SHELL_COMMAND_TOKEN))
+
+        command_arg = a.Single(a.Multiplicity.MANDATORY,
+                               instruction_arguments.COMMAND_ARGUMENT)
+
+        run_program_token = a.Single(a.Multiplicity.MANDATORY,
+                                     a.Named(RUN_PROGRAM_TOKEN))
+
+        run_program = a.Single(a.Multiplicity.MANDATORY,
+                               PROGRAM_ARGUMENT)
+
+        invokation_variants = [
+            invokation_variant_from_args([here_doc_arg]),
+            invokation_variant_from_args([optional_transformation_option, shell_command_token, command_arg],
+                                         self._tp.fnap(_SHELL_COMMAND_DESCRIPTION)),
+            invokation_variant_from_args([optional_transformation_option, run_program_token, run_program],
+                                         self._tp.fnap(_PROGRAM_DESCRIPTION)),
+        ]
+        return SyntaxElementDescription(CONTENTS_ARGUMENT,
+                                        [],
+                                        invokation_variants)
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT,
-                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT]
+                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
+                               syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT]
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
 
@@ -195,3 +234,33 @@ _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION
 
 REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
+
+
+def transformation_syntax_element_description() -> SyntaxElementDescription:
+    text_parser = TextParser({
+        'transformer': syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+    })
+    return cl_syntax.cli_argument_syntax_element_description(
+        instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
+        text_parser.fnap(_TRANSFORMATION_DESCRIPTION),
+        [
+            invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
+                                                   instruction_arguments.TRANSFORMATION_OPTION)]),
+        ]
+    )
+
+
+_TRANSFORMATION_DESCRIPTION = """\
+Transforms the program output.
+"""
+
+_SHELL_COMMAND_DESCRIPTION = """\
+The output from a shell command.
+
+
+{SHELL_COMMAND_LINE} is the literal contents until end of line.
+"""
+
+_PROGRAM_DESCRIPTION = """\
+Output from an executable program.
+"""
