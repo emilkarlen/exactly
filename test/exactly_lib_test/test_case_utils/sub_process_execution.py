@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
-from exactly_lib.test_case_utils import sub_process_execution as sut
-from exactly_lib.test_case_utils.sub_process_execution import InstructionSourceInfo
+from exactly_lib.test_case_utils.sub_proc import sub_process_execution as sut
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import InstructionSourceInfo
 from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure

@@ -16,12 +16,12 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, 
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_parse_source
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
