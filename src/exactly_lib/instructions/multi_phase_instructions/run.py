@@ -35,6 +35,8 @@ from exactly_lib.test_case_utils.parse.parse_list import parse_list, \
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
 from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
+from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
+    ValidationAndSubProcessExecutionSetup
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.structure import structures as docs
@@ -219,12 +221,12 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
         return [self.source.resolve_value_of_any_dependency(environment)]
 
 
-class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
-    def parse_from_token_parser(self, parser: TokenParserPrime) -> spe_parts.ValidationAndSubProcessExecutionSetup:
+class SetupParser(ValidationAndSubProcessExecutionSetupParser):
+    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
         tokens = new_token_stream(parser.consume_current_line_as_plain_string())
         exe_file = parse_executable_file.parse(tokens)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, tokens)
-        return spe_parts.ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
+        return ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
 
     def _validator__cmd_and_args_resolver(self,
                                           exe_file: ExecutableFile,

@@ -3,8 +3,6 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
-    ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -20,6 +18,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
+from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup, \
+    ValidationAndSubProcessExecutionSetupParser
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
@@ -41,7 +41,7 @@ class Configuration(ConfigurationBase):
     def run_sub_process_test(self,
                              put: unittest.TestCase,
                              source: ParseSource,
-                             execution_setup_parser: spe_parts.ValidationAndSubProcessExecutionSetupParser,
+                             execution_setup_parser: ValidationAndSubProcessExecutionSetupParser,
                              arrangement,
                              expectation,
                              instruction_name: str = 'instruction-name'):
@@ -60,7 +60,7 @@ class Configuration(ConfigurationBase):
 
     def _parser(self,
                 instruction_name: str,
-                execution_setup_parser: spe_parts.ValidationAndSubProcessExecutionSetupParser) -> InstructionParser:
+                execution_setup_parser: ValidationAndSubProcessExecutionSetupParser) -> InstructionParser:
         parts_parser = spe_parts.parts_parser(instruction_name, execution_setup_parser)
         return self.instruction_from_parts_parser(parts_parser)
 
@@ -272,7 +272,7 @@ class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
 
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-    spe_parts.ValidationAndSubProcessExecutionSetupParser):
+    ValidationAndSubProcessExecutionSetupParser):
     def __init__(self,
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
@@ -286,7 +286,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
-    spe_parts.ValidationAndSubProcessExecutionSetupParser):
+    ValidationAndSubProcessExecutionSetupParser):
     def __init__(self,
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
