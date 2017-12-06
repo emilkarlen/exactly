@@ -5,8 +5,6 @@ from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import \
     IsBothAssertionAndHelperIfInAssertPhase
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
-    ValidationAndSubProcessExecutionSetup
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
@@ -17,6 +15,8 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
+from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup, \
+    ValidationAndSubProcessExecutionSetupParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -82,7 +82,7 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
         return self._paragraphs(_NON_ASSERT_PHASE_REST_PRELUDE)
 
 
-class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
+class SetupParser(ValidationAndSubProcessExecutionSetupParser):
     def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
         parser.require_is_not_at_eol('Missing {COMMAND}',
                                      _PARSE_FORMAT_MAP)
