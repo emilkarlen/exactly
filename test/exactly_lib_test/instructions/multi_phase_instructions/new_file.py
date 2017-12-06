@@ -110,7 +110,7 @@ class TestFailingParseWithNoContents(unittest.TestCase):
 
 class TestFailingParseWithContents(unittest.TestCase):
     def test_path_is_mandatory__with_option(self):
-        arguments = args_with_rel_ops('{rel_act_option} <<MARKER superfluous ')
+        arguments = args_with_rel_ops('{rel_act_option} = <<MARKER superfluous ')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             source = remaining_source(arguments,
                                       ['MARKER'])
@@ -122,20 +122,27 @@ class TestFailingParseWithContents(unittest.TestCase):
                 with self.subTest(relativity=str(relativity),
                                   following_lines=repr(following_lines)):
                     option_conf = conf_rel_any(relativity)
-                    source = remaining_source('{rel_opt} file-name <<MARKER'.format(rel_opt=option_conf.option_string),
-                                              ['MARKER'] + following_lines)
+                    source = remaining_source(
+                        '{rel_opt} file-name = <<MARKER'.format(rel_opt=option_conf.option_string),
+                        ['MARKER'] + following_lines)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         _just_parse(source)
 
+    def test_fail_when_contents_is_missing(self):
+        arguments = 'expected-argument = '
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            source = remaining_source(arguments)
+            _just_parse(source)
+
     def test_fail_when_superfluous_arguments__without_option(self):
-        arguments = 'expected-argument <<MARKER superfluous-argument'
+        arguments = 'expected-argument = <<MARKER superfluous-argument'
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             source = remaining_source(arguments,
                                       ['MARKER'])
             _just_parse(source)
 
     def test_fail_when_superfluous_arguments__with_option(self):
-        arguments = args_with_rel_ops('{rel_act_option}  expected-argument <<MARKER superfluous-argument')
+        arguments = args_with_rel_ops('{rel_act_option}  expected-argument <= <MARKER superfluous-argument')
         source = remaining_source(arguments,
                                   ['MARKER'])
         with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -224,7 +231,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
 
 
 class TestSuccessfulScenariosWithContents(TestCaseBase):
-    def test_single_file(self):
+    def test_contents_from_here_doc(self):
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
@@ -232,8 +239,8 @@ class TestSuccessfulScenariosWithContents(TestCaseBase):
             with self.subTest(relativity_option_string=rel_opt_conf.option_string):
                 self._check(
                     remaining_source(
-                        '{rel_opt} {file_name} <<THE_MARKER'.format(rel_opt=rel_opt_conf.option_string,
-                                                                    file_name=expected_file.file_name),
+                        '{rel_opt} {file_name} = <<THE_MARKER'.format(rel_opt=rel_opt_conf.option_string,
+                                                                      file_name=expected_file.file_name),
                         [here_doc_line,
                          'THE_MARKER']),
                     ArrangementWithSds(
@@ -265,7 +272,7 @@ class TestSymbolReferences(TestCaseBase):
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
         self._check(
             remaining_source(
-                '{symbol_ref}/{file_name} <<THE_MARKER'.format(
+                '{symbol_ref}/{file_name} = <<THE_MARKER'.format(
                     symbol_ref=symbol_reference_syntax_for_name(symbol.name),
                     file_name=expected_file.file_name,
                 ),
@@ -319,7 +326,7 @@ class TestSymbolReferences(TestCaseBase):
 
         self._check(
             remaining_source(
-                '{symbol_ref}/{file_name} <<THE_MARKER'.format(
+                '{symbol_ref}/{file_name} = <<THE_MARKER'.format(
                     symbol_ref=symbol_reference_syntax_for_name(file_symbol.name),
                     file_name=expected_file.file_name,
                 ),
@@ -375,7 +382,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
         expected_file = fs.empty_file('a-file-name.txt')
         self._check(
             remaining_source(
-                '{file_name} <<MARKER'.format(file_name=expected_file.file_name),
+                '{file_name} = <<MARKER'.format(file_name=expected_file.file_name),
                 ['MARKER']),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
@@ -390,7 +397,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
         expected_file = fs.empty_file('a-file-name.txt')
         self._check(
             remaining_source(
-                '{file_name} <<MARKER'.format(file_name=expected_file.file_name),
+                '{file_name} = <<MARKER'.format(file_name=expected_file.file_name),
                 ['MARKER',
                  'following line']),
             ArrangementWithSds(
