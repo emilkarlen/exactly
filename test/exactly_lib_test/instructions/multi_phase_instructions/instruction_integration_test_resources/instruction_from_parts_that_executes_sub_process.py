@@ -9,6 +9,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
     InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.concrete_resolvers import list_constant
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
@@ -276,9 +277,8 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse(self, source: ParseSource) -> ValidationAndSubProcessExecutionSetup:
-        instruction_argument = source.remaining_part_of_current_line
-        source.consume_current_line()
+    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
+        instruction_argument = parser.consume_current_line_as_plain_string()
         return ValidationAndSubProcessExecutionSetup(self.validator,
                                                      _resolver_for_execute_py_on_command_line(
                                                          instruction_argument),
@@ -291,10 +291,9 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse(self, source: ParseSource) -> ValidationAndSubProcessExecutionSetup:
-        instruction_argument = source.remaining_part_of_current_line
+    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
+        instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = string_resolver.string_constant(instruction_argument)
-        source.consume_current_line()
         return ValidationAndSubProcessExecutionSetup(self.validator,
                                                      ConstantCmdAndArgsResolver(argument_resolver),
                                                      is_shell=True)

@@ -2,6 +2,8 @@ import sys
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import shell as sut
+from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -11,6 +13,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources impor
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import equivalent_source_variants
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
@@ -27,8 +30,17 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestSymbolReferences),
+        unittest.makeSuite(TestFailingParse),
         suite_for_instruction_documentation(sut.DescriptionForNonAssertPhaseInstruction('instruction name'))
     ])
+
+
+class TestFailingParse(unittest.TestCase):
+    def test_fail_when_only_white_space_on_line(self):
+        parser = sut.embryo_parser('instruction-name')
+        for source in equivalent_source_variants(self, '   '):
+            with self.assertRaises(SingleInstructionInvalidArgumentException):
+                parser.parse(source)
 
 
 class TestSymbolReferences(unittest.TestCase):

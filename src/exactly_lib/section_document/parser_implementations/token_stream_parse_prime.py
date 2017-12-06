@@ -50,9 +50,10 @@ class TokenParserPrime:
         if not self.is_at_eol:
             self.error(error_message_format_string)
 
-    def require_is_not_at_eol(self, error_message_format_string: str):
+    def require_is_not_at_eol(self, error_message_format_string: str,
+                              extra_format_map: dict = None):
         if self.is_at_eol:
-            self.error(error_message_format_string)
+            self.error(error_message_format_string, extra_format_map)
 
     def require_head_token_has_valid_syntax(self, error_message_format_string: str = ''):
         if self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR:
@@ -120,7 +121,7 @@ class TokenParserPrime:
 
         if self.token_stream.is_null:
             return self.error(error_message_header_template + ': Missing {__CONSTANTS__}',
-                              __CONSTANTS__=constants_list())
+                              {'__CONSTANTS__': constants_list()})
 
         head = self.token_stream.head
         if head.is_quoted:
@@ -133,8 +134,9 @@ class TokenParserPrime:
         if plain_head not in expected_constants:
             err_msg_tmpl = error_message_header_template + ': Expecting {__CONSTS__}.\nFound: `{__ACTUAL__}\''
             return self.error(err_msg_tmpl,
-                              __CONSTS__=constants_list(),
-                              __ACTUAL__=plain_head)
+                              {'__CONSTS__': constants_list(),
+                               '__ACTUAL__': plain_head
+                               })
         self.token_stream.consume()
 
         if constant_2_ret_val is not None:
@@ -364,11 +366,13 @@ class TokenParserPrime:
     def token_stream(self) -> TokenStream:
         return self._token_stream
 
-    def error(self, error_message_format_string: str, **kwargs):
+    def error(self,
+              error_message_format_string: str,
+              extra_format_map: dict = None):
 
         format_map = self.error_message_format_map
-        if kwargs:
-            format_map = dict(list(self.error_message_format_map.items()) + list(kwargs.items()))
+        if extra_format_map:
+            format_map = dict(list(self.error_message_format_map.items()) + list(extra_format_map.items()))
 
         err_msg = error_message_format_string.format_map(format_map)
 
