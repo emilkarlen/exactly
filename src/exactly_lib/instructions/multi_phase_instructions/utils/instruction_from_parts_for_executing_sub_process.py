@@ -7,9 +7,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case_utils import sub_process_execution as spe
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.sub_process_execution import ResultAndStderr
+from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ResultAndStderr
 
 
 class SubProcessExecutionSetup:

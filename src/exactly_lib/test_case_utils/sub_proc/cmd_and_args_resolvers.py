@@ -1,7 +1,7 @@
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import DataValueResolver
-from exactly_lib.test_case_utils.executable_file import ExecutableFile
-from exactly_lib.test_case_utils.sub_process_execution import CmdAndArgsResolver
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CmdAndArgsResolver
 
 
 class ConstantCmdAndArgsResolver(CmdAndArgsResolver):

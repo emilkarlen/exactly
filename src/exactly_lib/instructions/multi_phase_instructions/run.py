@@ -27,13 +27,13 @@ from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
-from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_list import parse_list, \
     parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
+from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.structure import structures as docs

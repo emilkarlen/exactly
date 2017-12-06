@@ -7,8 +7,8 @@ from exactly_lib.symbol.data.concrete_resolvers import list_constant
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
-from exactly_lib.test_case_utils.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument
