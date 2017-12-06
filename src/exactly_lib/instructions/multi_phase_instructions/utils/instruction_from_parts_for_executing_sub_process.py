@@ -33,19 +33,9 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> ResultAndStderr:
-        # The structures and implementation here does not feel good, - a candidate for refactoring!
-        # E.g. ExecuteInfo may be unnecessary.
-        # This implementation was copied from earlier code that was existed in many places - so that
-        # it had the purpose of being reusable in many places!
-        # After the refactoring that introduced this class, this implementation should perhaps be refactored.
-        # But no time for this now!
-        execute_info = spe.ExecuteInfo(
-            self.source_info,
-            self.setup.cmd_and_args_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds))
-        executor = spe.ExecutorThatStoresResultInFilesInDir(
-            self.setup.is_shell,
-            environment.process_execution_settings)
-        return spe.execute_and_read_stderr_if_non_zero_exitcode(execute_info, executor, logging_paths)
+        command = self.setup.resolve_command(environment.path_resolving_environment_pre_or_post_sds)
+        executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
+        return spe.execute_and_read_stderr_if_non_zero_exitcode(self.source_info, command, executor, logging_paths)
 
 
 class ResultAndStderrTranslator(MainStepResultTranslator):
