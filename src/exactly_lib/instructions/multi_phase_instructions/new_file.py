@@ -6,6 +6,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
+from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
@@ -13,18 +14,23 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
+    TokenParserPrime
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_here_document
-from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_parse_source
+from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
+
+CONTENTS_ASSIGNMENT_TOKEN = '='
+SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
@@ -45,10 +51,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             REL_OPT_ARG_CONF.path_suffix_is_required)
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
                                 instruction_arguments.HERE_DOCUMENT)
+        assignment_arg = a.Single(a.Multiplicity.MANDATORY,
+                                  a.Constant(CONTENTS_ASSIGNMENT_TOKEN))
         return [
             InvokationVariant(self._cl_syntax_for_args(arguments),
                               docs.paras('Creates an empty file.')),
-            InvokationVariant(self._cl_syntax_for_args(arguments + [here_doc_arg]),
+            InvokationVariant(self._cl_syntax_for_args(arguments + [assignment_arg, here_doc_arg]),
                               self._tp.paras('Creates a file with contents given by a {HERE_DOCUMENT}.')),
         ]
 
@@ -104,14 +112,16 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
     def parse(self, source: ParseSource) -> TheInstructionEmbryo:
-        file_ref = parse_file_ref_from_parse_source(source, REL_OPT_ARG_CONF)
-        contents = string_resolver.string_constant('')
-        if source.is_at_eol__except_for_space:
-            source.consume_current_line()
-        else:
-            contents = parse_here_document.parse_as_last_argument(False, source)
-        file_info = FileInfo(file_ref, contents)
-        return TheInstructionEmbryo(file_info)
+        with from_parse_source(source,
+                               consume_last_line_if_is_at_eol_after_parse=True) as parser:
+            assert isinstance(parser, TokenParserPrime)  # Type info for IDE
+            file_ref = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
+            contents = string_resolver.string_constant('')
+            if not parser.is_at_eol:
+                parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
+                contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
+            file_info = FileInfo(file_ref, contents)
+            return TheInstructionEmbryo(file_info)
 
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),

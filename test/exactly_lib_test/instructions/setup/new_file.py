@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.multi_phase_instructions.new_file import RELATIVITY_VARIANTS
+from exactly_lib.instructions.multi_phase_instructions import new_file
 from exactly_lib.instructions.setup import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
@@ -61,7 +61,7 @@ class TestCasesThatTestIntegrationByAFewRandomTests(TestCaseBaseForParser):
                       )
 
     def test_single_line_contents(self):
-        self._run(argument_list_source(['file name', '<<MARKER'],
+        self._run(argument_list_source(['file name', new_file.CONTENTS_ASSIGNMENT_TOKEN, '<<MARKER'],
                                        ['single line',
                                         'MARKER']),
                   Arrangement(),
@@ -102,10 +102,10 @@ class TestCasesThatTestIntegrationOfValueDefinitionByAFewRandomTests(TestCaseBas
                                   [empty_file('file-name.txt')])
                           ])),
                           symbol_usages=asrt.matches_sequence([
-                              equals_symbol_reference_with_restriction_on_direct_target('SYMBOL_NAME',
-                                                                                        equals_file_ref_relativity_restriction(
-                                                                                            FileRefRelativityRestriction(
-                                                                                                RELATIVITY_VARIANTS)))
+                              equals_symbol_reference_with_restriction_on_direct_target(
+                                  'SYMBOL_NAME',
+                                  equals_file_ref_relativity_restriction(
+                                      FileRefRelativityRestriction(new_file.RELATIVITY_VARIANTS)))
                           ]),
                       )
                       )
