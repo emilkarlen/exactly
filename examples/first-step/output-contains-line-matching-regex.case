@@ -1,6 +1,6 @@
 [setup]
 
-file output.txt <<EOF
+file output.txt = <<EOF
 kiwi
 orange
 apple

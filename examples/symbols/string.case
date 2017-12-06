@@ -5,7 +5,7 @@ def string GOOD = 'very good'
 
 def string MY_FILE = my-file.txt
 
-file @[MY_FILE]@ <<EOF
+file @[MY_FILE]@ = <<EOF
 a @[GOOD]@ 1st line
 a bad 2nd line
 a @[GOOD]@ 3d line

@@ -22,7 +22,7 @@ install this-is-an-existing-file-in-same-dir-as-test-case.txt
 
 dir first/second/third
 
-file in/a/dir/file-name.txt <<EOF
+file in/a/dir/file-name.txt = <<EOF
 contents of the file
 EOF
 
