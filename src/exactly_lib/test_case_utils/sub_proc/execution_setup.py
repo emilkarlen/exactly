@@ -1,8 +1,10 @@
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
+from exactly_lib.util.process_execution.os_process_execution import Command
 
 
 class SubProcessExecutionSetup:
@@ -15,6 +17,11 @@ class SubProcessExecutionSetup:
     @property
     def symbol_usages(self) -> list:
         return self.cmd_and_args_resolver.symbol_usages
+
+    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        cmd_and_args = self.cmd_and_args_resolver.resolve(environment)
+        return Command(cmd_and_args,
+                       self.is_shell)
 
 
 class ValidationAndSubProcessExecutionSetup(SubProcessExecutionSetup):

@@ -3,13 +3,13 @@ import pathlib
 import subprocess
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.phases.common import PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSourceInfo, instruction_log_dir
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_utils import file_services
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
-from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, Command
 
 EXIT_CODE_FILE_NAME = 'exitcode'
 STDOUT_FILE_NAME = 'stdout'
@@ -71,22 +71,6 @@ class ResultAndStderr:
         self.stderr_contents = stderr_contents
 
 
-class InstructionSourceInfo(tuple):
-    def __new__(cls,
-                source_line_number: int,
-                instruction_name: str):
-        return tuple.__new__(cls, (source_line_number,
-                                   instruction_name))
-
-    @property
-    def instruction_name(self) -> str:
-        return self[1]
-
-    @property
-    def line_number(self) -> int:
-        return self[0]
-
-
 class CmdAndArgsResolver:
     """
     Resolves the command string to execute.
@@ -107,15 +91,12 @@ class CmdAndArgsResolver:
 
 
 class ExecutorThatStoresResultInFilesInDir:
-    def __init__(self,
-                 is_shell: bool,
-                 process_execution_settings: ProcessExecutionSettings):
-        self.is_shell = is_shell
+    def __init__(self, process_execution_settings: ProcessExecutionSettings):
         self.process_execution_settings = process_execution_settings
 
     def apply(self,
               storage_dir: pathlib.Path,
-              cmd_and_args) -> Result:
+              command: Command) -> Result:
 
         def _err_msg(exception: Exception) -> str:
             return 'Error executing process:\n' + str(exception)
@@ -124,13 +105,13 @@ class ExecutorThatStoresResultInFilesInDir:
         with open(str(storage_dir / STDOUT_FILE_NAME), 'w') as f_stdout:
             with open(str(storage_dir / STDERR_FILE_NAME), 'w') as f_stderr:
                 try:
-                    exit_code = subprocess.call(cmd_and_args,
+                    exit_code = subprocess.call(command.args,
                                                 stdin=subprocess.DEVNULL,
                                                 stdout=f_stdout,
                                                 stderr=f_stderr,
                                                 env=self.process_execution_settings.environ,
                                                 timeout=self.process_execution_settings.timeout_in_seconds,
-                                                shell=self.is_shell)
+                                                shell=command.shell)
                     write_new_text_file(storage_dir / EXIT_CODE_FILE_NAME,
                                         str(exit_code))
                     return Result(None,
@@ -169,18 +150,13 @@ class ExecuteInfo:
         self.command = command
 
 
-def execute_and_read_stderr_if_non_zero_exitcode(execute_info: ExecuteInfo,
+def execute_and_read_stderr_if_non_zero_exitcode(source_info: InstructionSourceInfo,
+                                                 command: Command,
                                                  executor: ExecutorThatStoresResultInFilesInDir,
                                                  phase_logging_paths: PhaseLoggingPaths) -> ResultAndStderr:
-    source_info = execute_info.instruction_source_info
     storage_dir = instruction_log_dir(phase_logging_paths, source_info)
-    result = executor.apply(storage_dir, execute_info.command)
+    result = executor.apply(storage_dir, command)
     return read_stderr_if_non_zero_exitcode(result)
-
-
-def instruction_log_dir(phase_logging_paths: PhaseLoggingPaths,
-                        source_info: InstructionSourceInfo) -> pathlib.Path:
-    return phase_logging_paths.for_line(source_info.line_number, source_info.instruction_name)
 
 
 def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:

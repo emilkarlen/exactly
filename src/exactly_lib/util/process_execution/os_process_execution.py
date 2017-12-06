@@ -46,3 +46,11 @@ class Command(tuple):
         Tells whether args should be executed as a shell command.
         """
         return self[1]
+
+
+def executable_program_command(program_and_args: list) -> Command:
+    return Command(program_and_args, False)
+
+
+def shell_command(command: str) -> Command:
+    return Command(command, True)

@@ -254,6 +254,31 @@ class TestSuccessfulScenariosWithContents(TestCaseBase):
                                                                                fs.DirContents([expected_file])),
                     ))
 
+    # def test_contents_from_stdout_of_shell_command(self):
+    #     text_printed_by_shell_command = 'single line in here doc'
+    #     expected_file_contents = text_printed_by_shell_command + '\n'
+    #     expected_file = fs.File('a-file-name.txt', expected_file_contents)
+    #     for rel_opt_conf in ALLOWED_RELATIVITIES:
+    #         with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+    #             self._check(
+    #                 remaining_source(
+    #                     '{rel_opt} {file_name} = {shell_command_token} {shell_command}'.format(
+    #                         rel_opt=rel_opt_conf.option_string,
+    #                         file_name=expected_file.file_name,
+    #                         shell_command_token=sut.SHELL_COMMAND_TOKEN,
+    #                         shell_command=command_that_prints_line_to_stdout(text_printed_by_shell_command),
+    #                     )),
+    #                 ArrangementWithSds(
+    #                     pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+    #                 ),
+    #                 Expectation(
+    #                     main_result=is_success(),
+    #                     side_effects_on_home=f_asrt.dir_is_empty(),
+    #                     symbol_usages=asrt.is_empty_list,
+    #                     main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
+    #                                                                            fs.DirContents([expected_file])),
+    #                 ))
+
 
 class TestSymbolReferences(TestCaseBase):
     def test_symbol_reference_in_file_argument(self):

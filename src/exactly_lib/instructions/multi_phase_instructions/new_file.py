@@ -27,6 +27,7 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION
 from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecutionSetup
+from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -137,7 +138,9 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
                 return InstructionEmbryoForConstantContents(file_ref, string_resolver.string_constant(''))
 
     def _parse_sub_process_setup(self, parser: TokenParserPrime) -> SubProcessExecutionSetup:
-        raise NotImplementedError('todo')
+        parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, True)
+        setup_parser = ShellCommandSetupParser()
+        return setup_parser.parse_from_token_parser(parser)
 
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),

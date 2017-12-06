@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as sut
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import InstructionSourceInfo
-from exactly_lib.util.process_execution.os_process_execution import with_no_timeout
+from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, executable_program_command
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.test_resources.py_program import program_that_prints_and_exits_with_exit_code
@@ -33,9 +33,10 @@ sys.exit(%d)
                 DirContents([
                     File('program.py', py_pgm_that_exits_with_exit_code)
                 ]))) as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
+            executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.apply(sds.log_dir,
-                                    py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
+                                    executable_program_command(
+                                        py_exe.args_for_interpreting(sds.act_dir / 'program.py')))
             self.assertTrue(result.is_success,
                             'Result should indicate success')
             self.assertEqual(exit_code,
@@ -44,9 +45,9 @@ sys.exit(%d)
 
     def test_invalid_executable(self):
         with sandbox_directory_structure() as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
+            executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.apply(sds.log_dir,
-                                    [str(sds.act_dir / 'non-existing-program')])
+                                    executable_program_command([str(sds.act_dir / 'non-existing-program')]))
             self.assertFalse(result.is_success,
                              'Result should indicate failure')
 
@@ -57,9 +58,10 @@ sys.exit(%d)
                     File('program.py',
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
                 ]))) as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
+            executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.apply(sds.log_dir,
-                                    py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
+                                    executable_program_command(
+                                        py_exe.args_for_interpreting(sds.act_dir / 'program.py')))
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
                                                                             result)
@@ -71,9 +73,10 @@ sys.exit(%d)
                     File('program.py',
                          program_that_prints_and_exits_with_exit_code(PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS))
                 ]))) as sds:
-            executor = sut.ExecutorThatStoresResultInFilesInDir(False, with_no_timeout())
+            executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.apply(sds.log_dir / 'non-existing-path-component' / 'one-more-component',
-                                    py_exe.args_for_interpreting(sds.act_dir / 'program.py'))
+                                    executable_program_command(
+                                        py_exe.args_for_interpreting(sds.act_dir / 'program.py')))
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
                                                                             result)

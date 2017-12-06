@@ -9,14 +9,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.processing.exit_values import EXECUTION__HARD_ERROR
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
-from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
-from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
-from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup, \
-    ValidationAndSubProcessExecutionSetupParser
+from exactly_lib.test_case_utils.sub_proc.shell_program import COMMAND_SYNTAX_ELEMENT, ShellCommandSetupParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -27,10 +20,8 @@ def parts_parser(instruction_name: str) -> InstructionPartsParser:
 
 def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
     return spe_parts.InstructionEmbryoParser(instruction_name,
-                                             SetupParser())
+                                             ShellCommandSetupParser())
 
-
-_COMMAND_SYNTAX_ELEMENT = 'COMMAND'
 
 _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS = \
     "Executes a command using the current operating system's shell"
@@ -46,11 +37,11 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
                  name: str,
                  single_line_description: str):
         super().__init__(name, {
-            'COMMAND': _COMMAND_SYNTAX_ELEMENT,
+            'COMMAND': COMMAND_SYNTAX_ELEMENT,
             'HARD_ERROR': EXECUTION__HARD_ERROR.exit_identifier,
         })
         self.__single_line_description = single_line_description
-        self.command_arg = a.Named(_COMMAND_SYNTAX_ELEMENT)
+        self.command_arg = a.Named(COMMAND_SYNTAX_ELEMENT)
 
     def single_line_description(self) -> str:
         return self.__single_line_description
@@ -81,25 +72,6 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
     def _main_description_rest_prelude(self) -> list:
         return self._paragraphs(_NON_ASSERT_PHASE_REST_PRELUDE)
 
-
-class SetupParser(ValidationAndSubProcessExecutionSetupParser):
-    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
-        parser.require_is_not_at_eol('Missing {COMMAND}',
-                                     _PARSE_FORMAT_MAP)
-        argument_string = parser.consume_current_line_as_plain_string()
-        argument = string_resolver_from_string(argument_string)
-        if not argument_string:
-            msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
-            raise SingleInstructionInvalidArgumentException(msg)
-        return ValidationAndSubProcessExecutionSetup(
-            ConstantSuccessValidator(),
-            ConstantCmdAndArgsResolver(argument),
-            is_shell=True)
-
-
-_PARSE_FORMAT_MAP = {
-    'COMMAND': _COMMAND_SYNTAX_ELEMENT
-}
 
 _MAIN_DESCRIPTION_REST_BODY = """\
 Which commands are available and the syntax of them depends
