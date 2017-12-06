@@ -85,11 +85,11 @@ appropriate output directory::
     dir output-files/good
     dir output-files/bad
 
-    file input-files/a.txt <<EOF
+    file input-files/a.txt = <<EOF
     GOOD contents
     EOF
 
-    file input-files/b.txt <<EOF
+    file input-files/b.txt = <<EOF
     bad contents
     EOF
 
@@ -397,7 +397,7 @@ it just displays some of Exactly's features.)
 
     dir first/second/third
 
-    file in/a/dir/file-name.txt <<EOF
+    file in/a/dir/file-name.txt = <<EOF
     contents of the file
     EOF
 
