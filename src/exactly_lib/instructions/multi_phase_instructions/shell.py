@@ -10,9 +10,9 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_pa
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import ConstantCmdAndArgsResolver
@@ -102,10 +102,11 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
 
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
-    def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        argument_string = source.remaining_part_of_current_line.strip()
+    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
+        parser.require_is_not_at_eol('Missing {COMMAND}',
+                                     _PARSE_FORMAT_MAP)
+        argument_string = parser.consume_current_line_as_plain_string()
         argument = string_resolver_from_string(argument_string)
-        source.consume_current_line()
         if not argument_string:
             msg = _COMMAND_SYNTAX_ELEMENT + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
@@ -113,3 +114,8 @@ class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
             ConstantSuccessValidator(),
             ConstantCmdAndArgsResolver(argument),
             is_shell=True)
+
+
+_PARSE_FORMAT_MAP = {
+    'COMMAND': _COMMAND_SYNTAX_ELEMENT
+}

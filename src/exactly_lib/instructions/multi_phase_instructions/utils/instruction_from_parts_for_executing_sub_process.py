@@ -3,6 +3,8 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
+    from_parse_source
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.phases.result import pfh
@@ -77,7 +79,12 @@ class ResultAndStderrTranslator(MainStepResultTranslator):
 
 class ValidationAndSubProcessExecutionSetupParser:
     def parse(self, source: ParseSource) -> ValidationAndSubProcessExecutionSetup:
-        raise NotImplementedError()
+        with from_parse_source(source,
+                               consume_last_line_if_is_at_eol_after_parse=True) as parser:
+            return self.parse_from_token_parser(parser)
+
+    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
+        raise NotImplementedError('abstract method')
 
 
 class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParser):

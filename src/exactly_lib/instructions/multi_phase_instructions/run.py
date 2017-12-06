@@ -22,6 +22,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -219,9 +220,8 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
 
 
 class SetupParser(spe_parts.ValidationAndSubProcessExecutionSetupParser):
-    def parse(self, source: ParseSource) -> spe_parts.ValidationAndSubProcessExecutionSetup:
-        tokens = new_token_stream(source.remaining_part_of_current_line)
-        source.consume_current_line()
+    def parse_from_token_parser(self, parser: TokenParserPrime) -> spe_parts.ValidationAndSubProcessExecutionSetup:
+        tokens = new_token_stream(parser.consume_current_line_as_plain_string())
         exe_file = parse_executable_file.parse(tokens)
         (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, tokens)
         return spe_parts.ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
