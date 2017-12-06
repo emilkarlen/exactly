@@ -69,6 +69,16 @@ transform log.txt actual-commit-msg.txt GET_FIRST_LOG_MESSAGE
 or
 
 ----------------------------------------
+file log.txt = $ git log
+
+file actual-commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE --file log.txt 
+
+...
+----------------------------------------
+
+or
+
+----------------------------------------
 file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE $ git log
 
 ...
@@ -82,3 +92,51 @@ file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
 
 ...
 ----------------------------------------
+
+----------------------------------------
+file commit-msg.txt = $ git log
+                      --transformed GET_FIRST_LOG_MESSAGE
+                      
+
+...
+----------------------------------------
+
+
+
+----------------------------------------
+
+file f = other-file.txt --transformed GET_FIRST_LOG_MESSAGE
+
+file f = other.txt | GET_FIRST_LOG_MESSAGE
+
+file f = $ git log | GET_FIRST_LOG_MESSAGE
+
+file f = $ git log | head | GET_FIRST_LOG_MESSAGE
+
+file f < git log
+
+file f = run my-program
+
+file f = $( git log )
+
+** Parentheses around program
+
+file f = ( $ git log )
+
+file f = ( run my-prog "arg" ) --transformd GET_FIRST_LOG_MESSAGE
+
+file f = ( my-prog "arg" )     --transformd GET_FIRST_LOG_MESSAGE
+
+file f = ( my-prog "arg" ) | GET_FIRST_LOG_MESSAGE
+
+file f = ( $ git log | sed ) | GET_FIRST_LOG_MESSAGE
+
+file f = a-string
+
+file f = --file --transformed GET_FIRST_LOG_MESSAGE other.txt
+
+file f = --transformed GET_FIRST_LOG_MESSAGE --file other.txt
+
+file f = my-file.txt --transformed GET_FIRST_LOG_MESSAGE
+
+
