@@ -15,7 +15,7 @@ file 'file name with spaces.txt'
 file new-directory/empty-file.txt
 file new-directory/empty-file2.txt
 
-file non-empty-file.txt <<EOF
+file non-empty-file.txt = <<EOF
 Some contents.
 EOF
 

@@ -22,11 +22,11 @@ dir --rel-act input-files
 dir --rel-act output-files/good
 dir --rel-act output-files/bad
 
-file --rel-act input-files/a-good-file.txt <<EOF
+file --rel-act input-files/a-good-file.txt = <<EOF
 GOOD contents
 EOF
 
-file --rel-act input-files/a-bad-file.txt <<EOF
+file --rel-act input-files/a-bad-file.txt = <<EOF
 bad contents
 EOF
 

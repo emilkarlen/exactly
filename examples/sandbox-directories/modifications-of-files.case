@@ -17,11 +17,11 @@ dir input-files
 dir output-files/good
 dir output-files/bad
 
-file input-files/a-good-file.txt <<EOF
+file input-files/a-good-file.txt = <<EOF
 GOOD contents
 EOF
 
-file input-files/a-bad-file.txt <<EOF
+file input-files/a-bad-file.txt = <<EOF
 bad contents
 EOF
 

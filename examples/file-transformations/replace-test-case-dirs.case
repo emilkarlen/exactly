@@ -8,7 +8,7 @@
 [setup]
 
 
-file my-file-with-abs-paths.txt <<EOF
+file my-file-with-abs-paths.txt = <<EOF
 @[EXACTLY_ACT]@
 @[EXACTLY_TMP]@
 @[EXACTLY_ACT_HOME]@

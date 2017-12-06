@@ -8,7 +8,7 @@
 [setup]
 
 
-file my-file.txt <<EOF
+file my-file.txt = <<EOF
 first
 second
 third

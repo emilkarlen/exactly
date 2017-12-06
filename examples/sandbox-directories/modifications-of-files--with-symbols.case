@@ -30,11 +30,11 @@ dir @[INPUT_DIR]@
 dir @[OUTPUT_GOOD_DIR]@
 dir @[OUTPUT_BAD_DIR]@
 
-file @[INPUT_DIR]@/@[NAME_OF_GOOD_FILE]@ <<EOF
+file @[INPUT_DIR]@/@[NAME_OF_GOOD_FILE]@ = <<EOF
 @[GOOD_TOKEN]@ contents
 EOF
 
-file @[INPUT_DIR]@/@[NAME_OF_BAD_FILE]@ <<EOF
+file @[INPUT_DIR]@/@[NAME_OF_BAD_FILE]@ = <<EOF
 bad contents
 EOF
 
