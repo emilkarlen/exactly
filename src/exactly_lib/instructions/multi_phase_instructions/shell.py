@@ -1,6 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help_texts.instruction_arguments import COMMAND_ARGUMENT
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_sub_process as spe_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import \
@@ -9,7 +10,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.processing.exit_values import EXECUTION__HARD_ERROR
-from exactly_lib.test_case_utils.sub_proc.shell_program import COMMAND_SYNTAX_ELEMENT, ShellCommandSetupParser
+from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -37,11 +38,11 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
                  name: str,
                  single_line_description: str):
         super().__init__(name, {
-            'COMMAND': COMMAND_SYNTAX_ELEMENT,
+            'COMMAND': COMMAND_ARGUMENT.name,
             'HARD_ERROR': EXECUTION__HARD_ERROR.exit_identifier,
         })
         self.__single_line_description = single_line_description
-        self.command_arg = a.Named(COMMAND_SYNTAX_ELEMENT)
+        self.command_arg = COMMAND_ARGUMENT
 
     def single_line_description(self) -> str:
         return self.__single_line_description
