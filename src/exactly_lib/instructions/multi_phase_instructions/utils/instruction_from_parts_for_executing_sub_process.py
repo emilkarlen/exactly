@@ -4,7 +4,8 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
+    instruction_log_dir
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
@@ -35,7 +36,8 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
              os_services: OsServices) -> ResultAndStderr:
         command = self.setup.resolve_command(environment.path_resolving_environment_pre_or_post_sds)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
-        return spe.execute_and_read_stderr_if_non_zero_exitcode(self.source_info, command, executor, logging_paths)
+        storage_dir = instruction_log_dir(logging_paths, self.source_info)
+        return spe.execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
 
 
 class ResultAndStderrTranslator(MainStepResultTranslator):
