@@ -1,0 +1,39 @@
+-*- org -*-
+
+<2017-12-07 tor>
+
+Rename --rel-X --in-X ?
+
+----------------------------------------
+
+file --rel-tmp my-tmp-file.txt
+
+file --in-tmp my-tmp-file.txt
+
+file --in-tmp my-tmp-file.txt = --file --in-home my-home-file.txt
+
+
+def path SCRIPTS_DIR = ...
+
+file --in SCRIPTS_DIR my-script.sql
+
+
+install --in-home my-source-file.src
+
+# May be confusing - --in... may give the impression that it tells where
+# files are installed.
+
+stdout equals --file --in-act-home expected.txt
+
+
+contents --in-tmp my-tmp.txt equals --in-act-home expected.txt
+
+
+contents ( --in-tmp my-tmp.txt ) equals ( --in-act-home expected.txt )
+
+
+contents ( --in-tmp my-tmp.txt )
+         equals
+         ( --in-act-home expected.txt )
+
+----------------------------------------
