@@ -4,12 +4,12 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity.types import LINES_TRANSFORMER_TYPE_INFO
-from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import src_dst
+from exactly_lib.instructions.utils.transform import create_file_from_transformation_of_existing_file
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
@@ -116,15 +116,12 @@ class TheInstruction(embryo.InstructionEmbryo):
             return src_validation_res
         transformer = self._transformer.resolve(path_resolving_env.symbols)
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
+        dst_path = self._dst_path.resolve_value_of_any_dependency(path_resolving_env)
 
-        def write_file(output_file):
-            with src_path.open() as in_file:
-                for line in transformer.transform(path_resolving_env.home_and_sds, in_file):
-                    output_file.write(line)
-
-        return file_creation.resolve_and_create_file(self._dst_path,
-                                                     path_resolving_env,
-                                                     write_file)
+        return create_file_from_transformation_of_existing_file(src_path,
+                                                                dst_path,
+                                                                transformer,
+                                                                path_resolving_env.home_and_sds)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):

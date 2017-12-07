@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
+    MyNonIdentityTransformer, MyToUppercaseTransformer, MyCountNumUppercaseCharactersTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -132,30 +132,3 @@ class Test(unittest.TestCase):
 
         self.assertEqual(expected_output_lines,
                          actual_as_list)
-
-
-class MyNonIdentityTransformer(LinesTransformer):
-    @property
-    def is_identity_transformer(self) -> bool:
-        return False
-
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
-        return map(lambda s: 'not identity', lines)
-
-
-class MyToUppercaseTransformer(LinesTransformer):
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
-        return map(str.upper, lines)
-
-
-class MyCountNumUppercaseCharactersTransformer(LinesTransformer):
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
-        return map(get_number_of_uppercase_characters, lines)
-
-
-def get_number_of_uppercase_characters(line: str) -> str:
-    ret_val = 0
-    for ch in line:
-        if ch.isupper():
-            ret_val += 1
-    return str(ret_val)
