@@ -49,6 +49,9 @@ def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
 
 
 def parse_optional_transformer_resolver(parser: TokenParserPrime) -> LinesTransformerResolver:
+    """
+    :return: The identity transformer, if transformer option is not given.
+    """
     return parser.consume_and_handle_optional_option(
         IDENTITY_TRANSFORMER_RESOLVER,
         parse_lines_transformer_from_token_parser,

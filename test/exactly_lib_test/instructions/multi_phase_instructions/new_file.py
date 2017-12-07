@@ -1,10 +1,13 @@
 import unittest
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.string_resolver import string_constant
+from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import resolver_of_rel_option
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
@@ -12,6 +15,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.util.cli_syntax.option_syntax import option_syntax
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -20,10 +25,20 @@ from exactly_lib_test.instructions.test_resources.check_documentation import sui
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source, remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
-from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references, \
+    equals_symbol_reference
+from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl, \
+    is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
+from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
+from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
+    MyToUppercaseTransformer
+from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, \
     conf_rel_non_home, default_conf_rel_non_home
@@ -41,7 +56,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParseWithNoContents),
         unittest.makeSuite(TestFailingParseWithContents),
         unittest.makeSuite(TestSuccessfulScenariosWithNoContents),
-        unittest.makeSuite(TestSuccessfulScenariosWithContents),
+        unittest.makeSuite(TestSuccessfulScenariosWithConstantContents),
+        unittest.makeSuite(TestSuccessfulScenariosWithContentsFromProcessOutput),
         unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestFailingScenariosDueToAlreadyExistingFiles),
@@ -231,7 +247,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     ))
 
 
-class TestSuccessfulScenariosWithContents(TestCaseBase):
+class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
     def test_contents_from_here_doc(self):
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
@@ -255,8 +271,68 @@ class TestSuccessfulScenariosWithContents(TestCaseBase):
                                                                                fs.DirContents([expected_file])),
                     ))
 
+
+class TestSuccessfulScenariosWithContentsFromProcessOutput(TestCaseBase):
+
+    def test_symbol_usages(self):
+        text_printed_by_shell_command_symbol = NameAndValue('STRING_TO_PRINT_SYMBOL', 'hello_world')
+
+        dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', 'dst-file-name.txt')
+
+        to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+
+        source = remaining_source(
+            '{file_name} = {transformed_option} {transformer_symbol} '
+            '{shell_command_token} {shell_command}'.format(
+                file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
+                transformed_option=option_syntax(
+                    instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+                transformer_symbol=to_upper_transformer.name,
+                shell_command_token=sut.SHELL_COMMAND_TOKEN,
+                shell_command=command_that_prints_line_to_stdout(
+                    symbol_reference_syntax_for_name(text_printed_by_shell_command_symbol.name)
+                ),
+            ))
+
+        symbols = SymbolTable({
+            dst_file_symbol.name:
+                container(resolver_of_rel_option(RelOptionType.REL_ACT,
+                                                 PathPartAsFixedPath(dst_file_symbol.value))),
+
+            to_upper_transformer.name:
+                container(to_upper_transformer.value),
+
+            text_printed_by_shell_command_symbol.name:
+                container(string_constant(text_printed_by_shell_command_symbol.value))
+        })
+
+        # ACT & ASSERT #
+        self._check(source,
+                    ArrangementWithSds(
+                        symbols=symbols,
+                    ),
+                    Expectation(
+                        main_result=is_success(),
+                        symbol_usages=asrt.matches_sequence([
+
+                            equals_symbol_reference(
+                                SymbolReference(dst_file_symbol.name,
+                                                file_ref_or_string_reference_restrictions(
+                                                    sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
+                            ),
+
+                            is_lines_transformer_reference_to(to_upper_transformer.name),
+
+                            matches_reference_2(
+                                text_printed_by_shell_command_symbol.name,
+                                equals_data_type_reference_restrictions(is_any_data_type())),
+                        ]),
+                    )
+                    )
+
     def test_contents_from_stdout_of_shell_command(self):
-        text_printed_by_shell_command = 'single line in here doc'
+        text_printed_by_shell_command = 'single line of output'
         expected_file_contents = text_printed_by_shell_command + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
         for rel_opt_conf in ALLOWED_RELATIVITIES:
@@ -279,6 +355,44 @@ class TestSuccessfulScenariosWithContents(TestCaseBase):
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                                fs.DirContents([expected_file])),
                     ))
+
+    def test_contents_from_transformed_stdout_of_shell_command(self):
+        text_printed_by_shell_command = 'single line of output'
+        expected_file_contents = text_printed_by_shell_command.upper() + '\n'
+        expected_file = fs.File('a-file-name.txt', expected_file_contents)
+        to_upper_transformer = NameAndValue('TO_UPPER_CASE',
+                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            to_upper_transformer.name: container(to_upper_transformer.value)
+        })
+
+        rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_TMP)
+
+        self._check(
+            remaining_source(
+                '{rel_opt} {file_name} = {transformed_option} {to_upper_transformer_symbol} '
+                '{shell_command_token} {shell_command}'.format(
+                    rel_opt=rel_opt_conf.option_string,
+                    file_name=expected_file.file_name,
+                    transformed_option=option_syntax(
+                        instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+                    to_upper_transformer_symbol=to_upper_transformer.name,
+                    shell_command_token=sut.SHELL_COMMAND_TOKEN,
+                    shell_command=command_that_prints_line_to_stdout(text_printed_by_shell_command),
+                )),
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                symbols=symbols
+            ),
+            Expectation(
+                main_result=is_success(),
+                side_effects_on_home=f_asrt.dir_is_empty(),
+                symbol_usages=asrt.matches_sequence([
+                    is_lines_transformer_reference_to(to_upper_transformer.name),
+                ]),
+                main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
+                                                                       fs.DirContents([expected_file])),
+            ))
 
 
 class TestSymbolReferences(TestCaseBase):
