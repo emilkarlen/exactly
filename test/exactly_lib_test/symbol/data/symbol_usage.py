@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol import symbol_usage as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import file_ref_constant_container
 
 
@@ -29,7 +29,7 @@ class TestSymbolUsageVisitor(unittest.TestCase):
         visitor = _SymbolUsageVisitorTestThatRegistersClassOfVisitedObjects()
         # ACT #
         ret_val = visitor.visit(
-            sut.SymbolReference('name', ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction())))
+            sut.SymbolReference('name', ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))
         # ASSERT #
         self.assertListEqual(visitor.visited_classes,
                              [sut.SymbolReference],

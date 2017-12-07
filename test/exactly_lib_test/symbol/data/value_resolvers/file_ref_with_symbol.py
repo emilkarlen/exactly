@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     is_any_data_type
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction, \
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     FileRefRelativityRestriction
 from exactly_lib.symbol.data.value_resolvers import file_ref_with_symbol as sut
 from exactly_lib.symbol.data.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
@@ -45,7 +45,7 @@ class TestRelSymbol(unittest.TestCase):
         symbol_name_of_rel_path = 'symbol_name_of_rel_path'
         symbol_name_of_path_suffix = 'symbol_name_of_path_suffix'
         restrictions_on_path_suffix_symbol = restrictions.ReferenceRestrictionsOnDirectAndIndirect(
-            AnySymbolTypeRestriction())
+            AnyDataTypeRestriction())
         expected_mandatory_references = [
             vr_tr.equals_symbol_reference_with_restriction_on_direct_target(
                 symbol_name_of_rel_path,

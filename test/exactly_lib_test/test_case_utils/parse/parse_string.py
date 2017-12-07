@@ -6,7 +6,7 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
     ConstantStringFragmentResolver, StringResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
@@ -269,7 +269,7 @@ def fragment_resolver_from_fragment(fragment: Fragment) -> StringFragmentResolve
         return ConstantStringFragmentResolver(fragment.value)
     else:
         sr = SymbolReference(fragment.value,
-                             ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
+                             ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction(),
                                                                       indirect=None))
         return SymbolStringFragmentResolver(sr)
 
@@ -284,4 +284,4 @@ def single_symbol_reference(symbol_name: str,
 
 
 def no_restrictions() -> ReferenceRestrictions:
-    return ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction())
+    return ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction())

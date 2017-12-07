@@ -10,9 +10,9 @@ from exactly_lib.type_system.value_type import ValueType, TypeCategory
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class AnySymbolTypeRestriction(ValueRestriction):
+class AnyDataTypeRestriction(ValueRestriction):
     """
-    A restriction that any symbol value satisfies.
+    A restriction that any data symbol value satisfies.
     """
 
     def is_satisfied_by(self,
@@ -75,7 +75,7 @@ class FileRefRelativityRestriction(ValueRestriction):
 
 class ValueRestrictionVisitor:
     def visit(self, x: ValueRestriction):
-        if isinstance(x, AnySymbolTypeRestriction):
+        if isinstance(x, AnyDataTypeRestriction):
             return self.visit_none(x)
         if isinstance(x, StringRestriction):
             return self.visit_string(x)
@@ -83,7 +83,7 @@ class ValueRestrictionVisitor:
             return self.visit_file_ref_relativity(x)
         raise TypeError('%s is not an instance of %s' % (str(x), str(ValueRestriction)))
 
-    def visit_none(self, x: AnySymbolTypeRestriction):
+    def visit_none(self, x: AnyDataTypeRestriction):
         raise NotImplementedError()
 
     def visit_string(self, x: StringRestriction):
