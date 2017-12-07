@@ -18,10 +18,10 @@ file PATH = CONTENTS
 CONTENTS ::= HERE-DOCUMENT
          ::| STRING
          ::| [TRANSFORMATION] --file PATH-OF-EXISTING-FILE
-         ::| [TRANSFORMATION] [--stdout|--stderr|--exitcode] PROGRAM
+         ::| [TRANSFORMATION] [--stdout|--stderr|--exitcode] SHELL-COMMAND-OR-PROGRAM
 
-PROGRAM ::= run ...
-        ::= $ ...
+SHELL-COMMAND-OR-PROGRAM ::= PROGRAM [ARGUMENT]...
+                         ::| $ SHELL-COMMAND
 
 
 TRANSFORMATION ::= --transformed LINES-TRANSFORMER
@@ -30,7 +30,7 @@ TRANSFORMATION ::= --transformed LINES-TRANSFORMER
 
 The "transform" instruction can be replaced with
 
-file PATH = [TRANSFORMATION] EXISTING-FILE
+file PATH = [TRANSFORMATION] --file EXISTING-FILE
 
 * Examples
 
@@ -59,7 +59,7 @@ EOF
 Using new "file":
 
 ----------------------------------------
-file log.txt = $ git log
+file log.txt = --stdout $ git log
 
 transform log.txt actual-commit-msg.txt GET_FIRST_LOG_MESSAGE
 
@@ -69,9 +69,10 @@ transform log.txt actual-commit-msg.txt GET_FIRST_LOG_MESSAGE
 or
 
 ----------------------------------------
-file log.txt = $ git log
+file log.txt = --stdout $ git log
 
-file actual-commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE --file log.txt 
+file actual-commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
+                             --file log.txt 
 
 ...
 ----------------------------------------
@@ -79,7 +80,8 @@ file actual-commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE --file log.txt
 or
 
 ----------------------------------------
-file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE $ git log
+file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
+                      $ git log
 
 ...
 ----------------------------------------
@@ -91,6 +93,27 @@ file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
                       --stdout $ git log
 
 ...
+----------------------------------------
+
+----------------------------------------
+file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
+                      --stdout
+                      $ git log
+
+----------------------------------------
+
+----------------------------------------
+file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
+                      --stdout
+                      my-helper-prog-in-case-home "with" "arguments"
+
+----------------------------------------
+
+----------------------------------------
+file commit-msg.txt = --transformed GET_FIRST_LOG_MESSAGE
+                      --stdout
+                      @[MY_HELPER_PROGRAM]@ "with" "arguments"
+
 ----------------------------------------
 
 ----------------------------------------
