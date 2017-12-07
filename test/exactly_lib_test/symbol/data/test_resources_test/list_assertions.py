@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, \
     ReferenceRestrictionsOnDirectAndIndirect, is_any_data_type
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
@@ -209,7 +209,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         equals_symbol_references([SymbolReference(string_symbol.name,
                                                                   ReferenceRestrictionsOnDirectAndIndirect(
-                                                                            AnySymbolTypeRestriction()))]),
+                                                                      AnyDataTypeRestriction()))]),
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
                             SymbolReference(string_symbol.name,

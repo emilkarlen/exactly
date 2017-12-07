@@ -1,6 +1,6 @@
 import types
 
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction, StringRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver, \
     DataValueResolver
@@ -202,7 +202,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
         return '\n'.join(lines)
 
 
-class SymbolReferenceRestrictionsVisitor:
+class DataTypeReferenceRestrictionsVisitor:
     def visit(self, x: DataTypeReferenceRestrictions):
         if isinstance(x, ReferenceRestrictionsOnDirectAndIndirect):
             return self.visit_direct_and_indirect(x)
@@ -221,7 +221,7 @@ def is_any_data_type() -> DataTypeReferenceRestrictions:
     """
     :return: A restriction that is satisfied iff the symbol is a data value
     """
-    return ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction())
+    return ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())
 
 
 def string_made_up_by_just_strings(meaning_of_failure_of_indirect_reference: str = ''

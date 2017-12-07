@@ -106,7 +106,7 @@ class TestMatchesReference(unittest.TestCase):
         symbol_name = 'symbol name'
         symbol_reference = SymbolReference(symbol_name,
                                            r.ReferenceRestrictionsOnDirectAndIndirect(
-                                                     vr.AnySymbolTypeRestriction()))
+                                               vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference(asrt.is_(symbol_name),
                                           asrt.is_instance(r.ReferenceRestrictionsOnDirectAndIndirect))
         # ACT & ASSERT #
@@ -117,7 +117,7 @@ class TestMatchesReference(unittest.TestCase):
         symbol_name = 'symbol name'
         symbol_reference = SymbolReference(symbol_name,
                                            r.ReferenceRestrictionsOnDirectAndIndirect(
-                                                     vr.AnySymbolTypeRestriction()))
+                                               vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference(asrt.is_(symbol_name))
         # ACT & ASSERT #
         assertion.apply_without_message(self, symbol_reference)
@@ -126,7 +126,7 @@ class TestMatchesReference(unittest.TestCase):
         # ARRANGE #
         actual = SymbolReference('actual value name',
                                  r.ReferenceRestrictionsOnDirectAndIndirect(
-                                           vr.AnySymbolTypeRestriction()))
+                                     vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference(asrt.equals('expected value name'),
                                           asrt.anything_goes())
         assert_that_assertion_fails(assertion, actual)
@@ -135,7 +135,7 @@ class TestMatchesReference(unittest.TestCase):
         # ARRANGE #
         actual_symbol_name = 'actual value name'
         actual = SymbolReference(actual_symbol_name,
-                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnySymbolTypeRestriction()))
+                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference(assertion_on_restrictions=asrt.is_instance(r.OrReferenceRestrictions))
         assert_that_assertion_fails(assertion, actual)
 
@@ -146,7 +146,7 @@ class TestMatchesReference2(unittest.TestCase):
         symbol_name = 'symbol name'
         symbol_reference = SymbolReference(symbol_name,
                                            r.ReferenceRestrictionsOnDirectAndIndirect(
-                                                     vr.AnySymbolTypeRestriction()))
+                                               vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference_2(symbol_name,
                                             asrt.is_instance(r.ReferenceRestrictionsOnDirectAndIndirect))
         # ACT & ASSERT #
@@ -157,7 +157,7 @@ class TestMatchesReference2(unittest.TestCase):
         symbol_name = 'symbol name'
         symbol_reference = SymbolReference(symbol_name,
                                            r.ReferenceRestrictionsOnDirectAndIndirect(
-                                                     vr.AnySymbolTypeRestriction()))
+                                               vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference_2(symbol_name)
         # ACT & ASSERT #
         assertion.apply_without_message(self, symbol_reference)
@@ -166,7 +166,7 @@ class TestMatchesReference2(unittest.TestCase):
         # ARRANGE #
         actual = SymbolReference('actual value name',
                                  r.ReferenceRestrictionsOnDirectAndIndirect(
-                                           vr.AnySymbolTypeRestriction()))
+                                     vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference_2('expected value name',
                                             asrt.anything_goes())
         assert_that_assertion_fails(assertion, actual)
@@ -175,7 +175,7 @@ class TestMatchesReference2(unittest.TestCase):
         # ARRANGE #
         actual_symbol_name = 'actual value name'
         actual = SymbolReference(actual_symbol_name,
-                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnySymbolTypeRestriction()))
+                                 r.ReferenceRestrictionsOnDirectAndIndirect(vr.AnyDataTypeRestriction()))
         assertion = sut.matches_reference_2(actual_symbol_name,
                                             asrt.is_instance(r.OrReferenceRestrictions))
         assert_that_assertion_fails(assertion, actual)

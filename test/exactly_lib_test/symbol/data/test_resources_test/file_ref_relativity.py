@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction, \
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as sut
@@ -26,7 +26,7 @@ class TestEqualsFileRefRelativityRestriction(unittest.TestCase):
 
     def test_not_equals__different__types(self):
         expected = FileRefRelativityRestriction(PathRelativityVariants({RelOptionType.REL_HOME_CASE}, False))
-        actual = AnySymbolTypeRestriction()
+        actual = AnyDataTypeRestriction()
         assertion = sut.equals_file_ref_relativity_restriction(expected)
         assert_that_assertion_fails(assertion, actual)
 

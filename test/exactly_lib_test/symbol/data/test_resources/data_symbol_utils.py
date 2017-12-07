@@ -2,7 +2,7 @@ from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_resolver import string_constant
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
@@ -128,7 +128,7 @@ def symbol_table_with_single_file_ref_value(
 
 
 def symbol_reference(name: str,
-                     value_restriction: ValueRestriction = AnySymbolTypeRestriction()) -> SymbolReference:
+                     value_restriction: ValueRestriction = AnyDataTypeRestriction()) -> SymbolReference:
     return SymbolReference(name, ReferenceRestrictionsOnDirectAndIndirect(value_restriction))
 
 

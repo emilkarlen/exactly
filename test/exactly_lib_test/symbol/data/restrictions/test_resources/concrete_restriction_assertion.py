@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.symbol.data.restrictions.reference_restrictions import SymbolReferenceRestrictionsVisitor, \
+from exactly_lib.symbol.data.restrictions.reference_restrictions import DataTypeReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
     FailureOfIndirectReference, OrRestrictionPart
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction, \
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     StringRestriction, \
     FileRefRelativityRestriction, ValueRestrictionVisitor
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
@@ -13,7 +13,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
-is_any_data_type_restriction = asrt.is_instance(AnySymbolTypeRestriction)
+is_any_data_type_restriction = asrt.is_instance(AnyDataTypeRestriction)
 
 is_string_value_restriction = asrt.is_instance(StringRestriction)
 
@@ -97,7 +97,7 @@ class _EqualsValueRestrictionVisitor(ValueRestrictionVisitor):
         self.actual = actual
         self.put = put
 
-    def visit_none(self, expected: AnySymbolTypeRestriction):
+    def visit_none(self, expected: AnyDataTypeRestriction):
         is_any_data_type_restriction.apply(self.put, self.actual, self.message_builder)
 
     def visit_string(self, expected: StringRestriction):
@@ -133,7 +133,7 @@ def equals_data_type_reference_restrictions(expected: DataTypeReferenceRestricti
 
 
 REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
-    assertion_on_direct=asrt.is_instance(AnySymbolTypeRestriction),
+    assertion_on_direct=asrt.is_instance(AnyDataTypeRestriction),
     assertion_on_every=asrt.ValueIsNone())
 
 
@@ -165,7 +165,7 @@ def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRest
     )
 
 
-class _EqualsSymbolReferenceRestrictionsVisitor(SymbolReferenceRestrictionsVisitor):
+class _EqualsDataTypeReferenceRestrictionsVisitor(DataTypeReferenceRestrictionsVisitor):
     def visit_direct_and_indirect(self, x: ReferenceRestrictionsOnDirectAndIndirect) -> asrt.ValueAssertion:
         return _equals_reference_restriction_on_direct_and_indirect(x)
 
@@ -173,7 +173,7 @@ class _EqualsSymbolReferenceRestrictionsVisitor(SymbolReferenceRestrictionsVisit
         return equals_or_reference_restrictions(x)
 
 
-_EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsSymbolReferenceRestrictionsVisitor()
+_EQUALS_REFERENCE_RESTRICTIONS_VISITOR = _EqualsDataTypeReferenceRestrictionsVisitor()
 
 
 def value_restriction_that_is_unconditionally_satisfied() -> ValueRestriction:

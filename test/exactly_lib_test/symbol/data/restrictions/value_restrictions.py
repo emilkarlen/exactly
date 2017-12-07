@@ -34,7 +34,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
             file_ref_constant_resolver(),
             ListResolverTestImplForConstantListValue(ListValue([])),
         ]
-        restriction = vr.AnySymbolTypeRestriction()
+        restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -50,7 +50,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
             FileMatcherResolverConstantTestImpl(FileMatcherTestImpl()),
             LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
         ]
-        restriction = vr.AnySymbolTypeRestriction()
+        restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()
         for value in test_cases:
             with self.subTest(msg='value=' + str(value)):
@@ -144,9 +144,9 @@ class TestValueRestrictionVisitor(unittest.TestCase):
         expected_return_value = 72
         visitor = _VisitorThatRegisterClassOfVisitMethod(expected_return_value)
         # ACT #
-        actual_return_value = visitor.visit(vr.AnySymbolTypeRestriction())
+        actual_return_value = visitor.visit(vr.AnyDataTypeRestriction())
         # ASSERT #
-        self.assertEqual([vr.AnySymbolTypeRestriction],
+        self.assertEqual([vr.AnyDataTypeRestriction],
                          visitor.visited_classes,
                          'visited classes')
         self.assertEqual(expected_return_value,
@@ -196,8 +196,8 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
         self.visited_classes = []
         self.return_value = return_value
 
-    def visit_none(self, x: vr.AnySymbolTypeRestriction):
-        self.visited_classes.append(vr.AnySymbolTypeRestriction)
+    def visit_none(self, x: vr.AnyDataTypeRestriction):
+        self.visited_classes.append(vr.AnyDataTypeRestriction)
         return self.return_value
 
     def visit_string(self, x: vr.StringRestriction):

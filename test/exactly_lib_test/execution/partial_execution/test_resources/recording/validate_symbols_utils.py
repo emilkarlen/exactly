@@ -4,7 +4,7 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnySymbolTypeRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.string_resolver import StringResolver, SymbolStringFragmentResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.test_case.phases.common import TestCaseInstruction
@@ -126,14 +126,14 @@ class TestImplementationError(TestCaseBase):
 
 def _reference_to_undefined_symbol() -> SymbolReference:
     return SymbolReference('undefined symbol',
-                           ReferenceRestrictionsOnDirectAndIndirect(AnySymbolTypeRestriction()))
+                           ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))
 
 
 def definition_with_reference(name_of_defined: str,
                               name_of_referenced: str) -> SymbolDefinition:
     symbol_reference = SymbolReference(name_of_referenced,
-                                       ReferenceRestrictionsOnDirectAndIndirect(direct=AnySymbolTypeRestriction(),
-                                                                                      indirect=AnySymbolTypeRestriction()))
+                                       ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction(),
+                                                                                indirect=AnyDataTypeRestriction()))
     return SymbolDefinition(name_of_defined,
                             data_symbol_utils.container(
                                       StringResolver((SymbolStringFragmentResolver(symbol_reference),))
