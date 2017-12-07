@@ -331,7 +331,7 @@ class TestSuccessfulScenariosWithContentsFromProcessOutput(TestCaseBase):
                     )
                     )
 
-    def test_contents_from_stdout_of_shell_command(self):
+    def test_contents_from_stdout_of_shell_command__without_transformer(self):
         text_printed_by_shell_command = 'single line of output'
         expected_file_contents = text_printed_by_shell_command + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
@@ -356,7 +356,7 @@ class TestSuccessfulScenariosWithContentsFromProcessOutput(TestCaseBase):
                                                                                fs.DirContents([expected_file])),
                     ))
 
-    def test_contents_from_transformed_stdout_of_shell_command(self):
+    def test_contents_from_stdout_of_shell_command__with_transformer(self):
         text_printed_by_shell_command = 'single line of output'
         expected_file_contents = text_printed_by_shell_command.upper() + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
