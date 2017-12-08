@@ -44,7 +44,8 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
     conf_rel_non_home, default_conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
+from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
+    command_that_exits_with_code
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
@@ -57,7 +58,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParseWithContents),
         unittest.makeSuite(TestSuccessfulScenariosWithNoContents),
         unittest.makeSuite(TestSuccessfulScenariosWithConstantContents),
-        unittest.makeSuite(TestSuccessfulScenariosWithContentsFromProcessOutput),
+        unittest.makeSuite(TestScenariosWithContentsFromProcessOutput),
         unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestFailingScenariosDueToAlreadyExistingFiles),
@@ -272,7 +273,8 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                     ))
 
 
-class TestSuccessfulScenariosWithContentsFromProcessOutput(TestCaseBase):
+class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
+    TRANSFORMER_OPTION = option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
     def test_symbol_usages(self):
         text_printed_by_shell_command_symbol = NameAndValue('STRING_TO_PRINT_SYMBOL', 'hello_world')
@@ -393,6 +395,37 @@ class TestSuccessfulScenariosWithContentsFromProcessOutput(TestCaseBase):
                 main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                        fs.DirContents([expected_file])),
             ))
+
+    def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
+        transformer = NameAndValue('TRANSFORMER',
+                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            transformer.name: container(transformer.value)
+        })
+        cases = [
+            NameAndValue('without transformer',
+                         ''),
+            NameAndValue('with transformer',
+                         self.TRANSFORMER_OPTION + ' ' + transformer.name),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                self._check(
+                    remaining_source(
+                        '{file_name} = {transformer_specification} '
+                        '{shell_command_token} {shell_command_with_non_zero_exit_code}'.format(
+                            file_name='dst-file-name.txt',
+                            transformer_specification=case.value,
+                            shell_command_token=sut.SHELL_COMMAND_TOKEN,
+                            shell_command_with_non_zero_exit_code=command_that_exits_with_code(1),
+                        )),
+                    ArrangementWithSds(
+                        symbols=symbols,
+                    ),
+                    Expectation(
+                        symbol_usages=asrt.anything_goes(),
+                        main_result=is_failure(),
+                    ))
 
 
 class TestSymbolReferences(TestCaseBase):

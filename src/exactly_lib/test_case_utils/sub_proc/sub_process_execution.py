@@ -135,11 +135,25 @@ def read_stderr_if_non_zero_exitcode(result: Result) -> ResultAndStderr:
     return ResultAndStderr(result, stderr_contents)
 
 
+def failure_message_for_failure_to_failure_to_execute_process(result_and_err: ResultAndStderr) -> str:
+    return 'Failed to execute sub process: ' + result_and_err.result.error_message
+
+
 def failure_message_for_nonzero_status(result_and_err: ResultAndStderr) -> str:
     msg_tail = ''
     if result_and_err.stderr_contents:
         msg_tail = os.linesep + result_and_err.stderr_contents
     return 'Exit code: {}{}'.format(result_and_err.result.exit_code, msg_tail)
+
+
+def result_for_non_success_or_non_zero_exit_code(result_and_err: ResultAndStderr) -> str:
+    if result_and_err.result.is_success:
+        if result_and_err.result.exit_code == 0:
+            return None
+        else:
+            return failure_message_for_nonzero_status(result_and_err)
+    else:
+        return failure_message_for_failure_to_failure_to_execute_process(result_and_err)
 
 
 class ExecuteInfo:
