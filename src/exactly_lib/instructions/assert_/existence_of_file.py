@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import path_syntax
+from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
@@ -125,7 +126,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         sort_value__list_items = [
             (file_properties.TYPE_INFO[file_type],
-             docs.list_item(self._text(render_argument(a.Option(option_name))),
+             docs.list_item(syntax_text(render_argument(a.Option(option_name))),
                             type_description(file_type)))
             for file_type, option_name in FILE_TYPE_OPTIONS]
         sort_value__list_items.sort(key=lambda type_name__list_item: type_name__list_item[0].type_argument)
