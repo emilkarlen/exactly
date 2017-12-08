@@ -43,6 +43,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments 
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, \
     conf_rel_non_home, default_conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
     command_that_exits_with_code
@@ -61,7 +62,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestScenariosWithContentsFromProcessOutput),
         unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestSymbolReferences),
-        unittest.makeSuite(TestFailingScenariosDueToAlreadyExistingFiles),
+        unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
 
@@ -175,6 +176,82 @@ class TestCaseBase(unittest.TestCase):
                ):
         parser = sut.EmbryoParser('instruction-name')
         embryo_check.check(self, parser, source, arrangement, expectation)
+
+
+class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
+    def _check_cases_for_dst_file_setup(self,
+                                        dst_file_name: str,
+                                        dst_root_contents_before_execution: DirContents,
+                                        ):
+        # ARRANGE #
+        file_contents_cases = [
+            NameAndValue(
+                'empty file',
+                ('', [])
+            ),
+            NameAndValue(
+                'contents of here doc',
+                ('= <<EOF', ['contents', 'EOF'])
+            ),
+        ]
+
+        dst_file_relativity_cases = [
+            conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+            conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
+        ]
+
+        for rel_opt_conf in dst_file_relativity_cases:
+
+            non_home_contents = rel_opt_conf.populator_for_relativity_option_root__non_home(
+                dst_root_contents_before_execution)
+
+            for file_contents_case in file_contents_cases:
+                with self.subTest(file_contents_variant=file_contents_case.name,
+                                  dst_file_variant=rel_opt_conf):
+                    source = remaining_source(
+                        '{relativity_option_arg} {dst_file_argument} {case_arguments}'.format(
+                            relativity_option_arg=rel_opt_conf.option_string,
+                            dst_file_argument=dst_file_name,
+                            case_arguments=file_contents_case.value[0],
+                        ),
+                        file_contents_case.value[1])
+                    # ACT & ASSERT #
+                    self._check(source,
+                                ArrangementWithSds(
+                                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                    non_home_contents=non_home_contents,
+                                ),
+                                Expectation(
+                                    main_result=is_failure(),
+                                    symbol_usages=asrt.anything_goes(),
+                                )
+                                )
+
+    def test_fail_WHEN_dst_file_is_existing_file(self):
+        self._check_cases_for_dst_file_setup(
+            'file',
+            DirContents([
+                empty_file('file')
+            ]),
+        )
+
+    def test_file_WHEN_dst_file_is_existing_dir(self):
+        self._check_cases_for_dst_file_setup(
+            'existing-dir',
+            DirContents([
+                empty_dir('existing-dir')
+            ]),
+        )
+
+    def test_fail_WHEN_dst_file_is_under_path_that_contains_a_component_that_is_an_existing_file(self):
+        self._check_cases_for_dst_file_setup(
+            'existing-dir/existing-file/dst-file-name',
+            DirContents([
+                Dir('existing-dir', [
+                    empty_file('existing-file')
+                ])
+            ]),
+        )
 
 
 class TestSuccessfulScenariosWithNoContents(TestCaseBase):
@@ -585,61 +662,6 @@ class TestParserConsumptionOfSource(TestCaseBase):
 
 def _just_parse(source: ParseSource):
     sut.EmbryoParser('the-instruction-name').parse(source)
-
-
-class TestFailingScenariosDueToAlreadyExistingFiles(TestCaseBase):
-    def test_argument_is_existing_file(self):
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
-                self._check(
-                    single_line_source('{relativity_option} existing-file'.format(
-                        relativity_option=rel_opt_conf.option_string
-                    )),
-                    ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                        non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
-                            fs.DirContents([
-                                fs.empty_file('existing-file')
-                            ]))),
-                    Expectation(
-                        main_result=is_failure(),
-                    ))
-
-    def test_argument_is_existing_dir(self):
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
-                self._check(
-                    single_line_source('{relativity_option} existing-dir'.format(
-                        relativity_option=rel_opt_conf.option_string
-                    )),
-                    ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                        non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
-                            fs.DirContents([
-                                fs.empty_dir('existing-dir')
-                            ]))),
-                    Expectation(
-                        main_result=is_failure(),
-                    ))
-
-    def test_argument_is_under_path_that_contains_a_component_that_is_an_existing_file(self):
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
-                self._check(
-                    single_line_source('{rel_opt} existing-directory/existing-file/directory/file-name.txt'.format(
-                        rel_opt=rel_opt_conf.option_string
-                    )),
-                    ArrangementWithSds(
-                        pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                        non_home_contents=rel_opt_conf.populator_for_relativity_option_root__non_home(
-                            fs.DirContents([
-                                fs.Dir('existing-directory', [
-                                    fs.empty_file('existing-file')
-                                ])
-                            ]))),
-                    Expectation(
-                        main_result=is_failure(),
-                    ))
 
 
 if __name__ == '__main__':

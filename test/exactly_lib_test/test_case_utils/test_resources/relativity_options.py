@@ -283,7 +283,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         return [
             data_symbol_utils.entry(self.symbol_name,
                                     FileRefConstant(file_refs.of_rel_option(self.relativity,
-                                                                       PathPartAsNothing())))
+                                                                            PathPartAsNothing())))
         ]
 
 
