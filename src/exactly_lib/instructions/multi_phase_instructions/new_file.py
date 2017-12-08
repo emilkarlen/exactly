@@ -37,7 +37,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_co
 from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecutionSetup
 from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
-    execute_and_read_stderr_if_non_zero_exitcode
+    execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -172,8 +172,9 @@ class InstructionEmbryoForContentsFromSubProcess(embryo.InstructionEmbryo):
 
         result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
 
-        if not result_and_std_err.result.is_success:
-            return result_and_std_err.stderr_contents
+        err_msg = result_for_non_success_or_non_zero_exit_code(result_and_std_err)
+        if err_msg:
+            return err_msg
 
         path_to_create = self._path_to_create.resolve_value_of_any_dependency(
             path_resolving_env)
