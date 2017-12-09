@@ -198,8 +198,9 @@ def parse_file_maker(source_info: InstructionSourceInfo,
             return FileMakerForConstantContents(contents)
         else:
             contents_transformer = parse_optional_transformer_resolver(parser)
-
-            sub_process = _parse_sub_process_setup(parser)
+            sub_process = parser.parse_mandatory_option({
+                STDOUT_OPTION: _parse_sub_process_setup,
+            })
             return FileMakerForContentsFromSubProcess(source_info,
                                                       contents_transformer,
                                                       sub_process)
