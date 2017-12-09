@@ -13,7 +13,7 @@ from exactly_lib.section_document.parser_implementations.token_stream_parse_prim
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.test_case_utils.expression import parser as ep
 from exactly_lib.test_case_utils.file_matcher import file_matchers
@@ -57,7 +57,7 @@ def selection_syntax_element_description() -> SyntaxElementDescription:
     )
 
 
-class FileSelectionDescriptor(property_description.ErrorMessagePartConstructor):
+class FileSelectionDescriptor(ErrorMessagePartConstructor):
     def __init__(self, resolver: FileMatcherResolver):
         self.resolver = resolver
 

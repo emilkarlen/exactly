@@ -111,7 +111,7 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
               actual_info: ActualInfo
               ):
         failure_info = self._failure_resolver(checked_file_describer).resolve(environment, actual_info)
-        raise PfhFailException(failure_info.render())
+        raise PfhFailException(failure_info.error_message())
 
     def _failure_resolver(self, checked_file_describer: FilePropertyDescriptorConstructor) -> DiffFailureInfoResolver:
         description_of_actual_file = checked_file_describer.construct_for_contents_attribute(CONTENTS_ATTRIBUTE)

@@ -82,7 +82,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
                                                      diff_msg.actual_with_single_line_value(
                                                          actual_single_line_value,
                                                          description_lines))
-        raise PfhFailException(failure_info.render())
+        raise PfhFailException(failure_info.error_message())
 
     def _report_fail_with_line(self,
                                environment: InstructionEnvironmentForPostSdsStep,
@@ -96,7 +96,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
                                                      diff_msg.actual_with_single_line_value(
                                                          single_line_actual_value,
                                                          [number__contents[1]]))
-        raise PfhFailException(failure_info.render())
+        raise PfhFailException(failure_info.error_message())
 
     def _diff_failure_info_resolver(self,
                                     checked_file_describer: FilePropertyDescriptorConstructor

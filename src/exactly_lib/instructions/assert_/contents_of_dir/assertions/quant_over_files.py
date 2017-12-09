@@ -154,7 +154,7 @@ class _ErrorReportingHelper:
 
     def err_msg_for_dir(self, single_line_value: str) -> str:
         return self._diff_failure_info_for_dir().resolve(self.environment,
-                                                         diff_msg.ActualInfo(single_line_value)).render()
+                                                         diff_msg.ActualInfo(single_line_value)).error_message()
 
     def err_msg_for_file_in_dir(self,
                                 single_line_value: str,
@@ -165,7 +165,7 @@ class _ErrorReportingHelper:
         )
         actual_info = diff_msg.ActualInfo(single_line_value, failing_file_description_lines)
         return self._diff_failure_info_for_dir().resolve(self.environment,
-                                                         actual_info).render()
+                                                         actual_info).error_message()
 
     def _diff_failure_info_for_dir(self) -> diff_msg_utils.DiffFailureInfoResolver:
         property_descriptor = path_description.path_value_description(

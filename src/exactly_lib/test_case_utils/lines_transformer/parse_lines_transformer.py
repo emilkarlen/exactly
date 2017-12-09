@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_implementations import token_stream_par
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers
@@ -32,7 +32,7 @@ _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMEN
 LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 
-class LinesTransformerDescriptor(property_description.ErrorMessagePartConstructor):
+class LinesTransformerDescriptor(ErrorMessagePartConstructor):
     def __init__(self, resolver: LinesTransformerResolver):
         self.resolver = resolver
 

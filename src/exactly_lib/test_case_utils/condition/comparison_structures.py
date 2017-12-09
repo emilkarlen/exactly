@@ -116,11 +116,11 @@ class _FailureReporter:
         self.description_of_actual = description_of_actual
 
     def unexpected_value_message(self) -> str:
-        return self.failure_info().render()
+        return self.failure_info().error_message()
 
-    def failure_info(self) -> diff_msg.DiffFailureInfo:
+    def failure_info(self) -> diff_msg.DiffErrorInfo:
         expected_str = self.operator.name + ' ' + str(self.rhs)
-        return diff_msg.DiffFailureInfo(
+        return diff_msg.DiffErrorInfo(
             self.property_descriptor.description(self.environment),
             self.expectation_type,
             expected_str,
