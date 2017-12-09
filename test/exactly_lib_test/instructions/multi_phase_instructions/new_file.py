@@ -413,6 +413,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
         })
 
         # ACT & ASSERT #
+
         self._check(source,
                     ArrangementWithSds(
                         symbols=symbols,
