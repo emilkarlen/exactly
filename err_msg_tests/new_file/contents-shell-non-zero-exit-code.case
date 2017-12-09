@@ -1,0 +1,3 @@
+[setup]
+
+file f = $ exit 1
