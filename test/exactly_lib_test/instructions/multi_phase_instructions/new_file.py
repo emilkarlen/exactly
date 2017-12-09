@@ -78,6 +78,7 @@ def is_failure() -> asrt.ValueAssertion:
 DISALLOWED_RELATIVITIES = [
     RelOptionType.REL_RESULT,
     RelOptionType.REL_HOME_CASE,
+    RelOptionType.REL_HOME_ACT,
 ]
 
 ALLOWED_RELATIVITIES = [
