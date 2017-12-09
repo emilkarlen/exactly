@@ -47,6 +47,8 @@ CONTENTS_ASSIGNMENT_TOKEN = '='
 SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
 RUN_PROGRAM_TOKEN = instruction_names.RUN_INSTRUCTION_NAME
 
+STDOUT_OPTION = a.OptionName(long_name='stdout')
+
 CONTENTS_ARGUMENT = 'CONTENTS'
 
 
@@ -146,7 +148,7 @@ class FileMaker:
         raise NotImplementedError('abstract method')
 
 
-class InstructionEmbryoWithFileMaker(embryo.InstructionEmbryo):
+class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def __init__(self,
                  path_to_create: FileRefResolver,
                  file_maker: FileMaker):
@@ -179,35 +181,36 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
             source_info = InstructionSourceInfo(first_line_number,
                                                 self._instruction_name)
 
-            file_maker = self._parse_file_maker(source_info, parser)
-            return InstructionEmbryoWithFileMaker(path_to_create, file_maker)
+            file_maker = parse_file_maker(source_info, parser)
+            return TheInstructionEmbryo(path_to_create, file_maker)
 
-    def _parse_file_maker(self,
-                          source_info: InstructionSourceInfo,
-                          parser: TokenParserPrime) -> FileMaker:
-        if not parser.is_at_eol:
-            parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
-            parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)
 
-            parser.require_head_token_has_valid_syntax()
+def parse_file_maker(source_info: InstructionSourceInfo,
+                     parser: TokenParserPrime) -> FileMaker:
+    if not parser.is_at_eol:
+        parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
+        parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)
 
-            if parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
-                contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
-                return FileMakerForConstantContents(contents)
-            else:
-                contents_transformer = parse_optional_transformer_resolver(parser)
+        parser.require_head_token_has_valid_syntax()
 
-                sub_process = self._parse_sub_process_setup(parser)
-                return FileMakerForContentsFromSubProcess(source_info,
-                                                          contents_transformer,
-                                                          sub_process)
+        if parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+            contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
+            return FileMakerForConstantContents(contents)
         else:
-            return FileMakerForConstantContents(string_resolver.string_constant(''))
+            contents_transformer = parse_optional_transformer_resolver(parser)
 
-    def _parse_sub_process_setup(self, parser: TokenParserPrime) -> SubProcessExecutionSetup:
-        parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, True)
-        setup_parser = ShellCommandSetupParser()
-        return setup_parser.parse_from_token_parser(parser)
+            sub_process = _parse_sub_process_setup(parser)
+            return FileMakerForContentsFromSubProcess(source_info,
+                                                      contents_transformer,
+                                                      sub_process)
+    else:
+        return FileMakerForConstantContents(string_resolver.string_constant(''))
+
+
+def _parse_sub_process_setup(parser: TokenParserPrime) -> SubProcessExecutionSetup:
+    parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, True)
+    setup_parser = ShellCommandSetupParser()
+    return setup_parser.parse_from_token_parser(parser)
 
 
 class FileMakerForConstantContents(FileMaker):
