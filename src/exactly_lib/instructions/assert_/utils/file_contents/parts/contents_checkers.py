@@ -135,4 +135,4 @@ class FileTransformerAsAssertionPart(AssertionPart):
             diff_msg_utils.ConstantExpectedValueResolver('existing regular file'),
         )
         actual_info = diff_msg.ActualInfo(actual_info_single_line_value())
-        return diff_failure_resolver.resolve(environment, actual_info).render()
+        return diff_failure_resolver.resolve(environment, actual_info).error_message()

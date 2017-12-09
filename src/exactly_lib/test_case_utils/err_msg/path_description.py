@@ -6,12 +6,13 @@ from exactly_lib.test_case_file_structure import path_relativity as pr
 from exactly_lib.test_case_file_structure import relative_path_options as rpo
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.err_msg import property_description
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.type_system.data.file_ref import FileRef
 
 EXACTLY_SANDBOX_ROOT_DIR_NAME = 'EXACTLY_SANDBOX'
 
 
-class PathValuePartConstructor(property_description.ErrorMessagePartConstructor):
+class PathValuePartConstructor(ErrorMessagePartConstructor):
     def __init__(self, path_resolver: FileRefResolver):
         self.path_resolver = path_resolver
 

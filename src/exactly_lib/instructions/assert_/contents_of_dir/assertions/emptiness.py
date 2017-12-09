@@ -29,8 +29,8 @@ class _ErrorMessageResolver:
 
     def resolve(self,
                 actual_files: list,
-                environment: InstructionEnvironmentForPostSdsStep) -> diff_msg.DiffFailureInfo:
-        return diff_msg.DiffFailureInfo(
+                environment: InstructionEnvironmentForPostSdsStep) -> diff_msg.DiffErrorInfo:
+        return diff_msg.DiffErrorInfo(
             self.property_descriptor.description(environment),
             self.expectation_type,
             self.expected_description_str,
@@ -106,7 +106,7 @@ class _EmptinessChecker:
     def _fail_with_err_msg(self,
                            files_in_dir: list):
         diff_failure_info = self.error_message_resolver.resolve(files_in_dir, self.environment)
-        msg = diff_failure_info.render()
+        msg = diff_failure_info.error_message()
         raise pfh_ex_method.PfhFailException(msg)
 
 

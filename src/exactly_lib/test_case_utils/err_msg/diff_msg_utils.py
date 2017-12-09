@@ -1,6 +1,8 @@
+import exactly_lib.test_case_utils.err_msg.error_info
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
-from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor, ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
+from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -21,9 +23,10 @@ class ExplanationFailureInfoResolver:
 
     def resolve(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                explanation: str) -> diff_msg.ExplanationFailureInfo:
-        return diff_msg.ExplanationFailureInfo(explanation,
-                                               self.object_descriptor.lines(environment))
+                explanation: str) -> exactly_lib.test_case_utils.err_msg.error_info.ExplanationErrorInfo:
+        return exactly_lib.test_case_utils.err_msg.error_info.ExplanationErrorInfo(explanation,
+                                                                                   self.object_descriptor.lines(
+                                                                                       environment))
 
 
 class ExpectedValueResolver:
@@ -68,8 +71,8 @@ class DiffFailureInfoResolver:
 
     def resolve(self,
                 environment: InstructionEnvironmentForPostSdsStep,
-                actual: diff_msg.ActualInfo) -> diff_msg.DiffFailureInfo:
-        return diff_msg.DiffFailureInfo(
+                actual: diff_msg.ActualInfo) -> diff_msg.DiffErrorInfo:
+        return diff_msg.DiffErrorInfo(
             self.property_descriptor.description(environment),
             self.expectation_type,
             self.expected.resolve(environment),

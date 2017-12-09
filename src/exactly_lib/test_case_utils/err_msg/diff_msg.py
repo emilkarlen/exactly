@@ -1,5 +1,5 @@
 from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case_utils.err_msg.error_info import ErrorInfo
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescription
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.string import line_separated
@@ -30,36 +30,7 @@ def actual_with_just_description_lines(description_lines: list) -> ActualInfo:
     return ActualInfo(None, list(description_lines))
 
 
-class FailureInfo:
-    def render(self) -> str:
-        raise NotImplementedError('abstract method')
-
-    def as_pfh_fail(self) -> pfh.PassOrFailOrHardError:
-        return pfh.new_pfh_fail(self.render())
-
-
-class ExplanationFailureInfo(FailureInfo):
-    def __init__(self,
-                 explanation: str,
-                 object_description_lines: list):
-        """
-        :param object_description_lines: Describes the object that the failure relates to.
-        :param explanation: A single line explanation of the cause of the failure.
-        """
-        self.explanation = explanation
-        self.object_description_lines = object_description_lines
-
-    def render(self) -> str:
-        lines = []
-        lines.append(self.explanation)
-        if self.object_description_lines:
-            lines.append('')
-            lines.extend(self.object_description_lines)
-
-        return line_separated(lines)
-
-
-class DiffFailureInfo(FailureInfo):
+class DiffErrorInfo(ErrorInfo):
     def __init__(self,
                  property_description: PropertyDescription,
                  expectation_type: ExpectationType,
@@ -76,7 +47,7 @@ class DiffFailureInfo(FailureInfo):
         self.expected = expected
         self.actual = actual
 
-    def render(self) -> str:
+    def error_message(self) -> str:
         lines = []
         lines.append('Unexpected ' + self.property_description.name)
         if self.property_description.object_description_lines:

@@ -46,7 +46,7 @@ class EmptinessContentsAssertionPart(FileContentsAssertionPart):
         diff_failure_info_resolver = self._failure_info_resolver(actual_file_prop_descriptor_constructor)
         failure_info = diff_failure_info_resolver.resolve(environment,
                                                           diff_msg.actual_with_single_line_value(actual))
-        raise PfhFailException(failure_info.render())
+        raise PfhFailException(failure_info.error_message())
 
     @staticmethod
     def _first_line(file_to_check: FileToCheck) -> str:
