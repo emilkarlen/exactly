@@ -46,6 +46,7 @@ from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import shell_commands
+from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
@@ -192,7 +193,9 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
         })
 
         shell_contents_arguments_constructor = TransformableContentsConstructor(
-            shell_output_arguments(shell_commands.command_that_exits_with_code(0))
+            stdout_from(
+                shell_command(shell_commands.command_that_exits_with_code(0))
+            )
         )
 
         file_contents_cases = [
@@ -387,18 +390,20 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
                                             LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
 
-        source = remaining_source(
-            '{file_name} = {transformed_option} {transformer_symbol} '
-            '{shell_command_token} {shell_command}'.format(
-                file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
-                transformed_option=option_syntax(
-                    instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-                transformer_symbol=to_upper_transformer.name,
-                shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                shell_command=shell_commands.command_that_prints_line_to_stdout(
+        transformed_shell_contents_arguments = TransformableContentsConstructor(
+            stdout_from(
+                shell_command(shell_commands.command_that_prints_line_to_stdout(
                     symbol_reference_syntax_for_name(text_printed_by_shell_command_symbol.name)
-                ),
-            ))
+                ))
+            )
+        ).with_transformation(to_upper_transformer.name)
+
+        source = remaining_source(
+            '{file_name} {content_arguments}'.format(
+                file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
+                content_arguments=transformed_shell_contents_arguments.first_line
+            ),
+            transformed_shell_contents_arguments.following_lines)
 
         symbols = SymbolTable({
             dst_file_symbol.name:
@@ -441,17 +446,23 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
         text_printed_by_shell_command = 'single line of output'
         expected_file_contents = text_printed_by_shell_command + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
+
+        shell_contents_arguments = TransformableContentsConstructor(
+            stdout_from(
+                shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
+            )
+        ).without_transformation()
+
         for rel_opt_conf in ALLOWED_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_string):
                 self._check(
                     remaining_source(
-                        '{rel_opt} {file_name} = {shell_command_token} {shell_command}'.format(
+                        '{rel_opt} {file_name} {contents_arguments}'.format(
                             rel_opt=rel_opt_conf.option_string,
                             file_name=expected_file.file_name,
-                            shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                            shell_command=shell_commands.command_that_prints_line_to_stdout(
-                                text_printed_by_shell_command),
-                        )),
+                            contents_arguments=shell_contents_arguments.first_line
+                        ),
+                        shell_contents_arguments.following_lines),
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
@@ -475,18 +486,20 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
 
         rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_TMP)
 
+        shell_contents_arguments = TransformableContentsConstructor(
+            stdout_from(
+                shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
+            )
+        ).with_transformation(to_upper_transformer.name)
+
         self._check(
             remaining_source(
-                '{rel_opt} {file_name} = {transformed_option} {to_upper_transformer_symbol} '
-                '{shell_command_token} {shell_command}'.format(
+                '{rel_opt} {file_name} {shell_contents_arguments}'.format(
                     rel_opt=rel_opt_conf.option_string,
                     file_name=expected_file.file_name,
-                    transformed_option=option_syntax(
-                        instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-                    to_upper_transformer_symbol=to_upper_transformer.name,
-                    shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                    shell_command=shell_commands.command_that_prints_line_to_stdout(text_printed_by_shell_command),
-                )),
+                    shell_contents_arguments=shell_contents_arguments.first_line,
+                ),
+                shell_contents_arguments.following_lines),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                 symbols=symbols
@@ -507,23 +520,27 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
         symbols = SymbolTable({
             transformer.name: container(transformer.value)
         })
+        shell_contents_arguments = TransformableContentsConstructor(
+            stdout_from(
+                shell_command(shell_commands.command_that_exits_with_code(1))
+            )
+        )
+
         cases = [
             NameAndValue('without transformer',
-                         ''),
+                         shell_contents_arguments.without_transformation()),
             NameAndValue('with transformer',
-                         self.TRANSFORMER_OPTION + ' ' + transformer.name),
+                         shell_contents_arguments.with_transformation(transformer.name)),
         ]
         for case in cases:
             with self.subTest(case.name):
                 self._check(
                     remaining_source(
-                        '{file_name} = {transformer_specification} '
-                        '{shell_command_token} {shell_command_with_non_zero_exit_code}'.format(
+                        '{file_name} {shell_command_with_non_zero_exit_code}'.format(
                             file_name='dst-file-name.txt',
-                            transformer_specification=case.value,
-                            shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                            shell_command_with_non_zero_exit_code=shell_commands.command_that_exits_with_code(1),
-                        )),
+                            shell_command_with_non_zero_exit_code=case.value.first_line,
+                        ),
+                        case.value.following_lines),
                     ArrangementWithSds(
                         symbols=symbols,
                     ),
@@ -658,10 +675,14 @@ class TestParserConsumptionOfSource(TestCaseBase):
 
     def test_last_line__contents(self):
         expected_file = fs.empty_file('a-file-name.txt')
+        hd_args = here_document_contents_arguments([])
         self._check(
             remaining_source(
-                '{file_name} = <<MARKER'.format(file_name=expected_file.file_name),
-                ['MARKER']),
+                '{file_name} {hd_args}'.format(
+                    file_name=expected_file.file_name,
+                    hd_args=hd_args.first_line,
+                ),
+                hd_args.following_lines),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
@@ -673,11 +694,15 @@ class TestParserConsumptionOfSource(TestCaseBase):
 
     def test_not_last_line__contents(self):
         expected_file = fs.empty_file('a-file-name.txt')
+
+        hd_args = here_document_contents_arguments([])
         self._check(
             remaining_source(
-                '{file_name} = <<MARKER'.format(file_name=expected_file.file_name),
-                ['MARKER',
-                 'following line']),
+                '{file_name} {hd_args}'.format(
+                    file_name=expected_file.file_name,
+                    hd_args=hd_args.first_line,
+                ),
+                hd_args.following_lines + ['following line']),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
@@ -707,7 +732,12 @@ def here_document_contents_arguments(lines: list) -> OptionalArguments:
                              lines + ['EOF'])
 
 
-def shell_output_arguments(command_line: str) -> OptionalArguments:
+def stdout_from(program: OptionalArguments) -> OptionalArguments:
+    return OptionalArguments(option_syntax(sut.STDOUT_OPTION) + ' ' + program.first_line,
+                             program.following_lines)
+
+
+def shell_command(command_line: str) -> OptionalArguments:
     return OptionalArguments(sut.SHELL_COMMAND_TOKEN + ' ' + command_line,
                              [])
 

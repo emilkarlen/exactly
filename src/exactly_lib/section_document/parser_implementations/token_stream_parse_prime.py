@@ -10,6 +10,7 @@ from exactly_lib.section_document.parser_implementations.token_stream import Tok
 from exactly_lib.util import logic_types
 from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option
 from exactly_lib.util.cli_syntax.option_parsing import matches
+from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 
@@ -56,7 +57,7 @@ class TokenParserPrime:
             self.error(error_message_format_string, extra_format_map)
 
     def require_head_token_has_valid_syntax(self, error_message_format_string: str = ''):
-        if self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR:
+        if self._lookahead_token_has_invalid_syntax():
             err_msg_separator = ': ' if error_message_format_string else ''
             self.error(
                 error_message_format_string + err_msg_separator +
@@ -229,7 +230,7 @@ class TokenParserPrime:
                                                  ):
         """
         Looks at the current argument and checks if it is any of a given set of options,
-        and and returns a value that corresponds to that option.
+        and returns a value that corresponds to that option.
 
         A default value is returned if the the current argument is not any of the given options,
         or if there are no arguments.
@@ -349,6 +350,42 @@ class TokenParserPrime:
 
         return command
 
+    def parse_mandatory_option(self, option_name_2_parser: dict):
+        """
+        A variant of parse_optional_command ,where the command is mandatory.
+
+        :raises `SingleInstructionInvalidArgumentException': The command is not found
+        """
+
+        def expecting_an_option() -> str:
+            options = option_name_2_parser.keys()
+            options_str = '|'.join(map(option_syntax, options))
+            return 'Expecting : {}{}\nFound     : {}'.format(
+                '' if len(options) <= 1 else 'one of ',
+                options_str,
+                self.remaining_part_of_current_line)
+
+        if self.token_stream.is_null:
+            raise SingleInstructionInvalidArgumentException(expecting_an_option())
+        elif self._lookahead_token_has_invalid_syntax():
+            self.require_head_token_has_valid_syntax(expecting_an_option())
+
+        key_and_option_name_list = [
+            (option_name, option_name)
+            for option_name in option_name_2_parser.keys()
+        ]
+
+        def key_handler(x):
+            return x
+
+        actual_option = self.consume_and_handle_first_matching_option(None,
+                                                                      key_handler,
+                                                                      key_and_option_name_list)
+        if actual_option is None:
+            raise SingleInstructionInvalidArgumentException(expecting_an_option())
+        else:
+            return option_name_2_parser[actual_option](self)
+
     def consume_optional_option_with_mandatory_argument(self, option_with_arg: Option) -> Token:
         """
 
@@ -377,6 +414,9 @@ class TokenParserPrime:
         err_msg = error_message_format_string.format_map(format_map)
 
         raise SingleInstructionInvalidArgumentException(err_msg)
+
+    def _lookahead_token_has_invalid_syntax(self) -> bool:
+        return self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR
 
 
 def new_token_parser(source: str,
