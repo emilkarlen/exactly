@@ -38,6 +38,7 @@ from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecu
 from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
+from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -124,68 +125,45 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
 
-class InstructionEmbryoForConstantContents(embryo.InstructionEmbryo):
+class FileMaker:
+    """
+    Makes a file with a given path.
+
+    Lets sub classes determine the contents of the file.
+    """
+
+    def make(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             dst_file: FileRef) -> str:
+        """
+        :param dst_file: The path of a (probably!) non-existing file
+        :return: Error message, in case of error, else None
+        """
+        raise NotImplementedError('abstract method')
+
+    @property
+    def symbol_references(self) -> list:
+        raise NotImplementedError('abstract method')
+
+
+class InstructionEmbryoWithFileMaker(embryo.InstructionEmbryo):
     def __init__(self,
                  path_to_create: FileRefResolver,
-                 contents: string_resolver.StringResolver):
+                 file_maker: FileMaker):
         self._path_to_create = path_to_create
-        self._contents = contents
+        self._file_maker = file_maker
 
     @property
     def symbol_usages(self) -> list:
-        return self._path_to_create.references + self._contents.references
+        return self._path_to_create.references + self._file_maker.symbol_references
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> str:
-        path_to_create = self._path_to_create.resolve(environment.symbols).value_post_sds(environment.sds)
-        contents_str = self._contents.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
-        return create_file(path_to_create, contents_str)
-
-
-class InstructionEmbryoForContentsFromSubProcess(embryo.InstructionEmbryo):
-    def __init__(self,
-                 source_info: InstructionSourceInfo,
-                 path_to_create: FileRefResolver,
-                 output_transformer: LinesTransformerResolver,
-                 sub_process: SubProcessExecutionSetup):
-        self._source_info = source_info
-        self._path_to_create = path_to_create
-        self._output_transformer = output_transformer
-        self._sub_process = sub_process
-
-    @property
-    def symbol_usages(self) -> list:
-        return (self._path_to_create.references +
-                self._output_transformer.references +
-                self._sub_process.symbol_usages)
-
-    def main(self,
-             environment: InstructionEnvironmentForPostSdsStep,
-             logging_paths: PhaseLoggingPaths,
-             os_services: OsServices) -> str:
-        executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
-        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        command = self._sub_process.resolve_command(path_resolving_env)
-        storage_dir = instruction_log_dir(logging_paths, self._source_info)
-
-        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
-
-        err_msg = result_for_non_success_or_non_zero_exit_code(result_and_std_err)
-        if err_msg:
-            return err_msg
-
         path_to_create = self._path_to_create.resolve_value_of_any_dependency(
-            path_resolving_env)
-
-        path_of_output = storage_dir / result_and_std_err.result.file_names.stdout
-        transformer = self._output_transformer.resolve(path_resolving_env.symbols)
-
-        return create_file_from_transformation_of_existing_file(path_of_output,
-                                                                path_to_create,
-                                                                transformer,
-                                                                path_resolving_env.home_and_sds)
+            environment.path_resolving_environment_pre_or_post_sds)
+        return self._file_maker.make(environment, path_to_create)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
@@ -197,32 +175,95 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             assert isinstance(parser, TokenParserPrime)  # Type info for IDE
-            file_ref = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
-            if not parser.is_at_eol:
-                parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
-                parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)
+            path_to_create = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
+            source_info = InstructionSourceInfo(first_line_number,
+                                                self._instruction_name)
 
-                parser.require_head_token_has_valid_syntax()
+            file_maker = self._parse_file_maker(source_info, parser)
+            return InstructionEmbryoWithFileMaker(path_to_create, file_maker)
 
-                if parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
-                    contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
-                    return InstructionEmbryoForConstantContents(file_ref, contents)
-                else:
-                    contents_transformer = parse_optional_transformer_resolver(parser)
+    def _parse_file_maker(self,
+                          source_info: InstructionSourceInfo,
+                          parser: TokenParserPrime) -> FileMaker:
+        if not parser.is_at_eol:
+            parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
+            parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)
 
-                    sub_process = self._parse_sub_process_setup(parser)
-                    source_info = InstructionSourceInfo(first_line_number,
-                                                        self._instruction_name)
-                    return InstructionEmbryoForContentsFromSubProcess(source_info, file_ref,
-                                                                      contents_transformer,
-                                                                      sub_process)
+            parser.require_head_token_has_valid_syntax()
+
+            if parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+                contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
+                return FileMakerForConstantContents(contents)
             else:
-                return InstructionEmbryoForConstantContents(file_ref, string_resolver.string_constant(''))
+                contents_transformer = parse_optional_transformer_resolver(parser)
+
+                sub_process = self._parse_sub_process_setup(parser)
+                return FileMakerForContentsFromSubProcess(source_info,
+                                                          contents_transformer,
+                                                          sub_process)
+        else:
+            return FileMakerForConstantContents(string_resolver.string_constant(''))
 
     def _parse_sub_process_setup(self, parser: TokenParserPrime) -> SubProcessExecutionSetup:
         parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, True)
         setup_parser = ShellCommandSetupParser()
         return setup_parser.parse_from_token_parser(parser)
+
+
+class FileMakerForConstantContents(FileMaker):
+    def __init__(self, contents: string_resolver.StringResolver):
+        self._contents = contents
+
+    def make(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             dst_path: pathlib.Path
+             ) -> str:
+        contents_str = self._contents.resolve_value_of_any_dependency(
+            environment.path_resolving_environment_pre_or_post_sds)
+
+        return create_file(dst_path, contents_str)
+
+    @property
+    def symbol_references(self) -> list:
+        return self._contents.references
+
+
+class FileMakerForContentsFromSubProcess(FileMaker):
+    def __init__(self,
+                 source_info: InstructionSourceInfo,
+                 output_transformer: LinesTransformerResolver,
+                 sub_process: SubProcessExecutionSetup):
+        self._source_info = source_info
+        self._output_transformer = output_transformer
+        self._sub_process = sub_process
+
+    def make(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             dst_path: pathlib.Path
+             ) -> str:
+        executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
+        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
+        command = self._sub_process.resolve_command(path_resolving_env)
+        storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
+
+        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
+
+        err_msg = result_for_non_success_or_non_zero_exit_code(result_and_std_err)
+        if err_msg:
+            return err_msg
+
+        path_of_output = storage_dir / result_and_std_err.result.file_names.stdout
+        transformer = self._output_transformer.resolve(path_resolving_env.symbols)
+
+        return create_file_from_transformation_of_existing_file(path_of_output,
+                                                                dst_path,
+                                                                transformer,
+                                                                path_resolving_env.home_and_sds)
+
+    @property
+    def symbol_references(self) -> list:
+        return (self._output_transformer.references +
+                self._sub_process.symbol_usages)
 
 
 def parts_parser(instruction_name: str) -> InstructionPartsParser:
