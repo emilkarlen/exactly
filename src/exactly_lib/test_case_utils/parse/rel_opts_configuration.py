@@ -59,7 +59,45 @@ REL_OPTIONS_FOR_FILE_CREATION = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_
 
 
 def argument_configuration_for_file_creation(argument_syntax_element_name: str) -> RelOptionArgumentConfiguration:
-    return RelOptionArgumentConfiguration(RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_FILE_CREATION,
-                                                                  RelOptionType.REL_CWD),
+    return RelOptionArgumentConfiguration(REL_OPTIONS_FOR_FILE_CREATION,
                                           argument_syntax_element_name,
                                           True)
+
+
+RELATIVITY_VARIANTS_FOR_SOURCE_FILES__PRE_ACT = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
+                                                                        RelOptionType.REL_HOME_ACT,
+                                                                        RelOptionType.REL_ACT,
+                                                                        RelOptionType.REL_TMP,
+                                                                        RelOptionType.REL_CWD},
+                                                                       True)
+
+REL_OPTIONS_FOR_SOURCE_FILES__PRE_ACT = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_SOURCE_FILES__PRE_ACT,
+                                                                RelOptionType.REL_CWD)
+
+
+def argument_configuration_for_source_file__pre_act(
+        argument_syntax_element_name: str) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(
+        REL_OPTIONS_FOR_SOURCE_FILES__PRE_ACT,
+        argument_syntax_element_name,
+        True)
+
+
+RELATIVITY_VARIANTS_FOR_SOURCE_FILES__POST_ACT = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
+                                                                         RelOptionType.REL_HOME_ACT,
+                                                                         RelOptionType.REL_ACT,
+                                                                         RelOptionType.REL_TMP,
+                                                                         RelOptionType.REL_CWD,
+                                                                         RelOptionType.REL_RESULT},
+                                                                        True)
+
+REL_OPTIONS_FOR_SOURCE_FILES__POST_ACT = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_SOURCE_FILES__POST_ACT,
+                                                                 RelOptionType.REL_CWD)
+
+
+def argument_configuration_for_source_file__post_act(
+        argument_syntax_element_name: str) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(
+        REL_OPTIONS_FOR_SOURCE_FILES__POST_ACT,
+        argument_syntax_element_name,
+        True)

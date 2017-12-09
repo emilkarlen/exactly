@@ -29,11 +29,13 @@ from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     InstructionSourceInfo, instruction_log_dir
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
 from exactly_lib.test_case_utils.parse import parse_here_document
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
-    RELATIVITY_VARIANTS_FOR_FILE_CREATION
+    RELATIVITY_VARIANTS_FOR_FILE_CREATION, argument_configuration_for_source_file__pre_act, \
+    RelOptionArgumentConfiguration, RelOptionsConfiguration
 from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecutionSetup
 from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
@@ -43,18 +45,28 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
+
+def parts_parser(instruction_name: str,
+                 phase_is_before_act: bool) -> InstructionPartsParser:
+    return PartsParserFromEmbryoParser(EmbryoParser(instruction_name, phase_is_before_act),
+                                       MainStepResultTranslatorForErrorMessageStringResultAsHardError())
+
+
 CONTENTS_ASSIGNMENT_TOKEN = '='
 SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
 RUN_PROGRAM_TOKEN = instruction_names.RUN_INSTRUCTION_NAME
 
 STDOUT_OPTION = a.OptionName(long_name='stdout')
 
+FILE_OPTION = a.OptionName(long_name='file')
+
 CONTENTS_ARGUMENT = 'CONTENTS'
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
                                   IsAHelperIfInAssertPhase):
-    def __init__(self, name: str):
+    def __init__(self, name: str,
+                 phase_is_before_act: bool):
         super().__init__(name, {})
 
         self._tp = TextParser({
@@ -169,7 +181,10 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
-    def __init__(self, instruction_name: str):
+    def __init__(self,
+                 instruction_name: str,
+                 phase_is_before_act: bool):
+        self._src_file_rel_opt_arg_conf = _src_rel_opt_arg_conf_for_phase(phase_is_before_act)
         self._instruction_name = instruction_name
 
     def parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
@@ -270,11 +285,6 @@ class FileMakerForContentsFromSubProcess(FileMaker):
                 self._sub_process.symbol_usages)
 
 
-def parts_parser(instruction_name: str) -> InstructionPartsParser:
-    return PartsParserFromEmbryoParser(EmbryoParser(instruction_name),
-                                       MainStepResultTranslatorForErrorMessageStringResultAsHardError())
-
-
 def create_file(path_to_create: pathlib.Path,
                 contents_str: str) -> str:
     """
@@ -290,9 +300,13 @@ def create_file(path_to_create: pathlib.Path,
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
+_SRC_PATH_ARGUMENT = a.Named('SOURCE-FILE-PATH')
+
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION
 
 REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
+
+SRC_OPT_ARG_CONF = argument_configuration_for_source_file__pre_act(_SRC_PATH_ARGUMENT.name)
 
 
 def transformation_syntax_element_description() -> SyntaxElementDescription:
@@ -308,6 +322,28 @@ def transformation_syntax_element_description() -> SyntaxElementDescription:
         ]
     )
 
+
+SRC_PATH_ARGUMENT = instruction_arguments.SOURCE_PATH_ARGUMENT
+
+
+def _src_rel_opt_arg_conf_for_phase(phase_is_before_act: bool) -> RelOptionArgumentConfiguration:
+    rel_option_types = _SRC_REL_OPTIONS__BEFORE_ACT if phase_is_before_act else _SRC_REL_OPTIONS__AFTER_ACT
+    return _src_rel_opt_arg_conf(rel_option_types)
+
+
+def _src_rel_opt_arg_conf(rel_option_types: set) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(
+        RelOptionsConfiguration(PathRelativityVariants(
+            rel_option_types,
+            True),
+            RelOptionType.REL_CWD),
+        SRC_PATH_ARGUMENT.name,
+        True)
+
+
+_SRC_REL_OPTIONS__BEFORE_ACT = set(RelOptionType).difference({RelOptionType.REL_RESULT})
+
+_SRC_REL_OPTIONS__AFTER_ACT = set(RelOptionType)
 
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the program output.
