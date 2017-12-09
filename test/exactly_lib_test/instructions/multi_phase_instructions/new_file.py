@@ -1,4 +1,6 @@
+import types
 import unittest
+from enum import Enum
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
@@ -11,7 +13,7 @@ from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import resolver_
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
-    PathRelativityVariants
+    PathRelativityVariants, RelHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
@@ -40,10 +42,12 @@ from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_tra
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
+from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, \
-    conf_rel_non_home, default_conf_rel_non_home
+    conf_rel_non_home, default_conf_rel_non_home, conf_rel_home, conf_rel_sds, RelativityOptionConfiguration, \
+    every_conf_rel_home
 from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir, empty_dir
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir, empty_dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
@@ -63,7 +67,9 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
-        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name', False)),
+        suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name', True)),
     ])
 
 
@@ -75,10 +81,23 @@ def is_failure() -> asrt.ValueAssertion:
     return asrt.is_instance(str)
 
 
+class Step(Enum):
+    VALIDATE_PRE_SDS = 1
+    MAIN = 2
+
+
 DISALLOWED_RELATIVITIES = [
     RelOptionType.REL_RESULT,
     RelOptionType.REL_HOME_CASE,
     RelOptionType.REL_HOME_ACT,
+]
+
+ALLOWED_SOURCE_FILE_RELATIVITIES = [
+    conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
+    conf_rel_home(RelHomeOptionType.REL_HOME_ACT),
+    conf_rel_sds(RelSdsOptionType.REL_ACT),
+    conf_rel_sds(RelSdsOptionType.REL_TMP),
+    conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
 ]
 
 ALLOWED_RELATIVITIES = [
@@ -174,8 +193,9 @@ class TestCaseBase(unittest.TestCase):
                source: ParseSource,
                arrangement: ArrangementWithSds,
                expectation: Expectation,
+               phase_is_before_act: bool = True,
                ):
-        parser = sut.EmbryoParser('instruction-name')
+        parser = sut.EmbryoParser('instruction-name', phase_is_before_act)
         embryo_check.check(self, parser, source, arrangement, expectation)
 
 
@@ -199,6 +219,17 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
             )
         )
 
+        src_file = PathArgumentWithRelativity('src-file.txt',
+                                              conf_rel_home(RelHomeOptionType.REL_HOME_CASE))
+
+        file_contents_arguments_constructor = TransformableContentsConstructor(
+            file(src_file.file_name, src_file.relativity)
+        )
+
+        src_file_in_home_contents = src_file.relativity.populator_for_relativity_option_root(
+            DirContents([empty_file(src_file.file_name)])
+        )
+
         file_contents_cases = [
             NameAndValue(
                 'empty file',
@@ -216,6 +247,14 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
                 'contents of output from shell command / with transformation',
                 shell_contents_arguments_constructor.with_transformation(arbitrary_transformer.name)
             ),
+            NameAndValue(
+                'contents of existing file / without transformation',
+                file_contents_arguments_constructor.without_transformation()
+            ),
+            NameAndValue(
+                'contents of existing file / with transformation',
+                file_contents_arguments_constructor.with_transformation(arbitrary_transformer.name)
+            ),
         ]
 
         dst_file_relativity_cases = [
@@ -230,11 +269,11 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
 
             for file_contents_case in file_contents_cases:
                 optional_arguments = file_contents_case.value
-                assert isinstance(optional_arguments, OptionalArguments)  # Type info for IDE
+                assert isinstance(optional_arguments, Arguments)  # Type info for IDE
 
                 with self.subTest(file_contents_variant=file_contents_case.name,
                                   first_line_argments=optional_arguments.first_line,
-                                  dst_file_variant=rel_opt_conf):
+                                  dst_file_variant=rel_opt_conf.option_string):
                     source = remaining_source(
                         '{relativity_option_arg} {dst_file_argument} {optional_arguments}'.format(
                             relativity_option_arg=rel_opt_conf.option_string,
@@ -248,6 +287,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
                     self._check(source,
                                 ArrangementWithSds(
                                     pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                    home_or_sds_contents=src_file_in_home_contents,
                                     non_home_contents=non_home_contents,
                                     symbols=symbols,
                                 ),
@@ -270,6 +310,15 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
             'existing-dir',
             DirContents([
                 empty_dir('existing-dir')
+            ]),
+        )
+
+    def test_file_WHEN_dst_file_is_existing_broken_symlink(self):
+        self._check_cases_for_dst_file_setup(
+            'existing-dir',
+            DirContents([
+                fs.sym_link('existing-symlink.txt',
+                            'non-existing-symlink-target.txt')
             ]),
         )
 
@@ -380,10 +429,235 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                     ))
 
 
+class TestScenariosWithContentsFromFile(TestCaseBase):
+    src_file_name = 'src-file.txt'
+
+    src_file_variants = [
+        NameAndValue('no file',
+                     DirContents([])),
+        NameAndValue('file is a directory',
+                     DirContents([empty_dir(src_file_name)])),
+        NameAndValue('file is a broken symlink',
+                     DirContents([sym_link(src_file_name, 'non-existing-target-file')])),
+
+    ]
+
+    def test_symbol_usages(self):
+        # ARRANGE #
+
+        to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+
+        src_file = fs.File('src-file.txt', 'contents of source file')
+        src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
+        src_file_rel_option = RelOptionType.REL_HOME_CASE
+
+        expected_dst_file = fs.File('dst-file-name.txt', src_file.contents.upper())
+        dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', expected_dst_file.name)
+        dst_file_rel_option = RelOptionType.REL_TMP
+
+        file_contents_arg = TransformableContentsConstructor(
+            file(symbol_reference_syntax_for_name(src_file.name))
+        ).with_transformation(to_upper_transformer.name)
+
+        source = remaining_source(
+            '{file_name} {content_arguments}'.format(
+                file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
+                content_arguments=file_contents_arg.first_line
+            ),
+            file_contents_arg.following_lines)
+
+        symbols = SymbolTable({
+            src_file_symbol.name:
+                container(resolver_of_rel_option(src_file_rel_option,
+                                                 PathPartAsFixedPath(src_file_symbol.value))),
+
+            dst_file_symbol.name:
+                container(resolver_of_rel_option(dst_file_rel_option,
+                                                 PathPartAsFixedPath(dst_file_symbol.value))),
+
+            to_upper_transformer.name:
+                container(to_upper_transformer.value),
+        })
+
+        # ACT & ASSERT #
+
+        self._check(source,
+                    ArrangementWithSds(
+                        symbols=symbols,
+                    ),
+                    Expectation(
+                        main_result=is_success(),
+                        symbol_usages=asrt.matches_sequence([
+
+                            equals_symbol_reference(
+                                SymbolReference(dst_file_symbol.name,
+                                                file_ref_or_string_reference_restrictions(
+                                                    sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
+                            ),
+
+                            is_lines_transformer_reference_to(to_upper_transformer.name),
+
+                            SymbolReference(src_file_symbol.name,
+                                            file_ref_or_string_reference_restrictions(
+                                                sut.SRC_OPT_ARG_CONF.options.accepted_relativity_variants))
+                            ,
+                        ]),
+                    )
+                    )
+
+    @staticmethod
+    def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:
+        symbol_usages_expectation = asrt.is_list_of(asrt.is_instance(SymbolReference))
+
+        if step_of_expected_failure is Step.VALIDATE_PRE_SDS:
+            return Expectation(validation_pre_sds=IS_FAILURE_OF_VALIDATION,
+                               symbol_usages=symbol_usages_expectation)
+        else:
+            return Expectation(main_result=IS_FAILURE_OF_MAIN,
+                               symbol_usages=symbol_usages_expectation)
+
+    def _check_of_invalid_src_file(self,
+                                   is_before_act_2_every_src_file_rel_conf: types.FunctionType,
+                                   step_of_expected_failure: Step):
+        # ARRANGE #
+        transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            transformer.name:
+                container(transformer.value),
+        })
+
+        dst_file = PathArgumentWithRelativity('dst-file.txt',
+                                              conf_rel_any(RelOptionType.REL_TMP))
+
+        expectation = self._expect_failure_in(step_of_expected_failure)
+
+        for phase_is_before_act in [False, True]:
+            for src_file_rel_conf in is_before_act_2_every_src_file_rel_conf(phase_is_before_act):
+                src_file = PathArgumentWithRelativity(self.src_file_name,
+                                                      src_file_rel_conf)
+                args_constructor = TransformableContentsConstructor(
+                    file(self.src_file_name, src_file_rel_conf)
+                )
+                for src_file_variant in self.src_file_variants:
+                    for contents_arguments in args_constructor.with_and_without_transformer_cases(transformer.name):
+                        arguments = complete_arguments(dst_file, contents_arguments)
+                        source = source_of(arguments)
+                        with self.subTest(phase_is_before_act=phase_is_before_act,
+                                          relativity_of_src_path=src_file.relativity.option_string,
+                                          first_line=arguments.first_line):
+                            # ACT & ASSERT #
+                            self._check(
+                                source,
+                                ArrangementWithSds(
+                                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                    home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
+                                        src_file_variant.value),
+                                    symbols=symbols,
+                                ),
+                                expectation)
+
+    def test_validation_pre_sds_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_home(self):
+        self._check_of_invalid_src_file(lambda x: every_conf_rel_home(),
+                                        Step.VALIDATE_PRE_SDS)
+
+    def test_main_result_SHOULD_be_failure_WHEN_source_is_not_an_existing_file_rel_non_home(self):
+        def every_src_file_rel_conf(is_before_act: bool):
+            return [
+                conf_rel_non_home(relativity)
+                for relativity in accepted_non_home_source_relativities(is_before_act)
+            ]
+
+        self._check_of_invalid_src_file(every_src_file_rel_conf, Step.MAIN)
+
+    def test_all_relativities__without_transformer(self):
+        # ARRANGE #
+
+        source_file = fs.File('source-file.txt', 'contents of source file')
+        expected_file = fs.File('a-file-name.txt', source_file.contents)
+
+        for dst_rel_opt_conf in ALLOWED_RELATIVITIES:
+            for src_rel_opt_conf in ALLOWED_SOURCE_FILE_RELATIVITIES:
+                file_contents_arg = TransformableContentsConstructor(
+                    file(source_file.name, src_rel_opt_conf)
+                ).without_transformation()
+
+                with self.subTest(relativity_option_string=dst_rel_opt_conf.option_string):
+                    # ACT & ASSERT #
+
+                    self._check(
+                        remaining_source(
+                            '{rel_opt} {file_name} {contents_arguments}'.format(
+                                rel_opt=dst_rel_opt_conf.option_string,
+                                file_name=expected_file.file_name,
+                                contents_arguments=file_contents_arg.first_line
+                            ),
+                            file_contents_arg.following_lines),
+                        ArrangementWithSds(
+                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                            home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
+                                DirContents([source_file]))
+                        ),
+                        Expectation(
+                            main_result=is_success(),
+                            side_effects_on_home=f_asrt.dir_is_empty(),
+                            symbol_usages=asrt.is_empty_list,
+                            main_side_effects_on_sds=non_home_dir_contains_exactly(dst_rel_opt_conf.root_dir__non_home,
+                                                                                   fs.DirContents([expected_file])),
+                        ))
+
+    def test_all_relativities__with_transformer(self):
+        # ARRANGE #
+
+        source_file = fs.File('source-file.txt', 'contents of source file')
+        expected_file = fs.File('a-file-name.txt', source_file.contents.upper())
+
+        to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            to_upper_transformer.name:
+                container(to_upper_transformer.value),
+        })
+
+        for dst_rel_opt_conf in ALLOWED_RELATIVITIES:
+            for src_rel_opt_conf in ALLOWED_SOURCE_FILE_RELATIVITIES:
+                file_contents_arg = TransformableContentsConstructor(
+                    file(source_file.name, src_rel_opt_conf)
+                ).with_transformation(to_upper_transformer.name)
+
+                with self.subTest(relativity_option_string=dst_rel_opt_conf.option_string):
+                    # ACT & ASSERT #
+
+                    self._check(
+                        remaining_source(
+                            '{rel_opt} {file_name} {contents_arguments}'.format(
+                                rel_opt=dst_rel_opt_conf.option_string,
+                                file_name=expected_file.file_name,
+                                contents_arguments=file_contents_arg.first_line
+                            ),
+                            file_contents_arg.following_lines),
+                        ArrangementWithSds(
+                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                            home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
+                                DirContents([source_file])),
+                            symbols=symbols,
+                        ),
+                        Expectation(
+                            main_result=is_success(),
+                            main_side_effects_on_sds=non_home_dir_contains_exactly(dst_rel_opt_conf.root_dir__non_home,
+                                                                                   fs.DirContents([expected_file])),
+                            symbol_usages=asrt.matches_sequence([
+                                is_lines_transformer_reference_to(to_upper_transformer.name),
+                            ])
+                        ))
+
+
 class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
     TRANSFORMER_OPTION = option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
     def test_symbol_usages(self):
+        # ARRANGE #
         text_printed_by_shell_command_symbol = NameAndValue('STRING_TO_PRINT_SYMBOL', 'hello_world')
 
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', 'dst-file-name.txt')
@@ -714,44 +988,55 @@ class TestParserConsumptionOfSource(TestCaseBase):
         )
 
 
-def _just_parse(source: ParseSource):
-    sut.EmbryoParser('the-instruction-name').parse(source)
+def _just_parse(source: ParseSource,
+                phase_is_before_act: bool = True, ):
+    sut.EmbryoParser('the-instruction-name', phase_is_before_act).parse(source)
 
 
-class OptionalArguments:
+class Arguments:
     def __init__(self, first_line: str, following_lines: list):
         self.first_line = first_line
         self.following_lines = following_lines
 
 
-def empty_file_arguments() -> OptionalArguments:
-    return OptionalArguments('', [])
+def empty_file_arguments() -> Arguments:
+    return Arguments('', [])
 
 
-def here_document_contents_arguments(lines: list) -> OptionalArguments:
-    return OptionalArguments('= <<EOF',
-                             lines + ['EOF'])
+def here_document_contents_arguments(lines: list) -> Arguments:
+    return Arguments('= <<EOF',
+                     lines + ['EOF'])
 
 
-def stdout_from(program: OptionalArguments) -> OptionalArguments:
-    return OptionalArguments(option_syntax(sut.STDOUT_OPTION) + ' ' + program.first_line,
-                             program.following_lines)
+def stdout_from(program: Arguments) -> Arguments:
+    return Arguments(option_syntax(sut.STDOUT_OPTION) + ' ' + program.first_line,
+                     program.following_lines)
 
 
-def shell_command(command_line: str) -> OptionalArguments:
-    return OptionalArguments(sut.SHELL_COMMAND_TOKEN + ' ' + command_line,
-                             [])
+def shell_command(command_line: str) -> Arguments:
+    return Arguments(sut.SHELL_COMMAND_TOKEN + ' ' + command_line,
+                     [])
+
+
+def file(file_name: str,
+         rel_option: RelativityOptionConfiguration = None) -> Arguments:
+    args = [option_syntax(sut.FILE_OPTION)]
+    if rel_option is not None:
+        args.append(rel_option.option_string)
+    args.append(file_name)
+    return Arguments(' '.join(args),
+                     [])
 
 
 class TransformableContentsConstructor:
-    def __init__(self, after_transformer: OptionalArguments):
+    def __init__(self, after_transformer: Arguments):
         self.after_transformer = after_transformer
 
-    def without_transformation(self) -> OptionalArguments:
-        return OptionalArguments('= ' + self.after_transformer.first_line,
-                                 self.after_transformer.following_lines)
+    def without_transformation(self) -> Arguments:
+        return Arguments('= ' + self.after_transformer.first_line,
+                         self.after_transformer.following_lines)
 
-    def with_transformation(self, transformer: str) -> OptionalArguments:
+    def with_transformation(self, transformer: str) -> Arguments:
         first_line = ' '.join([
             '=',
             option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
@@ -759,8 +1044,65 @@ class TransformableContentsConstructor:
             self.after_transformer.first_line
         ])
 
-        return OptionalArguments(first_line,
-                                 self.after_transformer.following_lines)
+        return Arguments(first_line,
+                         self.after_transformer.following_lines)
+
+    def with_and_without_transformer_cases(self, transformer_expr: str) -> list:
+        return [
+            self.without_transformation(),
+            self.with_transformation(transformer_expr),
+        ]
+
+
+def complete_arguments(dst_file: PathArgumentWithRelativity,
+                       contents_arguments: Arguments) -> Arguments:
+    return Arguments(dst_file.argument_str + ' ' + contents_arguments.first_line,
+                     contents_arguments.following_lines)
+
+
+def source_of(arguments: Arguments) -> ParseSource:
+    return remaining_source(arguments.first_line,
+                            arguments.following_lines)
+
+
+def complete_source(dst_file: PathArgumentWithRelativity,
+                    contents_arguments: Arguments) -> ParseSource:
+    return source_of(complete_arguments(dst_file, contents_arguments))
+
+
+IS_FAILURE_OF_VALIDATION = asrt.is_instance(str)
+
+IS_FAILURE_OF_MAIN = asrt.is_instance(str)
+IS_SUCCESS_OF_MAIN = asrt.is_none
+
+
+def src_path_relativity_variants(phase_is_before_act: bool) -> PathRelativityVariants:
+    return PathRelativityVariants(
+        accepted_source_relativities(phase_is_before_act),
+        True)
+
+
+DST_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
+    {
+        RelOptionType.REL_CWD,
+        RelOptionType.REL_ACT,
+        RelOptionType.REL_TMP,
+    },
+    False)
+
+
+def accepted_source_relativities(phase_is_before_act: bool) -> set:
+    if phase_is_before_act:
+        return set(RelOptionType).difference({RelOptionType.REL_RESULT})
+    else:
+        return set(RelOptionType)
+
+
+def accepted_non_home_source_relativities(phase_is_before_act: bool) -> set:
+    if phase_is_before_act:
+        return set(RelNonHomeOptionType).difference({RelNonHomeOptionType.REL_RESULT})
+    else:
+        return set(RelNonHomeOptionType)
 
 
 if __name__ == '__main__':
