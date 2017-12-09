@@ -45,8 +45,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
-    command_that_exits_with_code
+from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
@@ -184,14 +183,34 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
                                         dst_root_contents_before_execution: DirContents,
                                         ):
         # ARRANGE #
+
+        arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                             LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+
+        symbols = SymbolTable({
+            arbitrary_transformer.name: container(arbitrary_transformer.value),
+        })
+
+        shell_contents_arguments_constructor = TransformableContentsConstructor(
+            shell_output_arguments(shell_commands.command_that_exits_with_code(0))
+        )
+
         file_contents_cases = [
             NameAndValue(
                 'empty file',
-                ('', [])
+                empty_file_arguments()
             ),
             NameAndValue(
                 'contents of here doc',
-                ('= <<EOF', ['contents', 'EOF'])
+                here_document_contents_arguments(['contents'])
+            ),
+            NameAndValue(
+                'contents of output from shell command / without transformation',
+                shell_contents_arguments_constructor.without_transformation()
+            ),
+            NameAndValue(
+                'contents of output from shell command / with transformation',
+                shell_contents_arguments_constructor.with_transformation(arbitrary_transformer.name)
             ),
         ]
 
@@ -206,20 +225,27 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
                 dst_root_contents_before_execution)
 
             for file_contents_case in file_contents_cases:
+                optional_arguments = file_contents_case.value
+                assert isinstance(optional_arguments, OptionalArguments)  # Type info for IDE
+
                 with self.subTest(file_contents_variant=file_contents_case.name,
+                                  first_line_argments=optional_arguments.first_line,
                                   dst_file_variant=rel_opt_conf):
                     source = remaining_source(
-                        '{relativity_option_arg} {dst_file_argument} {case_arguments}'.format(
+                        '{relativity_option_arg} {dst_file_argument} {optional_arguments}'.format(
                             relativity_option_arg=rel_opt_conf.option_string,
                             dst_file_argument=dst_file_name,
-                            case_arguments=file_contents_case.value[0],
+                            optional_arguments=optional_arguments.first_line,
                         ),
-                        file_contents_case.value[1])
+                        optional_arguments.following_lines)
+
                     # ACT & ASSERT #
+
                     self._check(source,
                                 ArrangementWithSds(
                                     pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                                     non_home_contents=non_home_contents,
+                                    symbols=symbols,
                                 ),
                                 Expectation(
                                     main_result=is_failure(),
@@ -369,7 +395,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                     instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
                 transformer_symbol=to_upper_transformer.name,
                 shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                shell_command=command_that_prints_line_to_stdout(
+                shell_command=shell_commands.command_that_prints_line_to_stdout(
                     symbol_reference_syntax_for_name(text_printed_by_shell_command_symbol.name)
                 ),
             ))
@@ -422,7 +448,8 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                             rel_opt=rel_opt_conf.option_string,
                             file_name=expected_file.file_name,
                             shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                            shell_command=command_that_prints_line_to_stdout(text_printed_by_shell_command),
+                            shell_command=shell_commands.command_that_prints_line_to_stdout(
+                                text_printed_by_shell_command),
                         )),
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
@@ -457,7 +484,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
                     to_upper_transformer_symbol=to_upper_transformer.name,
                     shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                    shell_command=command_that_prints_line_to_stdout(text_printed_by_shell_command),
+                    shell_command=shell_commands.command_that_prints_line_to_stdout(text_printed_by_shell_command),
                 )),
             ArrangementWithSds(
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
@@ -494,7 +521,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                             file_name='dst-file-name.txt',
                             transformer_specification=case.value,
                             shell_command_token=sut.SHELL_COMMAND_TOKEN,
-                            shell_command_with_non_zero_exit_code=command_that_exits_with_code(1),
+                            shell_command_with_non_zero_exit_code=shell_commands.command_that_exits_with_code(1),
                         )),
                     ArrangementWithSds(
                         symbols=symbols,
@@ -662,6 +689,46 @@ class TestParserConsumptionOfSource(TestCaseBase):
 
 def _just_parse(source: ParseSource):
     sut.EmbryoParser('the-instruction-name').parse(source)
+
+
+class OptionalArguments:
+    def __init__(self, first_line: str, following_lines: list):
+        self.first_line = first_line
+        self.following_lines = following_lines
+
+
+def empty_file_arguments() -> OptionalArguments:
+    return OptionalArguments('', [])
+
+
+def here_document_contents_arguments(lines: list) -> OptionalArguments:
+    return OptionalArguments('= <<EOF',
+                             lines + ['EOF'])
+
+
+def shell_output_arguments(command_line: str) -> OptionalArguments:
+    return OptionalArguments(sut.SHELL_COMMAND_TOKEN + ' ' + command_line,
+                             [])
+
+
+class TransformableContentsConstructor:
+    def __init__(self, after_transformer: OptionalArguments):
+        self.after_transformer = after_transformer
+
+    def without_transformation(self) -> OptionalArguments:
+        return OptionalArguments('= ' + self.after_transformer.first_line,
+                                 self.after_transformer.following_lines)
+
+    def with_transformation(self, transformer: str) -> OptionalArguments:
+        first_line = ' '.join([
+            '=',
+            option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            transformer,
+            self.after_transformer.first_line
+        ])
+
+        return OptionalArguments(first_line,
+                                 self.after_transformer.following_lines)
 
 
 if __name__ == '__main__':
