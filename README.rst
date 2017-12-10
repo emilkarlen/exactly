@@ -113,9 +113,9 @@ Testing and transforming the contents of files
 
 The ``contents`` instruction tests the contents of a file.
 It can also test a transformed version of a file,
-by applying a "file transformer".
+by applying a "lines transformer".
 
-Such a "file transformer" may be given a name
+Such a "lines transformer" may be given a name
 using the ``def`` instruction
 to make the test easier to read.
 
@@ -127,7 +127,7 @@ non-timing lines that we are not interested in,
 and that timing lines contains a time stamp of the form
 "NN:NN", whos exact value we are also not interested in.
 
-A "file transformer" is used to extract all timing lines
+A "lines transformer" is used to extract all timing lines
 and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
 
@@ -149,9 +149,9 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     def line-matcher     IS_TIMING_LINE     = regex ^timing
 
-    def file-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
+    def lines-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
 
-    def file-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
+    def lines-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
 
 The ``--transformed`` option does not modify the tested file,
@@ -400,6 +400,12 @@ it just displays some of Exactly's features.)
     file in/a/dir/file-name.txt = <<EOF
     contents of the file
     EOF
+
+    file output-from-git.txt = --stdout $ git status
+
+    file git-branch-info.txt = --transformed select line-num = 1
+                               --stdout
+                               $ git status
 
     dir root-dir-for-act-phase
 
