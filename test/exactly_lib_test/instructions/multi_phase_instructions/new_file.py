@@ -190,9 +190,9 @@ class TestCaseBase(unittest.TestCase):
                source: ParseSource,
                arrangement: ArrangementWithSds,
                expectation: Expectation,
-               phase_is_before_act: bool = True,
+               phase_is_after_act: bool = True,
                ):
-        parser = sut.EmbryoParser('instruction-name', phase_is_before_act)
+        parser = sut.EmbryoParser('instruction-name', phase_is_after_act)
         embryo_check.check(self, parser, source, arrangement, expectation)
 
 
@@ -460,13 +460,6 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             file(symbol_reference_syntax_for_name(src_file_symbol.name))
         ).with_transformation(to_upper_transformer.name)
 
-        source = remaining_source(
-            '{file_name} {content_arguments}'.format(
-                file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
-                content_arguments=file_contents_arg.first_line
-            ),
-            file_contents_arg.following_lines)
-
         symbols = SymbolTable({
             src_file_symbol.name:
                 container(resolver_of_rel_option(src_file_rel_conf.relativity_option,
@@ -482,32 +475,44 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         # ACT & ASSERT #
 
-        self._check(source,
-                    ArrangementWithSds(
-                        symbols=symbols,
-                        hds_contents=src_file_rel_conf.populator_for_relativity_option_root__home(
-                            DirContents([src_file]))
-                    ),
-                    Expectation(
-                        main_result=IS_SUCCESS,
-                        symbol_usages=asrt.matches_sequence([
+        for phase_is_after_act in [False, True]:
+            src_file_rel_opt_arg_conf = sut._src_rel_opt_arg_conf_for_phase(phase_is_after_act)
 
-                            equals_symbol_reference(
-                                SymbolReference(dst_file_symbol.name,
-                                                file_ref_or_string_reference_restrictions(
-                                                    sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
+            source = remaining_source(
+                '{file_name} {content_arguments}'.format(
+                    file_name=symbol_reference_syntax_for_name(dst_file_symbol.name),
+                    content_arguments=file_contents_arg.first_line
+                ),
+                file_contents_arg.following_lines)
+
+            with self.subTest(phase_is_after_act=phase_is_after_act):
+                self._check(source,
+                            ArrangementWithSds(
+                                symbols=symbols,
+                                hds_contents=src_file_rel_conf.populator_for_relativity_option_root__home(
+                                    DirContents([src_file]))
                             ),
+                            Expectation(
+                                main_result=IS_SUCCESS,
+                                symbol_usages=asrt.matches_sequence([
 
-                            is_lines_transformer_reference_to(to_upper_transformer.name),
+                                    equals_symbol_reference(
+                                        SymbolReference(dst_file_symbol.name,
+                                                        file_ref_or_string_reference_restrictions(
+                                                            sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
+                                    ),
 
-                            equals_symbol_reference(
-                                SymbolReference(src_file_symbol.name,
-                                                file_ref_or_string_reference_restrictions(
-                                                    sut.SRC_OPT_ARG_CONF.options.accepted_relativity_variants))
+                                    is_lines_transformer_reference_to(to_upper_transformer.name),
+
+                                    equals_symbol_reference(
+                                        SymbolReference(src_file_symbol.name,
+                                                        file_ref_or_string_reference_restrictions(
+                                                            src_file_rel_opt_arg_conf.options.accepted_relativity_variants))
+                                    ),
+                                ]),
                             ),
-                        ]),
-                    )
-                    )
+                            phase_is_after_act=phase_is_after_act
+                            )
 
     def test_superfluous_arguments(self):
         # ARRANGE #
@@ -533,12 +538,12 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             ),
         ]
 
-        for phase_is_before_act in [False, True]:
+        for phase_is_after_act in [False, True]:
             for file_contents_case in file_contents_cases:
                 optional_arguments = file_contents_case.value
                 assert isinstance(optional_arguments, Arguments)  # Type info for IDE
 
-                with self.subTest(phase_is_before_act=phase_is_before_act,
+                with self.subTest(phase_is_after_act=phase_is_after_act,
                                   file_contents_variant=file_contents_case.name,
                                   first_line_argments=optional_arguments.first_line):
                     source = remaining_source(
@@ -551,7 +556,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                     # ACT & ASSERT #
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         _just_parse(source,
-                                    phase_is_before_act=phase_is_before_act)
+                                    phase_is_after_act=phase_is_after_act)
 
     def test_validation_pre_sds_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_home(self):
         self._check_of_invalid_src_file(lambda x: every_conf_rel_home(),
@@ -742,7 +747,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                symbol_usages=symbol_usages_expectation)
 
     def _check_of_invalid_src_file(self,
-                                   is_before_act_2_every_src_file_rel_conf: types.FunctionType,
+                                   is_after_act_2_every_src_file_rel_conf: types.FunctionType,
                                    step_of_expected_failure: Step):
         # ARRANGE #
         transformer = NameAndValue('TRANSFORMER_SYMBOL',
@@ -757,8 +762,8 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         expectation = self._expect_failure_in(step_of_expected_failure)
 
-        for phase_is_before_act in [False, True]:
-            for src_file_rel_conf in is_before_act_2_every_src_file_rel_conf(phase_is_before_act):
+        for phase_is_after_act in [False, True]:
+            for src_file_rel_conf in is_after_act_2_every_src_file_rel_conf(phase_is_after_act):
                 src_file = PathArgumentWithRelativity(self.src_file_name,
                                                       src_file_rel_conf)
                 args_constructor = TransformableContentsConstructor(
@@ -768,7 +773,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                     for contents_arguments in args_constructor.with_and_without_transformer_cases(transformer.name):
                         arguments = complete_arguments(dst_file, contents_arguments)
                         source = source_of(arguments)
-                        with self.subTest(phase_is_before_act=phase_is_before_act,
+                        with self.subTest(phase_is_after_act=phase_is_after_act,
                                           relativity_of_src_path=src_file.relativity.option_string,
                                           first_line=arguments.first_line):
                             # ACT & ASSERT #
@@ -781,7 +786,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                     symbols=symbols,
                                 ),
                                 expectation,
-                                phase_is_before_act=phase_is_before_act)
+                                phase_is_after_act=phase_is_after_act)
 
     @staticmethod
     def _expected_non_home_contents(dst_file_rel_opt_conf: RelativityOptionConfigurationForRelNonHome,
@@ -1205,8 +1210,8 @@ class TestParserConsumptionOfSource(TestCaseBase):
 
 
 def _just_parse(source: ParseSource,
-                phase_is_before_act: bool = True, ):
-    sut.EmbryoParser('the-instruction-name', phase_is_before_act).parse(source)
+                phase_is_after_act: bool = True, ):
+    sut.EmbryoParser('the-instruction-name', phase_is_after_act).parse(source)
 
 
 class Arguments:
@@ -1318,9 +1323,9 @@ IS_FAILURE = asrt.is_instance(str)
 IS_SUCCESS = asrt.is_none
 
 
-def src_path_relativity_variants(phase_is_before_act: bool) -> PathRelativityVariants:
+def src_path_relativity_variants(phase_is_after_act: bool) -> PathRelativityVariants:
     return PathRelativityVariants(
-        accepted_source_relativities(phase_is_before_act),
+        accepted_source_relativities(phase_is_after_act),
         True)
 
 
@@ -1333,18 +1338,18 @@ DST_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     False)
 
 
-def accepted_source_relativities(phase_is_before_act: bool) -> set:
-    if phase_is_before_act:
+def accepted_source_relativities(phase_is_after_act: bool) -> set:
+    if phase_is_after_act:
         return set(RelOptionType).difference({RelOptionType.REL_RESULT})
     else:
         return set(RelOptionType)
 
 
-def accepted_non_home_source_relativities(phase_is_before_act: bool) -> set:
-    if phase_is_before_act:
-        return set(RelNonHomeOptionType).difference({RelNonHomeOptionType.REL_RESULT})
-    else:
+def accepted_non_home_source_relativities(phase_is_after_act: bool) -> set:
+    if phase_is_after_act:
         return set(RelNonHomeOptionType)
+    else:
+        return set(RelNonHomeOptionType).difference({RelNonHomeOptionType.REL_RESULT})
 
 
 if __name__ == '__main__':
