@@ -93,7 +93,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             invokation_variant_from_args(arguments,
                                          docs.paras('Creates an empty file.')),
             invokation_variant_from_args(arguments + [assignment_arg, contents_arg],
-                                         self._tp.paras('Creates a file with contents given by a {CONTENTS}.')),
+                                         self._tp.paras('Creates a file with contents given by {CONTENTS}.')),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -102,9 +102,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             rel_path_doc.path_element(_DST_PATH_ARGUMENT.name,
                                       REL_OPT_ARG_CONF.options,
                                       docs.paras(the_path_of('a non-existing file.'))),
-            transformation_syntax_element_description(),
             rel_path_doc.path_element_2(self._src_rel_opt_arg_conf,
                                         docs.paras(the_path_of('an existing file.'))),
+            transformation_syntax_element_description(),
         ]
 
     def _contents_sed(self) -> SyntaxElementDescription:
