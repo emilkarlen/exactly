@@ -3,7 +3,7 @@
 
 # Utils
 
-def file-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num = 5 | replace '^\s*' ''
+def lines-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num = 5 | replace '^\s*' ''
 
 
 # Initialize repo with single file
