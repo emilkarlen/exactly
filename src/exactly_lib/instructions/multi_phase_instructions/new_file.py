@@ -39,7 +39,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_co
     RELATIVITY_VARIANTS_FOR_FILE_CREATION, argument_configuration_for_source_file__pre_act, \
     RelOptionArgumentConfiguration, RelOptionsConfiguration
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ValidationStep, \
-    SingleStepValidator
+    SingleStepValidator, ConstantSuccessValidator
 from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecutionSetup
 from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
@@ -149,6 +149,14 @@ class FileMaker:
     Lets sub classes determine the contents of the file.
     """
 
+    @property
+    def symbol_references(self) -> list:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return ConstantSuccessValidator()
+
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              dst_file: pathlib.Path,
@@ -157,10 +165,6 @@ class FileMaker:
         :param dst_file: The path of a (probably!) non-existing file
         :return: Error message, in case of error, else None
         """
-        raise NotImplementedError('abstract method')
-
-    @property
-    def symbol_references(self) -> list:
         raise NotImplementedError('abstract method')
 
 
@@ -174,6 +178,10 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
     @property
     def symbol_usages(self) -> list:
         return self._path_to_create.references + self._file_maker.symbol_references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._file_maker.validator
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,

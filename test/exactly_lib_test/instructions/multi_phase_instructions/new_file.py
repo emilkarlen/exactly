@@ -76,14 +76,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-def is_success() -> asrt.ValueAssertion:
-    return asrt.is_none
-
-
-def is_failure() -> asrt.ValueAssertion:
-    return asrt.is_instance(str)
-
-
 class Step(Enum):
     VALIDATE_PRE_SDS = 1
     MAIN = 2
@@ -296,32 +288,35 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
                                     symbols=symbols,
                                 ),
                                 Expectation(
-                                    main_result=is_failure(),
+                                    main_result=IS_FAILURE,
                                     symbol_usages=asrt.anything_goes(),
                                 )
                                 )
 
     def test_fail_WHEN_dst_file_is_existing_file(self):
+        dst_file_name = 'file.txt'
         self._check_cases_for_dst_file_setup(
-            'file',
+            dst_file_name,
             DirContents([
-                empty_file('file')
+                empty_file(dst_file_name)
             ]),
         )
 
     def test_file_WHEN_dst_file_is_existing_dir(self):
+        dst_file_name = 'dst-dir'
         self._check_cases_for_dst_file_setup(
-            'existing-dir',
+            dst_file_name,
             DirContents([
-                empty_dir('existing-dir')
+                empty_dir(dst_file_name)
             ]),
         )
 
     def test_file_WHEN_dst_file_is_existing_broken_symlink(self):
+        dst_file_name = 'dst-file'
         self._check_cases_for_dst_file_setup(
-            'existing-dir',
+            dst_file_name,
             DirContents([
-                fs.sym_link('existing-symlink.txt',
+                fs.sym_link(dst_file_name,
                             'non-existing-symlink-target.txt')
             ]),
         )
@@ -351,7 +346,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
                     Expectation(
-                        main_result=is_success(),
+                        main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_list,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
@@ -372,7 +367,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
                     Expectation(
-                        main_result=is_success(),
+                        main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_list,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(
@@ -398,7 +393,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                         )
                     ),
                     Expectation(
-                        main_result=is_success(),
+                        main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_list,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(
@@ -425,7 +420,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
                     Expectation(
-                        main_result=is_success(),
+                        main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_list,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
@@ -493,7 +488,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             DirContents([src_file]))
                     ),
                     Expectation(
-                        main_result=is_success(),
+                        main_result=IS_SUCCESS,
                         symbol_usages=asrt.matches_sequence([
 
                             equals_symbol_reference(
@@ -513,63 +508,11 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                     )
                     )
 
-    @staticmethod
-    def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:
-        symbol_usages_expectation = asrt.is_list_of(asrt.is_instance(SymbolReference))
-
-        if step_of_expected_failure is Step.VALIDATE_PRE_SDS:
-            return Expectation(validation_pre_sds=IS_FAILURE_OF_VALIDATION,
-                               symbol_usages=symbol_usages_expectation)
-        else:
-            return Expectation(main_result=IS_FAILURE_OF_MAIN,
-                               symbol_usages=symbol_usages_expectation)
-
-    def _check_of_invalid_src_file(self,
-                                   is_before_act_2_every_src_file_rel_conf: types.FunctionType,
-                                   step_of_expected_failure: Step):
-        # ARRANGE #
-        transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
-        symbols = SymbolTable({
-            transformer.name:
-                container(transformer.value),
-        })
-
-        dst_file = PathArgumentWithRelativity('dst-file.txt',
-                                              conf_rel_any(RelOptionType.REL_TMP))
-
-        expectation = self._expect_failure_in(step_of_expected_failure)
-
-        for phase_is_before_act in [False, True]:
-            for src_file_rel_conf in is_before_act_2_every_src_file_rel_conf(phase_is_before_act):
-                src_file = PathArgumentWithRelativity(self.src_file_name,
-                                                      src_file_rel_conf)
-                args_constructor = TransformableContentsConstructor(
-                    file(self.src_file_name, src_file_rel_conf)
-                )
-                for src_file_variant in self.src_file_variants:
-                    for contents_arguments in args_constructor.with_and_without_transformer_cases(transformer.name):
-                        arguments = complete_arguments(dst_file, contents_arguments)
-                        source = source_of(arguments)
-                        with self.subTest(phase_is_before_act=phase_is_before_act,
-                                          relativity_of_src_path=src_file.relativity.option_string,
-                                          first_line=arguments.first_line):
-                            # ACT & ASSERT #
-                            self._check(
-                                source,
-                                ArrangementWithSds(
-                                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                                    home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
-                                        src_file_variant.value),
-                                    symbols=symbols,
-                                ),
-                                expectation)
-
     def test_validation_pre_sds_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_home(self):
         self._check_of_invalid_src_file(lambda x: every_conf_rel_home(),
                                         Step.VALIDATE_PRE_SDS)
 
-    def test_main_result_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_non_home(self):
+    def test_main_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_non_home(self):
         def every_src_file_rel_conf(is_before_act: bool):
             return [
                 conf_rel_non_home(relativity)
@@ -614,7 +557,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                 DirContents([src_file]))
                         ),
                         Expectation(
-                            main_result=is_success(),
+                            main_result=IS_SUCCESS,
                             symbol_usages=asrt.is_empty_list,
                             main_side_effects_on_sds=expected_non_home_contents,
                         ))
@@ -644,7 +587,8 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                     src_rel_opt_conf,
                     src_file)
 
-                with self.subTest(relativity_option_string=dst_rel_opt_conf.option_string):
+                with self.subTest(dst_option_string=dst_rel_opt_conf.option_string,
+                                  src_option_string=src_rel_opt_conf.option_string):
                     # ACT & ASSERT #
 
                     self._check(
@@ -662,12 +606,65 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             symbols=symbols,
                         ),
                         Expectation(
-                            main_result=is_success(),
+                            main_result=IS_SUCCESS,
                             main_side_effects_on_sds=expected_non_home_contents,
                             symbol_usages=asrt.matches_sequence([
                                 is_lines_transformer_reference_to(to_upper_transformer.name),
                             ])
                         ))
+
+    @staticmethod
+    def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:
+        symbol_usages_expectation = asrt.is_list_of(asrt.is_instance(SymbolReference))
+
+        if step_of_expected_failure is Step.VALIDATE_PRE_SDS:
+            return Expectation(validation_pre_sds=IS_FAILURE_OF_VALIDATION,
+                               symbol_usages=symbol_usages_expectation)
+        else:
+            return Expectation(main_result=IS_FAILURE,
+                               symbol_usages=symbol_usages_expectation)
+
+    def _check_of_invalid_src_file(self,
+                                   is_before_act_2_every_src_file_rel_conf: types.FunctionType,
+                                   step_of_expected_failure: Step):
+        # ARRANGE #
+        transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            transformer.name:
+                container(transformer.value),
+        })
+
+        dst_file = PathArgumentWithRelativity('dst-file.txt',
+                                              conf_rel_any(RelOptionType.REL_TMP))
+
+        expectation = self._expect_failure_in(step_of_expected_failure)
+
+        for phase_is_before_act in [False, True]:
+            for src_file_rel_conf in is_before_act_2_every_src_file_rel_conf(phase_is_before_act):
+                src_file = PathArgumentWithRelativity(self.src_file_name,
+                                                      src_file_rel_conf)
+                args_constructor = TransformableContentsConstructor(
+                    file(self.src_file_name, src_file_rel_conf)
+                )
+                for src_file_variant in self.src_file_variants:
+                    for contents_arguments in args_constructor.with_and_without_transformer_cases(transformer.name):
+                        arguments = complete_arguments(dst_file, contents_arguments)
+                        source = source_of(arguments)
+                        with self.subTest(phase_is_before_act=phase_is_before_act,
+                                          relativity_of_src_path=src_file.relativity.option_string,
+                                          first_line=arguments.first_line):
+                            # ACT & ASSERT #
+                            self._check(
+                                source,
+                                ArrangementWithSds(
+                                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                    home_or_sds_contents=src_file.relativity.populator_for_relativity_option_root(
+                                        src_file_variant.value),
+                                    symbols=symbols,
+                                ),
+                                expectation,
+                                phase_is_before_act=phase_is_before_act)
 
     @staticmethod
     def _expected_non_home_contents(dst_file_rel_opt_conf: RelativityOptionConfigurationForRelNonHome,
@@ -729,7 +726,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                         symbols=symbols,
                     ),
                     Expectation(
-                        main_result=is_success(),
+                        main_result=IS_SUCCESS,
                         symbol_usages=asrt.matches_sequence([
 
                             equals_symbol_reference(
@@ -772,7 +769,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
                     Expectation(
-                        main_result=is_success(),
+                        main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
                         symbol_usages=asrt.is_empty_list,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
@@ -810,7 +807,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                 symbols=symbols
             ),
             Expectation(
-                main_result=is_success(),
+                main_result=IS_SUCCESS,
                 side_effects_on_home=f_asrt.dir_is_empty(),
                 symbol_usages=asrt.matches_sequence([
                     is_lines_transformer_reference_to(to_upper_transformer.name),
@@ -851,7 +848,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                     ),
                     Expectation(
                         symbol_usages=asrt.anything_goes(),
-                        main_result=is_failure(),
+                        main_result=IS_FAILURE,
                     ))
 
 
@@ -885,7 +882,7 @@ class TestSymbolReferences(TestCaseBase):
                     symbol.value),
             ),
             Expectation(
-                main_result=is_success(),
+                main_result=IS_SUCCESS,
                 symbol_usages=equals_symbol_references([expected_symbol_reference]),
                 main_side_effects_on_sds=dir_contains_exactly(
                     relativity,
@@ -938,7 +935,7 @@ class TestSymbolReferences(TestCaseBase):
                 symbols=symbol_table,
             ),
             Expectation(
-                main_result=is_success(),
+                main_result=IS_SUCCESS,
                 symbol_usages=equals_symbol_references(expected_symbol_references),
                 main_side_effects_on_sds=dir_contains_exactly(
                     relativity,
@@ -958,7 +955,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
-                main_result=is_success(),
+                main_result=IS_SUCCESS,
                 source=source_is_at_end,
             ),
         )
@@ -973,7 +970,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
-                main_result=is_success(),
+                main_result=IS_SUCCESS,
                 source=is_at_beginning_of_line(2),
             ),
         )
@@ -992,7 +989,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
-                main_result=is_success(),
+                main_result=IS_SUCCESS,
                 source=source_is_at_end,
             ),
         )
@@ -1012,7 +1009,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
             ),
             Expectation(
-                main_result=is_success(),
+                main_result=IS_SUCCESS,
                 source=is_at_beginning_of_line(3),
             ),
         )
@@ -1102,8 +1099,8 @@ def complete_source(dst_file: PathArgumentWithRelativity,
 
 IS_FAILURE_OF_VALIDATION = asrt.is_instance(str)
 
-IS_FAILURE_OF_MAIN = asrt.is_instance(str)
-IS_SUCCESS_OF_MAIN = asrt.is_none
+IS_FAILURE = asrt.is_instance(str)
+IS_SUCCESS = asrt.is_none
 
 
 def src_path_relativity_variants(phase_is_before_act: bool) -> PathRelativityVariants:
