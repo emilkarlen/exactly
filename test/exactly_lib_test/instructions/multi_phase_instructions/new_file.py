@@ -508,6 +508,50 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                     )
                     )
 
+    def test_superfluous_arguments(self):
+        # ARRANGE #
+
+        arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                             LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+
+        src_file = PathArgumentWithRelativity('src-file.txt',
+                                              conf_rel_home(RelHomeOptionType.REL_HOME_CASE))
+
+        file_contents_arguments_constructor = TransformableContentsConstructor(
+            file(src_file.file_name, src_file.relativity)
+        )
+
+        file_contents_cases = [
+            NameAndValue(
+                'contents of existing file / without transformation',
+                file_contents_arguments_constructor.without_transformation()
+            ),
+            NameAndValue(
+                'contents of existing file / with transformation',
+                file_contents_arguments_constructor.with_transformation(arbitrary_transformer.name)
+            ),
+        ]
+
+        for phase_is_before_act in [False, True]:
+            for file_contents_case in file_contents_cases:
+                optional_arguments = file_contents_case.value
+                assert isinstance(optional_arguments, Arguments)  # Type info for IDE
+
+                with self.subTest(phase_is_before_act=phase_is_before_act,
+                                  file_contents_variant=file_contents_case.name,
+                                  first_line_argments=optional_arguments.first_line):
+                    source = remaining_source(
+                        '{dst_file_argument} {contents_arguments} superfluous_arg'.format(
+                            dst_file_argument='dst-file.txt',
+                            contents_arguments=optional_arguments.first_line,
+                        ),
+                        optional_arguments.following_lines)
+
+                    # ACT & ASSERT #
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        _just_parse(source,
+                                    phase_is_before_act=phase_is_before_act)
+
     def test_validation_pre_sds_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_home(self):
         self._check_of_invalid_src_file(lambda x: every_conf_rel_home(),
                                         Step.VALIDATE_PRE_SDS)

@@ -267,6 +267,7 @@ def _parse_file_maker_with_transformation(instruction_config: _InstructionConfig
     def parse_file(my_parser: TokenParserPrime) -> FileMaker:
         src_file = parse_file_ref_from_token_parser(instruction_config.src_rel_opt_arg_conf,
                                                     my_parser)
+        my_parser.report_superfluous_arguments_if_not_at_eol()
         return FileMakerForContentsFromExistingFile(instruction_config.source_info,
                                                     contents_transformer,
                                                     src_file)
