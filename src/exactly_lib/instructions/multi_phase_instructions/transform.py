@@ -9,7 +9,8 @@ from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info i
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import src_dst
-from exactly_lib.instructions.utils.transform import create_file_from_transformation_of_existing_file
+from exactly_lib.instructions.utils.file_creation import \
+    create_file_from_transformation_of_existing_file
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
