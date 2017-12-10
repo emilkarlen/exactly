@@ -24,6 +24,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
     HomeOrSdsPopulator, \
     HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.non_home_populator import NonHomePopulator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import rel_symbol_arg_str
 from exactly_lib_test.test_resources.file_structure import DirContents
@@ -121,6 +122,10 @@ class RelativityOptionConfiguration:
             raise ValueError('Not a {}: {}'.format(SymbolsConfiguration, symbols_configuration))
 
     @property
+    def is_rel_cwd(self) -> bool:
+        raise NotImplementedError('abstract method')
+
+    @property
     def option_string(self) -> str:
         return self._cli_option.option_string
 
@@ -154,6 +159,10 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     @property
     def relativity_option(self) -> RelOptionType:
         return self.relativity
+
+    @property
+    def is_rel_cwd(self) -> bool:
+        return self.relativity_option == RelOptionType.REL_CWD
 
     @property
     def exists_pre_sds(self) -> bool:
@@ -210,6 +219,9 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> sds_populator.SdsPopulator:
         raise NotImplementedError()
 
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
+        raise NotImplementedError('abstract method')
+
 
 class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurationForRelNonHome):
     def __init__(self,
@@ -224,6 +236,10 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
     @property
     def exists_pre_sds(self) -> bool:
         return False
+
+    @property
+    def is_rel_cwd(self) -> bool:
+        return self.relativity_non_home == RelNonHomeOptionType.REL_CWD
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
@@ -245,6 +261,10 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
         else:
             relativity_sds = RelSdsOptionType(self.relativity_non_home.value)
             return sds_populator.contents_in(relativity_sds, contents)
+
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
+        return sds_contents_check.non_home_dir_contains_exactly(self.root_dir__non_home,
+                                                                contents)
 
 
 class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHomeBase):

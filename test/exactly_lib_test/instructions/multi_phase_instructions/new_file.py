@@ -45,7 +45,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments 
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, \
     conf_rel_non_home, default_conf_rel_non_home, conf_rel_home, conf_rel_sds, RelativityOptionConfiguration, \
-    every_conf_rel_home
+    every_conf_rel_home, RelativityOptionConfigurationForRelNonHome
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, Dir, empty_dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -95,15 +95,16 @@ DISALLOWED_RELATIVITIES = [
     RelOptionType.REL_HOME_ACT,
 ]
 
-ALLOWED_SOURCE_FILE_RELATIVITIES = [
+ALLOWED_SRC_FILE_RELATIVITIES = [
     conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
     conf_rel_home(RelHomeOptionType.REL_HOME_ACT),
     conf_rel_sds(RelSdsOptionType.REL_ACT),
     conf_rel_sds(RelSdsOptionType.REL_TMP),
     conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
+    default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
 ]
 
-ALLOWED_RELATIVITIES = [
+ALLOWED_DST_FILE_RELATIVITIES = [
     conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
     conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
     conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
@@ -338,7 +339,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCaseBase):
 
 class TestSuccessfulScenariosWithNoContents(TestCaseBase):
     def test_single_file_in_root_dir(self):
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
+        for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_string):
                 file_name = 'file-name.txt'
                 expected_file = fs.empty_file(file_name)
@@ -358,7 +359,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     ))
 
     def test_single_file_in_non_existing_sub_dir(self):
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
+        for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_string):
                 sub_dir_name = 'sub-dir'
                 expected_file = fs.empty_file('file-name.txt')
@@ -381,7 +382,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     ))
 
     def test_single_file_in_existing_sub_dir(self):
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
+        for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_string):
                 sub_dir_name = 'sub-dir'
                 expected_file = fs.empty_file('file-name.txt')
@@ -412,7 +413,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
         here_doc_line = 'single line in here doc'
         expected_file_contents = here_doc_line + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
+        for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_string):
                 self._check(
                     remaining_source(
@@ -568,7 +569,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         self._check_of_invalid_src_file(lambda x: every_conf_rel_home(),
                                         Step.VALIDATE_PRE_SDS)
 
-    def test_main_result_SHOULD_be_failure_WHEN_source_is_not_an_existing_file_rel_non_home(self):
+    def test_main_result_SHOULD_fail_WHEN_source_is_not_an_existing_file_rel_non_home(self):
         def every_src_file_rel_conf(is_before_act: bool):
             return [
                 conf_rel_non_home(relativity)
@@ -580,16 +581,23 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
     def test_all_relativities__without_transformer(self):
         # ARRANGE #
 
-        source_file = fs.File('source-file.txt', 'contents of source file')
-        expected_file = fs.File('a-file-name.txt', source_file.contents)
+        src_file = fs.File('source-file.txt', 'contents of source file')
+        expected_file = fs.File('a-file-name.txt', src_file.contents)
 
-        for dst_rel_opt_conf in ALLOWED_RELATIVITIES:
-            for src_rel_opt_conf in ALLOWED_SOURCE_FILE_RELATIVITIES:
+        for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
+            for src_rel_opt_conf in ALLOWED_SRC_FILE_RELATIVITIES:
                 file_contents_arg = TransformableContentsConstructor(
-                    file(source_file.name, src_rel_opt_conf)
+                    file(src_file.name, src_rel_opt_conf)
                 ).without_transformation()
 
-                with self.subTest(relativity_option_string=dst_rel_opt_conf.option_string):
+                expected_non_home_contents = self._expected_non_home_contents(
+                    dst_rel_opt_conf,
+                    expected_file,
+                    src_rel_opt_conf,
+                    src_file)
+
+                with self.subTest(dst_relativity=dst_rel_opt_conf.option_string,
+                                  src_relativity=src_rel_opt_conf.option_string):
                     # ACT & ASSERT #
 
                     self._check(
@@ -603,21 +611,19 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                         ArrangementWithSds(
                             pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                             home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
-                                DirContents([source_file]))
+                                DirContents([src_file]))
                         ),
                         Expectation(
                             main_result=is_success(),
-                            side_effects_on_home=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.is_empty_list,
-                            main_side_effects_on_sds=non_home_dir_contains_exactly(dst_rel_opt_conf.root_dir__non_home,
-                                                                                   fs.DirContents([expected_file])),
+                            main_side_effects_on_sds=expected_non_home_contents,
                         ))
 
     def test_all_relativities__with_transformer(self):
         # ARRANGE #
 
-        source_file = fs.File('source-file.txt', 'contents of source file')
-        expected_file = fs.File('a-file-name.txt', source_file.contents.upper())
+        src_file = fs.File('source-file.txt', 'contents of source file')
+        expected_file = fs.File('a-file-name.txt', src_file.contents.upper())
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
                                             LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
@@ -626,11 +632,17 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                 container(to_upper_transformer.value),
         })
 
-        for dst_rel_opt_conf in ALLOWED_RELATIVITIES:
-            for src_rel_opt_conf in ALLOWED_SOURCE_FILE_RELATIVITIES:
+        for dst_rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
+            for src_rel_opt_conf in ALLOWED_SRC_FILE_RELATIVITIES:
                 file_contents_arg = TransformableContentsConstructor(
-                    file(source_file.name, src_rel_opt_conf)
+                    file(src_file.name, src_rel_opt_conf)
                 ).with_transformation(to_upper_transformer.name)
+
+                expected_non_home_contents = self._expected_non_home_contents(
+                    dst_rel_opt_conf,
+                    expected_file,
+                    src_rel_opt_conf,
+                    src_file)
 
                 with self.subTest(relativity_option_string=dst_rel_opt_conf.option_string):
                     # ACT & ASSERT #
@@ -646,17 +658,29 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                         ArrangementWithSds(
                             pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                             home_or_sds_contents=src_rel_opt_conf.populator_for_relativity_option_root(
-                                DirContents([source_file])),
+                                DirContents([src_file])),
                             symbols=symbols,
                         ),
                         Expectation(
                             main_result=is_success(),
-                            main_side_effects_on_sds=non_home_dir_contains_exactly(dst_rel_opt_conf.root_dir__non_home,
-                                                                                   fs.DirContents([expected_file])),
+                            main_side_effects_on_sds=expected_non_home_contents,
                             symbol_usages=asrt.matches_sequence([
                                 is_lines_transformer_reference_to(to_upper_transformer.name),
                             ])
                         ))
+
+    @staticmethod
+    def _expected_non_home_contents(dst_file_rel_opt_conf: RelativityOptionConfigurationForRelNonHome,
+                                    dst_file: fs.File,
+                                    src_file_rel_opt_conf: RelativityOptionConfiguration,
+                                    src_file: fs.File
+                                    ) -> asrt.ValueAssertion:
+        if dst_file_rel_opt_conf.option_string == src_file_rel_opt_conf.option_string or \
+                (dst_file_rel_opt_conf.is_rel_cwd and src_file_rel_opt_conf.is_rel_cwd):
+            return dst_file_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([dst_file,
+                                                                                          src_file]))
+        else:
+            return dst_file_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([dst_file]))
 
 
 class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
@@ -734,7 +758,7 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
             )
         ).without_transformation()
 
-        for rel_opt_conf in ALLOWED_RELATIVITIES:
+        for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             with self.subTest(relativity_option_string=rel_opt_conf.option_string):
                 self._check(
                     remaining_source(

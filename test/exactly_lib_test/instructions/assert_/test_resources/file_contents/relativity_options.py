@@ -11,6 +11,8 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    sub_dir_of_sds_contains_exactly
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator, \
     SdsPopulatorForSubDir, SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
@@ -19,6 +21,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import R
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_actions import \
     MkSubDirAndMakeItCurrentDirectory
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 _SUB_DIR_OF_ACT_DIR_THAT_IS_CWD = 'test-cwd'
 
@@ -66,6 +69,10 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
     def exists_pre_sds(self) -> bool:
         return False
 
+    @property
+    def is_rel_cwd(self) -> bool:
+        return True
+
     def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         return self.root_dir__sds(sds)
 
@@ -81,6 +88,10 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
 
     def populator_for_relativity_option_root__sds(self, contents: DirContents) -> SdsPopulator:
         return SdsPopulatorForSubDir(SUB_DIR_RESOLVER, contents)
+
+    def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
+        return sub_dir_of_sds_contains_exactly(SUB_DIR_RESOLVER.population_dir,
+                                               contents)
 
 
 MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY = MkSubDirAndMakeItCurrentDirectory(SUB_DIR_RESOLVER)
