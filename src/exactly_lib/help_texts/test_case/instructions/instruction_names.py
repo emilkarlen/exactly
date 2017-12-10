@@ -2,7 +2,11 @@ from exactly_lib.help_texts import conf_params
 
 RUN_INSTRUCTION_NAME = 'run'
 
-FILE_INSTRUCTION_NAME = 'file'
+NEW_FILE_INSTRUCTION_NAME = 'file'
+
+NEW_DIR_INSTRUCTION_NAME = 'dir'
+
+ENV_VAR_INSTRUCTION_NAME = 'env '
 
 TRANSFORM_FILE_INSTRUCTION_NAME = 'transform'
 
