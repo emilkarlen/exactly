@@ -12,14 +12,15 @@ from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.instruction_arguments import PROGRAM_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import instruction_names
-from exactly_lib.instructions.multi_phase_instructions.utils import file_creation
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
+from exactly_lib.instructions.utils import file_creation
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.transform import create_file_from_transformation_of_existing_file
+from exactly_lib.instructions.utils.file_creation import \
+    create_file_from_transformation_of_existing_file
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
@@ -30,17 +31,19 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     InstructionSourceInfo, instruction_log_dir
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
+from exactly_lib.test_case_utils import file_ref_check, file_properties
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
 from exactly_lib.test_case_utils.parse import parse_here_document
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION, argument_configuration_for_source_file__pre_act, \
     RelOptionArgumentConfiguration, RelOptionsConfiguration
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ValidationStep, \
+    SingleStepValidator
 from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecutionSetup
 from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
-from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -148,7 +151,8 @@ class FileMaker:
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             dst_file: FileRef) -> str:
+             dst_file: pathlib.Path,
+             ) -> str:
         """
         :param dst_file: The path of a (probably!) non-existing file
         :return: Error message, in case of error, else None
@@ -184,7 +188,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
     def __init__(self,
                  instruction_name: str,
                  phase_is_before_act: bool):
-        self._src_file_rel_opt_arg_conf = _src_rel_opt_arg_conf_for_phase(phase_is_before_act)
+        self._phase_is_before_act = phase_is_before_act
         self._instruction_name = instruction_name
 
     def parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
@@ -192,15 +196,28 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             assert isinstance(parser, TokenParserPrime)  # Type info for IDE
-            path_to_create = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
-            source_info = InstructionSourceInfo(first_line_number,
-                                                self._instruction_name)
 
-            file_maker = parse_file_maker(source_info, parser)
+            path_to_create = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
+            instruction_config = _InstructionConfig(
+                InstructionSourceInfo(first_line_number,
+                                      self._instruction_name),
+                _src_rel_opt_arg_conf_for_phase(self._phase_is_before_act)
+            )
+
+            file_maker = parse_file_maker(instruction_config, parser)
+
             return TheInstructionEmbryo(path_to_create, file_maker)
 
 
-def parse_file_maker(source_info: InstructionSourceInfo,
+class _InstructionConfig:
+    def __init__(self,
+                 source_info: InstructionSourceInfo,
+                 src_rel_opt_arg_conf: RelOptionArgumentConfiguration):
+        self.source_info = source_info
+        self.src_rel_opt_arg_conf = src_rel_opt_arg_conf
+
+
+def parse_file_maker(instruction_config: _InstructionConfig,
                      parser: TokenParserPrime) -> FileMaker:
     if not parser.is_at_eol:
         parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
@@ -213,14 +230,33 @@ def parse_file_maker(source_info: InstructionSourceInfo,
             return FileMakerForConstantContents(contents)
         else:
             contents_transformer = parse_optional_transformer_resolver(parser)
-            sub_process = parser.parse_mandatory_option({
-                STDOUT_OPTION: _parse_sub_process_setup,
-            })
-            return FileMakerForContentsFromSubProcess(source_info,
-                                                      contents_transformer,
-                                                      sub_process)
+            return _parse_file_maker_with_transformation(instruction_config,
+                                                         parser,
+                                                         contents_transformer)
     else:
         return FileMakerForConstantContents(string_resolver.string_constant(''))
+
+
+def _parse_file_maker_with_transformation(instruction_config: _InstructionConfig,
+                                          parser: TokenParserPrime,
+                                          contents_transformer: LinesTransformerResolver) -> FileMaker:
+    def parse_sub_process(my_parser: TokenParserPrime) -> FileMaker:
+        sub_process = _parse_sub_process_setup(my_parser)
+        return FileMakerForContentsFromSubProcess(instruction_config.source_info,
+                                                  contents_transformer,
+                                                  sub_process)
+
+    def parse_file(my_parser: TokenParserPrime) -> FileMaker:
+        src_file = parse_file_ref_from_token_parser(instruction_config.src_rel_opt_arg_conf,
+                                                    my_parser)
+        return FileMakerForContentsFromExistingFile(instruction_config.source_info,
+                                                    contents_transformer,
+                                                    src_file)
+
+    return parser.parse_mandatory_option({
+        STDOUT_OPTION: parse_sub_process,
+        FILE_OPTION: parse_file,
+    })
 
 
 def _parse_sub_process_setup(parser: TokenParserPrime) -> SubProcessExecutionSetup:
@@ -235,7 +271,7 @@ class FileMakerForConstantContents(FileMaker):
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             dst_path: pathlib.Path
+             dst_path: pathlib.Path,
              ) -> str:
         contents_str = self._contents.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
@@ -258,7 +294,7 @@ class FileMakerForContentsFromSubProcess(FileMaker):
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
-             dst_path: pathlib.Path
+             dst_path: pathlib.Path,
              ) -> str:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
@@ -283,6 +319,47 @@ class FileMakerForContentsFromSubProcess(FileMaker):
     def symbol_references(self) -> list:
         return (self._output_transformer.references +
                 self._sub_process.symbol_usages)
+
+
+class FileMakerForContentsFromExistingFile(FileMaker):
+    def __init__(self,
+                 source_info: InstructionSourceInfo,
+                 transformer: LinesTransformerResolver,
+                 src_path: FileRefResolver):
+        self._source_info = source_info
+        self._transformer = transformer
+        self._src_path = src_path
+
+        self._src_file_validator = file_ref_check.FileRefCheckValidator(
+            file_ref_check.FileRefCheck(src_path,
+                                        file_properties.must_exist_as(file_properties.FileType.REGULAR,
+                                                                      follow_symlinks=True)))
+
+    @property
+    def symbol_references(self) -> list:
+        return self._transformer.references + self._src_path.references
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return SingleStepValidator(ValidationStep.PRE_SDS,
+                                   self._src_file_validator)
+
+    def make(self,
+             environment: InstructionEnvironmentForPostSdsStep,
+             dst_path: pathlib.Path,
+             ) -> str:
+        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
+        src_validation_res = self._src_file_validator.validate_post_sds_if_applicable(path_resolving_env)
+        if src_validation_res:
+            return src_validation_res
+
+        transformer = self._transformer.resolve(path_resolving_env.symbols)
+        src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
+
+        return create_file_from_transformation_of_existing_file(src_path,
+                                                                dst_path,
+                                                                transformer,
+                                                                path_resolving_env.home_and_sds)
 
 
 def create_file(path_to_create: pathlib.Path,

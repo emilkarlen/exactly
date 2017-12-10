@@ -453,14 +453,14 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         src_file = fs.File('src-file.txt', 'contents of source file')
         src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
-        src_file_rel_option = RelOptionType.REL_HOME_CASE
+        src_file_rel_conf = conf_rel_home(RelHomeOptionType.REL_HOME_CASE)
 
         expected_dst_file = fs.File('dst-file-name.txt', src_file.contents.upper())
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', expected_dst_file.name)
         dst_file_rel_option = RelOptionType.REL_TMP
 
         file_contents_arg = TransformableContentsConstructor(
-            file(symbol_reference_syntax_for_name(src_file.name))
+            file(symbol_reference_syntax_for_name(src_file_symbol.name))
         ).with_transformation(to_upper_transformer.name)
 
         source = remaining_source(
@@ -472,7 +472,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         symbols = SymbolTable({
             src_file_symbol.name:
-                container(resolver_of_rel_option(src_file_rel_option,
+                container(resolver_of_rel_option(src_file_rel_conf.relativity_option,
                                                  PathPartAsFixedPath(src_file_symbol.value))),
 
             dst_file_symbol.name:
@@ -488,6 +488,8 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         self._check(source,
                     ArrangementWithSds(
                         symbols=symbols,
+                        hds_contents=src_file_rel_conf.populator_for_relativity_option_root__home(
+                            DirContents([src_file]))
                     ),
                     Expectation(
                         main_result=is_success(),
@@ -501,10 +503,11 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
                             is_lines_transformer_reference_to(to_upper_transformer.name),
 
-                            SymbolReference(src_file_symbol.name,
-                                            file_ref_or_string_reference_restrictions(
-                                                sut.SRC_OPT_ARG_CONF.options.accepted_relativity_variants))
-                            ,
+                            equals_symbol_reference(
+                                SymbolReference(src_file_symbol.name,
+                                                file_ref_or_string_reference_restrictions(
+                                                    sut.SRC_OPT_ARG_CONF.options.accepted_relativity_variants))
+                            ),
                         ]),
                     )
                     )
