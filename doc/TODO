@@ -1,5 +1,10 @@
 -*- org -*-
 
+* remove setup/validate_post_setup
+<2017-12-10 Sun>
+It is confusing that an instruction can report VALIDATION_ERROR
+after the execution has started - i.e. after some "heavy" setup may have
+taken place (e.g. populating a db) that needs cleanup.
 * assertions for process result - stdout, err, exitcode
 <2017-11-25 Sat>
 In the test of the git-hook, we wanted to test output of
