@@ -174,6 +174,10 @@ class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOp
         self._relativity_hds = relativity
         self._resolver_hds = relative_path_options.REL_HOME_OPTIONS_MAP[relativity].root_resolver
 
+    @property
+    def relativity_option_rel_home(self) -> RelHomeOptionType:
+        return self._relativity_hds
+
     def root_dir__hds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         return self._resolver_hds.from_home(hds)
 
