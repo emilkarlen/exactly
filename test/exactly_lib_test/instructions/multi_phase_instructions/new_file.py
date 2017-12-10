@@ -61,9 +61,12 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParseWithNoContents),
         unittest.makeSuite(TestFailingParseWithContents),
+
         unittest.makeSuite(TestSuccessfulScenariosWithNoContents),
         unittest.makeSuite(TestSuccessfulScenariosWithConstantContents),
+        unittest.makeSuite(TestScenariosWithContentsFromFile),
         unittest.makeSuite(TestScenariosWithContentsFromProcessOutput),
+
         unittest.makeSuite(TestParserConsumptionOfSource),
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
