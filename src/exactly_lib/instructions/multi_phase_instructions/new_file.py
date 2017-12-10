@@ -279,7 +279,7 @@ def _parse_file_maker_with_transformation(instruction_config: _InstructionConfig
 
 
 def _parse_sub_process_setup(parser: TokenParserPrime) -> SubProcessExecutionSetup:
-    parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, True)
+    parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, False)
     setup_parser = ShellCommandSetupParser()
     return setup_parser.parse_from_token_parser(parser)
 

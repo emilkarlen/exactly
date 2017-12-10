@@ -14,6 +14,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
     PathRelativityVariants, RelHomeOptionType, RelSdsOptionType
+from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
@@ -26,7 +27,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source, remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
-    is_at_beginning_of_line
+    is_at_beginning_of_line, source_is_not_at_end
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -657,6 +658,78 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             ])
                         ))
 
+    def test_new_line_before_mandatory_arguments_SHOULD_be_accepted(self):
+        # ARRANGE #
+
+        identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                            LinesTransformerResolverConstantTestImpl(IdentityLinesTransformer()))
+
+        symbols = SymbolTable({
+            identity_transformer.name: container(identity_transformer.value),
+        })
+
+        src_file = fs.File('src-file.txt', 'source file contents')
+        src_file_rel_opt_conf = conf_rel_home(RelHomeOptionType.REL_HOME_CASE)
+
+        expected_dst_file = fs.File('dst-file.txt', src_file.contents)
+        dst_file_rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_ACT)
+
+        file_arguments_constructor = TransformableContentsConstructor(
+            file(src_file.name,
+                 src_file_rel_opt_conf,
+                 with_new_line_after_output_option=True,
+                 ),
+            with_new_line_after_transformer=True,
+        )
+
+        file_contents_cases = [
+            NameAndValue(
+                'without transformation',
+                file_arguments_constructor.without_transformation()
+            ),
+            NameAndValue(
+                'with transformation',
+                file_arguments_constructor.with_transformation(identity_transformer.name)
+            ),
+        ]
+        text_on_line_after_instruction = ' text on line after instruction'
+
+        for file_contents_case in file_contents_cases:
+            optional_arguments = file_contents_case.value
+            assert isinstance(optional_arguments, Arguments)  # Type info for IDE
+
+            with self.subTest(file_contents_variant=file_contents_case.name,
+                              first_line_argments=optional_arguments.first_line):
+                source = remaining_source(
+                    '{rel_opt} {dst_file_name} {optional_arguments}'.format(
+                        rel_opt=dst_file_rel_opt_conf.option_string,
+                        dst_file_name=expected_dst_file.name,
+                        optional_arguments=optional_arguments.first_line,
+                    ),
+                    optional_arguments.following_lines +
+                    [text_on_line_after_instruction]
+                )
+
+                # ACT & ASSERT #
+
+                self._check(source,
+                            ArrangementWithSds(
+                                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                home_or_sds_contents=src_file_rel_opt_conf.populator_for_relativity_option_root(
+                                    DirContents([src_file])),
+                                symbols=symbols,
+                            ),
+                            Expectation(
+                                main_result=IS_SUCCESS,
+                                symbol_usages=asrt.anything_goes(),
+                                main_side_effects_on_sds=dst_file_rel_opt_conf.assert_root_dir_contains_exactly(
+                                    fs.DirContents([expected_dst_file])),
+                                source=source_is_not_at_end(
+                                    remaining_part_of_current_line=asrt.equals(text_on_line_after_instruction)
+                                )
+                            )
+                            )
+
     @staticmethod
     def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:
         symbol_usages_expectation = asrt.is_list_of(asrt.is_instance(SymbolReference))
@@ -895,6 +968,78 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                         main_result=IS_FAILURE,
                     ))
 
+    def test_new_line_before_mandatory_arguments_SHOULD_be_accepted(self):
+        # ARRANGE #
+
+        identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
+                                            LinesTransformerResolverConstantTestImpl(IdentityLinesTransformer()))
+
+        symbols = SymbolTable({
+            identity_transformer.name: container(identity_transformer.value),
+        })
+
+        text_to_print = 'text to print'
+        expected_dst_file = fs.File('dst-file.txt', text_to_print + '\n')
+
+        dst_file_rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_ACT)
+        assertion_on_non_home_contents = dst_file_rel_opt_conf.assert_root_dir_contains_exactly(
+            fs.DirContents([expected_dst_file]))
+
+        shell_contents_arguments_constructor = TransformableContentsConstructor(
+            stdout_from(
+                shell_command(shell_commands.command_that_prints_line_to_stdout(text_to_print)),
+                with_new_line_after_output_option=True,
+            ),
+            with_new_line_after_transformer=True,
+        )
+
+        file_contents_cases = [
+            NameAndValue(
+                'without transformation',
+                shell_contents_arguments_constructor.without_transformation()
+            ),
+            NameAndValue(
+                'with transformation',
+                shell_contents_arguments_constructor.with_transformation(identity_transformer.name)
+            ),
+        ]
+
+        text_on_line_after_instruction = ' text on line after instruction'
+
+        for file_contents_case in file_contents_cases:
+            optional_arguments = file_contents_case.value
+            assert isinstance(optional_arguments, Arguments)  # Type info for IDE
+
+            with self.subTest(file_contents_variant=file_contents_case.name,
+                              first_line_argments=optional_arguments.first_line):
+                source = remaining_source(
+                    '{rel_opt} {dst_file_name} {optional_arguments}'.format(
+                        rel_opt=dst_file_rel_opt_conf.option_string,
+                        dst_file_name=expected_dst_file.name,
+                        optional_arguments=optional_arguments.first_line,
+                    ),
+                    optional_arguments.following_lines +
+                    [text_on_line_after_instruction]
+                )
+
+                # ACT & ASSERT #
+
+                self._check(source,
+                            ArrangementWithSds(
+                                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                                symbols=symbols,
+                            ),
+                            Expectation(
+                                main_result=IS_SUCCESS,
+                                symbol_usages=asrt.anything_goes(),
+                                main_side_effects_on_sds=assertion_on_non_home_contents,
+                                source=source_is_not_at_end(
+                                    remaining_part_of_current_line=asrt.equals(text_on_line_after_instruction)
+                                )
+
+                            )
+                            )
+
 
 class TestSymbolReferences(TestCaseBase):
     def test_symbol_reference_in_file_argument(self):
@@ -1079,9 +1224,14 @@ def here_document_contents_arguments(lines: list) -> Arguments:
                      lines + ['EOF'])
 
 
-def stdout_from(program: Arguments) -> Arguments:
-    return Arguments(option_syntax(sut.STDOUT_OPTION) + ' ' + program.first_line,
-                     program.following_lines)
+def stdout_from(program: Arguments,
+                with_new_line_after_output_option: bool = False) -> Arguments:
+    if with_new_line_after_output_option:
+        return Arguments(option_syntax(sut.STDOUT_OPTION),
+                         [program.first_line] + program.following_lines)
+    else:
+        return Arguments(option_syntax(sut.STDOUT_OPTION) + ' ' + program.first_line,
+                         program.following_lines)
 
 
 def shell_command(command_line: str) -> Arguments:
@@ -1090,33 +1240,59 @@ def shell_command(command_line: str) -> Arguments:
 
 
 def file(file_name: str,
-         rel_option: RelativityOptionConfiguration = None) -> Arguments:
-    args = [option_syntax(sut.FILE_OPTION)]
+         rel_option: RelativityOptionConfiguration = None,
+         with_new_line_after_output_option: bool = False) -> Arguments:
+    first_line = [option_syntax(sut.FILE_OPTION)]
+    following_line_args = []
+
+    file_args = first_line
+    if with_new_line_after_output_option:
+        file_args = following_line_args
+
     if rel_option is not None:
-        args.append(rel_option.option_string)
-    args.append(file_name)
-    return Arguments(' '.join(args),
-                     [])
+        file_args.append(rel_option.option_string)
+    file_args.append(file_name)
+
+    following_lines = [] \
+        if not with_new_line_after_output_option \
+        else [' '.join(following_line_args)]
+
+    return Arguments(' '.join(first_line),
+                     following_lines)
 
 
 class TransformableContentsConstructor:
-    def __init__(self, after_transformer: Arguments):
-        self.after_transformer = after_transformer
+    def __init__(self,
+                 after_transformer: Arguments,
+                 with_new_line_after_transformer: bool = False):
+        self._with_new_line_after_transformer = with_new_line_after_transformer
+        self._after_transformer = after_transformer
 
     def without_transformation(self) -> Arguments:
-        return Arguments('= ' + self.after_transformer.first_line,
-                         self.after_transformer.following_lines)
+        return Arguments('= ' + self._after_transformer.first_line,
+                         self._after_transformer.following_lines)
 
     def with_transformation(self, transformer: str) -> Arguments:
-        first_line = ' '.join([
-            '=',
-            option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-            transformer,
-            self.after_transformer.first_line
-        ])
+        if self._with_new_line_after_transformer:
+            first_line = ' '.join([
+                '=',
+                option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+                transformer,
+            ])
 
-        return Arguments(first_line,
-                         self.after_transformer.following_lines)
+            return Arguments(first_line,
+                             [self._after_transformer.first_line] +
+                             self._after_transformer.following_lines)
+        else:
+            first_line = ' '.join([
+                '=',
+                option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+                transformer,
+                self._after_transformer.first_line
+            ])
+
+            return Arguments(first_line,
+                             self._after_transformer.following_lines)
 
     def with_and_without_transformer_cases(self, transformer_expr: str) -> list:
         return [
@@ -1134,11 +1310,6 @@ def complete_arguments(dst_file: PathArgumentWithRelativity,
 def source_of(arguments: Arguments) -> ParseSource:
     return remaining_source(arguments.first_line,
                             arguments.following_lines)
-
-
-def complete_source(dst_file: PathArgumentWithRelativity,
-                    contents_arguments: Arguments) -> ParseSource:
-    return source_of(complete_arguments(dst_file, contents_arguments))
 
 
 IS_FAILURE_OF_VALIDATION = asrt.is_instance(str)
