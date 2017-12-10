@@ -1,0 +1,44 @@
+-*- org -*-
+
+<2017-12-10 Sun>
+
+Currently, many instructions can be used in many phases - the multi
+phase instructions.
+
+But still they are different instructions in the source code - each phase adapts
+the multi phase implementation and treats it as a phase-specific instruction.
+
+* Drawbacks
+
+  - each "instance" has its own documentation
+    Resulting in multiple similair documentations
+    Too much documentation
+
+  - implementations often need to handle two cases: before and after the act
+    phase
+
+  - with a future macro functionality - it will be impossible to have a macro
+    that can be used in multiple phases: a macro will only be possible to
+    use in the same phase as it was defined.
+
+* Solution
+
+** introduce structure for "true" multi phase instructions (MPI)
+These are instructions that the system treats as identical regardless
+of which phase they appear in.
+
+** tc execution will tell each instruction which phase it is executed in
+
+** parser should parse a "maximal" ver of the instr - all allowed relativities
+
+** validation must be phase specific - e.g. is --rel-result allowed?
+Using --rel-result in the "setup" phase should give a validation error
+instead of, as today, a parse error.
+
+** html-doc: Move MPI to separate part
+
+** builtin help sysstem: doc for MPI: show single instr doc when instr search
+Now the help lists all instructions found with a given namn.
+The system should know if an instr is a MPI, and then display a single
+instr doc.
+

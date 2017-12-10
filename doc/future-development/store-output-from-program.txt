@@ -18,7 +18,7 @@ file PATH = CONTENTS
 CONTENTS ::= HERE-DOCUMENT
          ::| STRING
          ::| [TRANSFORMATION] --file PATH-OF-EXISTING-FILE
-         ::| [TRANSFORMATION] [--stdout|--stderr|--exitcode] SHELL-COMMAND-OR-PROGRAM
+         ::| [TRANSFORMATION] [--stdout|--stderr] SHELL-COMMAND-OR-PROGRAM
 
 SHELL-COMMAND-OR-PROGRAM ::= PROGRAM [ARGUMENT]...
                          ::| $ SHELL-COMMAND
