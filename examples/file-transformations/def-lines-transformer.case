@@ -1,5 +1,5 @@
 #
-# A "file-transformer" can be defined by the "def" instruction,
+# A "lines-transformer" can be defined by the "def" instruction,
 #
 # with may improve readability, and also makes the transformer reusable.
 #
@@ -7,9 +7,9 @@
 [setup]
 
 
-def file-transformer TURN_WINTER_TO_SPRING = replace 'winter' 'spring'
+def lines-transformer TURN_WINTER_TO_SPRING = replace 'winter' 'spring'
 
-def file-transformer TURN_WINTER_AND_SPRING_TO_SUMMER = TURN_WINTER_TO_SPRING | replace 'spring' 'summer'
+def lines-transformer TURN_WINTER_AND_SPRING_TO_SUMMER = TURN_WINTER_TO_SPRING | replace 'spring' 'summer'
 
 
 [act]
