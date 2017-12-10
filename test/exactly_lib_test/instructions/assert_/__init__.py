@@ -6,6 +6,7 @@ from exactly_lib_test.instructions.assert_ import \
     contents_of_dir, \
     run, \
     exitcode, \
+    new_file, \
     new_dir, \
     shell, \
     existence_of_file, \
@@ -17,22 +18,23 @@ from exactly_lib_test.instructions.assert_ import test_resources
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(test_resources.suite())
-    ret_val.addTest(utils.suite())
-    ret_val.addTest(exitcode.suite())
-    ret_val.addTest(contents_of_file.suite())
-    ret_val.addTest(contents_of_dir.suite())
-    ret_val.addTest(stdout.suite())
-    ret_val.addTest(stderr.suite())
-    ret_val.addTest(existence_of_file.suite())
-    ret_val.addTest(new_dir.suite())
-    ret_val.addTest(change_dir.suite())
-    ret_val.addTest(run.suite())
-    ret_val.addTest(shell.suite())
-    ret_val.addTest(env.suite())
-    ret_val.addTest(transform.suite())
-    return ret_val
+    return unittest.TestSuite([
+        test_resources.suite(),
+        utils.suite(),
+        exitcode.suite(),
+        contents_of_file.suite(),
+        contents_of_dir.suite(),
+        stdout.suite(),
+        stderr.suite(),
+        existence_of_file.suite(),
+        new_file.suite(),
+        new_dir.suite(),
+        change_dir.suite(),
+        run.suite(),
+        shell.suite(),
+        env.suite(),
+        transform.suite(),
+    ])
 
 
 if __name__ == '__main__':
