@@ -3,7 +3,7 @@
 
 # Utils
 
-def file-transformer GET_FIRST_LOG_MESSAGE = select line-num = 5 | replace '^\s*' ''
+def file-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num = 5 | replace '^\s*' ''
 
 
 # Initialize repo with single file
@@ -41,9 +41,9 @@ $ git commit -m "AB-123: commit message with issue number"
 [before-assert]
 
 
-$ git log > log.txt
-
-transform log.txt actual-commit-msg.txt GET_FIRST_LOG_MESSAGE
+file actual-commit-msg.txt = --transformed EXTRACT_FIRST_LOG_MESSAGE
+                             --stdout
+                             $ git log
 
 
 [assert]
