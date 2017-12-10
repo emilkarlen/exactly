@@ -1,0 +1,4 @@
+[setup]
+
+
+file dst-file = --file --rel-home src-file-in-home.txt
