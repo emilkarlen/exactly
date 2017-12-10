@@ -10,7 +10,6 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.instruction_arguments import PROGRAM_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
@@ -71,6 +70,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def __init__(self, name: str,
                  phase_is_before_act: bool):
         super().__init__(name, {})
+        self._src_rel_opt_arg_conf = _src_rel_opt_arg_conf_for_phase(phase_is_before_act)
 
         self._tp = TextParser({
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument.name,
@@ -83,7 +83,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         arguments = path_syntax.mandatory_path_with_optional_relativity(
-            _PATH_ARGUMENT,
+            _DST_PATH_ARGUMENT,
             REL_OPT_ARG_CONF.path_suffix_is_required)
         contents_arg = a.Single(a.Multiplicity.MANDATORY,
                                 a.Named(CONTENTS_ARGUMENT))
@@ -99,10 +99,12 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def syntax_element_descriptions(self) -> list:
         return [
             self._contents_sed(),
-            rel_path_doc.path_element(_PATH_ARGUMENT.name,
+            rel_path_doc.path_element(_DST_PATH_ARGUMENT.name,
                                       REL_OPT_ARG_CONF.options,
                                       docs.paras(the_path_of('a non-existing file.'))),
-            transformation_syntax_element_description()
+            transformation_syntax_element_description(),
+            rel_path_doc.path_element_2(self._src_rel_opt_arg_conf,
+                                        docs.paras(the_path_of('an existing file.'))),
         ]
 
     def _contents_sed(self) -> SyntaxElementDescription:
@@ -118,18 +120,26 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         command_arg = a.Single(a.Multiplicity.MANDATORY,
                                instruction_arguments.COMMAND_ARGUMENT)
 
-        run_program_token = a.Single(a.Multiplicity.MANDATORY,
-                                     a.Named(RUN_PROGRAM_TOKEN))
+        stdout_option = a.Single(a.Multiplicity.MANDATORY,
+                                 a.Option(STDOUT_OPTION))
 
-        run_program = a.Single(a.Multiplicity.MANDATORY,
-                               PROGRAM_ARGUMENT)
+        file_option = a.Single(a.Multiplicity.MANDATORY,
+                               a.Option(FILE_OPTION))
+
+        src_file_arg = a.Single(a.Multiplicity.MANDATORY,
+                                _SRC_PATH_ARGUMENT)
 
         invokation_variants = [
             invokation_variant_from_args([here_doc_arg]),
-            invokation_variant_from_args([optional_transformation_option, shell_command_token, command_arg],
+            invokation_variant_from_args([optional_transformation_option,
+                                          stdout_option,
+                                          shell_command_token,
+                                          command_arg],
                                          self._tp.fnap(_SHELL_COMMAND_DESCRIPTION)),
-            invokation_variant_from_args([optional_transformation_option, run_program_token, run_program],
-                                         self._tp.fnap(_PROGRAM_DESCRIPTION)),
+            invokation_variant_from_args([optional_transformation_option,
+                                          file_option,
+                                          src_file_arg],
+                                         self._tp.fnap(_FILE_DESCRIPTION)),
         ]
         return SyntaxElementDescription(CONTENTS_ARGUMENT,
                                         [],
@@ -383,13 +393,13 @@ def create_file(path_to_create: pathlib.Path,
                                      write_file)
 
 
-_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
+_DST_PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
 
 _SRC_PATH_ARGUMENT = a.Named('SOURCE-FILE-PATH')
 
 RELATIVITY_VARIANTS = RELATIVITY_VARIANTS_FOR_FILE_CREATION
 
-REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_PATH_ARGUMENT.name)
+REL_OPT_ARG_CONF = argument_configuration_for_file_creation(_DST_PATH_ARGUMENT.name)
 
 SRC_OPT_ARG_CONF = argument_configuration_for_source_file__pre_act(_SRC_PATH_ARGUMENT.name)
 
@@ -408,9 +418,6 @@ def transformation_syntax_element_description() -> SyntaxElementDescription:
     )
 
 
-SRC_PATH_ARGUMENT = instruction_arguments.SOURCE_PATH_ARGUMENT
-
-
 def _src_rel_opt_arg_conf_for_phase(phase_is_before_act: bool) -> RelOptionArgumentConfiguration:
     rel_option_types = _SRC_REL_OPTIONS__BEFORE_ACT if phase_is_before_act else _SRC_REL_OPTIONS__AFTER_ACT
     return _src_rel_opt_arg_conf(rel_option_types)
@@ -422,7 +429,7 @@ def _src_rel_opt_arg_conf(rel_option_types: set) -> RelOptionArgumentConfigurati
             rel_option_types,
             True),
             RelOptionType.REL_CWD),
-        SRC_PATH_ARGUMENT.name,
+        _SRC_PATH_ARGUMENT.name,
         True)
 
 
@@ -431,7 +438,7 @@ _SRC_REL_OPTIONS__BEFORE_ACT = set(RelOptionType).difference({RelOptionType.REL_
 _SRC_REL_OPTIONS__AFTER_ACT = set(RelOptionType)
 
 _TRANSFORMATION_DESCRIPTION = """\
-Transforms the program output.
+Transforms the original contents.
 """
 
 _SHELL_COMMAND_DESCRIPTION = """\
@@ -441,6 +448,6 @@ The output from a shell command.
 {SHELL_COMMAND_LINE} is the literal contents until end of line.
 """
 
-_PROGRAM_DESCRIPTION = """\
-Output from an executable program.
+_FILE_DESCRIPTION = """\
+The contents of an existing file.
 """

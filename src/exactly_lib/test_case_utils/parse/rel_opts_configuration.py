@@ -1,4 +1,5 @@
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
+from exactly_lib.util.cli_syntax.elements import argument as a
 
 
 class RelOptionsConfiguration(tuple):
@@ -47,6 +48,10 @@ class RelOptionArgumentConfiguration(tuple):
     @property
     def argument_syntax_name(self) -> str:
         return self[1]
+
+    @property
+    def argument(self) -> a.Named:
+        return a.Named(self.argument_syntax_name)
 
 
 RELATIVITY_VARIANTS_FOR_FILE_CREATION = PathRelativityVariants({RelOptionType.REL_ACT,
