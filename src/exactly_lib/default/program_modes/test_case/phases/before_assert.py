@@ -4,7 +4,7 @@ from exactly_lib.instructions.before_assert import change_dir, env, run, shell, 
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
-        (instruction_names.FILE_INSTRUCTION_NAME, new_file.setup),
+        (instruction_names.NEW_FILE_INSTRUCTION_NAME, new_file.setup),
         ('dir', new_dir.setup),
         ('env', env.setup),
         (instruction_names.RUN_INSTRUCTION_NAME, run.setup),
