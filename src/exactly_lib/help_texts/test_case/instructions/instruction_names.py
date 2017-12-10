@@ -2,6 +2,8 @@ from exactly_lib.help_texts import conf_params
 
 RUN_INSTRUCTION_NAME = 'run'
 
+FILE_INSTRUCTION_NAME = 'file'
+
 TRANSFORM_FILE_INSTRUCTION_NAME = 'transform'
 
 CHANGE_DIR_INSTRUCTION_NAME = 'cd'
