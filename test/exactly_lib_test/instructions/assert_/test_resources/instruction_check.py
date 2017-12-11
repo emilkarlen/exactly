@@ -1,3 +1,4 @@
+import os
 import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step
@@ -88,7 +89,12 @@ class Executor:
                 non_home_contents=self.arrangement.non_home_contents,
                 home_or_sds_contents=self.arrangement.home_or_sds_contents,
                 symbols=self.arrangement.symbols) as path_resolving_environment:
+            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             home_and_sds = path_resolving_environment.home_and_sds
+
+            cwd_after_sds = os.getcwd()
+            os.chdir(str(home_and_sds.hds.case_dir))
+
             environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
                                                                 self.arrangement.process_execution_settings.environ,
                                                                 symbols=self.arrangement.symbols)
@@ -99,6 +105,9 @@ class Executor:
                                                               phase_step.STEP__VALIDATE_PRE_SDS)
             if not validate_result.is_success:
                 return
+
+            os.chdir(cwd_after_sds)
+
             environment = i.InstructionEnvironmentForPostSdsStep(
                 environment.hds,
                 environment.environ,
@@ -113,7 +122,6 @@ class Executor:
                                                               phase_step.STEP__VALIDATE_POST_SETUP)
             if not validate_result.is_success:
                 return
-            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
             act_result = self.arrangement.act_result_producer.apply(ActEnvironment(home_and_sds))
             write_act_result(home_and_sds.sds, act_result)
             self._execute_main(environment, instruction)

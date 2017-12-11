@@ -1,13 +1,10 @@
 import os
 import os
 import unittest
-from time import strftime, localtime
 
-from exactly_lib import program_info
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common
@@ -18,21 +15,17 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
+    HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -149,62 +142,68 @@ class Executor:
                                                           'symbol-usages after parse')
         self.expectation.symbol_usages.apply_with_message(self.put, instruction.symbol_usages(),
                                                           'symbol-usages')
-        prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
-        with preserved_cwd():
-            with home_directory_structure(prefix=prefix + '-home',
-                                          contents=self.arrangement.hds_contents,
-                                          ) as hds:
-                environment = InstructionEnvironmentForPreSdsStep(hds,
-                                                                  self.arrangement.process_execution_settings.environ,
-                                                                  symbols=self.arrangement.symbols)
-                pre_validate_result = self._execute_pre_validate(environment, instruction)
-                self.expectation.symbol_usages.apply_with_message(self.put,
-                                                                  instruction.symbol_usages(),
-                                                                  'symbol-usages after ' +
-                                                                  phase_step.STEP__VALIDATE_PRE_SDS)
-                if not pre_validate_result.is_success:
-                    return
-                with sandbox_directory_structure(prefix=prefix + '-sds-') as sds:
-                    os.chdir(str(sds.act_dir))
-                    instruction_environment = i.InstructionEnvironmentForPostSdsStep(
-                        environment.hds,
-                        environment.environ,
-                        sds,
-                        phase_identifier.SETUP.identifier,
-                        timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
-                        symbols=self.arrangement.symbols)
-                    home_and_sds = HomeAndSds(hds, sds)
-                    path_resolving_environment = PathResolvingEnvironmentPreOrPostSds(home_and_sds,
-                                                                                      self.arrangement.symbols)
-                    self.arrangement.pre_contents_population_action.apply(path_resolving_environment)
-                    self.arrangement.sds_contents.populate_sds(sds)
-                    self.arrangement.non_home_contents.populate_non_home(sds)
-                    self.arrangement.home_or_sds_contents.populate_home_or_sds(home_and_sds)
-                    self.arrangement.post_sds_population_action.apply(path_resolving_environment)
-                    main_result = self._execute_main(sds, instruction_environment, instruction)
-                    self.expectation.symbol_usages.apply_with_message(self.put,
-                                                                      instruction.symbol_usages(),
-                                                                      'symbol-usages after ' +
-                                                                      phase_step.STEP__MAIN)
-                    if not main_result.is_success:
-                        return
-                    self.expectation.symbols_after_main.apply_with_message(
-                        self.put,
-                        instruction_environment.symbols,
-                        'symbols_after_main')
-                    self._execute_post_validate(instruction_environment, instruction)
-                    self.expectation.main_side_effects_on_home_and_sds.apply(self.put,
-                                                                             instruction_environment.home_and_sds)
-                    self.expectation.symbol_usages.apply_with_message(self.put,
-                                                                      instruction.symbol_usages(),
-                                                                      'symbol-usages after ' +
-                                                                      phase_step.STEP__VALIDATE_POST_SETUP)
-                    self.expectation.settings_builder.apply_with_message(
-                        self.put,
-                        SettingsBuilderAssertionModel(self.arrangement.initial_settings_builder,
-                                                      instruction_environment),
-                        'settings builder'
-                    )
+
+        with home_and_sds_with_act_as_curr_dir(
+                pre_contents_population_action=self.arrangement.pre_contents_population_action,
+                hds_contents=self.arrangement.hds_contents,
+                sds_contents=self.arrangement.sds_contents,
+                non_home_contents=self.arrangement.non_home_contents,
+                home_or_sds_contents=self.arrangement.home_or_sds_contents,
+                symbols=self.arrangement.symbols) as path_resolving_environment:
+
+            self.arrangement.post_sds_population_action.apply(path_resolving_environment)
+
+            cwd_after_sds = os.getcwd()
+            os.chdir(str(path_resolving_environment.hds.case_dir))
+
+            environment = InstructionEnvironmentForPreSdsStep(path_resolving_environment.hds,
+                                                              self.arrangement.process_execution_settings.environ,
+                                                              symbols=self.arrangement.symbols)
+            pre_validate_result = self._execute_pre_validate(environment, instruction)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__VALIDATE_PRE_SDS)
+            if not pre_validate_result.is_success:
+                return
+
+            os.chdir(cwd_after_sds)
+
+            instruction_environment = i.InstructionEnvironmentForPostSdsStep(
+                environment.hds,
+                environment.environ,
+                path_resolving_environment.sds,
+                phase_identifier.SETUP.identifier,
+                timeout_in_seconds=self.arrangement.process_execution_settings.timeout_in_seconds,
+                symbols=self.arrangement.symbols)
+
+            home_and_sds = path_resolving_environment.home_and_sds
+            sds = home_and_sds.sds
+
+            main_result = self._execute_main(sds, instruction_environment, instruction)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__MAIN)
+            if not main_result.is_success:
+                return
+            self.expectation.symbols_after_main.apply_with_message(
+                self.put,
+                instruction_environment.symbols,
+                'symbols_after_main')
+            self._execute_post_validate(instruction_environment, instruction)
+            self.expectation.main_side_effects_on_home_and_sds.apply(self.put,
+                                                                     instruction_environment.home_and_sds)
+            self.expectation.symbol_usages.apply_with_message(self.put,
+                                                              instruction.symbol_usages(),
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__VALIDATE_POST_SETUP)
+            self.expectation.settings_builder.apply_with_message(
+                self.put,
+                SettingsBuilderAssertionModel(self.arrangement.initial_settings_builder,
+                                              instruction_environment),
+                'settings builder'
+            )
 
     def _execute_pre_validate(self,
                               environment: InstructionEnvironmentForPreSdsStep,
