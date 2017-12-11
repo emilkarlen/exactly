@@ -1,0 +1,82 @@
+-*- org *-
+
+<2017-12-11 mån>
+
+A "fixture" is a setup of something, togheter with cleanup behaviour.
+
+The cleanup is performed only if the setup has been performed successfully.
+
+What matters is that setup and cleanup is specified as a single declaration,
+and the cleanup is only performed if the setup has been performed successfully.
+
+Exactly has [setup] and [cleanup], and a fixture can be defined in terms of
+instructions in [setup] with corresponding instructions in [cleanup].
+
+* Problem
+
+One scenario is problematic, regarding fixtures:
+ 1. An instruction in [setup] fails, so that the setup of the fixture F
+    is never performed.
+ 2. Execution continues with [cleanup], and the cleanup of the fixture F
+    is performed.
+
+The problem is that the cleanup of the fixture may be performed without
+the setup having taken place.
+
+* Solution
+
+The solution is to introduce a "fixture" functionality/instruction, that
+defines both setup and cleanup, and whos cleanup is performed only if
+the setup has been peformed successfully.
+
+The fixture setup and cleanup is defined in terms of an external program.
+It is given either "setup" or "cleanup" as the first argument, to
+specify the action it should perform.
+
+It is specified in [setup] only:
+
+----------------------------------------
+[setup]
+
+fixture my-fixture-program arg1 arg2
+========================================
+
+This is equivalent to:
+
+----------------------------------------
+[setup]
+
+run my-fixture-program "setup" arg1 arg2
+
+...
+
+[cleanup]
+
+run my-fixture-program "cleanup" arg1 arg2
+========================================
+
+And
+ - cleanup is not performed for a fixture whos setup has not been performed
+ - cleanup is not performed for a fixture whos setup failed
+
+* Implementation
+
+** New feature of the execution environment
+
+An instruction in [setup] may specify behaviour/instructions that
+are executed in [cleanup]
+
+** New instruction in [setup]
+
+----------------------------------------
+fixture PROGRAM [ARGUMENT]...
+----------------------------------------
+
+It is defined by
+ 1. run PROGRAM "setup" [ARGUMENT]...
+ 2. If (1) is successful, the following is added to be executed in [cleanup]:
+    run PROGRAM "cleanup" [ARGUMENT]...
+
+** Questions
+
+Should fixture cleanup:s be executed before or after instructions in [cleanup]?
