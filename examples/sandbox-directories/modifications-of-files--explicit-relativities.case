@@ -43,7 +43,7 @@ classify-files-by-moving-to-appropriate-dir GOOD .
 [assert]
 
 
-exitcode = 0
+exitcode == 0
 
 
 'All files should have been processed'
@@ -61,7 +61,7 @@ exists --file --rel-act output-files/good/a-good-file.txt
 
 'The dir for good files should contain only the file found to be good'
 
-dir-contents --rel-act output-files/good num-files = 1
+dir-contents --rel-act output-files/good num-files == 1
 
 
 
@@ -74,4 +74,4 @@ exists --file --rel-act output-files/bad/a-bad-file.txt
 
 'The dir for bad files should contain only the file found to be bad'
 
-dir-contents --rel-act output-files/bad num-files = 1
+dir-contents --rel-act output-files/bad num-files == 1

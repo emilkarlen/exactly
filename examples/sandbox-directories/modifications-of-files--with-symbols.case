@@ -48,7 +48,7 @@ classify-files-by-moving-to-appropriate-dir @[ARGUMENTS_TO_SUT]@
 [assert]
 
 
-exitcode = 0
+exitcode == 0
 
 
 'All files should have been processed'
@@ -66,7 +66,7 @@ exists --file @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@
 
 'The dir for good files should contain only the file found to be good'
 
-dir-contents @[OUTPUT_GOOD_DIR]@ num-files = 1
+dir-contents @[OUTPUT_GOOD_DIR]@ num-files == 1
 
 
 
@@ -79,7 +79,7 @@ exists --file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
 
 'The dir for bad files should contain only the file found to be bad'
 
-dir-contents @[OUTPUT_BAD_DIR]@ num-files = 1
+dir-contents @[OUTPUT_BAD_DIR]@ num-files == 1
 
 
 

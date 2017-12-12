@@ -38,7 +38,7 @@ classify-files-by-moving-to-appropriate-dir GOOD .
 [assert]
 
 
-exitcode = 0
+exitcode == 0
 
 
 'All files should have been processed'
@@ -56,7 +56,7 @@ exists --file output-files/good/a-good-file.txt
 
 'The dir for good files should contain only the file found to be good'
 
-dir-contents output-files/good num-files = 1
+dir-contents output-files/good num-files == 1
 
 
 
@@ -69,7 +69,7 @@ exists --file output-files/bad/a-bad-file.txt
 
 'The dir for bad files should contain only the file found to be bad'
 
-dir-contents output-files/bad num-files = 1
+dir-contents output-files/bad num-files == 1
 
 
 

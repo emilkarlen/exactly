@@ -17,4 +17,4 @@ EOF
 transform  bike-ratings.txt  great-bikes.txt  select regex 'great'
 
 
-contents  great-bikes.txt  num-lines = 2
+contents  great-bikes.txt  num-lines == 2

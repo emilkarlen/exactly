@@ -14,9 +14,7 @@ from exactly_lib_test.type_system.logic.test_resources.matcher_assertions import
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParseIntegerMatcher),
-    ])
+    return unittest.makeSuite(TestParseIntegerMatcher)
 
 
 _NAME_OF_LHS = 'LHS'
@@ -44,7 +42,7 @@ class TestParseIntegerMatcher(unittest.TestCase):
             (
                 'no arguments, but it appears on the following line',
                 remaining_source('',
-                                 ['= 1']),
+                                 [comparators.EQ.name + ' 1']),
             ),
             (
                 'invalid OPERATOR',
@@ -52,24 +50,24 @@ class TestParseIntegerMatcher(unittest.TestCase):
             ),
             (
                 'quoted OPERATOR',
-                remaining_source('"=" 69'),
+                remaining_source('"{op}" 69'.format(op=comparators.EQ.name)),
             ),
             (
                 'missing INTEGER',
-                remaining_source('='),
+                remaining_source(comparators.EQ.name),
             ),
             (
                 'missing INTEGER, but it appears on following line',
-                remaining_source('=',
+                remaining_source(comparators.EQ.name,
                                  ['72']),
             ),
             (
                 'invalid INTEGER',
-                remaining_source('= 0.5'),
+                remaining_source(comparators.EQ.name + ' 0.5'),
             ),
             (
                 'invalid INTEGER expression',
-                remaining_source('= "1 + [50]"'),
+                remaining_source(comparators.EQ.name + ' "1 + [50]"'),
             ),
         ]
         for name, source in cases:
@@ -81,8 +79,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
     def test_successful_parse(self):
         # ARRANGE #
         cases = [
-            Case('= plain integer',
-                 remaining_source('= 1'),
+            Case(comparators.EQ.name + ' plain integer',
+                 remaining_source(comparators.EQ.name + ' 1'),
                  source_assertion=
                  assert_source(is_at_eol=asrt.is_true),
                  result_assertion=is_equivalent_to(matcher_of(comparators.EQ, 1),
@@ -91,8 +89,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                        model_of(1),
                                                        model_of(2),
                                                    ])),
-            Case('!=',
-                 remaining_source('!= 1'),
+            Case(comparators.NE.name,
+                 remaining_source(comparators.NE.name + ' 1'),
                  source_assertion=
                  assert_source(is_at_eol=asrt.is_true),
                  result_assertion=is_equivalent_to(matcher_of(comparators.NE, 1),
@@ -101,8 +99,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                        model_of(1),
                                                        model_of(2),
                                                    ])),
-            Case('<',
-                 remaining_source('< 69'),
+            Case(comparators.LT.name,
+                 remaining_source(comparators.LT.name + ' 69'),
                  source_assertion=
                  assert_source(is_at_eol=asrt.is_true),
                  result_assertion=is_equivalent_to(matcher_of(comparators.LT, 69),
@@ -111,8 +109,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                        model_of(69),
                                                        model_of(72),
                                                    ])),
-            Case('<=',
-                 remaining_source('<= 69'),
+            Case(comparators.LTE.name,
+                 remaining_source(comparators.LTE.name + '  69'),
                  source_assertion=
                  assert_source(is_at_eol=asrt.is_true),
                  result_assertion=is_equivalent_to(matcher_of(comparators.LTE, 69),
@@ -121,8 +119,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                        model_of(69),
                                                        model_of(72),
                                                    ])),
-            Case('>',
-                 remaining_source('> 69'),
+            Case(comparators.GT.name,
+                 remaining_source(comparators.GT.name + ' 69'),
                  source_assertion=
                  assert_source(is_at_eol=asrt.is_true),
                  result_assertion=is_equivalent_to(matcher_of(comparators.GT, 69),
@@ -131,8 +129,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                        model_of(69),
                                                        model_of(72),
                                                    ])),
-            Case('>=',
-                 remaining_source('>= 69'),
+            Case(comparators.GTE.name,
+                 remaining_source(comparators.GTE.name + ' 69'),
                  source_assertion=
                  assert_source(is_at_eol=asrt.is_true),
                  result_assertion=is_equivalent_to(matcher_of(comparators.GTE, 69),
@@ -141,8 +139,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                        model_of(69),
                                                        model_of(72),
                                                    ])),
-            Case('>= following content on line',
-                 remaining_source('>= 72 next'),
+            Case(comparators.GTE.name + ' following content on line',
+                 remaining_source(comparators.GTE.name + ' 72 next'),
                  source_assertion=
                  assert_source(remaining_part_of_current_line=asrt.equals('next')),
                  result_assertion=is_equivalent_to(matcher_of(comparators.GTE, 72),
@@ -151,8 +149,8 @@ class TestParseIntegerMatcher(unittest.TestCase):
                                                        model_of(72),
                                                        model_of(80),
                                                    ])),
-            Case('= integer expression',
-                 remaining_source('= "69+72"'),
+            Case(comparators.EQ.name + ' integer expression',
+                 remaining_source('== "69+72"'),
                  source_assertion=
                  assert_source(is_at_eol=asrt.is_true),
                  result_assertion=is_equivalent_to(matcher_of(comparators.EQ, 69 + 72),

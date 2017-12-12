@@ -76,8 +76,8 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
 
     def test_invalid_arguments_without_symbol_references(self):
         test_cases = [
-            ' = a',
-            '> 1.5',
+            ' {op} a'.format(op=comparators.EQ.name),
+            '{op} 1.5'.format(op=comparators.GT.name),
         ]
         for condition_str in test_cases:
             with self.subTest(msg=condition_str):
@@ -95,7 +95,8 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
     def test_invalid_arguments_with_symbol_references(self):
         symbol = SymbolWithReferenceSyntax('symbol_name')
         operand_arg_with_symbol_ref_list = [
-            ' = {}'.format(symbol),
+            ' {op} {sym}'.format(op=comparators.EQ.name,
+                                 sym=symbol),
         ]
         invalid_symbol_values = [
             'not_a_number',

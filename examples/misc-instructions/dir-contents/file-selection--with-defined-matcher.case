@@ -13,4 +13,4 @@ def file-matcher MY_SELECTION = type file && name '*A.txt'
 [assert]
 
 
-dir-contents my-dir --selection MY_SELECTION num-files = 1
+dir-contents my-dir --selection MY_SELECTION num-files == 1

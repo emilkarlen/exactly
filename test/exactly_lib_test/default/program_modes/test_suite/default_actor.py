@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.processing.exit_values import EXECUTION__PASS
+from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.program_modes.test_case.act_phase import PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0
@@ -38,7 +39,7 @@ class SuiteWithSingleTestCaseThatInvokesSuccessfulCommandUsingDefaultActor(
             File('the.case', lines_content(['[act]',
                                             'system-under-test',
                                             '[assert]',
-                                            'exitcode = 0'])),
+                                            'exitcode {eq} 0'.format(eq=comparators.EQ.name)])),
             python_executable_file('system-under-test',
                                    PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0)
         ])
