@@ -33,7 +33,8 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
+from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
+    command_that_exits_with_code
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -45,7 +46,9 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
         # TestFailingValidationPreSds_TODO,
         # TestFailingWhenDestinationFileExists_TODO,
         TestContentsFromExistingFile_Successfully,
+
         TestContentsFromOutputOfShellCommand_Successfully,
+        TestContentsFromOutputOfShellCommand_FailureDueToNonZeroExitCodeFromCommand,
     ]
     suites = [tc(conf)
               for tc in common_test_cases]
@@ -242,6 +245,28 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
                     main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                            fs.DirContents([expected_file])),
                 ))
+
+
+class TestContentsFromOutputOfShellCommand_FailureDueToNonZeroExitCodeFromCommand(TestCaseBase):
+    def runTest(self):
+        shell_contents_arguments = TransformableContentsConstructor(
+            new_file_tr.stdout_from(
+                new_file_tr.shell_command(command_that_exits_with_code(1))
+            )
+        )
+
+        instruction_arguments = '{file_name} {shell_command_with_non_zero_exit_code}'.format(
+            file_name='dst-file-name.txt',
+            shell_command_with_non_zero_exit_code=shell_contents_arguments.without_transformation().first_line,
+        )
+
+        for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+            self.conf.run_test(
+                self,
+                source,
+                self.conf.arrangement(),
+                self.conf.expect_hard_error_of_main(),
+            )
 
 
 class TestFailingValidationPreSds_TODO(TestCaseBase):
