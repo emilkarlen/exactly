@@ -41,7 +41,7 @@ $ git commit -m "AB-123: commit message with issue number"
 [before-assert]
 
 
-file actual-commit-msg.txt = --transformed EXTRACT_FIRST_LOG_MESSAGE
+file actual-commit-msg.txt = --transformed-by EXTRACT_FIRST_LOG_MESSAGE
                              --stdout
                              $ git log
 
