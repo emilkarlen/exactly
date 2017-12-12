@@ -98,4 +98,7 @@ The result is {HARD_ERROR} if {COMMAND} exits with a non-zero exit code.
 
 _COMMAND_SYNTAX_ELEMENT_DESCRIPTION = """\
 Something that is understood by the current operating system's shell.
+
+
+It is the literal text until end of line.
 """
