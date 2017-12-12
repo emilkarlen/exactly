@@ -7,7 +7,7 @@ dir checked-dir
 [assert]
 
 
-dir-contents checked-dir ! num-files = 0
+dir-contents checked-dir ! num-files == 0
 
 
 [act]

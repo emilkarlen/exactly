@@ -16,4 +16,4 @@ bin/do-something-with-dir my-dir
 # The error message should tell what was expected and what was found:
 # (now only expected is displayed)
 
-dir-contents my-dir --selection type file & name '*A.txt' num-files = 1
+dir-contents my-dir --selection type file & name '*A.txt' num-files == 1

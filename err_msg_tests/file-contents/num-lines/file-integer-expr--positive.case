@@ -12,4 +12,4 @@ def string ONE = 1
 [assert]
 
 
-contents a-file.txt num-lines = "@[ONE]@ + 1"
+contents a-file.txt num-lines == "@[ONE]@ + 1"
