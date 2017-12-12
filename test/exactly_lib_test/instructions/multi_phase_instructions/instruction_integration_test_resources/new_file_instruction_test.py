@@ -8,6 +8,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHomeOptionType, RelNonHomeOptionType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.instructions.multi_phase_instructions import new_file as new_file_tr
 from exactly_lib_test.instructions.multi_phase_instructions import transform
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
@@ -21,6 +22,8 @@ from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_tr
     LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
+    non_home_dir_contains_exactly
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
@@ -30,6 +33,7 @@ from exactly_lib_test.test_case_utils.test_resources.relativity_options import c
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -40,7 +44,8 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
         TestSymbolUsages,
         # TestFailingValidationPreSds_TODO,
         # TestFailingWhenDestinationFileExists_TODO,
-        TestSuccessfullyCreateFileWithContentsFromExistingFile,
+        TestContentsFromExistingFile_Successfully,
+        TestContentsFromOutputOfShellCommand_Successfully,
     ]
     suites = [tc(conf)
               for tc in common_test_cases]
@@ -146,7 +151,7 @@ class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult_TODO(TestCaseBase)
         self.conf.parser().parse(source)
 
 
-class TestSuccessfullyCreateFileWithContentsFromExistingFile(TestCaseBase):
+class TestContentsFromExistingFile_Successfully(TestCaseBase):
     def runTest(self):
         # ARRANGE #
 
@@ -192,6 +197,50 @@ class TestSuccessfullyCreateFileWithContentsFromExistingFile(TestCaseBase):
                     symbol_usages=asrt.matches_sequence([
                         is_lines_transformer_reference_to(to_upper_transformer.name),
                     ])
+                ))
+
+
+class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
+    def runTest(self):
+        text_printed_by_shell_command = 'single line of output'
+
+        expected_file_contents = text_printed_by_shell_command.upper() + '\n'
+        expected_file = fs.File('dst-file.txt', expected_file_contents)
+
+        to_upper_transformer = NameAndValue('TO_UPPER_CASE',
+                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            to_upper_transformer.name: container(to_upper_transformer.value)
+        })
+
+        rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_TMP)
+
+        shell_contents_arguments = TransformableContentsConstructor(
+            new_file_tr.stdout_from(
+                new_file_tr.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
+            )
+        ).with_transformation(to_upper_transformer.name)
+
+        instruction_arguments = '{rel_opt} {file_name} {shell_contents_arguments}'.format(
+            rel_opt=rel_opt_conf.option_string,
+            file_name=expected_file.file_name,
+            shell_contents_arguments=shell_contents_arguments.first_line,
+        )
+
+        for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+            self.conf.run_test(
+                self,
+                source,
+                self.conf.arrangement(
+                    pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                    symbols=symbols
+                ),
+                self.conf.expect_success(
+                    symbol_usages=asrt.matches_sequence([
+                        is_lines_transformer_reference_to(to_upper_transformer.name),
+                    ]),
+                    main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
+                                                                           fs.DirContents([expected_file])),
                 ))
 
 
