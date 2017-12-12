@@ -43,12 +43,12 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     common_test_cases = [
         TestSymbolUsages,
-        # TestFailingValidationPreSds_TODO,
-        # TestFailingWhenDestinationFileExists_TODO,
         TestContentsFromExistingFile_Successfully,
 
         TestContentsFromOutputOfShellCommand_Successfully,
-        TestContentsFromOutputOfShellCommand_FailureDueToNonZeroExitCodeFromCommand,
+
+        TestValidatinErrorPreSds_DueToNonExistingSourceFile,
+        TestHardError_DueToNonZeroExitCodeFromShellCommand,
     ]
     suites = [tc(conf)
               for tc in common_test_cases]
@@ -247,7 +247,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
                 ))
 
 
-class TestContentsFromOutputOfShellCommand_FailureDueToNonZeroExitCodeFromCommand(TestCaseBase):
+class TestHardError_DueToNonZeroExitCodeFromShellCommand(TestCaseBase):
     def runTest(self):
         shell_contents_arguments = TransformableContentsConstructor(
             new_file_tr.stdout_from(
@@ -269,21 +269,35 @@ class TestContentsFromOutputOfShellCommand_FailureDueToNonZeroExitCodeFromComman
             )
 
 
-class TestFailingValidationPreSds_TODO(TestCaseBase):
+class TestValidatinErrorPreSds_DueToNonExistingSourceFile(TestCaseBase):
     def runTest(self):
-        non_existing_src_file = PathArgumentWithRelativity('src-file',
-                                                           conf_rel_any(RelOptionType.REL_HOME_CASE))
-        dst_file = PathArgumentWithRelativity('dst-file',
+        # ARRANGE #
+        dst_file = PathArgumentWithRelativity('dst-file.txt',
                                               conf_rel_any(RelOptionType.REL_TMP))
-        source = remaining_source(transform.ArgumentsConstructor(non_existing_src_file, dst_file).construct())
-        self.conf.run_test(
-            self,
-            source,
-            arrangement=
-            self.conf.arrangement(),
-            expectation=
-            self.conf.expect_failing_validation_pre_sds()
+
+        src_file_rel_conf = conf_rel_home(RelHomeOptionType.REL_HOME_CASE)
+        src_file = PathArgumentWithRelativity('non-existing-source-file.txt',
+                                              src_file_rel_conf)
+
+        contents_argument = TransformableContentsConstructor(
+            new_file_tr.file(src_file.file_name, src_file.relativity)
+        ).without_transformation()
+
+        instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(
+            rel_opt=dst_file.relativity.option_string,
+            file_name=dst_file.file_name,
+            contents_arguments=contents_argument.first_line,
         )
+        for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
+            # ACT & ASSERT#
+            self.conf.run_test(
+                self,
+                source,
+                arrangement=
+                self.conf.arrangement(),
+                expectation=
+                self.conf.expect_failing_validation_pre_sds()
+            )
 
 
 class TestFailingWhenDestinationFileExists_TODO(TestCaseBase):
