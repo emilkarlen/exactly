@@ -9,10 +9,8 @@ from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHomeOptionType, RelNonHomeOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions import new_file as new_file_tr
-from exactly_lib_test.instructions.multi_phase_instructions import transform
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
-from exactly_lib_test.instructions.multi_phase_instructions.new_file import TransformableContentsConstructor, file
 from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
@@ -21,7 +19,6 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to, \
     LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
@@ -31,7 +28,7 @@ from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity im
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, conf_rel_home, \
     conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
     command_that_exits_with_code
@@ -47,16 +44,17 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
 
         TestContentsFromOutputOfShellCommand_Successfully,
 
-        TestValidatinErrorPreSds_DueToNonExistingSourceFile,
-        TestHardError_DueToNonZeroExitCodeFromShellCommand,
+        TestValidationErrorPreSds_DueTo_NonExistingSourceFile,
+        TestHardError_DueTo_NonZeroExitCodeFromShellCommand,
     ]
     suites = [tc(conf)
-              for tc in common_test_cases]
+              for tc in common_test_cases
+              ]
 
-    # if conf.phase_is_after_act():
-    #     suites.append(TestParseShouldSucceedWhenRelativityOfSourceIsRelResult_TODO(conf))
-    # else:
-    #     suites.append(TestParseShouldFailWhenRelativityOfSourceIsRelResult_TODO(conf))
+    if conf.phase_is_after_act():
+        suites.append(TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(conf))
+    else:
+        suites.append(TestParseShouldFailWhenRelativityOfSourceIsRelResult(conf))
 
     suites.append(suite_for_documentation_instance(conf.documentation()))
 
@@ -85,8 +83,8 @@ class TestSymbolUsages(TestCaseBase):
         expected_dst_file = fs.File('dst-file-name.txt', src_file.contents.upper())
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', expected_dst_file.name)
 
-        file_contents_arg = TransformableContentsConstructor(
-            file(symbol_reference_syntax_for_name(src_file_symbol.name))
+        file_contents_arg = new_file_tr.TransformableContentsConstructor(
+            new_file_tr.file(symbol_reference_syntax_for_name(src_file_symbol.name))
         ).with_transformation(to_upper_transformer.name)
 
         source = remaining_source(
@@ -125,33 +123,41 @@ class TestSymbolUsages(TestCaseBase):
                                                          instruction.symbol_usages())
 
 
-class TestParseShouldFailWhenRelativityOfSourceIsRelResult_TODO(TestCaseBase):
+class TestParseShouldFailWhenRelativityOfSourceIsRelResult(TestCaseBase):
     def runTest(self):
         # ARRANGE #
-        src_file_arg = PathArgumentWithRelativity('src-file.txt',
-                                                  conf_rel_any(RelOptionType.REL_RESULT))
-        dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
-                                                  conf_rel_any(RelOptionType.REL_ACT))
-        instruction_argument = transform.ArgumentsConstructor(src_file_arg,
-                                                              dst_file_arg).construct()
-        source = remaining_source(instruction_argument)
+        instruction_arguments = instruction_arguments_for_src_file_rel_result()
+
+        source = remaining_source(instruction_arguments)
+        # ACT #
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             # ACT #
             self.conf.parser().parse(source)
 
 
-class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult_TODO(TestCaseBase):
+class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(TestCaseBase):
     def runTest(self):
         # ARRANGE #
-        src_file_arg = PathArgumentWithRelativity('src-file.txt',
-                                                  conf_rel_any(RelOptionType.REL_RESULT))
-        dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
-                                                  conf_rel_any(RelOptionType.REL_ACT))
-        instruction_argument = transform.ArgumentsConstructor(src_file_arg,
-                                                              dst_file_arg).construct()
-        source = remaining_source(instruction_argument)
+        instruction_arguments = instruction_arguments_for_src_file_rel_result()
+
+        source = remaining_source(instruction_arguments)
         # ACT #
         self.conf.parser().parse(source)
+
+
+def instruction_arguments_for_src_file_rel_result() -> str:
+    src_file_arg = PathArgumentWithRelativity('src-file.txt',
+                                              conf_rel_any(RelOptionType.REL_RESULT))
+    dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
+                                              conf_rel_any(RelOptionType.REL_ACT))
+    contents_arg = new_file_tr.TransformableContentsConstructor(
+        new_file_tr.file(src_file_arg.file_name, src_file_arg.relativity)
+    ).without_transformation()
+
+    return '{dst_file_arg} {contents_arguments}'.format(
+        dst_file_arg=dst_file_arg.argument_str,
+        contents_arguments=contents_arg.first_line
+    )
 
 
 class TestContentsFromExistingFile_Successfully(TestCaseBase):
@@ -171,8 +177,8 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
                 container(to_upper_transformer.value),
         })
 
-        file_contents_arg = TransformableContentsConstructor(
-            file(src_file.name, src_rel_opt_conf)
+        file_contents_arg = new_file_tr.TransformableContentsConstructor(
+            new_file_tr.file(src_file.name, src_rel_opt_conf)
         ).with_transformation(to_upper_transformer.name)
 
         expected_non_home_contents = dst_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([expected_file]))
@@ -218,7 +224,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
 
         rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_TMP)
 
-        shell_contents_arguments = TransformableContentsConstructor(
+        shell_contents_arguments = new_file_tr.TransformableContentsConstructor(
             new_file_tr.stdout_from(
                 new_file_tr.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
             )
@@ -247,9 +253,9 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
                 ))
 
 
-class TestHardError_DueToNonZeroExitCodeFromShellCommand(TestCaseBase):
+class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
     def runTest(self):
-        shell_contents_arguments = TransformableContentsConstructor(
+        shell_contents_arguments = new_file_tr.TransformableContentsConstructor(
             new_file_tr.stdout_from(
                 new_file_tr.shell_command(command_that_exits_with_code(1))
             )
@@ -269,7 +275,7 @@ class TestHardError_DueToNonZeroExitCodeFromShellCommand(TestCaseBase):
             )
 
 
-class TestValidatinErrorPreSds_DueToNonExistingSourceFile(TestCaseBase):
+class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseBase):
     def runTest(self):
         # ARRANGE #
         dst_file = PathArgumentWithRelativity('dst-file.txt',
@@ -279,7 +285,7 @@ class TestValidatinErrorPreSds_DueToNonExistingSourceFile(TestCaseBase):
         src_file = PathArgumentWithRelativity('non-existing-source-file.txt',
                                               src_file_rel_conf)
 
-        contents_argument = TransformableContentsConstructor(
+        contents_argument = new_file_tr.TransformableContentsConstructor(
             new_file_tr.file(src_file.file_name, src_file.relativity)
         ).without_transformation()
 
@@ -298,31 +304,3 @@ class TestValidatinErrorPreSds_DueToNonExistingSourceFile(TestCaseBase):
                 expectation=
                 self.conf.expect_failing_validation_pre_sds()
             )
-
-
-class TestFailingWhenDestinationFileExists_TODO(TestCaseBase):
-    def runTest(self):
-        src_file_relativity = RelHomeOptionType.REL_HOME_ACT
-        src_file_arg = PathArgumentWithRelativity('src-file',
-                                                  conf_rel_home(src_file_relativity))
-        dst_file_arg = PathArgumentWithRelativity('dst-file',
-                                                  conf_rel_any(RelOptionType.REL_TMP))
-        source = remaining_source(transform.ArgumentsConstructor(src_file_arg, dst_file_arg).construct())
-        self.conf.run_test(
-            self,
-            source,
-            arrangement=
-            self.conf.arrangement(
-                hds_contents=home_populators.contents_in(
-                    src_file_relativity,
-                    DirContents([
-                        empty_file(src_file_arg.file_name),
-                    ])),
-                home_or_sds_contents=dst_file_arg.relativity.populator_for_relativity_option_root(
-                    DirContents([
-                        empty_file(dst_file_arg.file_name),
-                    ]))
-            ),
-            expectation=
-            self.conf.expect_hard_error_of_main()
-        )
