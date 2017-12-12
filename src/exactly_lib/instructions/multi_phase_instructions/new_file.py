@@ -443,7 +443,7 @@ _SHELL_COMMAND_DESCRIPTION = """\
 The output from a shell command.
 
 
-{SHELL_COMMAND_LINE} is the literal contents until end of line.
+{SHELL_COMMAND_LINE} is the literal text until end of line.
 """
 
 _FILE_DESCRIPTION = """\
