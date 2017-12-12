@@ -12,6 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducer, \
@@ -129,21 +130,19 @@ class Executor(InstructionExecutionBase):
             home_and_sds = path_resolving_environment.home_and_sds
             self.arrangement.post_sds_population_action.apply(path_resolving_environment)
 
-            cwd_after_sds = os.getcwd()
-            os.chdir(str(home_and_sds.hds.case_dir))
+            with preserved_cwd():
+                os.chdir(str(home_and_sds.hds.case_dir))
 
-            environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
-                                                                self.arrangement.process_execution_settings.environ,
-                                                                symbols=self.arrangement.symbols)
-            validate_result = self._execute_validate_pre_sds(environment, instruction)
-            self.expectation.symbol_usages.apply_with_message(self.put,
-                                                              instruction.symbol_usages(),
-                                                              'symbol-usages after ' +
-                                                              phase_step.STEP__VALIDATE_PRE_SDS)
-            if not validate_result.is_success:
-                return
-
-            os.chdir(cwd_after_sds)
+                environment = i.InstructionEnvironmentForPreSdsStep(home_and_sds.hds,
+                                                                    self.arrangement.process_execution_settings.environ,
+                                                                    symbols=self.arrangement.symbols)
+                validate_result = self._execute_validate_pre_sds(environment, instruction)
+                self.expectation.symbol_usages.apply_with_message(self.put,
+                                                                  instruction.symbol_usages(),
+                                                                  'symbol-usages after ' +
+                                                                  phase_step.STEP__VALIDATE_PRE_SDS)
+                if not validate_result.is_success:
+                    return
 
             environment = i.InstructionEnvironmentForPostSdsStep(
                 environment.hds,
