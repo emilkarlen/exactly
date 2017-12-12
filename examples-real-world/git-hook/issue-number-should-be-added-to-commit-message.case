@@ -3,7 +3,7 @@
 
 # Utils
 
-def lines-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num = 5 | replace '^\s*' ''
+def lines-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num == 5 | replace '^\s*' ''
 
 
 # Initialize repo with single file
@@ -48,7 +48,7 @@ file actual-commit-msg.txt = --transformed EXTRACT_FIRST_LOG_MESSAGE
 [assert]
 
 
-exitcode = 0
+exitcode == 0
 
 contents actual-commit-msg.txt equals <<EOF
 AB-123 : commit message without issue number

@@ -6,4 +6,4 @@ prepare-commit-msg
 
 'hook is executable program, that should fail when given no arguments'
 
-exitcode = 1
+exitcode == 1
