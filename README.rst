@@ -41,7 +41,7 @@ and is able to find the email of a person::
 
     [assert]
 
-    exitcode = 0
+    exitcode == 0
 
     stdout equals <<EOF
     pablo@gauss.org
@@ -102,10 +102,10 @@ appropriate output directory::
     dir-contents input-files empty
 
     exists --file output-files/good/a.txt
-    dir-contents  output-files/good num-files = 1
+    dir-contents  output-files/good num-files === 1
 
     exists --file output-files/bad/b.txt
-    dir-contents  output-files/bad num-files = 1
+    dir-contents  output-files/bad num-files === 1
 
 
 Testing and transforming the contents of files
@@ -289,7 +289,7 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 
     [assert]
 
-    exitcode = 0
+    exitcode == 0
 
 ::
 
@@ -403,7 +403,7 @@ it just displays some of Exactly's features.)
 
     file output-from-git.txt = --stdout $ git status
 
-    file git-branch-info.txt = --transformed select line-num = 1
+    file git-branch-info.txt = --transformed select line-num == 1
                                --stdout
                                $ git status
 
