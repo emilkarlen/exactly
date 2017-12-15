@@ -34,6 +34,7 @@ from exactly_lib.test_case_utils import file_ref_check, file_properties
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
 from exactly_lib.test_case_utils.parse import parse_here_document
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
+from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation, \
     RELATIVITY_VARIANTS_FOR_FILE_CREATION, RelOptionArgumentConfiguration, RelOptionsConfiguration
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ValidationStep, \
@@ -43,6 +44,7 @@ from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetup
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.cli_syntax.option_syntax import is_option_string
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -242,14 +244,20 @@ def parse_file_maker(instruction_config: _InstructionConfig,
 
         parser.require_head_token_has_valid_syntax()
 
-        if parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
-            contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
-            return FileMakerForConstantContents(contents)
-        else:
+        head_source_string = parser.token_stream.head.source_string
+        if is_option_string(head_source_string):
             contents_transformer = parse_optional_transformer_resolver(parser)
             return _parse_file_maker_with_transformation(instruction_config,
                                                          parser,
                                                          contents_transformer)
+        else:
+            if head_source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+                contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
+                return FileMakerForConstantContents(contents)
+            else:
+                contents = parse_string_from_token_parser(parser)
+                parser.report_superfluous_arguments_if_not_at_eol()
+                return FileMakerForConstantContents(contents)
     else:
         return FileMakerForConstantContents(string_resolver.string_constant(''))
 
