@@ -1,6 +1,10 @@
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
 
 
+def is_option_string(string: str) -> str:
+    return string and string[0] == '-'
+
+
 def short_option_syntax(character: str) -> str:
     """
     Syntax for a short option.

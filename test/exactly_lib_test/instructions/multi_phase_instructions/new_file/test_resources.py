@@ -77,6 +77,20 @@ class Arguments:
         self.first_line = first_line
         self.following_lines = following_lines
 
+    @property
+    def lines(self) -> list:
+        return [self.first_line] + self.following_lines
+
+    @property
+    def as_single_string(self) -> str:
+        return '\n'.join(self.lines)
+
+
+def complete_arguments(dst_file: PathArgumentWithRelativity,
+                       contents: Arguments) -> Arguments:
+    return Arguments(dst_file.argument_str + ' ' + contents.first_line,
+                     contents.following_lines)
+
 
 def empty_file_arguments() -> Arguments:
     return Arguments('', [])
@@ -85,6 +99,10 @@ def empty_file_arguments() -> Arguments:
 def here_document_contents_arguments(lines: list) -> Arguments:
     return Arguments('= <<EOF',
                      lines + ['EOF'])
+
+
+def string_contents_arguments(string: str) -> Arguments:
+    return Arguments('= ' + string, [])
 
 
 def stdout_from(program: Arguments,
