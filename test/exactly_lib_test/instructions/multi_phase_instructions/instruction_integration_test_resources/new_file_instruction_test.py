@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file
+from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -113,7 +114,7 @@ class TestSymbolUsages(TestCaseBase):
             equals_symbol_reference(
                 SymbolReference(src_file_symbol.name,
                                 file_ref_or_string_reference_restrictions(
-                                    new_file._src_rel_opt_arg_conf_for_phase(
+                                    parse_file_maker._src_rel_opt_arg_conf_for_phase(
                                         self.conf.phase_is_after_act()).options.accepted_relativity_variants))
             ),
         ]

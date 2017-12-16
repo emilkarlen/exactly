@@ -3,6 +3,7 @@ from enum import Enum
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHomeOptionType, RelSdsOptionType, \
     RelNonHomeOptionType, PathRelativityVariants
@@ -108,22 +109,23 @@ def string_contents_arguments(string: str) -> Arguments:
 def stdout_from(program: Arguments,
                 with_new_line_after_output_option: bool = False) -> Arguments:
     if with_new_line_after_output_option:
-        return Arguments(option_syntax(sut.STDOUT_OPTION),
+        return Arguments(option_syntax(parse_file_maker.STDOUT_OPTION),
                          [program.first_line] + program.following_lines)
     else:
-        return Arguments(option_syntax(sut.STDOUT_OPTION) + ' ' + program.first_line,
+        return Arguments(option_syntax(
+            parse_file_maker.STDOUT_OPTION) + ' ' + program.first_line,
                          program.following_lines)
 
 
 def shell_command(command_line: str) -> Arguments:
-    return Arguments(sut.SHELL_COMMAND_TOKEN + ' ' + command_line,
+    return Arguments(parse_file_maker.SHELL_COMMAND_TOKEN + ' ' + command_line,
                      [])
 
 
 def file(file_name: str,
          rel_option: RelativityOptionConfiguration = None,
          with_new_line_after_output_option: bool = False) -> Arguments:
-    first_line = [option_syntax(sut.FILE_OPTION)]
+    first_line = [option_syntax(parse_file_maker.FILE_OPTION)]
     following_line_args = []
 
     file_args = first_line
