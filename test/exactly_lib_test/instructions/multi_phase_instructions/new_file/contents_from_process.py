@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import string_constant
@@ -10,7 +9,6 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
     IS_SUCCESS, ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE, \
@@ -47,14 +45,14 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestScenariosWithContentsFromProcessOutput),
+        unittest.makeSuite(TestSuccessfulScenarios),
+        unittest.makeSuite(TestFailingScenarios),
+        unittest.makeSuite(TestSymbolUsages),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
     ])
 
 
-class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
-    TRANSFORMER_OPTION = option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
-
+class TestSymbolUsages(TestCaseBase):
     def test_symbol_usages(self):
         # ARRANGE #
         text_printed_by_shell_command_symbol = NameAndValue('STRING_TO_PRINT_SYMBOL', 'hello_world')
@@ -116,6 +114,8 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                     )
                     )
 
+
+class TestSuccessfulScenarios(TestCaseBase):
     def test_contents_from_stdout_of_shell_command__without_transformer(self):
         text_printed_by_shell_command = 'single line of output'
         expected_file_contents = text_printed_by_shell_command + '\n'
@@ -188,41 +188,6 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
                                                                        fs.DirContents([expected_file])),
             ))
 
-    def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
-        transformer = NameAndValue('TRANSFORMER',
-                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
-        symbols = SymbolTable({
-            transformer.name: container(transformer.value)
-        })
-        shell_contents_arguments = TransformableContentsConstructor(
-            stdout_from(
-                shell_command(shell_commands.command_that_exits_with_code(1))
-            )
-        )
-
-        cases = [
-            NameAndValue('without transformer',
-                         shell_contents_arguments.without_transformation()),
-            NameAndValue('with transformer',
-                         shell_contents_arguments.with_transformation(transformer.name)),
-        ]
-        for case in cases:
-            with self.subTest(case.name):
-                self._check(
-                    remaining_source(
-                        '{file_name} {shell_command_with_non_zero_exit_code}'.format(
-                            file_name='dst-file-name.txt',
-                            shell_command_with_non_zero_exit_code=case.value.first_line,
-                        ),
-                        case.value.following_lines),
-                    ArrangementWithSds(
-                        symbols=symbols,
-                    ),
-                    Expectation(
-                        symbol_usages=asrt.anything_goes(),
-                        main_result=IS_FAILURE,
-                    ))
-
     def test_new_line_before_mandatory_arguments_SHOULD_be_accepted(self):
         # ARRANGE #
 
@@ -294,6 +259,43 @@ class TestScenariosWithContentsFromProcessOutput(TestCaseBase):
 
                             )
                             )
+
+
+class TestFailingScenarios(TestCaseBase):
+    def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
+        transformer = NameAndValue('TRANSFORMER',
+                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            transformer.name: container(transformer.value)
+        })
+        shell_contents_arguments = TransformableContentsConstructor(
+            stdout_from(
+                shell_command(shell_commands.command_that_exits_with_code(1))
+            )
+        )
+
+        cases = [
+            NameAndValue('without transformer',
+                         shell_contents_arguments.without_transformation()),
+            NameAndValue('with transformer',
+                         shell_contents_arguments.with_transformation(transformer.name)),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                self._check(
+                    remaining_source(
+                        '{file_name} {shell_command_with_non_zero_exit_code}'.format(
+                            file_name='dst-file-name.txt',
+                            shell_command_with_non_zero_exit_code=case.value.first_line,
+                        ),
+                        case.value.following_lines),
+                    ArrangementWithSds(
+                        symbols=symbols,
+                    ),
+                    Expectation(
+                        symbol_usages=asrt.anything_goes(),
+                        main_result=IS_FAILURE,
+                    ))
 
 
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
