@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityL
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
-    TransformableContentsConstructor, file, IS_SUCCESS, Arguments, just_parse, Step, \
+    TransformableContentsConstructor, file, IS_SUCCESS, just_parse, Step, \
     accepted_non_home_source_relativities, ALLOWED_DST_FILE_RELATIVITIES, ALLOWED_SRC_FILE_RELATIVITIES, \
     IS_FAILURE_OF_VALIDATION, IS_FAILURE, complete_arguments, source_of, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase, InvalidDestinationFileTestCasesData
@@ -28,6 +28,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_home, every_conf_rel_home, \
     conf_rel_non_home, conf_rel_any, RelativityOptionConfigurationForRelNonHome, RelativityOptionConfiguration

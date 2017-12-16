@@ -7,7 +7,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resour
     IS_SUCCESS, \
     TestCaseBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
-    empty_file_arguments, \
+    empty_file_contents_arguments, \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import just_parse, \
@@ -180,7 +180,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingSce
         file_contents_cases = [
             NameAndValue(
                 'empty file',
-                empty_file_arguments()
+                empty_file_contents_arguments()
             ),
         ]
 

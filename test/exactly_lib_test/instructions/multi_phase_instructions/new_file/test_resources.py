@@ -16,6 +16,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, here_document
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_home, conf_rel_sds, \
     conf_rel_non_home, default_conf_rel_non_home, RelativityOptionConfiguration
@@ -73,37 +74,26 @@ def just_parse(source: ParseSource,
     sut.EmbryoParser('the-instruction-name', phase_is_after_act).parse(source)
 
 
-class Arguments:
-    def __init__(self, first_line: str, following_lines: list):
-        self.first_line = first_line
-        self.following_lines = following_lines
-
-    @property
-    def lines(self) -> list:
-        return [self.first_line] + self.following_lines
-
-    @property
-    def as_single_string(self) -> str:
-        return '\n'.join(self.lines)
-
-
 def complete_arguments(dst_file: PathArgumentWithRelativity,
                        contents: Arguments) -> Arguments:
     return Arguments(dst_file.argument_str + ' ' + contents.first_line,
                      contents.following_lines)
 
 
-def empty_file_arguments() -> Arguments:
+def empty_file_contents_arguments() -> Arguments:
     return Arguments('', [])
 
 
+def explicit_contents_of(contents_arguments: Arguments) -> Arguments:
+    return Arguments('=').followed_by(contents_arguments)
+
+
 def here_document_contents_arguments(lines: list) -> Arguments:
-    return Arguments('= <<EOF',
-                     lines + ['EOF'])
+    return explicit_contents_of(here_document(lines))
 
 
 def string_contents_arguments(string: str) -> Arguments:
-    return Arguments('= ' + string, [])
+    return explicit_contents_of(Arguments(string))
 
 
 def stdout_from(program: Arguments,

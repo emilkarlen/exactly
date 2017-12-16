@@ -15,7 +15,7 @@ from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
     ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS, ACCEPTED_RELATIVITY_VARIANTS, just_parse, DISALLOWED_RELATIVITIES, \
-    complete_arguments, source_of, string_contents_arguments, Arguments
+    complete_arguments, source_of, string_contents_arguments
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
     here_document_contents_arguments, InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
@@ -28,6 +28,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.test_resources import file_structure as fs
