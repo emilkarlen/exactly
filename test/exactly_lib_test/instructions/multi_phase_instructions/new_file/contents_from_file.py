@@ -2,6 +2,7 @@ import types
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import resolver_of_rel_option
@@ -92,7 +93,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ACT & ASSERT #
 
         for phase_is_after_act in [False, True]:
-            src_file_rel_opt_arg_conf = sut._src_rel_opt_arg_conf_for_phase(phase_is_after_act)
+            src_file_rel_opt_arg_conf = parse_file_maker._src_rel_opt_arg_conf_for_phase(phase_is_after_act)
 
             source = remaining_source(
                 '{file_name} {content_arguments}'.format(
