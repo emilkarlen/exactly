@@ -7,13 +7,14 @@ from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resour
     IS_SUCCESS, \
     TestCaseBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
-    empty_file_contents_arguments, \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import just_parse, \
     DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
+    empty_file_contents_arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \

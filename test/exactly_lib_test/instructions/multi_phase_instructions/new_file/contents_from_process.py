@@ -10,14 +10,16 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
-    IS_SUCCESS, ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
-    stdout_from, shell_command, TransformableContentsConstructor, \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
+    IS_SUCCESS, ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import stdout_from, \
+    shell_command, \
+    TransformableContentsConstructor
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
