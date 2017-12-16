@@ -13,14 +13,17 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
+    InvalidDestinationFileTestCasesData, \
+    TestCommonFailingScenariosDueToInvalidDestinationFileBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
     ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS, ACCEPTED_RELATIVITY_VARIANTS, just_parse, DISALLOWED_RELATIVITIES, \
-    complete_arguments, source_of, string_contents_arguments
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
-    here_document_contents_arguments, InvalidDestinationFileTestCasesData, \
-    TestCommonFailingScenariosDueToInvalidDestinationFileBase
+    complete_arguments, source_of
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
+    here_document_contents_arguments, \
+    string_contents_arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
