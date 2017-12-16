@@ -262,23 +262,18 @@ class TestSuccessfulScenarios(TestCaseBase):
 
 
 class TestFailingScenarios(TestCaseBase):
-    def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
+    def _expect_failure(self, contents_arguments_constructor: TransformableContentsConstructor):
         transformer = NameAndValue('TRANSFORMER',
                                    LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             transformer.name: container(transformer.value)
         })
-        shell_contents_arguments = TransformableContentsConstructor(
-            stdout_from(
-                shell_command(shell_commands.command_that_exits_with_code(1))
-            )
-        )
 
         cases = [
             NameAndValue('without transformer',
-                         shell_contents_arguments.without_transformation()),
+                         contents_arguments_constructor.without_transformation()),
             NameAndValue('with transformer',
-                         shell_contents_arguments.with_transformation(transformer.name)),
+                         contents_arguments_constructor.with_transformation(transformer.name)),
         ]
         for case in cases:
             with self.subTest(case.name):
@@ -296,6 +291,21 @@ class TestFailingScenarios(TestCaseBase):
                         symbol_usages=asrt.anything_goes(),
                         main_result=IS_FAILURE,
                     ))
+
+    def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
+        self._expect_failure(TransformableContentsConstructor(
+            stdout_from(
+                shell_command(shell_commands.command_that_exits_with_code(1))
+            )
+        ))
+
+    def test_WHEN_shell_command_is_non_executable_THEN_result_SHOULD_be_error_message(self):
+        non_executable_shell_command = '<'
+        self._expect_failure(TransformableContentsConstructor(
+            stdout_from(
+                shell_command(non_executable_shell_command)
+            )
+        ))
 
 
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
