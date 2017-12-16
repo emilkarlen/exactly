@@ -115,6 +115,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
                                 instruction_arguments.HERE_DOCUMENT)
 
+        string_arg = a.Single(a.Multiplicity.MANDATORY,
+                              instruction_arguments.STRING)
+
         shell_command_token = a.Single(a.Multiplicity.MANDATORY,
                                        a.Named(SHELL_COMMAND_TOKEN))
 
@@ -131,16 +134,17 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                 _SRC_PATH_ARGUMENT)
 
         invokation_variants = [
+            invokation_variant_from_args([string_arg]),
             invokation_variant_from_args([here_doc_arg]),
+            invokation_variant_from_args([optional_transformation_option,
+                                          file_option,
+                                          src_file_arg],
+                                         self._tp.fnap(_FILE_DESCRIPTION)),
             invokation_variant_from_args([optional_transformation_option,
                                           stdout_option,
                                           shell_command_token,
                                           command_arg],
                                          self._tp.fnap(_SHELL_COMMAND_DESCRIPTION)),
-            invokation_variant_from_args([optional_transformation_option,
-                                          file_option,
-                                          src_file_arg],
-                                         self._tp.fnap(_FILE_DESCRIPTION)),
         ]
         return SyntaxElementDescription(CONTENTS_ARGUMENT,
                                         [],
@@ -148,6 +152,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT,
+                               syntax_elements.STRING_SYNTAX_ELEMENT,
                                syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
                                syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT]
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
