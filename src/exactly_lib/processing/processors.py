@@ -65,7 +65,8 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
         configuration.default_handling_setup.preprocessor,
         _Parser(configuration.test_case_definition.instruction_name_extractor_function,
                 ActPhaseParser(),
-                configuration.test_case_definition.instruction_setup))
+                configuration.test_case_definition.instruction_setup),
+        configuration.default_handling_setup.transformer)
 
 
 def new_executor_that_should_not_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
