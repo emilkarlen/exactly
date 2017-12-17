@@ -8,6 +8,17 @@ class TestCaseTransformer:
         return test_case
 
 
+class ComposedTestCaseTransformer(TestCaseTransformer):
+    def __init__(self,
+                 first: TestCaseTransformer,
+                 second: TestCaseTransformer):
+        self._first = first
+        self._second = second
+
+    def transform(self, test_case: TestCase) -> TestCase:
+        return self._second.transform(self._first.transform(test_case))
+
+
 def identity_test_case_transformer() -> TestCaseTransformer:
     return TestCaseTransformer()
 

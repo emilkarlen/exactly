@@ -157,6 +157,7 @@ class MainProgram:
                                       suite_hierarchy_reading.Reader(
                                           suite_hierarchy_reading.Environment(
                                               self._test_suite_definition.configuration_section_parser,
+                                              self._test_case_definition.parsing_setup,
                                               default_configuration.default_handling_setup)
                                       ),
                                       test_suite_execution_settings.reporter_factory,

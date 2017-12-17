@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.cli.program_modes.test_case import result_reporting
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing import test_case_processing, processors
-from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.processing.processors import TestCaseDefinition, TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.test_suite import suite_file_reading
@@ -22,6 +22,7 @@ def execute(std_output_files: StdOutputFiles,
     try:
         handling_setup = _resolve_handling_setup(settings.handling_setup,
                                                  configuration_section_parser,
+                                                 test_case_definition.parsing_setup,
                                                  settings.suite_to_read_config_from)
     except SuiteSyntaxError as ex:
         reporter = result_reporting.TestSuiteSyntaxErrorReporter(std_output_files)
@@ -55,12 +56,14 @@ def _get_reporter(std_output_files: StdOutputFiles,
 
 def _resolve_handling_setup(default_handling_setup: TestCaseHandlingSetup,
                             configuration_section_parser: document_parser.SectionElementParser,
+                            test_case_parsing_setup: TestCaseParsingSetup,
                             suite_to_read_config_from: pathlib.Path) -> TestCaseHandlingSetup:
     if not suite_to_read_config_from:
         return default_handling_setup
     from exactly_lib.cli.program_modes.test_case.read_conf_from_suite import resolve_handling_setup_from_suite
     return resolve_handling_setup_from_suite(default_handling_setup,
                                              configuration_section_parser,
+                                             test_case_parsing_setup,
                                              suite_to_read_config_from)
 
 
