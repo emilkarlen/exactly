@@ -7,7 +7,7 @@ from exactly_lib.default.program_modes import test_suite
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import InstructionsSetup
-from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.processing.processors import TestCaseDefinition, TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.execution import Executor
@@ -43,6 +43,7 @@ def check(setup: Setup,
         setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
         test_case_handling_setup = setup.test_case_handling_setup()
         suite_reading_environment = Environment(test_suite.new_parser(),
+                                                _TEST_CASE_PARSING_SETUP,
                                                 test_case_handling_setup)
         hierarchy_reader = Reader(suite_reading_environment)
         reporter_factory = ExecutionTracingReporterFactory()
@@ -76,7 +77,10 @@ INSTRUCTION_SETUP = InstructionsSetup(
     {},
     {})
 
-_DEFAULT_TEST_CASE_DEFINITION = TestCaseDefinition(white_space_name_and_argument_splitter,
-                                                   INSTRUCTION_SETUP,
+_TEST_CASE_PARSING_SETUP = TestCaseParsingSetup(white_space_name_and_argument_splitter,
+                                                INSTRUCTION_SETUP)
+
+_DEFAULT_TEST_CASE_DEFINITION = TestCaseDefinition(_TEST_CASE_PARSING_SETUP.instruction_name_extractor_function,
+                                                   _TEST_CASE_PARSING_SETUP.instruction_setup,
                                                    PredefinedProperties(),
                                                    )

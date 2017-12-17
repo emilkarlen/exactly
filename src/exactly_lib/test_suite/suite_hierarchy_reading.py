@@ -2,6 +2,7 @@ import functools
 import pathlib
 
 from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.processors import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.model import SectionContents, ElementType
@@ -22,9 +23,11 @@ class SuiteHierarchyReader:
 class Environment(tuple):
     def __new__(cls,
                 configuration_section_parser: SectionElementParser,
+                test_case_parsing_setup: TestCaseParsingSetup,
                 default_test_case_handling_setup: TestCaseHandlingSetup):
         return tuple.__new__(cls, (configuration_section_parser,
-                                   default_test_case_handling_setup))
+                                   default_test_case_handling_setup,
+                                   test_case_parsing_setup))
 
     @property
     def configuration_section_parser(self) -> SectionElementParser:
@@ -33,6 +36,10 @@ class Environment(tuple):
     @property
     def default_test_case_handling_setup(self) -> TestCaseHandlingSetup:
         return self[1]
+
+    @property
+    def test_case_parsing_setup(self) -> TestCaseParsingSetup:
+        return self[2]
 
 
 class Reader(SuiteHierarchyReader):
@@ -58,7 +65,8 @@ class _SingleFileReader:
                  inclusions: list,
                  suite_file_path: pathlib.Path) -> structure.TestSuite:
         test_suite = suite_file_reading.read_suite_document(suite_file_path,
-                                                            self.environment.configuration_section_parser)
+                                                            self.environment.configuration_section_parser,
+                                                            self.environment.test_case_parsing_setup)
         test_case_handling_setup = suite_file_reading.resolve_test_case_handling_setup(
             test_suite,
             self.environment.default_test_case_handling_setup)

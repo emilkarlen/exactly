@@ -20,6 +20,14 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 
 
+class TestCaseParsingSetup:
+    def __init__(self,
+                 instruction_name_extractor_function,
+                 instruction_setup: InstructionsSetup):
+        self.instruction_setup = instruction_setup
+        self.instruction_name_extractor_function = instruction_name_extractor_function
+
+
 class TestCaseDefinition:
     """Test case configuration that is defined in code."""
 
@@ -33,6 +41,11 @@ class TestCaseDefinition:
         self.predefined_properties = predefined_properties
         self.instruction_setup = instruction_setup
         self.instruction_name_extractor_function = instruction_name_extractor_function
+
+    @property
+    def parsing_setup(self) -> TestCaseParsingSetup:
+        return TestCaseParsingSetup(self.instruction_name_extractor_function,
+                                    self.instruction_setup)
 
 
 class Configuration:
