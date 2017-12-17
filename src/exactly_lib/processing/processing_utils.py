@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import test_case_processing as processing
+from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.processing.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
@@ -39,10 +40,12 @@ class AccessorFromParts(Accessor):
     def __init__(self,
                  source_reader: SourceReader,
                  pre_processor: Preprocessor,
-                 parser: Parser):
+                 parser: Parser,
+                 transformer: TestCaseTransformer):
         self._source_reader = source_reader
         self._pre_processor = pre_processor
         self._parser = parser
+        self._transformer = transformer
 
     def apply(self,
               test_case_file_path: pathlib.Path) -> test_case_doc.TestCase:
@@ -53,11 +56,12 @@ class AccessorFromParts(Accessor):
                                           processing.AccessErrorType.PRE_PROCESS_ERROR,
                                           test_case_file_path,
                                           source)
-        return self._apply(self._parser.apply,
-                           processing.AccessErrorType.SYNTAX_ERROR,
-                           test_case_file_path,
-                           preprocessed_source
-                           )
+        test_case = self._apply(self._parser.apply,
+                                processing.AccessErrorType.SYNTAX_ERROR,
+                                test_case_file_path,
+                                preprocessed_source
+                                )
+        return self._transformer.transform(test_case)
 
     @staticmethod
     def _apply(f, error_type: processing.AccessErrorType, *args, **kwargs):

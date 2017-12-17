@@ -5,6 +5,7 @@ from exactly_lib.execution.result import FullResult, new_skipped
 from exactly_lib.processing import processing_utils as sut
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
+from exactly_lib.processing.test_case_handling_setup import identity_test_case_transformer, TestCaseTransformer
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
@@ -33,7 +34,8 @@ class TestAccessor(unittest.TestCase):
         # ARRANGE #
         accessor = sut.AccessorFromParts(SourceReaderThat(raises(PROCESS_ERROR)),
                                          PreprocessorThat(raises_should_not_be_invoked_error),
-                                         ParserThat(raises_should_not_be_invoked_error))
+                                         ParserThat(raises_should_not_be_invoked_error),
+                                         identity_test_case_transformer())
         # ACT #
         with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(PATH)
@@ -45,7 +47,8 @@ class TestAccessor(unittest.TestCase):
         # ARRANGE #
         accessor = sut.AccessorFromParts(SourceReaderThat(gives_constant('source')),
                                          PreprocessorThat(raises(PROCESS_ERROR)),
-                                         ParserThat(raises_should_not_be_invoked_error))
+                                         ParserThat(raises_should_not_be_invoked_error),
+                                         identity_test_case_transformer())
         # ACT #
         with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(PATH)
@@ -57,7 +60,8 @@ class TestAccessor(unittest.TestCase):
         # ARRANGE #
         accessor = sut.AccessorFromParts(SourceReaderThat(gives_constant('source')),
                                          PreprocessorThat(gives_constant('preprocessed source')),
-                                         ParserThat(raises(PROCESS_ERROR)))
+                                         ParserThat(raises(PROCESS_ERROR)),
+                                         identity_test_case_transformer())
         # ACT #
         with self.assertRaises(tcp.AccessorError) as cm:
             accessor.apply(PATH)
@@ -65,13 +69,39 @@ class TestAccessor(unittest.TestCase):
         self.assertEqual(cm.exception.error,
                          tcp.AccessErrorType.SYNTAX_ERROR)
 
+    def test_that_transformer_is_applied(self):
+        # ARRANGE #
+        source = 'SOURCE'
+        p_source = 'PREPROCESSED SOURCE'
+        expected_tc = test_case_doc.TestCase(new_empty_section_contents(),
+                                             new_empty_section_contents(),
+                                             new_empty_section_contents(),
+                                             new_empty_section_contents(),
+                                             new_empty_section_contents(),
+                                             new_empty_section_contents())
+
+        class ConstantTransformer(TestCaseTransformer):
+            def transform(self, test_case: test_case_doc.TestCase) -> test_case_doc.TestCase:
+                return expected_tc
+
+        accessor = sut.AccessorFromParts(SourceReaderThatReturnsIfSame(PATH, source),
+                                         PreprocessorThatReturnsIfSame(source, p_source),
+                                         ParserThatReturnsIfSame(p_source, TEST_CASE),
+                                         ConstantTransformer())
+        # ACT #
+        actual = accessor.apply(PATH)
+        # ASSERT #
+        self.assertIs(expected_tc,
+                      actual)
+
     def test_successful_application(self):
         # ARRANGE #
         source = 'SOURCE'
         p_source = 'PREPROCESSED SOURCE'
         accessor = sut.AccessorFromParts(SourceReaderThatReturnsIfSame(PATH, source),
                                          PreprocessorThatReturnsIfSame(source, p_source),
-                                         ParserThatReturnsIfSame(p_source, TEST_CASE))
+                                         ParserThatReturnsIfSame(p_source, TEST_CASE),
+                                         identity_test_case_transformer())
         # ACT #
         actual = accessor.apply(PATH)
         # ASSERT #
@@ -86,7 +116,8 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
             error_info.of_exception(ValueError('exception message')))
         accessor = sut.AccessorFromParts(SourceReaderThat(raises(process_error)),
                                          PreprocessorThat(gives_constant('preprocessed source')),
-                                         ParserThat(gives_constant(TEST_CASE)))
+                                         ParserThat(gives_constant(TEST_CASE)),
+                                         identity_test_case_transformer())
         executor = ExecutorThat(raises(PROCESS_ERROR))
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
@@ -111,7 +142,8 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         # ARRANGE #
         accessor = sut.AccessorFromParts(SourceReaderThat(raises(RuntimeError())),
                                          PreprocessorThat(gives_constant('preprocessed source')),
-                                         ParserThat(gives_constant(TEST_CASE)))
+                                         ParserThat(gives_constant(TEST_CASE)),
+                                         identity_test_case_transformer())
         executor = ExecutorThat(raises(PROCESS_ERROR))
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
@@ -125,7 +157,8 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         # ARRANGE #
         accessor = sut.AccessorFromParts(SourceReaderThat(gives_constant('source')),
                                          PreprocessorThat(gives_constant('preprocessed source')),
-                                         ParserThat(gives_constant(TEST_CASE)))
+                                         ParserThat(gives_constant(TEST_CASE)),
+                                         identity_test_case_transformer())
         executor = ExecutorThat(raises(RuntimeError()))
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
@@ -139,7 +172,8 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         # ARRANGE #
         accessor = sut.AccessorFromParts(SourceReaderThat(gives_constant('source')),
                                          PreprocessorThat(gives_constant('preprocessed source')),
-                                         ParserThat(gives_constant(TEST_CASE)))
+                                         ParserThat(gives_constant(TEST_CASE)),
+                                         identity_test_case_transformer())
         full_result = new_skipped()
         executor = ExecutorThatReturnsIfSame(TEST_CASE, full_result)
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
