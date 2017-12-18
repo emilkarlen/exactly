@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib_test.test_suite import enumeration, suite_hierarchy_reading, execution, instruction_set, \
-    propagation_of_act_phase_setup_to_individual_test_cases, reporters
+from exactly_lib_test.test_suite import enumeration, suite_hierarchy_reading, instruction_set, \
+    propagation_of_act_phase_setup_to_individual_test_cases, reporters, execution
 
 
 def suite() -> unittest.TestSuite:

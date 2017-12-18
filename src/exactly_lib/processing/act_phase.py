@@ -9,9 +9,6 @@ class ActPhaseSetup(tuple):
 
     def __new__(cls,
                 source_and_executor_constructor: ActSourceAndExecutorConstructor):
-        """
-        :param script_builder_constructor: () -> ScriptSourceBuilder
-        """
         return tuple.__new__(cls, (source_and_executor_constructor,))
 
     @property
