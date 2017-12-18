@@ -1,3 +1,5 @@
+from typing import Callable
+
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -6,10 +8,12 @@ from exactly_lib.section_document.parser_implementations.instruction_parser_for_
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.util import line_source
 
+InstructionNameExtractor = Callable[[str], str]
+
 
 class InstructionParserForDictionaryOfInstructions(InstructionParser):
     def __init__(self,
-                 instruction_name_extractor_function,
+                 instruction_name_extractor_function: InstructionNameExtractor,
                  instruction_name__2__single_instruction_parser: dict):
         """
         :param instruction_name_extractor_function Callable that extracts an instruction name from a source line.
@@ -20,7 +24,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         self.__instruction_name__2__single_instruction_parser = instruction_name__2__single_instruction_parser
         for value in self.__instruction_name__2__single_instruction_parser.values():
             assert isinstance(value, InstructionParser)
-        self._name_and_argument_splitter = instruction_name_extractor_function
+        self._instruction_name_extractor_function = instruction_name_extractor_function
 
     def parse(self, source: ParseSource) -> model.Instruction:
         first_line = source.current_line
@@ -31,7 +35,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
 
     def _extract_name(self, source: ParseSource) -> str:
         try:
-            name = self._name_and_argument_splitter(source.remaining_part_of_current_line)
+            name = self._instruction_name_extractor_function(source.remaining_part_of_current_line)
             source.consume_part_of_current_line(len(name))
         except:
             raise InvalidInstructionSyntaxException(source.current_line)

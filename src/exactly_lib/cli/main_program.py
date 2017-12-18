@@ -14,6 +14,8 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
+from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
+    InstructionNameExtractor
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
@@ -64,7 +66,7 @@ class TestCaseDefinitionForMainProgram:
     """
 
     def __init__(self,
-                 instruction_name_extractor_function,
+                 instruction_name_extractor_function: InstructionNameExtractor,
                  instruction_setup: InstructionsSetup,
                  builtin_symbols: list):
         """

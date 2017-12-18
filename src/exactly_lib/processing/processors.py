@@ -14,6 +14,8 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
+    InstructionNameExtractor
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -22,7 +24,7 @@ from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 
 class TestCaseParsingSetup:
     def __init__(self,
-                 instruction_name_extractor_function,
+                 instruction_name_extractor_function: InstructionNameExtractor,
                  instruction_setup: InstructionsSetup):
         self.instruction_setup = instruction_setup
         self.instruction_name_extractor_function = instruction_name_extractor_function
@@ -35,7 +37,7 @@ class TestCaseDefinition:
     # Feels right, but have not looked into it.
 
     def __init__(self,
-                 instruction_name_extractor_function,
+                 instruction_name_extractor_function: InstructionNameExtractor,
                  instruction_setup: InstructionsSetup,
                  predefined_properties: full_execution.PredefinedProperties):
         self.predefined_properties = predefined_properties
@@ -107,7 +109,7 @@ class _SourceReader(processing_utils.SourceReader):
 
 class _Parser(processing_utils.Parser):
     def __init__(self,
-                 instruction_name_extractor_function,
+                 instruction_name_extractor_function: InstructionNameExtractor,
                  act_phase_parser: SectionElementParser,
                  instruction_setup: InstructionsSetup):
         self._instruction_name_extractor_function = instruction_name_extractor_function
