@@ -1,6 +1,6 @@
 import datetime
 import pathlib
-import types
+from typing import Callable, List
 
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
@@ -15,6 +15,8 @@ from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessi
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
+TestCaseProcessorConstructor = Callable[[case_processing.Configuration], test_case_processing.Processor]
+
 
 class Executor:
     """
@@ -27,11 +29,8 @@ class Executor:
                  suite_hierarchy_reader: SuiteHierarchyReader,
                  reporter_factory: reporting.RootSuiteReporterFactory,
                  suite_enumerator: SuiteEnumerator,
-                 test_case_processor_constructor,
+                 test_case_processor_constructor: TestCaseProcessorConstructor,
                  suite_root_file_path: pathlib.Path):
-        """
-        :param test_case_processor_constructor: `case_processing.Configuration` -> `test_case_processing.Processor`
-        """
         self._default_case_configuration = default_case_configuration
         self._std = output
         self._suite_hierarchy_reader = suite_hierarchy_reader
@@ -75,14 +74,13 @@ class SuitesExecutor:
     def __init__(self,
                  reporter: RootSuiteReporter,
                  default_case_configuration: case_processing.Configuration,
-                 test_case_processor_constructor: types.FunctionType):
+                 test_case_processor_constructor: TestCaseProcessorConstructor):
         self._reporter = reporter
         self._default_case_configuration = default_case_configuration
         self._test_case_processor_constructor = test_case_processor_constructor
 
-    def execute_and_report(self, suits_in_processing_order: list) -> int:
+    def execute_and_report(self, suits_in_processing_order: List[structure.TestSuite]) -> int:
         """
-        :param suits_in_processing_order: [TestSuite]
         :return: Exit code for main program.
         """
         self._reporter.root_suite_begin()
@@ -91,8 +89,7 @@ class SuitesExecutor:
         self._reporter.root_suite_end()
         return self._reporter.report_final_results()
 
-    def _process_single_sub_suite(self,
-                                  suite: structure.TestSuite):
+    def _process_single_sub_suite(self, suite: structure.TestSuite):
         """
         Executes a single suite (i.e. not it's sub suites).
         """
@@ -106,7 +103,7 @@ class SuitesExecutor:
             sub_suite_reporter.case_end(case, processing_info)
         sub_suite_reporter.listener().suite_end()
 
-    def _case_processor_for(self, suite):
+    def _case_processor_for(self, suite: structure.TestSuite) -> test_case_processing.Processor:
         configuration = self._configuration_for_cases_in_suite(suite)
         return self._test_case_processor_constructor(configuration)
 
