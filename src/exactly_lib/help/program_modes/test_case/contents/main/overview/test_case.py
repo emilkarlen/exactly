@@ -25,8 +25,6 @@ A test case file contains a sequence of "phases".
 
 The {phase[act]} phase contains the action to check/system under test (SUT).
 
-It is the only mandatory phase.
-
 By default, it must contain a single command line.
 
 
