@@ -15,11 +15,14 @@ def of_message(message: str) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
 
+def syntax_error_message(message: str) -> str:
+    return (misc_texts.SYNTAX_ERROR_NAME.singular.capitalize() +
+            ': ' +
+            message)
+
+
 def syntax_error_of_message(message: str) -> ErrorDescription:
-    msg = (misc_texts.SYNTAX_ERROR_NAME.singular.capitalize() +
-           ': ' +
-           message)
-    return ErrorDescriptionOfMessage(msg)
+    return ErrorDescriptionOfMessage(syntax_error_message(message))
 
 
 def of_exception(exception: Exception,

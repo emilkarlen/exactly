@@ -3,6 +3,7 @@ import pathlib
 
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
+from exactly_lib.help_texts import misc_texts
 from exactly_lib.help_texts.formatting import SectionName
 from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.processing.test_case_processing import ErrorInfo
@@ -87,7 +88,8 @@ class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
 
     def _visit_external_process_error(self, ed: error_description.ErrorDescriptionOfExternalProcessError):
         self.out.write_line_if_present(ed.message)
-        self.out.write_line('Exit code: ' + str(ed.external_process_error.exit_code))
+        self.out.write_line(misc_texts.EXIT_CODE.singular.capitalize() + ': ' +
+                            str(ed.external_process_error.exit_code))
         if ed.external_process_error.stderr_output:
             self.out.write_line(ed.external_process_error.stderr_output)
 

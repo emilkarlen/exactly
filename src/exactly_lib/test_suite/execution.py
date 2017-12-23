@@ -9,7 +9,7 @@ from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
-from exactly_lib.test_suite.error_reporint import report_suite_read_error
+from exactly_lib.test_suite.error_reporting import report_suite_read_error
 from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
 from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
