@@ -5,9 +5,9 @@ from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, 
 from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsConstructorWithSetup
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.formatting import cli_option, program_name
+from exactly_lib.help_texts.misc_texts import SYNTAX_ERROR_NAME
 from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -21,13 +21,14 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
             'symbol': SYMBOL_CONCEPT_INFO.name.singular,
             'symbols': SYMBOL_CONCEPT_INFO.name.plural,
             'cli_option_for_preprocessor': cli_option(OPTION_FOR_PREPROCESSOR),
+            'an_error_in_source': SYNTAX_ERROR_NAME.singular_determined,
         })
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
         preamble_paragraphs = self.fnap(BEFORE_STEP_LIST)
         paragraphs = (
-            preamble_paragraphs +
-            [self.processing_step_list()]
+                preamble_paragraphs +
+                [self.processing_step_list()]
         )
         return docs.SectionContents(
             paragraphs,
@@ -44,7 +45,7 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
                            ),
             docs.list_item('syntax checking',
                            step_with_single_exit_value(
-                               normalize_and_parse(PURPOSE_OF_SYNTAX_CHECKING),
+                               self.fnap(PURPOSE_OF_SYNTAX_CHECKING),
                                FAILURE_CONDITION_OF_SYNTAX_CHECKING,
                                exit_values.NO_EXECUTION__SYNTAX_ERROR)
                            ),
@@ -104,7 +105,7 @@ FAILURE_CONDITION_OF_PREPROCESSING = docs.para(
 
 PURPOSE_OF_SYNTAX_CHECKING = 'Checks the syntax of all elements in the test case file.'
 
-FAILURE_CONDITION_OF_SYNTAX_CHECKING = docs.para('Fails if a syntax error is found.')
+FAILURE_CONDITION_OF_SYNTAX_CHECKING = docs.para('Fails if {an_error_in_source} is found.')
 
 PURPOSE_OF_VALIDATION = """\
 Checks references to {symbols} and external resources (files etc).
