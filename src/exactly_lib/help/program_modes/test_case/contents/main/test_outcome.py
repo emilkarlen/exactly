@@ -8,8 +8,10 @@ from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_proces
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
 from exactly_lib.help_texts import formatting
+from exactly_lib.help_texts import misc_texts
 from exactly_lib.help_texts.doc_format import exit_value_text
 from exactly_lib.help_texts.entity import conf_params
+from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
@@ -32,7 +34,7 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
         [
             ('reporting',
              const_contents('Reporting',
-                            normalize_and_parse(REPORTING))
+                            _TEXT_PARSER.fnap(REPORTING))
 
              ),
             ('complete-execution',
@@ -42,7 +44,7 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
              ),
             ('error-during-validation',
              const_contents('Error during validation',
-                            _error_in_validation_before_execution(setup))
+                            _error_in_validation_before_execution())
 
              ),
             ('error-during-execution',
@@ -57,8 +59,7 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
              ),
             ('summary-of-exit-codes',
              const_contents('Summary of exit codes and identifiers',
-                            [_exit_value_table_for(setup,
-                                                   sorted(exit_values.ALL_EXIT_VALUES,
+                            [_exit_value_table_for(sorted(exit_values.ALL_EXIT_VALUES,
                                                           key=ExitValue.exit_identifier.fget))]
                             )
 
@@ -67,28 +68,31 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
     )
 
 
+_TEXT_PARSER = TextParser({
+    'phase': phase_names.PHASE_NAME_DICTIONARY,
+    'test_case_status': formatting.conf_param(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
+    'default_status': test_case_status.NAME_DEFAULT,
+    'an_error_in_source': misc_texts.SYNTAX_ERROR_NAME.singular_determined,
+    'an_exit_code': misc_texts.EXIT_CODE.singular_determined,
+    'an_exit_identifier': misc_texts.EXIT_IDENTIFIER.singular_determined,
+})
+
 PREAMBLE = ''
 
 REPORTING = """\
-Outcome is reported either as an exit code, or as an exit code together with an "exit identifier" printed as a single
+Outcome is reported either as {an_exit_code}, or as an exit code together with {an_exit_identifier} printed as a single
 line on stdout.
 """
 
 
 def _description_of_complete_execution(setup: Setup) -> list:
-    _TEXT_PARSER = TextParser({
-        'phase': setup.phase_names,
-        'test_case_status': formatting.conf_param(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
-        'default_status': test_case_status.NAME_DEFAULT,
-    })
-
     ret_val = []
     ret_val.extend(_TEXT_PARSER.fnap(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
     ret_val.append(_what_outcome_depends_on(_TEXT_PARSER))
     ret_val.extend(_TEXT_PARSER.fnap(TABLE_INTRO))
     ret_val.append(_outcomes_per_status_and_assert(setup))
-    ret_val.append(para(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
-    ret_val.append(_exit_value_table_for_full_execution(setup))
+    ret_val.extend(_TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
+    ret_val.append(_exit_value_table_for_full_execution())
     return ret_val
 
 
@@ -152,7 +156,7 @@ def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
 def _interrupted_execution(setup: Setup) -> list:
     ret_val = []
     ret_val.extend(normalize_and_parse(_INTERRUPTED_EXECUTION_PREAMBLE.format(phase=setup.phase_names)))
-    ret_val.append(para(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
+    ret_val.extend(_TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
     ret_val.append(para(_INTERRUPTED_EXECUTION_CAUSES))
     ret_val.append(interrupted_execution_list(setup))
     return ret_val
@@ -187,7 +191,7 @@ def interrupted_execution_list(setup: Setup) -> ParagraphItem:
         list_item('Implementation error',
                   step_with_single_exit_value(
                       [],
-                      _failure_condition_of_implementation_error(setup),
+                      _failure_condition_of_implementation_error(),
                       exit_values.EXECUTION__IMPLEMENTATION_ERROR)
                   ),
     ]
@@ -197,10 +201,10 @@ def interrupted_execution_list(setup: Setup) -> ParagraphItem:
                                    )
 
 
-def _error_in_validation_before_execution(setup: Setup) -> list:
+def _error_in_validation_before_execution() -> list:
     ret_val = []
-    ret_val.extend(normalize_and_parse(_ERROR_IN_VALIDATION_BEFORE_EXECUTION_PREAMBLE))
-    ret_val.append(para(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
+    ret_val += _TEXT_PARSER.fnap(_ERROR_IN_VALIDATION_BEFORE_EXECUTION_PREAMBLE)
+    ret_val += _TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
     ret_val.append(singe_exit_value_display(exit_values.EXECUTION__VALIDATE))
     return ret_val
 
@@ -210,12 +214,11 @@ If validation fails, the test case is not executed.
 """
 
 
-def _exit_value_table_for_all_exit_values(setup: Setup) -> ParagraphItem:
-    return _outcome_and_exit_value_table_for(setup, exit_values.ALL_EXIT_VALUES)
+# def _exit_value_table_for_all_exit_values() -> ParagraphItem:
+#     return _outcome_and_exit_value_table_for(exit_values.ALL_EXIT_VALUES)
 
 
-def _exit_value_table_for(setup: Setup,
-                          exit_value_list: list) -> ParagraphItem:
+def _exit_value_table_for(exit_value_list: list) -> ParagraphItem:
     def _row(exit_value: ExitValue) -> list:
         return [
             cell(paras(exit_value_text(exit_value))),
@@ -232,8 +235,7 @@ def _exit_value_table_for(setup: Setup,
         '  ')
 
 
-def _outcome_and_exit_value_table_for(setup: Setup,
-                                      exit_value_list: list) -> ParagraphItem:
+def _outcome_and_exit_value_table_for(exit_value_list: list) -> ParagraphItem:
     def _row(exit_value: ExitValue) -> list:
         return [
             cell(paras(exit_value.exit_identifier)),
@@ -252,16 +254,15 @@ def _outcome_and_exit_value_table_for(setup: Setup,
         '  ')
 
 
-def _exit_value_table_for_full_execution(setup: Setup) -> ParagraphItem:
-    return _outcome_and_exit_value_table_for(setup,
-                                             [
-                                                 exit_values.EXECUTION__PASS,
-                                                 exit_values.EXECUTION__FAIL,
-                                                 exit_values.EXECUTION__XPASS,
-                                                 exit_values.EXECUTION__XFAIL,
-                                                 exit_values.EXECUTION__SKIPPED,
+def _exit_value_table_for_full_execution() -> ParagraphItem:
+    return _outcome_and_exit_value_table_for([
+        exit_values.EXECUTION__PASS,
+        exit_values.EXECUTION__FAIL,
+        exit_values.EXECUTION__XPASS,
+        exit_values.EXECUTION__XFAIL,
+        exit_values.EXECUTION__SKIPPED,
 
-                                             ])
+    ])
 
 
 def _failure_condition_of_post_setup_validation(setup: Setup) -> ParagraphItem:
@@ -273,7 +274,7 @@ def _failure_condition_of_hard_error(setup: Setup) -> ParagraphItem:
                 """phase fails to create a file.""".format(phase=setup.phase_names))
 
 
-def _failure_condition_of_implementation_error(setup: Setup) -> ParagraphItem:
+def _failure_condition_of_implementation_error() -> ParagraphItem:
     return para("""An error in the implementation of %s is detected.""" % _program_name())
 
 
@@ -282,7 +283,7 @@ def _program_name():
 
 
 OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER = """\
-The outcome is reported by an exit code and an identifier printed as a single
+The outcome is reported by {an_exit_code} and {an_exit_identifier} printed as a single
 line on stdout.
 """
 
@@ -292,7 +293,7 @@ def _other_errors(setup: Setup) -> list:
     ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(program_name=_program_name(),
                                                                  EXIT_CODE=exit_codes.EXIT_INVALID_USAGE)))
     ret_val.extend(normalize_and_parse(_OTHER_NON_CLI_ERRORS))
-    ret_val.append(_other_non_cli_errors(setup))
+    ret_val.append(_other_non_cli_errors())
     return ret_val
 
 
@@ -309,7 +310,7 @@ The following errors may occur:
 """
 
 
-def _other_non_cli_errors(setup: Setup) -> ParagraphItem:
+def _other_non_cli_errors() -> ParagraphItem:
     items = [
         list_item('File access',
                   step_with_single_exit_value(
@@ -326,7 +327,7 @@ def _other_non_cli_errors(setup: Setup) -> ParagraphItem:
         list_item('Syntax checking',
                   step_with_single_exit_value(
                       [],
-                      para('Fails if the test case contains a syntax error.'),
+                      para('Fails if the test case contains {an_error_in_source}.'),
                       exit_values.NO_EXECUTION__SYNTAX_ERROR)
                   ),
     ]

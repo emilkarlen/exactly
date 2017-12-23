@@ -1,3 +1,6 @@
+from exactly_lib.help_texts import misc_texts
+
+
 class ErrorDescription:
     def __init__(self,
                  message: str):
@@ -12,14 +15,21 @@ def of_message(message: str) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
 
+def syntax_error_of_message(message: str) -> ErrorDescription:
+    msg = (misc_texts.SYNTAX_ERROR_NAME.singular.capitalize() +
+           ': ' +
+           message)
+    return ErrorDescriptionOfMessage(msg)
+
+
 def of_exception(exception: Exception,
-                 message: str=None) -> ErrorDescription:
+                 message: str = None) -> ErrorDescription:
     return ErrorDescriptionOfException(exception, message)
 
 
 def of_external_process_error(exit_code: int,
                               stderr_output: str,
-                              message: str=None) -> ErrorDescription:
+                              message: str = None) -> ErrorDescription:
     return ErrorDescriptionOfExternalProcessError(ExternalProcessError(exit_code,
                                                                        stderr_output),
                                                   message)
@@ -33,7 +43,7 @@ class ErrorDescriptionOfMessage(ErrorDescription):
 class ErrorDescriptionOfException(ErrorDescription):
     def __init__(self,
                  exception: Exception,
-                 message: str=None):
+                 message: str = None):
         super().__init__(message)
         self.__exception = exception
 
@@ -60,7 +70,7 @@ class ExternalProcessError(tuple):
 class ErrorDescriptionOfExternalProcessError(ErrorDescription):
     def __init__(self,
                  external_process_error: ExternalProcessError,
-                 message: str=None):
+                 message: str = None):
         super().__init__(message)
         self.__external_process_error = external_process_error
 

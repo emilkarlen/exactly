@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.help_texts import misc_texts
 from exactly_lib.util import line_source
 
 
@@ -94,4 +95,4 @@ class SuiteSyntaxError(SuiteReadError):
         return self._message
 
     def error_message_lines(self) -> list:
-        return ['Syntax error.']
+        return [misc_texts.SYNTAX_ERROR_NAME.singular.capitalize() + '.']
