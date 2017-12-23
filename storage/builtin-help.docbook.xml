@@ -2121,4 +2121,251 @@ Yes, casting is supported - casting data type -> string-->
       </varlistentry>
     </variablelist>
   </section>
+
+  <section>
+    <title>Suite sections</title>
+
+    <section>
+      <title>V 1</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Section with contents relating to test suites and also test
+          cases</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>[conf]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+
+        <listitem>
+          <para>Sections specific to test suites</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>[cases]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[suites]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+
+        <listitem>
+          <para>Sections that correspond to test case phases</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>[setup]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[act]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[before-assert]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[assert]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[cleanup]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>V 2</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>[cases]</para>
+        </listitem>
+
+        <listitem>
+          <para>[suites]</para>
+        </listitem>
+
+        <listitem>
+          <para>[conf]</para>
+        </listitem>
+
+        <listitem>
+          <para>Sections that correspond to test case phases</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>[setup]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[act]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[before-assert]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[assert]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[cleanup]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+      </itemizedlist>
+    </section>
+
+    <section>
+      <title>V 3</title>
+
+      <itemizedlist>
+        <listitem>
+          <para>Configuration of test cases directly in the suite</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>[conf]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+
+        <listitem>
+          <para>Specification of cases and sub suites contained in the
+          suite</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>[cases]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[suites]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+
+        <listitem>
+          <para>Behaviour to include in test cases directly in the
+          suite</para>
+
+          <variablelist>
+            <varlistentry>
+              <term>[setup]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[act]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[before-assert]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[assert]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>[cleanup]</term>
+
+              <listitem>
+                <para/>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </listitem>
+      </itemizedlist>
+    </section>
+  </section>
 </article>
