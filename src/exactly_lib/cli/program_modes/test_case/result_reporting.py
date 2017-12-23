@@ -65,7 +65,7 @@ class TestSuiteSyntaxErrorReporter(ResultReporter):
     """Reports the result of the execution via exitcode, stdout, stderr."""
 
     def report(self, ex: SuiteSyntaxError) -> int:
-        from exactly_lib.test_suite.error_reporint import report_suite_read_error
+        from exactly_lib.test_suite.error_reporting import report_suite_read_error
         return report_suite_read_error(ex, self._out_printer,
                                        self._err_printer,
                                        exit_values.NO_EXECUTION__SYNTAX_ERROR)
