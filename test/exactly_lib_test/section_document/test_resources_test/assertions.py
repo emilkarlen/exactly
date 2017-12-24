@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.util.line_source import LineSequence
+from exactly_lib.util.line_source import LineSequence, Line
 from exactly_lib_test.section_document.test_resources import assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -8,18 +8,48 @@ from exactly_lib_test.test_resources.test_of_test_resources_util import assert_t
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestEqualsLine),
         unittest.makeSuite(TestEqualsLineSequence),
     ])
 
 
 class EA:
-    """Expected and actual"""
+    """One expected value and one actual value."""
 
     def __init__(self,
                  expected,
                  actual):
         self.expected = expected
         self.actual = actual
+
+
+class TestEqualsLine(unittest.TestCase):
+    def test_SHOULD_be_equal(self):
+        # ARRANGE #
+        expected = Line(1, 'text')
+        actual = Line(1, 'text')
+        assertion = sut.equals_line(expected)
+        # ACT & ASSERT #
+        assertion.apply_without_message(self, actual)
+
+    def test_SHOULD_not_be_equal(self):
+        # ARRANGE #
+        cases = [
+            NameAndValue('unequal line number',
+                         EA(expected=Line(2, 'text'),
+                            actual=Line(1, 'text'))
+                         ),
+            NameAndValue('unequal text',
+                         EA(expected=Line(1, 'expected'),
+                            actual=Line(1, 'actual'))
+                         ),
+        ]
+
+        for name_and_ea in cases:
+            with self.subTest(name_and_ea.name):
+                assertion = sut.equals_line(name_and_ea.value.expected)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion, name_and_ea.value.actual)
 
 
 class TestEqualsLineSequence(unittest.TestCase):
