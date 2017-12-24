@@ -1,8 +1,11 @@
 import os
-import types
 import unittest
+from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List
 
 COMPONENT_SEPARATOR = '/'
+
+T = TypeVar('T')
+U = TypeVar('U')
 
 
 class MessageBuilder:
@@ -42,39 +45,38 @@ class MessageBuilder:
             return self
 
 
-class ValueAssertion:
+class ValueAssertion(Generic[T]):
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         raise NotImplementedError()
 
-    def apply_with_message(self, put: unittest.TestCase, value, message: str):
+    def apply_with_message(self, put: unittest.TestCase, value: T, message: str):
         """
         Short cut to 'apply' when using a str message.
         """
         return self.apply(put, value, MessageBuilder(message))
 
-    def apply_without_message(self, put: unittest.TestCase, value):
+    def apply_without_message(self, put: unittest.TestCase, value: T):
         """
         Short cut to 'apply' when using no message.
         """
         return self.apply(put, value, MessageBuilder())
 
 
-class OfCallable(ValueAssertion):
-    def __init__(self,
-                 f: types.FunctionType):
+class OfCallable(ValueAssertion[T]):
+    def __init__(self, f: Callable[[unittest.TestCase, T, MessageBuilder], None]):
         self.f = f
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         self.f(put, value, message_builder)
 
 
-class Constant(ValueAssertion):
+class Constant(ValueAssertion[Any]):
     """
     An assertion that passes or fails constantly.
     """
@@ -87,13 +89,13 @@ class Constant(ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Any,
               message_builder: MessageBuilder = MessageBuilder()):
         if not self.result:
             put.fail(message_builder.apply(self._message))
 
 
-class Boolean(ValueAssertion):
+class Boolean(ValueAssertion[T]):
     """
     Tests an expression casted to a boolean
     """
@@ -106,7 +108,7 @@ class Boolean(ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         msg = message_builder.apply(self.message)
         if self.expected:
@@ -115,7 +117,7 @@ class Boolean(ValueAssertion):
             put.assertFalse(value, msg)
 
 
-class IsInstance(ValueAssertion):
+class IsInstance(ValueAssertion[Type]):
     """
     Tests a boolean
     """
@@ -128,46 +130,46 @@ class IsInstance(ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Type,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertIsInstance(value,
                              self.expected,
                              message_builder.apply(self.message))
 
 
-def optional(present_value: ValueAssertion) -> ValueAssertion:
+def optional(present_value: ValueAssertion[T]) -> ValueAssertion[T]:
     return Or([ValueIsNone(),
                present_value])
 
 
-def anything_goes() -> ValueAssertion:
+def anything_goes() -> ValueAssertion[Any]:
     return Constant(True)
 
 
-class And(ValueAssertion):
+class And(ValueAssertion[Sequence[T]]):
     def __init__(self,
-                 assertions: list):
+                 assertions: Sequence[ValueAssertion[T]]):
         self.assertions = assertions
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Sequence[T],
               message_builder: MessageBuilder = MessageBuilder()):
         for assertion in self.assertions:
             assert isinstance(assertion, ValueAssertion)
             assertion.apply(put, value, message_builder)
 
 
-class Or(ValueAssertion):
+class Or(ValueAssertion[Sequence[T]]):
     def __init__(self,
-                 assertions: list,
+                 assertions: Sequence[ValueAssertion[T]],
                  assertion_name: str = 'none of the assertions were satisfied'):
         self.assertions = assertions
         self.assertion_name = assertion_name
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Sequence[T],
               message_builder: MessageBuilder = MessageBuilder()):
         failures = []
         for assertion in self.assertions:
@@ -181,16 +183,16 @@ class Or(ValueAssertion):
                  os.linesep.join(failures))
 
 
-class Not(ValueAssertion):
+class Not(ValueAssertion[T]):
     def __init__(self,
-                 assertion: ValueAssertion,
+                 assertion: ValueAssertion[T],
                  assertion_name: str = ''):
         self.assertion = assertion
         self.assertion_name = assertion_name
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         try:
             self.assertion.apply(put, value, message_builder)
@@ -200,79 +202,79 @@ class Not(ValueAssertion):
             put.fail(message_builder.apply('NOT ' + self.assertion_name))
 
 
-class Is(ValueAssertion):
+class Is(ValueAssertion[T]):
     def __init__(self,
-                 expected,
+                 expected: T,
                  message: str = None):
         self.expected = expected
         self.message = message
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertIs(self.expected, value,
                      message_builder.apply(self.message))
 
 
-class IsNot(ValueAssertion):
+class IsNot(ValueAssertion[T]):
     def __init__(self,
-                 expected,
+                 expected: T,
                  message: str = None):
         self.expected = expected
         self.message = message
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertIsNot(self.expected, value,
                         message_builder.apply(self.message))
 
 
-class ValueIsNone(ValueAssertion):
+class ValueIsNone(ValueAssertion[T]):
     def __init__(self,
                  message: str = None):
         self.message = message
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertIsNone(value,
                          message_builder.apply(self.message))
 
 
-class ValueIsNotNone(ValueAssertion):
+class ValueIsNotNone(ValueAssertion[T]):
     def __init__(self,
                  message: str = None):
         self.message = message
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertIsNotNone(value,
                             message_builder.apply(self.message))
 
 
-class Equals(ValueAssertion):
+class Equals(ValueAssertion[T]):
     def __init__(self,
-                 expected,
+                 expected: Any,
                  message: str = None):
         self.expected = expected
         self.message = message
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertEqual(self.expected,
                         value,
                         message_builder.apply(self.message))
 
 
-class _LenEquals(ValueAssertion):
+class _LenEquals(ValueAssertion[Sized]):
     def __init__(self,
                  expected: int,
                  message: str = None):
@@ -281,23 +283,23 @@ class _LenEquals(ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Sized,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertEqual(self.expected,
                         len(value),
                         message_builder.apply(self.message))
 
 
-class OnTransformed(ValueAssertion):
+class OnTransformed(ValueAssertion[T]):
     def __init__(self,
-                 transformer: types.FunctionType,
-                 assertion: ValueAssertion):
+                 transformer: Callable[[T], U],
+                 assertion: ValueAssertion[U]):
         self.transformer = transformer
         self.assertion = assertion
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         self.assertion.apply(put,
                              self.transformer(value),
@@ -305,9 +307,9 @@ class OnTransformed(ValueAssertion):
 
 
 def sub_component(component_name: str,
-                  component_getter: types.FunctionType,
-                  component_assertion: ValueAssertion,
-                  component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion:
+                  component_getter: Callable[[T], U],
+                  component_assertion: ValueAssertion[U],
+                  component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[T]:
     """
     Short cut for creating a SubComponentValueAssertion
     """
@@ -317,12 +319,12 @@ def sub_component(component_name: str,
                         component_assertion)
 
 
-def with_transformed_message(message_builder_transformer: types.FunctionType,
-                             value_assertion: ValueAssertion) -> ValueAssertion:
+def with_transformed_message(message_builder_transformer: Callable[[MessageBuilder], MessageBuilder],
+                             value_assertion: ValueAssertion[T]) -> ValueAssertion[T]:
     return _WithTransformedMessage(message_builder_transformer, value_assertion)
 
 
-def append_to_message(s: str) -> types.FunctionType:
+def append_to_message(s: str) -> Callable[[MessageBuilder], MessageBuilder]:
     def ret_val(message_builder: MessageBuilder) -> MessageBuilder:
         return message_builder.for_sub_component(s, component_separator='')
 
@@ -330,9 +332,9 @@ def append_to_message(s: str) -> types.FunctionType:
 
 
 def sub_component_list(list_name: str,
-                       list_getter: types.FunctionType,
-                       element_assertion: ValueAssertion,
-                       component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion:
+                       list_getter: Callable[[T], Sequence[U]],
+                       element_assertion: ValueAssertion[U],
+                       component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[T]:
     """
     Short cut for creating a SubComponentValueAssertion that checks a list
     """
@@ -343,15 +345,15 @@ def sub_component_list(list_name: str,
                          component_separator)
 
 
-def is_list_of(element_assertion: ValueAssertion) -> ValueAssertion:
+def is_list_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[List[T]]:
     return is_instance_with(list,
                             every_element('', element_assertion, component_separator=''))
 
 
-class _IsInstanceWith(ValueAssertion):
+class _IsInstanceWith(ValueAssertion[Any]):
     def __init__(self,
-                 expected_type: type,
-                 value_assertion: ValueAssertion,
+                 expected_type: Type[T],
+                 value_assertion: ValueAssertion[T],
                  description: str):
         self.expected_type = expected_type
         self.value_assertion = value_assertion
@@ -359,7 +361,7 @@ class _IsInstanceWith(ValueAssertion):
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Any,
               message_builder: MessageBuilder = MessageBuilder()):
         if self.description:
             message_builder = message_builder.with_description(self.description)
@@ -369,16 +371,16 @@ class _IsInstanceWith(ValueAssertion):
         self.value_assertion.apply(put, value, message_builder)
 
 
-class _IsNotNoneAndInstanceWith(ValueAssertion):
+class _IsNotNoneAndInstanceWith(ValueAssertion[Any]):
     def __init__(self,
-                 expected_type: type,
-                 value_assertion: ValueAssertion):
+                 expected_type: Type[T],
+                 value_assertion: ValueAssertion[T]):
         self.expected_type = expected_type
         self.value_assertion = value_assertion
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Any,
               message_builder: MessageBuilder = MessageBuilder()):
         msg = message_builder.apply('')
         put.assertIsNotNone(value, msg)
@@ -386,16 +388,16 @@ class _IsNotNoneAndInstanceWith(ValueAssertion):
         self.value_assertion.apply(put, value, message_builder)
 
 
-class _IsNoneOrInstanceWith(ValueAssertion):
+class _IsNoneOrInstanceWith(ValueAssertion[Any]):
     def __init__(self,
-                 expected_type: type,
-                 value_assertion: ValueAssertion):
+                 expected_type: Type[T],
+                 value_assertion: ValueAssertion[T]):
         self.expected_type = expected_type
         self.value_assertion = value_assertion
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Any,
               message_builder: MessageBuilder = MessageBuilder()):
         msg = message_builder.apply('')
         if value is None:
@@ -404,25 +406,25 @@ class _IsNoneOrInstanceWith(ValueAssertion):
         self.value_assertion.apply(put, value, message_builder)
 
 
-def is_instance_with(expected_type: type,
-                     value_assertion: ValueAssertion,
-                     description: str = '') -> ValueAssertion:
+def is_instance_with(expected_type: Type[T],
+                     value_assertion: ValueAssertion[T],
+                     description: str = '') -> ValueAssertion[Any]:
     return _IsInstanceWith(expected_type, value_assertion, description)
 
 
-def is_not_none_and_instance_with(expected_type: type,
-                                  value_assertion: ValueAssertion) -> ValueAssertion:
+def is_not_none_and_instance_with(expected_type: Type[T],
+                                  value_assertion: ValueAssertion[T]) -> ValueAssertion[Any]:
     return _IsNotNoneAndInstanceWith(expected_type, value_assertion)
 
 
-def is_none_or_instance_with(expected_type: type,
-                             value_assertion: ValueAssertion) -> ValueAssertion:
+def is_none_or_instance_with(expected_type: Type[T],
+                             value_assertion: ValueAssertion[T]) -> ValueAssertion[Any]:
     return _IsNoneOrInstanceWith(expected_type, value_assertion)
 
 
 def every_element(iterable_name: str,
-                  element_assertion: ValueAssertion,
-                  component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion:
+                  element_assertion: ValueAssertion[T],
+                  component_separator: str = COMPONENT_SEPARATOR) -> ValueAssertion[Sequence[T]]:
     """
     Short cut for creating a IterableElementsValueAssertion
     """
@@ -458,18 +460,18 @@ def sub_component_builder(component_name: str,
     return MessageBuilder(sub_component_header(component_name, super_message_builder, component_separator))
 
 
-class SubComponent(ValueAssertion):
+class SubComponent(ValueAssertion[T]):
     def __init__(self,
                  message_head_constructor: SubComponentMessageHeadConstructor,
-                 component_getter: types.FunctionType,
-                 component_assertion: ValueAssertion):
+                 component_getter: Callable[[T], U],
+                 component_assertion: ValueAssertion[U]):
         self.component_getter = component_getter
         self.component_assertion = component_assertion
         self.message_head_constructor = message_head_constructor
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         sub_component_value = self.component_getter(value)
         component_message_builder = MessageBuilder(self.message_head_constructor.apply(message_builder))
@@ -478,16 +480,16 @@ class SubComponent(ValueAssertion):
                                        component_message_builder)
 
 
-class EveryElement(ValueAssertion):
+class EveryElement(ValueAssertion[Sequence[T]]):
     def __init__(self,
                  message_head_constructor: SubComponentMessageHeadConstructor,
-                 element_assertion: ValueAssertion):
+                 element_assertion: ValueAssertion[T]):
         self.element_assertion = element_assertion
         self.message_head_constructor = message_head_constructor
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Sequence[T],
               message_builder: MessageBuilder = MessageBuilder()):
         head = self.message_head_constructor.apply(message_builder)
         element_index = 0
@@ -499,14 +501,14 @@ class EveryElement(ValueAssertion):
             element_index += 1
 
 
-class _MatchesSequence(ValueAssertion):
+class _MatchesSequence(ValueAssertion[Sequence[T]]):
     def __init__(self,
-                 element_assertions: list):
+                 element_assertions: Sequence[ValueAssertion[T]]):
         self.element_assertions = element_assertions
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Sequence[T],
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertEqual(len(self.element_assertions),
                         len(value),
@@ -519,16 +521,16 @@ class _MatchesSequence(ValueAssertion):
                                                element_message_builder)
 
 
-class _EqualsSequence(ValueAssertion):
+class _EqualsSequence(ValueAssertion[Sequence[T]]):
     def __init__(self,
-                 expected: list,
-                 new_value_assertion_for_expected: types.FunctionType):
+                 expected: Sequence[T],
+                 new_value_assertion_for_expected: Callable[[T], ValueAssertion[T]]):
         self.expected = expected
         self.new_value_assertion_for_expected = new_value_assertion_for_expected
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: Sequence[T],
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertEqual(len(self.expected),
                         len(value),
@@ -543,28 +545,28 @@ class _EqualsSequence(ValueAssertion):
                                     element_message_builder)
 
 
-def fail(msg: str) -> ValueAssertion:
+def fail(msg: str) -> ValueAssertion[T]:
     return Constant(False, msg)
 
 
-class _WithTransformedMessage(ValueAssertion):
+class _WithTransformedMessage(ValueAssertion[T]):
     def __init__(self,
-                 message_builder_transformer: types.FunctionType,
-                 value_assertion: ValueAssertion):
+                 message_builder_transformer: Callable[[MessageBuilder], MessageBuilder],
+                 value_assertion: ValueAssertion[T]):
         self.value_assertion = value_assertion
         self.message_builder_transformer = message_builder_transformer
 
     def apply(self,
               put: unittest.TestCase,
-              value,
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         self.value_assertion.apply(put,
                                    value,
                                    self.message_builder_transformer(message_builder))
 
 
-def equals_sequence(expected: list,
-                    new_value_assertion_for_expected: types.FunctionType) -> ValueAssertion:
+def equals_sequence(expected: Sequence[T],
+                    new_value_assertion_for_expected: Callable[[T], ValueAssertion[T]]) -> ValueAssertion[Sequence[T]]:
     return _EqualsSequence(expected, new_value_assertion_for_expected)
 
 
@@ -581,7 +583,7 @@ is_false = Equals(False)
 is_true = Equals(True)
 
 
-def casted_to_boolean_is(expected: bool) -> ValueAssertion:
+def casted_to_boolean_is(expected: bool) -> ValueAssertion[T]:
     return Boolean(expected)
 
 
@@ -591,20 +593,19 @@ is_empty_list = is_instance_with(list, is_empty)
 ignore = Constant(True)
 
 
-def matches_sequence(element_assertions: list) -> ValueAssertion:
+def matches_sequence(element_assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[Sequence[T]]:
     """
     :param element_assertions: The element at index i is an assertion on element at index i
-        in the list of acutal values.
-    :type element_assertions: [`ValueAssertion`]
+    in the list of actual values.
     """
     return _MatchesSequence(element_assertions)
 
 
-def is_not(value) -> ValueAssertion:
+def is_not(value) -> ValueAssertion[T]:
     return IsNot(value)
 
 
-def and_(assertions: list) -> ValueAssertion:
+def and_(assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[T]:
     if not assertions:
         return Constant(True)
     if len(assertions) == 1:
@@ -612,7 +613,7 @@ def and_(assertions: list) -> ValueAssertion:
     return And(assertions)
 
 
-def or_(assertions: list) -> ValueAssertion:
+def or_(assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[T]:
     if not assertions:
         return Constant(False)
     if len(assertions) == 1:
