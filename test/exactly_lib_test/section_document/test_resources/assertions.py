@@ -1,4 +1,5 @@
 import unittest
+from typing import Any
 
 from exactly_lib.util.line_source import Line, LineSequence
 from exactly_lib_test.test_resources.assertions.assert_utils import assertion_message
@@ -25,7 +26,7 @@ def assert_equals_line(test_case: unittest.TestCase,
                           assertion_message('Line text', message_header))
 
 
-def equals_line(expected: Line) -> asrt.ValueAssertion:
+def equals_line(expected: Line) -> asrt.ValueAssertion[Any]:
     return asrt.is_instance_with(Line,
                                  asrt.And([
                                      asrt.sub_component('line_number',
@@ -37,7 +38,7 @@ def equals_line(expected: Line) -> asrt.ValueAssertion:
                                  ]))
 
 
-def is_line(description: str = '') -> asrt.ValueAssertion:
+def is_line(description: str = '') -> asrt.ValueAssertion[Any]:
     return asrt.is_instance_with(Line,
                                  asrt.And([
                                      asrt.sub_component('line_number',
@@ -48,6 +49,18 @@ def is_line(description: str = '') -> asrt.ValueAssertion:
                                                         asrt.is_instance(str))
                                  ]),
                                  description)
+
+
+def equals_line_sequence(expected: LineSequence) -> asrt.ValueAssertion[LineSequence]:
+    return asrt.and_([
+        asrt.sub_component('first_line_number',
+                           LineSequence.first_line_number.fget,
+                           asrt.equals(expected.first_line_number)),
+        asrt.sub_component('lines',
+                           LineSequence.lines.fget,
+                           asrt.equals_sequence(expected.lines,
+                                                asrt.equals)),
+    ])
 
 
 def assert_equals_line_sequence(test_case: unittest.TestCase,
