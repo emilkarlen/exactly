@@ -6,28 +6,28 @@ from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def path_is_file_with_contents(expected_contents: str) -> asrt.ValueAssertion:
+def path_is_file_with_contents(expected_contents: str) -> asrt.ValueAssertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
     return _PathIsFileWithContents(expected_contents)
 
 
-def dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
     return DirContainsExactly(expected_contents)
 
 
-def dir_is_empty() -> asrt.ValueAssertion:
+def dir_is_empty() -> asrt.ValueAssertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
     return DirContainsExactly(file_structure.empty_dir_contents())
 
 
-def dir_contains_at_least(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def dir_contains_at_least(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion[pathlib.Path]:
     """
     Assumes that the actual value is a pathlib.Path
     """
