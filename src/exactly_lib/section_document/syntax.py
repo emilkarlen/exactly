@@ -63,7 +63,7 @@ def section_header(section_name: str) -> str:
 
 def extract_section_name_from_section_line(line: str) -> str:
     """
-    :param line: A line that matches _PHASE_LINE_RE
+    :param line: A line that matches SECTION_LINE_RE
     :raise ValueError: line is not a valid Phase Header
     :return:
     """
@@ -75,5 +75,5 @@ def extract_section_name_from_section_line(line: str) -> str:
     ret_val = after_phase_marker[:m.end()]
     after_name = after_phase_marker[m.end():]
     if not _SECTION_NAME_AFTER_RE.match(after_name):
-        raise ValueError('Invalid tail after section name: "%s"' % after_name)
+        raise ValueError('Invalid text after section name: "%s"' % after_name)
     return ret_val

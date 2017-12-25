@@ -187,7 +187,12 @@ class _Impl:
         self._elements_for_current_section.append(element)
 
     def extract_section_name_and_consume_line(self) -> str:
-        section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
+        try:
+            section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
+        except ValueError as ex:
+            raise FileSourceError(SourceError(self._current_line,
+                                              str(ex)),
+                                  None)
         self.move_one_line_forward()
         return section_name
 
