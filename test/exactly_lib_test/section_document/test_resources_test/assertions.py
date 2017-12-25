@@ -4,6 +4,7 @@ from exactly_lib.util.line_source import LineSequence, Line
 from exactly_lib_test.section_document.test_resources import assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_utils import EA
 
 
 def suite() -> unittest.TestSuite:
@@ -11,16 +12,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestEqualsLine),
         unittest.makeSuite(TestEqualsLineSequence),
     ])
-
-
-class EA:
-    """One expected value and one actual value."""
-
-    def __init__(self,
-                 expected,
-                 actual):
-        self.expected = expected
-        self.actual = actual
 
 
 class TestEqualsLine(unittest.TestCase):
