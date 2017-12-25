@@ -20,6 +20,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestSectionsConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParseSingleLineElements))
     ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
+    ret_val.addTest(unittest.makeSuite(TestInvalidSyntax))
     return ret_val
 
 
@@ -169,23 +170,6 @@ class TestParseSingleLineElements(ParseTestBase):
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
-
-    def test_instruction_in_default_phase_should_not_be_allowed_when_there_is_no_default_phase(self):
-        # ARRANGE #
-        parser = parser_for_sections(['phase 1'])
-        source_lines = ['instruction default',
-                        '[phase 1]',
-                        'instruction 1']
-        # ACT & ASSERT #
-        with self.assertRaises(FileSourceError) as cm:
-            self._parse_lines(parser,
-                              source_lines)
-        # ASSERT #
-        assert_equals_line(self,
-                           Line(1, 'instruction default'),
-                           cm.exception.source_error.line)
-        self.assertIsNone(cm.exception.maybe_section_name,
-                          'Section name')
 
     def test_parse_should_fail_when_instruction_parser_fails(self):
         # ARRANGE #
@@ -439,13 +423,31 @@ class TestParseMultiLineElements(ParseTestBase):
 #         actual = parse2.group_by_phase(lines)
 #         self.assertEqual(expected, actual)
 #
-#     def test_invalid_phase_name_should_raise_exception(self):
-#         self.assertRaises(SourceError,
-#                           parse2.group_by_phase,
-#                           [
-#                               (syntax.TYPE_PHASE,
-#                                Line(1, '[phase-name-without-closing-bracket'))
-#                           ])
+class TestInvalidSyntax(ParseTestBase):
+    def test_instruction_in_default_phase_should_not_be_allowed_when_there_is_no_default_phase(self):
+        # ARRANGE #
+        parser = parser_for_sections(['phase 1'])
+        source_lines = ['instruction default',
+                        '[phase 1]',
+                        'instruction 1']
+        # ACT & ASSERT #
+        with self.assertRaises(FileSourceError) as cm:
+            self._parse_lines(parser,
+                              source_lines)
+        # ASSERT #
+        assert_equals_line(self,
+                           Line(1, 'instruction default'),
+                           cm.exception.source_error.line)
+        self.assertIsNone(cm.exception.maybe_section_name,
+                          'Section name')
+
+    # def test_invalid_phase_name_should_raise_exception(self):
+    #     self.assertRaises(SourceError,
+    #                       parse2.group_by_phase,
+    #                       [
+    #                           (syntax.TYPE_PHASE,
+    #                            Line(1, '[phase-name-without-closing-bracket'))
+    #                       ])
 
 
 def is_multi_line_instruction_line(line: str) -> bool:
@@ -543,13 +545,20 @@ class SectionElementParserThatFails(sut.SectionElementParser):
 
 
 def parser_for_phase2_that_fails_unconditionally() -> DocumentParser:
+    return parser_with_successful_and_failing_section_parsers('phase 1', 'phase 2')
+
+
+def parser_with_successful_and_failing_section_parsers(successful_section: str,
+                                                       failing_section: str,
+                                                       default_section: str = None) -> DocumentParser:
     configuration = SectionsConfiguration(
-        (SectionConfiguration('phase 1',
+        (SectionConfiguration(successful_section,
                               SectionElementParserForEmptyCommentAndInstructionLines(
-                                  'phase 1')),
-         SectionConfiguration('phase 2',
-                              SectionElementParserThatFails()))
-    )
+                                  successful_section)),
+         SectionConfiguration(failing_section,
+                              SectionElementParserThatFails())),
+        default_section_name=default_section)
+
     return new_parser_for(configuration)
 
 
