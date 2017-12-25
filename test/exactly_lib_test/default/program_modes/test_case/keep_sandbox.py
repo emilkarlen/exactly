@@ -10,7 +10,7 @@ from exactly_lib_test.default.test_resources.internal_main_program_runner import
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_case_file_structure.sandbox_directory_structure import \
     is_sandbox_directory_structure_after_execution
-from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
+from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndTestActor
