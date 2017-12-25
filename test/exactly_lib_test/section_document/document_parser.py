@@ -18,7 +18,6 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    # ret_val.addTest(unittest.makeSuite(TestGroupByPhase))
     ret_val.addTest(unittest.makeSuite(TestSectionsConfiguration))
     ret_val.addTest(unittest.makeSuite(TestParseSingleLineElements))
     ret_val.addTest(unittest.makeSuite(TestParseMultiLineElements))
@@ -374,56 +373,6 @@ class TestParseMultiLineElements(ParseTestBase):
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
-
-
-# class TestGroupByPhase(unittest.TestCase):
-#     def test_valid(self):
-#         lines_for_default = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i0/1'))
-#         ]
-#
-#         section1_line = Line(20, '[section 1]')
-#         lines_for_section1 = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
-#             (syntax.TYPE_COMMENT, Line(2, '#1')),
-#             (syntax.TYPE_INSTRUCTION, Line(3, 'i1/2')),
-#         ]
-#
-#         section2_line = Line(30, '[section 2]')
-#         lines_for_section2 = [
-#         ]
-#
-#         section3_line = Line(40, '[section 3]')
-#         lines_for_section3 = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i3/1')),
-#             (syntax.TYPE_COMMENT, Line(2, '#3')),
-#         ]
-#
-#         lines = lines_for_default + \
-#                 [(syntax.TYPE_PHASE, section1_line)] + \
-#                 lines_for_section1 + \
-#                 [(syntax.TYPE_PHASE, section2_line)] + \
-#                 lines_for_section2 + \
-#                 [(syntax.TYPE_PHASE, section3_line)] + \
-#                 lines_for_section3
-#
-#         expected = [
-#             parse2.PhaseWithLines(None,
-#                                   None,
-#                                   tuple(lines_for_default)),
-#             parse2.PhaseWithLines('section 1',
-#                                   section1_line,
-#                                   tuple(lines_for_section1)),
-#             parse2.PhaseWithLines('section 2',
-#                                   section2_line,
-#                                   tuple(lines_for_section2)),
-#             parse2.PhaseWithLines('section 3',
-#                                   section3_line,
-#                                   tuple(lines_for_section3)),
-#         ]
-#
-#         actual = parse2.group_by_section(lines)
-#         self.assertEqual(expected, actual)
 
 
 class TestInvalidSyntax(ParseTestBase):
