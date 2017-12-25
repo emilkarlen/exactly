@@ -1,5 +1,7 @@
 import unittest
 
+from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as sut
 
 
@@ -17,6 +19,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestOnTransformed))
     ret_val.addTest(unittest.makeSuite(TestSubComponent))
     ret_val.addTest(unittest.makeSuite(TestEveryElement))
+    ret_val.addTest(unittest.makeSuite(TestMatchesDict))
     return ret_val
 
 
@@ -334,6 +337,58 @@ class TestEveryElement(unittest.TestCase):
 
     def test_two_element_list__true_true(self):
         self.every_element_is_none.apply(self.put, [None, None])
+
+
+class TestMatchesDict(unittest.TestCase):
+    def test_not_matches(self):
+        cases = [
+            NEA('different keys',
+                expected={'expected key': sut.equals('value')},
+                actual={'actual key': 'value'},
+                ),
+            NEA('different values',
+                expected={'key': sut.equals('expected value')},
+                actual={'key': 'actual value'},
+                ),
+            NEA('more elements in actual than in expected',
+                expected={1: sut.equals('value')},
+                actual={1: 'value',
+                        2: 'value'},
+                ),
+            NEA('more elements in expected than in actual',
+                expected={1: sut.equals('value'),
+                          2: sut.equals('value')},
+                actual={1: 'value'},
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                assertion = sut.matches_dict(nea.expected)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion, nea.actual)
+
+    def test_matches(self):
+        cases = [
+            NEA('empty',
+                expected=dict(),
+                actual=dict(),
+                ),
+            NEA('single element',
+                expected={1: sut.equals('value')},
+                actual={1: 'value'},
+                ),
+            NEA('many values',
+                expected={1: sut.anything_goes(),
+                          5: sut.anything_goes()},
+                actual={1: 'one value',
+                        5: 'another value'},
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                assertion = sut.matches_dict(nea.expected)
+                # ACT & ASSERT #
+                assertion.apply_without_message(self, nea.actual)
 
 
 def test_case_with_failure_exception_set_to_test_exception() -> unittest.TestCase:

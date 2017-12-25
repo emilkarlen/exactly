@@ -1,11 +1,13 @@
 import os
 import unittest
-from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List
+from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict
 
 COMPONENT_SEPARATOR = '/'
 
 T = TypeVar('T')
 U = TypeVar('U')
+
+TYPE_WITH_EQUALS = TypeVar('TYPE_WITH_EQUALS')
 
 
 class MessageBuilder:
@@ -599,6 +601,31 @@ def matches_sequence(element_assertions: Sequence[ValueAssertion[T]]) -> ValueAs
     in the list of actual values.
     """
     return _MatchesSequence(element_assertions)
+
+
+class _MatchesDict(ValueAssertion[Dict[TYPE_WITH_EQUALS, T]]):
+    def __init__(self, expected: Dict[TYPE_WITH_EQUALS, ValueAssertion[T]]):
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value: Dict[TYPE_WITH_EQUALS, T],
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertEqual(self.expected.keys(),
+                        value.keys(),
+                        'key set')
+        for k in self.expected.keys():
+            assertion = self.expected[k]
+            actual = value[k]
+            element_message_builder = sub_component_builder('[' + repr(k) + ']',
+                                                            message_builder,
+                                                            component_separator='')
+            assertion.apply(put, actual, element_message_builder)
+
+
+def matches_dict(expected: Dict[TYPE_WITH_EQUALS, ValueAssertion[T]]) -> ValueAssertion[Dict[TYPE_WITH_EQUALS, T]]:
+    """Assertion on a dict, with keys that can be compared using std Python equality"""
+    return _MatchesDict(expected)
 
 
 def is_not(value) -> ValueAssertion[T]:
