@@ -10,7 +10,9 @@ from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, equals_line_sequence
+from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, equals_line_sequence, \
+    equals_line
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -423,12 +425,13 @@ class TestParseMultiLineElements(ParseTestBase):
 #         actual = parse2.group_by_phase(lines)
 #         self.assertEqual(expected, actual)
 #
+
 class TestInvalidSyntax(ParseTestBase):
-    def test_instruction_in_default_phase_should_not_be_allowed_when_there_is_no_default_phase(self):
+    def test_instruction_in_default_section_SHOULD_not_be_allowed_when_there_is_no_default_section(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1'])
+        parser = parser_for_sections(['section 1'])
         source_lines = ['instruction default',
-                        '[phase 1]',
+                        '[section 1]',
                         'instruction 1']
         # ACT & ASSERT #
         with self.assertRaises(FileSourceError) as cm:
@@ -441,13 +444,72 @@ class TestInvalidSyntax(ParseTestBase):
         self.assertIsNone(cm.exception.maybe_section_name,
                           'Section name')
 
-    # def test_invalid_phase_name_should_raise_exception(self):
-    #     self.assertRaises(SourceError,
-    #                       parse2.group_by_phase,
-    #                       [
-    #                           (syntax.TYPE_PHASE,
-    #                            Line(1, '[phase-name-without-closing-bracket'))
-    #                       ])
+    def test_invalid_section_name_should_raise_exception(self):
+        parser = parser_for_sections(['section-header'])
+        cases = [
+            NEA('first section header is invalid (missing closing bracket)',
+                actual=['[section-header'],
+                expected=assert_file_source_error(equals_line(Line(1, '[section-header')),
+                                                  asrt.is_none)
+                ),
+            NEA('first section header is invalid (superfluous closing bracket)',
+                actual=['[section-header]]'],
+                expected=assert_file_source_error(equals_line(Line(1, '[section-header]]')),
+                                                  asrt.is_none)
+                ),
+            NEA('first section header is invalid (content after closing bracket)',
+                actual=['[section-header] superfluous'],
+                expected=assert_file_source_error(equals_line(Line(1, '[section-header] superfluous')),
+                                                  asrt.is_none)
+
+                ),
+            NEA('non-first section header is invalid',
+                actual=['[section-header]',
+                        'instruction 1',
+                        '[section-header',
+                        ]
+                ,
+                expected=assert_file_source_error(equals_line(Line(3, '[section-header')),
+                                                  asrt.is_none)
+
+                ),
+            NEA('section header with unknown section name (as first section header)',
+                actual=['[unknown-section-header]',
+                        'instruction 1'
+                        ]
+                ,
+                expected=assert_file_source_error(equals_line(Line(1, '[unknown-section-header]')),
+                                                  asrt.is_none)
+                ),
+            NEA('section header with unknown section name (as non-first section header)',
+                actual=['[section-header]',
+                        'instruction 1',
+                        '[unknown-section-header]',
+                        'instruction 2',
+                        ]
+                ,
+                expected=assert_file_source_error(equals_line(Line(3, '[unknown-section-header]')),
+                                                  asrt.is_none)
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                with self.assertRaises(FileSourceError) as cm:
+                    self._parse_lines(parser, nea.actual)
+                nea.expected.apply_without_message(self, cm.exception)
+
+
+def assert_file_source_error(line: asrt.ValueAssertion[Line] = asrt.anything_goes(),
+                             maybe_section_name: asrt.ValueAssertion[str] = asrt.anything_goes()
+                             ) -> asrt.ValueAssertion[FileSourceError]:
+    return asrt.and_([
+        asrt.sub_component('maybe_section_name',
+                           FileSourceError.maybe_section_name.fget,
+                           maybe_section_name),
+        asrt.sub_component('line',
+                           lambda fse: fse.source_error.line,
+                           line),
+    ])
 
 
 def is_multi_line_instruction_line(line: str) -> bool:
@@ -565,8 +627,7 @@ def parser_with_successful_and_failing_section_parsers(successful_section: str,
 def parser_for_sections(section_names: list,
                         default_section_name: str = None) -> DocumentParser:
     sections = [SectionConfiguration(name,
-                                     SectionElementParserForEmptyCommentAndInstructionLines(
-                                         name))
+                                     SectionElementParserForEmptyCommentAndInstructionLines(name))
                 for name in section_names]
     if default_section_name is not None:
         if default_section_name not in section_names:
