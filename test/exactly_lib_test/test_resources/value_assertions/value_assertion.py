@@ -47,6 +47,10 @@ class MessageBuilder:
             return self
 
 
+def new_message_builder(message_header_or_none: str = None) -> MessageBuilder:
+    return MessageBuilder('' if message_header_or_none is None else message_header_or_none)
+
+
 class ValueAssertion(Generic[T]):
     def apply(self,
               put: unittest.TestCase,

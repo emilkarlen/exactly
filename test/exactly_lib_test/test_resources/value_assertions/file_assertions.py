@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.assertions.file_checks import FileChecker
+from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -34,7 +34,7 @@ def dir_contains_at_least(expected_contents: file_structure.DirContents) -> asrt
     return _DirContainsAtLeast(expected_contents)
 
 
-class PathAssertionBase(asrt.ValueAssertion):
+class PathAssertionBase(asrt.ValueAssertion[pathlib.Path]):
     def apply(self,
               put: unittest.TestCase,
               value,
