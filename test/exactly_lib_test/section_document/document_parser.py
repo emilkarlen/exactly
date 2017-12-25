@@ -1,4 +1,5 @@
 import unittest
+from typing import Dict, Sequence
 
 from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document import model
@@ -9,9 +10,11 @@ from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, assert_equals_line_sequence
+from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, assert_equals_line_sequence, \
+    equals_line_sequence
 from exactly_lib_test.test_resources.assertions.assert_utils import TestCaseWithMessageHeader, \
     MessageWithHeaderConstructor
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -58,6 +61,22 @@ class ParseTestBase(unittest.TestCase):
                               str(expected_document.section)
                           ))
 
+    def _parse_and_check(self,
+                         parser: DocumentParser,
+                         lines: list,
+                         expected_document: Dict[str, Sequence[asrt.ValueAssertion[model.SectionContentElement]]]):
+        # ACT #
+        actual_document = self._parse_lines(parser, lines)
+        # ASSERT #
+        actual_section_2_elements = {section: actual_document.section_2_elements[section].elements
+                                     for section in actual_document.section}
+
+        expected_section_2_assertion = {section: asrt.matches_sequence(expected_document[section])
+                                        for section in expected_document.keys()}
+
+        assertion = asrt.matches_dict(expected_section_2_assertion)
+        assertion.apply_without_message(self, actual_section_2_elements)
+
 
 class TestSectionsConfiguration(ParseTestBase):
     def test_WHEN_the_default_section_name_is_not_a_name_of_a_section_THEN_an_exception_SHOULD_be_raised(self):
@@ -82,16 +101,12 @@ class TestParseSingleLineElements(ParseTestBase):
         source_lines = ['[phase 1]',
                         '[phase 2]',
                         ]
-        # ACT #
-        actual_document = self._parse_lines(parser,
-                                            source_lines)
-        # ASSERT #
-        expected_phase2instructions = {
-            'phase 1': model.SectionContents(()),
-            'phase 2': model.SectionContents(()),
+        expected = {
+            'phase 1': [],
+            'phase 2': [],
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
     def test_initial_empty_lines_and_comment_lines_should_be_ignored_when_there_is_no_default_phase(self):
         # ARRANGE #
@@ -103,50 +118,41 @@ class TestParseSingleLineElements(ParseTestBase):
                         '',
                         'instruction 1',
                         ]
-        # ACT #
-        actual_document = self._parse_lines(parser,
-                                            source_lines)
-        # ASSERT #
-        phase1_instructions = (
-            new_comment(4, 'COMMENT 1'),
-            new_empty(5, ''),
-            new_instruction(6, 'instruction 1', 'phase 1')
-        )
-        expected_phase2instructions = {
-            'phase 1': model.SectionContents(phase1_instructions),
+        expected = {
+            'phase 1': [
+                equals_comment_element(4, 'COMMENT 1'),
+                equals_empty_element(5, ''),
+                equals_instruction_without_description(6, 'instruction 1', 'phase 1'),
+            ],
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
     def test_valid_default_and_named_phase(self):
         # ARRANGE #
-        sections = parser_for_sections(['phase 1', 'default'],
-                                       default_section_name='default')
-        input_lines = ['COMMENT default',
-                       '',
-                       'instruction default',
-                       '[phase 1]',
-                       'COMMENT 1',
-                       'instruction 1']
-        # ACT #
-        actual_document = self._parse_lines(sections,
-                                            input_lines)
-        # ASSERT #
-        default_instructions = (
-            new_comment(1, 'COMMENT default'),
-            new_empty(2, ''),
-            new_instruction(3, 'instruction default', 'default')
+        parser = parser_for_sections(['phase 1', 'default'],
+                                     default_section_name='default')
+        source_lines = ['COMMENT default',
+                        '',
+                        'instruction default',
+                        '[phase 1]',
+                        'COMMENT 1',
+                        'instruction 1']
+        default_section_contents = (
+            equals_comment_element(1, 'COMMENT default'),
+            equals_empty_element(2, ''),
+            equals_instruction_without_description(3, 'instruction default', 'default')
         )
-        phase1_instructions = (
-            new_comment(5, 'COMMENT 1'),
-            new_instruction(6, 'instruction 1', 'phase 1')
+        section1_contents = (
+            equals_comment_element(5, 'COMMENT 1'),
+            equals_instruction_without_description(6, 'instruction 1', 'phase 1')
         )
-        expected_phase2instructions = {
-            'default': model.SectionContents(default_instructions),
-            'phase 1': model.SectionContents(phase1_instructions)
+        expected = {
+            'default': default_section_contents,
+            'phase 1': section1_contents,
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
     def test_valid_phase_with_comment_and_instruction(self):
         # ARRANGE #
@@ -155,23 +161,17 @@ class TestParseSingleLineElements(ParseTestBase):
                         'COMMENT',
                         'instruction'
                         ]
-        # ACT #
-        actual_document = self._parse_lines(parser,
-                                            source_lines)
-        # ASSERT #
-        phase1_instructions = (
-            new_comment(2, 'COMMENT'),
-            new_instruction(3, 'instruction', 'phase 1')
-        )
-        expected_phase2instructions = {
-            'phase 1': model.SectionContents(phase1_instructions)
+        expected = {
+            'phase 1': [
+                equals_comment_element(2, 'COMMENT'),
+                equals_instruction_without_description(3, 'instruction', 'phase 1')
+            ]
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
     def test_valid_phase_with_fragmented_phases(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'phase 2'])
         source_lines = ['[phase 1]',
                         'COMMENT 1',
                         '',
@@ -180,26 +180,20 @@ class TestParseSingleLineElements(ParseTestBase):
                         '[phase 1]',
                         'instruction 1'
                         ]
-        # ACT #
-        actual_document = self._parse_lines(parser,
-                                            source_lines)
-        # ASSERT #
-        phase1_instructions = (
-            new_comment(2, 'COMMENT 1'),
-            new_empty(3, ''),
-            new_instruction(7, 'instruction 1',
-                            'phase 1')
-        )
-        phase2_instructions = (
-            new_instruction(5, 'instruction 2',
-                            'phase 2'),
-        )
-        expected_phase2instructions = {
-            'phase 1': model.SectionContents(phase1_instructions),
-            'phase 2': model.SectionContents(phase2_instructions)
+        parser = parser_for_sections(['phase 1', 'phase 2'])
+        expected = {
+            'phase 1': [
+                equals_comment_element(2, 'COMMENT 1'),
+                equals_empty_element(3, ''),
+                equals_instruction_without_description(7, 'instruction 1', 'phase 1')
+            ],
+            'phase 2': [
+                equals_instruction_without_description(5, 'instruction 2', 'phase 2'),
+
+            ]
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
     def test_instruction_in_default_phase_should_not_be_allowed_when_there_is_no_default_phase(self):
         # ARRANGE #
@@ -239,19 +233,13 @@ class TestParseSingleLineElements(ParseTestBase):
         source_lines = ['[phase 1]',
                         'instruction 1',
                         ]
-        # ACT #
-        actual_document = self._parse_lines(parser,
-                                            source_lines)
-        # ASSERT #
-        phase1_instructions = (
-            new_instruction(2, 'instruction 1',
-                            'phase 1'),
-        )
-        expected_phase2instructions = {
-            'phase 1': model.SectionContents(phase1_instructions)
+        expected = {
+            'phase 1': [
+                equals_instruction_without_description(2, 'instruction 1', 'phase 1'),
+            ]
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
 
 class TestParseMultiLineElements(ParseTestBase):
@@ -261,18 +249,13 @@ class TestParseMultiLineElements(ParseTestBase):
                                      default_section_name='default')
         source_lines = ['MULTI-LINE-INSTRUCTION 1'
                         ]
-        # ACT #
-        actual_document = self._parse_lines(parser,
-                                            source_lines)
-        # ASSERT #
-        default_phase_instructions = (
-            new_instruction(1, 'MULTI-LINE-INSTRUCTION 1', 'default'),
-        )
-        expected_phase2instructions = {
-            'default': model.SectionContents(default_phase_instructions),
+        expected = {
+            'default': [
+                equals_instruction_without_description(1, 'MULTI-LINE-INSTRUCTION 1', 'default'),
+            ],
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
     def test_single_multi_line_instruction_in_default_phase_that_occupies_whole_doc(self):
         # ARRANGE #
@@ -280,21 +263,16 @@ class TestParseMultiLineElements(ParseTestBase):
                                      default_section_name='default')
         source_lines = ['MULTI-LINE-INSTRUCTION 1',
                         'MULTI-LINE-INSTRUCTION 2']
-        # ACT #
-        actual_document = self._parse_lines(parser,
-                                            source_lines)
-        # ASSERT #
-        default_phase_instructions = (
-            new_instruction__multi_line(1,
-                                        ['MULTI-LINE-INSTRUCTION 1',
-                                         'MULTI-LINE-INSTRUCTION 2'],
-                                        'default'),
-        )
-        expected_phase2instructions = {
-            'default': model.SectionContents(default_phase_instructions),
+        expected = {
+            'default': [
+                equals_multi_line_instruction_without_description(1,
+                                                                  ['MULTI-LINE-INSTRUCTION 1',
+                                                                   'MULTI-LINE-INSTRUCTION 2'],
+                                                                  'default'),
+            ],
         }
-        expected_document = model.Document(expected_phase2instructions)
-        self._check_document(expected_document, actual_document)
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
 
     def test_single_multi_line_instruction_in_default_phase_surrounded_by_empty_lines(self):
         # ARRANGE #
@@ -523,7 +501,6 @@ class TestParseMultiLineElements(ParseTestBase):
 #                           ])
 
 
-
 def is_multi_line_instruction_line(line: str) -> bool:
     return line[:len(_MULTI_LINE_INSTRUCTION_LINE_START)] == _MULTI_LINE_INSTRUCTION_LINE_START
 
@@ -538,7 +515,7 @@ class InstructionInSection(model.Instruction):
         self._section_name = section_name
 
     @property
-    def section_name(self):
+    def section_name(self) -> str:
         return self._section_name
 
 
@@ -677,20 +654,103 @@ class ElementChecker(TestCaseWithMessageHeader):
                                     expected_element.source,
                                     actual_element.source,
                                     self.message_header)
-        # self.tc.assertEqual(expected_element.source_line,
-        #                     actual_element.source_line,
-        #                     self.msg('Source lines should be equal'))
         if expected_element.element_type is ElementType.INSTRUCTION:
-            self.tc.assertEqual(expected_element.instruction_info.instruction.__class__,
-                                actual_element.instruction_info.instruction.__class__, )
-            if isinstance(expected_element.instruction_info.instruction, InstructionInSection):
-                self.tc.assertIsInstance(actual_element.instruction_info.instruction, InstructionInSection)
-                self.tc.assertEqual(expected_element.instruction_info.instruction.section_name,
-                                    actual_element.instruction_info.instruction.section_name,
+            self.tc.assertEqual(ElementType.INSTRUCTION,
+                                actual_element.element_type)
+            expected_instruction = expected_element.instruction_info.instruction
+            actual_instruction = actual_element.instruction_info.instruction
+            self.tc.assertEqual(expected_instruction.__class__,
+                                actual_instruction.__class__, )
+            if isinstance(expected_instruction, InstructionInSection):
+                self.tc.assertIsInstance(actual_instruction, InstructionInSection)
+                self.tc.assertEqual(expected_instruction.section_name,
+                                    actual_instruction.section_name,
                                     self.msg('Recorded phase name of instruction'))
+            else:
+                self.tc.fail('Actual instruction is not an instance of ' + str(InstructionInSection))
         else:
             self.tc.assertIsNone(expected_element.instruction_info,
                                  'Instruction should not be present for non-instruction elements')
+
+
+def equals_instruction_in_section(expected: InstructionInSection) -> asrt.ValueAssertion[model.Instruction]:
+    return asrt.is_instance_with(InstructionInSection,
+                                 asrt.sub_component('section_name',
+                                                    InstructionInSection.section_name.fget,
+                                                    asrt.equals(expected.section_name)))
+
+
+def matches_section_contents_element(element_type: ElementType,
+                                     source: line_source.LineSequence,
+                                     assertion_on_instruction_info: asrt.ValueAssertion[model.InstructionInfo]
+                                     ) -> asrt.ValueAssertion[model.SectionContentElement]:
+    return asrt.and_([
+        asrt.sub_component('element type',
+                           model.SectionContentElement.element_type.fget,
+                           asrt.equals(element_type)),
+        asrt.sub_component('source',
+                           model.SectionContentElement.source.fget,
+                           equals_line_sequence(source)),
+        asrt.sub_component('instruction_info',
+                           model.SectionContentElement.instruction_info.fget,
+                           assertion_on_instruction_info),
+    ])
+
+
+def matches_instruction_info(assertion_on_description: asrt.ValueAssertion[str],
+                             assertion_on_instruction: asrt.ValueAssertion[model.Instruction],
+                             ) -> asrt.ValueAssertion[model.InstructionInfo]:
+    return asrt.and_([
+        asrt.sub_component('description',
+                           model.InstructionInfo.description.fget,
+                           assertion_on_description),
+        asrt.sub_component('instruction',
+                           model.InstructionInfo.instruction.fget,
+                           assertion_on_instruction),
+    ])
+
+
+def matches_instruction_info_without_description(assertion_on_instruction: asrt.ValueAssertion[model.Instruction],
+                                                 ) -> asrt.ValueAssertion[model.InstructionInfo]:
+    return matches_instruction_info(assertion_on_description=asrt.is_none,
+                                    assertion_on_instruction=assertion_on_instruction)
+
+
+def equals_instruction_without_description(line_number: int,
+                                           line_text: str,
+                                           section_name: str) -> asrt.ValueAssertion[model.SectionContentElement]:
+    return matches_section_contents_element(
+        ElementType.INSTRUCTION,
+        line_source.LineSequence(line_number,
+                                 (line_text,)),
+        matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name)))
+    )
+
+
+def equals_multi_line_instruction_without_description(line_number: int,
+                                                      lines: list,
+                                                      section_name: str
+                                                      ) -> asrt.ValueAssertion[model.SectionContentElement]:
+    return matches_section_contents_element(
+        ElementType.INSTRUCTION,
+        line_source.LineSequence(line_number,
+                                 tuple(lines)),
+        matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name)))
+    )
+
+
+def equals_empty_element(line_number: int,
+                         line_text: str) -> asrt.ValueAssertion[model.SectionContentElement]:
+    return matches_section_contents_element(ElementType.EMPTY,
+                                            line_source.LineSequence(line_number, (line_text,)),
+                                            asrt.is_none)
+
+
+def equals_comment_element(line_number: int,
+                           line_text: str) -> asrt.ValueAssertion[model.SectionContentElement]:
+    return matches_section_contents_element(ElementType.COMMENT,
+                                            line_source.LineSequence(line_number, (line_text,)),
+                                            asrt.is_none)
 
 
 if __name__ == '__main__':
