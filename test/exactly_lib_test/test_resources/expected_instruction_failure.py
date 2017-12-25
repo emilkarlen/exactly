@@ -6,7 +6,6 @@ from exactly_lib.execution.result import InstructionFailureInfo, FullResultStatu
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
-from exactly_lib_test.test_resources.assertions.assert_utils import assertion_message
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -32,18 +31,18 @@ class ExpectedFailureDetails(tuple):
                    unittest_case: unittest.TestCase,
                    actual: FailureDetails,
                    message_header: str = None):
+        message_builder = asrt.new_message_builder(message_header)
         if self.error_message_or_none is None and self.exception_class_or_none is None:
             unittest_case.assertIsNone(actual,
                                        message_header)
         elif self.error_message_or_none is not None:
             self.error_message_or_none.apply_with_message(unittest_case,
                                                           actual.failure_message,
-                                                          assertion_message('failure message',
-                                                                            message_header))
+                                                          message_builder.for_sub_component('failure message'))
         else:
             unittest_case.assertIsInstance(actual.exception,
                                            self.exception_class_or_none,
-                                           assertion_message('exception class', message_header))
+                                           message_builder.for_sub_component('exception class'))
 
 
 def new_expected_failure_message(msg: str):
