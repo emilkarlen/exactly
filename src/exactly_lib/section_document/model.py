@@ -1,4 +1,5 @@
 import enum
+from typing import Dict
 
 from exactly_lib.util import line_source
 
@@ -116,15 +117,16 @@ class Document:
     The result of parsing a file without encountering any errors.
     """
 
-    def __init__(self, section2elements: dict):
-        """
-        :param section2elements dictionary str -> PhaseContents
-        """
+    def __init__(self, section2elements: Dict[str, SectionContents]):
         self._section2elements = section2elements
 
     @property
     def section(self) -> frozenset:
-        return self._section2elements.keys()
+        return frozenset(self._section2elements.keys())
+
+    @property
+    def section_2_elements(self) -> Dict[str, SectionContents]:
+        return self._section2elements
 
     def elements_for_section(self, section_name: str) -> SectionContents:
         return self._section2elements[section_name]
