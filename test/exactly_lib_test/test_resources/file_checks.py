@@ -5,7 +5,7 @@ import pathlib
 import unittest
 
 from exactly_lib_test.test_resources import file_structure
-from exactly_lib_test.test_resources.assertions import assert_utils
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class FileChecker:
@@ -14,6 +14,7 @@ class FileChecker:
                  message_header: str = None):
         self.put = put
         self.message_header = message_header
+        self.message_builder = asrt.new_message_builder(message_header)
 
     def assert_is_existing_empty_dir(self, p: pathlib.Path):
         self.assert_exists_dir_with_given_number_of_files_in_it(p, 0)
@@ -89,7 +90,7 @@ class FileChecker:
                                                 file_system_element.file_system_element_contents)
 
     def _msg(self, message: str) -> str:
-        return assert_utils.assertion_message(message, self.message_header)
+        return self.message_builder.for_sub_component(message)
 
     def assert_dir_contains_file(self,
                                  dir_path: pathlib.Path,
