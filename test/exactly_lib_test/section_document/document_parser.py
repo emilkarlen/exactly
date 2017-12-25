@@ -73,47 +73,47 @@ class TestSectionsConfiguration(ParseTestBase):
 
 
 class TestParseSingleLineElements(ParseTestBase):
-    def test_phases_without_elements_are_registered(self):
+    def test_sections_without_elements_are_registered(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'phase 2'])
-        source_lines = ['[phase 1]',
-                        '[phase 2]',
+        parser = parser_for_sections(['section 1', 'section 2'])
+        source_lines = ['[section 1]',
+                        '[section 2]',
                         ]
         expected = {
-            'phase 1': [],
-            'phase 2': [],
+            'section 1': [],
+            'section 2': [],
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_initial_empty_lines_and_comment_lines_should_be_ignored_when_there_is_no_default_phase(self):
+    def test_initial_empty_lines_and_comment_lines_should_be_ignored_when_there_is_no_default_section(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'phase 2'])
+        parser = parser_for_sections(['section 1', 'section 2'])
         source_lines = ['# standard-comment default',
                         '',
-                        '[phase 1]',
+                        '[section 1]',
                         'COMMENT 1',
                         '',
                         'instruction 1',
                         ]
         expected = {
-            'phase 1': [
+            'section 1': [
                 equals_comment_element(4, 'COMMENT 1'),
                 equals_empty_element(5, ''),
-                equals_instruction_without_description(6, 'instruction 1', 'phase 1'),
+                equals_instruction_without_description(6, 'instruction 1', 'section 1'),
             ],
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_valid_default_and_named_phase(self):
+    def test_valid_default_and_named_section(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'default'],
+        parser = parser_for_sections(['section 1', 'default'],
                                      default_section_name='default')
         source_lines = ['COMMENT default',
                         '',
                         'instruction default',
-                        '[phase 1]',
+                        '[section 1]',
                         'COMMENT 1',
                         'instruction 1']
         default_section_contents = (
@@ -123,50 +123,50 @@ class TestParseSingleLineElements(ParseTestBase):
         )
         section1_contents = (
             equals_comment_element(5, 'COMMENT 1'),
-            equals_instruction_without_description(6, 'instruction 1', 'phase 1')
+            equals_instruction_without_description(6, 'instruction 1', 'section 1')
         )
         expected = {
             'default': default_section_contents,
-            'phase 1': section1_contents,
+            'section 1': section1_contents,
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_valid_phase_with_comment_and_instruction(self):
+    def test_valid_section_with_comment_and_instruction(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'phase 2'])
-        source_lines = ['[phase 1]',
+        parser = parser_for_sections(['section 1', 'section 2'])
+        source_lines = ['[section 1]',
                         'COMMENT',
                         'instruction'
                         ]
         expected = {
-            'phase 1': [
+            'section 1': [
                 equals_comment_element(2, 'COMMENT'),
-                equals_instruction_without_description(3, 'instruction', 'phase 1')
+                equals_instruction_without_description(3, 'instruction', 'section 1')
             ]
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_valid_phase_with_fragmented_phases(self):
+    def test_valid_section_with_fragmented_sections(self):
         # ARRANGE #
-        source_lines = ['[phase 1]',
+        source_lines = ['[section 1]',
                         'COMMENT 1',
                         '',
-                        '[phase 2]',
+                        '[section 2]',
                         'instruction 2',
-                        '[phase 1]',
+                        '[section 1]',
                         'instruction 1'
                         ]
-        parser = parser_for_sections(['phase 1', 'phase 2'])
+        parser = parser_for_sections(['section 1', 'section 2'])
         expected = {
-            'phase 1': [
+            'section 1': [
                 equals_comment_element(2, 'COMMENT 1'),
                 equals_empty_element(3, ''),
-                equals_instruction_without_description(7, 'instruction 1', 'phase 1')
+                equals_instruction_without_description(7, 'instruction 1', 'section 1')
             ],
-            'phase 2': [
-                equals_instruction_without_description(5, 'instruction 2', 'phase 2'),
+            'section 2': [
+                equals_instruction_without_description(5, 'instruction 2', 'section 2'),
 
             ]
         }
@@ -175,8 +175,8 @@ class TestParseSingleLineElements(ParseTestBase):
 
     def test_parse_should_fail_when_instruction_parser_fails(self):
         # ARRANGE #
-        parser = parser_for_phase2_that_fails_unconditionally()
-        source_lines = ['[phase 2]',
+        parser = parser_for_section2_that_fails_unconditionally()
+        source_lines = ['[section 2]',
                         'instruction 2',
                         ]
         # ACT & ASSERT #
@@ -185,18 +185,18 @@ class TestParseSingleLineElements(ParseTestBase):
                 parser,
                 source_lines)
         # ASSERT #
-        self.assertEqual('phase 2',
+        self.assertEqual('section 2',
                          cm.exception.maybe_section_name)
 
-    def test_the_instruction_parser_for_the_current_phase_should_be_used(self):
+    def test_the_instruction_parser_for_the_current_section_should_be_used(self):
         # ARRANGE #
-        parser = parser_for_phase2_that_fails_unconditionally()
-        source_lines = ['[phase 1]',
+        parser = parser_for_section2_that_fails_unconditionally()
+        source_lines = ['[section 1]',
                         'instruction 1',
                         ]
         expected = {
-            'phase 1': [
-                equals_instruction_without_description(2, 'instruction 1', 'phase 1'),
+            'section 1': [
+                equals_instruction_without_description(2, 'instruction 1', 'section 1'),
             ]
         }
         # ACT & ASSERT #
@@ -204,7 +204,7 @@ class TestParseSingleLineElements(ParseTestBase):
 
 
 class TestParseMultiLineElements(ParseTestBase):
-    def test_single_multi_line_instruction_that_is_actually_only_a_single_line_in_default_phase(self):
+    def test_single_multi_line_instruction_that_is_actually_only_a_single_line_in_default_section(self):
         # ARRANGE #
         parser = parser_for_sections(['default'],
                                      default_section_name='default')
@@ -218,9 +218,9 @@ class TestParseMultiLineElements(ParseTestBase):
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_single_multi_line_instruction_in_default_phase_that_occupies_whole_doc(self):
+    def test_single_multi_line_instruction_in_default_section_that_occupies_whole_doc(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'default'],
+        parser = parser_for_sections(['section 1', 'default'],
                                      default_section_name='default')
         source_lines = ['MULTI-LINE-INSTRUCTION 1',
                         'MULTI-LINE-INSTRUCTION 2']
@@ -235,9 +235,9 @@ class TestParseMultiLineElements(ParseTestBase):
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_single_multi_line_instruction_in_default_phase_surrounded_by_empty_lines(self):
+    def test_single_multi_line_instruction_in_default_section_surrounded_by_empty_lines(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'default'],
+        parser = parser_for_sections(['section 1', 'default'],
                                      default_section_name='default')
         source_lines = ['',
                         'MULTI-LINE-INSTRUCTION 1',
@@ -256,14 +256,14 @@ class TestParseMultiLineElements(ParseTestBase):
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_single_multi_line_instruction_in_default_phase_ended_by_section_header(self):
+    def test_single_multi_line_instruction_in_default_section_ended_by_section_header(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'default'],
+        parser = parser_for_sections(['section 1', 'default'],
                                      default_section_name='default')
         source_lines = ['',
                         'MULTI-LINE-INSTRUCTION 1',
                         'MULTI-LINE-INSTRUCTION 2',
-                        '[phase 1]',
+                        '[section 1]',
                         'instruction 1',
                         ]
         expected = {
@@ -275,85 +275,85 @@ class TestParseMultiLineElements(ParseTestBase):
                                                                   'default'),
 
             ],
-            'phase 1': [
+            'section 1': [
                 equals_instruction_without_description(5, 'instruction 1',
-                                                       'phase 1'),
+                                                       'section 1'),
             ],
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_mix_of_instructions_without_default_phase(self):
+    def test_mix_of_instructions_without_default_section(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1'])
+        parser = parser_for_sections(['section 1'])
         source_lines = ['',
-                        '[phase 1]',
+                        '[section 1]',
                         'instruction 1',
                         'MULTI-LINE-INSTRUCTION 2-1',
                         'MULTI-LINE-INSTRUCTION 2-2',
                         'MULTI-LINE-INSTRUCTION 2-3',
                         'instruction 3']
         expected = {
-            'phase 1': [
-                equals_instruction_without_description(3, 'instruction 1', 'phase 1'),
+            'section 1': [
+                equals_instruction_without_description(3, 'instruction 1', 'section 1'),
                 equals_multi_line_instruction_without_description(4,
                                                                   ['MULTI-LINE-INSTRUCTION 2-1',
                                                                    'MULTI-LINE-INSTRUCTION 2-2',
                                                                    'MULTI-LINE-INSTRUCTION 2-3'],
-                                                                  'phase 1'),
-                equals_instruction_without_description(7, 'instruction 3', 'phase 1'),
+                                                                  'section 1'),
+                equals_instruction_without_description(7, 'instruction 3', 'section 1'),
             ],
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_multi_line_instruction_at_end_of_file_inside_phase(self):
+    def test_multi_line_instruction_at_end_of_file_inside_section(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'phase 2'])
+        parser = parser_for_sections(['section 1', 'section 2'])
         source_lines = ['',
-                        '[phase 1]',
+                        '[section 1]',
                         'instruction 1',
                         'MULTI-LINE-INSTRUCTION 2-1',
                         'MULTI-LINE-INSTRUCTION 2-2',
                         'MULTI-LINE-INSTRUCTION 2-3',
                         ]
         expected = {
-            'phase 1': [
+            'section 1': [
                 equals_instruction_without_description(3, 'instruction 1',
-                                                       'phase 1'),
+                                                       'section 1'),
                 equals_multi_line_instruction_without_description(4,
                                                                   ['MULTI-LINE-INSTRUCTION 2-1',
                                                                    'MULTI-LINE-INSTRUCTION 2-2',
                                                                    'MULTI-LINE-INSTRUCTION 2-3'],
-                                                                  'phase 1'),
+                                                                  'section 1'),
             ],
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
-    def test_adjacent_phase_lines(self):
+    def test_adjacent_section_lines(self):
         # ARRANGE #
-        parser = parser_for_sections(['phase 1', 'phase 2'])
-        source_lines = ['[phase 1]',
+        parser = parser_for_sections(['section 1', 'section 2'])
+        source_lines = ['[section 1]',
                         'instruction 1',
-                        '[phase 1]',
-                        '[phase 2]',
-                        '[phase 1]',
+                        '[section 1]',
+                        '[section 2]',
+                        '[section 1]',
                         'MULTI-LINE-INSTRUCTION 2-1',
                         'MULTI-LINE-INSTRUCTION 2-2',
                         'MULTI-LINE-INSTRUCTION 2-3',
                         ]
         expected = {
-            'phase 1': [
+            'section 1': [
                 equals_instruction_without_description(2, 'instruction 1',
-                                                       'phase 1'),
+                                                       'section 1'),
                 equals_multi_line_instruction_without_description(6,
                                                                   ['MULTI-LINE-INSTRUCTION 2-1',
                                                                    'MULTI-LINE-INSTRUCTION 2-2',
                                                                    'MULTI-LINE-INSTRUCTION 2-3'],
-                                                                  'phase 1'),
+                                                                  'section 1'),
             ],
-            'phase 2': [],
+            'section 2': [],
         }
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
@@ -365,64 +365,64 @@ class TestParseMultiLineElements(ParseTestBase):
 #             (syntax.TYPE_INSTRUCTION, Line(1, 'i0/1'))
 #         ]
 #
-#         phase1_line = Line(20, '[phase 1]')
-#         lines_for_phase1 = [
+#         section1_line = Line(20, '[section 1]')
+#         lines_for_section1 = [
 #             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
 #             (syntax.TYPE_COMMENT, Line(2, '#1')),
 #             (syntax.TYPE_INSTRUCTION, Line(3, 'i1/2')),
 #         ]
 #
-#         phase2_line = Line(30, '[phase 2]')
-#         lines_for_phase2 = [
+#         section2_line = Line(30, '[section 2]')
+#         lines_for_section2 = [
 #         ]
 #
-#         phase3_line = Line(40, '[phase 3]')
-#         lines_for_phase3 = [
+#         section3_line = Line(40, '[section 3]')
+#         lines_for_section3 = [
 #             (syntax.TYPE_INSTRUCTION, Line(1, 'i3/1')),
 #             (syntax.TYPE_COMMENT, Line(2, '#3')),
 #         ]
 #
 #         lines = lines_for_default + \
-#                 [(syntax.TYPE_PHASE, phase1_line)] + \
-#                 lines_for_phase1 + \
-#                 [(syntax.TYPE_PHASE, phase2_line)] + \
-#                 lines_for_phase2 + \
-#                 [(syntax.TYPE_PHASE, phase3_line)] + \
-#                 lines_for_phase3
+#                 [(syntax.TYPE_PHASE, section1_line)] + \
+#                 lines_for_section1 + \
+#                 [(syntax.TYPE_PHASE, section2_line)] + \
+#                 lines_for_section2 + \
+#                 [(syntax.TYPE_PHASE, section3_line)] + \
+#                 lines_for_section3
 #
 #         expected = [
 #             parse2.PhaseWithLines(None,
 #                                   None,
 #                                   tuple(lines_for_default)),
-#             parse2.PhaseWithLines('phase 1',
-#                                   phase1_line,
-#                                   tuple(lines_for_phase1)),
-#             parse2.PhaseWithLines('phase 2',
-#                                   phase2_line,
-#                                   tuple(lines_for_phase2)),
-#             parse2.PhaseWithLines('phase 3',
-#                                   phase3_line,
-#                                   tuple(lines_for_phase3)),
+#             parse2.PhaseWithLines('section 1',
+#                                   section1_line,
+#                                   tuple(lines_for_section1)),
+#             parse2.PhaseWithLines('section 2',
+#                                   section2_line,
+#                                   tuple(lines_for_section2)),
+#             parse2.PhaseWithLines('section 3',
+#                                   section3_line,
+#                                   tuple(lines_for_section3)),
 #         ]
 #
-#         actual = parse2.group_by_phase(lines)
+#         actual = parse2.group_by_section(lines)
 #         self.assertEqual(expected, actual)
 #
-#     def test_lines_in_default_phase_should_not_be_required(self):
-#         phase1_line = Line(20, '[phase 1]')
-#         lines_for_phase1 = [
+#     def test_lines_in_default_section_should_not_be_required(self):
+#         section1_line = Line(20, '[section 1]')
+#         lines_for_section1 = [
 #             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
 #         ]
-#         lines = [(syntax.TYPE_PHASE, phase1_line)] + \
-#                 lines_for_phase1
+#         lines = [(syntax.TYPE_PHASE, section1_line)] + \
+#                 lines_for_section1
 #
 #         expected = [
-#             parse2.PhaseWithLines('phase 1',
-#                                   phase1_line,
-#                                   tuple(lines_for_phase1)),
+#             parse2.PhaseWithLines('section 1',
+#                                   section1_line,
+#                                   tuple(lines_for_section1)),
 #         ]
 #
-#         actual = parse2.group_by_phase(lines)
+#         actual = parse2.group_by_section(lines)
 #         self.assertEqual(expected, actual)
 #
 
@@ -606,8 +606,8 @@ class SectionElementParserThatFails(sut.SectionElementParser):
                           'Unconditional failure')
 
 
-def parser_for_phase2_that_fails_unconditionally() -> DocumentParser:
-    return parser_with_successful_and_failing_section_parsers('phase 1', 'phase 2')
+def parser_for_section2_that_fails_unconditionally() -> DocumentParser:
+    return parser_with_successful_and_failing_section_parsers('section 1', 'section 2')
 
 
 def parser_with_successful_and_failing_section_parsers(successful_section: str,
