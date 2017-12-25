@@ -132,6 +132,23 @@ class TestParseSingleLineElements(ParseTestBase):
         # ACT & ASSERT #
         self._parse_and_check(parser, source_lines, expected)
 
+    def test_valid_default_and_named_section__without_default_section_contents(self):
+        # ARRANGE #
+        parser = parser_for_sections(['section 1', 'default'],
+                                     default_section_name='default')
+        source_lines = ['[section 1]',
+                        'COMMENT 1',
+                        'instruction 1']
+        section1_contents = (
+            equals_comment_element(2, 'COMMENT 1'),
+            equals_instruction_without_description(3, 'instruction 1', 'section 1')
+        )
+        expected = {
+            'section 1': section1_contents,
+        }
+        # ACT & ASSERT #
+        self._parse_and_check(parser, source_lines, expected)
+
     def test_valid_section_with_comment_and_instruction(self):
         # ARRANGE #
         parser = parser_for_sections(['section 1', 'section 2'])
@@ -407,24 +424,7 @@ class TestParseMultiLineElements(ParseTestBase):
 #
 #         actual = parse2.group_by_section(lines)
 #         self.assertEqual(expected, actual)
-#
-#     def test_lines_in_default_section_should_not_be_required(self):
-#         section1_line = Line(20, '[section 1]')
-#         lines_for_section1 = [
-#             (syntax.TYPE_INSTRUCTION, Line(1, 'i1/1')),
-#         ]
-#         lines = [(syntax.TYPE_PHASE, section1_line)] + \
-#                 lines_for_section1
-#
-#         expected = [
-#             parse2.PhaseWithLines('section 1',
-#                                   section1_line,
-#                                   tuple(lines_for_section1)),
-#         ]
-#
-#         actual = parse2.group_by_section(lines)
-#         self.assertEqual(expected, actual)
-#
+
 
 class TestInvalidSyntax(ParseTestBase):
     def test_instruction_in_default_section_SHOULD_not_be_allowed_when_there_is_no_default_section(self):
