@@ -1,5 +1,6 @@
 import os
 import types
+from typing import List, Dict
 
 import exactly_lib.cli.program_modes.help.error
 from exactly_lib.cli.cli_environment import exit_codes
@@ -8,14 +9,13 @@ from exactly_lib.cli.program_modes.test_case import argument_parsing as case_arg
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
-from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
-from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
-    InstructionNameExtractor
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
@@ -66,31 +66,23 @@ class TestCaseDefinitionForMainProgram:
     """
 
     def __init__(self,
-                 instruction_name_extractor_function: InstructionNameExtractor,
-                 instruction_setup: InstructionsSetup,
-                 builtin_symbols: list):
-        """
-        :param builtin_symbols: [`BuiltinSymbol`]
-        """
-        self.instruction_setup = instruction_setup
-        self.instruction_name_extractor_function = instruction_name_extractor_function
+                 test_case_parsing_setup: TestCaseParsingSetup,
+                 builtin_symbols: List[BuiltinSymbol]):
+        self.test_case_parsing_setup = test_case_parsing_setup
         self.builtin_symbols = builtin_symbols
 
 
 class TestSuiteDefinition(tuple):
     def __new__(cls,
-                configuration_section_instructions: dict,
+                configuration_section_instructions: Dict[str, SingleInstructionSetup],
                 configuration_section_parser: document_parser.SectionElementParser,
                 get_sds_root_name_prefix: types.FunctionType = lambda: ''):
-        """
-        :param configuration_section_instructions: instruction-name -> `SingleInstructionSetup`.
-        """
         return tuple.__new__(cls, (configuration_section_instructions,
                                    configuration_section_parser,
                                    get_sds_root_name_prefix))
 
     @property
-    def configuration_section_instructions(self) -> dict:
+    def configuration_section_instructions(self) -> Dict[str, SingleInstructionSetup]:
         """
         :rtype instruction-name -> `SingleInstructionSetup`
         """
@@ -115,8 +107,7 @@ class MainProgram:
 
         self._test_suite_definition = test_suite_definition
         self._test_case_definition = TestCaseDefinition(
-            test_case_definition.instruction_name_extractor_function,
-            test_case_definition.instruction_setup,
+            test_case_definition.test_case_parsing_setup,
             PredefinedProperties(
                 SymbolTable(dict(map(BuiltinSymbol.as_name_and_container_pair.fget,
                                      test_case_definition.builtin_symbols)))
@@ -193,10 +184,11 @@ class MainProgram:
             for builtin_symbol in self._test_case_def_for_m_p.builtin_symbols
         ]
         try:
-            application_help = new_application_help(self._test_case_def_for_m_p.instruction_setup,
-                                                    self._test_suite_definition.configuration_section_instructions,
-                                                    builtin_symbol_documentation_list,
-                                                    )
+            application_help = new_application_help(
+                self._test_case_def_for_m_p.test_case_parsing_setup.instruction_setup,
+                self._test_suite_definition.configuration_section_instructions,
+                builtin_symbol_documentation_list,
+            )
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
         except exactly_lib.cli.program_modes.help.error.HelpError as ex:

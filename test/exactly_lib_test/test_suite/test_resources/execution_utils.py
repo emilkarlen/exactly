@@ -6,7 +6,8 @@ from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
+from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
@@ -51,8 +52,9 @@ class TestCaseProcessorThatGivesConstantPerCase(tcp.Processor):
 
 
 DUMMY_TEST_CASE_DEFINITION = case_processing.TestCaseDefinition(
-    lambda x: ((), ()),
-    InstructionsSetup({}, {}, {}, {}, {}),
+    TestCaseParsingSetup(lambda x: '',
+                         InstructionsSetup({}, {}, {}, {}, {}),
+                         ActPhaseParser()),
     full_execution.PredefinedProperties(),
 )
 

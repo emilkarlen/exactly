@@ -3,7 +3,8 @@ from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
+from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.parser_implementations import section_element_parsers
@@ -51,8 +52,9 @@ def execute_main_program(arguments: list,
     program = main_program.MainProgram(str_std_out_files.stdout_files,
                                        the_test_case_handling_setup,
                                        TestCaseDefinitionForMainProgram(
-                                           name_and_argument_splitter,
-                                           instructions_setup,
+                                           TestCaseParsingSetup(name_and_argument_splitter,
+                                                                instructions_setup,
+                                                                ActPhaseParser()),
                                            list(builtin_symbols),
                                        ),
                                        test_suite_definition)

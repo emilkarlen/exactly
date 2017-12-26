@@ -9,6 +9,8 @@ from exactly_lib.help_texts.test_suite.section_names_with_syntax import SECTION_
 from exactly_lib.processing import exit_values
 from exactly_lib.processing import instruction_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
+from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
@@ -209,14 +211,16 @@ def test_case_definition_with_only_assert_phase_instructions(assert_phase_instru
 
     assert_phase_instructions_dict = dict(map(mk_setup, assert_phase_instructions))
     return TestCaseDefinitionForMainProgram(
-        instruction_name_extractor_function=instruction_name_and_argument_splitter.splitter,
-        instruction_setup=instruction_setup.InstructionsSetup(
-            config_instruction_set={},
-            setup_instruction_set={},
-            assert_instruction_set=assert_phase_instructions_dict,
-            before_assert_instruction_set={},
-            cleanup_instruction_set={},
-        ),
+        TestCaseParsingSetup(
+            instruction_name_extractor_function=instruction_name_and_argument_splitter.splitter,
+            instruction_setup=instruction_setup.InstructionsSetup(
+                config_instruction_set={},
+                setup_instruction_set={},
+                assert_instruction_set=assert_phase_instructions_dict,
+                before_assert_instruction_set={},
+                cleanup_instruction_set={},
+            ),
+            act_phase_parser=ActPhaseParser()),
         builtin_symbols=[]
     )
 

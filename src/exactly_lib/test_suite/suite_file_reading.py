@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, \
     SECTION_NAME__CASES, \
     DEFAULT_SECTION_NAME, SECTION_NAME__CASE_SETUP
-from exactly_lib.processing.processors import TestCaseParsingSetup
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.exceptions import FileSourceError

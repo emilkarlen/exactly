@@ -2,52 +2,34 @@ import pathlib
 
 import exactly_lib.section_document.exceptions
 from exactly_lib import program_info
-from exactly_lib.default.program_modes.test_case import test_case_parser
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.processing.instruction_setup import InstructionsSetup
-from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
+from exactly_lib.processing.parse import test_case_parser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
-from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
-    InstructionNameExtractor
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 
 
-class TestCaseParsingSetup:
-    def __init__(self,
-                 instruction_name_extractor_function: InstructionNameExtractor,
-                 instruction_setup: InstructionsSetup):
-        self.instruction_setup = instruction_setup
-        self.instruction_name_extractor_function = instruction_name_extractor_function
-
-
 class TestCaseDefinition:
     """Test case configuration that is defined in code."""
 
-    #  TODO: Should act phase parser be part of this class?
-    # Feels right, but have not looked into it.
-
     def __init__(self,
-                 instruction_name_extractor_function: InstructionNameExtractor,
-                 instruction_setup: InstructionsSetup,
+                 test_case_parsing_setup: TestCaseParsingSetup,
                  predefined_properties: full_execution.PredefinedProperties):
+        self.test_case_parsing_setup = test_case_parsing_setup
         self.predefined_properties = predefined_properties
-        self.instruction_setup = instruction_setup
-        self.instruction_name_extractor_function = instruction_name_extractor_function
 
     @property
     def parsing_setup(self) -> TestCaseParsingSetup:
-        return TestCaseParsingSetup(self.instruction_name_extractor_function,
-                                    self.instruction_setup)
+        return self.test_case_parsing_setup
 
 
 class Configuration:
@@ -78,9 +60,7 @@ def new_accessor(configuration: Configuration) -> processing.Accessor:
     return processing_utils.AccessorFromParts(
         _SourceReader(),
         configuration.default_handling_setup.preprocessor,
-        _Parser(configuration.test_case_definition.instruction_name_extractor_function,
-                ActPhaseParser(),
-                configuration.test_case_definition.instruction_setup),
+        _Parser(configuration.test_case_definition.parsing_setup),
         configuration.default_handling_setup.transformer)
 
 
@@ -109,19 +89,13 @@ class _SourceReader(processing_utils.SourceReader):
 
 class _Parser(processing_utils.Parser):
     def __init__(self,
-                 instruction_name_extractor_function: InstructionNameExtractor,
-                 act_phase_parser: SectionElementParser,
-                 instruction_setup: InstructionsSetup):
-        self._instruction_name_extractor_function = instruction_name_extractor_function
-        self._act_phase_parser = act_phase_parser
-        self._instruction_setup = instruction_setup
+                 test_case_parsing_setup: TestCaseParsingSetup):
+        self._test_case_parsing_setup = test_case_parsing_setup
 
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case_plain_source: str) -> test_case_doc.TestCase:
-        file_parser = test_case_parser.new_parser(self._instruction_name_extractor_function,
-                                                  self._act_phase_parser,
-                                                  self._instruction_setup)
+        file_parser = test_case_parser.new_parser(self._test_case_parsing_setup)
         source = ParseSource(test_case_plain_source)
         try:
             return file_parser.apply(source)

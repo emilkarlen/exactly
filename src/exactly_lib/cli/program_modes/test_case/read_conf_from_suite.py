@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.processing.processors import TestCaseParsingSetup
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.test_suite import suite_file_reading
