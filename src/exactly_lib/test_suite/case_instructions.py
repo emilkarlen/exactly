@@ -1,7 +1,7 @@
 from typing import List, Tuple
 
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import instruction_section_element_parser as isep
-from exactly_lib.processing.processors import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.model import SectionContentElement, new_instruction_e, ElementType, SectionContents, \

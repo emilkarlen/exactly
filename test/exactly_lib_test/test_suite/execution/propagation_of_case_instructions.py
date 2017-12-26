@@ -4,6 +4,8 @@ from typing import List
 
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing import processors
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
+from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.test_suite import enumeration
 from exactly_lib.test_suite import execution as sut
@@ -176,9 +178,11 @@ class Test(unittest.TestCase):
 def new_executor(recorder: List[str],
                  test_case_processor_constructor: TestCaseProcessorConstructor,
                  suite_root_file_path: pathlib.Path) -> sut.Executor:
-    test_case_definition = TestCaseDefinition(instruction_name_extractor,
-                                              instruction_setup(REGISTER_INSTRUCTION_NAME, recorder),
-                                              PredefinedProperties(empty_symbol_table()))
+    test_case_definition = TestCaseDefinition(
+        TestCaseParsingSetup(instruction_name_extractor,
+                             instruction_setup(REGISTER_INSTRUCTION_NAME, recorder),
+                             ActPhaseParser()),
+        PredefinedProperties(empty_symbol_table()))
     default_configuration = processors.Configuration(test_case_definition,
                                                      test_case_handling_setup_with_identity_preprocessor(),
                                                      False,

@@ -1,6 +1,9 @@
 from typing import Dict
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.section_document.document_parser import SectionElementParser
+from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
+    InstructionNameExtractor
 
 
 class InstructionsSetup(tuple):
@@ -39,3 +42,13 @@ class InstructionsSetup(tuple):
     @property
     def cleanup_instruction_set(self) -> Dict[str, SingleInstructionSetup]:
         return self[4]
+
+
+class TestCaseParsingSetup:
+    def __init__(self,
+                 instruction_name_extractor_function: InstructionNameExtractor,
+                 instruction_setup: InstructionsSetup,
+                 act_phase_parser: SectionElementParser):
+        self.instruction_setup = instruction_setup
+        self.instruction_name_extractor_function = instruction_name_extractor_function
+        self.act_phase_parser = act_phase_parser

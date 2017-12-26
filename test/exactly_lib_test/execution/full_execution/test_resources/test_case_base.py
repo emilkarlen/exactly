@@ -8,7 +8,6 @@ from exactly_lib.act_phase_setups.source_interpreter import python3
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.execution.result import FullResult
-from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
@@ -55,7 +54,7 @@ class FullExecutionTestCaseBase:
 
     def _act_phase_handling(self) -> ActPhaseHandling:
         if self.__act_phase_handling is None:
-            return act_phase_handling_for_setup(python3.new_act_phase_setup())
+            return python3.new_act_phase_handling()
         return self.__act_phase_handling
 
     def _test_case(self) -> test_case_doc.TestCase:

@@ -3,12 +3,11 @@ import pathlib
 import shutil
 import unittest
 
-import exactly_lib.act_phase_setups.source_interpreter.python3
 from exactly_lib import program_info
+from exactly_lib.act_phase_setups.source_interpreter import python3
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.partial_execution import TestCase
 from exactly_lib.execution.result import PartialResult
-from exactly_lib.processing.processors import act_phase_handling_for_setup
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
@@ -29,8 +28,7 @@ class PartialExecutionTestCaseBase:
         self.__sandbox_directory_structure = None
         self.__act_phase_handling = act_phase_handling
         if self.__act_phase_handling is None:
-            self.__act_phase_handling = act_phase_handling_for_setup(
-                exactly_lib.act_phase_setups.source_interpreter.python3.new_act_phase_setup())
+            self.__act_phase_handling = python3.new_act_phase_handling()
 
     def execute(self):
         # SETUP #
