@@ -1,5 +1,5 @@
 import enum
-from typing import Dict
+from typing import Dict, Sequence
 
 from exactly_lib.util import line_source
 
@@ -82,7 +82,8 @@ class SectionContentElementBuilder:
                                      source,
                                      None)
 
-    def new_instruction(self, source: line_source.LineSequence,
+    def new_instruction(self,
+                        source: line_source.LineSequence,
                         instruction: Instruction,
                         description: str = None) -> SectionContentElement:
         return SectionContentElement(ElementType.INSTRUCTION,
@@ -93,17 +94,14 @@ class SectionContentElementBuilder:
 
 class SectionContents:
     """
-    A sequence/list of SectionContentElement:s.
+    The SectionContentElement:s of a single section.
     """
 
-    def __init__(self, elements: tuple):
-        """
-        :param elements: List of `SectionContentElement`.
-        """
+    def __init__(self, elements: Sequence[SectionContentElement]):
         self._elements = elements
 
     @property
-    def elements(self) -> tuple:
+    def elements(self) -> Sequence[SectionContentElement]:
         return self._elements
 
 
