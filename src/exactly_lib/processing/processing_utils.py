@@ -3,7 +3,8 @@ import pathlib
 from exactly_lib.execution.result import FullResult
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
-from exactly_lib.processing.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo
+from exactly_lib.processing.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo, \
+    TestCaseSetup
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 
@@ -18,7 +19,7 @@ class SourceReader:
 
 class Parser:
     def apply(self,
-              test_case_file_path: pathlib.Path,
+              test_case: TestCaseSetup,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         """
         :raises ProcessError: Indicates syntax error
@@ -48,18 +49,17 @@ class AccessorFromParts(Accessor):
         self._parser = parser
         self._transformer = transformer
 
-    def apply(self,
-              test_case_file_path: pathlib.Path) -> test_case_doc.TestCase:
+    def apply(self, test_case: TestCaseSetup) -> test_case_doc.TestCase:
         source = self._apply(self._source_reader.apply,
                              processing.AccessErrorType.FILE_ACCESS_ERROR,
-                             test_case_file_path)
+                             test_case.file_path)
         preprocessed_source = self._apply(self._pre_processor.apply,
                                           processing.AccessErrorType.PRE_PROCESS_ERROR,
-                                          test_case_file_path,
+                                          test_case.file_path,
                                           source)
         test_case = self._apply(self._parser.apply,
                                 processing.AccessErrorType.SYNTAX_ERROR,
-                                test_case_file_path,
+                                test_case,
                                 preprocessed_source
                                 )
         return self._transformer.transform(test_case)
@@ -83,7 +83,7 @@ class ProcessorFromAccessorAndExecutor(processing.Processor):
     def apply(self, test_case: processing.TestCaseSetup) -> processing.Result:
         try:
             try:
-                a_test_case_doc = self._accessor.apply(test_case.file_path)
+                a_test_case_doc = self._accessor.apply(test_case)
             except AccessorError as ex:
                 return processing.Result(processing.Status.ACCESS_ERROR,
                                          error_info=ex.error_info,

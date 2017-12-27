@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 from typing import Dict, Sequence
 
@@ -29,6 +30,9 @@ _COMMENT_START = 'COMMENT'
 
 _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
 
+DUMMY_SOURCE_FILE_PATH = pathlib.Path('dummy source file path')
+DUMMY_FILE_INCLUSION_RELATIVITY_ROOT = pathlib.Path.cwd()
+
 
 class ParseTestBase(unittest.TestCase):
     def _parse_lines(self,
@@ -36,7 +40,9 @@ class ParseTestBase(unittest.TestCase):
                      lines: list) -> model.Document:
         plain_document = '\n'.join(lines)
         ptc_source = ParseSource(plain_document)
-        return parser.parse(ptc_source)
+        return parser.parse(DUMMY_SOURCE_FILE_PATH,
+                            DUMMY_FILE_INCLUSION_RELATIVITY_ROOT,
+                            ptc_source)
 
     def _parse_and_check(self,
                          parser: DocumentParser,

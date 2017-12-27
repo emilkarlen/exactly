@@ -46,7 +46,7 @@ def _process(test_case_file_path: pathlib.Path,
                                              is_keep_sds,
                                              sandbox_directory_root_name_prefix)
     processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
-    return processor.apply(test_case_processing.TestCaseSetup(test_case_file_path))
+    return processor.apply(test_case_processing.test_case_setup_of_source_file(test_case_file_path))
 
 
 def _get_reporter(std_output_files: StdOutputFiles,

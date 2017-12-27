@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
@@ -12,8 +14,14 @@ class DocumentParser:
     (i.e., a file that do not need pre-processing).
     """
 
-    def parse(self, source: ParseSource) -> model.Document:
+    def parse(self,
+              source_file_path: pathlib.Path,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> model.Document:
         """
+        :param source_file_path: None if the source is not a file.
+        :param file_inclusion_relativity_root: A directory that file inclusion paths are relative to.
+        :param source: The source to parse - the contents of source_file_path, if the source is from a file.
         :raises FileSourceError The test case cannot be parsed.
         """
         raise NotImplementedError()
@@ -100,22 +108,32 @@ class _DocumentParserForSectionsConfiguration(DocumentParser):
     def __init__(self, configuration: SectionsConfiguration):
         self._configuration = configuration
 
-    def parse(self, source: ParseSource) -> model.Document:
-        return _Impl(self._configuration, source).apply()
+    def parse(self,
+              source_file_path: pathlib.Path,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> model.Document:
+        impl = _Impl(self._configuration,
+                     model.SectionContentElementBuilder(source_file_path),
+                     file_inclusion_relativity_root,
+                     source)
+        return impl.apply()
 
 
 class _Impl:
     def __init__(self,
                  configuration: SectionsConfiguration,
+                 element_builder: model.SectionContentElementBuilder,
+                 file_inclusion_relativity_root: pathlib.Path,
                  document_source: ParseSource):
         self.configuration = configuration
+        self._element_builder = element_builder
+        self._file_inclusion_relativity_root = file_inclusion_relativity_root
         self._document_source = document_source
         self._current_line = self._get_current_line_or_none_if_is_at_eof()
         self._parser_for_current_section = None
         self._name_of_current_section = None
         self._elements_for_current_section = []
         self._section_name_2_element_list = {}
-        self._element_builder = model.SectionContentElementBuilder()
 
     @property
     def parser_for_current_section(self) -> SectionElementParser:
