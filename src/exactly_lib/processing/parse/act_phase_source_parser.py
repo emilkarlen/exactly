@@ -1,12 +1,15 @@
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.model import SectionContentElementBuilder
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
 
 
 class ActPhaseParser(document_parser.SectionElementParser):
-    def parse(self, source: document_parser.ParseSource) -> model.SectionContentElement:
+    def parse(self,
+              source: document_parser.ParseSource,
+              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
         first_line_number = source.current_line_number
         current_line = source.current_line_text
         lines_read = [_un_escape(current_line)]
@@ -21,8 +24,8 @@ class ActPhaseParser(document_parser.SectionElementParser):
 
         line_sequence = LineSequence(first_line_number,
                                      tuple(lines_read))
-        return model.new_instruction_e(line_sequence,
-                                       SourceCodeInstruction(line_sequence), None)
+        return element_builder.new_instruction(line_sequence,
+                                               SourceCodeInstruction(line_sequence), None)
 
 
 def _un_escape(s: str) -> str:

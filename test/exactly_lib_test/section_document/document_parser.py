@@ -6,7 +6,7 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document.document_parser import DocumentParser, new_parser_for, SectionConfiguration, \
     SectionsConfiguration
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
-from exactly_lib.section_document.model import ElementType
+from exactly_lib.section_document.model import ElementType, SectionContentElementBuilder
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
@@ -479,32 +479,35 @@ class InstructionInSection(model.Instruction):
         return self._section_name
 
 
+ELEMENT_BUILDER = SectionContentElementBuilder()
+
+
 def new_instruction(line_number: int,
                     line_text: str,
                     section_name: str) -> model.SectionContentElement:
-    return model.new_instruction_e(line_source.LineSequence(line_number,
-                                                            (line_text,)),
-                                   InstructionInSection(section_name))
+    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
+                                                                    (line_text,)),
+                                           InstructionInSection(section_name))
 
 
 def new_instruction__multi_line(line_number: int,
                                 lines: list,
                                 section_name: str) -> model.SectionContentElement:
-    return model.new_instruction_e(line_source.LineSequence(line_number,
-                                                            tuple(lines)),
-                                   InstructionInSection(section_name))
+    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
+                                                                    tuple(lines)),
+                                           InstructionInSection(section_name))
 
 
 def new_comment(line_number: int,
                 line_text: str) -> model.SectionContentElement:
-    return model.new_comment_e(line_source.LineSequence(line_number,
-                                                        (line_text,)))
+    return ELEMENT_BUILDER.new_comment(line_source.LineSequence(line_number,
+                                                                (line_text,)))
 
 
 def new_empty(line_number: int,
               line_text: str) -> model.SectionContentElement:
-    return model.new_empty_e(line_source.LineSequence(line_number,
-                                                      (line_text,)))
+    return ELEMENT_BUILDER.new_empty(line_source.LineSequence(line_number,
+                                                              (line_text,)))
 
 
 def _consume_current_line_and_return_it_as_line_sequence(source: ParseSource) -> line_source.LineSequence:
@@ -518,16 +521,18 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
     def __init__(self, section_name: str):
         self._section_name = section_name
 
-    def parse(self, source: ParseSource) -> model.SectionContentElement:
+    def parse(self,
+              source: ParseSource,
+              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
         current_line = source.current_line_text
         if current_line == '':
-            return model.new_empty_e(_consume_current_line_and_return_it_as_line_sequence(source))
+            return element_builder.new_empty(_consume_current_line_and_return_it_as_line_sequence(source))
         elif is_comment_line(current_line):
-            return model.new_comment_e(_consume_current_line_and_return_it_as_line_sequence(source))
+            return element_builder.new_comment(_consume_current_line_and_return_it_as_line_sequence(source))
         else:
             instruction_source = self._consume_instruction_source(source)
-            return model.new_instruction_e(instruction_source,
-                                           InstructionInSection(self._section_name))
+            return element_builder.new_instruction(instruction_source,
+                                                   InstructionInSection(self._section_name))
 
     @staticmethod
     def _consume_instruction_source(source: ParseSource) -> line_source.LineSequence:
@@ -550,7 +555,9 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
 
 
 class SectionElementParserThatFails(sut.SectionElementParser):
-    def parse(self, source: ParseSource) -> model.SectionContentElement:
+    def parse(self,
+              source: ParseSource,
+              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
         raise SourceError(_consume_current_line_and_return_it_as_line_sequence(source).first_line,
                           'Unconditional failure')
 

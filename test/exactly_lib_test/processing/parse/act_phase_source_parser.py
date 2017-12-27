@@ -9,9 +9,10 @@ from exactly_lib_test.section_document.test_resources.parse_source import source
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestParse),
-    ])
+    return unittest.makeSuite(TestParse)
+
+
+ELEMENT_BUILDER = model.SectionContentElementBuilder()
 
 
 class TestParse(unittest.TestCase):
@@ -19,7 +20,7 @@ class TestParse(unittest.TestCase):
         # ARRANGE #
         source = source3(['first line'])  # LineSequenceSourceFromListOfLines(following_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(source)
+        element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -38,7 +39,7 @@ class TestParse(unittest.TestCase):
                 # ARRANGE #
                 source = source3(source_line)
                 # ACT #
-                element = sut.ActPhaseParser().parse(source)
+                element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
                 # ASSERT #
                 instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
                 self.assertEqual(list(instruction.source_code().lines),
@@ -52,7 +53,7 @@ class TestParse(unittest.TestCase):
                         'third line']
         source = source3(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(source)
+        element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -68,7 +69,7 @@ class TestParse(unittest.TestCase):
         ]
         source = source3(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(source)
+        element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -87,7 +88,7 @@ class TestParse(unittest.TestCase):
         ]
         source = source3(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(source)
+        element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -108,7 +109,7 @@ class TestParse(unittest.TestCase):
         ]
         source = source3(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(source)
+        element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
