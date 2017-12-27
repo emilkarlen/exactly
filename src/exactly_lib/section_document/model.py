@@ -1,4 +1,5 @@
 import enum
+import pathlib
 from typing import Dict, Sequence
 
 from exactly_lib.util import line_source
@@ -36,6 +37,23 @@ class InstructionInfo(tuple):
         return self[1]
 
 
+class SourceLocation(tuple):
+    """A location in a file."""
+
+    def __new__(cls,
+                source: line_source.LineSequence,
+                file_path: pathlib.Path):
+        return tuple.__new__(cls, (source, file_path))
+
+    @property
+    def source(self) -> line_source.LineSequence:
+        return self[0]
+
+    @property
+    def file_path(self) -> pathlib.Path:
+        return self[1]
+
+
 class SectionContentElement:
     """
     Element of the contents of a section: either a comment or an instruction.
@@ -46,10 +64,16 @@ class SectionContentElement:
     def __init__(self,
                  element_type: ElementType,
                  source: line_source.LineSequence,
-                 instruction_info: InstructionInfo):
+                 instruction_info: InstructionInfo,
+                 file_path: pathlib.Path = None):
         self._element_type = element_type
         self._source = source
         self._instruction_info = instruction_info
+        self._location = SourceLocation(source, file_path)
+
+    @property
+    def location(self) -> SourceLocation:
+        return self._location
 
     @property
     def source(self) -> line_source.LineSequence:
@@ -72,15 +96,20 @@ class SectionContentElement:
 
 
 class SectionContentElementBuilder:
+    def __init__(self, file_path: pathlib.Path = None):
+        self._file_path = file_path
+
     def new_empty(self, source: line_source.LineSequence) -> SectionContentElement:
         return SectionContentElement(ElementType.EMPTY,
                                      source,
-                                     None)
+                                     None,
+                                     self._file_path)
 
     def new_comment(self, source: line_source.LineSequence) -> SectionContentElement:
         return SectionContentElement(ElementType.COMMENT,
                                      source,
-                                     None)
+                                     None,
+                                     self._file_path)
 
     def new_instruction(self,
                         source: line_source.LineSequence,
@@ -89,7 +118,8 @@ class SectionContentElementBuilder:
         return SectionContentElement(ElementType.INSTRUCTION,
                                      source,
                                      InstructionInfo(instruction,
-                                                     description))
+                                                     description),
+                                     self._file_path)
 
 
 class SectionContents:
