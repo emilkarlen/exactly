@@ -1,6 +1,7 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
+from exactly_lib.section_document.model import SectionContentElementBuilder
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 
@@ -19,7 +20,9 @@ class DocumentParser:
 
 
 class SectionElementParser:
-    def parse(self, source: ParseSource) -> model.SectionContentElement:
+    def parse(self,
+              source: ParseSource,
+              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
         """
         :raises FileSourceError The element cannot be parsed.
         """
@@ -112,6 +115,7 @@ class _Impl:
         self._name_of_current_section = None
         self._elements_for_current_section = []
         self._section_name_2_element_list = {}
+        self._element_builder = model.SectionContentElementBuilder()
 
     @property
     def parser_for_current_section(self) -> SectionElementParser:
@@ -181,7 +185,8 @@ class _Impl:
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
     def parse_element_at_current_line_using_current_section_element_parser(self) -> model.SectionContentElement:
-        return self.parser_for_current_section.parse(self._document_source)
+        return self.parser_for_current_section.parse(self._document_source,
+                                                     self._element_builder)
 
     def add_element_to_current_section(self, element: model.SectionContentElement):
         self._elements_for_current_section.append(element)

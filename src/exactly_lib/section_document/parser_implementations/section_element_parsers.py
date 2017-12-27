@@ -1,6 +1,7 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.document_parser import SectionElementParser
+from exactly_lib.section_document.model import SectionContentElementBuilder
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 
@@ -72,17 +73,19 @@ class StandardSyntaxElementParser(SectionElementParser):
     def __init__(self, instruction_parser: InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
-    def parse(self, source: ParseSource) -> model.SectionContentElement:
+    def parse(self,
+              source: ParseSource,
+              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):
-            return model.new_empty_e(self._consume_and_return_current_line(source))
+            return element_builder.new_empty(self._consume_and_return_current_line(source))
         if syntax.is_comment_line(first_line.text):
-            return model.new_comment_e(self._consume_and_return_current_line(source))
+            return element_builder.new_comment(self._consume_and_return_current_line(source))
         else:
             instruction_and_description = self.instruction_parser.parse(source)
-            return model.new_instruction_e(instruction_and_description.source,
-                                           instruction_and_description.instruction,
-                                           instruction_and_description.description)
+            return element_builder.new_instruction(instruction_and_description.source,
+                                                   instruction_and_description.instruction,
+                                                   instruction_and_description.description)
 
     @staticmethod
     def _consume_and_return_current_line(source: ParseSource) -> line_source.LineSequence:

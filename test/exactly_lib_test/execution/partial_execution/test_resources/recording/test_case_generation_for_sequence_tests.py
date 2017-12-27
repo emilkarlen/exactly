@@ -1,6 +1,6 @@
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.section_document import model
-from exactly_lib.section_document.model import new_instruction_e
+from exactly_lib.section_document.model import SectionContentElementBuilder
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import \
@@ -29,6 +29,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
             PartialPhase.ASSERT: self._new_assert_instruction,
             PartialPhase.CLEANUP: self._new_cleanup_instruction
         }
+        self._element_builder = SectionContentElementBuilder()
         self.__extra = {}
         for ph in PartialPhase:
             self.__extra[ph] = []
@@ -99,8 +100,8 @@ class TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList(TestCaseGene
 
     def phase_contents_for_act(self, act_phase: PartialPhase) -> model.SectionContents:
         return phase_contents(
-            [new_instruction_e(self.act_phase_source,
-                               act_phase_instruction_with_source(self.act_phase_source))])
+            [self._element_builder.new_instruction(self.act_phase_source,
+                                                   act_phase_instruction_with_source(self.act_phase_source))])
 
     def _all_elements_for(self, phase: PartialPhase) -> list:
         """
@@ -118,8 +119,8 @@ class TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(TestCaseGeneratorFor
 
     def phase_contents_for_act(self, act_phase: PartialPhase) -> model.SectionContents:
         return phase_contents(
-            [new_instruction_e(self.act_phase_source,
-                               act_phase_instruction_with_source(self.act_phase_source))])
+            [self._element_builder.new_instruction(self.act_phase_source,
+                                                   act_phase_instruction_with_source(self.act_phase_source))])
 
     def _all_elements_for(self, phase: PartialPhase) -> list:
         return [self.recorder_for(phase)] + self.the_extra(phase) + [self.recorder_for(phase)]

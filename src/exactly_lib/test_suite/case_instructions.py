@@ -4,8 +4,8 @@ from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import instruction_section_element_parser as isep
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.section_document.document_parser import SectionElementParser
-from exactly_lib.section_document.model import SectionContentElement, new_instruction_e, ElementType, SectionContents, \
-    Instruction
+from exactly_lib.section_document.model import SectionContentElement, ElementType, SectionContents, \
+    Instruction, SectionContentElementBuilder
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
@@ -39,11 +39,12 @@ class TestCaseSectionContentElementFactory:
         self._source = source
         self._description = description
         self._instruction_factory = instruction_factory
+        self._element_builder = SectionContentElementBuilder()
 
     def make(self) -> SectionContentElement:
-        return new_instruction_e(self._source,
-                                 self._instruction_factory.make_case_instruction(),
-                                 self._description)
+        return self._element_builder.new_instruction(self._source,
+                                                     self._instruction_factory.make_case_instruction(),
+                                                     self._description)
 
 
 class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):

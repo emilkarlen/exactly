@@ -71,25 +71,24 @@ class SectionContentElement:
         return self._instruction_info
 
 
-def new_empty_e(source: line_source.LineSequence) -> SectionContentElement:
-    return SectionContentElement(ElementType.EMPTY,
-                                 source,
-                                 None)
+class SectionContentElementBuilder:
+    def new_empty(self, source: line_source.LineSequence) -> SectionContentElement:
+        return SectionContentElement(ElementType.EMPTY,
+                                     source,
+                                     None)
 
+    def new_comment(self, source: line_source.LineSequence) -> SectionContentElement:
+        return SectionContentElement(ElementType.COMMENT,
+                                     source,
+                                     None)
 
-def new_comment_e(source: line_source.LineSequence) -> SectionContentElement:
-    return SectionContentElement(ElementType.COMMENT,
-                                 source,
-                                 None)
-
-
-def new_instruction_e(source: line_source.LineSequence,
-                      instruction: Instruction,
-                      description: str = None) -> SectionContentElement:
-    return SectionContentElement(ElementType.INSTRUCTION,
-                                 source,
-                                 InstructionInfo(instruction,
-                                                 description))
+    def new_instruction(self, source: line_source.LineSequence,
+                        instruction: Instruction,
+                        description: str = None) -> SectionContentElement:
+        return SectionContentElement(ElementType.INSTRUCTION,
+                                     source,
+                                     InstructionInfo(instruction,
+                                                     description))
 
 
 class SectionContents:

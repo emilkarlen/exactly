@@ -13,6 +13,9 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestStandardSyntaxElementParser)
 
 
+ELEMENT_BUILDER = model.SectionContentElementBuilder()
+
+
 class TestStandardSyntaxElementParser(unittest.TestCase):
     def test_parse_empty_line(self):
         parser = sut.StandardSyntaxElementParser(_InstructionParserForInstructionLineThatStartsWith('I'))
@@ -26,7 +29,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ARRANGE #
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(source)
+                element = parser.parse(source, ELEMENT_BUILDER)
                 # ASSERT #
                 self.assertEqual(ElementType.EMPTY,
                                  element.element_type,
@@ -50,7 +53,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ARRANGE #
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(source)
+                element = parser.parse(source, ELEMENT_BUILDER)
                 # ASSERT #
                 self.assertEqual(ElementType.COMMENT,
                                  element.element_type,
@@ -72,7 +75,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
             with self.subTest(source_lines=source_lines,
                               remaining_source=remaining_source):
                 source = _source_for_lines(source_lines)
-                element = parser.parse(source)
+                element = parser.parse(source, ELEMENT_BUILDER)
                 self.assertEqual(ElementType.INSTRUCTION,
                                  element.element_type,
                                  'Element type')
@@ -95,7 +98,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                                                  'description')
         parser = sut.StandardSyntaxElementParser(_InstructionParserThatGivesConstant(expected))
         source = _source_for_lines(['ignored', 'source', 'lines'])
-        element = parser.parse(source)
+        element = parser.parse(source, ELEMENT_BUILDER)
         self.assertEqual(ElementType.INSTRUCTION,
                          element.element_type,
                          'Element type')
