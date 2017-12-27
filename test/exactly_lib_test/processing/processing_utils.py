@@ -69,6 +69,21 @@ class TestAccessor(unittest.TestCase):
         self.assertEqual(cm.exception.error,
                          tcp.AccessErrorType.SYNTAX_ERROR)
 
+    def test_parser_that_raises_AccessorError(self):
+        # ARRANGE #
+        error_type = tcp.AccessErrorType.FILE_ACCESS_ERROR
+        accessor = sut.AccessorFromParts(SourceReaderThat(gives_constant('source')),
+                                         PreprocessorThat(gives_constant('preprocessed source')),
+                                         ParserThat(raises(tcp.AccessorError(error_type,
+                                                                             ERROR_INFO))),
+                                         identity_test_case_transformer())
+        # ACT #
+        with self.assertRaises(tcp.AccessorError) as cm:
+            accessor.apply(PATH)
+        # ASSERT #
+        self.assertEqual(cm.exception.error,
+                         error_type)
+
     def test_that_transformer_is_applied(self):
         # ARRANGE #
         source = 'SOURCE'
@@ -258,7 +273,7 @@ class ExecutorThat(sut.Executor):
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
-        self.f()
+        return self.f()
 
 
 class ExecutorThatReturnsIfSame(sut.Executor):
@@ -300,7 +315,9 @@ def if_same_then_else_raise(expected, actual, result):
         raise RuntimeError('should not be invoked')
 
 
-PROCESS_ERROR = tcp.ProcessError(tcp.ErrorInfo(error_description.of_exception(ValueError('exception message'))))
+ERROR_INFO = tcp.ErrorInfo(error_description.of_exception(ValueError('exception message')))
+
+PROCESS_ERROR = tcp.ProcessError(ERROR_INFO)
 
 PATH = pathlib.Path('path')
 

@@ -21,7 +21,8 @@ class Parser:
               test_case_file_path: pathlib.Path,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         """
-        :raises ProcessError:
+        :raises ProcessError: Indicates syntax error
+        :raises AccessorError: An error with explicit error type
         """
         raise NotImplementedError()
 
