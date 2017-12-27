@@ -9,12 +9,23 @@ from exactly_lib.util import line_source
 
 class TestCaseSetup:
     def __init__(self,
-                 file_path: pathlib.Path):
+                 file_path: pathlib.Path,
+                 file_inclusion_relativity_root: pathlib.Path):
+        self.__file_inclusion_relativity_root = file_inclusion_relativity_root
         self.__file_path = file_path
 
     @property
     def file_path(self) -> pathlib.Path:
         return self.__file_path
+
+    @property
+    def file_inclusion_relativity_root(self) -> pathlib.Path:
+        return self.__file_inclusion_relativity_root
+
+
+def test_case_setup_of_source_file(source_file: pathlib.Path) -> TestCaseSetup:
+    return TestCaseSetup(source_file,
+                         source_file.resolve().parent)
 
 
 class ErrorInfo(tuple):
@@ -137,8 +148,7 @@ class Preprocessor:
 
 
 class Accessor:
-    def apply(self,
-              test_case_file_path: pathlib.Path) -> test_case_doc.TestCase:
+    def apply(self, test_case: TestCaseSetup) -> test_case_doc.TestCase:
         """
         :raises AccessorError
         """

@@ -1,6 +1,7 @@
 from exactly_lib.help_texts.test_case import phase_names_plain
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.instruction_section_element_parser import section_element_parser
+from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import test_case_doc, phase_identifier
@@ -8,12 +9,15 @@ from exactly_lib.test_case import test_case_doc, phase_identifier
 
 class Parser:
     def __init__(self,
-                 plain_file_parser: document_parser.DocumentParser):
-        self.__plain_file_parser = plain_file_parser
+                 section_document_parser: document_parser.DocumentParser):
+        self.__section_document_parser = section_document_parser
 
     def apply(self,
-              plain_test_case: ParseSource) -> test_case_doc.TestCase:
-        document = self.__plain_file_parser.parse(plain_test_case)
+              test_case: TestCaseSetup,
+              test_case_source: ParseSource) -> test_case_doc.TestCase:
+        document = self.__section_document_parser.parse(test_case.file_path,
+                                                        test_case.file_inclusion_relativity_root,
+                                                        test_case_source)
         return test_case_doc.TestCase(
             document.elements_for_section_or_empty_if_phase_not_present(phase_identifier.CONFIGURATION.section_name),
             document.elements_for_section_or_empty_if_phase_not_present(phase_identifier.SETUP.section_name),

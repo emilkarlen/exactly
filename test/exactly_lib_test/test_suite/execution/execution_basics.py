@@ -5,7 +5,7 @@ from pathlib import Path
 from exactly_lib.execution.result import new_skipped
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.test_case_processing import TestCaseSetup, new_internal_error, new_executed, \
-    new_access_error
+    new_access_error, test_case_setup_of_source_file
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
@@ -56,7 +56,7 @@ class TestError(unittest.TestCase):
     def test_internal_error_in_test_case_processor(self):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
-        test_case = TestCaseSetup(Path('test-case'))
+        test_case = test_case_setup_of_source_file(Path('test-case'))
         root = test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
@@ -102,7 +102,7 @@ class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
                                                                   result: tcp.Result):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
-        test_case = TestCaseSetup(Path('test-case'))
+        test_case = test_case_setup_of_source_file(Path('test-case'))
         root = test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter_factory = ExecutionTracingReporterFactory()
@@ -131,9 +131,9 @@ class TestComplexSuite(unittest.TestCase):
         # ARRANGE #
         reporter_factory = ExecutionTracingReporterFactory()
         str_std_out_files = StringStdOutFiles()
-        tc_internal_error = TestCaseSetup(Path('internal error'))
-        tc_access_error = TestCaseSetup(Path('access error'))
-        tc_executed = TestCaseSetup(Path('executed'))
+        tc_internal_error = test_case_setup_of_source_file(Path('internal error'))
+        tc_access_error = test_case_setup_of_source_file(Path('access error'))
+        tc_executed = test_case_setup_of_source_file(Path('executed'))
         root = test_suite(
             'root',
             [],
@@ -219,15 +219,15 @@ class TestComplexSuite(unittest.TestCase):
         # ARRANGE #
         reporter_factory = ExecutionTracingReporterFactory()
         str_std_out_files = StringStdOutFiles()
-        tc_internal_error_11 = TestCaseSetup(Path('internal error 11'))
-        tc_internal_error_21 = TestCaseSetup(Path('internal error 21'))
-        tc_access_error_1 = TestCaseSetup(Path('access error A'))
-        tc_access_error_12 = TestCaseSetup(Path('access error 12'))
-        tc_executed_11 = TestCaseSetup(Path('executed 11'))
-        tc_executed_12 = TestCaseSetup(Path('executed 12'))
-        tc_executed_1 = TestCaseSetup(Path('executed 1'))
-        tc_executed_2 = TestCaseSetup(Path('executed 2'))
-        tc_executed_root = TestCaseSetup(Path('executed root'))
+        tc_internal_error_11 = test_case_setup_of_source_file(Path('internal error 11'))
+        tc_internal_error_21 = test_case_setup_of_source_file(Path('internal error 21'))
+        tc_access_error_1 = test_case_setup_of_source_file(Path('access error A'))
+        tc_access_error_12 = test_case_setup_of_source_file(Path('access error 12'))
+        tc_executed_11 = test_case_setup_of_source_file(Path('executed 11'))
+        tc_executed_12 = test_case_setup_of_source_file(Path('executed 12'))
+        tc_executed_1 = test_case_setup_of_source_file(Path('executed 1'))
+        tc_executed_2 = test_case_setup_of_source_file(Path('executed 2'))
+        tc_executed_root = test_case_setup_of_source_file(Path('executed root'))
         test_case_processor = TestCaseProcessorThatGivesConstantPerCase({
             id(tc_internal_error_11): new_internal_error(error_info.of_message('message A')),
             id(tc_internal_error_21): new_internal_error(error_info.of_message('message B')),

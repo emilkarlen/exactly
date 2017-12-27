@@ -10,7 +10,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import test_case_parser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError
+from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError, TestCaseSetup
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
@@ -88,20 +88,19 @@ class _SourceReader(processing_utils.SourceReader):
 
 
 class _Parser(processing_utils.Parser):
-    def __init__(self,
-                 test_case_parsing_setup: TestCaseParsingSetup):
+    def __init__(self, test_case_parsing_setup: TestCaseParsingSetup):
         self._test_case_parsing_setup = test_case_parsing_setup
 
     def apply(self,
-              test_case_file_path: pathlib.Path,
+              test_case: TestCaseSetup,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         file_parser = test_case_parser.new_parser(self._test_case_parsing_setup)
         source = ParseSource(test_case_plain_source)
         try:
-            return file_parser.apply(source)
+            return file_parser.apply(test_case, source)
         except exactly_lib.section_document.exceptions.FileSourceError as ex:
             error_info = ErrorInfo(error_description.syntax_error_of_message(ex.source_error.message),
-                                   file_path=test_case_file_path,
+                                   file_path=test_case.file_path,
                                    line=ex.source_error.line,
                                    section_name=ex.maybe_section_name)
             raise ProcessError(error_info)

@@ -99,4 +99,5 @@ def test_suite(source_file_name: str,
 
 
 def test_case(source_file_name: str) -> TestCaseSetup:
-    return TestCaseSetup(pathlib.Path(source_file_name))
+    return TestCaseSetup(pathlib.Path(source_file_name),
+                         pathlib.Path.cwd())

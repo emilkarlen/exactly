@@ -17,7 +17,7 @@ from exactly_lib.test_suite.instruction_set import parse
 from exactly_lib.test_suite.instruction_set.sections import cases
 from exactly_lib.test_suite.instruction_set.sections import suites
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
-    ConfigurationSectionEnvironment
+    ConfigurationSectionEnvironment, ConfigurationSectionInstruction
 from exactly_lib.test_suite.test_suite_doc import TestCaseInstructionSetupFromSuite
 
 
@@ -29,9 +29,13 @@ def read_suite_document(suite_file_path: pathlib.Path,
     :raises parse.SuiteSyntaxError: The suite file has syntax errors
     """
     source = new_for_file(suite_file_path)
-    parser = _Parser(configuration_section_parser, test_case_parsing_setup)
+    file_inclusion_relativity_root = suite_file_path.parent
+    parser = _Parser(configuration_section_parser,
+                     test_case_parsing_setup)
     try:
-        return parser.apply(source)
+        return parser.apply(suite_file_path,
+                            file_inclusion_relativity_root,
+                            source)
     except FileSourceError as ex:
         raise parse.SuiteSyntaxError(suite_file_path,
                                      ex.source_error.line,
@@ -57,7 +61,9 @@ def _derive_conf_section_environment(test_suite: test_suite_doc.TestSuiteDocumen
                                                               default_handling_setup.act_phase_setup)
     for section_element in test_suite.configuration_section.elements:
         if section_element.element_type is ElementType.INSTRUCTION:
-            section_element.instruction_info.instruction.execute(instruction_environment)
+            instruction = section_element.instruction_info.instruction
+            assert isinstance(instruction, ConfigurationSectionInstruction)
+            instruction.execute(instruction_environment)
     return instruction_environment
 
 
@@ -76,11 +82,15 @@ class _Parser:
             ),
             default_section_name=DEFAULT_SECTION_NAME
         )
-        self.__plain_file_parser = document_parser.new_parser_for(parser_configuration)
+        self.__section_doc_parser = document_parser.new_parser_for(parser_configuration)
 
     def apply(self,
-              plain_test_case: ParseSource) -> test_suite_doc.TestSuiteDocument:
-        document = self.__plain_file_parser.parse(plain_test_case)
+              suite_file_path: pathlib.Path,
+              file_inclusion_relativity_root: pathlib.Path,
+              suite_file_source: ParseSource) -> test_suite_doc.TestSuiteDocument:
+        document = self.__section_doc_parser.parse(suite_file_path,
+                                                   file_inclusion_relativity_root,
+                                                   suite_file_source)
         return test_suite_doc.TestSuiteDocument(
             document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CONF),
             document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__SUITS),
