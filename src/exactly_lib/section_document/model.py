@@ -49,15 +49,24 @@ class SectionContentElement:
                  element_type: ElementType,
                  source: line_source.LineSequence,
                  instruction_info: InstructionInfo,
-                 file_path: pathlib.Path = None):
+                 file_path: pathlib.Path = None,
+                 file_inclusion_chain: Sequence[SourceLocation] = ()):
         self._element_type = element_type
         self._source = source
         self._instruction_info = instruction_info
         self._location = SourceLocation(source, file_path)
+        self._file_inclusion_chain = file_inclusion_chain
 
     @property
     def location(self) -> SourceLocation:
         return self._location
+
+    @property
+    def file_inclusion_chain(self) -> Sequence[SourceLocation]:
+        """
+        :return: The sequence of file inclusions that leads to the file specified by `location`.
+        """
+        return self._file_inclusion_chain
 
     @property
     def location_as_line_in_file(self) -> LineInFile:
@@ -89,20 +98,25 @@ class SectionContentElement:
 
 
 class SectionContentElementBuilder:
-    def __init__(self, file_path: pathlib.Path = None):
+    def __init__(self,
+                 file_path: pathlib.Path = None,
+                 file_inclusion_chain: Sequence[line_source.SourceLocation] = ()):
         self._file_path = file_path
+        self._file_inclusion_chain = file_inclusion_chain
 
     def new_empty(self, source: line_source.LineSequence) -> SectionContentElement:
         return SectionContentElement(ElementType.EMPTY,
                                      source,
                                      None,
-                                     self._file_path)
+                                     self._file_path,
+                                     self._file_inclusion_chain)
 
     def new_comment(self, source: line_source.LineSequence) -> SectionContentElement:
         return SectionContentElement(ElementType.COMMENT,
                                      source,
                                      None,
-                                     self._file_path)
+                                     self._file_path,
+                                     self._file_inclusion_chain)
 
     def new_instruction(self,
                         source: line_source.LineSequence,
@@ -112,7 +126,8 @@ class SectionContentElementBuilder:
                                      source,
                                      InstructionInfo(instruction,
                                                      description),
-                                     self._file_path)
+                                     self._file_path,
+                                     self._file_inclusion_chain)
 
 
 class SectionContents:

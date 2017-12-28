@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+from exactly_lib.util.line_source import SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.parse import test_resources as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
@@ -96,14 +97,18 @@ class TestEqualsInstructionWithoutDescription(unittest.TestCase):
         expected_line_text = 'line text'
         expected_section_name = 'section name'
         expected_file_path = pathlib.Path('a path')
+        expected_file_inclusion_chain = [SourceLocation(single_line_sequence(2, 'inclusion line'),
+                                                        pathlib.Path('inclusion file path'))]
         assertion = sut.equals_instruction_without_description(expected_line_num,
                                                                expected_line_text,
                                                                expected_section_name,
-                                                               expected_file_path)
+                                                               expected_file_path,
+                                                               expected_file_inclusion_chain)
         actual = sut.new_instruction(expected_line_num,
                                      expected_line_text,
                                      expected_section_name,
-                                     expected_file_path)
+                                     expected_file_path,
+                                     expected_file_inclusion_chain)
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
 
@@ -113,34 +118,48 @@ class TestEqualsInstructionWithoutDescription(unittest.TestCase):
         expected_line_text = 'line text'
         expected_section_name = 'section name'
         expected_file_path = pathlib.Path('a path')
+        expected_file_inclusion_chain = [SourceLocation(single_line_sequence(2, 'inclusion line'),
+                                                        pathlib.Path('inclusion file path'))]
         assertion = sut.equals_instruction_without_description(expected_line_num,
                                                                expected_line_text,
                                                                expected_section_name,
-                                                               expected_file_path)
+                                                               expected_file_path,
+                                                               expected_file_inclusion_chain)
         cases = [
             NameAndValue('unexpected line num',
                          sut.new_instruction(expected_line_num + 1,
                                              expected_line_text,
                                              expected_section_name,
-                                             expected_file_path)
+                                             expected_file_path,
+                                             expected_file_inclusion_chain)
                          ),
             NameAndValue('unexpected line text',
                          sut.new_instruction(expected_line_num,
                                              expected_line_text + ' unexpected',
                                              expected_section_name,
-                                             expected_file_path)
+                                             expected_file_path,
+                                             expected_file_inclusion_chain)
                          ),
             NameAndValue('unexpected section name',
                          sut.new_instruction(expected_line_num,
                                              expected_line_text,
                                              expected_section_name + ' unexpected',
-                                             expected_file_path)
+                                             expected_file_path,
+                                             expected_file_inclusion_chain)
                          ),
             NameAndValue('unexpected file path',
                          sut.new_instruction(expected_line_num,
                                              expected_line_text,
                                              expected_section_name,
-                                             expected_file_path / 'unexpected')
+                                             expected_file_path / 'unexpected',
+                                             expected_file_inclusion_chain)
+                         ),
+            NameAndValue('unexpected file inclusion chain',
+                         sut.new_instruction(expected_line_num,
+                                             expected_line_text,
+                                             expected_section_name,
+                                             expected_file_path,
+                                             [])
                          ),
             NameAndValue('unexpected element type - empty',
                          sut.new_empty(expected_line_num, expected_line_text)

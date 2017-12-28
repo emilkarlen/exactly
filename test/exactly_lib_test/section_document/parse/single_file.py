@@ -33,8 +33,10 @@ _COMMENT_START = 'COMMENT'
 
 _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
 
-DUMMY_SOURCE_FILE_PATH = pathlib.Path('dummy source file path')
+EXPECTED_SOURCE_FILE_PATH = pathlib.Path('dummy source file path')
 DUMMY_FILE_INCLUSION_RELATIVITY_ROOT = pathlib.Path.cwd()
+
+NO_FILE_INCLUSIONS = []
 
 
 class ParseTestBase(unittest.TestCase):
@@ -42,7 +44,7 @@ class ParseTestBase(unittest.TestCase):
                      parser: DocumentParser,
                      lines: list) -> model.Document:
         ptc_source = source_of_lines(lines)
-        return parser.parse(DUMMY_SOURCE_FILE_PATH,
+        return parser.parse(EXPECTED_SOURCE_FILE_PATH,
                             DUMMY_FILE_INCLUSION_RELATIVITY_ROOT,
                             ptc_source)
 
@@ -107,7 +109,8 @@ class TestParseSingleLineElements(ParseTestBase):
             'section 1': [
                 equals_comment_element(4, 'COMMENT 1'),
                 equals_empty_element(5, ''),
-                equals_instruction_without_description(6, 'instruction 1', 'section 1', DUMMY_SOURCE_FILE_PATH),
+                equals_instruction_without_description(6, 'instruction 1', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
             ],
         }
         # ACT & ASSERT #
@@ -126,11 +129,13 @@ class TestParseSingleLineElements(ParseTestBase):
         default_section_contents = (
             equals_comment_element(1, 'COMMENT default'),
             equals_empty_element(2, ''),
-            equals_instruction_without_description(3, 'instruction default', 'default', DUMMY_SOURCE_FILE_PATH)
+            equals_instruction_without_description(3, 'instruction default', 'default', EXPECTED_SOURCE_FILE_PATH,
+                                                   NO_FILE_INCLUSIONS)
         )
         section1_contents = (
             equals_comment_element(5, 'COMMENT 1'),
-            equals_instruction_without_description(6, 'instruction 1', 'section 1', DUMMY_SOURCE_FILE_PATH)
+            equals_instruction_without_description(6, 'instruction 1', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                   NO_FILE_INCLUSIONS)
         )
         expected = {
             'default': default_section_contents,
@@ -148,7 +153,8 @@ class TestParseSingleLineElements(ParseTestBase):
                         'instruction 1']
         section1_contents = (
             equals_comment_element(2, 'COMMENT 1'),
-            equals_instruction_without_description(3, 'instruction 1', 'section 1', DUMMY_SOURCE_FILE_PATH)
+            equals_instruction_without_description(3, 'instruction 1', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                   NO_FILE_INCLUSIONS)
         )
         expected = {
             'section 1': section1_contents,
@@ -166,7 +172,8 @@ class TestParseSingleLineElements(ParseTestBase):
         expected = {
             'section 1': [
                 equals_comment_element(2, 'COMMENT'),
-                equals_instruction_without_description(3, 'instruction', 'section 1', DUMMY_SOURCE_FILE_PATH)
+                equals_instruction_without_description(3, 'instruction', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS)
             ]
         }
         # ACT & ASSERT #
@@ -187,10 +194,12 @@ class TestParseSingleLineElements(ParseTestBase):
             'section 1': [
                 equals_comment_element(2, 'COMMENT 1'),
                 equals_empty_element(3, ''),
-                equals_instruction_without_description(7, 'instruction 1', 'section 1', DUMMY_SOURCE_FILE_PATH)
+                equals_instruction_without_description(7, 'instruction 1', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS)
             ],
             'section 2': [
-                equals_instruction_without_description(5, 'instruction 2', 'section 2', DUMMY_SOURCE_FILE_PATH),
+                equals_instruction_without_description(5, 'instruction 2', 'section 2', EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
 
             ]
         }
@@ -220,7 +229,8 @@ class TestParseSingleLineElements(ParseTestBase):
                         ]
         expected = {
             'section 1': [
-                equals_instruction_without_description(2, 'instruction 1', 'section 1', DUMMY_SOURCE_FILE_PATH),
+                equals_instruction_without_description(2, 'instruction 1', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
             ]
         }
         # ACT & ASSERT #
@@ -237,7 +247,8 @@ class TestParseMultiLineElements(ParseTestBase):
         expected = {
             'default': [
                 equals_instruction_without_description(1, 'MULTI-LINE-INSTRUCTION 1', 'default',
-                                                       DUMMY_SOURCE_FILE_PATH),
+                                                       EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
             ],
         }
         # ACT & ASSERT #
@@ -255,7 +266,8 @@ class TestParseMultiLineElements(ParseTestBase):
                                                                   ['MULTI-LINE-INSTRUCTION 1',
                                                                    'MULTI-LINE-INSTRUCTION 2'],
                                                                   'default',
-                                                                  DUMMY_SOURCE_FILE_PATH),
+                                                                  EXPECTED_SOURCE_FILE_PATH,
+                                                                  NO_FILE_INCLUSIONS),
             ],
         }
         # ACT & ASSERT #
@@ -277,7 +289,8 @@ class TestParseMultiLineElements(ParseTestBase):
                                                                   ['MULTI-LINE-INSTRUCTION 1',
                                                                    'MULTI-LINE-INSTRUCTION 2'],
                                                                   'default',
-                                                                  DUMMY_SOURCE_FILE_PATH),
+                                                                  EXPECTED_SOURCE_FILE_PATH,
+                                                                  NO_FILE_INCLUSIONS),
             ],
         }
         # ACT & ASSERT #
@@ -300,13 +313,15 @@ class TestParseMultiLineElements(ParseTestBase):
                                                                   ['MULTI-LINE-INSTRUCTION 1',
                                                                    'MULTI-LINE-INSTRUCTION 2'],
                                                                   'default',
-                                                                  DUMMY_SOURCE_FILE_PATH),
+                                                                  EXPECTED_SOURCE_FILE_PATH,
+                                                                  NO_FILE_INCLUSIONS),
 
             ],
             'section 1': [
                 equals_instruction_without_description(5, 'instruction 1',
                                                        'section 1',
-                                                       DUMMY_SOURCE_FILE_PATH),
+                                                       EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
             ],
         }
         # ACT & ASSERT #
@@ -324,14 +339,17 @@ class TestParseMultiLineElements(ParseTestBase):
                         'instruction 3']
         expected = {
             'section 1': [
-                equals_instruction_without_description(3, 'instruction 1', 'section 1', DUMMY_SOURCE_FILE_PATH),
+                equals_instruction_without_description(3, 'instruction 1', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
                 equals_multi_line_instruction_without_description(4,
                                                                   ['MULTI-LINE-INSTRUCTION 2-1',
                                                                    'MULTI-LINE-INSTRUCTION 2-2',
                                                                    'MULTI-LINE-INSTRUCTION 2-3'],
                                                                   'section 1',
-                                                                  DUMMY_SOURCE_FILE_PATH),
-                equals_instruction_without_description(7, 'instruction 3', 'section 1', DUMMY_SOURCE_FILE_PATH),
+                                                                  EXPECTED_SOURCE_FILE_PATH,
+                                                                  NO_FILE_INCLUSIONS),
+                equals_instruction_without_description(7, 'instruction 3', 'section 1', EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
             ],
         }
         # ACT & ASSERT #
@@ -351,13 +369,15 @@ class TestParseMultiLineElements(ParseTestBase):
             'section 1': [
                 equals_instruction_without_description(3, 'instruction 1',
                                                        'section 1',
-                                                       DUMMY_SOURCE_FILE_PATH),
+                                                       EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
                 equals_multi_line_instruction_without_description(4,
                                                                   ['MULTI-LINE-INSTRUCTION 2-1',
                                                                    'MULTI-LINE-INSTRUCTION 2-2',
                                                                    'MULTI-LINE-INSTRUCTION 2-3'],
                                                                   'section 1',
-                                                                  DUMMY_SOURCE_FILE_PATH),
+                                                                  EXPECTED_SOURCE_FILE_PATH,
+                                                                  NO_FILE_INCLUSIONS),
             ],
         }
         # ACT & ASSERT #
@@ -379,13 +399,15 @@ class TestParseMultiLineElements(ParseTestBase):
             'section 1': [
                 equals_instruction_without_description(2, 'instruction 1',
                                                        'section 1',
-                                                       DUMMY_SOURCE_FILE_PATH),
+                                                       EXPECTED_SOURCE_FILE_PATH,
+                                                       NO_FILE_INCLUSIONS),
                 equals_multi_line_instruction_without_description(6,
                                                                   ['MULTI-LINE-INSTRUCTION 2-1',
                                                                    'MULTI-LINE-INSTRUCTION 2-2',
                                                                    'MULTI-LINE-INSTRUCTION 2-3'],
                                                                   'section 1',
-                                                                  DUMMY_SOURCE_FILE_PATH),
+                                                                  EXPECTED_SOURCE_FILE_PATH,
+                                                                  NO_FILE_INCLUSIONS),
             ],
             'section 2': [],
         }
