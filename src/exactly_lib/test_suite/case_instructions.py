@@ -1,17 +1,16 @@
-from typing import List, Tuple
+from typing import List, Sequence
 
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import instruction_section_element_parser as isep
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.model import SectionContentElement, ElementType, SectionContents, \
-    Instruction, SectionContentElementBuilder
+    Instruction, SectionContentElementBuilder, SourceLocation
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteInstruction
-from exactly_lib.util import line_source
 
 
 class CaseSetupPhaseInstruction(TestSuiteInstruction):
@@ -33,18 +32,18 @@ class CaseSetupPhaseInstructionParser(InstructionParser):
 
 class TestCaseSectionContentElementFactory:
     def __init__(self,
-                 source: line_source.LineSequence,
+                 source_location: SourceLocation,
                  instruction_factory: CaseSetupPhaseInstruction,
                  description: str = None):
-        self._source = source
+        self._source_location = source_location
         self._description = description
         self._instruction_factory = instruction_factory
-        self._element_builder = SectionContentElementBuilder()
 
     def make(self) -> SectionContentElement:
-        return self._element_builder.new_instruction(self._source,
-                                                     self._instruction_factory.make_case_instruction(),
-                                                     self._description)
+        element_builder = SectionContentElementBuilder(self._source_location.file_path)
+        return element_builder.new_instruction(self._source_location.source,
+                                               self._instruction_factory.make_case_instruction(),
+                                               self._description)
 
 
 class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
@@ -53,13 +52,13 @@ class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
         self._setup_phase_element_factories = self._element_factories_for(setup_section_instruction_elements.elements)
 
     @staticmethod
-    def _element_factories_for(setup_section_instruction_elements: Tuple[SectionContentElement]
+    def _element_factories_for(setup_section_instruction_elements: Sequence[SectionContentElement]
                                ) -> List[TestCaseSectionContentElementFactory]:
         def factory(instruction_element: SectionContentElement) -> TestCaseSectionContentElementFactory:
             inst_factory = instruction_element.instruction_info.instruction
             assert isinstance(inst_factory, CaseSetupPhaseInstruction)
 
-            return TestCaseSectionContentElementFactory(instruction_element.source,
+            return TestCaseSectionContentElementFactory(instruction_element.location,
                                                         inst_factory,
                                                         instruction_element.instruction_info.description)
 
