@@ -65,6 +65,10 @@ class SectionContentElement:
                           self._location.file_path)
 
     @property
+    def file_path(self) -> pathlib.Path:
+        return self._location.file_path
+
+    @property
     def source(self) -> line_source.LineSequence:
         return self._source
 
