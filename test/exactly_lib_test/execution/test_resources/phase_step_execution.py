@@ -34,7 +34,7 @@ class ExpectedResult(tuple):
                                       'Status')
             assert_equals_line(unittest_case,
                                self.line,
-                               return_value.source_line,
+                               return_value.source_location.line,
                                'Source Line')
             self.failure_details.assertions(unittest_case,
                                             return_value.failure_details,
