@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import ElementType, SectionContentElementBuilder
 from exactly_lib.util import line_source
@@ -17,7 +19,8 @@ class InstructionInSection(model.Instruction):
 
 def matches_section_contents_element(element_type: ElementType,
                                      source: line_source.LineSequence,
-                                     assertion_on_instruction_info: asrt.ValueAssertion[model.InstructionInfo]
+                                     assertion_on_instruction_info: asrt.ValueAssertion[model.InstructionInfo],
+                                     assertion_on_file_path: asrt.ValueAssertion[pathlib.Path],
                                      ) -> asrt.ValueAssertion[model.SectionContentElement]:
     return asrt.and_([
         asrt.sub_component('element type',
@@ -26,6 +29,9 @@ def matches_section_contents_element(element_type: ElementType,
         asrt.sub_component('source',
                            model.SectionContentElement.source.fget,
                            equals_line_sequence(source)),
+        asrt.sub_component('file_path',
+                           model.SectionContentElement.file_path.fget,
+                           assertion_on_file_path),
         asrt.sub_component('instruction_info',
                            model.SectionContentElement.instruction_info.fget,
                            assertion_on_instruction_info),
@@ -60,24 +66,29 @@ def matches_instruction_info_without_description(assertion_on_instruction: asrt.
 
 def equals_instruction_without_description(line_number: int,
                                            line_text: str,
-                                           section_name: str) -> asrt.ValueAssertion[model.SectionContentElement]:
+                                           section_name: str,
+                                           file_path: pathlib.Path,
+                                           ) -> asrt.ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,
         line_source.LineSequence(line_number,
                                  (line_text,)),
-        matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name)))
+        matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name))),
+        asrt.equals(file_path),
     )
 
 
 def equals_multi_line_instruction_without_description(line_number: int,
                                                       lines: list,
-                                                      section_name: str
+                                                      section_name: str,
+                                                      file_path: pathlib.Path,
                                                       ) -> asrt.ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,
         line_source.LineSequence(line_number,
                                  tuple(lines)),
-        matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name)))
+        matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name))),
+        asrt.equals(file_path),
     )
 
 
@@ -85,42 +96,46 @@ def equals_empty_element(line_number: int,
                          line_text: str) -> asrt.ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(ElementType.EMPTY,
                                             line_source.LineSequence(line_number, (line_text,)),
-                                            asrt.is_none)
+                                            asrt.is_none,
+                                            asrt.anything_goes())
 
 
 def equals_comment_element(line_number: int,
                            line_text: str) -> asrt.ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(ElementType.COMMENT,
                                             line_source.LineSequence(line_number, (line_text,)),
-                                            asrt.is_none)
+                                            asrt.is_none,
+                                            asrt.anything_goes())
 
 
-ELEMENT_BUILDER = SectionContentElementBuilder()
+_ELEMENT_BUILDER_WITHOUT_FILE_PATH = SectionContentElementBuilder()
 
 
 def new_instruction(line_number: int,
                     line_text: str,
-                    section_name: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
-                                                                    (line_text,)),
-                                           InstructionInSection(section_name))
+                    section_name: str,
+                    file_path: pathlib.Path = None) -> model.SectionContentElement:
+    return SectionContentElementBuilder(file_path).new_instruction(line_source.LineSequence(line_number,
+                                                                                            (line_text,)),
+                                                                   InstructionInSection(section_name))
 
 
 def new_instruction__multi_line(line_number: int,
                                 lines: list,
-                                section_name: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
-                                                                    tuple(lines)),
-                                           InstructionInSection(section_name))
+                                section_name: str,
+                                file_path: pathlib.Path = None) -> model.SectionContentElement:
+    return SectionContentElementBuilder(file_path).new_instruction(line_source.LineSequence(line_number,
+                                                                                            tuple(lines)),
+                                                                   InstructionInSection(section_name))
 
 
 def new_comment(line_number: int,
                 line_text: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_comment(line_source.LineSequence(line_number,
-                                                                (line_text,)))
+    return _ELEMENT_BUILDER_WITHOUT_FILE_PATH.new_comment(line_source.LineSequence(line_number,
+                                                                                   (line_text,)))
 
 
 def new_empty(line_number: int,
               line_text: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_empty(line_source.LineSequence(line_number,
-                                                              (line_text,)))
+    return _ELEMENT_BUILDER_WITHOUT_FILE_PATH.new_empty(line_source.LineSequence(line_number,
+                                                                                 (line_text,)))

@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from exactly_lib_test.section_document.parse import test_resources as sut
@@ -94,12 +95,15 @@ class TestEqualsInstructionWithoutDescription(unittest.TestCase):
         expected_line_num = 1
         expected_line_text = 'line text'
         expected_section_name = 'section name'
+        expected_file_path = pathlib.Path('a path')
         assertion = sut.equals_instruction_without_description(expected_line_num,
                                                                expected_line_text,
-                                                               expected_section_name)
+                                                               expected_section_name,
+                                                               expected_file_path)
         actual = sut.new_instruction(expected_line_num,
                                      expected_line_text,
-                                     expected_section_name)
+                                     expected_section_name,
+                                     expected_file_path)
         # ACT & ASSERT #
         assertion.apply_without_message(self, actual)
 
@@ -108,24 +112,35 @@ class TestEqualsInstructionWithoutDescription(unittest.TestCase):
         expected_line_num = 2
         expected_line_text = 'line text'
         expected_section_name = 'section name'
+        expected_file_path = pathlib.Path('a path')
         assertion = sut.equals_instruction_without_description(expected_line_num,
                                                                expected_line_text,
-                                                               expected_section_name)
+                                                               expected_section_name,
+                                                               expected_file_path)
         cases = [
             NameAndValue('unexpected line num',
                          sut.new_instruction(expected_line_num + 1,
                                              expected_line_text,
-                                             expected_section_name)
+                                             expected_section_name,
+                                             expected_file_path)
                          ),
             NameAndValue('unexpected line text',
                          sut.new_instruction(expected_line_num,
                                              expected_line_text + ' unexpected',
-                                             expected_section_name)
+                                             expected_section_name,
+                                             expected_file_path)
                          ),
             NameAndValue('unexpected section name',
                          sut.new_instruction(expected_line_num,
                                              expected_line_text,
-                                             expected_section_name + ' unexpected')
+                                             expected_section_name + ' unexpected',
+                                             expected_file_path)
+                         ),
+            NameAndValue('unexpected file path',
+                         sut.new_instruction(expected_line_num,
+                                             expected_line_text,
+                                             expected_section_name,
+                                             expected_file_path / 'unexpected')
                          ),
             NameAndValue('unexpected element type - empty',
                          sut.new_empty(expected_line_num, expected_line_text)
