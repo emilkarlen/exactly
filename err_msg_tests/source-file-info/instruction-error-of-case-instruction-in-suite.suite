@@ -1,0 +1,11 @@
+#
+# Correct syntax, but failure in an execution-step of a test case instruction.
+#
+
+[cases]
+
+empty.case
+
+[setup]
+
+def string S = @[UNDEFINED_SYMBOL]@
