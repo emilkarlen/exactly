@@ -1,5 +1,5 @@
 from exactly_lib.section_document import model as doc
-from exactly_lib.section_document.model import SectionContentElementBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.util import line_source
 

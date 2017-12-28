@@ -2,7 +2,8 @@ import pathlib
 from typing import List, Sequence
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.model import ElementType, SectionContentElementBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
+from exactly_lib.section_document.model import ElementType
 from exactly_lib.util import line_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence, equals_source_location

@@ -1,11 +1,10 @@
 import unittest
 
-from exactly_lib_test.section_document.parse import single_file, test_resources_test
+from exactly_lib_test.section_document.parse import single_file
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        test_resources_test.suite(),
         single_file.suite(),
     ])
 

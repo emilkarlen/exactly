@@ -6,15 +6,15 @@ from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document import model
 from exactly_lib.section_document.document_parser import DocumentParser, new_parser_for, SectionConfiguration, \
     SectionsConfiguration
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
-from exactly_lib.section_document.model import SectionContentElementBuilder
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.parse.test_resources import InstructionInSection, \
+from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
+from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection, \
     equals_instruction_without_description, \
     equals_multi_line_instruction_without_description, equals_empty_element, equals_comment_element
-from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line, equals_line

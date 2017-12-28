@@ -1,6 +1,6 @@
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.section_document import model
-from exactly_lib.section_document.model import SectionContentElementBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import \

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.model import SectionContentElementBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections import cases as sut

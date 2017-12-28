@@ -1,4 +1,5 @@
-from exactly_lib.section_document.model import SectionContentElement, Instruction, SectionContentElementBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
+from exactly_lib.section_document.model import SectionContentElement, Instruction
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line, LineSequence
 

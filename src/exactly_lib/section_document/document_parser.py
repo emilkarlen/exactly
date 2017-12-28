@@ -3,8 +3,8 @@ from typing import Sequence
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
-from exactly_lib.section_document.model import SectionContentElementBuilder
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 
@@ -101,7 +101,7 @@ class _DocumentParserForSectionsConfiguration(DocumentParser):
               file_inclusion_relativity_root: pathlib.Path,
               source: ParseSource) -> model.Document:
         impl = _Impl(self._configuration,
-                     model.SectionContentElementBuilder(source_file_path),
+                     SectionContentElementBuilder(source_file_path),
                      file_inclusion_relativity_root,
                      source)
         return impl.apply()
@@ -110,7 +110,7 @@ class _DocumentParserForSectionsConfiguration(DocumentParser):
 class _Impl:
     def __init__(self,
                  configuration: SectionsConfiguration,
-                 element_builder: model.SectionContentElementBuilder,
+                 element_builder: SectionContentElementBuilder,
                  file_inclusion_relativity_root: pathlib.Path,
                  document_source: ParseSource):
         self.configuration = configuration
