@@ -55,7 +55,7 @@ def output_location(printer: FilePrinter,
                     section_presentation_type_name: str):
     has_output_header = False
     if file:
-        printer.write_line('File: ' + str(file))
+        printer.write_line('File: ' + _file_str(file))
         has_output_header = True
     if section_name:
         printer.write_line('In ' + SectionName(section_name).syntax)
@@ -114,3 +114,13 @@ class _SourceDisplayer(FailureInfoVisitor):
                         failure_info.source_location.line,
                         failure_info.element_description,
                         SECTION_CONCEPT_NAME)
+
+
+def _file_str(path: pathlib.Path) -> str:
+    if not path.is_absolute():
+        return str(path)
+    cwd = pathlib.Path.cwd().resolve()
+    try:
+        return str(path.relative_to(cwd))
+    except ValueError:
+        return str(path)
