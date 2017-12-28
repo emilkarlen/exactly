@@ -56,6 +56,10 @@ class LineSequence:
         return os.linesep.join(self._lines)
 
 
+def single_line_sequence(line_number: int, line: str) -> LineSequence:
+    return LineSequence(line_number, (line,))
+
+
 class LineInFile(tuple):
     def __new__(cls,
                 line: Line,
