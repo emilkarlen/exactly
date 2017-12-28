@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
@@ -58,21 +59,15 @@ class SectionsConfiguration:
     """
 
     def __init__(self,
-                 parsers_for_named_sections: tuple,
+                 parsers_for_named_sections: Sequence[SectionConfiguration],
                  default_section_name: str = None,
                  section_element_name_for_error_messages: str = 'section'):
-        """
-        :param parsers_for_named_sections: sequence of SectionConfiguration.
-        """
         self.section_element_name_for_error_messages = section_element_name_for_error_messages
         self._parsers_for_named_sections = parsers_for_named_sections
-        section_names = []
-        section2parser = {}
-        for pfp in parsers_for_named_sections:
-            section_names.append(pfp.section_name)
-            section2parser[pfp.section_name] = pfp.parser
-        self._section_list_as_tuple = tuple(section_names)
-        self._section2parser = section2parser
+        self._section2parser = {
+            pfp.section_name: pfp.parser
+            for pfp in parsers_for_named_sections
+        }
 
         self._parser_for_default_section = None
         self.default_section_name = None
@@ -85,13 +80,6 @@ class SectionsConfiguration:
                                  (default_section_name,
                                   str(self._section2parser.keys()))
                                  )
-
-    def section_names(self) -> tuple:
-        """
-        Sequence of all Section Names (same order as given to constructor.
-        :return: tuple of str:s
-        """
-        return self._section_list_as_tuple
 
     def parser_for_section(self, section_name: str) -> SectionElementParser:
         return self._section2parser[section_name]
