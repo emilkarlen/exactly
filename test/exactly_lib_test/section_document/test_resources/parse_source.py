@@ -3,7 +3,7 @@ import shlex
 from exactly_lib.section_document.parse_source import ParseSource
 
 
-def source3(lines: list) -> ParseSource:
+def source_of_lines(lines: list) -> ParseSource:
     return ParseSource('\n'.join(lines))
 
 

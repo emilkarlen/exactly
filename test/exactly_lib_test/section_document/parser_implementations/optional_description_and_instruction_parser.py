@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_implementations.optional_description_an
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser, \
     InstructionAndDescription
-from exactly_lib_test.section_document.test_resources.parse_source import source3
+from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -32,7 +32,7 @@ class TestParseWithDescription(unittest.TestCase):
 
     def test_no_description(self):
         source_lines = ['instruction']
-        source = source3(source_lines)
+        source = source_of_lines(source_lines)
         expectation = Expectation(description=asrt.is_none,
                                   source=source_is_at_end,
                                   instruction=assert_instruction(1, 'instruction'))
@@ -58,7 +58,7 @@ class TestParseWithDescription(unittest.TestCase):
         ]
         for source_lines in test_cases:
             with self.subTest(source_lines=source_lines):
-                source = source3(source_lines)
+                source = source_of_lines(source_lines)
                 with self.assertRaises(SourceError):
                     self.sut.parse(source)
 
@@ -73,7 +73,7 @@ class TestParseWithDescription(unittest.TestCase):
             with self.subTest(source_lines=source_lines,
                               expected_description=expected_description,
                               expected_instruction=expected_instruction):
-                source = source3(source_lines)
+                source = source_of_lines(source_lines)
                 expectation = Expectation(description=asrt.equals(expected_description),
                                           source=source_is_at_end,
                                           instruction=assert_instruction(1, expected_instruction))
@@ -123,7 +123,7 @@ class TestParseWithDescription(unittest.TestCase):
         ]
         for description_lines, expectation in source_and_description_variants:
             with self.subTest(description_lines=description_lines):
-                source = source3(description_lines)
+                source = source_of_lines(description_lines)
                 arrangement = Arrangement(self.sut, source)
                 check(self, expectation, arrangement)
 
@@ -178,7 +178,7 @@ class TestParseWithDescription(unittest.TestCase):
         ]
         for description_lines, expectation in source_and_description_variants:
             with self.subTest(description_lines=description_lines):
-                source = source3(description_lines)
+                source = source_of_lines(description_lines)
                 arrangement = Arrangement(self.sut, source)
                 check(self, expectation, arrangement)
 
@@ -217,7 +217,7 @@ class TestParseWithDescription(unittest.TestCase):
         for source_lines, expectation in test_cases:
             with self.subTest(source_lines=str(source_lines)):
                 check(self, expectation,
-                      Arrangement(self.sut, source3(source_lines)))
+                      Arrangement(self.sut, source_of_lines(source_lines)))
 
     def test_strip_space_from_description(self):
         test_cases = [
@@ -244,7 +244,7 @@ class TestParseWithDescription(unittest.TestCase):
         for source_lines, expectation in test_cases:
             with self.subTest(source_lines=str(source_lines)):
                 check(self, expectation,
-                      Arrangement(self.sut, source3(source_lines)))
+                      Arrangement(self.sut, source_of_lines(source_lines)))
 
 
 class Expectation(tuple):

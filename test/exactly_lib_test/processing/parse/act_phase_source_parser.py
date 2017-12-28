@@ -5,7 +5,7 @@ from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstr
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib_test.section_document.test_resources.parse_source import source3
+from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 
 
 def suite() -> unittest.TestSuite:
@@ -18,7 +18,7 @@ ELEMENT_BUILDER = model.SectionContentElementBuilder()
 class TestParse(unittest.TestCase):
     def test_parse_single_line_from_single_line_source(self):
         # ARRANGE #
-        source = source3(['first line'])  # LineSequenceSourceFromListOfLines(following_lines)
+        source = source_of_lines(['first line'])
         # ACT #
         element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
@@ -37,7 +37,7 @@ class TestParse(unittest.TestCase):
         for source_line in test_cases:
             with self.subTest(source_line=source_line):
                 # ARRANGE #
-                source = source3(source_line)
+                source = source_of_lines(source_line)
                 # ACT #
                 element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
                 # ASSERT #
@@ -51,7 +51,7 @@ class TestParse(unittest.TestCase):
         source_lines = ['first line',
                         'second line',
                         'third line']
-        source = source3(source_lines)
+        source = source_of_lines(source_lines)
         # ACT #
         element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
@@ -67,7 +67,7 @@ class TestParse(unittest.TestCase):
             'second line',
             '[section-header]',
         ]
-        source = source3(source_lines)
+        source = source_of_lines(source_lines)
         # ACT #
         element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
@@ -86,7 +86,7 @@ class TestParse(unittest.TestCase):
             '\\',
             '[section-header]',
         ]
-        source = source3(source_lines)
+        source = source_of_lines(source_lines)
         # ACT #
         element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
@@ -107,7 +107,7 @@ class TestParse(unittest.TestCase):
             '    \\',
             '[section-header]',
         ]
-        source = source3(source_lines)
+        source = source_of_lines(source_lines)
         # ACT #
         element = sut.ActPhaseParser().parse(source, ELEMENT_BUILDER)
         # ASSERT #
