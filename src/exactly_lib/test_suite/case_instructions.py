@@ -4,8 +4,9 @@ from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import instruction_section_element_parser as isep
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.section_document.document_parser import SectionElementParser
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import SectionContentElement, ElementType, SectionContents, \
-    Instruction, SectionContentElementBuilder
+    Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction

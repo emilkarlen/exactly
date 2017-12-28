@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.section_document import model
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import section_element_parsers as sut
@@ -13,7 +14,7 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestStandardSyntaxElementParser)
 
 
-ELEMENT_BUILDER = model.SectionContentElementBuilder()
+ELEMENT_BUILDER = SectionContentElementBuilder()
 
 
 class TestStandardSyntaxElementParser(unittest.TestCase):

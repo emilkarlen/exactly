@@ -1,7 +1,7 @@
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
-from exactly_lib.section_document.model import SectionContentElementBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
 
