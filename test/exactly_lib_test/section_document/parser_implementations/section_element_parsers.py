@@ -6,7 +6,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import section_element_parsers as sut
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
 
 
 def suite() -> unittest.TestSuite:

@@ -1,11 +1,11 @@
 from exactly_lib.symbol import resolver_structure as rs, symbol_usage as su
 from exactly_lib.symbol.resolver_structure import SymbolContainer
-from exactly_lib_test.section_document.test_resources import assertions as asrt_sec_doc
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources import line_source_assertions as asrt_line_source
 
 
 def matches_container(assertion_on_resolver: asrt.ValueAssertion,
-                      assertion_on_source: asrt.ValueAssertion = asrt_sec_doc.is_line(),
+                      assertion_on_source: asrt.ValueAssertion = asrt_line_source.is_line(),
                       ) -> asrt.ValueAssertion:
     return asrt.is_instance_with(
         rs.SymbolContainer,

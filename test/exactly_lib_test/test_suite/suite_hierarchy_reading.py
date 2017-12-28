@@ -10,9 +10,9 @@ from exactly_lib.test_suite.instruction_set.parse import SuiteFileReferenceError
     SuiteDoubleInclusion
 from exactly_lib.util import line_source
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_suite.test_resources import check_exception, check_structure
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
 
 
 def suite() -> unittest.TestSuite:

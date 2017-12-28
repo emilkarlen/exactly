@@ -7,8 +7,8 @@ from exactly_lib.execution.partial_execution import PartialResultStatus
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
-from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureDetails
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
 
 
 class ExpectedResult(tuple):
