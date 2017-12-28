@@ -102,10 +102,10 @@ appropriate output directory::
     dir-contents input-files empty
 
     exists --file output-files/good/a.txt
-    dir-contents  output-files/good num-files === 1
+    dir-contents  output-files/good num-files == 1
 
     exists --file output-files/bad/b.txt
-    dir-contents  output-files/bad num-files === 1
+    dir-contents  output-files/bad num-files == 1
 
 
 Testing and transforming the contents of files
@@ -137,7 +137,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [assert]
 
-    contents log.txt --transformed GET_TIMING_LINES equals <<EOF
+    contents log.txt --transformed-by GET_TIMING_LINES equals <<EOF
     timing TIMESTAMP begin
     timing TIMESTAMP preprocessing
     timing TIMESTAMP validation
@@ -147,14 +147,14 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [setup]
 
-    def line-matcher     IS_TIMING_LINE     = regex ^timing
+    def line-matcher      IS_TIMING_LINE     = regex ^timing
 
     def lines-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
 
     def lines-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
 
-The ``--transformed`` option does not modify the tested file,
+The ``--transformed-by`` option does not modify the tested file,
 it just applies the assertion to a transformed version of it.
 
 
@@ -403,7 +403,7 @@ it just displays some of Exactly's features.)
 
     file output-from-git.txt = --stdout $ git status
 
-    file git-branch-info.txt = --transformed select line-num == 1
+    file git-branch-info.txt = --transformed-by select line-num == 1
                                --stdout
                                $ git status
 
