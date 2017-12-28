@@ -477,37 +477,6 @@ def is_comment_line(line: str) -> bool:
     return line[:len(_COMMENT_START)] == _COMMENT_START
 
 
-ELEMENT_BUILDER = SectionContentElementBuilder()
-
-
-def new_instruction(line_number: int,
-                    line_text: str,
-                    section_name: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
-                                                                    (line_text,)),
-                                           InstructionInSection(section_name))
-
-
-def new_instruction__multi_line(line_number: int,
-                                lines: list,
-                                section_name: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
-                                                                    tuple(lines)),
-                                           InstructionInSection(section_name))
-
-
-def new_comment(line_number: int,
-                line_text: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_comment(line_source.LineSequence(line_number,
-                                                                (line_text,)))
-
-
-def new_empty(line_number: int,
-              line_text: str) -> model.SectionContentElement:
-    return ELEMENT_BUILDER.new_empty(line_source.LineSequence(line_number,
-                                                              (line_text,)))
-
-
 def _consume_current_line_and_return_it_as_line_sequence(source: ParseSource) -> line_source.LineSequence:
     ret_val = line_source.LineSequence(source.current_line_number,
                                        (source.current_line_text,))
