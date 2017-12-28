@@ -1,10 +1,10 @@
 import unittest
 
 from exactly_lib.util.line_source import LineSequence, Line
-from exactly_lib_test.section_document.test_resources import assertions as sut
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import EA
+from exactly_lib_test.util.test_resources import line_source_assertions as sut
 
 
 def suite() -> unittest.TestSuite:

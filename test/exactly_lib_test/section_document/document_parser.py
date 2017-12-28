@@ -11,10 +11,10 @@ from exactly_lib.section_document.model import ElementType, SectionContentElemen
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.test_resources.assertions import assert_equals_line, equals_line_sequence, \
-    equals_line
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line, equals_line_sequence, \
+    equals_line
 
 
 def suite() -> unittest.TestSuite:
