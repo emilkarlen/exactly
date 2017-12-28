@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parser_implementations import parser_for_dictionary_of_instructions as sut
-from exactly_lib_test.section_document.test_resources.parse_source import source3
+from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
 
 
@@ -60,7 +60,7 @@ class TestFailingNameExtractor(unittest.TestCase):
 
     def _check(self, splitter):
         phase_parser = sut.InstructionParserForDictionaryOfInstructions(splitter, {})
-        source = source3(['line'])
+        source = source_of_lines(['line'])
         with self.assertRaises(sut.InvalidInstructionSyntaxException) as cm:
             phase_parser.parse(source)
         assert_equals_line(self,
@@ -72,7 +72,7 @@ class TestFailingNameExtractor(unittest.TestCase):
 class TestParse(unittest.TestCase):
     def test__when__instruction_name_not_in_dict__then__exception_should_be_raised(self):
         phase_parser = sut.InstructionParserForDictionaryOfInstructions(name_extractor, {})
-        source = source3(['Ia'])
+        source = source_of_lines(['Ia'])
         with self.assertRaises(sut.UnknownInstructionException) as cm:
             phase_parser.parse(source)
         self.assertEqual('I',
@@ -88,7 +88,7 @@ class TestParse(unittest.TestCase):
                         'F': SingleInstructionParserThatRaisesInvalidArgumentError('the error message')}
         phase_parser = sut.InstructionParserForDictionaryOfInstructions(name_extractor,
                                                                         parsers_dict)
-        source = source3(['Fa'])
+        source = source_of_lines(['Fa'])
         with self.assertRaises(sut.InvalidInstructionArgumentException) as cm:
             phase_parser.parse(source)
         self.assertEqual('F',
@@ -108,7 +108,7 @@ class TestParse(unittest.TestCase):
                         'F': parser_that_raises_exception}
         phase_parser = sut.InstructionParserForDictionaryOfInstructions(name_extractor,
                                                                         parsers_dict)
-        source = source3(['Fa'])
+        source = source_of_lines(['Fa'])
         with self.assertRaises(sut.ArgumentParsingImplementationException) as cm:
             phase_parser.parse(source)
         self.assertEqual('F',
@@ -136,7 +136,7 @@ class TestParse(unittest.TestCase):
         ]
         for source_lines, expected_argument, expected_remaining_source in test_cases:
             with self.subTest(source_lines=source_lines):
-                source = source3(source_lines)
+                source = source_of_lines(source_lines)
                 instruction = phase_parser.parse(source)
                 self.assertIsInstance(instruction,
                                       model.Instruction,

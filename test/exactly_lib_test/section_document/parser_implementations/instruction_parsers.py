@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parser_implementations import instruction_parsers as sut
-from exactly_lib_test.section_document.test_resources.parse_source import source3
+from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -53,7 +53,7 @@ class TestInstructionParserThatConsumesRestOfCurrentLine(unittest.TestCase):
         ]
         for source_lines, num_chars_to_consume_before, expected_instr_arg, expected_source in test_cases:
             with self.subTest():
-                source = source3(source_lines)
+                source = source_of_lines(source_lines)
                 source.consume_part_of_current_line(num_chars_to_consume_before)
                 instruction = self.parser.parse(source)
                 self.assertIsInstance(instruction, Instruction,

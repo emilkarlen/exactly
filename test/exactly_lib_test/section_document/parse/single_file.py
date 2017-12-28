@@ -14,6 +14,7 @@ from exactly_lib.util.line_source import Line
 from exactly_lib_test.section_document.parse.test_resources import InstructionInSection, \
     equals_instruction_without_description, \
     equals_multi_line_instruction_without_description, equals_empty_element, equals_comment_element
+from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line, equals_line
@@ -40,8 +41,7 @@ class ParseTestBase(unittest.TestCase):
     def _parse_lines(self,
                      parser: DocumentParser,
                      lines: list) -> model.Document:
-        plain_document = '\n'.join(lines)
-        ptc_source = ParseSource(plain_document)
+        ptc_source = source_of_lines(lines)
         return parser.parse(DUMMY_SOURCE_FILE_PATH,
                             DUMMY_FILE_INCLUSION_RELATIVITY_ROOT,
                             ptc_source)
