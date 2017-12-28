@@ -1,7 +1,7 @@
 import unittest
 from typing import Any
 
-from exactly_lib.util.line_source import Line, LineSequence
+from exactly_lib.util.line_source import Line, LineSequence, SourceLocation
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -58,3 +58,14 @@ def assert_equals_line(test_case: unittest.TestCase,
     message_builder = asrt.MessageBuilder('' if message_header is None else message_header)
 
     assertion.apply(test_case, actual, message_builder)
+
+
+def equals_source_location(expected: SourceLocation) -> asrt.ValueAssertion[SourceLocation]:
+    return asrt.and_([
+        asrt.sub_component('source',
+                           SourceLocation.source.fget,
+                           equals_line_sequence(expected.source)),
+        asrt.sub_component('file_path',
+                           SourceLocation.file_path.fget,
+                           asrt.equals(expected.file_path)),
+    ])
