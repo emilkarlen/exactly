@@ -1,5 +1,5 @@
 from exactly_lib.section_document import model
-from exactly_lib.section_document.model import ElementType
+from exactly_lib.section_document.model import ElementType, SectionContentElementBuilder
 from exactly_lib.util import line_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
@@ -93,3 +93,34 @@ def equals_comment_element(line_number: int,
     return matches_section_contents_element(ElementType.COMMENT,
                                             line_source.LineSequence(line_number, (line_text,)),
                                             asrt.is_none)
+
+
+ELEMENT_BUILDER = SectionContentElementBuilder()
+
+
+def new_instruction(line_number: int,
+                    line_text: str,
+                    section_name: str) -> model.SectionContentElement:
+    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
+                                                                    (line_text,)),
+                                           InstructionInSection(section_name))
+
+
+def new_instruction__multi_line(line_number: int,
+                                lines: list,
+                                section_name: str) -> model.SectionContentElement:
+    return ELEMENT_BUILDER.new_instruction(line_source.LineSequence(line_number,
+                                                                    tuple(lines)),
+                                           InstructionInSection(section_name))
+
+
+def new_comment(line_number: int,
+                line_text: str) -> model.SectionContentElement:
+    return ELEMENT_BUILDER.new_comment(line_source.LineSequence(line_number,
+                                                                (line_text,)))
+
+
+def new_empty(line_number: int,
+              line_text: str) -> model.SectionContentElement:
+    return ELEMENT_BUILDER.new_empty(line_source.LineSequence(line_number,
+                                                              (line_text,)))
