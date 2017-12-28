@@ -109,8 +109,8 @@ class _SourceDisplayer(FailureInfoVisitor):
 
     def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
         output_location(self.out,
-                        None,
+                        failure_info.source_location.file_path,
                         failure_info.phase_step.phase.identifier,
-                        failure_info.source_line,
+                        failure_info.source_location.line,
                         failure_info.element_description,
                         SECTION_CONCEPT_NAME)

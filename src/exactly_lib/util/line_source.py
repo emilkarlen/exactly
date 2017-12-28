@@ -1,4 +1,6 @@
 import os
+import pathlib
+from typing import Sequence
 
 
 class Line(tuple):
@@ -23,7 +25,7 @@ class LineSequence:
 
     def __init__(self,
                  first_line_number: int,
-                 lines: tuple):
+                 lines: Sequence[str]):
         """
         :param first_line_number: Line number of first line in the sequence.
         :param lines: Non-empty list of individual lines, without ending line-separator.
@@ -36,7 +38,7 @@ class LineSequence:
         return self._first_line_number
 
     @property
-    def lines(self) -> tuple:
+    def lines(self) -> Sequence[str]:
         """
         All lines (at least one). No line ends with the line-separator.
         """
@@ -52,3 +54,18 @@ class LineSequence:
         All lines, separated by line-separator, but not ending with one.
         """
         return os.linesep.join(self._lines)
+
+
+class LineInFile(tuple):
+    def __new__(cls,
+                line: Line,
+                file_path: pathlib.Path):
+        return tuple.__new__(cls, (line, file_path))
+
+    @property
+    def line(self) -> Line:
+        return self[0]
+
+    @property
+    def file_path(self) -> pathlib.Path:
+        return self[1]

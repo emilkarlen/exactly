@@ -69,10 +69,10 @@ class SingleInstructionExecutionFailure(tuple):
 
     def __new__(cls,
                 status: result.PartialResultStatus,
-                source_line: line_source.Line,
+                source_location: line_source.LineInFile,
                 details: failure_details.FailureDetails):
         return tuple.__new__(cls, (status,
-                                   source_line,
+                                   source_location,
                                    details))
 
     @property
@@ -83,7 +83,7 @@ class SingleInstructionExecutionFailure(tuple):
         return self[0]
 
     @property
-    def source_line(self) -> line_source.Line:
+    def source_location(self) -> line_source.LineInFile:
         return self[1]
 
     @property
@@ -106,12 +106,12 @@ def execute_element(executor: ControlledInstructionExecutor,
         if fail_info is None:
             return None
         return SingleInstructionExecutionFailure(result.PartialResultStatus(fail_info.status.value),
-                                                 element.first_line,
+                                                 element.location_as_line_in_file,
                                                  failure_details.new_failure_details_from_message(
                                                      fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(result.PartialResultStatus.IMPLEMENTATION_ERROR,
-                                                 element.first_line,
+                                                 element.location_as_line_in_file,
                                                  failure_details.new_failure_details_from_exception(ex))
 
 

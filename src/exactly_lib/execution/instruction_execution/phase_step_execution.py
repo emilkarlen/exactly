@@ -7,6 +7,7 @@ from exactly_lib.section_document.model import SectionContents, SectionContentEl
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.util.line_source import LineInFile
 
 
 class ElementHeaderExecutor:
@@ -22,17 +23,17 @@ class ElementHeaderExecutorThatDoesNothing(ElementHeaderExecutor):
 class Failure(tuple):
     def __new__(cls,
                 status: PartialResultStatus,
-                source_line: line_source.Line,
+                source_location: LineInFile,
                 failure_details: FailureDetails,
                 element_description: str = None):
-        return tuple.__new__(cls, (status, source_line, failure_details, element_description))
+        return tuple.__new__(cls, (status, source_location, failure_details, element_description))
 
     @property
     def status(self) -> PartialResultStatus:
         return self[0]
 
     @property
-    def source_line(self) -> line_source.Line:
+    def source_location(self) -> LineInFile:
         return self[1]
 
     @property
@@ -87,7 +88,7 @@ def execute_phase(phase_contents: SectionContents,
             failure.status,
             sds,
             InstructionFailureInfo(phase_step,
-                                   failure.source_line,
+                                   failure.source_location,
                                    failure.failure_details,
                                    failure.element_description)
         )
@@ -125,7 +126,7 @@ def execute_phase_prim(phase_contents: SectionContents,
                                            instruction_info)
             if failure_info is not None:
                 return Failure(failure_info.status,
-                               failure_info.source_line,
+                               failure_info.source_location,
                                failure_info.failure_details,
                                instruction_info.description)
     return None
