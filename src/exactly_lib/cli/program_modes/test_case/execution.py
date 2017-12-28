@@ -60,8 +60,8 @@ def _resolve_handling_setup(default_handling_setup: TestCaseHandlingSetup,
                             suite_to_read_config_from: pathlib.Path) -> TestCaseHandlingSetup:
     if not suite_to_read_config_from:
         return default_handling_setup
-    from exactly_lib.cli.program_modes.test_case.read_conf_from_suite import resolve_handling_setup_from_suite
-    return resolve_handling_setup_from_suite(default_handling_setup,
-                                             configuration_section_parser,
-                                             test_case_parsing_setup,
-                                             suite_to_read_config_from)
+    from exactly_lib.test_suite.suite_file_reading import resolve_handling_setup_from_suite_file
+    return resolve_handling_setup_from_suite_file(default_handling_setup,
+                                                  configuration_section_parser,
+                                                  test_case_parsing_setup,
+                                                  suite_to_read_config_from)

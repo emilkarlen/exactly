@@ -98,3 +98,14 @@ class _Parser:
             TestCaseInstructionSetupFromSuite(
                 document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CASE_SETUP)),
         )
+
+
+def resolve_handling_setup_from_suite_file(default_handling_setup: TestCaseHandlingSetup,
+                                           configuration_section_parser: document_parser.SectionElementParser,
+                                           test_case_parsing_setup: TestCaseParsingSetup,
+                                           suite_to_read_config_from: pathlib.Path) -> TestCaseHandlingSetup:
+    suite_document = read_suite_document(suite_to_read_config_from,
+                                         configuration_section_parser,
+                                         test_case_parsing_setup)
+    return resolve_test_case_handling_setup(suite_document,
+                                            default_handling_setup)
