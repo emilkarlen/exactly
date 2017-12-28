@@ -3,7 +3,7 @@ import pathlib
 from typing import Dict, Sequence
 
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import LineInFile
+from exactly_lib.util.line_source import LineInFile, SourceLocation
 
 
 class Instruction:
@@ -35,23 +35,6 @@ class InstructionInfo(tuple):
 
     @property
     def description(self) -> str:
-        return self[1]
-
-
-class SourceLocation(tuple):
-    """A location in a file."""
-
-    def __new__(cls,
-                source: line_source.LineSequence,
-                file_path: pathlib.Path):
-        return tuple.__new__(cls, (source, file_path))
-
-    @property
-    def source(self) -> line_source.LineSequence:
-        return self[0]
-
-    @property
-    def file_path(self) -> pathlib.Path:
         return self[1]
 
 

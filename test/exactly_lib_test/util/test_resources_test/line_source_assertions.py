@@ -1,9 +1,10 @@
+import pathlib
 import unittest
 
-from exactly_lib.util.line_source import LineSequence, Line
+from exactly_lib.util.line_source import LineSequence, Line, SourceLocation
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
-from exactly_lib_test.test_resources.test_utils import EA
+from exactly_lib_test.test_resources.test_utils import EA, NEA
 from exactly_lib_test.util.test_resources import line_source_assertions as sut
 
 
@@ -11,6 +12,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestEqualsLine),
         unittest.makeSuite(TestEqualsLineSequence),
+        unittest.makeSuite(TestEqualsSourceLocation),
     ])
 
 
@@ -80,6 +82,36 @@ class TestEqualsLineSequence(unittest.TestCase):
                 assertion = sut.equals_line_sequence(name_and_ea.value.expected)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion, name_and_ea.value.actual)
+
+
+class TestEqualsSourceLocation(unittest.TestCase):
+    path_a = pathlib.Path('a')
+    path_b = pathlib.Path('b')
+
+    line_sequence_1 = LineSequence(1, ['line'])
+    line_sequence_2 = LineSequence(2, ['line'])
+
+    def test_not_equals(self):
+        cases = [
+            NEA('different path',
+                SourceLocation(self.line_sequence_1, self.path_a),
+                SourceLocation(self.line_sequence_1, self.path_b),
+                ),
+            NEA('different line sequence',
+                SourceLocation(self.line_sequence_1, self.path_a),
+                SourceLocation(self.line_sequence_2, self.path_a),
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                assertion = sut.equals_source_location(nea.expected)
+                # ACT & ASSERT #
+                assert_that_assertion_fails(assertion, nea.actual)
+
+    def test_equals(self):
+        assertion = sut.equals_source_location(SourceLocation(self.line_sequence_1, self.path_a))
+        # ACT & ASSERT #
+        assertion.apply_without_message(self, SourceLocation(self.line_sequence_1, self.path_a))
 
 
 if __name__ == '__main__':

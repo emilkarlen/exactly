@@ -69,3 +69,20 @@ class LineInFile(tuple):
     @property
     def file_path(self) -> pathlib.Path:
         return self[1]
+
+
+class SourceLocation(tuple):
+    """A location in a file."""
+
+    def __new__(cls,
+                source: LineSequence,
+                file_path: pathlib.Path):
+        return tuple.__new__(cls, (source, file_path))
+
+    @property
+    def source(self) -> LineSequence:
+        return self[0]
+
+    @property
+    def file_path(self) -> pathlib.Path:
+        return self[1]
