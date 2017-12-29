@@ -90,3 +90,24 @@ class SourceLocation(tuple):
     @property
     def file_path(self) -> pathlib.Path:
         return self[1]
+
+
+class SourceLocationPath(tuple):
+    """A location in a file, with file inclusion chain info."""
+
+    def __new__(cls,
+                location: SourceLocation,
+                file_inclusion_chain: Sequence[SourceLocation]):
+        return tuple.__new__(cls, (location, file_inclusion_chain))
+
+    @property
+    def location(self) -> SourceLocation:
+        return self[0]
+
+    @property
+    def file_inclusion_chain(self) -> Sequence[SourceLocation]:
+        return self[1]
+
+
+def source_location_path_without_inclusions(location: SourceLocation) -> SourceLocationPath:
+    return SourceLocationPath(location, ())

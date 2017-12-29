@@ -1,7 +1,7 @@
 import unittest
 from typing import Any
 
-from exactly_lib.util.line_source import Line, LineSequence, SourceLocation
+from exactly_lib.util.line_source import Line, LineSequence, SourceLocation, SourceLocationPath
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -61,11 +61,25 @@ def assert_equals_line(test_case: unittest.TestCase,
 
 
 def equals_source_location(expected: SourceLocation) -> asrt.ValueAssertion[SourceLocation]:
-    return asrt.and_([
-        asrt.sub_component('source',
-                           SourceLocation.source.fget,
-                           equals_line_sequence(expected.source)),
-        asrt.sub_component('file_path',
-                           SourceLocation.file_path.fget,
-                           asrt.equals(expected.file_path)),
-    ])
+    return asrt.is_instance_with(SourceLocation,
+                                 asrt.and_([
+                                     asrt.sub_component('source',
+                                                        SourceLocation.source.fget,
+                                                        equals_line_sequence(expected.source)),
+                                     asrt.sub_component('file_path',
+                                                        SourceLocation.file_path.fget,
+                                                        asrt.equals(expected.file_path)),
+                                 ]))
+
+
+def equals_source_location_path(expected: SourceLocationPath) -> asrt.ValueAssertion[SourceLocationPath]:
+    return asrt.is_instance_with(SourceLocationPath,
+                                 asrt.and_([
+                                     asrt.sub_component('location',
+                                                        SourceLocationPath.location.fget,
+                                                        equals_source_location(expected.location)),
+                                     asrt.sub_component('file_inclusion_chain',
+                                                        SourceLocationPath.file_inclusion_chain.fget,
+                                                        asrt.matches_sequence(list(map(equals_source_location,
+                                                                                       expected.file_inclusion_chain)))),
+                                 ]))
