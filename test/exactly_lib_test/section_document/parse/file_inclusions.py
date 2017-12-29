@@ -1,56 +1,59 @@
 import unittest
 from pathlib import Path
 
-from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib_test.section_document.parse.test_resources_for_parse_file import SECTION_1_NAME, \
-    ARBITRARY_INSTRUCTION_SOURCE_LINE, NO_FILE_INCLUSIONS, SECTIONS_CONFIGURATION, Arrangement, Expectation, check, \
-    matches_file_access_error
+    ARBITRARY_INSTRUCTION_SOURCE_LINE, NO_FILE_INCLUSIONS, Expectation, check, \
+    matches_file_access_error, std_conf_arrangement, is_file_access_error, check_and_expect_exception
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
     equals_instruction_without_description
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file, file_with_lines
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file, \
+    file_with_lines, empty_dir_contents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestInvalidRootSourceFile),
+        unittest.makeSuite(TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid),
         unittest.makeSuite(TestRootFileWithoutInclusions),
     ])
 
 
-class TestInvalidRootSourceFile(unittest.TestCase):
-    def test(self):
+class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
+    def _check(self,
+               root_source_file_path: Path,
+               name_of_invalid_file: str,
+               expected_exception: asrt.ValueAssertion[FileAccessError]):
         # ARRANGE #
-        file_name = 'source-file-name'
-        source_file_path = Path(file_name)
         cases = [
             NameAndValue('source file does not exist',
                          DirContents([])
                          ),
             NameAndValue('source file is a directory',
-                         DirContents([empty_dir(file_name)])
+                         DirContents([empty_dir(name_of_invalid_file)])
                          ),
             NameAndValue('symlink to non-existing file',
-                         DirContents([sym_link(file_name, 'non-existing-file')])
+                         DirContents([sym_link(name_of_invalid_file, 'non-existing-file')])
                          ),
         ]
         for nav in cases:
             with self.subTest(nav.name):
-                with tmp_dir_as_cwd(nav.value):
-                    with self.assertRaises(FileAccessError) as cm:
-                        # ACT & ASSERT #
-                        sut.parse(SECTIONS_CONFIGURATION, source_file_path)
+                check_and_expect_exception(
+                    self,
+                    arrangement=std_conf_arrangement(empty_dir_contents(),
+                                                     root_source_file_path),
+                    expected_exception=is_file_access_error(expected_exception)
+                )
 
-                    self._assert_matches_file_access_error(source_file_path, cm.exception)
-
-    def _assert_matches_file_access_error(self,
-                                          source_file_path: Path,
-                                          actual: Exception):
-        assert isinstance(actual, FileAccessError)
-        matches_file_access_error(source_file_path).apply_without_message(self, actual)
+    def test_invalid_root_source_file(self):
+        # ARRANGE #
+        file_name = 'source-file-name'
+        source_file_path = Path(file_name)
+        self._check(source_file_path,
+                    name_of_invalid_file=file_name,
+                    expected_exception=matches_file_access_error(source_file_path))
 
 
 class TestRootFileWithoutInclusions(unittest.TestCase):
@@ -60,8 +63,8 @@ class TestRootFileWithoutInclusions(unittest.TestCase):
         source_file_path = Path(file_name)
         # ACT & ASSERT #
         check(self,
-              Arrangement(DirContents([empty_file(file_name)]),
-                          source_file_path),
+              std_conf_arrangement(DirContents([empty_file(file_name)]),
+                                   source_file_path),
               Expectation({}))
 
     def test_single_instruction(self):
@@ -74,8 +77,8 @@ class TestRootFileWithoutInclusions(unittest.TestCase):
         source_file_path = Path(source_file.file_name)
         # ACT & ASSERT #
         check(self,
-              Arrangement(DirContents([source_file]),
-                          source_file_path),
+              std_conf_arrangement(DirContents([source_file]),
+                                   source_file_path),
               Expectation({
                   SECTION_1_NAME: [
                       equals_instruction_without_description(2,
@@ -86,5 +89,3 @@ class TestRootFileWithoutInclusions(unittest.TestCase):
                   ]
               })
               )
-
-

@@ -49,10 +49,17 @@ SECTIONS_CONFIGURATION = sut.SectionsConfiguration([
 
 class Arrangement:
     def __init__(self,
+                 sections_configuration: sut.SectionsConfiguration,
                  cwd_dir_contents: DirContents,
                  root_file: Path):
+        self.sections_configuration = sections_configuration
         self.cwd_dir_contents = cwd_dir_contents
         self.root_file = root_file
+
+
+def std_conf_arrangement(cwd_dir_contents: DirContents,
+                         root_file: Path) -> Arrangement:
+    return Arrangement(SECTIONS_CONFIGURATION, cwd_dir_contents, root_file)
 
 
 class Expectation:
@@ -66,9 +73,13 @@ def check(put: unittest.TestCase,
     # ARRANGE #
     with tmp_dir_as_cwd(arrangement.cwd_dir_contents):
         # ACT #
-        actual = sut.parse(SECTIONS_CONFIGURATION, arrangement.root_file)
+        actual = sut.parse(arrangement.sections_configuration, arrangement.root_file)
         # ASSERT #
         matches_document(expectation.document).apply_without_message(put, actual)
+
+
+def is_file_access_error(expected: asrt.ValueAssertion[FileAccessError]) -> asrt.ValueAssertion[Exception]:
+    return asrt.is_instance_with(FileAccessError, expected)
 
 
 def matches_file_access_error(source_file_path: Path) -> asrt.ValueAssertion[FileAccessError]:
@@ -80,3 +91,13 @@ def matches_file_access_error(source_file_path: Path) -> asrt.ValueAssertion[Fil
                            FileAccessError.message.fget,
                            asrt.is_not_none),
     ])
+
+
+def check_and_expect_exception(put: unittest.TestCase,
+                               arrangement: Arrangement,
+                               expected_exception: asrt.ValueAssertion[Exception]):
+    with tmp_dir_as_cwd(arrangement.cwd_dir_contents):
+        with put.assertRaises(Exception) as cm:
+            # ACT & ASSERT #
+            sut.parse(arrangement.sections_configuration, arrangement.root_file)
+        expected_exception.apply_with_message(put, cm.exception, 'Exception')
