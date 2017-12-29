@@ -139,5 +139,12 @@ class DirContents:
         return self._file_system_element_contents
 
 
+def add_dir_contents(dir_contents_sequence: Sequence[DirContents]) -> DirContents:
+    elements = []
+    for dc in dir_contents_sequence:
+        elements += dc.file_system_elements
+    return DirContents(elements)
+
+
 def empty_dir_contents() -> DirContents:
     return DirContents([])
