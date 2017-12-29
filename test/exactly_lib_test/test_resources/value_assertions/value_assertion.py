@@ -152,21 +152,21 @@ def anything_goes() -> ValueAssertion[Any]:
     return Constant(True)
 
 
-class And(ValueAssertion[Sequence[T]]):
+class And(ValueAssertion[T]):
     def __init__(self,
                  assertions: Sequence[ValueAssertion[T]]):
         self.assertions = assertions
 
     def apply(self,
               put: unittest.TestCase,
-              value: Sequence[T],
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         for assertion in self.assertions:
             assert isinstance(assertion, ValueAssertion)
             assertion.apply(put, value, message_builder)
 
 
-class Or(ValueAssertion[Sequence[T]]):
+class Or(ValueAssertion[T]):
     def __init__(self,
                  assertions: Sequence[ValueAssertion[T]],
                  assertion_name: str = 'none of the assertions were satisfied'):
@@ -175,7 +175,7 @@ class Or(ValueAssertion[Sequence[T]]):
 
     def apply(self,
               put: unittest.TestCase,
-              value: Sequence[T],
+              value: T,
               message_builder: MessageBuilder = MessageBuilder()):
         failures = []
         for assertion in self.assertions:
