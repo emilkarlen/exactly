@@ -2,53 +2,23 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.section_document import document_parser as sut
-from exactly_lib.section_document import model
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import FileAccessError
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence, \
-    matches_document
-from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection
+from exactly_lib.section_document.syntax import section_header
+from exactly_lib_test.section_document.parse.test_resources_for_parse_file import SECTION_1_NAME, \
+    ARBITRARY_INSTRUCTION_SOURCE_LINE, NO_FILE_INCLUSIONS, SECTIONS_CONFIGURATION, Arrangement, Expectation, check, \
+    matches_file_access_error
+from exactly_lib_test.section_document.test_resources.section_contents_elements import \
+    equals_instruction_without_description
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file, file_with_lines
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestInvalidRootSourceFile),
-        unittest.makeSuite(TestEmptyFile),
+        unittest.makeSuite(TestRootFileWithoutInclusions),
     ])
-
-
-INCLUDE_DIRECTIVE_NAME = 'include'
-
-SECTION_1_NAME = 'section1'
-
-
-class SectionElementParserForInstructionAndInclusionLines(sut.SectionElementParser):
-    def __init__(self, section_name: str):
-        self._section_name = section_name
-
-    def parse(self,
-              source: ParseSource,
-              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
-        current_line = source.current_line_text
-        consumed_source = consume_current_line_and_return_it_as_line_sequence(source)
-        if current_line.isspace():
-            return element_builder.new_empty(consumed_source)
-        current_line_parts = current_line.split()
-        if current_line_parts[0] == INCLUDE_DIRECTIVE_NAME:
-            raise NotImplementedError('todo : reporting of include directive')
-        else:
-            return element_builder.new_instruction(consumed_source,
-                                                   InstructionInSection(self._section_name))
-
-
-SECTIONS_CONFIGURATION = sut.SectionsConfiguration([
-    sut.SectionConfiguration(SECTION_1_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_1_NAME)
-                             )])
 
 
 class TestInvalidRootSourceFile(unittest.TestCase):
@@ -83,25 +53,38 @@ class TestInvalidRootSourceFile(unittest.TestCase):
         matches_file_access_error(source_file_path).apply_without_message(self, actual)
 
 
-class TestEmptyFile(unittest.TestCase):
-    def test(self):
+class TestRootFileWithoutInclusions(unittest.TestCase):
+    def test_empty(self):
         # ARRANGE #
         file_name = 'source-file-name'
         source_file_path = Path(file_name)
-        with tmp_dir_as_cwd(DirContents([empty_file(file_name)])):
-            # ACT #
-            actual = sut.parse(SECTIONS_CONFIGURATION, source_file_path)
-            # ASSERT #
-            expected = dict()
-            matches_document(expected).apply_without_message(self, actual)
+        # ACT & ASSERT #
+        check(self,
+              Arrangement(DirContents([empty_file(file_name)]),
+                          source_file_path),
+              Expectation({}))
+
+    def test_single_instruction(self):
+        # ARRANGE #
+        source_lines = [
+            section_header(SECTION_1_NAME),
+            ARBITRARY_INSTRUCTION_SOURCE_LINE,
+        ]
+        source_file = file_with_lines('source-file.txt', source_lines)
+        source_file_path = Path(source_file.file_name)
+        # ACT & ASSERT #
+        check(self,
+              Arrangement(DirContents([source_file]),
+                          source_file_path),
+              Expectation({
+                  SECTION_1_NAME: [
+                      equals_instruction_without_description(2,
+                                                             ARBITRARY_INSTRUCTION_SOURCE_LINE,
+                                                             SECTION_1_NAME,
+                                                             source_file_path,
+                                                             NO_FILE_INCLUSIONS)
+                  ]
+              })
+              )
 
 
-def matches_file_access_error(source_file_path: Path) -> asrt.ValueAssertion[FileAccessError]:
-    return asrt.and_([
-        asrt.sub_component('path',
-                           FileAccessError.path.fget,
-                           asrt.equals(source_file_path)),
-        asrt.sub_component('message',
-                           FileAccessError.message.fget,
-                           asrt.is_not_none),
-    ])

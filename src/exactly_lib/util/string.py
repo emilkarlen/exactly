@@ -1,7 +1,8 @@
 import os
+from typing import Sequence
 
 
-def lines_content(lines: list) -> str:
+def lines_content(lines: Sequence[str]) -> str:
     return '' \
         if not lines \
         else '\n'.join(lines) + '\n'
