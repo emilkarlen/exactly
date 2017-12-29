@@ -11,7 +11,8 @@ from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence
+from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence, \
+    matches_document
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection, \
     equals_instruction_without_description, \
@@ -56,14 +57,8 @@ class ParseTestBase(unittest.TestCase):
         # ACT #
         actual_document = self._parse_lines(parser, lines)
         # ASSERT #
-        actual_section_2_elements = {section: actual_document.section_2_elements[section].elements
-                                     for section in actual_document.section}
-
-        expected_section_2_assertion = {section: asrt.matches_sequence(expected_document[section])
-                                        for section in expected_document.keys()}
-
-        assertion = asrt.matches_dict(expected_section_2_assertion)
-        assertion.apply_without_message(self, actual_section_2_elements)
+        assertion = matches_document(expected_document)
+        assertion.apply_without_message(self, actual_document)
 
 
 class TestSectionsConfiguration(ParseTestBase):
