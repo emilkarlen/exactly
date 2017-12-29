@@ -11,6 +11,7 @@ from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
+from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection, \
     equals_instruction_without_description, \
@@ -509,13 +510,6 @@ def is_comment_line(line: str) -> bool:
     return line[:len(_COMMENT_START)] == _COMMENT_START
 
 
-def _consume_current_line_and_return_it_as_line_sequence(source: ParseSource) -> line_source.LineSequence:
-    ret_val = line_source.LineSequence(source.current_line_number,
-                                       (source.current_line_text,))
-    source.consume_current_line()
-    return ret_val
-
-
 class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
@@ -525,9 +519,9 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
               element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
         current_line = source.current_line_text
         if current_line == '':
-            return element_builder.new_empty(_consume_current_line_and_return_it_as_line_sequence(source))
+            return element_builder.new_empty(consume_current_line_and_return_it_as_line_sequence(source))
         elif is_comment_line(current_line):
-            return element_builder.new_comment(_consume_current_line_and_return_it_as_line_sequence(source))
+            return element_builder.new_comment(consume_current_line_and_return_it_as_line_sequence(source))
         else:
             instruction_source = self._consume_instruction_source(source)
             return element_builder.new_instruction(instruction_source,
@@ -550,14 +544,14 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
                     break
             return line_source.LineSequence(first_line_number, tuple(lines))
         else:
-            return _consume_current_line_and_return_it_as_line_sequence(source)
+            return consume_current_line_and_return_it_as_line_sequence(source)
 
 
 class SectionElementParserThatFails(sut.SectionElementParser):
     def parse(self,
               source: ParseSource,
               element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
-        raise SourceError(_consume_current_line_and_return_it_as_line_sequence(source).first_line,
+        raise SourceError(consume_current_line_and_return_it_as_line_sequence(source).first_line,
                           'Unconditional failure')
 
 

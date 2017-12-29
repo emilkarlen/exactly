@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.util import line_source
 
 
@@ -5,6 +7,11 @@ class SourceError(Exception):
     """
     An exceptions related to a line in the test case,
     raised by a parser that is unaware of current section.
+
+    I.e., this exception is used within the parsing of a document,
+    as communication between the parsing framework and element parsers.
+
+    This kind of exceptions is never thrown from a document parser.
     """
 
     def __init__(self,
@@ -22,7 +29,14 @@ class SourceError(Exception):
         return self._message
 
 
-class FileSourceError(Exception):
+class ParseError(Exception):
+    """
+    An exception from a document parser.
+    """
+    pass
+
+
+class FileSourceError(ParseError):
     """
     An exceptions related to a line in the test case.
     """
@@ -40,3 +54,19 @@ class FileSourceError(Exception):
     @property
     def maybe_section_name(self) -> str:
         return self._maybe_section_name
+
+
+class FileAccessError(ParseError):
+    def __init__(self,
+                 path: pathlib.Path,
+                 message: str):
+        self._path = path
+        self._message = message
+
+    @property
+    def path(self) -> pathlib.Path:
+        return self._path
+
+    @property
+    def message(self) -> str:
+        return self._message
