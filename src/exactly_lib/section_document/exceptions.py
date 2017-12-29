@@ -1,6 +1,8 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import SourceLocation
 
 
 class SourceError(Exception):
@@ -58,15 +60,21 @@ class FileSourceError(ParseError):
 
 class FileAccessError(ParseError):
     def __init__(self,
-                 path: pathlib.Path,
-                 message: str):
-        self._path = path
+                 erroneous_path: pathlib.Path,
+                 message: str,
+                 location_path: Sequence[SourceLocation]):
+        self._erroneous_path = erroneous_path
         self._message = message
+        self._location_path = location_path
 
     @property
-    def path(self) -> pathlib.Path:
-        return self._path
+    def erroneous_path(self) -> pathlib.Path:
+        return self._erroneous_path
 
     @property
     def message(self) -> str:
         return self._message
+
+    @property
+    def location_path(self) -> Sequence[SourceLocation]:
+        return self._location_path

@@ -1,5 +1,5 @@
 import unittest
-from typing import Any
+from typing import Any, Sequence
 
 from exactly_lib.util.line_source import Line, LineSequence, SourceLocation, SourceLocationPath
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -72,6 +72,12 @@ def equals_source_location(expected: SourceLocation) -> asrt.ValueAssertion[Sour
                                  ]))
 
 
+def equals_source_location_sequence(expected: Sequence[SourceLocation]
+                                    ) -> asrt.ValueAssertion[Sequence[SourceLocation]]:
+    return asrt.matches_sequence(list(map(equals_source_location,
+                                          expected)))
+
+
 def equals_source_location_path(expected: SourceLocationPath) -> asrt.ValueAssertion[SourceLocationPath]:
     return asrt.is_instance_with(SourceLocationPath,
                                  asrt.and_([
@@ -80,6 +86,5 @@ def equals_source_location_path(expected: SourceLocationPath) -> asrt.ValueAsser
                                                         equals_source_location(expected.location)),
                                      asrt.sub_component('file_inclusion_chain',
                                                         SourceLocationPath.file_inclusion_chain.fget,
-                                                        asrt.matches_sequence(list(map(equals_source_location,
-                                                                                       expected.file_inclusion_chain)))),
+                                                        equals_source_location_sequence(expected.file_inclusion_chain)),
                                  ]))

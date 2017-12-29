@@ -6,18 +6,24 @@ from exactly_lib.section_document import document_parser as sut, model
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.util.line_source import SourceLocation
 from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence, \
     matches_document
 from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_sequence
 
 INCLUDE_DIRECTIVE_NAME = 'include'
 SECTION_1_NAME = 'section1'
 SECTION_2_NAME = 'section2'
 ARBITRARY_INSTRUCTION_SOURCE_LINE = 'instruction source line'
 NO_FILE_INCLUSIONS = []
+
+
+def inclusion_of_file(file_name: str) -> str:
+    return INCLUDE_DIRECTIVE_NAME + ' ' + file_name
 
 
 class SectionElementParserForInstructionAndInclusionLines(sut.SectionElementParser):
@@ -82,14 +88,18 @@ def is_file_access_error(expected: asrt.ValueAssertion[FileAccessError]) -> asrt
     return asrt.is_instance_with(FileAccessError, expected)
 
 
-def matches_file_access_error(source_file_path: Path) -> asrt.ValueAssertion[FileAccessError]:
+def matches_file_access_error(erroneous_path: Path,
+                              location_path: Sequence[SourceLocation]) -> asrt.ValueAssertion[FileAccessError]:
     return asrt.and_([
-        asrt.sub_component('path',
-                           FileAccessError.path.fget,
-                           asrt.equals(source_file_path)),
+        asrt.sub_component('erroneous_path',
+                           FileAccessError.erroneous_path.fget,
+                           asrt.equals(erroneous_path)),
         asrt.sub_component('message',
                            FileAccessError.message.fget,
                            asrt.is_not_none),
+        asrt.sub_component('location_path',
+                           FileAccessError.location_path.fget,
+                           equals_source_location_sequence(location_path)),
     ])
 
 

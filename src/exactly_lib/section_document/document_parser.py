@@ -8,6 +8,7 @@ from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import SourceLocation
 
 
 class DocumentParser:
@@ -97,15 +98,16 @@ def parse(configuration: SectionsConfiguration,
           source_file_path: pathlib.Path) -> model.Document:
     source_parser = new_parser_for(configuration)
     file_inclusion_relativity_root = source_file_path.parent
-    source = read_source_file(source_file_path)
+    source = read_source_file(source_file_path, [])
     return source_parser.parse(source_file_path, file_inclusion_relativity_root, source)
 
 
-def read_source_file(file_path: pathlib.Path) -> ParseSource:
+def read_source_file(file_path: pathlib.Path,
+                     location_path: Sequence[SourceLocation]) -> ParseSource:
     try:
         return new_for_file(file_path)
     except OSError as ex:
-        raise FileAccessError(file_path, str(ex))
+        raise FileAccessError(file_path, str(ex), location_path)
 
 
 class _DocumentParserForSectionsConfiguration(DocumentParser):
