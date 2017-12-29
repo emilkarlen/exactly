@@ -4,8 +4,9 @@ from typing import Sequence
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
-from exactly_lib.section_document.exceptions import SourceError, FileSourceError
+from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 
 
@@ -90,6 +91,21 @@ class SectionsConfiguration:
 
 def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
     return _DocumentParserForSectionsConfiguration(configuration)
+
+
+def parse(configuration: SectionsConfiguration,
+          source_file_path: pathlib.Path) -> model.Document:
+    source_parser = new_parser_for(configuration)
+    file_inclusion_relativity_root = source_file_path.parent
+    source = read_source_file(source_file_path)
+    return source_parser.parse(source_file_path, file_inclusion_relativity_root, source)
+
+
+def read_source_file(file_path: pathlib.Path) -> ParseSource:
+    try:
+        return new_for_file(file_path)
+    except OSError as ex:
+        raise FileAccessError(file_path, str(ex))
 
 
 class _DocumentParserForSectionsConfiguration(DocumentParser):
