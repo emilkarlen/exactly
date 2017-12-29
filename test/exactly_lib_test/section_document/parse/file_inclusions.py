@@ -6,10 +6,11 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence
+from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence, \
+    matches_document
 from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -17,6 +18,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestInvalidRootSourceFile),
+        unittest.makeSuite(TestEmptyFile),
     ])
 
 
@@ -51,6 +53,7 @@ SECTIONS_CONFIGURATION = sut.SectionsConfiguration([
 
 class TestInvalidRootSourceFile(unittest.TestCase):
     def test(self):
+        # ARRANGE #
         file_name = 'source-file-name'
         source_file_path = Path(file_name)
         cases = [
@@ -68,6 +71,7 @@ class TestInvalidRootSourceFile(unittest.TestCase):
             with self.subTest(nav.name):
                 with tmp_dir_as_cwd(nav.value):
                     with self.assertRaises(FileAccessError) as cm:
+                        # ACT & ASSERT #
                         sut.parse(SECTIONS_CONFIGURATION, source_file_path)
 
                     self._assert_matches_file_access_error(source_file_path, cm.exception)
@@ -77,6 +81,19 @@ class TestInvalidRootSourceFile(unittest.TestCase):
                                           actual: Exception):
         assert isinstance(actual, FileAccessError)
         matches_file_access_error(source_file_path).apply_without_message(self, actual)
+
+
+class TestEmptyFile(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+        file_name = 'source-file-name'
+        source_file_path = Path(file_name)
+        with tmp_dir_as_cwd(DirContents([empty_file(file_name)])):
+            # ACT #
+            actual = sut.parse(SECTIONS_CONFIGURATION, source_file_path)
+            # ASSERT #
+            expected = dict()
+            matches_document(expected).apply_without_message(self, actual)
 
 
 def matches_file_access_error(source_file_path: Path) -> asrt.ValueAssertion[FileAccessError]:
