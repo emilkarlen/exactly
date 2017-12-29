@@ -1,6 +1,8 @@
 import pathlib
+from typing import Sequence
 
 import exactly_lib_test.test_resources.programs.python_program_execution
+from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_utils import write_file
 from exactly_lib_test.test_resources.files import executable_files
 
@@ -68,6 +70,10 @@ def python_executable_file(executable_file_name_for_invokation_at_command_line: 
 
 def empty_file(file_name: str) -> File:
     return File(file_name, '')
+
+
+def file_with_lines(name: str, contents: Sequence[str]) -> File:
+    return File(name, lines_content(contents))
 
 
 class Dir(FileSystemElement):
