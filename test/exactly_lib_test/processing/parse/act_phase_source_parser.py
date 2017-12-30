@@ -5,6 +5,7 @@ from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstr
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.section_element_parser import ParsedInstruction
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 
@@ -122,9 +123,9 @@ class TestParse(unittest.TestCase):
 
     def _assert_is_instruction_element_with_correct_type_of_instruction(self,
                                                                         element) -> SourceCodeInstruction:
-        self.assertIsInstance(element, model.SectionContentElement,
-                              'Expecting the parser to have returned a ' + str(model.SectionContentElement))
-        assert isinstance(element, model.SectionContentElement)
+        self.assertIsInstance(element, ParsedInstruction,
+                              'Expecting the parser to have returned a ' + str(ParsedInstruction))
+        assert isinstance(element, ParsedInstruction)
         instruction = element.instruction_info.instruction
         self.assertIsInstance(instruction, ActPhaseInstruction,
                               'Expecting the instruction to be a ' + str(ActPhaseInstruction))

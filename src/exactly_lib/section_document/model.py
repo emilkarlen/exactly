@@ -26,7 +26,7 @@ class InstructionInfo(tuple):
 
     def __new__(cls,
                 instruction: Instruction,
-                description: str):
+                description: str = None):
         return tuple.__new__(cls, (instruction, description))
 
     @property
