@@ -5,7 +5,10 @@ from typing import Dict, Sequence
 from exactly_lib.section_document import document_parser as sut, model
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import FileAccessError
+from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
+    ParsedInstruction
 from exactly_lib.util.line_source import SourceLocation
 from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence, \
     matches_document
@@ -32,17 +35,17 @@ class SectionElementParserForInstructionAndInclusionLines(sut.SectionElementPars
 
     def parse(self,
               source: ParseSource,
-              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
+              element_builder: SectionContentElementBuilder) -> ParsedSectionElement:
         current_line = source.current_line_text
         consumed_source = consume_current_line_and_return_it_as_line_sequence(source)
         if current_line.isspace():
-            return element_builder.new_empty(consumed_source)
+            return new_empty_element(consumed_source)
         current_line_parts = current_line.split()
         if current_line_parts[0] == INCLUDE_DIRECTIVE_NAME:
             raise NotImplementedError('todo : reporting of include directive')
         else:
-            return element_builder.new_instruction(consumed_source,
-                                                   InstructionInSection(self._section_name))
+            return ParsedInstruction(consumed_source,
+                                     InstructionInfo(InstructionInSection(self._section_name)))
 
 
 SECTIONS_CONFIGURATION = sut.SectionsConfiguration([

@@ -6,9 +6,9 @@ from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
+from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation
 
@@ -129,7 +129,7 @@ class _DocumentParserForSectionsConfiguration(DocumentParser):
 
 class SectionContentsElementConstructor(ParsedSectionElementVisitor[model.SectionContentElement]):
     def __init__(self,
-                 element_builder: model.SectionContentElementBuilder):
+                 element_builder: SectionContentElementBuilder):
         self._element_builder = element_builder
 
     def visit_instruction_element(self, instruction: ParsedInstruction) -> model.SectionContentElement:

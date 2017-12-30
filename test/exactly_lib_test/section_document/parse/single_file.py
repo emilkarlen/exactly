@@ -8,7 +8,7 @@ from exactly_lib.section_document.document_parser import DocumentParser, new_par
     SectionsConfiguration
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
-from exactly_lib.section_document.model import SectionContentElementBuilder, InstructionInfo
+from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedInstruction, \
     new_empty_element, new_comment_element
@@ -517,9 +517,9 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
               element_builder: SectionContentElementBuilder) -> ParsedSectionElement:
         current_line = source.current_line_text
         if current_line == '':
-            return new_empty_element(_consume_current_line_and_return_it_as_line_sequence(source))
+            return new_empty_element(consume_current_line_and_return_it_as_line_sequence(source))
         elif is_comment_line(current_line):
-            return new_comment_element(_consume_current_line_and_return_it_as_line_sequence(source))
+            return new_comment_element(consume_current_line_and_return_it_as_line_sequence(source))
 
         else:
             instruction_source = self._consume_instruction_source(source)

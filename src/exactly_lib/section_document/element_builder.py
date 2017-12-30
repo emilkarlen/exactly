@@ -28,6 +28,14 @@ class SectionContentElementBuilder:
                                      self._file_path,
                                      self._file_inclusion_chain)
 
+    def new_non_instruction(self,
+                            source: line_source.LineSequence,
+                            element_type: ElementType) -> SectionContentElement:
+        return SectionContentElement(element_type,
+                                     source,
+                                     None,
+                                     self._file_path)
+
     def new_instruction(self,
                         source: line_source.LineSequence,
                         instruction: Instruction,
