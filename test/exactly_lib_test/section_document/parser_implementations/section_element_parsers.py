@@ -1,12 +1,15 @@
 import unittest
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import section_element_parsers as sut
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import Line
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
+from exactly_lib.util.line_source import LineSequence
+from exactly_lib_test.section_document.parse.test_resources import matches_instruction_info
+from exactly_lib_test.section_document.test_resources.section_element_parser_assertions import equals_empty_element, \
+    equals_comment_element, matches_instruction
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
 def suite() -> unittest.TestSuite:
@@ -31,12 +34,8 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ACT #
                 element = parser.parse(source, ELEMENT_BUILDER)
                 # ASSERT #
-                self.assertEqual(ElementType.EMPTY,
-                                 element.element_type,
-                                 'Element type')
-                assert_equals_line(self,
-                                   Line(1, source_lines[0]),
-                                   element.first_line)
+                element_assertion = equals_empty_element(LineSequence(1, (source_lines[0],)))
+                element_assertion.apply_with_message(self, element, 'element')
                 self.assertEqual('\n'.join(source_lines[1:]),
                                  source.remaining_source,
                                  'Remaining source')
@@ -55,12 +54,8 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ACT #
                 element = parser.parse(source, ELEMENT_BUILDER)
                 # ASSERT #
-                self.assertEqual(ElementType.COMMENT,
-                                 element.element_type,
-                                 'Element type')
-                assert_equals_line(self,
-                                   Line(1, source_lines[0]),
-                                   element.first_line)
+                element_assertion = equals_comment_element(LineSequence(1, (source_lines[0],)))
+                element_assertion.apply_with_message(self, element, 'element')
                 self.assertEqual(remaining_source,
                                  source.remaining_source,
                                  'Remaining source')
@@ -75,18 +70,16 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
             with self.subTest(source_lines=source_lines,
                               remaining_source=remaining_source):
                 source = _source_for_lines(source_lines)
+                # ACT #
                 element = parser.parse(source, ELEMENT_BUILDER)
-                self.assertEqual(ElementType.INSTRUCTION,
-                                 element.element_type,
-                                 'Element type')
-                self.assertIsInstance(element.instruction_info.instruction,
-                                      Instruction,
-                                      'Instruction class')
-                assert_equals_line(self,
-                                   Line(1, source_lines[0]),
-                                   element.first_line)
-                self.assertIsNone(element.instruction_info.description,
-                                  'description')
+                # ASSERT #
+                expected_instruction_source = LineSequence(1, (source_lines[0],))
+                element_assertion = matches_instruction(
+                    source=equals_line_sequence(expected_instruction_source),
+                    instruction_info=matches_instruction_info(
+                        assertion_on_description=asrt.is_none,
+                        assertion_on_instruction=asrt.is_instance(Instruction)))
+                element_assertion.apply_with_message(self, element, 'element')
                 self.assertEqual(remaining_source,
                                  source.remaining_source,
                                  'Remaining source')
@@ -98,19 +91,15 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                                                  'description')
         parser = sut.StandardSyntaxElementParser(_InstructionParserThatGivesConstant(expected))
         source = _source_for_lines(['ignored', 'source', 'lines'])
+        # ACT #
         element = parser.parse(source, ELEMENT_BUILDER)
-        self.assertEqual(ElementType.INSTRUCTION,
-                         element.element_type,
-                         'Element type')
-        self.assertIs(expected.instruction,
-                      element.instruction_info.instruction,
-                      'Instruction object')
-        self.assertIs(expected.source,
-                      element.source,
-                      'source')
-        self.assertIs(expected.description,
-                      element.instruction_info.description,
-                      'description')
+        # ASSERT #
+        element_assertion = matches_instruction(
+            source=asrt.is_(expected.source),
+            instruction_info=matches_instruction_info(
+                assertion_on_description=asrt.is_(expected.description),
+                assertion_on_instruction=asrt.is_(expected.instruction)))
+        element_assertion.apply_with_message(self, element, 'element')
 
 
 class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescriptionParser):

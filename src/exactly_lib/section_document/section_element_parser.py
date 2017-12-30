@@ -40,6 +40,14 @@ class ParsedNonInstructionElement(ParsedSectionElement):
         return self._element_type
 
 
+def new_empty_element(source: line_source.LineSequence) -> ParsedNonInstructionElement:
+    return ParsedNonInstructionElement(source, ElementType.EMPTY)
+
+
+def new_comment_element(source: line_source.LineSequence) -> ParsedNonInstructionElement:
+    return ParsedNonInstructionElement(source, ElementType.COMMENT)
+
+
 class ParsedFileInclusionDirective(ParsedSectionElement):
     def __init__(self,
                  source: line_source.LineSequence,

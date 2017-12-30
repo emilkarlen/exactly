@@ -42,6 +42,16 @@ def equals_non_instruction(expected: ParsedNonInstructionElement) -> asrt.ValueA
                                    asrt.equals(expected.element_type))
 
 
+def equals_empty_element(source: line_source.LineSequence) -> asrt.ValueAssertion[ParsedSectionElement]:
+    return matches_non_instruction(equals_line_sequence(source),
+                                   asrt.equals(ElementType.EMPTY))
+
+
+def equals_comment_element(source: line_source.LineSequence) -> asrt.ValueAssertion[ParsedSectionElement]:
+    return matches_non_instruction(equals_line_sequence(source),
+                                   asrt.equals(ElementType.COMMENT))
+
+
 def matches_file_inclusion_directive(
         source: asrt.ValueAssertion[line_source.LineSequence] = asrt.anything_goes(),
         files_to_include: asrt.ValueAssertion[Sequence[pathlib.Path]] = asrt.anything_goes(),
