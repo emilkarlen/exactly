@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Generic, TypeVar
 
 from exactly_lib.section_document.model import InstructionInfo, ElementType
 from exactly_lib.util import line_source
@@ -52,8 +52,11 @@ class ParsedFileInclusionDirective(ParsedSectionElement):
         return self._files_to_include
 
 
-class ParsedSectionElementVisitor:
-    def visit(self, element: ParsedSectionElement):
+T = TypeVar('T')
+
+
+class ParsedSectionElementVisitor(Generic[T]):
+    def visit(self, element: ParsedSectionElement) -> T:
         """
         :return: Return value from _visit... method
         """
@@ -66,11 +69,11 @@ class ParsedSectionElementVisitor:
         else:
             raise TypeError('Unknown {}: {}'.format(ParsedInstruction, str(element)))
 
-    def visit_instruction_element(self, instruction: ParsedInstruction):
+    def visit_instruction_element(self, instruction: ParsedInstruction) -> T:
         raise NotImplementedError()
 
-    def visit_non_instruction_element(self, non_instruction: ParsedNonInstructionElement):
+    def visit_non_instruction_element(self, non_instruction: ParsedNonInstructionElement) -> T:
         raise NotImplementedError()
 
-    def visit_file_inclusion_directive(self, file_inclusion: ParsedFileInclusionDirective):
+    def visit_file_inclusion_directive(self, file_inclusion: ParsedFileInclusionDirective) -> T:
         raise NotImplementedError()
