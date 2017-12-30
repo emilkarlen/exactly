@@ -27,6 +27,12 @@ class SourceError(Exception):
         return self._line
 
     @property
+    def source(self) -> line_source.LineSequence:
+        # TODO Objects should store LineSequence instead of Line
+        return line_source.single_line_sequence(self._line.line_number,
+                                                self._line.text)
+
+    @property
     def message(self) -> str:
         return self._message
 
@@ -35,7 +41,20 @@ class ParseError(Exception):
     """
     An exception from a document parser.
     """
-    pass
+
+    def __init__(self,
+                 message: str,
+                 location_path: Sequence[SourceLocation]):
+        self._message = message
+        self._location_path = location_path
+
+    @property
+    def location_path(self) -> Sequence[SourceLocation]:
+        return self._location_path
+
+    @property
+    def message(self) -> str:
+        return self._message
 
 
 class FileSourceError(ParseError):
@@ -45,7 +64,10 @@ class FileSourceError(ParseError):
 
     def __init__(self,
                  source_error: SourceError,
-                 maybe_section_name: str):
+                 maybe_section_name: str,
+                 location_path: Sequence[SourceLocation]):
+        super().__init__(source_error.message,
+                         location_path)
         self._source_error = source_error
         self._maybe_section_name = maybe_section_name
 
@@ -63,18 +85,9 @@ class FileAccessError(ParseError):
                  erroneous_path: pathlib.Path,
                  message: str,
                  location_path: Sequence[SourceLocation]):
+        super().__init__(message, location_path)
         self._erroneous_path = erroneous_path
-        self._message = message
-        self._location_path = location_path
 
     @property
     def erroneous_path(self) -> pathlib.Path:
         return self._erroneous_path
-
-    @property
-    def message(self) -> str:
-        return self._message
-
-    @property
-    def location_path(self) -> Sequence[SourceLocation]:
-        return self._location_path

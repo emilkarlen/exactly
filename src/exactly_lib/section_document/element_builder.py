@@ -46,3 +46,21 @@ class SectionContentElementBuilder:
                                                      description),
                                      self._file_path,
                                      self._file_inclusion_chain)
+
+    @property
+    def file_path(self) -> pathlib.Path:
+        return self._file_path
+
+    @property
+    def file_inclusion_chain(self) -> Sequence[line_source.SourceLocation]:
+        return self._file_inclusion_chain
+
+    def location_path_of(self, source: line_source.LineSequence) -> Sequence[line_source.SourceLocation]:
+        return list(self._file_inclusion_chain) + [line_source.SourceLocation(source, self._file_path)]
+
+    def for_inclusion(self,
+                      source: line_source.LineSequence,
+                      file_to_include: pathlib.Path):
+        file_inclusion_chain = self.location_path_of(source)
+        return SectionContentElementBuilder(file_to_include,
+                                            file_inclusion_chain)
