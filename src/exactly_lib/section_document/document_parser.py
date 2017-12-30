@@ -102,16 +102,16 @@ class _SectionsConfigurationInternal:
                  default_section_name: str = None,
                  section_element_name_for_error_messages: str = 'section'):
         self.section_element_name_for_error_messages = section_element_name_for_error_messages
-        self._section2parser = sections
+        self.section2parser = sections
 
         self._parser_for_default_section = None
         self.default_section_name = default_section_name
 
     def parser_for_section(self, section_name: str) -> SectionElementParser:
-        return self._section2parser[section_name]
+        return self.section2parser[section_name]
 
     def has_section(self, section_name: str) -> bool:
-        return section_name in self._section2parser
+        return section_name in self.section2parser
 
 
 def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
@@ -120,38 +120,78 @@ def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
 
 def parse(configuration: SectionsConfiguration,
           source_file_path: pathlib.Path) -> model.Document:
-    source_parser = new_parser_for(configuration)
     file_inclusion_relativity_root = source_file_path.parent
-    source = read_source_file(source_file_path, [])
-    return source_parser.parse(source_file_path, file_inclusion_relativity_root, source)
+    raw_doc = _parse_file(_internal_conf_of(configuration),
+                          SectionContentElementBuilder(source_file_path, []),
+                          file_inclusion_relativity_root)
+    return _build_document(raw_doc)
 
 
 def read_source_file(file_path: pathlib.Path,
-                     location_path: Sequence[SourceLocation]) -> ParseSource:
+                     file_inclusion_chain: Sequence[SourceLocation]) -> ParseSource:
     try:
         return new_for_file(file_path)
     except OSError as ex:
-        raise FileAccessError(file_path, str(ex), location_path)
+        raise FileAccessError(file_path, str(ex), file_inclusion_chain)
+
+
+def _internal_conf_of(configuration: SectionsConfiguration) -> _SectionsConfigurationInternal:
+    return _SectionsConfigurationInternal(configuration.sections(),
+                                          configuration.default_section_name,
+                                          configuration.section_element_name_for_error_messages)
 
 
 class _DocumentParserForSectionsConfiguration(DocumentParser):
     def __init__(self, configuration: SectionsConfiguration):
-        self._configuration = _SectionsConfigurationInternal(configuration.sections(),
-                                                             configuration.default_section_name,
-                                                             configuration.section_element_name_for_error_messages)
+        self._configuration = _internal_conf_of(configuration)
 
     def parse(self,
               source_file_path: pathlib.Path,
               file_inclusion_relativity_root: pathlib.Path,
               source: ParseSource) -> model.Document:
-        impl = _Impl(self._configuration,
-                     SectionContentElementBuilder(source_file_path),
-                     file_inclusion_relativity_root,
-                     source)
-        return _build_document(impl.apply())
+        raw_doc = _parse_source(self._configuration,
+                                SectionContentElementBuilder(source_file_path, []),
+                                file_inclusion_relativity_root,
+                                source)
+        return _build_document(raw_doc)
 
 
-class SectionContentsElementConstructor(ParsedSectionElementVisitor[model.SectionContentElement]):
+RawDoc = Dict[str, List[SectionContentElement]]
+
+
+def _parse_file(conf: _SectionsConfigurationInternal,
+                element_builder: SectionContentElementBuilder,
+                file_inclusion_relativity_root: pathlib.Path,
+                ) -> RawDoc:
+    source = read_source_file(element_builder.file_path, element_builder.file_inclusion_chain)
+    return _parse_source(conf,
+                         element_builder,
+                         file_inclusion_relativity_root,
+                         source)
+
+
+def _parse_source(conf: _SectionsConfigurationInternal,
+                  element_builder: SectionContentElementBuilder,
+                  file_inclusion_relativity_root: pathlib.Path,
+                  source: ParseSource,
+                  ) -> RawDoc:
+    impl = _Impl(conf,
+                 element_builder,
+                 file_inclusion_relativity_root,
+                 source)
+    return impl.apply()
+
+
+def _add_raw_doc(added_to: RawDoc,
+                 to_add: RawDoc):
+    for key, elements in to_add.items():
+        if key in added_to:
+            added_to[key].extend(elements)
+        else:
+            added_to[key] = elements
+
+
+class SectionContentsElementConstructor(ParsedSectionElementVisitor):
     def __init__(self,
                  element_builder: SectionContentElementBuilder):
         self._element_builder = element_builder
@@ -167,8 +207,8 @@ class SectionContentsElementConstructor(ParsedSectionElementVisitor[model.Sectio
                                                          non_instruction.element_type)
 
     def visit_file_inclusion_directive(self, file_inclusion: ParsedFileInclusionDirective
-                                       ) -> model.SectionContentElement:
-        raise NotImplementedError('not implemented')
+                                       ) -> ParsedFileInclusionDirective:
+        return file_inclusion
 
 
 class _Impl:
@@ -192,7 +232,7 @@ class _Impl:
     def parser_for_current_section(self) -> SectionElementParser:
         return self._parser_for_current_section
 
-    def apply(self) -> Dict[str, List[SectionContentElement]]:
+    def apply(self) -> RawDoc:
         if self.is_at_eof():
             return {}
         if self.current_line_is_section_line():
@@ -213,7 +253,8 @@ class _Impl:
                             section=self.configuration.section_element_name_for_error_messages)
                         raise FileSourceError(SourceError(self._current_line,
                                                           msg),
-                                              None)
+                                              None,
+                                              self._location_path_of_current_line())
         return self._section_name_2_element_list
 
     def switch_section_according_to_last_section_line_and_consume_section_lines(self):
@@ -232,7 +273,8 @@ class _Impl:
                     name=section_name)
                 raise FileSourceError(SourceError(section_line,
                                                   msg),
-                                      None)
+                                      None,
+                                      self._location_path_of_current_line())
             self.set_current_section(section_name)
 
     def read_rest_of_document_from_inside_section_or_at_eof(self):
@@ -248,10 +290,15 @@ class _Impl:
     def read_section_elements_until_next_section_or_eof(self):
         while not self.is_at_eof() and not self.current_line_is_section_line():
             try:
-                element = self.parse_element_at_current_line_using_current_section_element_parser()
+                parsed_element = self.parse_element_at_current_line_using_current_section_element_parser()
             except SourceError as ex:
-                raise FileSourceError(ex, self._name_of_current_section)
-            self.add_element_to_current_section(element)
+                raise FileSourceError(ex, self._name_of_current_section,
+                                      self._element_builder.location_path_of(ex.source))
+            if isinstance(parsed_element, model.SectionContentElement):
+                self.add_element_to_current_section(parsed_element)
+            else:
+                assert isinstance(parsed_element, ParsedFileInclusionDirective)
+                self._include_files(parsed_element)
 
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
@@ -268,7 +315,8 @@ class _Impl:
         except ValueError as ex:
             raise FileSourceError(SourceError(self._current_line,
                                               str(ex)),
-                                  None)
+                                  None,
+                                  self._location_path_of_current_line())
         self.move_one_line_forward()
         return section_name
 
@@ -303,13 +351,38 @@ class _Impl:
             if self._document_source.is_at_eof \
             else self._document_source.current_line
 
+    def _location_path_of_current_line(self) -> Sequence[line_source.SourceLocation]:
+        source = line_source.single_line_sequence(self._document_source.current_line_number,
+                                                  self._document_source.current_line_text)
+        return self._element_builder.location_path_of(source)
+
     def current_line_is_comment_or_empty(self):
         return syntax.EMPTY_LINE_RE.match(self._current_line.text) or \
                syntax.COMMENT_LINE_RE.match(self._current_line.text)
 
+    def _include_files(self, inclusion_directive: ParsedFileInclusionDirective):
+        conf = _SectionsConfigurationInternal(self.configuration.section2parser,
+                                              self._name_of_current_section,
+                                              self.configuration.section_element_name_for_error_messages)
+        for file_to_include in inclusion_directive.files_to_include:
+            element_builder = self._element_builder.for_inclusion(inclusion_directive.source,
+                                                                  file_to_include)
+            included_doc = _parse_file(conf, element_builder,
+                                       self._file_inclusion_relativity_root_of(file_to_include))
+            _add_raw_doc(self._section_name_2_element_list, included_doc)
 
-def _build_document(sections: Dict[str, List[SectionContentElement]]) -> model.Document:
+    def _file_inclusion_relativity_root_of(self, included_file: pathlib.Path) -> pathlib.Path:
+        ret_val = self._file_inclusion_relativity_root / included_file.parent
+        try:
+            return ret_val.resolve()
+        except RuntimeError as ex:
+            raise FileAccessError(ret_val,
+                                  str(ex),
+                                  self._element_builder.file_inclusion_chain)
+
+
+def _build_document(raw_doc: RawDoc) -> model.Document:
     return model.Document({
         section_name: model.SectionContents(tuple(elements))
-        for section_name, elements in sections.items()
+        for section_name, elements in raw_doc.items()
     })

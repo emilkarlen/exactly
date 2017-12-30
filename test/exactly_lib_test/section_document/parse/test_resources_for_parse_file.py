@@ -6,7 +6,7 @@ from typing import Dict, Sequence
 from exactly_lib.section_document.document_parser import SectionsConfiguration, SectionElementParser, \
     SectionConfiguration, parse
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
-from exactly_lib.section_document.exceptions import FileAccessError
+from exactly_lib.section_document.exceptions import FileAccessError, FileSourceError
 from exactly_lib.section_document.model import InstructionInfo, SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
@@ -91,6 +91,25 @@ def check(put: unittest.TestCase,
         actual = parse(arrangement.sections_configuration, arrangement.root_file)
         # ASSERT #
         matches_document(expectation.document).apply_without_message(put, actual)
+
+
+def is_file_source_error(expected: asrt.ValueAssertion[FileSourceError]) -> asrt.ValueAssertion[Exception]:
+    return asrt.is_instance_with(FileSourceError, expected)
+
+
+def matches_file_source_error(maybe_section_name: asrt.ValueAssertion[str],
+                              location_path: Sequence[SourceLocation]) -> asrt.ValueAssertion[FileSourceError]:
+    return asrt.and_([
+        asrt.sub_component('maybe_section_name',
+                           FileSourceError.maybe_section_name.fget,
+                           maybe_section_name),
+        asrt.sub_component('message',
+                           FileSourceError.message.fget,
+                           asrt.is_not_none),
+        asrt.sub_component('location_path',
+                           FileSourceError.location_path.fget,
+                           equals_source_location_sequence(location_path)),
+    ])
 
 
 def is_file_access_error(expected: asrt.ValueAssertion[FileAccessError]) -> asrt.ValueAssertion[Exception]:
