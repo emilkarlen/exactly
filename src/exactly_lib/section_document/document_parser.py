@@ -1,10 +1,11 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Dict, List
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError
+from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
@@ -73,17 +74,38 @@ class SectionsConfiguration:
             for pfp in parsers_for_named_sections
         }
 
-        self._parser_for_default_section = None
-        self.default_section_name = None
+        self.default_section_name = default_section_name
         if default_section_name is not None:
-            try:
-                self._parser_for_default_section = self._section2parser[default_section_name]
-                self.default_section_name = (default_section_name,)
-            except KeyError:
+            if default_section_name not in self._section2parser:
                 raise ValueError('The name of the default section "%s" does not correspond to any section: %s' %
                                  (default_section_name,
                                   str(self._section2parser.keys()))
                                  )
+
+    def sections(self) -> Dict[str, SectionElementParser]:
+        return self._section2parser
+
+    def parser_for_section(self, section_name: str) -> SectionElementParser:
+        return self._section2parser[section_name]
+
+    def has_section(self, section_name: str) -> bool:
+        return section_name in self._section2parser
+
+
+class _SectionsConfigurationInternal:
+    """
+    Sections and their instruction parser.
+    """
+
+    def __init__(self,
+                 sections: Dict[str, SectionElementParser],
+                 default_section_name: str = None,
+                 section_element_name_for_error_messages: str = 'section'):
+        self.section_element_name_for_error_messages = section_element_name_for_error_messages
+        self._section2parser = sections
+
+        self._parser_for_default_section = None
+        self.default_section_name = default_section_name
 
     def parser_for_section(self, section_name: str) -> SectionElementParser:
         return self._section2parser[section_name]
@@ -114,7 +136,9 @@ def read_source_file(file_path: pathlib.Path,
 
 class _DocumentParserForSectionsConfiguration(DocumentParser):
     def __init__(self, configuration: SectionsConfiguration):
-        self._configuration = configuration
+        self._configuration = _SectionsConfigurationInternal(configuration.sections(),
+                                                             configuration.default_section_name,
+                                                             configuration.section_element_name_for_error_messages)
 
     def parse(self,
               source_file_path: pathlib.Path,
@@ -124,7 +148,7 @@ class _DocumentParserForSectionsConfiguration(DocumentParser):
                      SectionContentElementBuilder(source_file_path),
                      file_inclusion_relativity_root,
                      source)
-        return impl.apply()
+        return _build_document(impl.apply())
 
 
 class SectionContentsElementConstructor(ParsedSectionElementVisitor[model.SectionContentElement]):
@@ -149,7 +173,7 @@ class SectionContentsElementConstructor(ParsedSectionElementVisitor[model.Sectio
 
 class _Impl:
     def __init__(self,
-                 configuration: SectionsConfiguration,
+                 configuration: _SectionsConfigurationInternal,
                  element_builder: SectionContentElementBuilder,
                  file_inclusion_relativity_root: pathlib.Path,
                  document_source: ParseSource):
@@ -168,15 +192,15 @@ class _Impl:
     def parser_for_current_section(self) -> SectionElementParser:
         return self._parser_for_current_section
 
-    def apply(self) -> model.Document:
+    def apply(self) -> Dict[str, List[SectionContentElement]]:
         if self.is_at_eof():
-            return model.empty_document()
+            return {}
         if self.current_line_is_section_line():
             self.switch_section_according_to_last_section_line_and_consume_section_lines()
             self.read_rest_of_document_from_inside_section_or_at_eof()
         else:
             if self.configuration.default_section_name is not None:
-                self.set_current_section(self.configuration.default_section_name[0])
+                self.set_current_section(self.configuration.default_section_name)
                 self.read_rest_of_document_from_inside_section_or_at_eof()
             else:
                 self.skip_standard_comment_and_empty_lines()
@@ -190,7 +214,7 @@ class _Impl:
                         raise FileSourceError(SourceError(self._current_line,
                                                           msg),
                                               None)
-        return self.build_document()
+        return self._section_name_2_element_list
 
     def switch_section_according_to_last_section_line_and_consume_section_lines(self):
         """
@@ -248,12 +272,6 @@ class _Impl:
         self.move_one_line_forward()
         return section_name
 
-    def build_document(self) -> model.Document:
-        sections = {}
-        for section_name, elements in self._section_name_2_element_list.items():
-            sections[section_name] = model.SectionContents(tuple(elements))
-        return model.Document(sections)
-
     def set_current_section(self, section_name: str):
         self._name_of_current_section = section_name
         self._parser_for_current_section = self.configuration.parser_for_section(section_name)
@@ -288,3 +306,10 @@ class _Impl:
     def current_line_is_comment_or_empty(self):
         return syntax.EMPTY_LINE_RE.match(self._current_line.text) or \
                syntax.COMMENT_LINE_RE.match(self._current_line.text)
+
+
+def _build_document(sections: Dict[str, List[SectionContentElement]]) -> model.Document:
+    return model.Document({
+        section_name: model.SectionContents(tuple(elements))
+        for section_name, elements in sections.items()
+    })
