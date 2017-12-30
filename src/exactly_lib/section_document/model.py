@@ -26,7 +26,7 @@ class InstructionInfo(tuple):
 
     def __new__(cls,
                 instruction: Instruction,
-                description: str):
+                description: str = None):
         return tuple.__new__(cls, (instruction, description))
 
     @property
@@ -100,6 +100,14 @@ class SectionContentElementBuilder:
 
     def new_comment(self, source: line_source.LineSequence) -> SectionContentElement:
         return SectionContentElement(ElementType.COMMENT,
+                                     source,
+                                     None,
+                                     self._file_path)
+
+    def new_non_instruction(self,
+                            source: line_source.LineSequence,
+                            element_type: ElementType) -> SectionContentElement:
+        return SectionContentElement(element_type,
                                      source,
                                      None,
                                      self._file_path)
