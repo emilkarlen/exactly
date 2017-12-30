@@ -7,6 +7,8 @@ from exactly_lib.section_document.element_builder import SectionContentElementBu
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.utils import new_for_file
+from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedSectionElementVisitor, \
+    ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation
 
@@ -33,7 +35,7 @@ class DocumentParser:
 class SectionElementParser:
     def parse(self,
               source: ParseSource,
-              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
+              element_builder: SectionContentElementBuilder) -> ParsedSectionElement:
         """
         :raises FileSourceError The element cannot be parsed.
         """
@@ -125,6 +127,26 @@ class _DocumentParserForSectionsConfiguration(DocumentParser):
         return impl.apply()
 
 
+class SectionContentsElementConstructor(ParsedSectionElementVisitor[model.SectionContentElement]):
+    def __init__(self,
+                 element_builder: model.SectionContentElementBuilder):
+        self._element_builder = element_builder
+
+    def visit_instruction_element(self, instruction: ParsedInstruction) -> model.SectionContentElement:
+        return self._element_builder.new_instruction(instruction.source,
+                                                     instruction.instruction_info.instruction,
+                                                     instruction.instruction_info.description)
+
+    def visit_non_instruction_element(self, non_instruction: ParsedNonInstructionElement
+                                      ) -> model.SectionContentElement:
+        return self._element_builder.new_non_instruction(non_instruction.source,
+                                                         non_instruction.element_type)
+
+    def visit_file_inclusion_directive(self, file_inclusion: ParsedFileInclusionDirective
+                                       ) -> model.SectionContentElement:
+        raise NotImplementedError('not implemented')
+
+
 class _Impl:
     def __init__(self,
                  configuration: SectionsConfiguration,
@@ -140,6 +162,7 @@ class _Impl:
         self._name_of_current_section = None
         self._elements_for_current_section = []
         self._section_name_2_element_list = {}
+        self._element_constructor = SectionContentsElementConstructor(element_builder)
 
     @property
     def parser_for_current_section(self) -> SectionElementParser:
@@ -209,8 +232,8 @@ class _Impl:
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
     def parse_element_at_current_line_using_current_section_element_parser(self) -> model.SectionContentElement:
-        return self.parser_for_current_section.parse(self._document_source,
-                                                     self._element_builder)
+        parsed_element = self.parser_for_current_section.parse(self._document_source, self._element_builder)
+        return self._element_constructor.visit(parsed_element)
 
     def add_element_to_current_section(self, element: model.SectionContentElement):
         self._elements_for_current_section.append(element)
