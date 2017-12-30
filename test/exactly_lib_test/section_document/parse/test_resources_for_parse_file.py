@@ -1,14 +1,16 @@
+import pathlib
 import unittest
 from pathlib import Path
 from typing import Dict, Sequence
 
-from exactly_lib.section_document import document_parser as sut, model
+from exactly_lib.section_document.document_parser import SectionsConfiguration, SectionElementParser, \
+    SectionConfiguration, parse
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import FileAccessError
-from exactly_lib.section_document.model import InstructionInfo
+from exactly_lib.section_document.model import InstructionInfo, SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
-    ParsedInstruction
+    ParsedInstruction, ParsedFileInclusionDirective
 from exactly_lib.util.line_source import SourceLocation
 from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence, \
     matches_document
@@ -29,7 +31,7 @@ def inclusion_of_file(file_name: str) -> str:
     return INCLUDE_DIRECTIVE_NAME + ' ' + file_name
 
 
-class SectionElementParserForInstructionAndInclusionLines(sut.SectionElementParser):
+class SectionElementParserForInstructionAndInclusionLines(SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
 
@@ -42,23 +44,27 @@ class SectionElementParserForInstructionAndInclusionLines(sut.SectionElementPars
             return new_empty_element(consumed_source)
         current_line_parts = current_line.split()
         if current_line_parts[0] == INCLUDE_DIRECTIVE_NAME:
-            raise NotImplementedError('todo : reporting of include directive')
+            paths_to_include = [
+                pathlib.Path(file_name)
+                for file_name in current_line_parts[1:]
+            ]
+            return ParsedFileInclusionDirective(consumed_source, paths_to_include)
         else:
             return ParsedInstruction(consumed_source,
                                      InstructionInfo(InstructionInSection(self._section_name)))
 
 
-SECTIONS_CONFIGURATION = sut.SectionsConfiguration([
-    sut.SectionConfiguration(SECTION_1_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_1_NAME)
-                             ),
-    sut.SectionConfiguration(SECTION_2_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_2_NAME)
-                             ),
+SECTIONS_CONFIGURATION = SectionsConfiguration([
+    SectionConfiguration(SECTION_1_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_1_NAME)
+                         ),
+    SectionConfiguration(SECTION_2_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_2_NAME)
+                         ),
 ])
 
 
 class Arrangement:
     def __init__(self,
-                 sections_configuration: sut.SectionsConfiguration,
+                 sections_configuration: SectionsConfiguration,
                  cwd_dir_contents: DirContents,
                  root_file: Path):
         self.sections_configuration = sections_configuration
@@ -72,7 +78,7 @@ def std_conf_arrangement(cwd_dir_contents: DirContents,
 
 
 class Expectation:
-    def __init__(self, document: Dict[str, Sequence[asrt.ValueAssertion[model.SectionContentElement]]]):
+    def __init__(self, document: Dict[str, Sequence[asrt.ValueAssertion[SectionContentElement]]]):
         self.document = document
 
 
@@ -82,7 +88,7 @@ def check(put: unittest.TestCase,
     # ARRANGE #
     with tmp_dir_as_cwd(arrangement.cwd_dir_contents):
         # ACT #
-        actual = sut.parse(arrangement.sections_configuration, arrangement.root_file)
+        actual = parse(arrangement.sections_configuration, arrangement.root_file)
         # ASSERT #
         matches_document(expectation.document).apply_without_message(put, actual)
 
@@ -112,5 +118,5 @@ def check_and_expect_exception(put: unittest.TestCase,
     with tmp_dir_as_cwd(arrangement.cwd_dir_contents):
         with put.assertRaises(Exception) as cm:
             # ACT & ASSERT #
-            sut.parse(arrangement.sections_configuration, arrangement.root_file)
+            parse(arrangement.sections_configuration, arrangement.root_file)
         expected_exception.apply_with_message(put, cm.exception, 'Exception')

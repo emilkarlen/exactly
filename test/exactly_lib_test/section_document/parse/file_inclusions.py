@@ -1,11 +1,14 @@
 import unittest
 from pathlib import Path
 
+from exactly_lib.section_document.document_parser import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.syntax import section_header
+from exactly_lib.util.line_source import SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.parse.test_resources_for_parse_file import SECTION_1_NAME, \
     ARBITRARY_INSTRUCTION_SOURCE_LINE, NO_FILE_INCLUSIONS, Expectation, check, \
-    matches_file_access_error, std_conf_arrangement, is_file_access_error, check_and_expect_exception
+    matches_file_access_error, std_conf_arrangement, is_file_access_error, check_and_expect_exception, \
+    inclusion_of_file, SectionElementParserForInstructionAndInclusionLines, SECTION_2_NAME, Arrangement
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
     equals_instruction_without_description
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file, \
@@ -18,6 +21,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid),
         unittest.makeSuite(TestRootFileWithoutInclusions),
+        unittest.makeSuite(TestRootFileWithInclusions),
     ])
 
 
@@ -58,24 +62,24 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
                     expected_exception=matches_file_access_error(root_file_path,
                                                                  []))
 
-    # def test_invalid_included_file(self):
-    #     # ARRANGE #
-    #     included_file_name = 'included-file.src'
-    #     root_file = file_with_lines('root-file.src',
-    #                                 [
-    #                                     section_header(SECTION_1_NAME),
-    #                                     inclusion_of_file(included_file_name),
-    #                                 ])
-    #     root_file_path = Path(root_file.file_name)
-    #     self._check(root_file_path,
-    #                 name_of_invalid_file=included_file_name,
-    #                 additional_dir_contents=DirContents([root_file]),
-    #                 expected_exception=matches_file_access_error(
-    #                     Path(included_file_name),
-    #                     [
-    #                         SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
-    #                                        root_file_path)
-    #                     ]))
+    def test_invalid_included_file(self):
+        # ARRANGE #
+        included_file_name = 'included-file.src'
+        root_file = file_with_lines('root-file.src',
+                                    [
+                                        section_header(SECTION_1_NAME),
+                                        inclusion_of_file(included_file_name),
+                                    ])
+        root_file_path = Path(root_file.file_name)
+        self._check(root_file_path,
+                    name_of_invalid_file=included_file_name,
+                    additional_dir_contents=DirContents([root_file]),
+                    expected_exception=matches_file_access_error(
+                        Path(included_file_name),
+                        [
+                            SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
+                                           root_file_path)
+                        ]))
 
 
 class TestRootFileWithoutInclusions(unittest.TestCase):
@@ -111,3 +115,48 @@ class TestRootFileWithoutInclusions(unittest.TestCase):
                   ]
               })
               )
+
+
+class TestRootFileWithInclusions(unittest.TestCase):
+    def test_inclusion_directive_SHOULD_be_allowed_before_section_declaration_even_when_there_is_no_default_section(
+            self):
+        # ARRANGE #
+        included_file_lines = [
+            section_header(SECTION_1_NAME),
+            ARBITRARY_INSTRUCTION_SOURCE_LINE,
+        ]
+        included_file = file_with_lines('included.src', included_file_lines)
+        included_file_path = Path(included_file.name)
+
+        root_file_lines = [
+            inclusion_of_file(included_file.name),
+        ]
+        root_file = file_with_lines('root.src', root_file_lines)
+        root_file_path = Path(root_file.file_name)
+
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  DirContents([root_file, included_file]),
+                                  root_file_path)
+        expected_doc = {
+            SECTION_1_NAME: [
+                equals_instruction_without_description(
+                    2,
+                    ARBITRARY_INSTRUCTION_SOURCE_LINE,
+                    SECTION_1_NAME,
+                    included_file_path,
+                    [
+                        SourceLocation(single_line_sequence(1, inclusion_of_file(included_file.name)),
+                                       root_file_path)
+                    ])
+            ]
+        }
+        # ACT & ASSERT #
+        check(self, arrangement, Expectation(expected_doc))
+
+
+SECTION_1_AND_2_WITHOUT_DEFAULT = SectionsConfiguration([
+    SectionConfiguration(SECTION_1_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_1_NAME)
+                         ),
+    SectionConfiguration(SECTION_2_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_2_NAME)
+                         ),
+])
