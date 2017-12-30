@@ -1,8 +1,10 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.document_parser import SectionElementParser
-from exactly_lib.section_document.model import SectionContentElementBuilder
+from exactly_lib.section_document.model import SectionContentElementBuilder, InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
+    new_comment_element, ParsedInstruction
 from exactly_lib.util import line_source
 
 
@@ -75,17 +77,17 @@ class StandardSyntaxElementParser(SectionElementParser):
 
     def parse(self,
               source: ParseSource,
-              element_builder: SectionContentElementBuilder) -> model.SectionContentElement:
+              element_builder: SectionContentElementBuilder) -> ParsedSectionElement:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):
-            return element_builder.new_empty(self._consume_and_return_current_line(source))
+            return new_empty_element(self._consume_and_return_current_line(source))
         if syntax.is_comment_line(first_line.text):
-            return element_builder.new_comment(self._consume_and_return_current_line(source))
+            return new_comment_element(self._consume_and_return_current_line(source))
         else:
             instruction_and_description = self.instruction_parser.parse(source)
-            return element_builder.new_instruction(instruction_and_description.source,
-                                                   instruction_and_description.instruction,
-                                                   instruction_and_description.description)
+            return ParsedInstruction(instruction_and_description.source,
+                                     InstructionInfo(instruction_and_description.instruction,
+                                                     instruction_and_description.description))
 
     @staticmethod
     def _consume_and_return_current_line(source: ParseSource) -> line_source.LineSequence:
