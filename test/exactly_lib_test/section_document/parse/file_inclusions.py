@@ -25,6 +25,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid),
         unittest.makeSuite(TestRootFileWithoutInclusions),
         unittest.makeSuite(TestRootFileWithInclusions),
+        unittest.makeSuite(TestSectionSwitching),
         unittest.makeSuite(TestCombinationOfDocuments),
     ])
 
@@ -179,19 +180,135 @@ class TestRootFileWithInclusions(unittest.TestCase):
 
 class SingleFileInclusionCheckSetup:
     def __init__(self,
+                 sections_conf: SectionsConfiguration,
                  root_file_lines: List[str],
                  included_file_lines: List[str],
                  expected_doc: Dict[str, Sequence[asrt.ValueAssertion[SectionContentElement]]]
                  ):
+        self.sections_conf = sections_conf
         self.root_file_lines = root_file_lines
         self.included_file_lines = included_file_lines
         self.expected_doc = expected_doc
 
 
-class TestCombinationOfDocuments(unittest.TestCase):
-    def _check(self):
-        pass
+class TestSectionSwitching(unittest.TestCase):
+    def test_current_section_of_including_file_SHOULD_become_default_section_of_included_file(self):
+        # ARRANGE #
+        root_file_name = 'root.src'
+        root_file_path = Path(root_file_name)
 
+        included_file_name = 'included.src'
+        included_file_path = Path(included_file_name)
+
+        instruction_1_in_included_file = 'instruction 1 in included file'
+
+        cases = [
+            NameAndValue(
+                'WHEN including from default section THEN that section SHOULD be default also in included file',
+                SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITH_SECTION_1_AS_DEFAULT,
+                    root_file_lines=[
+                        inclusion_of_file(included_file_name)
+                    ],
+                    included_file_lines=[
+                        instruction_1_in_included_file,
+                    ],
+                    expected_doc={
+                        SECTION_1_NAME: [
+                            equals_instruction_without_description(
+                                1,
+                                instruction_1_in_included_file,
+                                SECTION_1_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(single_line_sequence(1, inclusion_of_file(included_file_name)),
+                                                   root_file_path)
+                                ])
+                        ]
+                    }
+                )),
+            NameAndValue(
+                'WHEN including from non-default section THEN that section SHOULD be default in included file',
+                SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
+                    root_file_lines=[
+                        section_header(SECTION_2_NAME),
+                        inclusion_of_file(included_file_name)
+                    ],
+                    included_file_lines=[
+                        instruction_1_in_included_file,
+                    ],
+                    expected_doc={
+                        SECTION_2_NAME: [
+                            equals_instruction_without_description(
+                                1,
+                                instruction_1_in_included_file,
+                                SECTION_2_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
+                                                   root_file_path)
+                                ])
+                        ]
+                    }
+                )),
+        ]
+        for nav in cases:
+            setup = nav.value
+            assert isinstance(setup, SingleFileInclusionCheckSetup)
+            with self.subTest(nav.name):
+                # ACT & ASSERT #
+                check_single_file_inclusions(self, setup, root_file_name, included_file_name)
+
+    def test_current_section_of_including_file_SHOULD_not_depend_on_section_switching_in_included_file(self):
+        # ARRANGE #
+        root_file_name = 'root.src'
+        root_file_path = Path(root_file_name)
+
+        included_file_name = 'included.src'
+        included_file_path = Path(included_file_name)
+
+        instruction_1_in_included_file = 'instruction 1 in included file'
+        instruction_1_in_root_file = 'instruction 1 in root file'
+
+        setup = SingleFileInclusionCheckSetup(
+            sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
+            root_file_lines=[
+                section_header(SECTION_1_NAME),
+                inclusion_of_file(included_file_name),
+                instruction_1_in_root_file,
+            ],
+            included_file_lines=[
+                section_header(SECTION_2_NAME),
+                instruction_1_in_included_file,
+            ],
+            expected_doc={
+                SECTION_1_NAME: [
+                    equals_instruction_without_description(
+                        3,
+                        instruction_1_in_root_file,
+                        SECTION_1_NAME,
+                        root_file_path,
+                        NO_FILE_INCLUSIONS)
+                ],
+                SECTION_2_NAME: [
+                    equals_instruction_without_description(
+                        2,
+                        instruction_1_in_included_file,
+                        SECTION_2_NAME,
+                        included_file_path,
+                        [
+                            SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
+                                           root_file_path)
+                        ])
+                ],
+            }
+        )
+        # ACT & ASSERT #
+        check_single_file_inclusions(self, setup, root_file_name, included_file_name)
+
+
+class TestCombinationOfDocuments(unittest.TestCase):
     def test_combination_of_instruction_from_root_and_included_file(self):
         # ARRANGE #
         root_file_name = 'root.src'
@@ -201,7 +318,6 @@ class TestCombinationOfDocuments(unittest.TestCase):
         included_file_path = Path(included_file_name)
 
         instruction_1_in_included_file = 'instruction 1 in included file'
-        instruction_2_in_included_file = 'instruction 2 in included file'
         instruction_1_in_root_file = 'instruction 1 in root file'
         instruction_2_in_root_file = 'instruction 2 in root file'
 
@@ -209,6 +325,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
             NameAndValue(
                 '0 instr in root, 1 instr in included',
                 SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
                     root_file_lines=[
                         section_header(SECTION_1_NAME),
                         inclusion_of_file(included_file_name)
@@ -233,6 +350,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
             NameAndValue(
                 '1 instr in root, 1 instr in included (after root) /same section',
                 SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
                     root_file_lines=[
                         section_header(SECTION_1_NAME),
                         instruction_1_in_root_file,
@@ -264,6 +382,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
             NameAndValue(
                 '1 instr in root, 1 instr in included (before root) /same section',
                 SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
                     root_file_lines=[
                         section_header(SECTION_1_NAME),
                         inclusion_of_file(included_file_name),
@@ -295,6 +414,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
             NameAndValue(
                 '1 instr in root + 1 instr in included + 1 instr in root  /same section',
                 SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
                     root_file_lines=[
                         section_header(SECTION_1_NAME),
                         instruction_1_in_root_file,
@@ -333,6 +453,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
             NameAndValue(
                 '1 instr in root, 1 instr in included (after root) /different sections',
                 SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
                     root_file_lines=[
                         section_header(SECTION_1_NAME),
                         instruction_1_in_root_file,
@@ -368,15 +489,24 @@ class TestCombinationOfDocuments(unittest.TestCase):
         for nav in cases:
             setup = nav.value
             assert isinstance(setup, SingleFileInclusionCheckSetup)
-            root_file = file_with_lines(root_file_name, setup.root_file_lines)
-            included_file = file_with_lines(included_file_name, setup.included_file_lines)
-            arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
-                                      DirContents([root_file, included_file]),
-                                      root_file_path)
-            expectation = Expectation(setup.expected_doc)
             with self.subTest(nav.name):
                 # ACT & ASSERT #
-                check(self, arrangement, expectation)
+                check_single_file_inclusions(self, setup, root_file_name, included_file_name)
+
+
+def check_single_file_inclusions(put: unittest.TestCase,
+                                 setup: SingleFileInclusionCheckSetup,
+                                 root_file_name: str,
+                                 included_file_name: str,
+                                 ):
+    root_file = file_with_lines(root_file_name, setup.root_file_lines)
+    included_file = file_with_lines(included_file_name, setup.included_file_lines)
+    arrangement = Arrangement(setup.sections_conf,
+                              DirContents([root_file, included_file]),
+                              Path(root_file_name))
+    expectation = Expectation(setup.expected_doc)
+    # ACT & ASSERT #
+    check(put, arrangement, expectation)
 
 
 SECTION_1_AND_2_WITHOUT_DEFAULT = SectionsConfiguration([
@@ -385,3 +515,11 @@ SECTION_1_AND_2_WITHOUT_DEFAULT = SectionsConfiguration([
     SectionConfiguration(SECTION_2_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_2_NAME)
                          ),
 ])
+
+SECTION_1_AND_2_WITH_SECTION_1_AS_DEFAULT = SectionsConfiguration([
+    SectionConfiguration(SECTION_1_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_1_NAME)
+                         ),
+    SectionConfiguration(SECTION_2_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_2_NAME)
+                         ),
+],
+    default_section_name=SECTION_1_NAME)
