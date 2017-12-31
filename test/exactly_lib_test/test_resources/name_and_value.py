@@ -1,4 +1,9 @@
-class NameAndValue(tuple):
+from typing import Generic, TypeVar
+
+T = TypeVar('T')
+
+
+class NameAndValue(tuple, Generic[T]):
     """
     A name with an associated value.
 
@@ -6,7 +11,8 @@ class NameAndValue(tuple):
     """
 
     def __new__(cls,
-                name, value):
+                name,
+                value: T):
         return tuple.__new__(cls, (name, value))
 
     @property
@@ -14,5 +20,5 @@ class NameAndValue(tuple):
         return self[0]
 
     @property
-    def value(self):
+    def value(self) -> T:
         return self[1]
