@@ -31,6 +31,10 @@ def inclusion_of_file(file_name: str) -> str:
     return INCLUDE_DIRECTIVE_NAME + ' ' + file_name
 
 
+def inclusion_of_list_of_files(files: list) -> str:
+    return inclusion_of_file(' '.join(files))
+
+
 class SectionElementParserForInstructionAndInclusionLines(SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
