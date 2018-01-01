@@ -14,8 +14,8 @@ from exactly_lib_test.section_document.parse.test_resources_for_parse_file impor
     is_file_source_error, matches_file_source_error, inclusion_of_list_of_files
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
     equals_instruction_without_description
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file, \
-    file_with_lines, empty_dir_contents, add_dir_contents
+from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
+    empty_dir_contents, add_dir_contents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -23,8 +23,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid),
-        unittest.makeSuite(TestRootFileWithoutInclusions),
-        unittest.makeSuite(TestRootFileWithInclusions),
+        unittest.makeSuite(TestInclusionDirectiveIsNotAllowedOutsideOfSection),
         unittest.makeSuite(TestSectionSwitching),
         unittest.makeSuite(TestCombinationOfDocuments),
     ])
@@ -112,42 +111,7 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
         )
 
 
-class TestRootFileWithoutInclusions(unittest.TestCase):
-    def test_empty(self):
-        # ARRANGE #
-        file_name = 'source-file-name'
-        source_file_path = Path(file_name)
-        # ACT & ASSERT #
-        check(self,
-              std_conf_arrangement(DirContents([empty_file(file_name)]),
-                                   source_file_path),
-              Expectation({}))
-
-    def test_single_instruction(self):
-        # ARRANGE #
-        source_lines = [
-            section_header(SECTION_1_NAME),
-            ARBITRARY_INSTRUCTION_SOURCE_LINE,
-        ]
-        source_file = file_with_lines('source-file.txt', source_lines)
-        source_file_path = Path(source_file.file_name)
-        # ACT & ASSERT #
-        check(self,
-              std_conf_arrangement(DirContents([source_file]),
-                                   source_file_path),
-              Expectation({
-                  SECTION_1_NAME: [
-                      equals_instruction_without_description(2,
-                                                             ARBITRARY_INSTRUCTION_SOURCE_LINE,
-                                                             SECTION_1_NAME,
-                                                             source_file_path,
-                                                             NO_FILE_INCLUSIONS)
-                  ]
-              })
-              )
-
-
-class TestRootFileWithInclusions(unittest.TestCase):
+class TestInclusionDirectiveIsNotAllowedOutsideOfSection(unittest.TestCase):
     def test_inclusion_directive_SHOULD_not_be_allowed_before_section_declaration_when_there_is_no_default_section(
             self):
         # ARRANGE #
