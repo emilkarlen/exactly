@@ -26,6 +26,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestInclusionDirectiveIsNotAllowedOutsideOfSection),
         unittest.makeSuite(TestSectionSwitching),
         unittest.makeSuite(TestCombinationOfDocuments),
+        unittest.makeSuite(TestMultipleInclusions),
     ])
 
 
@@ -601,6 +602,138 @@ class TestCombinationOfDocuments(unittest.TestCase):
         expectation = Expectation(expected_doc)
         # ACT & ASSERT #
         check(self, arrangement, expectation)
+
+
+class TestMultipleInclusions(unittest.TestCase):
+    def test_multiple_inclusions_of_same_file(self):
+        # ARRANGE #
+        root_file_name = 'root.src'
+        root_file_path = Path(root_file_name)
+
+        included_file_name = 'included.src'
+        included_file_path = Path(included_file_name)
+
+        instruction_in_included_file = 'instruction in included file'
+
+        cases = [
+            NameAndValue(
+                'inclusions in same section',
+                SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
+                    root_file_lines=[
+                        section_header(SECTION_1_NAME),
+                        inclusion_of_file(included_file_name),
+                        inclusion_of_file(included_file_name),
+                    ],
+                    included_file_lines=[
+                        instruction_in_included_file,
+                    ],
+                    expected_doc={
+                        SECTION_1_NAME: [
+                            equals_instruction_without_description(
+                                1,
+                                instruction_in_included_file,
+                                SECTION_1_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
+                                                   root_file_path)
+                                ]),
+                            equals_instruction_without_description(
+                                1,
+                                instruction_in_included_file,
+                                SECTION_1_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(single_line_sequence(3, inclusion_of_file(included_file_name)),
+                                                   root_file_path)
+                                ]),
+                        ]
+                    }
+                )),
+            NameAndValue(
+                'inclusions via same directive',
+                SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
+                    root_file_lines=[
+                        section_header(SECTION_1_NAME),
+                        inclusion_of_list_of_files([included_file_name, included_file_name]),
+                    ],
+                    included_file_lines=[
+                        instruction_in_included_file,
+                    ],
+                    expected_doc={
+                        SECTION_1_NAME: [
+                            equals_instruction_without_description(
+                                1,
+                                instruction_in_included_file,
+                                SECTION_1_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(
+                                        single_line_sequence(2, inclusion_of_list_of_files([included_file_name,
+                                                                                            included_file_name])),
+                                        root_file_path)
+                                ]),
+                            equals_instruction_without_description(
+                                1,
+                                instruction_in_included_file,
+                                SECTION_1_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(
+                                        single_line_sequence(2, inclusion_of_list_of_files([included_file_name,
+                                                                                            included_file_name])),
+                                        root_file_path)
+                                ]),
+                        ]
+                    }
+                )),
+            NameAndValue(
+                'inclusions in different sections',
+                SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
+                    root_file_lines=[
+                        section_header(SECTION_1_NAME),
+                        inclusion_of_file(included_file_name),
+                        section_header(SECTION_2_NAME),
+                        inclusion_of_file(included_file_name),
+                    ],
+                    included_file_lines=[
+                        instruction_in_included_file,
+                    ],
+                    expected_doc={
+                        SECTION_1_NAME: [
+                            equals_instruction_without_description(
+                                1,
+                                instruction_in_included_file,
+                                SECTION_1_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
+                                                   root_file_path)
+                                ]),
+                        ],
+                        SECTION_2_NAME: [
+                            equals_instruction_without_description(
+                                1,
+                                instruction_in_included_file,
+                                SECTION_2_NAME,
+                                included_file_path,
+                                [
+                                    SourceLocation(single_line_sequence(4, inclusion_of_file(included_file_name)),
+                                                   root_file_path)
+                                ]),
+                        ]
+                    }
+                )),
+        ]
+        for nav in cases:
+            setup = nav.value
+            assert isinstance(setup, SingleFileInclusionCheckSetup)
+            with self.subTest(nav.name):
+                # ACT & ASSERT #
+                check_single_file_inclusions(self, setup, root_file_name, included_file_name)
 
 
 def check_single_file_inclusions(put: unittest.TestCase,
