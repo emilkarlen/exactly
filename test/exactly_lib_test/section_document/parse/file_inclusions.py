@@ -11,7 +11,7 @@ from exactly_lib_test.section_document.parse.test_resources_for_parse_file impor
     ARBITRARY_INSTRUCTION_SOURCE_LINE, NO_FILE_INCLUSIONS, Expectation, check, \
     matches_file_access_error, std_conf_arrangement, is_file_access_error, check_and_expect_exception, \
     inclusion_of_file, SectionElementParserForInstructionAndInclusionLines, SECTION_2_NAME, Arrangement, \
-    is_file_source_error, matches_file_source_error
+    is_file_source_error, matches_file_source_error, inclusion_of_list_of_files
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
     equals_instruction_without_description
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, empty_file, \
@@ -309,7 +309,7 @@ class TestSectionSwitching(unittest.TestCase):
 
 
 class TestCombinationOfDocuments(unittest.TestCase):
-    def test_combination_of_instruction_from_root_and_included_file(self):
+    def test_combination_of_instruction_from_root_and_single_included_file(self):
         # ARRANGE #
         root_file_name = 'root.src'
         root_file_path = Path(root_file_name)
@@ -344,6 +344,28 @@ class TestCombinationOfDocuments(unittest.TestCase):
                                     SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ])
+                        ]
+                    }
+                )),
+            NameAndValue(
+                '1 instr in root, 0 instr in included',
+                SingleFileInclusionCheckSetup(
+                    sections_conf=SECTION_1_AND_2_WITHOUT_DEFAULT,
+                    root_file_lines=[
+                        section_header(SECTION_1_NAME),
+                        instruction_1_in_root_file,
+                        inclusion_of_file(included_file_name)
+                    ],
+                    included_file_lines=[
+                    ],
+                    expected_doc={
+                        SECTION_1_NAME: [
+                            equals_instruction_without_description(
+                                2,
+                                instruction_1_in_root_file,
+                                SECTION_1_NAME,
+                                root_file_path,
+                                NO_FILE_INCLUSIONS)
                         ]
                     }
                 )),
@@ -492,6 +514,129 @@ class TestCombinationOfDocuments(unittest.TestCase):
             with self.subTest(nav.name):
                 # ACT & ASSERT #
                 check_single_file_inclusions(self, setup, root_file_name, included_file_name)
+
+    def test_inclusion_of_multiple_files_in_same_directive(self):
+        # ARRANGE #
+        root_file_name = 'root.src'
+        root_file_path = Path(root_file_name)
+
+        included_file_1_name = 'included-1.src'
+        included_file_2_name = 'included-2.src'
+
+        instruction_in_included_file_1 = 'instruction in included file 1'
+        instruction_in_included_file_2 = 'instruction in included file 2'
+        instruction_1_in_root_file = 'instruction 1 in root file'
+        instruction_2_in_root_file = 'instruction 1 in root file'
+
+        inclusion_directive_of_file_1_and_2 = inclusion_of_list_of_files([included_file_1_name,
+                                                                          included_file_2_name])
+
+        root_file_lines = [
+            section_header(SECTION_1_NAME),
+            instruction_1_in_root_file,
+            inclusion_directive_of_file_1_and_2,
+            instruction_2_in_root_file,
+        ]
+
+        included_file_1_lines = [
+            instruction_in_included_file_1,
+        ]
+
+        included_file_2_lines = [
+            instruction_in_included_file_2,
+        ]
+
+        file_inclusion_chain_of_included_files = [
+            SourceLocation(single_line_sequence(3, inclusion_directive_of_file_1_and_2),
+                           root_file_path)
+        ]
+
+        expected_doc = {
+            SECTION_1_NAME: [
+                equals_instruction_without_description(
+                    2,
+                    instruction_1_in_root_file,
+                    SECTION_1_NAME,
+                    root_file_path,
+                    NO_FILE_INCLUSIONS
+                ),
+                equals_instruction_without_description(
+                    1,
+                    instruction_in_included_file_1,
+                    SECTION_1_NAME,
+                    Path(included_file_1_name),
+                    file_inclusion_chain_of_included_files),
+                equals_instruction_without_description(
+                    1,
+                    instruction_in_included_file_2,
+                    SECTION_1_NAME,
+                    Path(included_file_2_name),
+                    file_inclusion_chain_of_included_files),
+                equals_instruction_without_description(
+                    4,
+                    instruction_2_in_root_file,
+                    SECTION_1_NAME,
+                    root_file_path,
+                    NO_FILE_INCLUSIONS
+                ),
+            ],
+        }
+
+        root_file = file_with_lines(root_file_name, root_file_lines)
+        included_file_1 = file_with_lines(included_file_1_name, included_file_1_lines)
+        included_file_2 = file_with_lines(included_file_2_name, included_file_2_lines)
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  DirContents([root_file,
+                                               included_file_1,
+                                               included_file_2]),
+                                  root_file_path)
+        expectation = Expectation(expected_doc)
+        # ACT & ASSERT #
+        check(self, arrangement, expectation)
+
+    def test_inclusion_of_empty_list_of_files(self):
+        # ARRANGE #
+        root_file_name = 'root.src'
+        root_file_path = Path(root_file_name)
+
+        instruction_1_in_root_file = 'instruction 1 in root file'
+        instruction_2_in_root_file = 'instruction 1 in root file'
+
+        inclusion_directive_of_file_1_and_2 = inclusion_of_list_of_files([])
+
+        root_file_lines = [
+            section_header(SECTION_1_NAME),
+            instruction_1_in_root_file,
+            inclusion_directive_of_file_1_and_2,
+            instruction_2_in_root_file,
+        ]
+
+        expected_doc = {
+            SECTION_1_NAME: [
+                equals_instruction_without_description(
+                    2,
+                    instruction_1_in_root_file,
+                    SECTION_1_NAME,
+                    root_file_path,
+                    NO_FILE_INCLUSIONS
+                ),
+                equals_instruction_without_description(
+                    4,
+                    instruction_2_in_root_file,
+                    SECTION_1_NAME,
+                    root_file_path,
+                    NO_FILE_INCLUSIONS
+                ),
+            ],
+        }
+
+        root_file = file_with_lines(root_file_name, root_file_lines)
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  DirContents([root_file]),
+                                  root_file_path)
+        expectation = Expectation(expected_doc)
+        # ACT & ASSERT #
+        check(self, arrangement, expectation)
 
 
 def check_single_file_inclusions(put: unittest.TestCase,
