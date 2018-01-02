@@ -15,7 +15,7 @@ from exactly_lib_test.section_document.parse.test_resources_for_parse_file impor
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
     equals_instruction_without_description
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
-    empty_dir_contents, add_dir_contents
+    empty_dir_contents, add_dir_contents, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -26,7 +26,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestInclusionDirectiveIsNotAllowedOutsideOfSection),
         unittest.makeSuite(TestSectionSwitching),
         unittest.makeSuite(TestCombinationOfDocuments),
-        unittest.makeSuite(TestMultipleInclusions),
+        unittest.makeSuite(TestMultipleInclusionsOfSameFile),
+        unittest.makeSuite(TestInclusionFromInclusion),
     ])
 
 
@@ -604,7 +605,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
         check(self, arrangement, expectation)
 
 
-class TestMultipleInclusions(unittest.TestCase):
+class TestMultipleInclusionsOfSameFile(unittest.TestCase):
     def test_multiple_inclusions_of_same_file(self):
         # ARRANGE #
         root_file_name = 'root.src'
@@ -736,6 +737,73 @@ class TestMultipleInclusions(unittest.TestCase):
                 check_single_file_inclusions(self, setup, root_file_name, included_file_name)
 
 
+class TestInclusionFromInclusion(unittest.TestCase):
+    def test_instruction_source_locations(self):
+        # ARRANGE #
+
+        instruction_in_root_file = 'instruction 1 in root file'
+
+        instruction_in_included_file_1 = 'instruction 1 in included file 1'
+        instruction_in_included_file_2 = 'instruction 1 in included file 2'
+
+        included_file_2 = NameAndValue('included-file-2.src', [
+            instruction_in_included_file_2,
+        ])
+
+        included_file_1 = NameAndValue('included-file-1.src', [
+            inclusion_of_file(included_file_2.name),
+            instruction_in_included_file_1,
+        ])
+
+        root_file = NameAndValue('root.src', [
+            section_header(SECTION_1_NAME),
+            inclusion_of_file(included_file_1.name),
+            instruction_in_root_file,
+        ])
+        root_file_path = Path(root_file.name)
+
+        expected_doc = {
+            SECTION_1_NAME: [
+                equals_instruction_without_description(
+                    1,
+                    instruction_in_included_file_2,
+                    SECTION_1_NAME,
+                    Path(included_file_2.name),
+                    [
+                        SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_1.name)),
+                                       root_file_path),
+                        SourceLocation(single_line_sequence(1, inclusion_of_file(included_file_2.name)),
+                                       Path(included_file_1.name)),
+                    ]
+                ),
+                equals_instruction_without_description(
+                    2,
+                    instruction_in_included_file_1,
+                    SECTION_1_NAME,
+                    Path(included_file_1.name),
+                    [
+                        SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_1.name)),
+                                       root_file_path),
+                    ]
+                ),
+                equals_instruction_without_description(
+                    3,
+                    instruction_in_root_file,
+                    SECTION_1_NAME,
+                    Path(root_file.name),
+                    NO_FILE_INCLUSIONS,
+                ),
+            ],
+        }
+
+        arrangement = arrangement_of(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                     root_file,
+                                     [included_file_1, included_file_2])
+        expectation = Expectation(expected_doc)
+        # ACT & ASSERT #
+        check(self, arrangement, expectation)
+
+
 def check_single_file_inclusions(put: unittest.TestCase,
                                  setup: SingleFileInclusionCheckSetup,
                                  root_file_name: str,
@@ -749,6 +817,17 @@ def check_single_file_inclusions(put: unittest.TestCase,
     expectation = Expectation(setup.expected_doc)
     # ACT & ASSERT #
     check(put, arrangement, expectation)
+
+
+def arrangement_of(sections_configuration: SectionsConfiguration,
+                   root_file: NameAndValue[Sequence[str]],
+                   non_root_files: Sequence[NameAndValue[Sequence[str]]]) -> Arrangement:
+    def mk_file(name_and_lines: NameAndValue[Sequence[str]]) -> File:
+        return file_with_lines(name_and_lines.name, name_and_lines.value)
+
+    return Arrangement(sections_configuration,
+                       DirContents([mk_file(f) for f in ([root_file] + non_root_files)]),
+                       Path(root_file.name))
 
 
 SECTION_1_AND_2_WITHOUT_DEFAULT = SectionsConfiguration([
