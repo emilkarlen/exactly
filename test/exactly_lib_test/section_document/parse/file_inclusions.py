@@ -803,6 +803,39 @@ class TestInclusionFromInclusion(unittest.TestCase):
         # ACT & ASSERT #
         check(self, arrangement, expectation)
 
+    def test_source_locations_of_file_access_error(self):
+        # ARRANGE #
+
+        non_existing_included_file_2_name = 'non-existing-included-file-2.src'
+
+        included_file_1 = NameAndValue('included-file-1.src', [
+            inclusion_of_file(non_existing_included_file_2_name),
+        ])
+
+        root_file = NameAndValue('root.src', [
+            section_header(SECTION_1_NAME),
+            inclusion_of_file(included_file_1.name),
+        ])
+        root_file_path = Path(root_file.name)
+
+        arrangement = arrangement_of(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                     root_file,
+                                     [included_file_1])
+        expected_file_access_error = matches_file_access_error(
+            Path(non_existing_included_file_2_name),
+            [
+                SourceLocation(single_line_sequence(2,
+                                                    inclusion_of_file(included_file_1.name)),
+                               root_file_path),
+                SourceLocation(single_line_sequence(1, inclusion_of_file(non_existing_included_file_2_name)),
+                               Path(included_file_1.name)),
+
+            ]
+        )
+        # ACT & ASSERT #
+        check_and_expect_exception(self, arrangement,
+                                   is_file_access_error(expected_file_access_error))
+
 
 def check_single_file_inclusions(put: unittest.TestCase,
                                  setup: SingleFileInclusionCheckSetup,
