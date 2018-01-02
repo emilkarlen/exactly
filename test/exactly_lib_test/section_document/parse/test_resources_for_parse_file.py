@@ -6,7 +6,7 @@ from typing import Dict, Sequence
 from exactly_lib.section_document.document_parser import SectionsConfiguration, SectionElementParser, \
     SectionConfiguration, parse
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
-from exactly_lib.section_document.exceptions import FileAccessError, FileSourceError
+from exactly_lib.section_document.exceptions import FileAccessError, FileSourceError, new_source_error
 from exactly_lib.section_document.model import InstructionInfo, SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
@@ -21,9 +21,11 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_sequence
 
 INCLUDE_DIRECTIVE_NAME = 'include'
+OK_INSTRUCTION_NAME = 'ok'
+SYNTAX_ERROR_INSTRUCTION_NAME = 'error'
+
 SECTION_1_NAME = 'section1'
 SECTION_2_NAME = 'section2'
-ARBITRARY_INSTRUCTION_SOURCE_LINE = 'instruction source line'
 NO_FILE_INCLUSIONS = []
 
 
@@ -35,7 +37,25 @@ def inclusion_of_list_of_files(files: list) -> str:
     return inclusion_of_file(' '.join(files))
 
 
-class SectionElementParserForInstructionAndInclusionLines(SectionElementParser):
+def ok_instruction(arg: str) -> str:
+    return OK_INSTRUCTION_NAME + ' ' + arg
+
+
+def syntax_error_instruction(error_message: str) -> str:
+    return SYNTAX_ERROR_INSTRUCTION_NAME + ' ' + error_message
+
+
+ARBITRARY_OK_INSTRUCTION_SOURCE_LINE = ok_instruction('ok instruction line')
+
+
+class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(SectionElementParser):
+    """
+    Parse result:
+     - line with only space -> EMPTY element
+     - line beginning with SYNTAX_ERROR_INSTRUCTION_NAME -> ParseError
+     - OK_INSTRUCTION_NAME -> INSTRUCTION element
+    """
+
     def __init__(self, section_name: str):
         self._section_name = section_name
 
@@ -53,15 +73,21 @@ class SectionElementParserForInstructionAndInclusionLines(SectionElementParser):
                 for file_name in current_line_parts[1:]
             ]
             return ParsedFileInclusionDirective(consumed_source, paths_to_include)
-        else:
+        elif current_line_parts[0] == SYNTAX_ERROR_INSTRUCTION_NAME:
+            raise new_source_error(consumed_source, current_line_parts[1])
+        elif current_line_parts[0] == OK_INSTRUCTION_NAME:
             return ParsedInstruction(consumed_source,
                                      InstructionInfo(InstructionInSection(self._section_name)))
+        else:
+            raise ValueError('Unknown source: ' + current_line)
 
 
 SECTIONS_CONFIGURATION = SectionsConfiguration([
-    SectionConfiguration(SECTION_1_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_1_NAME)
+    SectionConfiguration(SECTION_1_NAME,
+                         SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(SECTION_1_NAME)
                          ),
-    SectionConfiguration(SECTION_2_NAME, SectionElementParserForInstructionAndInclusionLines(SECTION_2_NAME)
+    SectionConfiguration(SECTION_2_NAME,
+                         SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(SECTION_2_NAME)
                          ),
 ])
 

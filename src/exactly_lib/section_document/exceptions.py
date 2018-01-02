@@ -37,6 +37,12 @@ class SourceError(Exception):
         return self._message
 
 
+def new_source_error(source: line_source.LineSequence,
+                     message: str) -> SourceError:
+    return SourceError(source.first_line,
+                       message)
+
+
 class ParseError(Exception):
     """
     An exception from a document parser.
