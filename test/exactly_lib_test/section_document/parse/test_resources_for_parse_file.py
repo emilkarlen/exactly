@@ -6,7 +6,6 @@ from typing import Dict, Sequence
 from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.document_parser import SectionsConfiguration, SectionElementParser, \
     SectionConfiguration
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import FileAccessError, FileSourceError, new_source_error
 from exactly_lib.section_document.model import InstructionInfo, SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
@@ -62,9 +61,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
     def __init__(self, section_name: str):
         self._section_name = section_name
 
-    def parse(self,
-              source: ParseSource,
-              element_builder: SectionContentElementBuilder) -> ParsedSectionElement:
+    def parse(self, source: ParseSource) -> ParsedSectionElement:
         current_line = source.current_line_text
         consumed_source = consume_current_line_and_return_it_as_line_sequence(source)
         if current_line.isspace():
@@ -121,7 +118,7 @@ def check(put: unittest.TestCase,
     # ARRANGE #
     with tmp_dir_as_cwd(arrangement.cwd_dir_contents):
         # ACT #
-        actual = parse(arrangement.sections_configuration, arrangement.root_file)
+        actual = sut.parse(arrangement.sections_configuration, arrangement.root_file)
         # ASSERT #
         matches_document(expectation.document).apply_without_message(put, actual)
 

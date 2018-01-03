@@ -6,7 +6,6 @@ from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document import model
 from exactly_lib.section_document.document_parser import DocumentParser, new_parser_for, SectionConfiguration, \
     SectionsConfiguration
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
@@ -512,9 +511,7 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
     def __init__(self, section_name: str):
         self._section_name = section_name
 
-    def parse(self,
-              source: ParseSource,
-              element_builder: SectionContentElementBuilder) -> ParsedSectionElement:
+    def parse(self, source: ParseSource) -> ParsedSectionElement:
         current_line = source.current_line_text
         if current_line == '':
             return new_empty_element(consume_current_line_and_return_it_as_line_sequence(source))
@@ -547,9 +544,7 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
 
 
 class SectionElementParserThatFails(sut.SectionElementParser):
-    def parse(self,
-              source: ParseSource,
-              element_builder: SectionContentElementBuilder) -> ParsedSectionElement:
+    def parse(self, source: ParseSource) -> ParsedSectionElement:
         raise SourceError(consume_current_line_and_return_it_as_line_sequence(source).first_line,
                           'Unconditional failure')
 
