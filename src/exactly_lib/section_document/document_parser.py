@@ -120,19 +120,21 @@ def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
 
 def parse(configuration: SectionsConfiguration,
           source_file_path: pathlib.Path) -> model.Document:
-    file_inclusion_relativity_root = source_file_path.parent
     raw_doc = _parse_file(_internal_conf_of(configuration),
                           SectionContentElementBuilder(source_file_path, []),
-                          file_inclusion_relativity_root)
+                          _resolve_file_inclusion_relativity_root(pathlib.Path.cwd(), []))
     return _build_document(raw_doc)
 
 
 def read_source_file(file_path: pathlib.Path,
+                     file_path_for_error_message: pathlib.Path,
                      file_inclusion_chain: Sequence[SourceLocation]) -> ParseSource:
     try:
         return new_for_file(file_path)
     except OSError as ex:
-        raise FileAccessError(file_path, str(ex), file_inclusion_chain)
+        raise FileAccessError(file_path_for_error_message,
+                              str(ex),
+                              file_inclusion_chain)
 
 
 def _internal_conf_of(configuration: SectionsConfiguration) -> _SectionsConfigurationInternal:
@@ -163,7 +165,11 @@ def _parse_file(conf: _SectionsConfigurationInternal,
                 element_builder: SectionContentElementBuilder,
                 file_inclusion_relativity_root: pathlib.Path,
                 ) -> RawDoc:
-    source = read_source_file(element_builder.file_path, element_builder.file_inclusion_chain)
+    path_to_file = file_inclusion_relativity_root / element_builder.file_path
+    source = read_source_file(path_to_file,
+                              element_builder.file_path,
+                              element_builder.file_inclusion_chain)
+    file_inclusion_relativity_root = path_to_file.parent
     return _parse_source(conf,
                          element_builder,
                          file_inclusion_relativity_root,
@@ -367,18 +373,20 @@ class _Impl:
         for file_to_include in inclusion_directive.files_to_include:
             element_builder = self._element_builder.for_inclusion(inclusion_directive.source,
                                                                   file_to_include)
-            included_doc = _parse_file(conf, element_builder,
-                                       self._file_inclusion_relativity_root_of(file_to_include))
+            included_doc = _parse_file(conf,
+                                       element_builder,
+                                       self._file_inclusion_relativity_root)
             _add_raw_doc(self._section_name_2_element_list, included_doc)
 
-    def _file_inclusion_relativity_root_of(self, included_file: pathlib.Path) -> pathlib.Path:
-        ret_val = self._file_inclusion_relativity_root / included_file.parent
-        try:
-            return ret_val.resolve()
-        except RuntimeError as ex:
-            raise FileAccessError(ret_val,
-                                  str(ex),
-                                  self._element_builder.file_inclusion_chain)
+
+def _resolve_file_inclusion_relativity_root(relativity_root: pathlib.Path,
+                                            file_inclusion_chain: Sequence[line_source.SourceLocation]) -> pathlib.Path:
+    try:
+        return relativity_root.resolve()
+    except RuntimeError as ex:
+        raise FileAccessError(relativity_root,
+                              str(ex),
+                              file_inclusion_chain)
 
 
 def _build_document(raw_doc: RawDoc) -> model.Document:

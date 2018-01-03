@@ -1,5 +1,5 @@
 import unittest
-from pathlib import Path, PosixPath
+from pathlib import Path, PosixPath, PurePosixPath
 from typing import List, Dict, Sequence
 
 from exactly_lib.section_document.document_parser import SectionConfiguration, SectionsConfiguration
@@ -17,7 +17,7 @@ from exactly_lib_test.section_document.parse.test_resources_for_parse_file impor
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
     equals_instruction_without_description
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
-    empty_dir_contents, add_dir_contents, File
+    empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -739,99 +739,121 @@ class TestMultipleInclusionsOfSameFile(unittest.TestCase):
                 check_single_file_inclusions(self, setup, root_file_name, included_file_name)
 
 
+class SetupWithDoubleInclusionAndIncludedFilesInSubDir:
+    def __init__(self, source_line_in_included_file_2_or_none_if_file_should_not_exist: str = None):
+        self.sub_dir_of_included_files = 'sub-dir'
+
+        self.instruction_in_root_file = ok_instruction('instruction 1 in root file')
+
+        self.instruction_in_included_file_1 = ok_instruction('instruction 1 in included file 1')
+        self.source_line_in_included_file_2 = source_line_in_included_file_2_or_none_if_file_should_not_exist
+
+        self.included_file_2 = file_with_lines('included-file-2.src', [
+            (
+                self.source_line_in_included_file_2
+                if source_line_in_included_file_2_or_none_if_file_should_not_exist is not None
+                else ''
+            ),
+        ])
+
+        self.included_file_1 = file_with_lines('included-file-1.src', [
+            inclusion_of_file(self.included_file_2.name),
+            self.instruction_in_included_file_1,
+        ])
+
+        self.inclusion_of_file_1_from_root_file = inclusion_of_file(
+            PurePosixPath(self.sub_dir_of_included_files) / self.included_file_1.name)
+
+        self.root_file = file_with_lines('root.src', [
+            section_header(SECTION_1_NAME),
+            self.inclusion_of_file_1_from_root_file,
+            self.instruction_in_root_file,
+        ])
+        self.root_file_path = Path(self.root_file.name)
+
+    @property
+    def dir_contents(self) -> DirContents:
+        files_in_sub_dir = [self.included_file_1]
+        if self.source_line_in_included_file_2 is not None:
+            files_in_sub_dir.append(self.included_file_2)
+
+        return DirContents([
+            self.root_file,
+            Dir(self.sub_dir_of_included_files, files_in_sub_dir),
+        ])
+
+    @property
+    def source_location_of_inclusion_of_file_1_from_root_file(self) -> SourceLocation:
+        return SourceLocation(single_line_sequence(2, self.inclusion_of_file_1_from_root_file),
+                              self.root_file_path)
+
+    @property
+    def source_location_of_inclusion_of_file_2_from_included_file_1(self) -> SourceLocation:
+        return SourceLocation(single_line_sequence(1, inclusion_of_file(self.included_file_2.name)),
+                              Path(self.sub_dir_of_included_files) / self.included_file_1.name)
+
+
 class TestInclusionFromInclusion(unittest.TestCase):
     def test_instruction_source_locations(self):
         # ARRANGE #
-
-        instruction_in_root_file = ok_instruction('instruction 1 in root file')
-
-        instruction_in_included_file_1 = ok_instruction('instruction 1 in included file 1')
-        instruction_in_included_file_2 = ok_instruction('instruction 1 in included file 2')
-
-        included_file_2 = NameAndValue('included-file-2.src', [
-            instruction_in_included_file_2,
-        ])
-
-        included_file_1 = NameAndValue('included-file-1.src', [
-            inclusion_of_file(included_file_2.name),
-            instruction_in_included_file_1,
-        ])
-
-        root_file = NameAndValue('root.src', [
-            section_header(SECTION_1_NAME),
-            inclusion_of_file(included_file_1.name),
-            instruction_in_root_file,
-        ])
-        root_file_path = Path(root_file.name)
+        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
+            source_line_in_included_file_2_or_none_if_file_should_not_exist=ok_instruction(
+                'instruction in included file 2'))
 
         expected_doc = {
             SECTION_1_NAME: [
                 equals_instruction_without_description(
                     1,
-                    instruction_in_included_file_2,
+                    setup.source_line_in_included_file_2,
                     SECTION_1_NAME,
-                    Path(included_file_2.name),
+                    Path(setup.included_file_2.name),
                     [
-                        SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_1.name)),
-                                       root_file_path),
-                        SourceLocation(single_line_sequence(1, inclusion_of_file(included_file_2.name)),
-                                       Path(included_file_1.name)),
+                        setup.source_location_of_inclusion_of_file_1_from_root_file,
+                        setup.source_location_of_inclusion_of_file_2_from_included_file_1,
                     ]
                 ),
                 equals_instruction_without_description(
                     2,
-                    instruction_in_included_file_1,
+                    setup.instruction_in_included_file_1,
                     SECTION_1_NAME,
-                    Path(included_file_1.name),
+                    Path(setup.sub_dir_of_included_files) / setup.included_file_1.name,
                     [
-                        SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_1.name)),
-                                       root_file_path),
+                        setup.source_location_of_inclusion_of_file_1_from_root_file,
                     ]
                 ),
                 equals_instruction_without_description(
                     3,
-                    instruction_in_root_file,
+                    setup.instruction_in_root_file,
                     SECTION_1_NAME,
-                    Path(root_file.name),
+                    setup.root_file_path,
                     NO_FILE_INCLUSIONS,
                 ),
             ],
         }
 
-        arrangement = arrangement_of(SECTION_1_AND_2_WITHOUT_DEFAULT,
-                                     root_file,
-                                     [included_file_1, included_file_2])
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  setup.dir_contents,
+                                  setup.root_file_path,
+                                  )
         expectation = Expectation(expected_doc)
         # ACT & ASSERT #
         check(self, arrangement, expectation)
 
     def test_source_locations_of_file_access_error(self):
         # ARRANGE #
+        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
+            source_line_in_included_file_2_or_none_if_file_should_not_exist=None
+        )
 
-        non_existing_included_file_2_name = 'non-existing-included-file-2.src'
-
-        included_file_1 = NameAndValue('included-file-1.src', [
-            inclusion_of_file(non_existing_included_file_2_name),
-        ])
-
-        root_file = NameAndValue('root.src', [
-            section_header(SECTION_1_NAME),
-            inclusion_of_file(included_file_1.name),
-        ])
-        root_file_path = Path(root_file.name)
-
-        arrangement = arrangement_of(SECTION_1_AND_2_WITHOUT_DEFAULT,
-                                     root_file,
-                                     [included_file_1])
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  setup.dir_contents,
+                                  setup.root_file_path,
+                                  )
         expected_file_access_error = matches_file_access_error(
-            Path(non_existing_included_file_2_name),
+            Path(setup.included_file_2.name),
             [
-                SourceLocation(single_line_sequence(2,
-                                                    inclusion_of_file(included_file_1.name)),
-                               root_file_path),
-                SourceLocation(single_line_sequence(1, inclusion_of_file(non_existing_included_file_2_name)),
-                               Path(included_file_1.name)),
-
+                setup.source_location_of_inclusion_of_file_1_from_root_file,
+                setup.source_location_of_inclusion_of_file_2_from_included_file_1,
             ]
         )
         # ACT & ASSERT #
@@ -841,34 +863,22 @@ class TestInclusionFromInclusion(unittest.TestCase):
     def test_source_locations_of_file_source_error(self):
         # ARRANGE #
         error_message = 'the error message'
-        included_file_2 = NameAndValue('included-file-2.src', [
-            syntax_error_instruction(error_message),
-        ])
+        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
+            source_line_in_included_file_2_or_none_if_file_should_not_exist=syntax_error_instruction(error_message)
+        )
 
-        included_file_1 = NameAndValue('included-file-1.src', [
-            inclusion_of_file(included_file_2.name),
-        ])
-
-        root_file = NameAndValue('root.src', [
-            section_header(SECTION_1_NAME),
-            inclusion_of_file(included_file_1.name),
-        ])
-        root_file_path = Path(root_file.name)
-
-        arrangement = arrangement_of(SECTION_1_AND_2_WITHOUT_DEFAULT,
-                                     root_file,
-                                     [included_file_1, included_file_2])
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  setup.dir_contents,
+                                  setup.root_file_path,
+                                  )
         expected_file_source_error = matches_file_source_error(
             asrt.equals(SECTION_1_NAME),
             [
-                SourceLocation(single_line_sequence(2,
-                                                    inclusion_of_file(included_file_1.name)),
-                               root_file_path),
-                SourceLocation(single_line_sequence(1, inclusion_of_file(included_file_2.name)),
-                               Path(included_file_1.name)),
+                setup.source_location_of_inclusion_of_file_1_from_root_file,
+                setup.source_location_of_inclusion_of_file_2_from_included_file_1,
                 SourceLocation(single_line_sequence(1,
                                                     syntax_error_instruction(error_message)),
-                               Path(included_file_2.name)),
+                               Path(setup.included_file_2.name)),
 
             ]
         )
@@ -890,17 +900,6 @@ def check_single_file_inclusions(put: unittest.TestCase,
     expectation = Expectation(setup.expected_doc)
     # ACT & ASSERT #
     check(put, arrangement, expectation)
-
-
-def arrangement_of(sections_configuration: SectionsConfiguration,
-                   root_file: NameAndValue[Sequence[str]],
-                   non_root_files: Sequence[NameAndValue[Sequence[str]]]) -> Arrangement:
-    def mk_file(name_and_lines: NameAndValue[Sequence[str]]) -> File:
-        return file_with_lines(name_and_lines.name, name_and_lines.value)
-
-    return Arrangement(sections_configuration,
-                       DirContents([mk_file(f) for f in ([root_file] + non_root_files)]),
-                       Path(root_file.name))
 
 
 SECTION_1_AND_2_WITHOUT_DEFAULT = SectionsConfiguration([

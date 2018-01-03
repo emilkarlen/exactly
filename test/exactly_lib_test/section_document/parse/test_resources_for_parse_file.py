@@ -3,8 +3,9 @@ import unittest
 from pathlib import Path
 from typing import Dict, Sequence
 
+from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.document_parser import SectionsConfiguration, SectionElementParser, \
-    SectionConfiguration, parse
+    SectionConfiguration
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import FileAccessError, FileSourceError, new_source_error
 from exactly_lib.section_document.model import InstructionInfo, SectionContentElement
@@ -29,7 +30,9 @@ SECTION_2_NAME = 'section2'
 NO_FILE_INCLUSIONS = []
 
 
-def inclusion_of_file(file_name: str) -> str:
+def inclusion_of_file(file_name) -> str:
+    if not isinstance(file_name, str):
+        file_name = str(file_name)
     return INCLUDE_DIRECTIVE_NAME + ' ' + file_name
 
 
@@ -167,5 +170,5 @@ def check_and_expect_exception(put: unittest.TestCase,
     with tmp_dir_as_cwd(arrangement.cwd_dir_contents):
         with put.assertRaises(Exception) as cm:
             # ACT & ASSERT #
-            parse(arrangement.sections_configuration, arrangement.root_file)
+            sut.parse(arrangement.sections_configuration, arrangement.root_file)
         expected_exception.apply_with_message(put, cm.exception, 'Exception')
