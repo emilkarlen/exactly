@@ -25,7 +25,7 @@ class TestCaseSetup:
 
 def test_case_setup_of_source_file(source_file: pathlib.Path) -> TestCaseSetup:
     return TestCaseSetup(source_file,
-                         source_file.resolve().parent)
+                         source_file.parent)
 
 
 class ErrorInfo(tuple):
