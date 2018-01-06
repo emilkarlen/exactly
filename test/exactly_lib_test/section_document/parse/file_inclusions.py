@@ -32,6 +32,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCombinationOfDocuments),
         unittest.makeSuite(TestMultipleInclusionsOfSameFile),
         unittest.makeSuite(TestInclusionFromInclusion),
+        unittest.makeSuite(TestFileInclusionRelativityRootIsGivenToElementParser),
     ])
 
 
@@ -796,6 +797,7 @@ class SetupWithDoubleInclusionAndIncludedFilesInSubDir:
 
 
 class TestInclusionFromInclusion(unittest.TestCase):
+
     def test_instruction_source_locations(self):
         # ARRANGE #
         setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
@@ -887,6 +889,32 @@ class TestInclusionFromInclusion(unittest.TestCase):
         # ACT & ASSERT #
         check_and_expect_exception(self, arrangement,
                                    is_file_source_error(expected_file_source_error))
+
+
+class TestFileInclusionRelativityRootIsGivenToElementParser(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
+            source_line_in_included_file_2_or_none_if_file_should_not_exist=ok_instruction(
+                'instruction in included file 2'))
+
+        section_conf_with_parser_that_raises_ex_if_included_file_is_not_existing_file_rel_file_incl_rel_path = (
+            SectionsConfiguration([
+                SectionConfiguration(SECTION_1_NAME,
+                                     SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(
+                                         SECTION_1_NAME,
+                                         do_raise_ex_if_included_file_is_not_existing_file_rel_file_incl_path=True)
+                                     ),
+            ]))
+
+        arrangement = Arrangement(
+            section_conf_with_parser_that_raises_ex_if_included_file_is_not_existing_file_rel_file_incl_rel_path,
+            setup.dir_contents,
+            setup.root_file_path,
+        )
+        expectation = Expectation(asrt.anything_goes())
+        # ACT & ASSERT #
+        check(self, arrangement, expectation)
 
 
 def check_single_file_inclusions(put: unittest.TestCase,

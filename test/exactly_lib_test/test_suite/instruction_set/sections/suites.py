@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
@@ -23,7 +24,7 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
+                        parser.parse(pathlib.Path(), source)
 
     def test_succeed_when_valid_syntax(self):
         test_cases = [
@@ -35,7 +36,7 @@ class TestParse(unittest.TestCase):
         for instruction_argument in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                    parser.parse(source)
+                    parser.parse(pathlib.Path(), source)
 
 
 if __name__ == '__main__':

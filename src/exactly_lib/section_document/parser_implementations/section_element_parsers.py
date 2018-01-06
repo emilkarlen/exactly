@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.document_parser import SectionElementParser
@@ -75,7 +77,9 @@ class StandardSyntaxElementParser(SectionElementParser):
     def __init__(self, instruction_parser: InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
-    def parse(self, source: ParseSource) -> ParsedSectionElement:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedSectionElement:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):
             return new_empty_element(self._consume_and_return_current_line(source))

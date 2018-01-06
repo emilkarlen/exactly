@@ -34,7 +34,9 @@ class DocumentParser:
 
 
 class SectionElementParser:
-    def parse(self, source: ParseSource) -> ParsedSectionElement:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedSectionElement:
         """
         :raises FileSourceError The element cannot be parsed.
         """
@@ -306,7 +308,8 @@ class _Impl:
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
     def parse_element_at_current_line_using_current_section_element_parser(self) -> model.SectionContentElement:
-        parsed_element = self.parser_for_current_section.parse(self._document_source)
+        parsed_element = self.parser_for_current_section.parse(self._file_inclusion_relativity_root,
+                                                               self._document_source)
         return self._element_constructor.visit(parsed_element)
 
     def add_element_to_current_section(self, element: model.SectionContentElement):

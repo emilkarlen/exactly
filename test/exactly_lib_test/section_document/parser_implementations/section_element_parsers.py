@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from exactly_lib.section_document import model
@@ -29,7 +30,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ARRANGE #
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(source)
+                element = parser.parse(pathlib.Path(), source)
                 # ASSERT #
                 element_assertion = equals_empty_element(LineSequence(1, (source_lines[0],)))
                 element_assertion.apply_with_message(self, element, 'element')
@@ -49,7 +50,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ARRANGE #
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(source)
+                element = parser.parse(pathlib.Path(), source)
                 # ASSERT #
                 element_assertion = equals_comment_element(LineSequence(1, (source_lines[0],)))
                 element_assertion.apply_with_message(self, element, 'element')
@@ -68,7 +69,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                               remaining_source=remaining_source):
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(source)
+                element = parser.parse(pathlib.Path(), source)
                 # ASSERT #
                 expected_instruction_source = LineSequence(1, (source_lines[0],))
                 element_assertion = matches_instruction(
@@ -89,7 +90,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
         parser = sut.StandardSyntaxElementParser(_InstructionParserThatGivesConstant(expected))
         source = _source_for_lines(['ignored', 'source', 'lines'])
         # ACT #
-        element = parser.parse(source)
+        element = parser.parse(pathlib.Path(), source)
         # ASSERT #
         element_assertion = matches_instruction(
             source=asrt.is_(expected.source),

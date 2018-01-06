@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.model import InstructionInfo
@@ -7,7 +9,9 @@ from exactly_lib.util.line_source import LineSequence
 
 
 class ActPhaseParser(document_parser.SectionElementParser):
-    def parse(self, source: document_parser.ParseSource) -> ParsedInstruction:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: document_parser.ParseSource) -> ParsedInstruction:
         first_line_number = source.current_line_number
         current_line = source.current_line_text
         lines_read = [_un_escape(current_line)]
