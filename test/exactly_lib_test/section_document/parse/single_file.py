@@ -512,7 +512,9 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
     def __init__(self, section_name: str):
         self._section_name = section_name
 
-    def parse(self, source: ParseSource) -> ParsedSectionElement:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedSectionElement:
         current_line = source.current_line_text
         if current_line == '':
             return new_empty_element(consume_current_line_and_return_it_as_line_sequence(source))
@@ -545,7 +547,9 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
 
 
 class SectionElementParserThatFails(sut.SectionElementParser):
-    def parse(self, source: ParseSource) -> ParsedSectionElement:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedSectionElement:
         raise SourceError(consume_current_line_and_return_it_as_line_sequence(source).first_line,
                           'Unconditional failure')
 
