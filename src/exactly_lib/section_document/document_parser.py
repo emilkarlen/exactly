@@ -195,9 +195,8 @@ def _add_raw_doc(added_to: RawDoc,
             added_to[key] = elements
 
 
-class SectionContentsElementConstructor(ParsedSectionElementVisitor):
-    def __init__(self,
-                 element_builder: SectionContentElementBuilder):
+class _SectionContentsElementConstructor(ParsedSectionElementVisitor):
+    def __init__(self, element_builder: SectionContentElementBuilder):
         self._element_builder = element_builder
 
     def visit_instruction_element(self, instruction: ParsedInstruction) -> model.SectionContentElement:
@@ -230,7 +229,7 @@ class _Impl:
         self._name_of_current_section = None
         self._elements_for_current_section = []
         self._section_name_2_element_list = {}
-        self._element_constructor = SectionContentsElementConstructor(element_builder)
+        self._element_constructor = _SectionContentsElementConstructor(element_builder)
 
     @property
     def parser_for_current_section(self) -> SectionElementParser:
