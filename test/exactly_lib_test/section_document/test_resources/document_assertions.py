@@ -1,6 +1,7 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Dict
 
+from exactly_lib.section_document import model
 from exactly_lib.section_document.model import InstructionInfo, ElementType
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedInstruction, \
     ParsedNonInstructionElement, ParsedFileInclusionDirective
@@ -71,3 +72,17 @@ def equals_file_inclusion_directive(expected: ParsedFileInclusionDirective
                                     ) -> asrt.ValueAssertion[ParsedSectionElement]:
     return matches_file_inclusion_directive(equals_line_sequence(expected.source),
                                             asrt.equals(expected.files_to_include))
+
+
+def doc_to_dict(doc: model.Document) -> Dict[str, Sequence[model.SectionContentElement]]:
+    return {section: doc.section_2_elements[section].elements
+            for section in doc.section}
+
+
+def matches_document(expected: Dict[str, Sequence[asrt.ValueAssertion[model.SectionContentElement]]]
+                     ) -> asrt.ValueAssertion[model.Document]:
+    expected_section_2_assertion = {section: asrt.matches_sequence(expected[section])
+                                    for section in expected.keys()}
+
+    assertion_on_dict = asrt.matches_dict(expected_section_2_assertion)
+    return asrt.on_transformed(doc_to_dict, assertion_on_dict)

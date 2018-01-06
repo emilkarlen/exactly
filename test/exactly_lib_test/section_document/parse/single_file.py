@@ -13,8 +13,9 @@ from exactly_lib.section_document.section_element_parser import ParsedSectionEle
     new_empty_element, new_comment_element
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.section_document.parse.test_resources import consume_current_line_and_return_it_as_line_sequence, \
-    matches_document
+from exactly_lib_test.section_document.parse.test_resources.element_parser import \
+    consume_current_line_and_return_it_as_line_sequence
+from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection, \
     equals_instruction_without_description, \
