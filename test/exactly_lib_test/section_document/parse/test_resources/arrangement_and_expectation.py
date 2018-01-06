@@ -1,12 +1,10 @@
 import unittest
 from pathlib import Path
-from typing import Dict, Sequence
 
 from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.document_parser import SectionsConfiguration
-from exactly_lib.section_document.model import SectionContentElement
+from exactly_lib.section_document.model import Document
 from exactly_lib_test.section_document.parse.test_resources.element_parser import SECTIONS_CONFIGURATION
-from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -28,7 +26,7 @@ def std_conf_arrangement(cwd_dir_contents: DirContents,
 
 
 class Expectation:
-    def __init__(self, document: Dict[str, Sequence[asrt.ValueAssertion[SectionContentElement]]]):
+    def __init__(self, document: asrt.ValueAssertion[Document]):
         self.document = document
 
 
@@ -40,7 +38,7 @@ def check(put: unittest.TestCase,
         # ACT #
         actual = sut.parse(arrangement.sections_configuration, arrangement.root_file)
         # ASSERT #
-        matches_document(expectation.document).apply_without_message(put, actual)
+        expectation.document.apply_without_message(put, actual)
 
 
 def check_and_expect_exception(put: unittest.TestCase,

@@ -15,6 +15,7 @@ from exactly_lib_test.section_document.parse.test_resources.element_parser impor
     ARBITRARY_OK_INSTRUCTION_SOURCE_LINE, SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions
 from exactly_lib_test.section_document.parse.test_resources.exception_assertions import is_file_source_error, \
     matches_file_source_error, is_file_access_error, matches_file_access_error
+from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
     equals_instruction_without_description
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
@@ -559,7 +560,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
                                                included_file_1,
                                                included_file_2]),
                                   root_file_path)
-        expectation = Expectation(expected_doc)
+        expectation = Expectation(matches_document(expected_doc))
         # ACT & ASSERT #
         check(self, arrangement, expectation)
 
@@ -603,7 +604,7 @@ class TestCombinationOfDocuments(unittest.TestCase):
         arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
                                   DirContents([root_file]),
                                   root_file_path)
-        expectation = Expectation(expected_doc)
+        expectation = Expectation(matches_document(expected_doc))
         # ACT & ASSERT #
         check(self, arrangement, expectation)
 
@@ -836,7 +837,7 @@ class TestInclusionFromInclusion(unittest.TestCase):
                                   setup.dir_contents,
                                   setup.root_file_path,
                                   )
-        expectation = Expectation(expected_doc)
+        expectation = Expectation(matches_document(expected_doc))
         # ACT & ASSERT #
         check(self, arrangement, expectation)
 
@@ -898,7 +899,7 @@ def check_single_file_inclusions(put: unittest.TestCase,
     arrangement = Arrangement(setup.sections_conf,
                               DirContents([root_file, included_file]),
                               Path(root_file_name))
-    expectation = Expectation(setup.expected_doc)
+    expectation = Expectation(matches_document(setup.expected_doc))
     # ACT & ASSERT #
     check(put, arrangement, expectation)
 
