@@ -122,7 +122,8 @@ def parse(configuration: SectionsConfiguration,
           source_file_path: pathlib.Path) -> model.Document:
     raw_doc = _parse_file(_internal_conf_of(configuration),
                           SectionContentElementBuilder(source_file_path, []),
-                          _resolve_file_inclusion_relativity_root(pathlib.Path.cwd(), []))
+                          _resolve_file_inclusion_relativity_root(pathlib.Path.cwd(), []),
+                          [])
     return _build_document(raw_doc)
 
 
@@ -154,7 +155,8 @@ class _DocumentParserForSectionsConfiguration(DocumentParser):
         raw_doc = _parse_source(self._configuration,
                                 SectionContentElementBuilder(source_file_path, []),
                                 file_inclusion_relativity_root,
-                                source)
+                                source,
+                                [])
         return _build_document(raw_doc)
 
 
@@ -164,27 +166,37 @@ RawDoc = Dict[str, List[SectionContentElement]]
 def _parse_file(conf: _SectionsConfigurationInternal,
                 element_builder: SectionContentElementBuilder,
                 file_inclusion_relativity_root: pathlib.Path,
+                previously_visited_paths: List[pathlib.Path],
                 ) -> RawDoc:
     path_to_file = file_inclusion_relativity_root / element_builder.file_path
     source = read_source_file(path_to_file,
                               element_builder.file_path,
                               element_builder.file_inclusion_chain)
+    resolved_path_of_current_file = path_to_file.resolve()
+    if resolved_path_of_current_file in previously_visited_paths:
+        raise FileAccessError(element_builder.file_path,
+                              'Cyclic inclusion of file',
+                              element_builder.file_inclusion_chain)
+    visited_paths = previously_visited_paths + [resolved_path_of_current_file]
     file_inclusion_relativity_root = path_to_file.parent
     return _parse_source(conf,
                          element_builder,
                          file_inclusion_relativity_root,
-                         source)
+                         source,
+                         visited_paths)
 
 
 def _parse_source(conf: _SectionsConfigurationInternal,
                   element_builder: SectionContentElementBuilder,
                   file_inclusion_relativity_root: pathlib.Path,
                   source: ParseSource,
+                  visited_paths: List[pathlib.Path],
                   ) -> RawDoc:
     impl = _Impl(conf,
                  element_builder,
                  file_inclusion_relativity_root,
-                 source)
+                 source,
+                 visited_paths)
     return impl.apply()
 
 
@@ -221,7 +233,8 @@ class _Impl:
                  configuration: _SectionsConfigurationInternal,
                  element_builder: SectionContentElementBuilder,
                  file_inclusion_relativity_root: pathlib.Path,
-                 document_source: ParseSource):
+                 document_source: ParseSource,
+                 visited_paths: List[pathlib.Path]):
         self.configuration = configuration
         self._element_builder = element_builder
         self._file_inclusion_relativity_root = file_inclusion_relativity_root
@@ -232,6 +245,7 @@ class _Impl:
         self._elements_for_current_section = []
         self._section_name_2_element_list = {}
         self._element_constructor = _SectionContentsElementConstructor(element_builder)
+        self.visited_paths = visited_paths
 
     @property
     def parser_for_current_section(self) -> SectionElementParser:
@@ -375,7 +389,8 @@ class _Impl:
                                                                   file_to_include)
             included_doc = _parse_file(conf,
                                        element_builder,
-                                       self._file_inclusion_relativity_root)
+                                       self._file_inclusion_relativity_root,
+                                       self.visited_paths)
             _add_raw_doc(self._section_name_2_element_list, included_doc)
 
 
