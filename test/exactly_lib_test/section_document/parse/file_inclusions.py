@@ -21,6 +21,7 @@ from exactly_lib_test.section_document.test_resources.section_contents_elements 
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -33,6 +34,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestMultipleInclusionsOfSameFile),
         unittest.makeSuite(TestInclusionFromInclusion),
         unittest.makeSuite(TestFileInclusionRelativityRootIsGivenToElementParser),
+        unittest.makeSuite(TestDetectionOfInclusionCycles),
     ])
 
 
@@ -917,6 +919,153 @@ class TestFileInclusionRelativityRootIsGivenToElementParser(unittest.TestCase):
         check(self, arrangement, expectation)
 
 
+class TestDetectionOfInclusionCycles(unittest.TestCase):
+    def test_inclusion_of_current_source_file(self):
+        # ARRANGE #
+        root_file_name = 'root.src'
+        root_file_path = Path(root_file_name)
+        root_file = file_with_lines(root_file_name, [
+            inclusion_of_file(root_file_name),
+        ])
+        cwd_dir_contents = DirContents([root_file])
+
+        arrangement = Arrangement(SECTION_1_AND_2_WITH_SECTION_1_AS_DEFAULT,
+                                  cwd_dir_contents,
+                                  root_file_path)
+        # EXPECTATION #
+        expected_exception = is_file_access_error(
+            matches_file_access_error(
+                erroneous_path=root_file_path,
+                location_path=[
+                    SourceLocation(single_line_sequence(1, inclusion_of_file(root_file_name)),
+                                   root_file_path)
+                ]))
+        # ACT & ASSERT #
+        check_and_expect_exception(self,
+                                   arrangement=arrangement,
+                                   expected_exception=expected_exception)
+
+    def test_inclusion_of_current_source_file_via_sym_link(self):
+        # ARRANGE #
+        non_symlink_file_name = 'file.src'
+        non_symlink_file_path = Path(non_symlink_file_name)
+
+        symlink_file_name = 'sym-link-to-file.src'
+        symlink_file_path = Path(symlink_file_name)
+
+        symlink_file = sym_link(symlink_file_name,
+                                non_symlink_file_name)
+
+        cases = [
+            NEA('root file is non-symlink file',
+                expected=matches_file_access_error(
+                    erroneous_path=symlink_file_path,
+                    location_path=[
+                        SourceLocation(single_line_sequence(1, inclusion_of_file(symlink_file_name)),
+                                       non_symlink_file_path)
+                    ]),
+                actual=Arrangement(SECTION_1_WITH_SECTION_1_AS_DEFAULT,
+                                   cwd_dir_contents=DirContents([
+                                       file_with_lines(non_symlink_file_name, [
+                                           inclusion_of_file(symlink_file_name),
+                                       ]),
+                                       symlink_file,
+                                   ]),
+                                   root_file=non_symlink_file_path)
+                ),
+            NEA('root file is symlink file',
+                expected=matches_file_access_error(
+                    erroneous_path=non_symlink_file_path,
+                    location_path=[
+                        SourceLocation(single_line_sequence(1, inclusion_of_file(non_symlink_file_name)),
+                                       symlink_file_path)
+                    ]),
+                actual=Arrangement(SECTION_1_WITH_SECTION_1_AS_DEFAULT,
+                                   cwd_dir_contents=DirContents([
+                                       file_with_lines(non_symlink_file_name, [
+                                           inclusion_of_file(non_symlink_file_name),
+                                       ]),
+                                       symlink_file,
+                                   ]),
+                                   root_file=symlink_file_path)
+                ),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                # ACT & ASSERT #
+                check_and_expect_exception(self,
+                                           arrangement=nea.actual,
+                                           expected_exception=is_file_access_error(nea.expected))
+
+    def test_distance_gt_1_and_different_rel_path_of_file_included_twice(self):
+        # ARRANGE #
+        sub_dir_name = 'sub-dir'
+        sub_dir_path = PurePosixPath('sub-dir')
+        file_in_root_dir_0_name = '0.src'
+        file_in_root_dir_1_name = '1.src'
+        file_in_sub_dir_2_name = '2.src'
+        file_in_sub_dir_3_name = '3.src'
+        file_in_sub_dir_4_name = '4.src'
+
+        inclusion_of_file_1_source_code = inclusion_of_file(file_in_root_dir_1_name)
+        file_in_root_dir_0 = file_with_lines(file_in_root_dir_0_name, [
+            inclusion_of_file_1_source_code,
+        ])
+
+        inclusion_of_file_2_source_code = inclusion_of_file(sub_dir_path / file_in_sub_dir_2_name)
+        file_in_root_dir_1 = file_with_lines(file_in_root_dir_1_name, [
+            inclusion_of_file_2_source_code,
+        ])
+        inclusion_of_file_3_source_code = inclusion_of_file(file_in_sub_dir_3_name)
+        file_in_sub_dir_2 = file_with_lines(file_in_sub_dir_2_name, [
+            inclusion_of_file_3_source_code
+        ])
+        inclusion_of_file_4_source_code = inclusion_of_file(file_in_sub_dir_4_name)
+        file_in_sub_dir_3 = file_with_lines(file_in_sub_dir_3_name, [
+            inclusion_of_file_4_source_code
+        ])
+
+        inclusion_path_that_cause_circle = PurePosixPath('..') / file_in_root_dir_1_name
+        inclusion_of_file_1_from_file_4_source_code = inclusion_of_file(inclusion_path_that_cause_circle)
+        file_in_sub_dir_4 = file_with_lines(file_in_sub_dir_4_name, [
+            inclusion_of_file_1_from_file_4_source_code
+        ])
+
+        cwd_dir_contents = DirContents([
+            file_in_root_dir_0,
+            file_in_root_dir_1,
+            Dir(sub_dir_name, [
+                file_in_sub_dir_2,
+                file_in_sub_dir_3,
+                file_in_sub_dir_4,
+            ])
+        ])
+        # EXPECTATION #
+        expected_exception = is_file_access_error(
+            matches_file_access_error(
+                erroneous_path=Path(inclusion_path_that_cause_circle),
+                location_path=[
+                    SourceLocation(single_line_sequence(1, inclusion_of_file_1_source_code),
+                                   Path(file_in_root_dir_0_name)),
+                    SourceLocation(single_line_sequence(1, inclusion_of_file_2_source_code),
+                                   Path(file_in_root_dir_1_name)),
+                    SourceLocation(single_line_sequence(1, inclusion_of_file_3_source_code),
+                                   Path(sub_dir_path / file_in_sub_dir_2_name)),
+                    SourceLocation(single_line_sequence(1, inclusion_of_file_4_source_code),
+                                   Path(file_in_sub_dir_3_name)),
+                    SourceLocation(single_line_sequence(1, inclusion_of_file_1_from_file_4_source_code),
+                                   Path(file_in_sub_dir_4_name)),
+                ])
+        )
+        arrangement = Arrangement(SECTION_1_WITH_SECTION_1_AS_DEFAULT,
+                                  cwd_dir_contents,
+                                  Path(file_in_root_dir_0_name))
+        # ACT & ASSERT #
+        check_and_expect_exception(self,
+                                   arrangement=arrangement,
+                                   expected_exception=expected_exception)
+
+
 def check_single_file_inclusions(put: unittest.TestCase,
                                  setup: SingleFileInclusionCheckSetup,
                                  root_file_name: str,
@@ -947,6 +1096,13 @@ SECTION_1_AND_2_WITH_SECTION_1_AS_DEFAULT = SectionsConfiguration([
                          ),
     SectionConfiguration(SECTION_2_NAME,
                          SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(SECTION_2_NAME)
+                         ),
+],
+    default_section_name=SECTION_1_NAME)
+
+SECTION_1_WITH_SECTION_1_AS_DEFAULT = SectionsConfiguration([
+    SectionConfiguration(SECTION_1_NAME,
+                         SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(SECTION_1_NAME)
                          ),
 ],
     default_section_name=SECTION_1_NAME)

@@ -59,11 +59,23 @@ class SectionContentElement:
 
     @property
     def location(self) -> SourceLocation:
+        """
+        Gives the
+         - source code of the element
+         - file path that contains the element (or None iff the element is not from a file (but from stdin, i.e.)
+           file path is relative the location of the last element in file_inclusion_chain
+           If there is no file_inclusion_chain element, then it is the (relative) path of the root file
+        """
         return self._location
 
     @property
     def file_inclusion_chain(self) -> Sequence[SourceLocation]:
         """
+        Each element holds
+         - the source code that "represents" the inclusion directive
+         - the file that contains the above source code.
+           the file path is relative the location of the file of the previous inclusion chain element
+
         :return: The sequence of file inclusions that leads to the file specified by `location`.
         """
         return self._file_inclusion_chain
@@ -75,10 +87,16 @@ class SectionContentElement:
 
     @property
     def file_path(self) -> pathlib.Path:
+        """
+        :return: The file component of `location`
+        """
         return self._location.file_path
 
     @property
     def source(self) -> line_source.LineSequence:
+        """
+        :return: The source component of `location`
+        """
         return self._source
 
     @property
