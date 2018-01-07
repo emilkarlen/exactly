@@ -50,12 +50,14 @@ class SectionContentElement:
                  source: line_source.LineSequence,
                  instruction_info: InstructionInfo,
                  file_path: pathlib.Path = None,
-                 file_inclusion_chain: Sequence[SourceLocation] = ()):
+                 file_inclusion_chain: Sequence[SourceLocation] = (),
+                 abs_path_of_dir_containing_file: pathlib.Path = None):
         self._element_type = element_type
         self._source = source
         self._instruction_info = instruction_info
         self._location = SourceLocation(source, file_path)
         self._file_inclusion_chain = file_inclusion_chain
+        self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
     @property
     def location(self) -> SourceLocation:
@@ -91,6 +93,21 @@ class SectionContentElement:
         :return: The file component of `location`
         """
         return self._location.file_path
+
+    @property
+    def abs_path_of_dir_containing_file(self) -> pathlib.Path:
+        """
+        :return: The absolute path of the dir that contains
+        the final component of `file_path`,
+        or, if `file_path` is None, a path that
+        serves the same purpose for specifying paths
+        relative to (the base name of) `file_path`.
+
+        I.e., the absolute path of `file_path` is
+
+          self.abs_path_of_dir_containing_file / self.file_path.name
+        """
+        return self._abs_path_of_dir_containing_file
 
     @property
     def source(self) -> line_source.LineSequence:
