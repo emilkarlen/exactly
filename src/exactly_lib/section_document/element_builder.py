@@ -18,39 +18,36 @@ class SectionContentElementBuilder:
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
     def new_empty(self, source: line_source.LineSequence) -> SectionContentElement:
-        return SectionContentElement(ElementType.EMPTY,
-                                     source,
-                                     None,
-                                     self._file_path,
-                                     self._file_inclusion_chain,
-                                     self._abs_path_of_dir_containing_file)
+        return self.new_non_instruction(source,
+                                        ElementType.EMPTY)
 
     def new_comment(self, source: line_source.LineSequence) -> SectionContentElement:
-        return SectionContentElement(ElementType.COMMENT,
-                                     source,
-                                     None,
-                                     self._file_path,
-                                     self._file_inclusion_chain,
-                                     self._abs_path_of_dir_containing_file)
+        return self.new_non_instruction(source,
+                                        ElementType.COMMENT)
 
     def new_non_instruction(self,
                             source: line_source.LineSequence,
                             element_type: ElementType) -> SectionContentElement:
-        return SectionContentElement(element_type,
-                                     source,
-                                     None,
-                                     self._file_path,
-                                     self._file_inclusion_chain,
-                                     self._abs_path_of_dir_containing_file)
+        return self._new(element_type,
+                         source,
+                         None)
 
     def new_instruction(self,
                         source: line_source.LineSequence,
                         instruction: Instruction,
                         description: str = None) -> SectionContentElement:
-        return SectionContentElement(ElementType.INSTRUCTION,
+        return self._new(ElementType.INSTRUCTION,
+                         source,
+                         InstructionInfo(instruction,
+                                         description))
+
+    def _new(self,
+             element_type: ElementType,
+             source: line_source.LineSequence,
+             instruction_info: InstructionInfo) -> SectionContentElement:
+        return SectionContentElement(element_type,
                                      source,
-                                     InstructionInfo(instruction,
-                                                     description),
+                                     instruction_info,
                                      self._file_path,
                                      self._file_inclusion_chain,
                                      self._abs_path_of_dir_containing_file)
