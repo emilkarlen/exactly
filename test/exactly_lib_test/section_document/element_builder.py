@@ -9,6 +9,7 @@ from exactly_lib_test.section_document.test_resources.section_contents_elements 
     InstructionInSection, equals_instruction_in_section, matches_instruction_info, equals_file_inclusion_chain
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
 def suite() -> unittest.TestSuite:
@@ -63,21 +64,21 @@ class TestBuild(unittest.TestCase):
         cases = [
             NEA('empty',
                 expected=matches_section_contents_element(ElementType.EMPTY,
-                                                          line_sequence,
+                                                          equals_line_sequence(line_sequence),
                                                           asrt.is_none,
                                                           assertion_on_file_path,
                                                           assertion_on_file_inclusion_chain),
                 actual=builder.new_empty(line_sequence)),
             NEA('comment',
                 expected=matches_section_contents_element(ElementType.COMMENT,
-                                                          line_sequence,
+                                                          equals_line_sequence(line_sequence),
                                                           asrt.is_none,
                                                           assertion_on_file_path,
                                                           assertion_on_file_inclusion_chain),
                 actual=builder.new_comment(line_sequence)),
             NEA('instruction without description',
                 expected=matches_section_contents_element(ElementType.INSTRUCTION,
-                                                          line_sequence,
+                                                          equals_line_sequence(line_sequence),
                                                           matches_instruction_info(
                                                               asrt.is_none,
                                                               equals_instruction_in_section(INSTRUCTION)),
@@ -86,7 +87,7 @@ class TestBuild(unittest.TestCase):
                 actual=builder.new_instruction(line_sequence, INSTRUCTION, None)),
             NEA('instruction with description',
                 expected=matches_section_contents_element(ElementType.INSTRUCTION,
-                                                          line_sequence,
+                                                          equals_line_sequence(line_sequence),
                                                           matches_instruction_info(
                                                               asrt.equals(description),
                                                               equals_instruction_in_section(INSTRUCTION)),

@@ -2,9 +2,10 @@ import unittest
 from pathlib import Path, PosixPath, PurePosixPath
 from typing import List, Dict, Sequence
 
+from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.document_parser import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.exceptions import FileAccessError
-from exactly_lib.section_document.model import SectionContentElement
+from exactly_lib.section_document.model import SectionContentElement, ElementType
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.parse.test_resources.arrangement_and_expectation import Expectation, check, \
@@ -17,7 +18,8 @@ from exactly_lib_test.section_document.parse.test_resources.exception_assertions
     matches_file_source_error, is_file_access_error, matches_file_access_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \
-    equals_instruction_without_description
+    equals_instruction_without_description, matches_section_contents_element
+from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -35,6 +37,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestInclusionFromInclusion),
         unittest.makeSuite(TestFileInclusionRelativityRootIsGivenToElementParser),
         unittest.makeSuite(TestDetectionOfInclusionCycles),
+        unittest.makeSuite(TestAbsPathOfDirContainingFile),
     ])
 
 
@@ -917,6 +920,65 @@ class TestFileInclusionRelativityRootIsGivenToElementParser(unittest.TestCase):
         expectation = Expectation(asrt.anything_goes())
         # ACT & ASSERT #
         check(self, arrangement, expectation)
+
+
+class TestAbsPathOfDirContainingFile(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+        sub_dir_name = 'sub-dir'
+        sub_dir_path = PurePosixPath('sub-dir')
+        file_0_in_sub_dir_name = '0.src'
+        file_1_in_root_dir_name = '1.src'
+        file_2_in_sub_dir_name = '2.src'
+
+        file_2_in_sub_dir = file_with_lines(file_2_in_sub_dir_name, [
+            ok_instruction('2'),
+        ])
+        file_1_in_root_dir = file_with_lines(file_1_in_root_dir_name, [
+            ok_instruction('1'),
+            inclusion_of_file(sub_dir_path / file_2_in_sub_dir.name),
+        ])
+        file_0_in_sub_dir = file_with_lines(file_0_in_sub_dir_name, [
+            ok_instruction('0'),
+            inclusion_of_file(PurePosixPath('..') / file_1_in_root_dir.name),
+        ])
+        cwd_dir_contents = DirContents([
+            file_1_in_root_dir,
+            Dir(sub_dir_name, [
+                file_0_in_sub_dir,
+                file_2_in_sub_dir,
+            ])
+        ])
+        root_file_path = Path(sub_dir_name) / file_0_in_sub_dir.name
+        with tmp_dir_as_cwd(cwd_dir_contents) as cwd_path:
+            # ACT #
+            actual_doc = sut.parse(SECTION_1_WITH_SECTION_1_AS_DEFAULT,
+                                   root_file_path)
+            # ASSERT #
+            # EXPECTATION #
+            abs_cwd_path = cwd_path.resolve()
+            expected_doc = {
+                SECTION_1_NAME: [
+                    matches_section_contents_element(
+                        ElementType.INSTRUCTION,
+                        abs_path_of_dir_containing_file=
+                        asrt.equals(abs_cwd_path / sub_dir_name)
+                    ),
+                    matches_section_contents_element(
+                        ElementType.INSTRUCTION,
+                        abs_path_of_dir_containing_file=
+                        asrt.equals(abs_cwd_path)
+                    ),
+                    matches_section_contents_element(
+                        ElementType.INSTRUCTION,
+                        abs_path_of_dir_containing_file=
+                        asrt.equals(abs_cwd_path / sub_dir_name)
+                    ),
+                ],
+            }
+            # ASSERT #
+            assertion_on_doc = matches_document(expected_doc)
+            assertion_on_doc.apply_without_message(self, actual_doc)
 
 
 class TestDetectionOfInclusionCycles(unittest.TestCase):

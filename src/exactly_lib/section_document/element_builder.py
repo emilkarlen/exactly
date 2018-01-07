@@ -10,23 +10,28 @@ class SectionContentElementBuilder:
 
     def __init__(self,
                  file_path: pathlib.Path = None,
-                 file_inclusion_chain: Sequence[line_source.SourceLocation] = ()):
+                 file_inclusion_chain: Sequence[line_source.SourceLocation] = (),
+                 abs_path_of_dir_containing_file: pathlib.Path = None,
+                 ):
         self._file_path = file_path
         self._file_inclusion_chain = file_inclusion_chain
+        self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
     def new_empty(self, source: line_source.LineSequence) -> SectionContentElement:
         return SectionContentElement(ElementType.EMPTY,
                                      source,
                                      None,
                                      self._file_path,
-                                     self._file_inclusion_chain)
+                                     self._file_inclusion_chain,
+                                     self._abs_path_of_dir_containing_file)
 
     def new_comment(self, source: line_source.LineSequence) -> SectionContentElement:
         return SectionContentElement(ElementType.COMMENT,
                                      source,
                                      None,
                                      self._file_path,
-                                     self._file_inclusion_chain)
+                                     self._file_inclusion_chain,
+                                     self._abs_path_of_dir_containing_file)
 
     def new_non_instruction(self,
                             source: line_source.LineSequence,
@@ -34,7 +39,9 @@ class SectionContentElementBuilder:
         return SectionContentElement(element_type,
                                      source,
                                      None,
-                                     self._file_path)
+                                     self._file_path,
+                                     self._file_inclusion_chain,
+                                     self._abs_path_of_dir_containing_file)
 
     def new_instruction(self,
                         source: line_source.LineSequence,
@@ -45,7 +52,8 @@ class SectionContentElementBuilder:
                                      InstructionInfo(instruction,
                                                      description),
                                      self._file_path,
-                                     self._file_inclusion_chain)
+                                     self._file_inclusion_chain,
+                                     self._abs_path_of_dir_containing_file)
 
     @property
     def file_path(self) -> pathlib.Path:
@@ -57,10 +65,3 @@ class SectionContentElementBuilder:
 
     def location_path_of(self, source: line_source.LineSequence) -> Sequence[line_source.SourceLocation]:
         return list(self._file_inclusion_chain) + [line_source.SourceLocation(source, self._file_path)]
-
-    def for_inclusion(self,
-                      source: line_source.LineSequence,
-                      file_to_include: pathlib.Path):
-        file_inclusion_chain = self.location_path_of(source)
-        return SectionContentElementBuilder(file_to_include,
-                                            file_inclusion_chain)

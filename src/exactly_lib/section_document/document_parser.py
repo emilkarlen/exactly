@@ -121,7 +121,8 @@ def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
 def parse(configuration: SectionsConfiguration,
           source_file_path: pathlib.Path) -> model.Document:
     raw_doc = _parse_file(_internal_conf_of(configuration),
-                          SectionContentElementBuilder(source_file_path, []),
+                          source_file_path,
+                          [],
                           _resolve_file_inclusion_relativity_root(pathlib.Path.cwd(), []),
                           [])
     return _build_document(raw_doc)
@@ -164,23 +165,26 @@ RawDoc = Dict[str, List[SectionContentElement]]
 
 
 def _parse_file(conf: _SectionsConfigurationInternal,
-                element_builder: SectionContentElementBuilder,
+                file_path: pathlib.Path,
+                file_inclusion_chain: Sequence[line_source.SourceLocation],
                 file_inclusion_relativity_root: pathlib.Path,
                 previously_visited_paths: List[pathlib.Path],
                 ) -> RawDoc:
-    path_to_file = file_inclusion_relativity_root / element_builder.file_path
+    path_to_file = file_inclusion_relativity_root / file_path
     source = read_source_file(path_to_file,
-                              element_builder.file_path,
-                              element_builder.file_inclusion_chain)
+                              file_path,
+                              file_inclusion_chain)
     resolved_path_of_current_file = path_to_file.resolve()
     if resolved_path_of_current_file in previously_visited_paths:
-        raise FileAccessError(element_builder.file_path,
+        raise FileAccessError(file_path,
                               'Cyclic inclusion of file',
-                              element_builder.file_inclusion_chain)
+                              file_inclusion_chain)
     visited_paths = previously_visited_paths + [resolved_path_of_current_file]
     file_inclusion_relativity_root = path_to_file.parent
     return _parse_source(conf,
-                         element_builder,
+                         SectionContentElementBuilder(file_path,
+                                                      file_inclusion_chain,
+                                                      resolved_path_of_current_file.parent),
                          file_inclusion_relativity_root,
                          source,
                          visited_paths)
@@ -385,10 +389,9 @@ class _Impl:
                                               self._name_of_current_section,
                                               self.configuration.section_element_name_for_error_messages)
         for file_to_include in inclusion_directive.files_to_include:
-            element_builder = self._element_builder.for_inclusion(inclusion_directive.source,
-                                                                  file_to_include)
             included_doc = _parse_file(conf,
-                                       element_builder,
+                                       file_to_include,
+                                       self._element_builder.location_path_of(inclusion_directive.source),
                                        self._file_inclusion_relativity_root,
                                        self.visited_paths)
             _add_raw_doc(self._section_name_2_element_list, included_doc)
