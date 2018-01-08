@@ -7,7 +7,7 @@ from exactly_lib.section_document.model import SectionContents, SectionContentEl
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
-from exactly_lib.util.line_source import LineInFile
+from exactly_lib.util.line_source import LineInFile, SourceLocationPath, source_location_path_of_line_in_file
 
 
 class ElementHeaderExecutor:
@@ -35,6 +35,10 @@ class Failure(tuple):
     @property
     def source_location(self) -> LineInFile:
         return self[1]
+
+    @property
+    def source_location3(self) -> SourceLocationPath:
+        return source_location_path_of_line_in_file(self.source_location)
 
     @property
     def failure_details(self) -> FailureDetails:
@@ -88,7 +92,7 @@ def execute_phase(phase_contents: SectionContents,
             failure.status,
             sds,
             InstructionFailureInfo(phase_step,
-                                   failure.source_location,
+                                   source_location_path_of_line_in_file(failure.source_location),
                                    failure.failure_details,
                                    failure.element_description)
         )

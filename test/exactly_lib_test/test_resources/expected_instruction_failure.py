@@ -174,7 +174,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
         assert isinstance(actual, InstructionFailureInfo)
         self.assertions_(unittest_case,
                          actual.phase_step,
-                         actual.source_location.line,
+                         actual.source_location.location.source.first_line,
                          actual.failure_details)
 
     @property

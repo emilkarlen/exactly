@@ -3,8 +3,7 @@ from enum import Enum
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.failure_details import FailureDetails
-from exactly_lib.util.line_source import LineInFile, lines_in_file_from_line, SourceLocationPath, \
-    SourceLocation
+from exactly_lib.util.line_source import SourceLocationPath
 
 
 class FailureInfo:
@@ -33,7 +32,7 @@ class InstructionFailureInfo(FailureInfo):
 
     def __init__(self,
                  phase_step: PhaseStep,
-                 source_location: LineInFile,
+                 source_location: SourceLocationPath,
                  failure_details: FailureDetails,
                  element_description: str = None):
         super().__init__(phase_step, failure_details)
@@ -42,15 +41,8 @@ class InstructionFailureInfo(FailureInfo):
         self.__element_description = element_description
 
     @property
-    def source_location(self) -> LineInFile:
+    def source_location(self) -> SourceLocationPath:
         return self.__source_location
-
-    @property
-    def source_location3(self) -> SourceLocationPath:
-        lines_in_file = lines_in_file_from_line(self.source_location)
-        return SourceLocationPath(SourceLocation(lines_in_file.lines,
-                                                 lines_in_file.file_path),
-                                  [])
 
     @property
     def element_description(self) -> str:

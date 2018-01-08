@@ -152,7 +152,7 @@ class _SourceDisplayer(FailureInfoVisitor):
 
     def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
         output_location3(self.out,
-                         failure_info.source_location3,
+                         failure_info.source_location,
                          failure_info.phase_step.phase.identifier,
                          failure_info.element_description,
                          SECTION_CONCEPT_NAME)

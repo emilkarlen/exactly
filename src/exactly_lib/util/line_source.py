@@ -161,5 +161,12 @@ def source_location_path_of(file_path: pathlib.Path,
     )
 
 
+def source_location_path_of_line_in_file(line_in_file: LineInFile) -> SourceLocationPath:
+    return source_location_path_without_inclusions(
+        SourceLocation(line_sequence_from_line(line_in_file.line),
+                       line_in_file.file_path)
+    )
+
+
 def source_location_path_without_inclusions(location: SourceLocation) -> SourceLocationPath:
     return SourceLocationPath(location, ())
