@@ -7,7 +7,7 @@ from exactly_lib.section_document.model import SectionContents, SectionContentEl
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
-from exactly_lib.util.line_source import LineInFile, SourceLocationPath, source_location_path_of_line_in_file
+from exactly_lib.util.line_source import SourceLocationPath
 
 
 class ElementHeaderExecutor:
@@ -23,9 +23,12 @@ class ElementHeaderExecutorThatDoesNothing(ElementHeaderExecutor):
 class Failure(tuple):
     def __new__(cls,
                 status: PartialResultStatus,
-                source_location: LineInFile,
+                source_location: SourceLocationPath,
                 failure_details: FailureDetails,
                 element_description: str = None):
+        """
+        :param source_location: None if no source is related to the failure.
+        """
         return tuple.__new__(cls, (status, source_location, failure_details, element_description))
 
     @property
@@ -33,12 +36,11 @@ class Failure(tuple):
         return self[0]
 
     @property
-    def source_location(self) -> LineInFile:
+    def source_location(self) -> SourceLocationPath:
+        """
+        :return: None if no source is related to the failure.
+        """
         return self[1]
-
-    @property
-    def source_location3(self) -> SourceLocationPath:
-        return source_location_path_of_line_in_file(self.source_location)
 
     @property
     def failure_details(self) -> FailureDetails:
@@ -92,7 +94,7 @@ def execute_phase(phase_contents: SectionContents,
             failure.status,
             sds,
             InstructionFailureInfo(phase_step,
-                                   source_location_path_of_line_in_file(failure.source_location),
+                                   failure.source_location,
                                    failure.failure_details,
                                    failure.element_description)
         )
@@ -130,7 +132,7 @@ def execute_phase_prim(phase_contents: SectionContents,
                                            instruction_info)
             if failure_info is not None:
                 return Failure(failure_info.status,
-                               failure_info.source_location,
+                               failure_info.source_location_path,
                                failure_info.failure_details,
                                instruction_info.description)
     return None
