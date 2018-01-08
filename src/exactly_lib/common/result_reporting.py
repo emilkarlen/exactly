@@ -39,10 +39,9 @@ def error_message_for_error_info(error_info: ErrorInfo) -> str:
 
 
 def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
-    _output_location(printer,
-                     error_info.file,
+    output_location3(printer,
+                     error_info.source_location_path,
                      error_info.maybe_section_name,
-                     error_info.source,
                      None,
                      SECTION_CONCEPT_NAME)
     _ErrorDescriptionDisplayer(printer).visit(error_info.description)
@@ -74,11 +73,11 @@ def _output_location(printer: FilePrinter,
         printer.write_empty_line()
 
 
-def output_location2(printer: FilePrinter,
-                     source_info: LinesInFile,
-                     section_name: str,
-                     description: str,
-                     section_presentation_type_name: str):
+def _output_location2(printer: FilePrinter,
+                      source_info: LinesInFile,
+                      section_name: str,
+                      description: str,
+                      section_presentation_type_name: str):
     if source_info is None:
         return _output_location(printer,
                                 None,
@@ -101,20 +100,20 @@ def output_location3(printer: FilePrinter,
                      description: str,
                      section_presentation_type_name: str):
     if source_location is None:
-        return output_location2(printer,
-                                None,
-                                section_name,
-                                description,
-                                section_presentation_type_name)
+        return _output_location2(printer,
+                                 None,
+                                 section_name,
+                                 description,
+                                 section_presentation_type_name)
     source_info = None
     if source_location.location is not None:
         source_info = LinesInFile(source_location.location.source,
                                   source_location.location.file_path)
-    return output_location2(printer,
-                            source_info,
-                            section_name,
-                            description,
-                            section_presentation_type_name)
+    return _output_location2(printer,
+                             source_info,
+                             section_name,
+                             description,
+                             section_presentation_type_name)
 
 
 class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):

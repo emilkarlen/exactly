@@ -155,8 +155,16 @@ class SourceLocationPath(tuple):
 
 def source_location_path_of(file_path: pathlib.Path,
                             line: Line) -> SourceLocationPath:
+    """
+    :return: None iff file_path and line is None
+    """
+    if file_path is None and line is None:
+        return None
+    line_sequence = None
+    if line:
+        line_sequence = line_sequence_from_line(line)
     return source_location_path_without_inclusions(
-        SourceLocation(line_sequence_from_line(line),
+        SourceLocation(line_sequence,
                        file_path)
     )
 
@@ -165,6 +173,15 @@ def source_location_path_of_line_in_file(line_in_file: LineInFile) -> SourceLoca
     return source_location_path_without_inclusions(
         SourceLocation(line_sequence_from_line(line_in_file.line),
                        line_in_file.file_path)
+    )
+
+
+def source_location_path_of_lines_in_file(lines_in_file: LinesInFile) -> SourceLocationPath:
+    if lines_in_file is None:
+        return None
+    return source_location_path_without_inclusions(
+        SourceLocation(lines_in_file.lines,
+                       lines_in_file.file_path)
     )
 
 

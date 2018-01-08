@@ -16,6 +16,7 @@ from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
+from exactly_lib.util.line_source import source_location_path_of_lines_in_file, LinesInFile
 
 
 class TestCaseDefinition:
@@ -100,8 +101,8 @@ class _Parser(processing_utils.Parser):
             return file_parser.apply(test_case, source)
         except exactly_lib.section_document.exceptions.FileSourceError as ex:
             error_info = ErrorInfo(error_description.syntax_error_of_message(ex.source_error.message),
-                                   file_path=test_case.file_path,
-                                   line=ex.source_error.line,
+                                   source_location_path_of_lines_in_file(LinesInFile(ex.source_error.source,
+                                                                                     test_case.file_path)),
                                    section_name=ex.maybe_section_name)
             raise ProcessError(error_info)
 

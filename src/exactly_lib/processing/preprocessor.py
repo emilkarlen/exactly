@@ -5,6 +5,7 @@ import tempfile
 from exactly_lib import program_info
 from exactly_lib.processing.test_case_processing import Preprocessor, ProcessError, ErrorInfo
 from exactly_lib.test_case import error_description
+from exactly_lib.util.line_source import source_location_path_of
 
 
 class IdentityPreprocessor(Preprocessor):
@@ -69,7 +70,8 @@ class PreprocessorViaExternalProgram(Preprocessor):
     def __error_info(ed: error_description.ErrorDescription,
                      test_case_file_path: pathlib.Path) -> ErrorInfo:
         return ErrorInfo(ed,
-                         test_case_file_path)
+                         source_location_path_of(test_case_file_path,
+                                                 None))
 
     def __error_message(self) -> str:
         return 'Error from preprocessing by: ' + str(self.external_program)
