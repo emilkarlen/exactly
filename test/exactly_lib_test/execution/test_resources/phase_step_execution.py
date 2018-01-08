@@ -8,7 +8,9 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureDetails
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line, \
+    equals_single_line_source_location_path
 
 
 class ExpectedResult(tuple):
@@ -34,8 +36,11 @@ class ExpectedResult(tuple):
                                       'Status')
             assert_equals_line(unittest_case,
                                self.line,
-                               return_value.source_location.line,
+                               return_value.source_location3.location.source.first_line,
                                'Source Line')
+            self.assertion_on_source_location_path.apply_with_message(unittest_case,
+                                                                      return_value.source_location3,
+                                                                      'source location path')
             self.failure_details.assertions(unittest_case,
                                             return_value.failure_details,
                                             'Failure details')
@@ -47,6 +52,10 @@ class ExpectedResult(tuple):
     @property
     def line(self) -> line_source.Line:
         return self[1]
+
+    @property
+    def assertion_on_source_location_path(self) -> asrt.ValueAssertion[line_source.SourceLocationPath]:
+        return equals_single_line_source_location_path(self.line)
 
     @property
     def failure_details(self) -> ExpectedFailureDetails:
