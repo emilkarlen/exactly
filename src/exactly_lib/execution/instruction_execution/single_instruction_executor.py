@@ -5,7 +5,6 @@ from exactly_lib.section_document.model import SectionContentElement, Instructio
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import source_location_path_of_line_in_file
 
 
 class PartialControlledFailureEnum(Enum):
@@ -70,7 +69,7 @@ class SingleInstructionExecutionFailure(tuple):
 
     def __new__(cls,
                 status: result.PartialResultStatus,
-                source_location: line_source.LineInFile,
+                source_location: line_source.SourceLocationPath,
                 details: failure_details.FailureDetails):
         return tuple.__new__(cls, (status,
                                    source_location,
@@ -84,12 +83,8 @@ class SingleInstructionExecutionFailure(tuple):
         return self[0]
 
     @property
-    def source_location(self) -> line_source.LineInFile:
-        return self[1]
-
-    @property
     def source_location_path(self) -> line_source.SourceLocationPath:
-        return source_location_path_of_line_in_file(self.source_location)
+        return self[1]
 
     @property
     def failure_details(self) -> failure_details.FailureDetails:
@@ -111,12 +106,12 @@ def execute_element(executor: ControlledInstructionExecutor,
         if fail_info is None:
             return None
         return SingleInstructionExecutionFailure(result.PartialResultStatus(fail_info.status.value),
-                                                 element.location_as_line_in_file,
+                                                 element.source_location_path,
                                                  failure_details.new_failure_details_from_message(
                                                      fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(result.PartialResultStatus.IMPLEMENTATION_ERROR,
-                                                 element.location_as_line_in_file,
+                                                 element.source_location_path,
                                                  failure_details.new_failure_details_from_exception(ex))
 
 

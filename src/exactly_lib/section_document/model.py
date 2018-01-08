@@ -3,7 +3,7 @@ import pathlib
 from typing import Dict, Sequence
 
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import LineInFile, SourceLocation
+from exactly_lib.util.line_source import LineInFile, SourceLocation, SourceLocationPath
 
 
 class Instruction:
@@ -81,6 +81,11 @@ class SectionContentElement:
         :return: The sequence of file inclusions that leads to the file specified by `location`.
         """
         return self._file_inclusion_chain
+
+    @property
+    def source_location_path(self) -> SourceLocationPath:
+        return SourceLocationPath(self.location,
+                                  self.file_inclusion_chain)
 
     @property
     def location_as_line_in_file(self) -> LineInFile:
