@@ -5,6 +5,7 @@ from exactly_lib.section_document.model import SectionContentElement, Instructio
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import source_location_path_of_line_in_file
 
 
 class PartialControlledFailureEnum(Enum):
@@ -85,6 +86,10 @@ class SingleInstructionExecutionFailure(tuple):
     @property
     def source_location(self) -> line_source.LineInFile:
         return self[1]
+
+    @property
+    def source_location_path(self) -> line_source.SourceLocationPath:
+        return source_location_path_of_line_in_file(self.source_location)
 
     @property
     def failure_details(self) -> failure_details.FailureDetails:

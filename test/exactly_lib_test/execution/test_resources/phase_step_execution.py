@@ -34,7 +34,7 @@ class ExpectedResult(tuple):
                                       return_value.status,
                                       'Status')
             self.line.apply_with_message(unittest_case,
-                                         return_value.source_location3,
+                                         return_value.source_location,
                                          'source location path')
             self.failure_details.assertions(unittest_case,
                                             return_value.failure_details,
