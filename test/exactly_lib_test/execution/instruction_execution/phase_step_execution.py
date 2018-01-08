@@ -16,6 +16,7 @@ from exactly_lib_test.section_document.test_resources.elements import new_commen
 from exactly_lib_test.test_resources.expected_instruction_failure import \
     new_expected_failure_message, \
     new_expected_exception
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_single_line_source_location_path
 
 
 def suite() -> unittest.TestSuite:
@@ -103,7 +104,7 @@ class Test(unittest.TestCase):
             phase_contents,
             instruction_executor,
             ExpectedResult(PartialResultStatus.FAIL,
-                           Line(1, '1'),
+                           equals_single_line_source_location_path(Line(1, '1')),
                            new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
@@ -124,7 +125,7 @@ class Test(unittest.TestCase):
             phase_contents,
             instruction_executor,
             ExpectedResult(PartialResultStatus.HARD_ERROR,
-                           Line(1, '1'),
+                           equals_single_line_source_location_path(Line(1, '1')),
                            new_expected_failure_message('hard error message')),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
@@ -144,7 +145,7 @@ class Test(unittest.TestCase):
             phase_contents,
             instruction_executor,
             ExpectedResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                           Line(1, '1'),
+                           equals_single_line_source_location_path(Line(1, '1')),
                            new_expected_exception(TestException)),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
@@ -167,7 +168,7 @@ class Test(unittest.TestCase):
             phase_contents,
             instruction_executor,
             ExpectedResult(PartialResultStatus.FAIL,
-                           Line(1, '1'),
+                           equals_single_line_source_location_path(Line(1, '1')),
                            new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction'])
@@ -192,7 +193,7 @@ class Test(unittest.TestCase):
             phase_contents,
             instruction_executor,
             ExpectedResult(PartialResultStatus.FAIL,
-                           Line(2, '2'),
+                           equals_single_line_source_location_path(Line(2, '2')),
                            new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
@@ -218,7 +219,7 @@ class Test(unittest.TestCase):
             phase_contents,
             instruction_executor,
             ExpectedResult(PartialResultStatus.FAIL,
-                           Line(2, '2'),
+                           equals_single_line_source_location_path(Line(2, '2')),
                            new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
@@ -243,7 +244,7 @@ class Test(unittest.TestCase):
             phase_contents,
             instruction_executor,
             ExpectedResult(PartialResultStatus.FAIL,
-                           Line(1, '1'),
+                           equals_single_line_source_location_path(Line(1, '1')),
                            new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',

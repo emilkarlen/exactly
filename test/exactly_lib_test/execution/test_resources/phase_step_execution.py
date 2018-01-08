@@ -7,16 +7,15 @@ from exactly_lib.execution.partial_execution import PartialResultStatus
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import SourceLocationPath
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line, \
-    equals_single_line_source_location_path
 
 
 class ExpectedResult(tuple):
     def __new__(cls,
                 status: PartialResultStatus,
-                line: line_source.Line,
+                line: asrt.ValueAssertion[SourceLocationPath],
                 failure_details: ExpectedFailureDetails):
         return tuple.__new__(cls, (status,
                                    line,
@@ -34,13 +33,9 @@ class ExpectedResult(tuple):
             unittest_case.assertEqual(self.status,
                                       return_value.status,
                                       'Status')
-            assert_equals_line(unittest_case,
-                               self.line,
-                               return_value.source_location3.location.source.first_line,
-                               'Source Line')
-            self.assertion_on_source_location_path.apply_with_message(unittest_case,
-                                                                      return_value.source_location3,
-                                                                      'source location path')
+            self.line.apply_with_message(unittest_case,
+                                         return_value.source_location3,
+                                         'source location path')
             self.failure_details.assertions(unittest_case,
                                             return_value.failure_details,
                                             'Failure details')
@@ -50,12 +45,8 @@ class ExpectedResult(tuple):
         return self[0]
 
     @property
-    def line(self) -> line_source.Line:
+    def line(self) -> asrt.ValueAssertion[line_source.SourceLocationPath]:
         return self[1]
-
-    @property
-    def assertion_on_source_location_path(self) -> asrt.ValueAssertion[line_source.SourceLocationPath]:
-        return equals_single_line_source_location_path(self.line)
 
     @property
     def failure_details(self) -> ExpectedFailureDetails:
