@@ -60,6 +60,10 @@ def single_line_sequence(line_number: int, line: str) -> LineSequence:
     return LineSequence(line_number, (line,))
 
 
+def line_sequence_from_line(line: Line) -> LineSequence:
+    return single_line_sequence(line.line_number, line.text)
+
+
 class LineInFile(tuple):
     def __new__(cls,
                 line: Line,
@@ -75,20 +79,60 @@ class LineInFile(tuple):
         return self[1]
 
 
+class LinesInFile(tuple):
+    def __new__(cls,
+                lines: LineSequence,
+                file_path: pathlib.Path):
+        """
+        :param lines: None iff source if not relevant
+        :param file_path: None iff source does not originate from a file
+        """
+        return tuple.__new__(cls, (lines, file_path))
+
+    @property
+    def lines(self) -> LineSequence:
+        """
+        :return: None iff source if not relevant
+        """
+        return self[0]
+
+    @property
+    def file_path(self) -> pathlib.Path:
+        """
+        :return: None iff source does not originate from a file
+        """
+        return self[1]
+
+
+def lines_in_file_from_line(line: LineInFile) -> LinesInFile:
+    return LinesInFile(line_sequence_from_line(line.line),
+                       line.file_path)
+
+
 class SourceLocation(tuple):
     """A location in a file."""
 
     def __new__(cls,
                 source: LineSequence,
                 file_path: pathlib.Path):
+        """
+        :param source: None iff source if not relevant
+        :param file_path: None iff source does not originate from a file
+        """
         return tuple.__new__(cls, (source, file_path))
 
     @property
     def source(self) -> LineSequence:
+        """
+        :return: None iff source if not relevant
+        """
         return self[0]
 
     @property
     def file_path(self) -> pathlib.Path:
+        """
+        :return: None iff source does not originate from a file
+        """
         return self[1]
 
 
@@ -107,6 +151,14 @@ class SourceLocationPath(tuple):
     @property
     def file_inclusion_chain(self) -> Sequence[SourceLocation]:
         return self[1]
+
+
+def source_location_path_of(file_path: pathlib.Path,
+                            line: Line) -> SourceLocationPath:
+    return source_location_path_without_inclusions(
+        SourceLocation(line_sequence_from_line(line),
+                       file_path)
+    )
 
 
 def source_location_path_without_inclusions(location: SourceLocation) -> SourceLocationPath:

@@ -47,6 +47,26 @@ class ErrorInfo(tuple):
         return self[1]
 
     @property
+    def source(self) -> line_source.LineSequence:
+        # TODO Objects should store LineSequence instead of Line
+        line = self.line
+        if line is None:
+            return None
+        return line_source.single_line_sequence(line.line_number,
+                                                line.text)
+
+    @property
+    def source_info(self) -> line_source.LinesInFile:
+        """
+        :return: May be None
+        """
+        # TODO Objects should store LineSequence instead of Line
+        line_sequence = self.source
+        if line_sequence is None and self.file is None:
+            return None
+        return line_source.LinesInFile(line_sequence, self.file)
+
+    @property
     def description(self) -> ErrorDescription:
         return self[2]
 
