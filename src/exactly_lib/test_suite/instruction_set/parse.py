@@ -2,6 +2,7 @@ import pathlib
 
 from exactly_lib.test_case import error_description
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import line_sequence_from_line, SourceLocationPath, SourceLocation
 
 
 class SuiteReadError(Exception):
@@ -20,6 +21,12 @@ class SuiteReadError(Exception):
     @property
     def line(self) -> line_source.Line:
         return self._line
+
+    @property
+    def source_location(self) -> SourceLocationPath:
+        return SourceLocationPath(SourceLocation(line_sequence_from_line(self._line),
+                                                 self.suite_file),
+                                  [])
 
     @property
     def maybe_section_name(self) -> str:
