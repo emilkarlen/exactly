@@ -13,6 +13,7 @@ from exactly_lib.test_suite.error_reporting import report_suite_read_error
 from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
 from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
+from exactly_lib.util.line_source import source_location_path_of
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
 TestCaseProcessorConstructor = Callable[[case_processing.Configuration], test_case_processing.Processor]
@@ -130,5 +131,7 @@ def _process_case(case_processor: test_case_processing.Processor,
         return case_processor.apply(case)
     except Exception as ex:
         error_info = test_case_processing.ErrorInfo(error_description.of_exception(ex),
-                                                    file_path=case.file_path)
+                                                    source_location_path_of(case.file_path,
+                                                                            None)
+                                                    )
         return test_case_processing.new_internal_error(error_info)

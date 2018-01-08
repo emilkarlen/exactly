@@ -31,48 +31,26 @@ def test_case_setup_of_source_file(source_file: pathlib.Path) -> TestCaseSetup:
 class ErrorInfo(tuple):
     def __new__(cls,
                 description: ErrorDescription,
-                file_path: pathlib.Path = None,
-                line: line_source.Line = None,
+                source_location_path: line_source.SourceLocationPath = None,
                 section_name: str = None):
         if description is not None:
             assert isinstance(description, ErrorDescription)
-        return tuple.__new__(cls, (file_path, line, description, section_name))
+        return tuple.__new__(cls, (source_location_path, description, section_name))
 
     @property
-    def file(self) -> pathlib.Path:
-        return self[0]
-
-    @property
-    def line(self) -> line_source.Line:
-        return self[1]
-
-    @property
-    def source(self) -> line_source.LineSequence:
-        # TODO Objects should store LineSequence instead of Line
-        line = self.line
-        if line is None:
-            return None
-        return line_source.single_line_sequence(line.line_number,
-                                                line.text)
-
-    @property
-    def source_info(self) -> line_source.LinesInFile:
+    def source_location_path(self) -> line_source.SourceLocationPath:
         """
         :return: May be None
         """
-        # TODO Objects should store LineSequence instead of Line
-        line_sequence = self.source
-        if line_sequence is None and self.file is None:
-            return None
-        return line_source.LinesInFile(line_sequence, self.file)
+        return self[0]
 
     @property
     def description(self) -> ErrorDescription:
-        return self[2]
+        return self[1]
 
     @property
     def maybe_section_name(self) -> str:
-        return self[3]
+        return self[2]
 
 
 class Status(Enum):
