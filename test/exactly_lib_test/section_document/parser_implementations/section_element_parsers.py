@@ -2,6 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.section_document import model
+from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations import section_element_parsers as sut
 from exactly_lib.util import line_source
@@ -83,10 +84,11 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                                  'Remaining source')
 
     def test_element_from_instruction_parser_SHOULD_be_assigned_to_section_contents_element(self):
-        expected = sut.InstructionAndDescription(Instruction(),
-                                                 line_source.LineSequence(1,
-                                                                          ('first line text',)),
-                                                 'description')
+        expected_instruction_info = InstructionInfo(Instruction(),
+                                                    'description')
+        expected = sut.ParsedInstruction(line_source.LineSequence(1,
+                                                                  ('first line text',)),
+                                         expected_instruction_info)
         parser = sut.StandardSyntaxElementParser(_InstructionParserThatGivesConstant(expected))
         source = _source_for_lines(['ignored', 'source', 'lines'])
         # ACT #
@@ -95,8 +97,8 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
         element_assertion = matches_instruction(
             source=asrt.is_(expected.source),
             instruction_info=matches_instruction_info(
-                assertion_on_description=asrt.is_(expected.description),
-                assertion_on_instruction=asrt.is_(expected.instruction)))
+                assertion_on_description=asrt.is_(expected_instruction_info.description),
+                assertion_on_instruction=asrt.is_(expected_instruction_info.instruction)))
         element_assertion.apply_with_message(self, element, 'element')
 
 
@@ -104,7 +106,7 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescr
     def __init__(self, instruction_line_identifier: str):
         self.instruction_line_identifier = instruction_line_identifier
 
-    def parse(self, source: ParseSource) -> sut.InstructionAndDescription:
+    def parse(self, source: ParseSource) -> sut.ParsedInstruction:
         first_line_number = source.current_line_number
         dummy_source = line_source.LineSequence(first_line_number, (source.current_line_text,))
         is_instruction = False
@@ -113,14 +115,15 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescr
             is_instruction = True
         if not is_instruction:
             raise ValueError('Not an instruction')
-        return sut.InstructionAndDescription(Instruction(), dummy_source, None)
+        return sut.ParsedInstruction(dummy_source,
+                                     InstructionInfo(Instruction(), None))
 
 
 class _InstructionParserThatGivesConstant(sut.InstructionAndDescriptionParser):
-    def __init__(self, return_value: sut.InstructionAndDescription):
+    def __init__(self, return_value: sut.ParsedInstruction):
         self.return_value = return_value
 
-    def parse(self, source: ParseSource) -> sut.InstructionAndDescription:
+    def parse(self, source: ParseSource) -> sut.ParsedInstruction:
         return self.return_value
 
 
