@@ -6,8 +6,8 @@ from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser, \
-    InstructionAndDescription
+from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.section_element_parser import ParsedInstruction
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -249,9 +249,9 @@ class TestParseWithDescription(unittest.TestCase):
 
 class Expectation(tuple):
     def __new__(cls,
-                description: asrt.ValueAssertion = asrt.anything_goes(),
-                instruction: asrt.ValueAssertion = asrt.anything_goes(),
-                source: asrt.ValueAssertion = asrt.anything_goes()):
+                description: asrt.ValueAssertion[str] = asrt.anything_goes(),
+                instruction: asrt.ValueAssertion[model.Instruction] = asrt.anything_goes(),
+                source: asrt.ValueAssertion[ParseSource] = asrt.anything_goes()):
         return tuple.__new__(cls, (description, instruction, source))
 
     @property
@@ -267,16 +267,20 @@ class Expectation(tuple):
         return self[2]
 
     def apply(self, put: unittest.TestCase,
-              actual_instruction_and_description,
+              actual_parsed_instruction,
               source: ParseSource):
-        put.assertIsInstance(actual_instruction_and_description, InstructionAndDescription,
-                             'instruction_and_description')
-        assert isinstance(actual_instruction_and_description, InstructionAndDescription)  # Type info for IDE
-        put.assertIsInstance(actual_instruction_and_description.instruction, Instruction,
+        put.assertIsInstance(actual_parsed_instruction, ParsedInstruction,
+                             'ParsedInstruction')
+        assert isinstance(actual_parsed_instruction, ParsedInstruction)  # Type info for IDE
+        instruction_info = actual_parsed_instruction.instruction_info
+        put.assertIsInstance(actual_parsed_instruction.instruction_info, model.InstructionInfo,
+                             'instruction_info')
+        assert isinstance(instruction_info, model.InstructionInfo)
+        put.assertIsInstance(instruction_info.instruction, Instruction,
                              'instruction')
-        self.description.apply_with_message(put, actual_instruction_and_description.description,
+        self.description.apply_with_message(put, instruction_info.description,
                                             'description')
-        self.instruction.apply_with_message(put, actual_instruction_and_description.instruction,
+        self.instruction.apply_with_message(put, instruction_info.instruction,
                                             'instruction')
         self.source.apply_with_message(put, source,
                                        'source')

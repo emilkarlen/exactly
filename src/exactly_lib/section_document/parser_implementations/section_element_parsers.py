@@ -10,26 +10,6 @@ from exactly_lib.section_document.section_element_parser import ParsedSectionEle
 from exactly_lib.util import line_source
 
 
-class InstructionAndDescription(tuple):
-    def __new__(cls,
-                instruction: model.Instruction,
-                source: line_source.LineSequence,
-                description: str = None):
-        return tuple.__new__(cls, (instruction, source, description))
-
-    @property
-    def instruction(self) -> model.Instruction:
-        return self[0]
-
-    @property
-    def source(self) -> line_source.LineSequence:
-        return self[1]
-
-    @property
-    def description(self) -> str:
-        return self[2]
-
-
 class InstructionAndDescriptionParser:
     """
     Parses an instruction, optionally preceded by an description.
@@ -37,7 +17,7 @@ class InstructionAndDescriptionParser:
     Raises an exception if the parse fails.
     """
 
-    def parse(self, source: ParseSource) -> InstructionAndDescription:
+    def parse(self, source: ParseSource) -> ParsedInstruction:
         """
         :raises FileSourceError The description or instruction cannot be parsed.
         """
@@ -62,7 +42,7 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
     def __init__(self, instruction_parser: InstructionParser):
         self.instruction_parser = instruction_parser
 
-    def parse(self, source: ParseSource) -> InstructionAndDescription:
+    def parse(self, source: ParseSource) -> ParsedInstruction:
         return parse_and_compute_source(self.instruction_parser, source)
 
 
@@ -86,10 +66,7 @@ class StandardSyntaxElementParser(SectionElementParser):
         if syntax.is_comment_line(first_line.text):
             return new_comment_element(self._consume_and_return_current_line(source))
         else:
-            instruction_and_description = self.instruction_parser.parse(source)
-            return ParsedInstruction(instruction_and_description.source,
-                                     InstructionInfo(instruction_and_description.instruction,
-                                                     instruction_and_description.description))
+            return self.instruction_parser.parse(source)
 
     @staticmethod
     def _consume_and_return_current_line(source: ParseSource) -> line_source.LineSequence:
@@ -101,7 +78,7 @@ class StandardSyntaxElementParser(SectionElementParser):
 
 def parse_and_compute_source(parser: InstructionParser,
                              source: ParseSource,
-                             description: str = None) -> InstructionAndDescription:
+                             description: str = None) -> ParsedInstruction:
     source_before = source.remaining_source
     first_line_number = source.current_line_number
     len_before_parse = len(source_before)
@@ -110,4 +87,6 @@ def parse_and_compute_source(parser: InstructionParser,
     len_instruction_source = len_before_parse - len_after_parse
     instruction_source = source_before[:len_instruction_source]
     source = line_source.LineSequence(first_line_number, tuple(instruction_source.split('\n')))
-    return InstructionAndDescription(instruction, source, description)
+    return ParsedInstruction(source,
+                             InstructionInfo(instruction,
+                                             description))
