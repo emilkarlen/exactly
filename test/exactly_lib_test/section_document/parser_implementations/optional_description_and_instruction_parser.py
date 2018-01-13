@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from exactly_lib.section_document import model
@@ -40,6 +41,7 @@ class TestParseWithDescription(unittest.TestCase):
         check(self, expectation, arrangement)
 
     def test_fail_when_there_is_a_description_but_no_following_instruction(self):
+        file_inclusion_relativity_root = pathlib.Path()
         test_cases = [
             ['\'description\'',
              ],
@@ -60,7 +62,7 @@ class TestParseWithDescription(unittest.TestCase):
             with self.subTest(source_lines=source_lines):
                 source = source_of_lines(source_lines)
                 with self.assertRaises(SourceError):
-                    self.sut.parse(source)
+                    self.sut.parse(file_inclusion_relativity_root, source)
 
     def test_description_and_instruction_on_single_line(self):
         source_and_description_variants = [
@@ -305,7 +307,8 @@ class Arrangement(tuple):
 def check(put: unittest.TestCase,
           expectation: Expectation,
           arrangement: Arrangement):
-    result = arrangement.parser.parse(arrangement.source)
+    result = arrangement.parser.parse(pathlib.Path(),
+                                      arrangement.source)
     expectation.apply(put, result, arrangement.source)
 
 

@@ -10,14 +10,16 @@ from exactly_lib.section_document.section_element_parser import ParsedSectionEle
 from exactly_lib.util import line_source
 
 
-class InstructionAndDescriptionParser:
+class InstructionAndDescriptionParser(SectionElementParser):
     """
     Parses an instruction, optionally preceded by an description.
 
     Raises an exception if the parse fails.
     """
 
-    def parse(self, source: ParseSource) -> ParsedInstruction:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedInstruction:
         """
         :raises FileSourceError The description or instruction cannot be parsed.
         """
@@ -42,7 +44,9 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
     def __init__(self, instruction_parser: InstructionParser):
         self.instruction_parser = instruction_parser
 
-    def parse(self, source: ParseSource) -> ParsedInstruction:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedInstruction:
         return parse_and_compute_source(self.instruction_parser, source)
 
 
@@ -50,12 +54,12 @@ class StandardSyntaxElementParser(SectionElementParser):
     """
     A parser that knows how to parse empty lines and
     comment lines (denoted by standard syntax).
-    Every other line is treated as the start of an
-    instruction to be parsed by a given instruction parser.
+    Every other line is treated as the start of a directive or
+    an instruction to be parsed by a given instruction parser.
     """
 
-    def __init__(self, instruction_parser: InstructionAndDescriptionParser):
-        self.instruction_parser = instruction_parser
+    def __init__(self, instruction_or_directive_parser: SectionElementParser):
+        self.instruction_or_directive_parser = instruction_or_directive_parser
 
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
@@ -66,7 +70,8 @@ class StandardSyntaxElementParser(SectionElementParser):
         if syntax.is_comment_line(first_line.text):
             return new_comment_element(self._consume_and_return_current_line(source))
         else:
-            return self.instruction_parser.parse(source)
+            return self.instruction_or_directive_parser.parse(file_inclusion_relativity_root,
+                                                              source)
 
     @staticmethod
     def _consume_and_return_current_line(source: ParseSource) -> line_source.LineSequence:
