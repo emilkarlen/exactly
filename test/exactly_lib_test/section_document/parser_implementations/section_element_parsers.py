@@ -106,7 +106,9 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescr
     def __init__(self, instruction_line_identifier: str):
         self.instruction_line_identifier = instruction_line_identifier
 
-    def parse(self, source: ParseSource) -> sut.ParsedInstruction:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> sut.ParsedInstruction:
         first_line_number = source.current_line_number
         dummy_source = line_source.LineSequence(first_line_number, (source.current_line_text,))
         is_instruction = False
@@ -123,7 +125,9 @@ class _InstructionParserThatGivesConstant(sut.InstructionAndDescriptionParser):
     def __init__(self, return_value: sut.ParsedInstruction):
         self.return_value = return_value
 
-    def parse(self, source: ParseSource) -> sut.ParsedInstruction:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> sut.ParsedInstruction:
         return self.return_value
 
 

@@ -1,4 +1,5 @@
 import io
+import pathlib
 import shlex
 
 from exactly_lib.section_document import syntax
@@ -14,7 +15,9 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
     def __init__(self, instruction_parser: InstructionParser):
         self.instruction_parser = instruction_parser
 
-    def parse(self, source: ParseSource) -> ParsedInstruction:
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedInstruction:
         first_line = source.current_line
         description = _DescriptionExtractor(source).apply()
         self._consume_space_and_comment_lines(source, first_line)
