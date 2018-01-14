@@ -1,0 +1,10 @@
+$ git init
+
+file file-in-repo
+
+$ git add file-in-repo
+
+$ git commit -m 'file already in repo'
+
+
+install prepare-commit-msg .git/hooks
