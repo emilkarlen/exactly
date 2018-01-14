@@ -6,7 +6,7 @@ from exactly_lib.section_document.section_element_parser import ParsedInstructio
     ParsedFileInclusionDirective
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.section_document.test_resources import document_assertions as sut
-from exactly_lib_test.section_document.test_resources.section_contents_elements import matches_instruction_info
+from exactly_lib_test.section_document.test_resources.element_assertions import matches_instruction_info
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

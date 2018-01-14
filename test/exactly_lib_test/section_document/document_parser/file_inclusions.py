@@ -20,7 +20,7 @@ from exactly_lib_test.section_document.document_parser.test_resources.element_pa
 from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import is_file_source_error, \
     matches_file_source_error, is_file_access_error, matches_file_access_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
-from exactly_lib_test.section_document.test_resources.section_contents_elements import \
+from exactly_lib_test.section_document.test_resources.element_assertions import \
     equals_instruction_without_description, matches_section_contents_element
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \

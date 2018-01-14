@@ -5,7 +5,7 @@ from typing import Sequence
 from exactly_lib.section_document import element_builder as sut
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.util.line_source import SourceLocation, single_line_sequence
-from exactly_lib_test.section_document.test_resources.section_contents_elements import matches_section_contents_element, \
+from exactly_lib_test.section_document.test_resources.element_assertions import matches_section_contents_element, \
     InstructionInSection, equals_instruction_in_section, matches_instruction_info, equals_file_inclusion_chain
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
