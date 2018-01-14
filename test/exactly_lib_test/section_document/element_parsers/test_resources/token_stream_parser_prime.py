@@ -1,19 +1,19 @@
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 
 
 def remaining_source(remaining_contents_of_first_line: str,
-                     following_lines: list = ()) -> TokenParserPrime:
+                     following_lines: list = ()) -> TokenParser:
     """
     :param remaining_contents_of_first_line: Part of the first line that has not been consumed.
     :return: Source with some initial content of the first line that has been consumed.
     """
     content = '\n'.join([remaining_contents_of_first_line] + list(following_lines))
     token_stream = TokenStream(content)
-    return TokenParserPrime(token_stream)
+    return TokenParser(token_stream)
 
 
-def remaining_source_lines(lines: list) -> TokenParserPrime:
+def remaining_source_lines(lines: list) -> TokenParser:
     """
     A variant of 'remaining_source'.
     """

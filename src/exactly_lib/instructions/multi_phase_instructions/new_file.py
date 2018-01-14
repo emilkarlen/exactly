@@ -17,8 +17,8 @@ from exactly_lib.instructions.utils.parse.parse_file_maker import CONTENTS_ASSIG
     InstructionConfig, parse_file_contents, \
     FileContentsDocumentation, \
     _src_rel_opt_arg_conf_for_phase
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
-    TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
+    TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
@@ -120,7 +120,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         first_line_number = source.current_line_number
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
-            assert isinstance(parser, TokenParserPrime)  # Type info for IDE
+            assert isinstance(parser, TokenParser)  # Type info for IDE
 
             path_to_create = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
             instruction_config = InstructionConfig(

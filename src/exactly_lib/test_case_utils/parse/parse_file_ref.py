@@ -8,11 +8,11 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import ensure_is_not_option_argument, \
     std_error_message_text_for_token_syntax_error_from_exception, std_error_message_text_for_token_syntax_error
-from exactly_lib.section_document.element_parsers.parser_combinations import \
+from exactly_lib.section_document.element_parsers.source_utils import \
     token_stream_from_remaining_part_of_current_line_of_parse_source
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream, TokenSyntaxError, \
     LookAheadState
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -118,7 +118,7 @@ def parse_file_ref(tokens: TokenStream,
 
 
 def parse_file_ref_from_token_parser(conf: RelOptionArgumentConfiguration,
-                                     token_parser: TokenParserPrime
+                                     token_parser: TokenParser
                                      ) -> FileRefResolver:
     """
     :raises SingleInstructionInvalidArgumentException: Invalid arguments

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.element_parsers import token_stream_parse_prime as sut
+from exactly_lib.section_document.element_parsers import token_stream_parser as sut
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib_test.test_resources.actions import do_return
@@ -32,7 +32,7 @@ class TestParseOptionalCommand(unittest.TestCase):
             with self.subTest(name=case.name):
                 # ARRANGE #
                 token_stream = TokenStream(case.value)
-                parser = sut.TokenParserPrime(token_stream)
+                parser = sut.TokenParser(token_stream)
                 # ACT #
                 actual = parser.parse_optional_command(command_name_2_parser)
                 # ASSERT #
@@ -47,7 +47,7 @@ class TestParseOptionalCommand(unittest.TestCase):
         }
         # ARRANGE #
         token_stream = TokenStream(command_name)
-        parser = sut.TokenParserPrime(token_stream)
+        parser = sut.TokenParser(token_stream)
         # ACT #
         actual = parser.parse_optional_command(command_name_2_parser)
         # ASSERT #

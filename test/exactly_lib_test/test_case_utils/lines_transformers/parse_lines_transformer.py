@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer as sut
@@ -49,7 +49,7 @@ class Expectation:
 
 class TestReplaceParser(unittest.TestCase):
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         # ACT #
         actual_resolver = sut.parse_replace(source)
@@ -182,7 +182,7 @@ class TestReplaceParser(unittest.TestCase):
 
 class TestSelectParser(unittest.TestCase):
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         # ACT #
         actual_resolver = sut.parse_select(source)
@@ -255,7 +255,7 @@ class TestSelectParser(unittest.TestCase):
 
 class TestParseLineTransformer(unittest.TestCase):
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         # ACT #
         actual_resolver = sut.parse_lines_transformer_from_token_parser(source)

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source
+from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as sut
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \

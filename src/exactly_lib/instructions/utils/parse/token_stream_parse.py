@@ -2,18 +2,18 @@ from contextlib import contextmanager
 
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 
 
-class TokenParser(TokenParserPrime):
+class TokenParserExtra(TokenParser):
     """
     Utility for implementing parsers backed by a :class:`TokenStream`,
 
-    with support for parsing value types used by Exactly.
+    with "extra" support for parsing value types used by Exactly.
     """
 
     def __init__(self, token_stream: TokenStream, error_message_format_map: dict = None):
@@ -29,17 +29,16 @@ class TokenParser(TokenParserPrime):
 
 
 def new_token_parser(source: str,
-                     error_message_format_map: dict = None) -> TokenParser:
+                     error_message_format_map: dict = None) -> TokenParserExtra:
     """
     Constructs a :class:`TokenParser`
     :argument error_message_format_map: strings that are replaced in error messages
     via :func:`str#format`
     :type error_message_format_map: dict str -> str
-    :rtype: :class:`TokenParser`
     :raises :class:`SingleInstructionInvalidArgumentException` Source has invalid syntax
     """
-    return TokenParser(new_token_stream(source),
-                       error_message_format_map)
+    return TokenParserExtra(new_token_stream(source),
+                            error_message_format_map)
 
 
 @contextmanager

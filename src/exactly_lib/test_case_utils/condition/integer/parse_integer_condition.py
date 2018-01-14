@@ -5,7 +5,7 @@ from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime, \
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -42,7 +42,7 @@ class IntegerComparisonOperatorAndRightOperand:
 _MISSING_INTEGER_ARGUMENT = 'Missing ' + INTEGER_ARGUMENT.name
 
 
-def parse_integer_matcher(parser: TokenParserPrime,
+def parse_integer_matcher(parser: TokenParser,
                           name_of_lhs: str = 'LHS') -> IntegerMatcher:
     comparison_operator = parse_comparison_operator(parser)
     parser.require_is_not_at_eol(_MISSING_INTEGER_ARGUMENT)
@@ -57,7 +57,7 @@ def parse_integer_matcher(parser: TokenParserPrime,
 
 
 def parse_integer_comparison_operator_and_rhs(
-        parser: TokenParserPrime,
+        parser: TokenParser,
         custom_integer_restriction: types.FunctionType = None) -> IntegerComparisonOperatorAndRightOperand:
     my_parser = token_parser_with_additional_error_message_format_map(parser, {'INTEGER': INTEGER_ARGUMENT.name})
 

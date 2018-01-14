@@ -7,7 +7,7 @@ from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import new_token_parser
+from exactly_lib.section_document.element_parsers.token_stream_parser import new_token_parser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import negation_of_predicate

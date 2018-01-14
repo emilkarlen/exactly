@@ -8,7 +8,7 @@ from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.instructions.utils.documentation import src_dst
-from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
+from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParserExtra
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -95,7 +95,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class Parser(InstructionParserThatConsumesCurrentLine):
     def _parse(self, rest_of_line: str) -> SetupPhaseInstruction:
-        parser = TokenParser(TokenStream(rest_of_line))
+        parser = TokenParserExtra(TokenStream(rest_of_line))
         src_file_ref = parser.consume_file_ref(REL_OPTION_ARG_CONF_FOR_SOURCE)
         if parser.is_at_eol:
             return _InstallSourceWithoutExplicitDestinationInstruction(src_file_ref)

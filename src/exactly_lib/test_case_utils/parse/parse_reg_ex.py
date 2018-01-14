@@ -4,7 +4,7 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -13,7 +13,7 @@ IGNORE_CASE_OPTION_NAME = a.OptionName(long_name='ignore-case')
 IGNORE_CASE_OPTION = option_syntax.option_syntax(IGNORE_CASE_OPTION_NAME)
 
 
-def parse_regex(parser: TokenParserPrime):
+def parse_regex(parser: TokenParser):
     """Returns a reg-ex object"""
     parser.require_is_not_at_eol(_MISSING_REGEX_ARGUMENT_ERR_MSG)
     is_ignore_case = parser.consume_and_handle_optional_option(False,

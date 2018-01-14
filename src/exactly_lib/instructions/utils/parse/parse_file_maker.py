@@ -8,7 +8,7 @@ from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromSubProcess, FileMakerForContentsFromExistingFile
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
@@ -123,7 +123,7 @@ class InstructionConfig:
 
 
 def parse_file_contents(instruction_config: InstructionConfig,
-                        parser: TokenParserPrime) -> FileMaker:
+                        parser: TokenParser) -> FileMaker:
     """
     Parses a file contents specification of the form: [= FILE-MAKER]
 
@@ -139,7 +139,7 @@ def parse_file_contents(instruction_config: InstructionConfig,
 
 
 def parse_file_maker(instruction_config: InstructionConfig,
-                     parser: TokenParserPrime) -> FileMaker:
+                     parser: TokenParser) -> FileMaker:
     parser.require_head_token_has_valid_syntax()
 
     head_source_string = parser.token_stream.head.source_string
@@ -159,15 +159,15 @@ def parse_file_maker(instruction_config: InstructionConfig,
 
 
 def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
-                                          parser: TokenParserPrime,
+                                          parser: TokenParser,
                                           contents_transformer: LinesTransformerResolver) -> FileMaker:
-    def parse_sub_process(my_parser: TokenParserPrime) -> FileMaker:
+    def parse_sub_process(my_parser: TokenParser) -> FileMaker:
         sub_process = _parse_sub_process_setup(my_parser)
         return FileMakerForContentsFromSubProcess(instruction_config.source_info,
                                                   contents_transformer,
                                                   sub_process)
 
-    def parse_file(my_parser: TokenParserPrime) -> FileMaker:
+    def parse_file(my_parser: TokenParser) -> FileMaker:
         src_file = parse_file_ref_from_token_parser(instruction_config.src_rel_opt_arg_conf,
                                                     my_parser)
         my_parser.report_superfluous_arguments_if_not_at_eol()
@@ -181,7 +181,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
     })
 
 
-def _parse_sub_process_setup(parser: TokenParserPrime) -> SubProcessExecutionSetup:
+def _parse_sub_process_setup(parser: TokenParser) -> SubProcessExecutionSetup:
     parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, False)
     setup_parser = ShellCommandSetupParser()
     return setup_parser.parse_from_token_parser(parser)

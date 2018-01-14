@@ -1,7 +1,7 @@
 import re
 import unittest
 
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils import file_properties
@@ -33,7 +33,7 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration):
-    def parse(self, parser: TokenParserPrime) -> SymbolValueResolver:
+    def parse(self, parser: TokenParser) -> SymbolValueResolver:
         return sut.parse_resolver(parser)
 
     def resolved_value_equals(self,

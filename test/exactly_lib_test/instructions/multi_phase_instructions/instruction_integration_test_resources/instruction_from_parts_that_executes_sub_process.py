@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils import \
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.concrete_resolvers import list_constant
@@ -278,7 +278,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
+    def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         instruction_argument = parser.consume_current_line_as_plain_string()
         return ValidationAndSubProcessExecutionSetup(self.validator,
                                                      _resolver_for_execute_py_on_command_line(
@@ -292,7 +292,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
+    def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = string_resolver.string_constant(instruction_argument)
         return ValidationAndSubProcessExecutionSetup(self.validator,

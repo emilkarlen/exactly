@@ -7,7 +7,7 @@ from exactly_lib.help_texts.argument_rendering import path_syntax
 from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
-from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
+from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParserExtra
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
@@ -143,8 +143,8 @@ class Parser(InstructionParserThatConsumesCurrentLine):
         }
 
     def _parse(self, rest_of_line: str) -> AssertPhaseInstruction:
-        tokens = TokenParser(new_token_stream(rest_of_line),
-                             self.format_map)
+        tokens = TokenParserExtra(new_token_stream(rest_of_line),
+                                  self.format_map)
         is_negated = tokens.consume_and_return_true_if_first_argument_is_unquoted_and_equals(NEGATION_OPERATOR)
         file_properties_check = tokens.consume_and_handle_first_matching_option(
             _DEFAULT_FILE_PROPERTIES_CHECK,

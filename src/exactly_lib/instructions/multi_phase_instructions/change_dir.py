@@ -12,7 +12,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation
-from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
+from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParserExtra
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
@@ -104,7 +104,7 @@ class EmbryoParser(embryo.InstructionEmbryoParserThatConsumesCurrentLine):
 
     def _parse(self, rest_of_line: str) -> InstructionEmbryo:
         rel_opt_arg_conf = relativity_options(self.is_after_act_phase)
-        tokens = TokenParser(TokenStream(rest_of_line))
+        tokens = TokenParserExtra(TokenStream(rest_of_line))
 
         target_file_ref = tokens.consume_file_ref(rel_opt_arg_conf)
         tokens.report_superfluous_arguments_if_not_at_eol()

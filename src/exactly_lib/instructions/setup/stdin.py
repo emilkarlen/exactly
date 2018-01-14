@@ -7,8 +7,8 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
-    TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
+    TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -65,7 +65,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> SetupPhaseInstruction:
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            assert isinstance(token_parser, TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
+            assert isinstance(token_parser, TokenParser), 'Must have a TokenParser'  # Type info for IDE
             token_parser.require_is_not_at_eol('Missing file comparison argument')
 
             string_or_file_ref = parse_here_doc_or_file_ref.parse_from_token_parser(token_parser,

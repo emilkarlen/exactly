@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.parse import parse_reg_ex as sut
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -34,7 +34,7 @@ class Expectation:
 
 class TestParseWithoutIgnoreCaseOption(unittest.TestCase):
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         _check(self, source, expectation)
 
@@ -149,7 +149,7 @@ class TestParseWithoutIgnoreCaseOption(unittest.TestCase):
 
 class TestParseWithIgnoreCaseOption(unittest.TestCase):
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         _check(self, source, expectation)
 
@@ -268,7 +268,7 @@ class TestParseWithIgnoreCaseOption(unittest.TestCase):
 
 
 def _check(put: unittest.TestCase,
-           source: TokenParserPrime,
+           source: TokenParser,
            expectation: Expectation):
     # ACT #
     actual_reg_ex = sut.parse_regex(source)

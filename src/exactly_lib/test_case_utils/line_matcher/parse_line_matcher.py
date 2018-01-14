@@ -3,8 +3,8 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity import types
 from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
-from exactly_lib.section_document.element_parsers import token_stream_parse_prime
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import parse_integer_matcher
@@ -35,27 +35,27 @@ LINE_NUMBER_PROPERTY = 'line number'
 
 
 def parse_line_matcher(source: ParseSource) -> LineMatcherResolver:
-    with token_stream_parse_prime.from_parse_source(source) as tp:
+    with token_stream_parser.from_parse_source(source) as tp:
         return parse_optional_matcher_resolver(tp)
 
 
-def parse_optional_matcher_resolver(parser: TokenParserPrime) -> LineMatcherResolver:
+def parse_optional_matcher_resolver(parser: TokenParser) -> LineMatcherResolver:
     return parser.consume_and_handle_optional_option(
         CONSTANT_TRUE_MATCHER_RESOLVER,
         parse_line_matcher_from_token_parser,
         WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
-def parse_line_matcher_from_token_parser(parser: TokenParserPrime) -> LineMatcherResolver:
+def parse_line_matcher_from_token_parser(parser: TokenParser) -> LineMatcherResolver:
     return parse_expression.parse(GRAMMAR, parser)
 
 
-def parse_regex(parser: TokenParserPrime) -> LineMatcherResolver:
+def parse_regex(parser: TokenParser) -> LineMatcherResolver:
     regex = parse_reg_ex.parse_regex(parser)
     return resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherRegex(regex))
 
 
-def parse_line_number(parser: TokenParserPrime) -> LineMatcherResolver:
+def parse_line_number(parser: TokenParser) -> LineMatcherResolver:
     integer_matcher = parse_integer_matcher(parser,
                                             name_of_lhs=LINE_NUMBER_PROPERTY)
     return resolvers.LineMatcherConstantResolver(line_matchers.LineMatcherLineNumber(integer_matcher))

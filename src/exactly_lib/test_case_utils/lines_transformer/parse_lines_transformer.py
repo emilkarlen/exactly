@@ -1,7 +1,7 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import types, syntax_elements
-from exactly_lib.section_document.element_parsers import token_stream_parse_prime
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -44,11 +44,11 @@ class LinesTransformerDescriptor(ErrorMessagePartConstructor):
 
 
 def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
-    with token_stream_parse_prime.from_parse_source(source) as tp:
+    with token_stream_parser.from_parse_source(source) as tp:
         return parse_optional_transformer_resolver(tp)
 
 
-def parse_optional_transformer_resolver(parser: TokenParserPrime) -> LinesTransformerResolver:
+def parse_optional_transformer_resolver(parser: TokenParser) -> LinesTransformerResolver:
     """
     :return: The identity transformer, if transformer option is not given.
     """
@@ -58,18 +58,18 @@ def parse_optional_transformer_resolver(parser: TokenParserPrime) -> LinesTransf
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
-def parse_lines_transformer_from_token_parser(parser: TokenParserPrime) -> LinesTransformerResolver:
+def parse_lines_transformer_from_token_parser(parser: TokenParser) -> LinesTransformerResolver:
     return parse_expression.parse(GRAMMAR, parser)
 
 
-def parse_replace(parser: TokenParserPrime) -> LinesTransformerResolver:
+def parse_replace(parser: TokenParser) -> LinesTransformerResolver:
     regex = parse_reg_ex.parse_regex(parser)
     parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
     replacement = parser.consume_mandatory_token(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
     return resolvers.LinesTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
 
 
-def parse_select(parser: TokenParserPrime) -> LinesTransformerResolver:
+def parse_select(parser: TokenParser) -> LinesTransformerResolver:
     line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser(parser)
     return resolvers.LinesTransformerSelectResolver(line_matcher)
 

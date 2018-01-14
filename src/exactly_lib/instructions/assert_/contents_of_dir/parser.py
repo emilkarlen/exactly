@@ -3,9 +3,9 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions import common, 
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMENT, ACTUAL_RELATIVITY_CONFIGURATION
 from exactly_lib.instructions.assert_.utils import assertion_part
-from exactly_lib.section_document.element_parsers import token_stream_parse_prime
+from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as expression_parse
@@ -23,11 +23,11 @@ class Parser(InstructionParser):
         }
 
     def parse(self, source: ParseSource) -> AssertPhaseInstruction:
-        with token_stream_parse_prime.from_parse_source(
+        with token_stream_parser.from_parse_source(
                 source,
                 consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser,
-                              token_stream_parse_prime.TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
+                              token_stream_parser.TokenParser), 'Must have a TokenParser'  # Type info for IDE
 
             path_to_check = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
                                                                             token_parser)
@@ -53,7 +53,7 @@ class _CheckInstructionParser:
         self.missing_check_description = 'Missing argument for check :' + grammar_options_syntax.alternatives_list(
             self.command_parsers)
 
-    def parse(self, parser: TokenParserPrime) -> AssertPhaseInstruction:
+    def parse(self, parser: TokenParser) -> AssertPhaseInstruction:
         assertion_variant = parser.parse_mandatory_command(self.command_parsers,
                                                            self.missing_check_description)
         assertions = assertion_part.SequenceOfCooperativeAssertionParts([
@@ -63,11 +63,11 @@ class _CheckInstructionParser:
         return assertion_part.AssertionInstructionFromAssertionPart(assertions,
                                                                     lambda x: self.settings)
 
-    def parse_empty_check(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
+    def parse_empty_check(self, parser: TokenParser) -> DirContentsAssertionPart:
         self._expect_no_more_args_and_consume_current_line(parser)
         return emptiness.EmptinessAssertion(self.settings)
 
-    def parse_num_files_check(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
+    def parse_num_files_check(self, parser: TokenParser) -> DirContentsAssertionPart:
         cmp_op_and_rhs = expression_parse.parse_integer_comparison_operator_and_rhs(
             parser,
             expression_parse.validator_for_non_negative)
@@ -76,15 +76,15 @@ class _CheckInstructionParser:
 
         return num_files.NumFilesAssertion(self.settings, cmp_op_and_rhs)
 
-    def parse_file_quantified_assertion__all(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
+    def parse_file_quantified_assertion__all(self, parser: TokenParser) -> DirContentsAssertionPart:
         return self._file_quantified_assertion(Quantifier.ALL, parser)
 
-    def parse_file_quantified_assertion__exists(self, parser: TokenParserPrime) -> DirContentsAssertionPart:
+    def parse_file_quantified_assertion__exists(self, parser: TokenParser) -> DirContentsAssertionPart:
         return self._file_quantified_assertion(Quantifier.EXISTS, parser)
 
     def _file_quantified_assertion(self,
                                    quantifier: Quantifier,
-                                   parser: TokenParserPrime) -> DirContentsAssertionPart:
+                                   parser: TokenParser) -> DirContentsAssertionPart:
         parser.consume_mandatory_constant_unquoted_string(config.QUANTIFICATION_OVER_FILE_ARGUMENT,
                                                           must_be_on_current_line=True)
         parser.consume_mandatory_constant_unquoted_string(
@@ -95,6 +95,6 @@ class _CheckInstructionParser:
         return quant_over_files.QuantifiedAssertion(self.settings, quantifier, actual_file_assertion_part)
 
     @staticmethod
-    def _expect_no_more_args_and_consume_current_line(parser: TokenParserPrime):
+    def _expect_no_more_args_and_consume_current_line(parser: TokenParser):
         parser.report_superfluous_arguments_if_not_at_eol()
         parser.consume_current_line_as_plain_string()

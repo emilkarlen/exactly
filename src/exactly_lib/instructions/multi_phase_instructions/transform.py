@@ -11,8 +11,8 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.instructions.utils.file_creation import \
     create_file_from_transformation_of_existing_file
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
-    TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
+    TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
@@ -131,7 +131,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
 
     def parse(self, source: ParseSource) -> TheInstruction:
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            assert isinstance(token_parser, TokenParserPrime)  # Type info for IDE
+            assert isinstance(token_parser, TokenParser)  # Type info for IDE
             src_file = parse_file_ref_from_token_parser(self._src_rel_opt_arg_conf, token_parser)
             dst_file = parse_file_ref_from_token_parser(DST_REL_OPT_ARG_CONF, token_parser)
             lines_transformer = self._parse_transformer(token_parser)
@@ -140,7 +140,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
             return TheInstruction(src_file, dst_file, lines_transformer)
 
     @staticmethod
-    def _parse_transformer(token_parser: TokenParserPrime) -> LinesTransformerResolver:
+    def _parse_transformer(token_parser: TokenParser) -> LinesTransformerResolver:
         if token_parser.is_at_eol:
             return LinesTransformerConstant(IdentityLinesTransformer())
         else:
