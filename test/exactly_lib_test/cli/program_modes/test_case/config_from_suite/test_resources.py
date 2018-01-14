@@ -54,7 +54,7 @@ def test_suite_definition_without_instructions() -> TestSuiteDefinition:
 
 
 def test_suite_definition_with_instructions(configuration_section_instructions: dict) -> TestSuiteDefinition:
-    parser = section_element_parsers.StandardSyntaxElementParser(
+    parser = section_element_parsers.standard_syntax_element_parser(
         InstructionWithOptionalDescriptionParser(
             InstructionParserForDictionaryOfInstructions(
                 instruction_name_and_argument_splitter.splitter,

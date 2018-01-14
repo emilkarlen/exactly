@@ -141,7 +141,7 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
 
 class TestStandardSyntaxElementParser(unittest.TestCase):
     def test_parse_empty_line(self):
-        parser = sut.StandardSyntaxElementParser(_InstructionParserForInstructionLineThatStartsWith('I'))
+        parser = sut.standard_syntax_element_parser(_InstructionParserForInstructionLineThatStartsWith('I'))
         test_cases = [([' '], ''),
                       (['  \t  '], ''),
                       (['  ', 'remaining'], 'remaining'),
@@ -161,7 +161,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                                  'Remaining source')
 
     def test_parse_comment_line(self):
-        parser = sut.StandardSyntaxElementParser(_InstructionParserForInstructionLineThatStartsWith('I'))
+        parser = sut.standard_syntax_element_parser(_InstructionParserForInstructionLineThatStartsWith('I'))
         test_cases = [(['# comment'], ''),
                       (['  #  comment'], ''),
                       (['#   ', 'remaining'], 'remaining'),
@@ -181,7 +181,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                                  'Remaining source')
 
     def test_parse_single_line_instruction(self):
-        parser = sut.StandardSyntaxElementParser(_InstructionParserForInstructionLineThatStartsWith('I'))
+        parser = sut.standard_syntax_element_parser(_InstructionParserForInstructionLineThatStartsWith('I'))
         test_cases = [(['I arguments'], ''),
                       (['I arguments', 'remaining'], 'remaining'),
                       (['I line 1', 'I line 2', 'not an instruction'], 'not an instruction'),
@@ -210,7 +210,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
         expected = sut.ParsedInstruction(line_source.LineSequence(1,
                                                                   ('first line text',)),
                                          expected_instruction_info)
-        parser = sut.StandardSyntaxElementParser(_InstructionParserThatGivesConstant(expected))
+        parser = sut.standard_syntax_element_parser(_InstructionParserThatGivesConstant(expected))
         source = _source_for_lines(['ignored', 'source', 'lines'])
         # ACT #
         element = parser.parse(pathlib.Path(), source)

@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions, InstructionNameExtractor
-from exactly_lib.section_document.element_parsers.section_element_parsers import StandardSyntaxElementParser, \
+from exactly_lib.section_document.element_parsers.section_element_parsers import standard_syntax_element_parser, \
     InstructionParser
 
 
@@ -16,7 +16,7 @@ def instruction_parser(instruction_name_extractor_function: InstructionNameExtra
 
 
 def section_element_parser_of(the_instruction_parser: InstructionParser) -> document_parser.SectionElementParser:
-    return StandardSyntaxElementParser(
+    return standard_syntax_element_parser(
         InstructionWithOptionalDescriptionParser(the_instruction_parser))
 
 
