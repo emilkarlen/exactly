@@ -4,10 +4,6 @@
 including repo-in-cwd-with-installed-commit-hook.setup
 
 
-# Checkout branch with issue number in name and,
-# add a file to index
-
-
 $ git checkout -b "AB-123-branch-with-issue-number"
 
 file file-to-add
