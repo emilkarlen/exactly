@@ -3,12 +3,12 @@ from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCoop
 from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileExistenceAssertionPart
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 
 
 def parse_instruction(actual_file: ComparisonActualFile,
-                      token_parser: TokenParserPrime) -> AssertPhaseInstruction:
+                      token_parser: TokenParser) -> AssertPhaseInstruction:
     """
     An instruction that
 

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.help_texts import expression
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, SymbolContainer
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.util import symbol_table
@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class Configuration:
-    def parse(self, parser: TokenParserPrime) -> SymbolValueResolver:
+    def parse(self, parser: TokenParser) -> SymbolValueResolver:
         raise NotImplementedError('abstract method')
 
     def resolved_value_equals(self, value: Matcher,
@@ -62,7 +62,7 @@ class TestParseStandardExpressionsBase(unittest.TestCase):
         raise NotImplementedError('abstract method')
 
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         # ACT #
         actual_resolver = self.conf.parse(source)

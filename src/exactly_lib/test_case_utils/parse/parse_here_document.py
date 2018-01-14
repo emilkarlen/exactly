@@ -3,7 +3,7 @@ import re
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime, \
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -36,7 +36,7 @@ def parse_as_last_argument(here_document_is_mandatory: bool,
 
 
 def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
-                                             token_parser: TokenParserPrime) -> StringResolver:
+                                             token_parser: TokenParser) -> StringResolver:
     """
     Expects the here-document marker to be the ane and only token remaining on the current line.
     Consumes current line and all lines included in the here-document.
@@ -84,7 +84,7 @@ def _parse_document_lines(marker: str, source: ParseSource) -> StringResolver:
     raise HereDocumentContentsParsingException("End Of File reached without finding Marker: '{}'".format(marker))
 
 
-def _parse_document_lines_from_token_parser(marker: str, token_parser: TokenParserPrime) -> StringResolver:
+def _parse_document_lines_from_token_parser(marker: str, token_parser: TokenParser) -> StringResolver:
     here_doc = []
     while token_parser.has_current_line:
         line = token_parser.consume_current_line_as_plain_string()

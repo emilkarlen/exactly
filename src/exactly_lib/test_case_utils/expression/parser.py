@@ -1,7 +1,7 @@
-from exactly_lib.section_document.element_parsers import token_stream_parse_prime
+from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from .grammar import Grammar
@@ -9,19 +9,19 @@ from .grammar import Grammar
 
 def parse_from_parse_source(grammar: Grammar,
                             source: ParseSource):
-    with token_stream_parse_prime.from_parse_source(source) as tp:
+    with token_stream_parser.from_parse_source(source) as tp:
         return parse(grammar, tp)
 
 
 def parse(grammar: Grammar,
-          parser: TokenParserPrime):
+          parser: TokenParser):
     return _Parser(grammar, parser).parse()
 
 
 class _Parser:
     def __init__(self,
                  grammar: Grammar,
-                 parser: TokenParserPrime):
+                 parser: TokenParser):
         self.parser = parser
         self.grammar = grammar
         self.complex_expressions_keys = self.grammar.complex_expressions.keys()

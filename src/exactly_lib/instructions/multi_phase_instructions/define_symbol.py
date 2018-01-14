@@ -18,7 +18,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.list_resolver import ListResolver
@@ -219,7 +219,7 @@ def _parse_list(token_stream: TokenStream) -> ListResolver:
 
 
 def _parse_line_matcher(token_stream: TokenStream) -> LineMatcherResolver:
-    token_parser = TokenParserPrime(token_stream)
+    token_parser = TokenParser(token_stream)
     if token_parser.is_at_eol:
         return parse_line_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
     else:
@@ -227,7 +227,7 @@ def _parse_line_matcher(token_stream: TokenStream) -> LineMatcherResolver:
 
 
 def _parse_file_matcher(token_stream: TokenStream) -> FileMatcherResolver:
-    token_parser = TokenParserPrime(token_stream)
+    token_parser = TokenParser(token_stream)
     if token_parser.is_at_eol:
         return parse_file_matcher.SELECTION_OF_ALL_FILES
     else:
@@ -235,7 +235,7 @@ def _parse_file_matcher(token_stream: TokenStream) -> FileMatcherResolver:
 
 
 def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_resolvers.LinesTransformerResolver:
-    token_parser = TokenParserPrime(token_stream)
+    token_parser = TokenParser(token_stream)
     if token_parser.is_at_eol:
         return line_transformer_resolvers.LinesTransformerConstant(IdentityLinesTransformer())
     return parse_lines_transformer.parse_lines_transformer_from_token_parser(token_parser)

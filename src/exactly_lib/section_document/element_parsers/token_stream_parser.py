@@ -15,7 +15,7 @@ from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 
 
-class TokenParserPrime:
+class TokenParser:
     """
     Utility for implementing parsers backed by a :class:`TokenStream`.
 
@@ -420,7 +420,7 @@ class TokenParserPrime:
 
 
 def new_token_parser(source: str,
-                     error_message_format_map: dict = None) -> TokenParserPrime:
+                     error_message_format_map: dict = None) -> TokenParser:
     """
     Constructs a :class:`TokenParser`
     :argument error_message_format_map: strings that are replaced in error messages
@@ -429,18 +429,18 @@ def new_token_parser(source: str,
     :rtype: :class:`TokenParser`
     :raises :class:`SingleInstructionInvalidArgumentException` Source has invalid syntax
     """
-    return TokenParserPrime(new_token_stream(source),
-                            error_message_format_map)
+    return TokenParser(new_token_stream(source),
+                       error_message_format_map)
 
 
-def token_parser_with_additional_error_message_format_map(parser: TokenParserPrime,
+def token_parser_with_additional_error_message_format_map(parser: TokenParser,
                                                           additional_error_message_format_map: dict
-                                                          ) -> TokenParserPrime:
+                                                          ) -> TokenParser:
     combined_error_message_format_map = dict(list(parser.error_message_format_map.items()) +
                                              list(additional_error_message_format_map.items()))
 
-    return TokenParserPrime(parser.token_stream,
-                            combined_error_message_format_map)
+    return TokenParser(parser.token_stream,
+                       combined_error_message_format_map)
 
 
 @contextmanager

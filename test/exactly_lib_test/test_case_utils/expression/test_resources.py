@@ -1,5 +1,5 @@
 from exactly_lib.help_texts.cross_ref.concrete_cross_refs import CustomCrossReferenceId
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -80,12 +80,12 @@ class ComplexB(ComplexExpr):
     pass
 
 
-def parse_simple_with_arg(parser: TokenParserPrime) -> SimpleWithArg:
+def parse_simple_with_arg(parser: TokenParser) -> SimpleWithArg:
     token = parser.consume_mandatory_token('failed parse of simple expression with arg')
     return SimpleWithArg(token.string)
 
 
-def parse_simple_sans_arg(parser: TokenParserPrime) -> SimpleSansArg:
+def parse_simple_sans_arg(parser: TokenParser) -> SimpleSansArg:
     return SimpleSansArg()
 
 

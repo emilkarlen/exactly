@@ -3,7 +3,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
@@ -36,7 +36,7 @@ def parse_string_resolver_from_parse_source(source: ParseSource,
     return ret_val
 
 
-def parse_string_from_token_parser(token_parser: TokenParserPrime,
+def parse_string_from_token_parser(token_parser: TokenParser,
                                    conf: Configuration = DEFAULT_CONFIGURATION) -> StringResolver:
     """
     :raises SingleInstructionInvalidArgumentException: Invalid arguments

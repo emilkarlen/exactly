@@ -5,8 +5,8 @@ from exactly_lib.instructions.assert_.utils.file_contents import parse_instructi
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
-    TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
+    TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
@@ -52,7 +52,7 @@ class ParserForContentsForActualValue(InstructionParser):
 
     def parse(self, source: ParseSource) -> AssertPhaseInstruction:
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            assert isinstance(token_parser, TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
+            assert isinstance(token_parser, TokenParser), 'Must have a TokenParser'  # Type info for IDE
             token_parser.require_is_not_at_eol('Missing file comparison argument')
             return parse_instruction.parse_instruction(self.comparison_actual_value,
                                                        token_parser)

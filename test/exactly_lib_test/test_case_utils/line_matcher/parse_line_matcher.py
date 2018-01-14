@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
@@ -39,7 +39,7 @@ def suite() -> unittest.TestSuite:
 
 
 class Configuration(matcher_parse_check.Configuration):
-    def parse(self, parser: TokenParserPrime) -> SymbolValueResolver:
+    def parse(self, parser: TokenParser) -> SymbolValueResolver:
         return sut.parse_line_matcher_from_token_parser(parser)
 
     def resolved_value_equals(self,
@@ -73,7 +73,7 @@ class Configuration(matcher_parse_check.Configuration):
 
 class TestRegexParser(unittest.TestCase):
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         # ACT #
         actual_resolver = sut.parse_regex(source)
@@ -194,7 +194,7 @@ class TestRegexParser(unittest.TestCase):
 
 class TestLineNumberParser(unittest.TestCase):
     def _check(self,
-               source: TokenParserPrime,
+               source: TokenParser,
                expectation: Expectation):
         # ACT #
         actual_resolver = sut.parse_line_number(source)

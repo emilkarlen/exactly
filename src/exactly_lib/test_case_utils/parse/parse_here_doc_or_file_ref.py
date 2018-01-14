@@ -4,7 +4,7 @@ import pathlib
 import shlex
 
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime, \
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
@@ -88,7 +88,7 @@ def parse_from_parse_source(source: ParseSource,
     return ret_val
 
 
-def parse_from_token_parser(token_parser: TokenParserPrime,
+def parse_from_token_parser(token_parser: TokenParser,
                             conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringResolverOrFileRef:
     token_parser.require_is_not_at_eol(MISSING_SOURCE)
     token_parser.require_head_token_has_valid_syntax()

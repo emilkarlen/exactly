@@ -1,5 +1,5 @@
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
-    TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
+    TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
@@ -39,5 +39,5 @@ class ValidationAndSubProcessExecutionSetupParser:
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             return self.parse_from_token_parser(parser)
 
-    def parse_from_token_parser(self, parser: TokenParserPrime) -> ValidationAndSubProcessExecutionSetup:
+    def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         raise NotImplementedError('abstract method')

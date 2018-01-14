@@ -8,7 +8,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
-from exactly_lib.section_document.element_parsers import token_stream_parse_prime
+from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
@@ -66,11 +66,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> AssertPhaseInstruction:
-        with token_stream_parse_prime.from_parse_source(
+        with token_stream_parser.from_parse_source(
                 source,
                 consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser,
-                              token_stream_parse_prime.TokenParserPrime), 'Must have a TokenParser'  # Type info for IDE
+                              token_stream_parser.TokenParser), 'Must have a TokenParser'  # Type info for IDE
             token_parser.require_is_not_at_eol(
                 'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
 
@@ -94,7 +94,7 @@ def parse_actual_file_argument(source: ParseSource) -> ComparisonActualFile:
     return ActComparisonActualFileForFileRef(file_ref)
 
 
-def parse_actual_file_argument_from_token_parser(token_parser: token_stream_parse_prime.TokenParserPrime
+def parse_actual_file_argument_from_token_parser(token_parser: token_stream_parser.TokenParser
                                                  ) -> ComparisonActualFile:
     file_ref = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
                                                                token_parser)

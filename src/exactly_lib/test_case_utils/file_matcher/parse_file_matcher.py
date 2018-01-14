@@ -7,8 +7,8 @@ from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
-from exactly_lib.section_document.element_parsers import token_stream_parse_prime
-from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers import token_stream_parser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -68,12 +68,12 @@ class FileSelectionDescriptor(ErrorMessagePartConstructor):
 
 
 def parse_resolver_from_parse_source(source: ParseSource) -> FileMatcherResolver:
-    with token_stream_parse_prime.from_parse_source(source) as tp:
+    with token_stream_parser.from_parse_source(source) as tp:
         return parse_resolver(tp)
 
 
-def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileMatcherResolver:
-    parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
+def parse_optional_selection_resolver(parser: TokenParser) -> FileMatcherResolver:
+    parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return parser.consume_and_handle_optional_option(
@@ -82,37 +82,37 @@ def parse_optional_selection_resolver(parser: TokenParserPrime) -> FileMatcherRe
         SELECTION_OPTION.name)
 
 
-def parse_resolver(parser: TokenParserPrime) -> FileMatcherResolver:
-    parser = token_stream_parse_prime.token_parser_with_additional_error_message_format_map(
+def parse_resolver(parser: TokenParser) -> FileMatcherResolver:
+    parser = token_stream_parser.token_parser_with_additional_error_message_format_map(
         parser,
         ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
     return _parse(parser)
 
 
-def _parse(parser: TokenParserPrime) -> FileMatcherResolver:
+def _parse(parser: TokenParser) -> FileMatcherResolver:
     ret_val = ep.parse(GRAMMAR, parser)
     assert isinstance(ret_val, FileMatcherResolver), ('Must have parsed a ' + str(FileMatcherResolver))
     return ret_val
 
 
-def _parse_name_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
+def _parse_name_matcher(parser: TokenParser) -> FileMatcherResolver:
     return parser.parse_choice_of_optional_option(_parse_name_reg_ex_matcher,
                                                   _parse_name_glob_pattern_matcher,
                                                   REG_EX_OPTION)
 
 
-def _parse_name_glob_pattern_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
+def _parse_name_glob_pattern_matcher(parser: TokenParser) -> FileMatcherResolver:
     pattern = parser.consume_mandatory_string_argument(
         _ERR_MSG_FORMAT_STRING_FOR_PARSE_NAME)
     return _constant(file_matchers.FileMatcherNameGlobPattern(pattern))
 
 
-def _parse_name_reg_ex_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
+def _parse_name_reg_ex_matcher(parser: TokenParser) -> FileMatcherResolver:
     compiled_reg_ex = parse_reg_ex.parse_regex(parser)
     return _constant(file_matchers.FileMatcherBaseNameRegExPattern(compiled_reg_ex))
 
 
-def _parse_type_matcher(parser: TokenParserPrime) -> FileMatcherResolver:
+def _parse_type_matcher(parser: TokenParser) -> FileMatcherResolver:
     file_type = parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE,
         file_properties.SYNTAX_TOKEN_2_FILE_TYPE.get,
