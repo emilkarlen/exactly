@@ -5,8 +5,8 @@ from typing import Dict, Sequence
 from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document import model
 from exactly_lib.section_document.document_parser import DocumentParser, new_parser_for, SectionConfiguration, \
-    SectionsConfiguration, SectionElementParser
-from exactly_lib.section_document.exceptions import SourceError, FileSourceError
+    SectionsConfiguration
+from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedInstruction, \
@@ -19,6 +19,8 @@ from exactly_lib_test.section_document.document_parser.test_resources.element_pa
 from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import \
     matches_file_source_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
+from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatReturnsNone, \
+    SectionElementParserThatRaisesSourceError
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection, \
     equals_instruction_without_description, \
@@ -587,14 +589,6 @@ class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementP
             return consume_current_line_and_return_it_as_line_sequence(source)
 
 
-class SectionElementParserThatFails(sut.SectionElementParser):
-    def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
-        raise SourceError(consume_current_line_and_return_it_as_line_sequence(source).first_line,
-                          'Unconditional failure')
-
-
 def parser_for_section2_that_fails_unconditionally() -> DocumentParser:
     return parser_with_successful_and_failing_section_parsers('section 1', 'section 2')
 
@@ -607,7 +601,7 @@ def parser_with_successful_and_failing_section_parsers(successful_section: str,
                               SectionElementParserForEmptyCommentAndInstructionLines(
                                   successful_section)),
          SectionConfiguration(failing_section,
-                              SectionElementParserThatFails())),
+                              SectionElementParserThatRaisesSourceError())),
         default_section_name=default_section)
 
     return new_parser_for(configuration)
@@ -628,13 +622,6 @@ def parser_for_sections(section_names: list,
         tuple(sections),
         default_section_name=default_section_name)
     return new_parser_for(configuration)
-
-
-class SectionElementParserThatReturnsNone(SectionElementParser):
-    def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
-        return None
 
 
 if __name__ == '__main__':
