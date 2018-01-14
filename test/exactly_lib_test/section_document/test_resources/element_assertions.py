@@ -2,7 +2,6 @@ import pathlib
 from typing import List, Sequence
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import single_line_sequence
@@ -133,54 +132,3 @@ def equals_comment_element(line_number: int,
                                             asrt.anything_goes())
 
 
-_ELEMENT_BUILDER_WITHOUT_FILE_PATH = SectionContentElementBuilder()
-
-
-def new_instruction(line_number: int,
-                    line_text: str,
-                    section_name: str,
-                    file_path: pathlib.Path = None,
-                    abs_path_of_dir_containing_file: pathlib.Path = None,
-                    file_inclusion_chain: List[line_source.SourceLocation] = ()) -> model.SectionContentElement:
-    builder = SectionContentElementBuilder(file_path,
-                                           file_inclusion_chain,
-                                           _root_path_if_non(abs_path_of_dir_containing_file),
-                                           )
-    return builder.new_instruction(line_source.LineSequence(line_number,
-                                                            (line_text,)),
-                                   InstructionInSection(section_name))
-
-
-def new_instruction__multi_line(line_number: int,
-                                lines: list,
-                                section_name: str,
-                                file_path: pathlib.Path = None,
-                                abs_path_of_dir_containing_file: pathlib.Path = None,
-                                file_inclusion_chain: List[line_source.SourceLocation] = ()
-                                ) -> model.SectionContentElement:
-    builder = SectionContentElementBuilder(file_path,
-                                           file_inclusion_chain,
-                                           _root_path_if_non(abs_path_of_dir_containing_file),
-                                           )
-    return builder.new_instruction(line_source.LineSequence(line_number,
-                                                            tuple(lines)),
-                                   InstructionInSection(section_name))
-
-
-def new_comment(line_number: int,
-                line_text: str) -> model.SectionContentElement:
-    return _ELEMENT_BUILDER_WITHOUT_FILE_PATH.new_comment(line_source.LineSequence(line_number,
-                                                                                   (line_text,)))
-
-
-def new_empty(line_number: int,
-              line_text: str) -> model.SectionContentElement:
-    return _ELEMENT_BUILDER_WITHOUT_FILE_PATH.new_empty(line_source.LineSequence(line_number,
-                                                                                 (line_text,)))
-
-
-def _root_path_if_non(path: pathlib.Path) -> pathlib.Path:
-    if path is None:
-        return pathlib.Path.cwd().root
-    else:
-        return path

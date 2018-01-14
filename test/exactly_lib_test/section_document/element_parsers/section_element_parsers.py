@@ -16,10 +16,10 @@ from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.document_assertions import equals_empty_element, \
     equals_comment_element, matches_instruction
+from exactly_lib_test.section_document.test_resources.element_assertions import matches_instruction_info
 from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatReturnsNone, \
     SectionElementParserThatReturnsConstantAndConsumesCurrentLine, SectionElementParserThatRaisesSourceError
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
-from exactly_lib_test.section_document.test_resources.section_contents_elements import matches_instruction_info
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence

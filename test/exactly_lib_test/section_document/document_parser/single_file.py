@@ -19,12 +19,12 @@ from exactly_lib_test.section_document.document_parser.test_resources.element_pa
 from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import \
     matches_file_source_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
+from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSection, \
+    equals_instruction_without_description, \
+    equals_multi_line_instruction_without_description, equals_empty_element, equals_comment_element
 from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatReturnsNone, \
     SectionElementParserThatRaisesSourceError
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
-from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection, \
-    equals_instruction_without_description, \
-    equals_multi_line_instruction_without_description, equals_empty_element, equals_comment_element
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line, equals_line
