@@ -15,7 +15,8 @@ from exactly_lib_test.section_document.document_parser.test_resources.arrangemen
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import SECTION_1_NAME, \
     SECTION_2_NAME, \
     NO_FILE_INCLUSIONS, inclusion_of_file, inclusion_of_list_of_files, ok_instruction, syntax_error_instruction, \
-    ARBITRARY_OK_INSTRUCTION_SOURCE_LINE, SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions
+    ARBITRARY_OK_INSTRUCTION_SOURCE_LINE, SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions, \
+    UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE
 from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import is_file_source_error, \
     matches_file_source_error, is_file_access_error, matches_file_access_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
@@ -32,7 +33,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid),
-        unittest.makeSuite(TestInclusionDirectiveIsNotAllowedOutsideOfSection),
+        unittest.makeSuite(TestDetectionOfSyntaxError),
         unittest.makeSuite(TestSectionSwitching),
         unittest.makeSuite(TestCombinationOfDocuments),
         unittest.makeSuite(TestMultipleInclusionsOfSameFile),
@@ -125,7 +126,7 @@ class TestFileAccessErrorShouldBeRaisedWhenFileIsInvalid(unittest.TestCase):
         )
 
 
-class TestInclusionDirectiveIsNotAllowedOutsideOfSection(unittest.TestCase):
+class TestDetectionOfSyntaxError(unittest.TestCase):
     def test_inclusion_directive_SHOULD_not_be_allowed_before_section_declaration_when_there_is_no_default_section(
             self):
         # ARRANGE #
@@ -154,6 +155,57 @@ class TestInclusionDirectiveIsNotAllowedOutsideOfSection(unittest.TestCase):
         # ACT & ASSERT #
         check_and_expect_exception(self, arrangement,
                                    expected_exception)
+
+    def test_source_locations_of_file_source_error(self):
+        # ARRANGE #
+        error_message = 'the error message'
+        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
+            source_line_in_included_file_2_or_none_if_file_should_not_exist=syntax_error_instruction(error_message)
+        )
+
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  setup.dir_contents,
+                                  setup.root_file_path,
+                                  )
+        expected_file_source_error = matches_file_source_error(
+            asrt.equals(SECTION_1_NAME),
+            [
+                setup.source_location_of_inclusion_of_file_1_from_root_file,
+                setup.source_location_of_inclusion_of_file_2_from_included_file_1,
+                SourceLocation(single_line_sequence(1,
+                                                    syntax_error_instruction(error_message)),
+                               Path(setup.included_file_2.name)),
+
+            ]
+        )
+        # ACT & ASSERT #
+        check_and_expect_exception(self, arrangement,
+                                   is_file_source_error(expected_file_source_error))
+
+    def test_source_locations_of_file_source_error_when_element_parser_reports_error_by_returning_none(self):
+        # ARRANGE #
+        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
+            source_line_in_included_file_2_or_none_if_file_should_not_exist=UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE
+        )
+
+        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
+                                  setup.dir_contents,
+                                  setup.root_file_path,
+                                  )
+        expected_file_source_error = matches_file_source_error(
+            asrt.equals(SECTION_1_NAME),
+            [
+                setup.source_location_of_inclusion_of_file_1_from_root_file,
+                setup.source_location_of_inclusion_of_file_2_from_included_file_1,
+                SourceLocation(single_line_sequence(1,
+                                                    UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE),
+                               Path(setup.included_file_2.name)),
+
+            ]
+        )
+        # ACT & ASSERT #
+        check_and_expect_exception(self, arrangement,
+                                   is_file_source_error(expected_file_source_error))
 
 
 class SingleFileInclusionCheckSetup:
@@ -870,32 +922,6 @@ class TestInclusionFromInclusion(unittest.TestCase):
         # ACT & ASSERT #
         check_and_expect_exception(self, arrangement,
                                    is_file_access_error(expected_file_access_error))
-
-    def test_source_locations_of_file_source_error(self):
-        # ARRANGE #
-        error_message = 'the error message'
-        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
-            source_line_in_included_file_2_or_none_if_file_should_not_exist=syntax_error_instruction(error_message)
-        )
-
-        arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
-                                  setup.dir_contents,
-                                  setup.root_file_path,
-                                  )
-        expected_file_source_error = matches_file_source_error(
-            asrt.equals(SECTION_1_NAME),
-            [
-                setup.source_location_of_inclusion_of_file_1_from_root_file,
-                setup.source_location_of_inclusion_of_file_2_from_included_file_1,
-                SourceLocation(single_line_sequence(1,
-                                                    syntax_error_instruction(error_message)),
-                               Path(setup.included_file_2.name)),
-
-            ]
-        )
-        # ACT & ASSERT #
-        check_and_expect_exception(self, arrangement,
-                                   is_file_source_error(expected_file_source_error))
 
 
 class TestFileInclusionRelativityRootIsGivenToElementParser(unittest.TestCase):

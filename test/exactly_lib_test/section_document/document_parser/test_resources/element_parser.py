@@ -14,6 +14,7 @@ from exactly_lib_test.section_document.test_resources.section_contents_elements 
 INCLUDE_DIRECTIVE_NAME = 'include'
 OK_INSTRUCTION_NAME = 'ok'
 SYNTAX_ERROR_INSTRUCTION_NAME = 'error'
+UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE = 'none'
 SECTION_1_NAME = 'section1'
 SECTION_2_NAME = 'section2'
 NO_FILE_INCLUSIONS = []
@@ -45,6 +46,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
     Parse result:
      - line with only space -> EMPTY element
      - line beginning with SYNTAX_ERROR_INSTRUCTION_NAME -> ParseError
+     - line beginning with UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE -> return None
      - OK_INSTRUCTION_NAME -> INSTRUCTION element
     """
 
@@ -60,6 +62,8 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
               file_inclusion_relativity_root: pathlib.Path,
               source: ParseSource) -> ParsedSectionElement:
         current_line = source.current_line_text
+        if current_line == UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE:
+            return None
         consumed_source = consume_current_line_and_return_it_as_line_sequence(source)
         if current_line.isspace():
             return new_empty_element(consumed_source)
