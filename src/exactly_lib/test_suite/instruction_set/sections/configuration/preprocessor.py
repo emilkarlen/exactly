@@ -7,7 +7,7 @@ from exactly_lib.help_texts.entity import concepts
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG, \
     extract_mandatory_arguments_after_eq
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
-from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment

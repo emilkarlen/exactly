@@ -2,11 +2,11 @@ import types
 from contextlib import contextmanager
 
 from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, LookAheadState
+from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream, LookAheadState
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import logic_types
 from exactly_lib.util.cli_syntax.elements.argument import OptionName, Option
 from exactly_lib.util.cli_syntax.option_parsing import matches

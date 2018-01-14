@@ -7,10 +7,10 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCase
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
-from exactly_lib.section_document.parser_implementations import section_element_parsers
-from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
+from exactly_lib.section_document.element_parsers import section_element_parsers
+from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
-from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
+from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib_test.cli.test_resources.main_program_runner_utils import \
     first_char_is_name_and_rest_is_argument__splitter, EMPTY_INSTRUCTIONS_SETUP

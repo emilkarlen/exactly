@@ -3,7 +3,7 @@ from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCoop
 from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileExistenceAssertionPart
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 
 

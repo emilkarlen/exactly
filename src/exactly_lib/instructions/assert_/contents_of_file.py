@@ -8,9 +8,9 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
+from exactly_lib.section_document.element_parsers import token_stream_parse_prime
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations import token_stream_parse_prime
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref

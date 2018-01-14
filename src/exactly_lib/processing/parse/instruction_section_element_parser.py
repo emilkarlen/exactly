@@ -1,11 +1,11 @@
 from typing import Dict
 
 from exactly_lib.section_document import document_parser
-from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
+from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
-from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
+from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions, InstructionNameExtractor
-from exactly_lib.section_document.parser_implementations.section_element_parsers import StandardSyntaxElementParser, \
+from exactly_lib.section_document.element_parsers.section_element_parsers import StandardSyntaxElementParser, \
     InstructionParser
 
 

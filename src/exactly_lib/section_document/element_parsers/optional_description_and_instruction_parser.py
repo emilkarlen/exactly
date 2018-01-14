@@ -3,10 +3,10 @@ import pathlib
 import shlex
 
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.element_parsers.section_element_parsers import \
+    InstructionParser, InstructionAndDescriptionParser, parse_and_compute_source
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.section_element_parsers import \
-    InstructionParser, InstructionAndDescriptionParser, parse_and_compute_source
 from exactly_lib.section_document.section_element_parser import ParsedInstruction
 from exactly_lib.util.line_source import Line
 

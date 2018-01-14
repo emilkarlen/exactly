@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION_NAME
 from exactly_lib.instructions.setup import stdin as sut
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver, string_constant
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name

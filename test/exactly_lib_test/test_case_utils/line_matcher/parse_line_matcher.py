@@ -1,9 +1,9 @@
 import re
 import unittest
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher, \
@@ -14,9 +14,9 @@ from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRe
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util import symbol_table
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_parser_prime \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser_prime \
     import remaining_source
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax

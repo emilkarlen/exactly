@@ -1,8 +1,8 @@
 import re
 import unittest
 
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_matcher import file_matchers

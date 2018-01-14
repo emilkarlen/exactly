@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.configuration import timeout as sut
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions

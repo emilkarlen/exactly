@@ -8,9 +8,9 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parse
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.help_texts.test_case.actors import command_line as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \

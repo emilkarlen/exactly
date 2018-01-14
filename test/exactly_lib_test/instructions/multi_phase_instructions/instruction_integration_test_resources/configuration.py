@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase

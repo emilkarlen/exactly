@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.configuration.utils import actor_utils
-from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder

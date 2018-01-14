@@ -5,10 +5,10 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
 from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.section_document.parser_implementations import section_element_parsers
-from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
+from exactly_lib.section_document.element_parsers import section_element_parsers
+from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
-from exactly_lib.section_document.parser_implementations.parser_for_dictionary_of_instructions import \
+from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd

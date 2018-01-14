@@ -1,5 +1,5 @@
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 
 
 def remaining_source(remaining_contents_of_first_line: str,

@@ -1,10 +1,10 @@
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.misc_utils import is_option_argument
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.misc_utils import is_option_argument
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect

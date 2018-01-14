@@ -4,16 +4,16 @@ import types
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.misc_utils import ensure_is_not_option_argument, \
+from exactly_lib.section_document.element_parsers.misc_utils import ensure_is_not_option_argument, \
     std_error_message_text_for_token_syntax_error_from_exception, std_error_message_text_for_token_syntax_error
-from exactly_lib.section_document.parser_implementations.parser_combinations import \
+from exactly_lib.section_document.element_parsers.parser_combinations import \
     token_stream_from_remaining_part_of_current_line_of_parse_source
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError, \
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream, TokenSyntaxError, \
     LookAheadState
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \

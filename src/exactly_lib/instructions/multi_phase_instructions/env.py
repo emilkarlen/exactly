@@ -8,11 +8,11 @@ from exactly_lib.instructions.multi_phase_instructions.utils import instruction_
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
     MainStepResultTranslatorForUnconditionalSuccess
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream, \
+from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream, \
     std_error_message_text_for_token_syntax_error_from_exception
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream, TokenSyntaxError
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream, TokenSyntaxError
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds

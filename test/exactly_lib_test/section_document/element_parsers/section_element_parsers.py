@@ -2,9 +2,9 @@ import pathlib
 import unittest
 
 from exactly_lib.section_document import model
+from exactly_lib.section_document.element_parsers import section_element_parsers as sut
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations import section_element_parsers as sut
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.section_document.test_resources.document_assertions import equals_empty_element, \

@@ -4,7 +4,7 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils import instruction_from_parts as sut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
     instruction_from_parts as tr

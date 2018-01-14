@@ -4,9 +4,9 @@ import pathlib
 import shlex
 
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime, \
     from_parse_source
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
