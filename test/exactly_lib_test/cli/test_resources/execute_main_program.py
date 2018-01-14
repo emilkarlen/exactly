@@ -30,7 +30,7 @@ def test_suite_definition() -> TestSuiteDefinition:
 
 
 def _new_parser() -> document_parser.SectionElementParser:
-    return section_element_parsers.StandardSyntaxElementParser(
+    return section_element_parsers.standard_syntax_element_parser(
         InstructionWithOptionalDescriptionParser(
             InstructionParserForDictionaryOfInstructions(
                 instruction_name_and_argument_splitter.splitter,

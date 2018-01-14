@@ -1,13 +1,13 @@
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
-    StandardSyntaxElementParser, InstructionWithoutDescriptionParser, InstructionParser
+    standard_syntax_element_parser, InstructionWithoutDescriptionParser, InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_suite.instruction_set import utils
 from exactly_lib.test_suite.instruction_set.instruction import Environment, TestSuiteInstruction
 
 
 def new_parser() -> SectionElementParser:
-    return StandardSyntaxElementParser(InstructionWithoutDescriptionParser(_SuitesSectionParser()))
+    return standard_syntax_element_parser(InstructionWithoutDescriptionParser(_SuitesSectionParser()))
 
 
 class TestSuiteSectionInstruction(TestSuiteInstruction):

@@ -7,7 +7,7 @@ from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
-    new_comment_element, ParsedInstruction
+    new_comment_element, ParsedInstruction, ParsedNonInstructionElement
 from exactly_lib.util import line_source
 
 
@@ -77,28 +77,26 @@ class ParserFromSequenceOfParsers(SectionElementParser):
         return None
 
 
-class StandardSyntaxElementParser(SectionElementParser):
+class StandardSyntaxCommentAndEmptyLineParser(SectionElementParser):
     """
-    A parser that knows how to parse empty lines and
-    comment lines (denoted by standard syntax).
-    Every other line is treated as the start of a directive or
-    an instruction to be parsed by a given instruction parser.
-    """
+    Parser for comments and empty lines, according to "standard" syntax.
 
-    def __init__(self, instruction_or_directive_parser: SectionElementParser):
-        self.instruction_or_directive_parser = instruction_or_directive_parser
+    (See module syntax for def of standard syntax.)
+
+    Reports/returns None if the current source line is neither a comment
+    nor an empty line.
+    """
 
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
+              source: ParseSource) -> ParsedNonInstructionElement:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):
             return new_empty_element(self._consume_and_return_current_line(source))
         if syntax.is_comment_line(first_line.text):
             return new_comment_element(self._consume_and_return_current_line(source))
         else:
-            return self.instruction_or_directive_parser.parse(file_inclusion_relativity_root,
-                                                              source)
+            return None
 
     @staticmethod
     def _consume_and_return_current_line(source: ParseSource) -> line_source.LineSequence:
@@ -106,6 +104,19 @@ class StandardSyntaxElementParser(SectionElementParser):
         source.consume_current_line()
         return line_source.LineSequence(current_line.line_number,
                                         (current_line.text,))
+
+
+def standard_syntax_element_parser(instruction_or_directive_parser: SectionElementParser) -> SectionElementParser:
+    """
+    A parser that knows how to parse empty lines and
+    comment lines (denoted by standard syntax).
+    Every other line is treated as the start of a directive or
+    an instruction to be parsed by a given instruction parser.
+    """
+    return ParserFromSequenceOfParsers([
+        StandardSyntaxCommentAndEmptyLineParser(),
+        instruction_or_directive_parser,
+    ])
 
 
 def parse_and_compute_source(parser: InstructionParser,
