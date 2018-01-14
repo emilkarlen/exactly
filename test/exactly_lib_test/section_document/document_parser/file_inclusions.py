@@ -8,13 +8,15 @@ from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.model import SectionContentElement, ElementType
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import SourceLocation, single_line_sequence
-from exactly_lib_test.section_document.parse.test_resources.arrangement_and_expectation import Expectation, check, \
+from exactly_lib_test.section_document.document_parser.test_resources.arrangement_and_expectation import Expectation, \
+    check, \
     std_conf_arrangement, check_and_expect_exception, \
     Arrangement
-from exactly_lib_test.section_document.parse.test_resources.element_parser import SECTION_1_NAME, SECTION_2_NAME, \
+from exactly_lib_test.section_document.document_parser.test_resources.element_parser import SECTION_1_NAME, \
+    SECTION_2_NAME, \
     NO_FILE_INCLUSIONS, inclusion_of_file, inclusion_of_list_of_files, ok_instruction, syntax_error_instruction, \
     ARBITRARY_OK_INSTRUCTION_SOURCE_LINE, SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions
-from exactly_lib_test.section_document.parse.test_resources.exception_assertions import is_file_source_error, \
+from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import is_file_source_error, \
     matches_file_source_error, is_file_access_error, matches_file_access_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.section_contents_elements import \

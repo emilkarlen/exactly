@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.section_document import element_builder
-from exactly_lib_test.section_document import test_resources_test, parse
+from exactly_lib_test.section_document import test_resources_test, document_parser
 from exactly_lib_test.section_document import test_syntax, element_parsers, \
     parse_source, section_element_parser
 
@@ -13,7 +13,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(test_syntax.suite())
     ret_val.addTest(element_builder.suite())
     ret_val.addTest(parse_source.suite())
-    ret_val.addTest(parse.suite())
+    ret_val.addTest(document_parser.suite())
     ret_val.addTest(element_parsers.suite())
     return ret_val
 

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.section_document.parse import single_file, file_inclusions
+from exactly_lib_test.section_document.document_parser import single_file, file_inclusions
 
 
 def suite() -> unittest.TestSuite:
