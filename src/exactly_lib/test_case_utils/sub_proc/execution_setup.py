@@ -1,6 +1,6 @@
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe

@@ -5,9 +5,9 @@ import unittest
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.utils.parse import parse_executable_file as sut
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     is_any_data_type
@@ -29,7 +29,7 @@ from exactly_lib_test.instructions.test_resources import executable_file_test_ut
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
     ExpectationOnExeFile
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su

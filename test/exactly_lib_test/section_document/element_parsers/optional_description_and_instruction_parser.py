@@ -3,11 +3,11 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
+    InstructionWithOptionalDescriptionParser
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.optional_description_and_instruction_parser import \
-    InstructionWithOptionalDescriptionParser
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.section_document.section_element_parser import ParsedInstruction
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end

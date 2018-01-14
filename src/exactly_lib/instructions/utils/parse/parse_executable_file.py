@@ -1,8 +1,8 @@
 import sys
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.concrete_resolvers import list_constant
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver

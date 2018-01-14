@@ -2,9 +2,9 @@ import re
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 

@@ -1,14 +1,14 @@
 import unittest
 
 from exactly_lib.help_texts import expression
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, SymbolContainer
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
 from exactly_lib.util import symbol_table
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_parser_prime \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser_prime \
     import remaining_source
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.expression.test_resources import \

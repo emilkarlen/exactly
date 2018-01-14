@@ -17,9 +17,9 @@ from exactly_lib.instructions.utils.parse.parse_file_maker import CONTENTS_ASSIG
     InstructionConfig, parse_file_contents, \
     FileContentsDocumentation, \
     _src_rel_opt_arg_conf_for_phase
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \

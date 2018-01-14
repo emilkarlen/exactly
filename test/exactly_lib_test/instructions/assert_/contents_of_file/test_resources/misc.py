@@ -1,5 +1,5 @@
 from exactly_lib.instructions.assert_ import contents_of_file as sut
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check

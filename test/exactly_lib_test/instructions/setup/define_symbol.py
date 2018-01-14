@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions.define_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.instructions.setup import define_symbol as sut
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \

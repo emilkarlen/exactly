@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument, InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
-from exactly_lib_test.section_document.parser_implementations.test_resources.exception_assertions import \
+from exactly_lib_test.section_document.element_parsers.test_resources.exception_assertions import \
     assert_is_single_instruction_invalid_argument_exception
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 

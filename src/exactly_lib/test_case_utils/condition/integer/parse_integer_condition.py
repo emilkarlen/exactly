@@ -3,9 +3,9 @@ import types
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.data.string_resolver import StringResolver

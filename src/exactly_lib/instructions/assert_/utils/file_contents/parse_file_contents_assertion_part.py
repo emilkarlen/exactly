@@ -4,7 +4,7 @@ from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCoop
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileTransformerAsAssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime, \
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime, \
     token_parser_with_additional_error_message_format_map
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op

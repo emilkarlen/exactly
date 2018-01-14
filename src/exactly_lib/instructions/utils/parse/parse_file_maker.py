@@ -8,7 +8,7 @@ from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromSubProcess, FileMakerForContentsFromExistingFile
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo

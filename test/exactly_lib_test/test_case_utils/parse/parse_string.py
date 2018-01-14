@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -16,7 +16,7 @@ from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_string as sut
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream, \
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source

@@ -8,9 +8,9 @@ from exactly_lib.help_texts.doc_format import syntax_text
 from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParser
-from exactly_lib.section_document.parser_implementations.instruction_parsers import \
+from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
-from exactly_lib.section_document.parser_implementations.misc_utils import new_token_stream
+from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i

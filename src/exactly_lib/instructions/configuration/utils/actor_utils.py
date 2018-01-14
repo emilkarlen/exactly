@@ -13,7 +13,7 @@ from exactly_lib.help_texts.entity import concepts, actors
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD

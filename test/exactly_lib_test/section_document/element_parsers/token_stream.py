@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.section_document.parser_implementations import token_stream as sut
-from exactly_lib.section_document.parser_implementations.token_stream import TokenSyntaxError, LookAheadState
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+from exactly_lib.section_document.element_parsers import token_stream as sut
+from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError, LookAheadState
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_quoted, assert_plain, assert_token_stream
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

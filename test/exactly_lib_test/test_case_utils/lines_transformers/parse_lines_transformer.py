@@ -1,9 +1,9 @@
 import re
 import unittest
 
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer as sut
@@ -12,9 +12,9 @@ from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLi
     CustomLinesTransformer, SequenceLinesTransformer, SelectLinesTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_assertions import \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
-from exactly_lib_test.section_document.parser_implementations.test_resources.token_stream_parser_prime \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser_prime \
     import remaining_source
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container

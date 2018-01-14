@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.instructions.configuration import act_home as sut
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.instructions.configuration.test_resources import set_home_dir

@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_environ
 from exactly_lib.util.symbol_table import SymbolTable

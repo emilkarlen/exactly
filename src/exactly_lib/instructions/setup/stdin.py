@@ -6,10 +6,10 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import from_parse_source, \
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import from_parse_source, \
     TokenParserPrime
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case.os_services import OsServices

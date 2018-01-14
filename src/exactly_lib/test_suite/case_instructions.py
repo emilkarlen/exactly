@@ -5,10 +5,10 @@ from exactly_lib.processing.parse import instruction_section_element_parser as i
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.model import SectionContentElement, ElementType, SectionContents, \
     Instruction
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteInstruction

@@ -1,7 +1,7 @@
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.section_document.parser_implementations.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parser_implementations.token_stream_parse_prime import TokenParserPrime
+from exactly_lib.section_document.element_parsers.token_stream_parse_prime import TokenParserPrime
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import ConstantCmdAndArgsResolver

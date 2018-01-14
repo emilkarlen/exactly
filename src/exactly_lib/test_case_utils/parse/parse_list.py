@@ -1,6 +1,6 @@
+from exactly_lib.section_document.element_parsers import token_parse as tp
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations import token_parse as tp
-from exactly_lib.section_document.parser_implementations.token_stream import TokenStream
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
 from exactly_lib.symbol.data.list_resolver import ListResolver

@@ -3,8 +3,8 @@ from typing import List
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import model
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_implementations.section_element_parsers import InstructionParser
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
