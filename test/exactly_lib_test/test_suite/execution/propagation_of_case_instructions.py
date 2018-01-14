@@ -12,7 +12,7 @@ from exactly_lib.test_suite import execution as sut
 from exactly_lib.test_suite import suite_hierarchy_reading
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.section_document.document_parser.single_file import SectionElementParserThatFails
+from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatRaisesSourceError
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -192,7 +192,7 @@ def new_executor(recorder: List[str],
                         StringStdOutFiles().stdout_files,
                         suite_hierarchy_reading.Reader(
                             suite_hierarchy_reading.Environment(
-                                SectionElementParserThatFails(),
+                                SectionElementParserThatRaisesSourceError(),
                                 test_case_definition.parsing_setup,
                                 default_configuration.default_handling_setup)
                         ),
