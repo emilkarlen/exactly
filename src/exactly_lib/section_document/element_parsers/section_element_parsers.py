@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
@@ -48,6 +49,32 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
               file_inclusion_relativity_root: pathlib.Path,
               source: ParseSource) -> ParsedInstruction:
         return parse_and_compute_source(self.instruction_parser, source)
+
+
+class ParserFromSequenceOfParsers(SectionElementParser):
+    """
+    A parser that tries a sequence of parsers, and returns the value
+    from the first parser that gives a result that is not None.
+
+    A parser that returns None, must not consume source.
+
+    An exception from a parser will be propagated from this parser.
+    """
+
+    def __init__(self, parsers_to_try: Sequence[SectionElementParser]):
+        """
+        :param parsers_to_try: Parsers to try - in precedence order.
+        """
+        self._parsers_to_try = parsers_to_try
+
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedSectionElement:
+        for parser in self._parsers_to_try:
+            element = parser.parse(file_inclusion_relativity_root, source)
+            if element is not None:
+                return element
+        return None
 
 
 class StandardSyntaxElementParser(SectionElementParser):

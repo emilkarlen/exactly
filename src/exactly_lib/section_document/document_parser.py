@@ -39,17 +39,17 @@ class SectionElementParser:
               source: ParseSource) -> ParsedSectionElement:
         """
         May return None if source is recognized.
-        Unrecognized source may also be reported by raising FileSourceError.
+        Unrecognized source may also be reported by raising SourceError.
 
         The possibility to return None exists to help constructing parsers from parts -
         a return value of None means that some other parser may try to parse the same source,
-        while a raised FileSourceError means that this parser recognizes the source (e.g. by
+        while a raised SourceError means that this parser recognizes the source (e.g. by
         being the name of an instruction), but that there is some syntax error related to
         the recognized element (e.g. instruction).
 
         :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
         have been consumed by this parser.
-        :raises FileSourceError The element cannot be parsed.
+        :raises SourceError: The element cannot be parsed.
         """
         raise NotImplementedError()
 

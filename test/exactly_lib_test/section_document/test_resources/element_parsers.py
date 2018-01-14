@@ -22,3 +22,14 @@ class SectionElementParserThatRaisesSourceError(sut.SectionElementParser):
               source: ParseSource) -> ParsedSectionElement:
         raise SourceError(consume_current_line_and_return_it_as_line_sequence(source).first_line,
                           'Unconditional failure')
+
+
+class SectionElementParserThatReturnsConstantAndConsumesCurrentLine(sut.SectionElementParser):
+    def __init__(self, return_value: ParsedSectionElement):
+        self.return_value = return_value
+
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedSectionElement:
+        source.consume_current_line()
+        return self.return_value
