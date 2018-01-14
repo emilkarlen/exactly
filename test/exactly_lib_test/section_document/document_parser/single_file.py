@@ -5,16 +5,19 @@ from typing import Dict, Sequence
 from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document import model
 from exactly_lib.section_document.document_parser import DocumentParser, new_parser_for, SectionConfiguration, \
-    SectionsConfiguration
+    SectionsConfiguration, SectionElementParser
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedInstruction, \
     new_empty_element, new_comment_element
+from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import Line
+from exactly_lib.util.line_source import Line, SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import \
     consume_current_line_and_return_it_as_line_sequence
+from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import \
+    matches_file_source_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.section_contents_elements import InstructionInSection, \
@@ -415,6 +418,44 @@ class TestParseMultiLineElements(ParseTestBase):
 
 
 class TestInvalidSyntax(ParseTestBase):
+    def test_element_parser_SHOULD_be_able_to_report_syntax_error_by_returning_None(self):
+        # ARRANGE #
+        section_name = 'section-name'
+        parser = new_parser_for(
+            SectionsConfiguration([SectionConfiguration(section_name,
+                                                        SectionElementParserThatReturnsNone())],
+                                  default_section_name=section_name))
+        unrecognized_line = 'unrecognized'
+        cases = [
+            NEA('unrecognized source inside declared section',
+                actual=[section_header(section_name),
+                        unrecognized_line,
+                        'following line'],
+                expected=matches_file_source_error(
+                    maybe_section_name=asrt.equals(section_name),
+                    location_path=[
+                        SourceLocation(single_line_sequence(2, unrecognized_line),
+                                       EXPECTED_SOURCE_FILE_PATH)
+                    ])
+                ),
+            NEA('unrecognized source in default section',
+                actual=[unrecognized_line,
+                        'following line'],
+                expected=matches_file_source_error(
+                    maybe_section_name=asrt.equals(section_name),
+                    location_path=[
+                        SourceLocation(single_line_sequence(1, unrecognized_line),
+                                       EXPECTED_SOURCE_FILE_PATH)
+                    ],
+                )),
+        ]
+        for nea in cases:
+            with self.subTest(nea.name):
+                with self.assertRaises(FileSourceError) as cm:
+                    # ACT & ASSERT #
+                    self._parse_lines(parser, nea.actual)
+                nea.expected.apply_without_message(self, cm.exception)
+
     def test_instruction_in_default_section_SHOULD_not_be_allowed_when_there_is_no_default_section(self):
         # ARRANGE #
         parser = parser_for_sections(['section 1'])
@@ -587,6 +628,13 @@ def parser_for_sections(section_names: list,
         tuple(sections),
         default_section_name=default_section_name)
     return new_parser_for(configuration)
+
+
+class SectionElementParserThatReturnsNone(SectionElementParser):
+    def parse(self,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> ParsedSectionElement:
+        return None
 
 
 if __name__ == '__main__':

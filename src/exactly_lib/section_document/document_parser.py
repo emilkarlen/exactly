@@ -4,14 +4,14 @@ from typing import Sequence, Dict, List
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
-from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError
+from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, new_source_error
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocation
+from exactly_lib.util.line_source import SourceLocation, line_sequence_from_line
 
 
 class DocumentParser:
@@ -38,6 +38,17 @@ class SectionElementParser:
               file_inclusion_relativity_root: pathlib.Path,
               source: ParseSource) -> ParsedSectionElement:
         """
+        May return None if source is recognized.
+        Unrecognized source may also be reported by raising FileSourceError.
+
+        The possibility to return None exists to help constructing parsers from parts -
+        a return value of None means that some other parser may try to parse the same source,
+        while a raised FileSourceError means that this parser recognizes the source (e.g. by
+        being the name of an instruction), but that there is some syntax error related to
+        the recognized element (e.g. instruction).
+
+        :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
+        have been consumed by this parser.
         :raises FileSourceError The element cannot be parsed.
         """
         raise NotImplementedError()
@@ -328,6 +339,11 @@ class _Impl:
     def parse_element_at_current_line_using_current_section_element_parser(self) -> model.SectionContentElement:
         parsed_element = self.parser_for_current_section.parse(self._file_inclusion_relativity_root,
                                                                self._document_source)
+        if parsed_element is None:
+            raise FileSourceError(new_source_error(line_sequence_from_line(self._document_source.current_line),
+                                                   'Syntax error'),
+                                  self._name_of_current_section,
+                                  self._location_path_of_current_line())
         return self._element_constructor.visit(parsed_element)
 
     def add_element_to_current_section(self, element: model.SectionContentElement):
