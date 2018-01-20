@@ -7,7 +7,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib_test.cli.test_resources import execute_main_program
 from exactly_lib_test.cli.test_resources.main_program_runner_utils import \
     first_char_is_name_and_rest_is_argument__splitter, EMPTY_INSTRUCTIONS_SETUP
-from exactly_lib_test.cli.test_resources.test_case_handling_setup import test_case_handling_setup
+from exactly_lib_test.processing.test_resources.test_case_setup import test_case_handling_setup
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult
 
