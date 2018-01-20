@@ -1,13 +1,10 @@
 import pathlib
 
-from exactly_lib.execution import full_execution
 from exactly_lib.execution import result
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
-from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseSetup
@@ -16,6 +13,8 @@ from exactly_lib.test_suite import structure
 from exactly_lib.util.failure_details import new_failure_details_from_message
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
+from exactly_lib_test.processing.test_resources.test_case_setup import \
+    test_case_definition_with_no_instructions_and_no_preprocessor
 
 
 def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSetup:
@@ -51,12 +50,7 @@ class TestCaseProcessorThatGivesConstantPerCase(tcp.Processor):
         return self.test_case_id_2_result[id(test_case)]
 
 
-DUMMY_TEST_CASE_DEFINITION = case_processing.TestCaseDefinition(
-    TestCaseParsingSetup(lambda x: '',
-                         InstructionsSetup({}, {}, {}, {}, {}),
-                         ActPhaseParser()),
-    full_execution.PredefinedProperties(),
-)
+DUMMY_TEST_CASE_DEFINITION = test_case_definition_with_no_instructions_and_no_preprocessor()
 
 DUMMY_CASE_PROCESSING = case_processing.Configuration(
     DUMMY_TEST_CASE_DEFINITION,

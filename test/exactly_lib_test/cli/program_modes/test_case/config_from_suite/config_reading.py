@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
@@ -20,16 +19,16 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
-from exactly_lib.util.std import StdFiles
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for, run_test_case, \
     test_suite_definition_without_instructions, test_suite_definition_with_instructions
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
-from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
-from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceAndExecutorConstructorForConstantExecutor
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
 from exactly_lib_test.processing.processing_utils import PreprocessorThat
+from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_prints_single_string_on_stdout, \
+    act_setup_that_does_nothing
+from exactly_lib_test.processing.test_resources.test_case_setup import \
+    setup_with_null_act_phase_and_null_preprocessing
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -48,10 +47,7 @@ SUCCESS_INDICATOR_STRING = 'output from actor set in suite'
 
 class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
     def runTest(self):
-        default_test_case_handling = TestCaseHandlingSetup(
-            act_phase_setup=act_setup_that_does_nothing(),
-            preprocessor=IdentityPreprocessor()
-        )
+        default_test_case_handling = setup_with_null_act_phase_and_null_preprocessing()
 
         test_suite_definition = test_suite_definition_with_single_conf_instruction(
             name=SUITE_CONF_INSTRUCTION_THAT_SETS_PREPROCESSOR_AND_ACTOR__NAME,
@@ -262,27 +258,3 @@ class SuiteConfInstructionThatSets(ConfigurationSectionInstruction):
     def execute(self, environment: ConfigurationSectionEnvironment):
         environment.preprocessor = self.preprocessor
         environment.act_phase_setup = self.act_phase_setup
-
-
-def act_setup_that_prints_single_string_on_stdout(string_to_print: str) -> ActPhaseSetup:
-    return ActPhaseSetup(ActSourceAndExecutorConstructorForConstantExecutor(
-        ActSourceAndExecutorThatRunsConstantActions(
-            execute_initial_action=PrintStringOnStdout(string_to_print)))
-    )
-
-
-def act_setup_that_does_nothing() -> ActPhaseSetup:
-    return ActPhaseSetup(ActSourceAndExecutorConstructorForConstantExecutor(
-        ActSourceAndExecutorThatRunsConstantActions())
-    )
-
-
-class PrintStringOnStdout:
-    def __init__(self, string_to_print: str):
-        self.string_to_print = string_to_print
-
-    def __call__(self,
-                 environment: InstructionEnvironmentForPostSdsStep,
-                 script_output_dir_path: pathlib.Path,
-                 std_files: StdFiles):
-        std_files.output.out.write(self.string_to_print)
