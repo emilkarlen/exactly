@@ -2,15 +2,16 @@ import unittest
 
 from exactly_lib_test.processing import parse
 from exactly_lib_test.processing import preprocessor
-from exactly_lib_test.processing import processing_utils
+from exactly_lib_test.processing import processing_utils, processors
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(preprocessor.suite())
-    ret_val.addTest(processing_utils.suite())
-    ret_val.addTest(parse.suite())
-    return ret_val
+    return unittest.TestSuite([
+        preprocessor.suite(),
+        processing_utils.suite(),
+        parse.suite(),
+        processors.suite(),
+    ])
 
 
 if __name__ == '__main__':

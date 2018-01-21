@@ -1,4 +1,5 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document.model import Instruction
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
@@ -30,3 +31,7 @@ def instruction_item(instruction_name: str,
     return (instruction_name,
             single_instruction_setup(instruction_name,
                                      instruction))
+
+
+def directive_for_inclusion_of_file(path: str) -> str:
+    return instruction_names.FILE_INCLUSION_DIRECTIVE_NAME + ' ' + path
