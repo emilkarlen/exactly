@@ -28,7 +28,7 @@ class DocumentParser:
         :param source_file_path: None if the source is not a file.
         :param file_inclusion_relativity_root: A directory that file inclusion paths are relative to.
         :param source: The source to parse - the contents of source_file_path, if the source is from a file.
-        :raises FileSourceError The test case cannot be parsed.
+        :raises ParseError The test case cannot be parsed.
         """
         raise NotImplementedError()
 

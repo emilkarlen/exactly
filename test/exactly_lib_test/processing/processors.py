@@ -9,20 +9,22 @@ from exactly_lib.processing import processors as sut
 from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.processors import TestCaseDefinition
-from exactly_lib.processing.test_case_processing import TestCaseSetup, Status, Result
+from exactly_lib.processing.test_case_processing import TestCaseSetup, Status, Result, Processor, AccessErrorType
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.util.line_source import Line, source_location_path_of
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instr
 from exactly_lib_test.processing.test_resources.instruction_set import directive_for_inclusion_of_file
 from exactly_lib_test.processing.test_resources.test_case_setup import \
-    setup_with_null_act_phase_and_null_preprocessing
+    setup_with_null_act_phase_and_null_preprocessing, configuration_with_no_instructions_and_no_preprocessor
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_path
 
 
 def suite() -> unittest.TestSuite:
@@ -73,6 +75,45 @@ class TestFileInclusion(unittest.TestCase):
                                          result.execution_result.status)
                         self.assertEqual([phase.section_name],
                                          recording_output)
+
+    def test_inclusion_of_non_exiting_file_SHOULD_cause_file_access_error(self):
+        name_of_non_existing_file = 'non-existing.src'
+        configuration = configuration_with_no_instructions_and_no_preprocessor()
+        proc_cases = [
+            NameAndValue('not allowed to pollute current process',
+                         sut.new_processor_that_should_not_pollute_current_process(configuration)),
+            NameAndValue('allowed to pollute current process',
+                         sut.new_processor_that_is_allowed_to_pollute_current_process(configuration)),
+        ]
+        for phase in phase_identifier.ALL_WITH_INSTRUCTIONS:
+            for proc_case in proc_cases:
+                with self.subTest(phase.section_name,
+                                  proc=proc_case.name):
+                    test_case_file = fs.file_with_lines('test.case', [
+                        section_header(phase.section_name),
+                        directive_for_inclusion_of_file(name_of_non_existing_file),
+                    ])
+                    cwd_contents = fs.DirContents([test_case_file])
+                    processor = proc_case.value
+                    assert isinstance(processor, Processor)
+                    with tmp_dir_as_cwd(cwd_contents):
+                        test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
+                                                        file_inclusion_relativity_root=pathlib.Path.cwd())
+                        # ACT #
+                        result = processor.apply(test_case_setup)
+                        # ASSERT #
+                        assert isinstance(result, Result)  # Type info for IDE
+                        self.assertEqual(Status.ACCESS_ERROR,
+                                         result.status)
+                        self.assertEqual(AccessErrorType.FILE_ACCESS_ERROR,
+                                         result.access_error_type)
+                        source_location_path_expectation = equals_source_location_path(
+                            source_location_path_of(pathlib.Path(test_case_file.name),
+                                                    Line(2,
+                                                         directive_for_inclusion_of_file(name_of_non_existing_file))))
+                        source_location_path_expectation.apply_with_message(self,
+                                                                            result.error_info.source_location_path,
+                                                                            'source location path')
 
 
 def configuration_with_instruction_in_each_phase_that_records_phase_name(

@@ -3,7 +3,7 @@ from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
-from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.processing.processors import TestCaseDefinition, Configuration
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_does_nothing
 
@@ -38,3 +38,9 @@ def test_case_definition_with_no_instructions_and_no_preprocessor() -> TestCaseD
         parsing_setup_with_no_instructions(),
         PredefinedProperties(),
     )
+
+
+def configuration_with_no_instructions_and_no_preprocessor() -> Configuration:
+    return Configuration(test_case_definition_with_no_instructions_and_no_preprocessor(),
+                         test_case_handling_setup(),
+                         is_keep_sandbox=False)
