@@ -1,6 +1,5 @@
 import pathlib
 
-import exactly_lib.section_document.exceptions
 from exactly_lib import program_info
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FullResult
@@ -10,13 +9,16 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import test_case_parser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError, TestCaseSetup
+from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError, TestCaseSetup, AccessorError, \
+    AccessErrorType
+from exactly_lib.section_document import exceptions
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.util.line_source import source_location_path_of_lines_in_file, LinesInFile
+from exactly_lib.util.line_source import source_location_path_of_lines_in_file, LinesInFile, \
+    source_location_path_of_non_empty_location_path
 
 
 class TestCaseDefinition:
@@ -99,12 +101,18 @@ class _Parser(processing_utils.Parser):
         source = ParseSource(test_case_plain_source)
         try:
             return file_parser.apply(test_case, source)
-        except exactly_lib.section_document.exceptions.FileSourceError as ex:
+        except exceptions.FileSourceError as ex:
             error_info = ErrorInfo(error_description.syntax_error_of_message(ex.source_error.message),
                                    source_location_path_of_lines_in_file(LinesInFile(ex.source_error.source,
                                                                                      test_case.file_path)),
                                    section_name=ex.maybe_section_name)
             raise ProcessError(error_info)
+
+        except exceptions.FileAccessError as ex:
+            error_info = ErrorInfo(error_description.syntax_error_of_message(ex.message),
+                                   source_location_path_of_non_empty_location_path(ex.location_path))
+            raise AccessorError(AccessErrorType.FILE_ACCESS_ERROR,
+                                error_info)
 
 
 def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:

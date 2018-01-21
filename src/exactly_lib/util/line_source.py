@@ -187,3 +187,8 @@ def source_location_path_of_lines_in_file(lines_in_file: LinesInFile) -> SourceL
 
 def source_location_path_without_inclusions(location: SourceLocation) -> SourceLocationPath:
     return SourceLocationPath(location, ())
+
+
+def source_location_path_of_non_empty_location_path(location_path: Sequence[SourceLocation]) -> SourceLocationPath:
+    return SourceLocationPath(location_path[0],
+                              location_path[1:])
