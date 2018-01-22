@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.line_source import Line, LineSequence
 
 _WHICH_IS_A_BUILTIN_SYMBOL = 'which is a builtin symbol'
@@ -7,8 +9,8 @@ def source_line(line: Line) -> str:
     return 'Line {}: `{}\''.format(line.line_number, line.text)
 
 
-def source_line_sequence(source: LineSequence) -> str:
-    return source_line(source.first_line)
+def source_line_sequence(source: LineSequence) -> List[str]:
+    return list(source.lines)
 
 
 def source_line_of_symbol(definition_source: Line) -> str:
