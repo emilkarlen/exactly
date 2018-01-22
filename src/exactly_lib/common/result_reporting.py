@@ -1,15 +1,15 @@
 import io
 import pathlib
+from typing import Sequence
 
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
 from exactly_lib.help_texts import misc_texts
 from exactly_lib.help_texts.formatting import SectionName
-from exactly_lib.help_texts.test_case.phase_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
-from exactly_lib.util import line_source, error_message_format
-from exactly_lib.util.line_source import LinesInFile, SourceLocationPath
+from exactly_lib.util.error_message_format import source_line_sequence
+from exactly_lib.util.line_source import SourceLocationPath, SourceLocation
 from exactly_lib.util.std import FilePrinter
 
 
@@ -39,31 +39,39 @@ def error_message_for_error_info(error_info: ErrorInfo) -> str:
 
 
 def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
-    output_location3(printer,
-                     error_info.source_location_path,
-                     error_info.maybe_section_name,
-                     None,
-                     SECTION_CONCEPT_NAME)
+    output_location(printer,
+                    error_info.source_location_path,
+                    error_info.maybe_section_name,
+                    None)
     _ErrorDescriptionDisplayer(printer).visit(error_info.description)
 
 
+def _output_file_inclusion_chain(printer: FilePrinter,
+                                 chain: Sequence[SourceLocation]):
+    [
+        print_file_inclusion_location(printer, location)
+        for location in chain
+    ]
+
+
 def _output_location(printer: FilePrinter,
-                     file: pathlib.Path,
+                     source_location: SourceLocation,
                      section_name: str,
-                     source: line_source.LineSequence,
-                     description: str,
-                     section_presentation_type_name: str):
+                     description: str):
     has_output_header = False
-    if file:
-        printer.write_line('File: ' + _file_str(file))
+    if source_location and source_location.file_path:
+        if source_location.source:
+            printer.write_line(line_in_file(source_location))
+        else:
+            printer.write_line(_file_str(source_location.file_path))
         has_output_header = True
     if section_name:
         printer.write_line('In ' + SectionName(section_name).syntax)
         has_output_header = True
-    if source:
+    if source_location and source_location.source:
         if has_output_header:
             printer.write_empty_line()
-        printer.write_line(error_message_format.source_line_sequence(source))
+        printer.write_lines(source_line_sequence(source_location.source))
         has_output_header = True
     if description:
         printer.write_line('\nDescribed as "{}"'.format(description))
@@ -73,47 +81,21 @@ def _output_location(printer: FilePrinter,
         printer.write_empty_line()
 
 
-def _output_location2(printer: FilePrinter,
-                      source_info: LinesInFile,
-                      section_name: str,
-                      description: str,
-                      section_presentation_type_name: str):
-    if source_info is None:
-        return _output_location(printer,
-                                None,
-                                section_name,
-                                None,
-                                description,
-                                section_presentation_type_name)
-    else:
-        return _output_location(printer,
-                                source_info.file_path,
-                                section_name,
-                                source_info.lines,
-                                description,
-                                section_presentation_type_name)
-
-
-def output_location3(printer: FilePrinter,
-                     source_location: SourceLocationPath,
-                     section_name: str,
-                     description: str,
-                     section_presentation_type_name: str):
+def output_location(printer: FilePrinter,
+                    source_location: SourceLocationPath,
+                    section_name: str,
+                    description: str):
     if source_location is None:
-        return _output_location2(printer,
-                                 None,
-                                 section_name,
-                                 description,
-                                 section_presentation_type_name)
-    source_info = None
-    if source_location.location is not None:
-        source_info = LinesInFile(source_location.location.source,
-                                  source_location.location.file_path)
-    return _output_location2(printer,
-                             source_info,
-                             section_name,
-                             description,
-                             section_presentation_type_name)
+        _output_location(printer,
+                         None,
+                         section_name,
+                         description)
+    else:
+        _output_file_inclusion_chain(printer, source_location.file_inclusion_chain)
+        _output_location(printer,
+                         source_location.location,
+                         section_name,
+                         description)
 
 
 class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
@@ -143,18 +125,16 @@ class _SourceDisplayer(FailureInfoVisitor):
         self.out = out
 
     def _visit_phase_failure(self, failure_info: PhaseFailureInfo):
-        output_location3(self.out,
-                         None,
-                         failure_info.phase_step.phase.identifier,
-                         None,
-                         SECTION_CONCEPT_NAME)
+        output_location(self.out,
+                        None,
+                        failure_info.phase_step.phase.identifier,
+                        None)
 
     def _visit_instruction_failure(self, failure_info: InstructionFailureInfo):
-        output_location3(self.out,
-                         failure_info.source_location,
-                         failure_info.phase_step.phase.identifier,
-                         failure_info.element_description,
-                         SECTION_CONCEPT_NAME)
+        output_location(self.out,
+                        failure_info.source_location,
+                        failure_info.phase_step.phase.identifier,
+                        failure_info.element_description)
 
 
 def _file_str(path: pathlib.Path) -> str:
@@ -165,3 +145,17 @@ def _file_str(path: pathlib.Path) -> str:
         return str(path.relative_to(cwd))
     except ValueError:
         return str(path)
+
+
+def print_file_inclusion_location(printer: FilePrinter,
+                                  location: SourceLocation):
+    printer.write_line(line_in_file(location))
+    [
+        printer.write_line('  ' + line_source)
+        for line_source in location.source.lines
+    ]
+    printer.write_empty_line()
+
+
+def line_in_file(location: SourceLocation) -> str:
+    return str(location.file_path) + ', line ' + str(location.source.first_line_number)
