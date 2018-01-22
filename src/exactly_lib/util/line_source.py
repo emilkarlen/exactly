@@ -190,5 +190,5 @@ def source_location_path_without_inclusions(location: SourceLocation) -> SourceL
 
 
 def source_location_path_of_non_empty_location_path(location_path: Sequence[SourceLocation]) -> SourceLocationPath:
-    return SourceLocationPath(location_path[0],
-                              location_path[1:])
+    return SourceLocationPath(location_path[-1],
+                              location_path[:-1])
