@@ -14,7 +14,8 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.util.line_source import Line, source_location_path_of
+from exactly_lib.util.line_source import Line, source_location_path_of, SourceLocationPath, SourceLocation, \
+    single_line_sequence
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instr
 from exactly_lib_test.processing.test_resources.instruction_set import directive_for_inclusion_of_file
@@ -114,6 +115,70 @@ class TestFileInclusion(unittest.TestCase):
                         source_location_path_expectation.apply_with_message(self,
                                                                             result.error_info.source_location_path,
                                                                             'source location path')
+
+    def test_source_location_path_of_error_WHEN_multiple_inclusions(self):
+        configuration = configuration_with_no_instructions_and_no_preprocessor()
+        proc_cases = [
+            NameAndValue('not allowed to pollute current process',
+                         sut.new_processor_that_should_not_pollute_current_process(configuration)),
+            NameAndValue('allowed to pollute current process',
+                         sut.new_processor_that_is_allowed_to_pollute_current_process(configuration)),
+        ]
+        invalid_line_cases = [
+            NameAndValue('inclusion of non-existing file',
+                         (directive_for_inclusion_of_file('non-existing.src'),
+                          AccessErrorType.FILE_ACCESS_ERROR)),
+            NameAndValue('non-existing instruction',
+                         ('non-existing-instruction',
+                          AccessErrorType.SYNTAX_ERROR)),
+        ]
+        for phase in phase_identifier.ALL_WITH_INSTRUCTIONS:
+            for invalid_line_case in invalid_line_cases:
+                file_with_error = fs.file_with_lines('file-with-error.src', [
+                    invalid_line_case.value[0],
+                ])
+                erroneous_line = single_line_sequence(1, invalid_line_case.value[0])
+
+                test_case_file = fs.file_with_lines('test.case', [
+                    section_header(phase.section_name),
+                    directive_for_inclusion_of_file(file_with_error.name),
+                ])
+                line_that_includes_erroneous_file = single_line_sequence(2, directive_for_inclusion_of_file(
+                    file_with_error.name))
+
+                cwd_contents = fs.DirContents([test_case_file,
+                                               file_with_error])
+                for proc_case in proc_cases:
+                    with self.subTest(phase=phase.section_name,
+                                      proc=proc_case.name,
+                                      line=erroneous_line.first_line):
+                        processor = proc_case.value
+                        assert isinstance(processor, Processor)
+                        with tmp_dir_as_cwd(cwd_contents):
+                            test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
+                                                            file_inclusion_relativity_root=pathlib.Path.cwd())
+                            # ACT #
+                            result = processor.apply(test_case_setup)
+                            # ASSERT #
+                            assert isinstance(result, Result)  # Type info for IDE
+
+                            self.assertEqual(Status.ACCESS_ERROR,
+                                             result.status)
+
+                            self.assertEqual(invalid_line_case.value[1],
+                                             result.access_error_type)
+
+                            source_location_path_expectation = equals_source_location_path(
+                                SourceLocationPath(
+                                    SourceLocation(erroneous_line,
+                                                   pathlib.Path(file_with_error.name)),
+                                    [
+                                        SourceLocation(line_that_includes_erroneous_file,
+                                                       pathlib.Path(test_case_file.name))])
+                            )
+                            source_location_path_expectation.apply_with_message(self,
+                                                                                result.error_info.source_location_path,
+                                                                                'source location path')
 
 
 def configuration_with_instruction_in_each_phase_that_records_phase_name(
