@@ -12,9 +12,7 @@ from exactly_lib_test.test_resources.test_utils import NIE
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestOutputLocation),
-    ])
+    return unittest.makeSuite(TestOutputLocation)
 
 
 class TestOutputLocation(unittest.TestCase):
@@ -69,8 +67,8 @@ class TestOutputLocation(unittest.TestCase):
             NIE(
                 'single location without source line',
                 expected_value=lines_string([
-                    file_line(file_path_a),
                     section_line(section_name),
+                    file_line(file_path_a),
                     ''
                 ]),
                 input_value=SourceLocationPath(
@@ -83,8 +81,8 @@ class TestOutputLocation(unittest.TestCase):
                 'single location with source line',
                 expected_value=lines_string(
                     [
-                        file_and_line_num_line(file_path_a, line_sequence_a),
                         section_line(section_name),
+                        file_and_line_num_line(file_path_a, line_sequence_a),
                         '',
                     ] +
                     source_line(line_sequence_a) +
@@ -102,10 +100,13 @@ class TestOutputLocation(unittest.TestCase):
                 'location with single location in file inclusion path',
                 expected_value=
                 lines_string(
+                    [
+                        section_line(section_name),
+
+                    ] +
                     file_inclusion_chain_location(source_location_b) +
                     [
                         file_and_line_num_line(file_path_a, line_sequence_a),
-                        section_line(section_name),
                         '',
                     ] +
                     source_line(line_sequence_a) +
@@ -124,11 +125,11 @@ class TestOutputLocation(unittest.TestCase):
                 'location with multiple locations in file inclusion path',
                 expected_value=
                 lines_string(
+                    [section_line(section_name)] +
                     file_inclusion_chain_location(source_location_b) +
                     file_inclusion_chain_location(source_location_c) +
                     [
                         file_and_line_num_line(file_path_a, line_sequence_a),
-                        section_line(section_name),
                         '',
                     ] +
                     source_line(line_sequence_a) +

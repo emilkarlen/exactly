@@ -57,16 +57,13 @@ def _output_file_inclusion_chain(printer: FilePrinter,
 def _output_location(printer: FilePrinter,
                      source_location: SourceLocation,
                      section_name: str,
-                     description: str):
+                     description: str) -> bool:
     has_output_header = False
     if source_location and source_location.file_path:
         if source_location.source:
             printer.write_line(line_in_file(source_location))
         else:
             printer.write_line(_file_str(source_location.file_path))
-        has_output_header = True
-    if section_name:
-        printer.write_line('In ' + SectionName(section_name).syntax)
         has_output_header = True
     if source_location and source_location.source:
         if has_output_header:
@@ -76,26 +73,29 @@ def _output_location(printer: FilePrinter,
     if description:
         printer.write_line('\nDescribed as "{}"'.format(description))
         has_output_header = True
-
-    if has_output_header:
-        printer.write_empty_line()
+    return has_output_header
 
 
 def output_location(printer: FilePrinter,
                     source_location: SourceLocationPath,
                     section_name: str,
                     description: str):
+    if section_name:
+        printer.write_line('In ' + SectionName(section_name).syntax)
     if source_location is None:
-        _output_location(printer,
-                         None,
-                         section_name,
-                         description)
+        has_output = _output_location(printer,
+                                      None,
+                                      section_name,
+                                      description)
     else:
         _output_file_inclusion_chain(printer, source_location.file_inclusion_chain)
         _output_location(printer,
                          source_location.location,
                          section_name,
                          description)
+        has_output = True
+    if has_output or section_name:
+        printer.write_empty_line()
 
 
 class _ErrorDescriptionDisplayer(error_description.ErrorDescriptionVisitor):
