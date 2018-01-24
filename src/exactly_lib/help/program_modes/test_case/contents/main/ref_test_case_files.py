@@ -103,7 +103,7 @@ Here, {instruction[exitcode]} is executed before {instruction[stderr]}:
 ```
 [assert]
 
-exitcode 0
+exitcode == 0
 
 [act]
 
