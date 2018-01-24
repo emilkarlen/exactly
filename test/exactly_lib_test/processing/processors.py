@@ -1,6 +1,6 @@
 import pathlib
 import unittest
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.full_execution import PredefinedProperties
@@ -14,6 +14,7 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
+from exactly_lib.test_case.phases.result import svh
 from exactly_lib.util.line_source import Line, source_location_path_of, SourceLocationPath, SourceLocation, \
     single_line_sequence
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
@@ -23,19 +24,23 @@ from exactly_lib_test.processing.test_resources.test_case_setup import \
     setup_with_null_act_phase_and_null_preprocessing, configuration_with_no_instructions_and_no_preprocessor
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_path
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFileInclusion),
+        unittest.makeSuite(TestFileInclusionResultStatus),
+        unittest.makeSuite(TestFileInclusionSourceLocationPathsWithMultipleInclusions),
     ])
 
 
-class TestFileInclusion(unittest.TestCase):
+class TestFileInclusionResultStatus(unittest.TestCase):
     def test_inclusion_of_file_SHOULD_be_possible_in_all_phases_except_act(self):
+        # ARRANGE #
         name_of_recording_instruction = 'recording-instruction'
 
         file_to_include = fs.file_with_lines('included-file.src', [
@@ -78,6 +83,7 @@ class TestFileInclusion(unittest.TestCase):
                                          recording_output)
 
     def test_inclusion_of_non_exiting_file_SHOULD_cause_file_access_error(self):
+        # ARRANGE #
         name_of_non_existing_file = 'non-existing.src'
         configuration = configuration_with_no_instructions_and_no_preprocessor()
         proc_cases = [
@@ -116,28 +122,36 @@ class TestFileInclusion(unittest.TestCase):
                                                                             result.error_info.source_location_path,
                                                                             'source location path')
 
-    def test_source_location_path_of_error_WHEN_multiple_inclusions(self):
-        configuration = configuration_with_no_instructions_and_no_preprocessor()
+
+class SourceAndStatus:
+    def __init__(self,
+                 failing_source_line: str,
+                 expected_result_statuses: asrt.ValueAssertion[Result]
+                 ):
+        self.failing_source_line = failing_source_line
+        self.expected_result_statuses = expected_result_statuses
+
+
+class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCase):
+    def _check_failing_line(self,
+                            configuration: sut.Configuration,
+                            phases: Sequence[Phase],
+                            invalid_line_cases: Sequence[NameAndValue[SourceAndStatus]]):
         proc_cases = [
             NameAndValue('not allowed to pollute current process',
                          sut.new_processor_that_should_not_pollute_current_process(configuration)),
             NameAndValue('allowed to pollute current process',
                          sut.new_processor_that_is_allowed_to_pollute_current_process(configuration)),
         ]
-        invalid_line_cases = [
-            NameAndValue('inclusion of non-existing file',
-                         (directive_for_inclusion_of_file('non-existing.src'),
-                          AccessErrorType.FILE_ACCESS_ERROR)),
-            NameAndValue('non-existing instruction',
-                         ('non-existing-instruction',
-                          AccessErrorType.SYNTAX_ERROR)),
-        ]
-        for phase in phase_identifier.ALL_WITH_INSTRUCTIONS:
+        for phase in phases:
             for invalid_line_case in invalid_line_cases:
+                source_and_status = invalid_line_case.value
+                assert isinstance(source_and_status, SourceAndStatus)  # Type info for IDE
+
                 file_with_error = fs.file_with_lines('file-with-error.src', [
-                    invalid_line_case.value[0],
+                    source_and_status.failing_source_line,
                 ])
-                erroneous_line = single_line_sequence(1, invalid_line_case.value[0])
+                erroneous_line = single_line_sequence(1, source_and_status.failing_source_line)
 
                 test_case_file = fs.file_with_lines('test.case', [
                     section_header(phase.section_name),
@@ -148,6 +162,13 @@ class TestFileInclusion(unittest.TestCase):
 
                 cwd_contents = fs.DirContents([test_case_file,
                                                file_with_error])
+
+                expected_source_location_path = SourceLocationPath(
+                    location=SourceLocation(erroneous_line,
+                                            pathlib.Path(file_with_error.name)),
+                    file_inclusion_chain=[SourceLocation(line_that_includes_erroneous_file,
+                                                         pathlib.Path(test_case_file.name))])
+
                 for proc_case in proc_cases:
                     with self.subTest(phase=phase.section_name,
                                       proc=proc_case.name,
@@ -162,37 +183,107 @@ class TestFileInclusion(unittest.TestCase):
                             # ASSERT #
                             assert isinstance(result, Result)  # Type info for IDE
 
-                            self.assertEqual(Status.ACCESS_ERROR,
-                                             result.status)
-
-                            self.assertEqual(invalid_line_case.value[1],
-                                             result.access_error_type)
+                            source_and_status.expected_result_statuses.apply_with_message(self,
+                                                                                          result,
+                                                                                          'result statuses')
 
                             source_location_path_expectation = equals_source_location_path(
-                                SourceLocationPath(
-                                    SourceLocation(erroneous_line,
-                                                   pathlib.Path(file_with_error.name)),
-                                    [
-                                        SourceLocation(line_that_includes_erroneous_file,
-                                                       pathlib.Path(test_case_file.name))])
-                            )
+                                expected_source_location_path)
                             source_location_path_expectation.apply_with_message(self,
-                                                                                result.error_info.source_location_path,
+                                                                                result.source_location_path,
                                                                                 'source location path')
+
+    def test_source_location_path_of_error_WHEN_test_case_not_executed(self):
+        self._check_failing_line(
+            configuration=configuration_with_no_instructions_and_no_preprocessor(),
+            phases=phase_identifier.ALL_WITH_INSTRUCTIONS,
+            invalid_line_cases=[
+                NameAndValue('inclusion of non-existing file',
+                             SourceAndStatus(
+                                 failing_source_line=directive_for_inclusion_of_file('non-existing.src'),
+                                 expected_result_statuses=result_matches(Status.ACCESS_ERROR,
+                                                                         AccessErrorType.FILE_ACCESS_ERROR))),
+                NameAndValue('non-existing instruction',
+                             SourceAndStatus(
+                                 failing_source_line='non-existing-instruction',
+                                 expected_result_statuses=result_matches(Status.ACCESS_ERROR,
+                                                                         AccessErrorType.SYNTAX_ERROR))),
+            ])
+
+    def test_source_location_path_of_error_WHEN_test_case_is_executed_and_validation_fails(self):
+        name_of_failing_instruction = 'validation-failing-instruction'
+        self._check_failing_line(
+            configuration=configuration_with_instruction_in_each_phase_with_failing_validation(
+                name_of_failing_instruction),
+            phases=(phase_identifier.SETUP,
+                    phase_identifier.BEFORE_ASSERT,
+                    phase_identifier.ASSERT,
+                    phase_identifier.CLEANUP),
+            invalid_line_cases=[
+                NameAndValue('inclusion of non-existing file',
+                             SourceAndStatus(
+                                 failing_source_line=name_of_failing_instruction,
+                                 expected_result_statuses=result_for_executed_status_matches(
+                                     FullResultStatus.VALIDATE))),
+            ])
+
+
+def result_matches(status: Status,
+                   access_error_type: AccessErrorType) -> asrt.ValueAssertion[Result]:
+    return asrt.and_([
+        asrt.sub_component('status',
+                           Result.status.fget,
+                           asrt.equals(status)),
+        asrt.sub_component('access_error_type',
+                           Result.access_error_type.fget,
+                           asrt.equals(access_error_type)),
+    ])
+
+
+def result_for_executed_status_matches(full_result_status: FullResultStatus) -> asrt.ValueAssertion[Result]:
+    def get_full_result_status(result: Result) -> FullResultStatus:
+        return result.execution_result.status
+
+    return asrt.and_([
+        asrt.sub_component('status',
+                           Result.status.fget,
+                           asrt.equals(Status.EXECUTED)),
+        asrt.sub_component('full_result/status',
+                           get_full_result_status,
+                           asrt.equals(full_result_status)),
+    ])
+
+
+def configuration_with_instruction_in_each_phase_with_failing_validation(
+        instruction_name: str) -> sut.Configuration:
+    instr_setup_factory = InstructionWithFailingValidationFactory()
+    instruction_set = InstructionsSetup(
+        config_instruction_set={instruction_name: instr_setup_factory.conf_instr_setup()},
+        setup_instruction_set={instruction_name: instr_setup_factory.setup_instr_setup()},
+        before_assert_instruction_set={instruction_name: instr_setup_factory.before_assert_instr_setup()},
+        assert_instruction_set={instruction_name: instr_setup_factory.assert_instr_setup()},
+        cleanup_instruction_set={instruction_name: instr_setup_factory.cleanup_instr_setup()},
+    )
+    return configuration_for_instruction_set(instruction_set)
 
 
 def configuration_with_instruction_in_each_phase_that_records_phase_name(
         instruction_name: str,
         recording_output: List[str]) -> sut.Configuration:
+    instr_setup_factory = PhaseRecordingInstructionFactory(recording_output)
     instruction_set = InstructionsSetup(
-        config_instruction_set={instruction_name: conf_instr_setup(recording_output)},
-        setup_instruction_set={instruction_name: setup_instr_setup(recording_output)},
-        before_assert_instruction_set={instruction_name: before_assert_instr_setup(recording_output)},
-        assert_instruction_set={instruction_name: assert_instr_setup(recording_output)},
-        cleanup_instruction_set={instruction_name: cleanup_instr_setup(recording_output)},
+        config_instruction_set={instruction_name: instr_setup_factory.conf_instr_setup()},
+        setup_instruction_set={instruction_name: instr_setup_factory.setup_instr_setup()},
+        before_assert_instruction_set={instruction_name: instr_setup_factory.before_assert_instr_setup()},
+        assert_instruction_set={instruction_name: instr_setup_factory.assert_instr_setup()},
+        cleanup_instruction_set={instruction_name: instr_setup_factory.cleanup_instr_setup()},
     )
+    return configuration_for_instruction_set(instruction_set)
+
+
+def configuration_for_instruction_set(instruction_set: InstructionsSetup) -> sut.Configuration:
     tc_parsing_setup = TestCaseParsingSetup(
-        lambda s: s.split()[0],
+        first_space_separated_string_extractor,
         instruction_set,
         ActPhaseParser()
     )
@@ -206,34 +297,74 @@ def configuration_with_instruction_in_each_phase_that_records_phase_name(
     )
 
 
-def conf_instr_setup(recorder: List[str]) -> SingleInstructionSetup:
-    return instr_setup(instr.configuration_phase_instruction_that(
-        main_initial_action=append_section_name_action(recorder, phase_identifier.CONFIGURATION))
-    )
+def first_space_separated_string_extractor(s: str) -> str:
+    return s.split()[0]
 
 
-def setup_instr_setup(recorder: List[str]) -> SingleInstructionSetup:
-    return instr_setup(instr.setup_phase_instruction_that(
-        main_initial_action=append_section_name_action(recorder, phase_identifier.SETUP))
-    )
+class PhaseRecordingInstructionFactory:
+    """
+    Builds instructions that records the name of the phase, by appending it to a list.
+    """
+
+    def __init__(self, recording_output: List[str]):
+        self.recording_output = recording_output
+
+    def conf_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.configuration_phase_instruction_that(
+            main_initial_action=append_section_name_action(self.recording_output, phase_identifier.CONFIGURATION))
+        )
+
+    def setup_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.setup_phase_instruction_that(
+            main_initial_action=append_section_name_action(self.recording_output, phase_identifier.SETUP))
+        )
+
+    def before_assert_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.before_assert_phase_instruction_that(
+            main_initial_action=append_section_name_action(self.recording_output, phase_identifier.BEFORE_ASSERT))
+        )
+
+    def assert_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.assert_phase_instruction_that(
+            main_initial_action=append_section_name_action(self.recording_output, phase_identifier.ASSERT))
+        )
+
+    def cleanup_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.cleanup_phase_instruction_that(
+            main_initial_action=append_section_name_action(self.recording_output, phase_identifier.CLEANUP))
+        )
 
 
-def before_assert_instr_setup(recorder: List[str]) -> SingleInstructionSetup:
-    return instr_setup(instr.before_assert_phase_instruction_that(
-        main_initial_action=append_section_name_action(recorder, phase_identifier.BEFORE_ASSERT))
-    )
+class InstructionWithFailingValidationFactory:
+    """
+    Builds instructions that records the name of the phase, by appending it to a list.
+    """
 
+    def __init__(self):
+        self.do_return_validation_error = do_return(svh.new_svh_validation_error('validation error message'))
 
-def assert_instr_setup(recorder: List[str]) -> SingleInstructionSetup:
-    return instr_setup(instr.assert_phase_instruction_that(
-        main_initial_action=append_section_name_action(recorder, phase_identifier.ASSERT))
-    )
+    def conf_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.configuration_phase_instruction_that())
 
+    def setup_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.setup_phase_instruction_that(
+            validate_pre_sds=self.do_return_validation_error
+        ))
 
-def cleanup_instr_setup(recorder: List[str]) -> SingleInstructionSetup:
-    return instr_setup(instr.cleanup_phase_instruction_that(
-        main_initial_action=append_section_name_action(recorder, phase_identifier.CLEANUP))
-    )
+    def before_assert_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.before_assert_phase_instruction_that(
+            validate_pre_sds=self.do_return_validation_error)
+        )
+
+    def assert_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.assert_phase_instruction_that(
+            validate_pre_sds=self.do_return_validation_error)
+        )
+
+    def cleanup_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.cleanup_phase_instruction_that(
+            validate_pre_sds=self.do_return_validation_error)
+        )
 
 
 def instr_setup(instruction: Instruction) -> SingleInstructionSetup:

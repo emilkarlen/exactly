@@ -129,7 +129,10 @@ def parse_and_compute_source(parser: InstructionParser,
     len_after_parse = len(source.remaining_source)
     len_instruction_source = len_before_parse - len_after_parse
     instruction_source = source_before[:len_instruction_source]
-    source = line_source.LineSequence(first_line_number, tuple(instruction_source.split('\n')))
+    lines = instruction_source.split('\n')
+    if len(lines) > 1 and lines[-1] == '':
+        del lines[-1]
+    source = line_source.LineSequence(first_line_number, tuple(lines))
     return ParsedInstruction(source,
                              InstructionInfo(instruction,
                                              description))

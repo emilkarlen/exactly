@@ -5,6 +5,7 @@ from exactly_lib.execution.result import FullResult
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.error_description import ErrorDescription
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import SourceLocationPath
 
 
 class TestCaseSetup:
@@ -91,6 +92,13 @@ class Result(tuple):
     @property
     def execution_result(self) -> FullResult:
         return self[3]
+
+    @property
+    def source_location_path(self) -> SourceLocationPath:
+        if self.error_info is not None:
+            return self.error_info.source_location_path
+        else:
+            return self.execution_result.failure_info.source_location_path
 
 
 def new_internal_error(error_info: ErrorInfo) -> Result:
