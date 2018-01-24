@@ -14,7 +14,7 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.phases.result import svh, pfh
 from exactly_lib.util.line_source import Line, source_location_path_of, SourceLocationPath, SourceLocation, \
     single_line_sequence
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
@@ -220,11 +220,24 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                     phase_identifier.ASSERT,
                     phase_identifier.CLEANUP),
             invalid_line_cases=[
-                NameAndValue('inclusion of non-existing file',
+                NameAndValue('failing validation',
                              SourceAndStatus(
                                  failing_source_line=name_of_failing_instruction,
                                  expected_result_statuses=result_for_executed_status_matches(
                                      FullResultStatus.VALIDATE))),
+            ])
+
+    def test_source_location_path_of_error_WHEN_test_case_is_executed_and_assertion_fails(self):
+        name_of_failing_instruction = 'failing-assertion-instruction'
+        self._check_failing_line(
+            configuration=configuration_with_assert_instruction_that_fails(name_of_failing_instruction),
+            phases=[phase_identifier.ASSERT],
+            invalid_line_cases=[
+                NameAndValue('failing assertion',
+                             SourceAndStatus(
+                                 failing_source_line=name_of_failing_instruction,
+                                 expected_result_statuses=result_for_executed_status_matches(
+                                     FullResultStatus.FAIL))),
             ])
 
 
@@ -252,6 +265,21 @@ def result_for_executed_status_matches(full_result_status: FullResultStatus) -> 
                            get_full_result_status,
                            asrt.equals(full_result_status)),
     ])
+
+
+def configuration_with_assert_instruction_that_fails(instruction_name: str) -> sut.Configuration:
+    assert_instruction_setup = instr_setup(instr.assert_phase_instruction_that(
+        main=do_return(pfh.new_pfh_fail('fail error message')))
+    )
+
+    instruction_set = InstructionsSetup(
+        config_instruction_set={},
+        setup_instruction_set={},
+        before_assert_instruction_set={},
+        assert_instruction_set={instruction_name: assert_instruction_setup},
+        cleanup_instruction_set={},
+    )
+    return configuration_for_instruction_set(instruction_set)
 
 
 def configuration_with_instruction_in_each_phase_with_failing_validation(
