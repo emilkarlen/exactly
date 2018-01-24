@@ -9,9 +9,11 @@ from exactly_lib.util.line_source import SourceLocationPath
 class FailureInfo:
     def __init__(self,
                  phase_step: PhaseStep,
-                 failure_details: FailureDetails):
+                 failure_details: FailureDetails,
+                 source_location: SourceLocationPath):
         self.__phase_step = phase_step
         self.__failure_details = failure_details
+        self.__source_location = source_location
 
     @property
     def phase_step(self) -> PhaseStep:
@@ -20,6 +22,10 @@ class FailureInfo:
     @property
     def failure_details(self) -> FailureDetails:
         return self.__failure_details
+
+    @property
+    def source_location_path(self) -> SourceLocationPath:
+        return self.__source_location
 
     def __str__(self):
         return str(self.phase_step) + ': ' + str(self.failure_details)
@@ -35,7 +41,7 @@ class InstructionFailureInfo(FailureInfo):
                  source_location: SourceLocationPath,
                  failure_details: FailureDetails,
                  element_description: str = None):
-        super().__init__(phase_step, failure_details)
+        super().__init__(phase_step, failure_details, source_location)
         self.__source_location = source_location
         self.__phase_step = phase_step
         self.__element_description = element_description
@@ -53,7 +59,7 @@ class PhaseFailureInfo(FailureInfo):
     def __init__(self,
                  phase_step: PhaseStep,
                  failure_details: FailureDetails):
-        super().__init__(phase_step, failure_details)
+        super().__init__(phase_step, failure_details, None)
 
 
 class FailureInfoVisitor:
