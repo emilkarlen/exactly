@@ -1,0 +1,3 @@
+[setup]
+
+including file-that-includes-file-with-erroneous-instruction.xly
