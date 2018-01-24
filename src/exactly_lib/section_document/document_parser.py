@@ -4,14 +4,15 @@ from typing import Sequence, Dict, List
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
-from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, new_source_error
+from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, \
+    new_source_error_of_single_line
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocation, line_sequence_from_line
+from exactly_lib.util.line_source import SourceLocation
 
 
 class DocumentParser:
@@ -285,8 +286,8 @@ class _Impl:
                     else:
                         msg = 'Instruction outside of {section}'.format(
                             section=self.configuration.section_element_name_for_error_messages)
-                        raise FileSourceError(SourceError(self._current_line,
-                                                          msg),
+                        raise FileSourceError(new_source_error_of_single_line(self._current_line,
+                                                                              msg),
                                               None,
                                               self._location_path_of_current_line())
         return self._section_name_2_element_list
@@ -305,8 +306,8 @@ class _Impl:
                 msg = 'There is no {section} named "{name}"'.format(
                     section=self.configuration.section_element_name_for_error_messages,
                     name=section_name)
-                raise FileSourceError(SourceError(section_line,
-                                                  msg),
+                raise FileSourceError(new_source_error_of_single_line(section_line,
+                                                                      msg),
                                       None,
                                       self._location_path_of_current_line())
             self.set_current_section(section_name)
@@ -340,8 +341,8 @@ class _Impl:
         parsed_element = self.parser_for_current_section.parse(self._file_inclusion_relativity_root,
                                                                self._document_source)
         if parsed_element is None:
-            raise FileSourceError(new_source_error(line_sequence_from_line(self._document_source.current_line),
-                                                   'Syntax error'),
+            raise FileSourceError(new_source_error_of_single_line(self._document_source.current_line,
+                                                                  'Syntax error'),
                                   self._name_of_current_section,
                                   self._location_path_of_current_line())
         return self._element_constructor.visit(parsed_element)
@@ -353,8 +354,8 @@ class _Impl:
         try:
             section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
         except ValueError as ex:
-            raise FileSourceError(SourceError(self._current_line,
-                                              str(ex)),
+            raise FileSourceError(new_source_error_of_single_line(self._current_line,
+                                                                  str(ex)),
                                   None,
                                   self._location_path_of_current_line())
         self.move_one_line_forward()
