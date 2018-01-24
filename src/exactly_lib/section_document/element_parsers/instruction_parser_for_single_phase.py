@@ -1,6 +1,7 @@
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import line_sequence_from_line
 
 
 class SingleInstructionInvalidArgumentException(Exception):
@@ -21,7 +22,7 @@ class InvalidInstructionException(SourceError):
     def __init__(self,
                  line: line_source.Line,
                  message: str):
-        super().__init__(line, message)
+        super().__init__(line_sequence_from_line(line), message)
 
 
 class InvalidInstructionSyntaxException(InvalidInstructionException):
@@ -77,6 +78,6 @@ class ArgumentParsingImplementationException(SourceError):
                  instruction_name: str,
                  parser_that_raised_exception: InstructionParser,
                  msg: str):
-        super().__init__(line, msg)
+        super().__init__(line_sequence_from_line(line), msg)
         self.instruction_name = instruction_name
         self.parser_that_raised_exception = parser_that_raised_exception

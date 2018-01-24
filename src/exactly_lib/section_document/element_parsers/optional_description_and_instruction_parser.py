@@ -5,7 +5,7 @@ import shlex
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParser, InstructionAndDescriptionParser, parse_and_compute_source
-from exactly_lib.section_document.exceptions import SourceError
+from exactly_lib.section_document.exceptions import new_source_error_of_single_line
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedInstruction
 from exactly_lib.util.line_source import Line
@@ -27,18 +27,20 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
     def _consume_space_and_comment_lines(source: ParseSource, first_line: Line):
         error_message = 'End-of-file reached without finding an instruction (following a description)'
         if source.is_at_eof:
-            raise SourceError(first_line, error_message)
+            raise new_source_error_of_single_line(first_line, error_message)
+        line_in_error_message = first_line
         source.consume_initial_space_on_current_line()
         if not source.is_at_eol:
             return
         source.consume_current_line()
         while not source.is_at_eof:
             if syntax.is_empty_or_comment_line(source.current_line_text):
+                line_in_error_message = source.current_line
                 source.consume_current_line()
             else:
                 source.consume_initial_space_on_current_line()
                 return
-        raise SourceError(first_line, error_message)
+        raise new_source_error_of_single_line(line_in_error_message, error_message)
 
 
 class _DescriptionExtractor:
@@ -58,8 +60,8 @@ class _DescriptionExtractor:
         try:
             string_token = self.lexer.get_token()
         except ValueError as ex:
-            raise SourceError(self.source.current_line,
-                              'Invalid description: ' + str(ex))
+            raise new_source_error_of_single_line(self.source.current_line,
+                                                  'Invalid description: ' + str(ex))
         num_chars_consumed = self.source_io.tell()
         if len(self.source.remaining_source) > num_chars_consumed:
             num_chars_consumed -= 1

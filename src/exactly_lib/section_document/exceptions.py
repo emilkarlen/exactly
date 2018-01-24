@@ -2,7 +2,7 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocation
+from exactly_lib.util.line_source import SourceLocation, line_sequence_from_line
 
 
 class SourceError(Exception):
@@ -17,29 +17,27 @@ class SourceError(Exception):
     """
 
     def __init__(self,
-                 line: line_source.Line,
+                 source: line_source.LineSequence,
                  message: str):
-        self._line = line
+        self._source = source
         self._message = message
 
     @property
     def line(self) -> line_source.Line:
-        return self._line
+        return self._source.first_line
 
     @property
     def source(self) -> line_source.LineSequence:
-        # TODO Objects should store LineSequence instead of Line
-        return line_source.single_line_sequence(self._line.line_number,
-                                                self._line.text)
+        return self._source
 
     @property
     def message(self) -> str:
         return self._message
 
 
-def new_source_error(source: line_source.LineSequence,
-                     message: str) -> SourceError:
-    return SourceError(source.first_line,
+def new_source_error_of_single_line(line: line_source.Line,
+                                    message: str) -> SourceError:
+    return SourceError(line_sequence_from_line(line),
                        message)
 
 

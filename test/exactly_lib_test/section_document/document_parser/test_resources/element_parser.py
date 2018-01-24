@@ -3,7 +3,7 @@ from typing import Sequence
 
 from exactly_lib.section_document.document_parser import SectionElementParser, SectionsConfiguration, \
     SectionConfiguration
-from exactly_lib.section_document.exceptions import new_source_error
+from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
@@ -78,7 +78,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
                                                          paths_to_include)
             return ParsedFileInclusionDirective(consumed_source, paths_to_include)
         elif current_line_parts[0] == SYNTAX_ERROR_INSTRUCTION_NAME:
-            raise new_source_error(consumed_source, current_line_parts[1])
+            raise SourceError(consumed_source, current_line_parts[1])
         elif current_line_parts[0] == OK_INSTRUCTION_NAME:
             return ParsedInstruction(consumed_source,
                                      InstructionInfo(InstructionInSection(
