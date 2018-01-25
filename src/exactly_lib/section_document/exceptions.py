@@ -23,10 +23,6 @@ class SourceError(Exception):
         self._message = message
 
     @property
-    def line(self) -> line_source.Line:
-        return self._source.first_line
-
-    @property
     def source(self) -> line_source.LineSequence:
         return self._source
 

@@ -7,6 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import line_sequence_from_line
 
 InstructionNameExtractor = Callable[[str], str]
 
@@ -37,8 +38,8 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         try:
             name = self._instruction_name_extractor_function(source.remaining_part_of_current_line)
             source.consume_part_of_current_line(len(name))
-        except:
-            raise InvalidInstructionSyntaxException(source.current_line)
+        except Exception:
+            raise InvalidInstructionSyntaxException(line_sequence_from_line(source.current_line))
         return name
 
     def _lookup_parser(self,
@@ -48,7 +49,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         :raises: InvalidInstructionException
         """
         if name not in self.__instruction_name__2__single_instruction_parser:
-            raise UnknownInstructionException(original_source_line,
+            raise UnknownInstructionException(line_sequence_from_line(original_source_line),
                                               name)
         return self.__instruction_name__2__single_instruction_parser[name]
 
@@ -63,11 +64,11 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         try:
             return parser.parse(source)
         except SingleInstructionInvalidArgumentException as ex:
-            raise InvalidInstructionArgumentException(first_line,
+            raise InvalidInstructionArgumentException(line_sequence_from_line(first_line),
                                                       name,
                                                       ex.error_message)
         except Exception as ex:
-            raise ArgumentParsingImplementationException(first_line,
+            raise ArgumentParsingImplementationException(line_sequence_from_line(first_line),
                                                          name,
                                                          parser,
                                                          str(ex))
