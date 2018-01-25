@@ -20,11 +20,13 @@ from exactly_lib.util.line_source import Line, source_location_path_of, SourceLo
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instr
 from exactly_lib_test.processing.test_resources.instruction_set import directive_for_inclusion_of_file
+from exactly_lib_test.processing.test_resources.result_assertions import result_matches, \
+    result_for_executed_status_matches
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     setup_with_null_act_phase_and_null_preprocessing, configuration_with_no_instructions_and_no_preprocessor
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
 from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.actions import do_return
+from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -193,7 +195,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                                                                                 result.source_location_path,
                                                                                 'source location path')
 
-    def test_source_location_path_of_error_WHEN_test_case_not_executed(self):
+    def test_test_case_not_executed(self):
         self._check_failing_line(
             configuration=configuration_with_no_instructions_and_no_preprocessor(),
             phases=phase_identifier.ALL_WITH_INSTRUCTIONS,
@@ -210,7 +212,21 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                                                                          AccessErrorType.SYNTAX_ERROR))),
             ])
 
-    def test_source_location_path_of_error_WHEN_test_case_is_executed_and_validation_fails(self):
+    def test_instruction_with_implementation_error(self):
+        name_of_failing_instruction = 'instruction-with-implementation-error'
+        self._check_failing_line(
+            configuration=configuration_with_instruction_in_each_phase_with_implementation_error(
+                name_of_failing_instruction),
+            phases=phase_identifier.ALL_WITH_INSTRUCTIONS,
+            invalid_line_cases=[
+                NameAndValue('implementation error',
+                             SourceAndStatus(
+                                 failing_source_line=name_of_failing_instruction,
+                                 expected_result_statuses=result_for_executed_status_matches(
+                                     FullResultStatus.IMPLEMENTATION_ERROR))),
+            ])
+
+    def test_instruction_validation_fails(self):
         name_of_failing_instruction = 'validation-failing-instruction'
         self._check_failing_line(
             configuration=configuration_with_instruction_in_each_phase_with_failing_validation(
@@ -227,7 +243,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                                      FullResultStatus.VALIDATE))),
             ])
 
-    def test_source_location_path_of_error_WHEN_test_case_is_executed_and_assertion_fails(self):
+    def test_assertion_fails(self):
         name_of_failing_instruction = 'failing-assertion-instruction'
         self._check_failing_line(
             configuration=configuration_with_assert_instruction_that_fails(name_of_failing_instruction),
@@ -239,32 +255,6 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                                  expected_result_statuses=result_for_executed_status_matches(
                                      FullResultStatus.FAIL))),
             ])
-
-
-def result_matches(status: Status,
-                   access_error_type: AccessErrorType) -> asrt.ValueAssertion[Result]:
-    return asrt.and_([
-        asrt.sub_component('status',
-                           Result.status.fget,
-                           asrt.equals(status)),
-        asrt.sub_component('access_error_type',
-                           Result.access_error_type.fget,
-                           asrt.equals(access_error_type)),
-    ])
-
-
-def result_for_executed_status_matches(full_result_status: FullResultStatus) -> asrt.ValueAssertion[Result]:
-    def get_full_result_status(result: Result) -> FullResultStatus:
-        return result.execution_result.status
-
-    return asrt.and_([
-        asrt.sub_component('status',
-                           Result.status.fget,
-                           asrt.equals(Status.EXECUTED)),
-        asrt.sub_component('full_result/status',
-                           get_full_result_status,
-                           asrt.equals(full_result_status)),
-    ])
 
 
 def configuration_with_assert_instruction_that_fails(instruction_name: str) -> sut.Configuration:
@@ -285,6 +275,19 @@ def configuration_with_assert_instruction_that_fails(instruction_name: str) -> s
 def configuration_with_instruction_in_each_phase_with_failing_validation(
         instruction_name: str) -> sut.Configuration:
     instr_setup_factory = InstructionWithFailingValidationFactory()
+    instruction_set = InstructionsSetup(
+        config_instruction_set={instruction_name: instr_setup_factory.conf_instr_setup()},
+        setup_instruction_set={instruction_name: instr_setup_factory.setup_instr_setup()},
+        before_assert_instruction_set={instruction_name: instr_setup_factory.before_assert_instr_setup()},
+        assert_instruction_set={instruction_name: instr_setup_factory.assert_instr_setup()},
+        cleanup_instruction_set={instruction_name: instr_setup_factory.cleanup_instr_setup()},
+    )
+    return configuration_for_instruction_set(instruction_set)
+
+
+def configuration_with_instruction_in_each_phase_with_implementation_error(
+        instruction_name: str) -> sut.Configuration:
+    instr_setup_factory = InstructionWithImplementationErrorFactory()
     instruction_set = InstructionsSetup(
         config_instruction_set={instruction_name: instr_setup_factory.conf_instr_setup()},
         setup_instruction_set={instruction_name: instr_setup_factory.setup_instr_setup()},
@@ -365,7 +368,7 @@ class PhaseRecordingInstructionFactory:
 
 class InstructionWithFailingValidationFactory:
     """
-    Builds instructions that records the name of the phase, by appending it to a list.
+    Builds instructions that causes validation error (except for conf phase).
     """
 
     def __init__(self):
@@ -395,6 +398,37 @@ class InstructionWithFailingValidationFactory:
         )
 
 
+class InstructionWithImplementationErrorFactory:
+    """
+    Builds instructions that raises an exception that indicates implementation error.
+    """
+
+    def conf_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.configuration_phase_instruction_that(
+            main_initial_action=do_raise(ImplementationError())
+        ))
+
+    def setup_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.setup_phase_instruction_that(
+            main_initial_action=do_raise(ImplementationError())
+        ))
+
+    def before_assert_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.before_assert_phase_instruction_that(
+            main_initial_action=do_raise(ImplementationError())
+        ))
+
+    def assert_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.assert_phase_instruction_that(
+            main_initial_action=do_raise(ImplementationError())
+        ))
+
+    def cleanup_instr_setup(self) -> SingleInstructionSetup:
+        return instr_setup(instr.cleanup_phase_instruction_that(
+            main_initial_action=do_raise(ImplementationError())
+        ))
+
+
 def instr_setup(instruction: Instruction) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         parser=ParserThatGives(instruction),
@@ -407,3 +441,7 @@ def append_section_name_action(recorder: List[str], phase: Phase):
         recorder.append(phase.section_name)
 
     return ret_val
+
+
+class ImplementationError(Exception):
+    pass

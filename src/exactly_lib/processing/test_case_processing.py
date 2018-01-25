@@ -73,7 +73,9 @@ class Result(tuple):
                 error_type: AccessErrorType = None,
                 execution_result: FullResult = None):
         """
-        Exactly only one of the arguments must be non-None.
+        :param error_info:
+        :param error_type: Given iff status is Status.ACCESS_ERROR
+        :param execution_result: Given iff status is Status.EXECUTED
         """
         return tuple.__new__(cls, (status, error_info, error_type, execution_result))
 
