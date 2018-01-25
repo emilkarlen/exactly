@@ -51,6 +51,14 @@ def equals_line_sequence(expected: LineSequence) -> asrt.ValueAssertion[LineSequ
                                                             asrt.equals))
 
 
+def assert_equals_line_sequence(put: unittest.TestCase,
+                                expected: LineSequence,
+                                actual: LineSequence,
+                                msg: str = 'line sequence'):
+    assertion = equals_line_sequence(expected)
+    assertion.apply_with_message(put, actual, msg)
+
+
 def assert_equals_line(test_case: unittest.TestCase,
                        expected: Line,
                        actual: Line,

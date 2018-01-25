@@ -98,7 +98,7 @@ class _SingleFileReader:
                             for path in paths:
                                 if path in self._visited:
                                     raise parse.SuiteDoubleInclusion(suite_file_path,
-                                                                     element.first_line,
+                                                                     element.source,
                                                                      path,
                                                                      self._visited[path])
                                 else:
@@ -106,7 +106,7 @@ class _SingleFileReader:
                         ret_val.extend(paths)
                     except instruction.FileNotAccessibleSimpleError as ex:
                         raise parse.SuiteFileReferenceError(suite_file_path,
-                                                            element.first_line,
+                                                            element.source,
                                                             ex.file_path)
             return ret_val
 

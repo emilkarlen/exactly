@@ -27,7 +27,8 @@ from exactly_lib_test.section_document.test_resources.element_parsers import Sec
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line, equals_line
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_line, \
+    assert_equals_line_sequence
 
 
 def suite() -> unittest.TestSuite:
@@ -469,9 +470,9 @@ class TestInvalidSyntax(ParseTestBase):
             self._parse_lines(parser,
                               source_lines)
         # ASSERT #
-        assert_equals_line(self,
-                           Line(1, 'instruction default'),
-                           cm.exception.source_error.line)
+        assert_equals_line_sequence(self,
+                                    line_source.single_line_sequence(1, 'instruction default'),
+                                    cm.exception.source_error.source)
         self.assertIsNone(cm.exception.maybe_section_name,
                           'Section name')
 
