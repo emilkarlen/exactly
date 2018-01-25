@@ -6,7 +6,7 @@ from exactly_lib.execution.result import InstructionFailureInfo, FullResultStatu
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_single_line
 
 
 class ExpectedFailureDetails(tuple):
@@ -149,7 +149,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
     def assertions_(self,
                     unittest_case: unittest.TestCase,
                     phase_step: PhaseStep,
-                    actual_line: line_source.Line,
+                    actual_line: line_source.LineSequence,
                     actual_details: FailureDetails):
         unittest_case.assertEqual(self.phase_step.phase,
                                   phase_step.phase.the_enum,
@@ -158,9 +158,9 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
                                   phase_step.step,
                                   'Step')
         if self.source_line is not None:
-            assert_equals_line(unittest_case,
-                               self.source_line,
-                               actual_line)
+            assert_equals_single_line(unittest_case,
+                                      self.source_line,
+                                      actual_line)
         self.expected_failure.assertions(unittest_case,
                                          actual_details)
 
@@ -174,7 +174,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
         assert isinstance(actual, InstructionFailureInfo)
         self.assertions_(unittest_case,
                          actual.phase_step,
-                         actual.source_location.location.source.first_line,
+                         actual.source_location.location.source,
                          actual.failure_details)
 
     @property

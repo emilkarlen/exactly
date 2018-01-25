@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers import parser_for_dictionary_of_instructions as sut
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_single_line
 
 
 def suite() -> unittest.TestSuite:
@@ -63,9 +63,9 @@ class TestFailingNameExtractor(unittest.TestCase):
         source = source_of_lines(['line'])
         with self.assertRaises(sut.InvalidInstructionSyntaxException) as cm:
             phase_parser.parse(source)
-        assert_equals_line(self,
-                           source.current_line,
-                           cm.exception.line,
+        assert_equals_single_line(self,
+                                  source.current_line,
+                                  cm.exception.source,
                            'Source line')
 
 
@@ -78,9 +78,9 @@ class TestParse(unittest.TestCase):
         self.assertEqual('I',
                          cm.exception.instruction_name,
                          'Instruction name')
-        assert_equals_line(self,
-                           source.current_line,
-                           cm.exception.line,
+        assert_equals_single_line(self,
+                                  source.current_line,
+                                  cm.exception.source,
                            'Source line')
 
     def test__when__parser_fails_to_parse_instruction_name_not_in_dict__then__exception_should_be_raised(self):
@@ -97,9 +97,9 @@ class TestParse(unittest.TestCase):
         self.assertEqual('the error message',
                          cm.exception.error_message,
                          'Error message')
-        assert_equals_line(self,
-                           source.current_line,
-                           cm.exception.line,
+        assert_equals_single_line(self,
+                                  source.current_line,
+                                  cm.exception.source,
                            'Source line')
 
     def test__when__parser_raises_unknown_exception__then__exception_should_be_raised(self):
@@ -117,9 +117,9 @@ class TestParse(unittest.TestCase):
         self.assertIs(parser_that_raises_exception,
                       cm.exception.parser_that_raised_exception,
                       'Failing Parser instance')
-        assert_equals_line(self,
-                           source.current_line,
-                           cm.exception.line,
+        assert_equals_single_line(self,
+                                  source.current_line,
+                                  cm.exception.source,
                            'Source line')
 
     def test__when__parser_succeeds__then__the_instruction_should_be_returned(self):

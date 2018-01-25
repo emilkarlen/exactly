@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from typing import Any, Sequence
 
-from exactly_lib.util.line_source import Line, LineSequence, SourceLocation, SourceLocationPath
+from exactly_lib.util.line_source import Line, LineSequence, SourceLocation, SourceLocationPath, line_sequence_from_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -59,10 +59,10 @@ def assert_equals_line_sequence(put: unittest.TestCase,
     assertion.apply_with_message(put, actual, msg)
 
 
-def assert_equals_line(test_case: unittest.TestCase,
-                       expected: Line,
-                       actual: Line,
-                       message_header: str = None):
+def assert_equals_single_line(test_case: unittest.TestCase,
+                              expected: Line,
+                              actual: LineSequence,
+                              message_header: str = None):
     """
     :param expected: May be None
     :param actual: May be None
@@ -71,7 +71,7 @@ def assert_equals_line(test_case: unittest.TestCase,
     if expected is None:
         assertion = asrt.is_none
     else:
-        assertion = equals_line(expected)
+        assertion = equals_line_sequence(line_sequence_from_line(expected))
     message_builder = asrt.MessageBuilder('' if message_header is None else message_header)
 
     assertion.apply(test_case, actual, message_builder)
