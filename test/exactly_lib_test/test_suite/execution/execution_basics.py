@@ -305,7 +305,7 @@ class TestCaseProcessorThatRaisesUnconditionally(tcp.Processor):
 class ReaderThatRaisesParseError(SuiteHierarchyReader):
     def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
         raise SuiteSyntaxError(suite_file_path,
-                               line_source.Line(1, 'line'),
+                               line_source.single_line_sequence(1, 'line'),
                                'message')
 
 

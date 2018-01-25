@@ -2,16 +2,16 @@ import pathlib
 
 from exactly_lib.test_case import error_description
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import line_sequence_from_line, SourceLocationPath, SourceLocation
+from exactly_lib.util.line_source import SourceLocationPath, SourceLocation
 
 
 class SuiteReadError(Exception):
     def __init__(self,
                  suite_file: pathlib.Path,
-                 line: line_source.Line,
+                 source: line_source.LineSequence,
                  maybe_section_name: str = None):
         self._suite_file = suite_file
-        self._line = line
+        self._source = source
         self._maybe_section_name = maybe_section_name
 
     @property
@@ -19,12 +19,12 @@ class SuiteReadError(Exception):
         return self._suite_file
 
     @property
-    def line(self) -> line_source.Line:
-        return self._line
+    def source(self) -> line_source.LineSequence:
+        return self._source
 
     @property
     def source_location(self) -> SourceLocationPath:
-        return SourceLocationPath(SourceLocation(line_sequence_from_line(self._line),
+        return SourceLocationPath(SourceLocation(self.source,
                                                  self.suite_file),
                                   [])
 
@@ -45,10 +45,10 @@ class SuiteReadError(Exception):
 class SuiteDoubleInclusion(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
-                 line: line_source.Line,
+                 source: line_source.LineSequence,
                  included_suite_file: pathlib.Path,
                  first_referenced_from: pathlib.Path):
-        super().__init__(suite_file, line, None)
+        super().__init__(suite_file, source, None)
         self._included_suite_file = included_suite_file
         self._first_referenced_from = first_referenced_from
 
@@ -72,9 +72,11 @@ class SuiteDoubleInclusion(SuiteReadError):
 class SuiteFileReferenceError(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
-                 line: line_source.Line,
+                 source: line_source.LineSequence,
                  reference: pathlib.Path):
-        super().__init__(suite_file, line, None)
+        super().__init__(suite_file,
+                         source,
+                         None)
         self._reference = reference
 
     @property
@@ -91,10 +93,12 @@ class SuiteFileReferenceError(SuiteReadError):
 class SuiteSyntaxError(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
-                 line: line_source.Line,
+                 source: line_source.LineSequence,
                  message: str,
                  maybe_section_name: str = None):
-        super().__init__(suite_file, line, maybe_section_name)
+        super().__init__(suite_file,
+                         source,
+                         maybe_section_name)
         self._message = message
 
     def error_message_lines(self) -> list:

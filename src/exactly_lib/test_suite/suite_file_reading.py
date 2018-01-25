@@ -38,7 +38,7 @@ def read_suite_document(suite_file_path: pathlib.Path,
                             source)
     except FileSourceError as ex:
         raise parse.SuiteSyntaxError(suite_file_path,
-                                     ex.source_error.line,
+                                     ex.source_error.source,
                                      ex.source_error.message,
                                      maybe_section_name=ex.maybe_section_name)
 

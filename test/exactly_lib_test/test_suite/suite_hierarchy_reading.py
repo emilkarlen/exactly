@@ -8,11 +8,11 @@ from exactly_lib.processing.test_case_processing import test_case_setup_of_sourc
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.instruction_set.parse import SuiteFileReferenceError, SuiteSyntaxError, \
     SuiteDoubleInclusion
-from exactly_lib.util import line_source
+from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, File, Dir
 from exactly_lib_test.test_suite.test_resources import check_exception, check_structure
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
 
 
 def suite() -> unittest.TestSuite:
@@ -270,9 +270,9 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
         put.assertEqual(str(self.root_suite_based_at(root_path)),
                         str(actual.suite_file),
                         'Source file that contains the error')
-        assert_equals_line(put,
-                           line_source.Line(2, 'does-not_exist.case'),
-                           actual.line)
+        assert_equals_line_sequence(put,
+                                    single_line_sequence(2, 'does-not_exist.case'),
+                                    actual.source)
 
 
 class SuiteFileSyntaxError(check_exception.Setup):
@@ -296,9 +296,9 @@ class SuiteFileSyntaxError(check_exception.Setup):
         put.assertEqual(str(self.root_suite_based_at(root_path)),
                         str(actual.suite_file),
                         'Source file that contains the error')
-        assert_equals_line(put,
-                           line_source.Line(1, '[invalid-section]'),
-                           actual.line)
+        assert_equals_line_sequence(put,
+                                    single_line_sequence(1, '[invalid-section]'),
+                                    actual.source)
 
 
 class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
@@ -323,9 +323,9 @@ class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
         put.assertEqual(str(self.root_suite_based_at(root_path)),
                         str(actual.suite_file),
                         'Source file that contains the error')
-        assert_equals_line(put,
-                           line_source.Line(2, 'does-not_exist.suite'),
-                           actual.line)
+        assert_equals_line_sequence(put,
+                                    single_line_sequence(2, 'does-not_exist.suite'),
+                                    actual.source)
 
 
 class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
@@ -350,9 +350,9 @@ class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
         put.assertEqual(str(self.root_suite_based_at(root_path)),
                         str(actual.suite_file),
                         'Source file that contains the error')
-        assert_equals_line(put,
-                           line_source.Line(2, 'main.suite'),
-                           actual.line)
+        assert_equals_line_sequence(put,
+                                    single_line_sequence(2, 'main.suite'),
+                                    actual.source)
         put.assertEqual(self.root_suite_based_at(root_path),
                         actual.included_suite_file,
                         'File that is included twice')
@@ -397,9 +397,9 @@ class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
         put.assertEqual(str(root_path / 'local-2.suite'),
                         str(actual.suite_file),
                         'Source file that contains the error')
-        assert_equals_line(put,
-                           line_source.Line(3, 'subdir/in-subdir.suite'),
-                           actual.line)
+        assert_equals_line_sequence(put,
+                                    single_line_sequence(3, 'subdir/in-subdir.suite'),
+                                    actual.source)
         put.assertEqual(root_path / 'subdir' / 'in-subdir.suite',
                         actual.included_suite_file,
                         'File that is included twice')
