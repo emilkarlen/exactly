@@ -17,7 +17,7 @@ from exactly_lib.util.line_source import Line, SourceLocation, single_line_seque
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import \
     consume_current_line_and_return_it_as_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import \
-    matches_file_source_error
+    matches_file_source_error, file_source_error_equals_line
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSection, \
     equals_instruction_without_description, \
@@ -27,8 +27,7 @@ from exactly_lib_test.section_document.test_resources.element_parsers import Sec
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import equals_line, \
-    assert_equals_line_sequence
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
 
 
 def suite() -> unittest.TestSuite:
@@ -481,18 +480,18 @@ class TestInvalidSyntax(ParseTestBase):
         cases = [
             NEA('first section header is invalid (missing closing bracket)',
                 actual=['[section-header'],
-                expected=assert_file_source_error(equals_line(Line(1, '[section-header')),
-                                                  asrt.is_none)
+                expected=file_source_error_equals_line(Line(1, '[section-header'),
+                                                       asrt.is_none)
                 ),
             NEA('first section header is invalid (superfluous closing bracket)',
                 actual=['[section-header]]'],
-                expected=assert_file_source_error(equals_line(Line(1, '[section-header]]')),
-                                                  asrt.is_none)
+                expected=file_source_error_equals_line(Line(1, '[section-header]]'),
+                                                       asrt.is_none)
                 ),
             NEA('first section header is invalid (content after closing bracket)',
                 actual=['[section-header] superfluous'],
-                expected=assert_file_source_error(equals_line(Line(1, '[section-header] superfluous')),
-                                                  asrt.is_none)
+                expected=file_source_error_equals_line(Line(1, '[section-header] superfluous'),
+                                                       asrt.is_none)
 
                 ),
             NEA('non-first section header is invalid',
@@ -501,8 +500,8 @@ class TestInvalidSyntax(ParseTestBase):
                         '[section-header',
                         ]
                 ,
-                expected=assert_file_source_error(equals_line(Line(3, '[section-header')),
-                                                  asrt.is_none)
+                expected=file_source_error_equals_line(Line(3, '[section-header'),
+                                                       asrt.is_none)
 
                 ),
             NEA('section header with unknown section name (as first section header)',
@@ -510,8 +509,8 @@ class TestInvalidSyntax(ParseTestBase):
                         'instruction 1'
                         ]
                 ,
-                expected=assert_file_source_error(equals_line(Line(1, '[unknown-section-header]')),
-                                                  asrt.is_none)
+                expected=file_source_error_equals_line(Line(1, '[unknown-section-header]'),
+                                                       asrt.is_none)
                 ),
             NEA('section header with unknown section name (as non-first section header)',
                 actual=['[section-header]',
@@ -520,8 +519,8 @@ class TestInvalidSyntax(ParseTestBase):
                         'instruction 2',
                         ]
                 ,
-                expected=assert_file_source_error(equals_line(Line(3, '[unknown-section-header]')),
-                                                  asrt.is_none)
+                expected=file_source_error_equals_line(Line(3, '[unknown-section-header]'),
+                                                       asrt.is_none)
                 ),
         ]
         for nea in cases:
@@ -529,19 +528,6 @@ class TestInvalidSyntax(ParseTestBase):
                 with self.assertRaises(FileSourceError) as cm:
                     self._parse_lines(parser, nea.actual)
                 nea.expected.apply_without_message(self, cm.exception)
-
-
-def assert_file_source_error(line: asrt.ValueAssertion[Line] = asrt.anything_goes(),
-                             maybe_section_name: asrt.ValueAssertion[str] = asrt.anything_goes()
-                             ) -> asrt.ValueAssertion[FileSourceError]:
-    return asrt.and_([
-        asrt.sub_component('maybe_section_name',
-                           FileSourceError.maybe_section_name.fget,
-                           maybe_section_name),
-        asrt.sub_component('line',
-                           lambda fse: fse.source_error.line,
-                           line),
-    ])
 
 
 def is_multi_line_instruction_line(line: str) -> bool:
