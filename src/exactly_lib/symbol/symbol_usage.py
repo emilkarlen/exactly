@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
@@ -11,6 +13,22 @@ class SymbolUsage:
     @property
     def name(self) -> str:
         return self._name
+
+
+class SymbolReference(SymbolUsage):
+    """
+    A reference to a named element that is assumed to have been previously defined.
+    """
+
+    def __init__(self,
+                 name: str,
+                 restrictions: ReferenceRestrictions):
+        super().__init__(name)
+        self._restrictions = restrictions
+
+    @property
+    def restrictions(self) -> ReferenceRestrictions:
+        return self._restrictions
 
 
 class SymbolDefinition(SymbolUsage, ObjectWithSymbolReferences):
@@ -29,28 +47,12 @@ class SymbolDefinition(SymbolUsage, ObjectWithSymbolReferences):
         return self._container
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._container.resolver.references
 
     @property
     def symbol_table_entry(self) -> Entry:
         return Entry(self.name, self.resolver_container)
-
-
-class SymbolReference(SymbolUsage):
-    """
-    A reference to a named element that is assumed to have been previously defined.
-    """
-
-    def __init__(self,
-                 name: str,
-                 restrictions: ReferenceRestrictions):
-        super().__init__(name)
-        self._restrictions = restrictions
-
-    @property
-    def restrictions(self) -> ReferenceRestrictions:
-        return self._restrictions
 
 
 class SymbolUsageVisitor:

@@ -1,18 +1,17 @@
 import itertools
+from typing import Sequence, List
 
 
 class ObjectWithSymbolReferences:
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence:
         """
-        All :class:`NamedElementReference` directly referenced by this object.
-
-        :rtype list of :class:`NamedElementReference`
+        All :class:`SymbolReference` directly referenced by this object.
         """
         return []
 
 
-def references_from_objects_with_symbol_references(object_with_symbol_references_iterable) -> list:
+def references_from_objects_with_symbol_references(objects: Sequence[ObjectWithSymbolReferences]) -> List:
     """Concatenates the references from a list of :class:`ObjectWithSymbolReferences`"""
     return list(itertools.chain.from_iterable([x.references
-                                               for x in object_with_symbol_references_iterable]))
+                                               for x in objects]))
