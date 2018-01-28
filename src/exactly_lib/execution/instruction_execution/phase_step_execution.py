@@ -11,12 +11,12 @@ from exactly_lib.util.line_source import SourceLocationPath
 
 
 class ElementHeaderExecutor:
-    def apply(self, line: line_source.Line):
+    def apply(self, line: line_source.LineSequence):
         raise NotImplementedError()
 
 
 class ElementHeaderExecutorThatDoesNothing(ElementHeaderExecutor):
-    def apply(self, line: line_source.Line):
+    def apply(self, line: line_source.LineSequence):
         pass
 
 
@@ -123,9 +123,9 @@ def execute_phase_prim(phase_contents: SectionContents,
     for element in phase_contents.elements:
         assert isinstance(element, SectionContentElement)
         if element.element_type is ElementType.COMMENT:
-            header_executor_for_comment.apply(element.first_line)
+            header_executor_for_comment.apply(element.source)
         elif element.element_type is ElementType.INSTRUCTION:
-            header_executor_for_instruction.apply(element.first_line)
+            header_executor_for_instruction.apply(element.source)
             instruction_info = element.instruction_info
             failure_info = execute_element(instruction_executor,
                                            element,
