@@ -11,7 +11,7 @@ from exactly_lib.symbol.data.value_resolvers.path_part_resolvers import PathPart
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.util.line_source import Line
+from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
@@ -55,7 +55,7 @@ class TestSymbolReference(unittest.TestCase):
         symbol_table = singleton_symbol_table(string_entry('val_name', 'value string'))
         symbol_usage = su.SymbolReference('val_name',
                                           ReferenceRestrictionsOnDirectAndIndirect(
-                                                    RestrictionThatIsAlwaysSatisfied()))
+                                              RestrictionThatIsAlwaysSatisfied()))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNone(actual, 'result should indicate success')
@@ -177,7 +177,7 @@ class TestValidationOfList(unittest.TestCase):
 def symbol_of(name: str) -> su.SymbolDefinition:
     return su.SymbolDefinition(name,
                                vs.SymbolContainer(string_constant('string value'),
-                                                  Line(1, 'source code')))
+                                                  single_line_sequence(1, 'source code')))
 
 
 def file_ref_entry(name: str, file_ref_value: FileRef) -> Entry:
@@ -187,7 +187,7 @@ def file_ref_entry(name: str, file_ref_value: FileRef) -> Entry:
 def string_entry(name: str, constant: str = 'string value') -> Entry:
     return Entry(name,
                  vs.SymbolContainer(string_constant(constant),
-                                    Line(1, 'source code')))
+                                    single_line_sequence(1, 'source code')))
 
 
 def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRelativityVariants:

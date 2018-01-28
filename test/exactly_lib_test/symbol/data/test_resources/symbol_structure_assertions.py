@@ -12,8 +12,8 @@ def equals_container(expected: rs.SymbolContainer,
     component_assertions = []
     if not ignore_source_line:
         component_assertions.append(asrt.sub_component('source',
-                                                       rs.SymbolContainer.definition_source_lines.fget,
-                                                       equals_line_sequence(expected.definition_source_lines)))
+                                                       rs.SymbolContainer.definition_source.fget,
+                                                       equals_line_sequence(expected.definition_source)))
     expected_resolver = expected.resolver
     assert isinstance(expected_resolver, DataValueResolver), 'All actual values must be SymbolValueResolver'
     component_assertions.append(asrt.sub_component('resolver',

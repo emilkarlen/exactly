@@ -7,14 +7,15 @@ from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
     SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.util.line_source import Line
+from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 
 
 def container(value_resolver: SymbolValueResolver,
               line_num: int = 1,
               source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(value_resolver, Line(line_num, source_line))
+    return SymbolContainer(value_resolver,
+                           single_line_sequence(line_num, source_line))
 
 
 def container_of_builtin(value_resolver: SymbolValueResolver) -> SymbolContainer:
@@ -31,7 +32,7 @@ def entry_with_arbitrary_element(name: str,
                                  line_num: int = 1,
                                  source_line: str = 'value def line') -> Entry:
     return Entry(name, SymbolContainer(value_resolver,
-                                       Line(line_num, source_line)))
+                                       single_line_sequence(line_num, source_line)))
 
 
 def symbol_table_from_symbol_definitions(definitions: iter) -> SymbolTable:

@@ -13,7 +13,7 @@ from exactly_lib.type_system.data import file_ref as _file_ref
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.value_type import DataValueType
-from exactly_lib.util.line_source import Line
+from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.data.test_resources.value_resolvers import ConstantValueResolver
@@ -23,7 +23,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref im
 def container(value_resolver: DataValueResolver,
               line_num: int = 1,
               source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(value_resolver, Line(line_num, source_line))
+    return SymbolContainer(value_resolver,
+                           single_line_sequence(line_num, source_line))
 
 
 def container_of_builtin(value_resolver: DataValueResolver) -> SymbolContainer:
@@ -34,7 +35,7 @@ def string_constant_container(constant_str: str,
                               line_num: int = 1,
                               source_line: str = 'value def line') -> SymbolContainer:
     return SymbolContainer(string_constant(constant_str),
-                           Line(line_num, source_line))
+                           single_line_sequence(line_num, source_line))
 
 
 def string_value_constant_container2(string_value: StringValue,
@@ -42,7 +43,7 @@ def string_value_constant_container2(string_value: StringValue,
                                      source_line: str = 'value def line') -> SymbolContainer:
     return SymbolContainer(ConstantValueResolver(DataValueType.STRING,
                                                  string_value),
-                           Line(line_num, source_line))
+                           single_line_sequence(line_num, source_line))
 
 
 def string_symbol_definition(name: str, constant_str: str = 'string value') -> SymbolDefinition:
@@ -79,7 +80,7 @@ def list_value_constant_container(list_value: ListValue,
                                   line_num: int = 1,
                                   source_line: str = 'value def line') -> SymbolContainer:
     return SymbolContainer(ListResolverTestImplForConstantListValue(list_value),
-                           Line(line_num, source_line))
+                           single_line_sequence(line_num, source_line))
 
 
 def list_symbol_definition(name: str, resolved_value: ListValue) -> SymbolDefinition:
@@ -96,14 +97,14 @@ def file_ref_constant_container(
         line_num: int = 1,
         source_line: str = 'value def line') -> SymbolContainer:
     return SymbolContainer(FileRefConstant(file_ref_value),
-                           Line(line_num, source_line))
+                           single_line_sequence(line_num, source_line))
 
 
 def file_ref_resolver_container(file_ref_resolver: FileRefResolver,
                                 line_num: int = 1,
                                 source_line: str = 'value def line') -> SymbolContainer:
     return SymbolContainer(file_ref_resolver,
-                           Line(line_num, source_line))
+                           single_line_sequence(line_num, source_line))
 
 
 def file_ref_symbol_definition(
@@ -137,7 +138,7 @@ def entry(name: str,
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
     return Entry(name, SymbolContainer(value_resolver,
-                                       Line(line_num, source_line)))
+                                       single_line_sequence(line_num, source_line)))
 
 
 def symbol_table_from_names(names: iter) -> SymbolTable:

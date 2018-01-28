@@ -9,7 +9,7 @@ from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
-from exactly_lib.util.line_source import Line
+from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
@@ -47,4 +47,5 @@ class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):
 
 
 def _resolver_container(value: FileRefResolver) -> SymbolContainer:
-    return SymbolContainer(value, Line(1, 'source line'))
+    return SymbolContainer(value,
+                           single_line_sequence(1, 'source line'))

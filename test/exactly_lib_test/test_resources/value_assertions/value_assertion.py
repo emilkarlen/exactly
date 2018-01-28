@@ -579,6 +579,7 @@ def equals_sequence(expected: Sequence[T],
 is_instance = IsInstance
 is_ = Is
 not_ = Not
+
 is_none = ValueIsNone()
 is_not_none = ValueIsNotNone()
 equals = Equals
@@ -587,6 +588,10 @@ on_transformed = OnTransformed
 
 is_false = Equals(False)
 is_true = Equals(True)
+
+
+def not__(assertion: ValueAssertion[T]) -> ValueAssertion[T]:
+    return Not(assertion)
 
 
 def casted_to_boolean_is(expected: bool) -> ValueAssertion[T]:
