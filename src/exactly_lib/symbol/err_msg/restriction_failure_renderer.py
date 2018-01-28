@@ -67,7 +67,7 @@ def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, s
     def line_ref_of_symbol(symbol_name: str) -> str:
         container = symbols.lookup(symbol_name)
         assert isinstance(container, SymbolContainer), 'Only known type of SymbolTableValue'
-        return error_message_format.source_line_of_symbol(container.definition_source_lines)
+        return error_message_format.source_line_of_symbol(container.definition_source)
 
     ret_val = []
     path_to_failing_symbol = [failing_symbol] + path_to_failing_symbol

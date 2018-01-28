@@ -37,7 +37,7 @@ def invalid_type_header_lines(expected: list,
     ret_val = ([
                    'Illegal type, of symbol "{}"'.format(symbol_name)
                ] +
-               defined_at_line__err_msg_lines(container.definition_source_lines) +
+               defined_at_line__err_msg_lines(container.definition_source) +
                [
                    '',
                    'Found    : ' + _type_name_of(actual),

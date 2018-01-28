@@ -38,6 +38,7 @@ from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
+from exactly_lib.util.line_source import line_sequence_from_line
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -177,7 +178,8 @@ def _parse(source: ParseSource) -> SymbolDefinition:
     if not token_stream.is_null:
         msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return SymbolDefinition(name_str, SymbolContainer(value_resolver, source_line))
+    return SymbolDefinition(name_str, SymbolContainer(value_resolver,
+                                                      line_sequence_from_line(source_line)))
 
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT

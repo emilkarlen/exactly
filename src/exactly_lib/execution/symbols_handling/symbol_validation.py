@@ -39,7 +39,7 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
             'Symbol `{}\' has already been defined:\n\n{}'.format(
                 definition.name,
                 error_message_format.source_lines(
-                    already_defined_resolver_container.definition_source_lines)))
+                    already_defined_resolver_container.definition_source)))
     else:
         for referenced_value in definition.references:
             failure_info = validate_symbol_usage(referenced_value, symbol_table)

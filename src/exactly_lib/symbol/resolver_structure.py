@@ -5,7 +5,7 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.value_type import DataValueType, ValueType, TypeCategory, LogicValueType
-from exactly_lib.util.line_source import Line, LineSequence, line_sequence_from_line
+from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
 
 
@@ -161,29 +161,18 @@ class SymbolContainer(SymbolTableValue):
 
     def __init__(self,
                  value_resolver: SymbolValueResolver,
-                 source: Line):
+                 source: LineSequence):
         self._resolver = value_resolver
         self._source = source
 
     @property
-    def definition_source(self) -> Line:
+    def definition_source(self) -> LineSequence:
         """
         The source code of the definition of the value.
 
         :rtype None iff the symbol is built in.
         """
         return self._source
-
-    @property
-    def definition_source_lines(self) -> LineSequence:
-        """
-        The source code of the definition of the value.
-
-        :rtype None iff the symbol is built in.
-        """
-        if self._source is None:
-            return None
-        return line_sequence_from_line(self._source)
 
     @property
     def resolver(self) -> SymbolValueResolver:

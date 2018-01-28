@@ -1,7 +1,8 @@
-from typing import Any
+from typing import Any, Sequence
 
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
@@ -13,7 +14,7 @@ def matches_resolver_of_logic_type(resolver_type: type,
                                    logic_value_type: LogicValueType,
                                    value_type: ValueType,
                                    resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
-                                   references: asrt.ValueAssertion = asrt.is_empty_list,
+                                   references: asrt.ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_list,
                                    symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion[Any]:
     named_elements = symbol_table.symbol_table_from_none_or_value(symbols)
 
