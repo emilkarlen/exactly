@@ -1,7 +1,9 @@
+from typing import List
+
 import exactly_lib_test.section_document.test_resources.elements
 from exactly_lib.execution import partial_execution
 from exactly_lib.section_document import model
-from exactly_lib.section_document.model import SectionContents
+from exactly_lib.section_document.model import SectionContents, SectionContentElement
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
@@ -102,32 +104,32 @@ class TestCaseGeneratorBase:
     def cleanup_phase(self) -> model.SectionContents:
         return phase_contents(self._cleanup_phase())
 
-    def _setup_phase(self) -> list:
+    def _setup_phase(self) -> List[SectionContentElement]:
         """
-        :rtype list[PhaseContentElement] (with instruction of type SetupPhaseInstruction)
-        """
-        return []
-
-    def _act_phase(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type ActPhaseInstruction)
+        :returns: Elements with instruction of type SetupPhaseInstruction
         """
         return []
 
-    def _before_assert_phase(self) -> list:
+    def _act_phase(self) -> List[SectionContentElement]:
         """
-        :rtype list[PhaseContentElement] (with instruction of type BeforeAssertPhaseInstruction)
-        """
-        return []
-
-    def _assert_phase(self) -> list:
-        """
-        :rtype list[PhaseContentElement] (with instruction of type AssertPhaseInstruction)
+        :returns: Elements with instruction of type ActPhaseInstruction
         """
         return []
 
-    def _cleanup_phase(self) -> list:
+    def _before_assert_phase(self) -> List[SectionContentElement]:
         """
-        :rtype list[PhaseContentElement] (with instruction of type CleanupPhaseInstruction)
+        :returns: Elements with instruction of type BeforeAssertPhaseInstruction
+        """
+        return []
+
+    def _assert_phase(self) -> List[SectionContentElement]:
+        """
+        :returns: Elements with instruction of type AssertPhaseInstruction
+        """
+        return []
+
+    def _cleanup_phase(self) -> List[SectionContentElement]:
+        """
+        :returns: Elements with instruction of type CleanupPhaseInstruction
         """
         return []
