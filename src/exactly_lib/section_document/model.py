@@ -3,7 +3,7 @@ import pathlib
 from typing import Dict, Sequence
 
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import LineInFile, SourceLocation, SourceLocationPath
+from exactly_lib.util.line_source import SourceLocation, SourceLocationPath
 
 
 class Instruction:
@@ -86,11 +86,6 @@ class SectionContentElement:
     def source_location_path(self) -> SourceLocationPath:
         return SourceLocationPath(self.location,
                                   self.file_inclusion_chain)
-
-    @property
-    def location_as_line_in_file(self) -> LineInFile:
-        return LineInFile(self._location.source.first_line,
-                          self._location.file_path)
 
     @property
     def file_path(self) -> pathlib.Path:

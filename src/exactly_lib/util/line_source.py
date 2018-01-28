@@ -64,21 +64,6 @@ def line_sequence_from_line(line: Line) -> LineSequence:
     return single_line_sequence(line.line_number, line.text)
 
 
-class LineInFile(tuple):
-    def __new__(cls,
-                line: Line,
-                file_path: pathlib.Path):
-        return tuple.__new__(cls, (line, file_path))
-
-    @property
-    def line(self) -> Line:
-        return self[0]
-
-    @property
-    def file_path(self) -> pathlib.Path:
-        return self[1]
-
-
 class SourceLocation(tuple):
     """A location in a file."""
 
@@ -136,13 +121,6 @@ def source_location_path_of(file_path: pathlib.Path,
     return source_location_path_without_inclusions(
         SourceLocation(line_sequence,
                        file_path)
-    )
-
-
-def source_location_path_of_line_in_file(line_in_file: LineInFile) -> SourceLocationPath:
-    return source_location_path_without_inclusions(
-        SourceLocation(line_sequence_from_line(line_in_file.line),
-                       line_in_file.file_path)
     )
 
 

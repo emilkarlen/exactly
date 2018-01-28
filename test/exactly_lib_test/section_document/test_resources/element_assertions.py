@@ -130,5 +130,3 @@ def equals_comment_element(line_number: int,
                                             asrt.is_none,
                                             asrt.anything_goes(),
                                             asrt.anything_goes())
-
-
