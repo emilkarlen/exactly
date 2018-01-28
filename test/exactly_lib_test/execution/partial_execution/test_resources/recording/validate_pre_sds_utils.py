@@ -51,7 +51,7 @@ class TestValidationError(TestCaseBase):
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             conf.step,
-                            test_case.the_extra(conf.phase)[0].first_line,
+                            test_case.the_extra(conf.phase)[0].source,
                             'validation error message'),
                         conf.expected_steps,
                         False)
@@ -70,7 +70,7 @@ class TestHardError(TestCaseBase):
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             conf.step,
-                            test_case.the_extra(conf.phase)[0].first_line,
+                            test_case.the_extra(conf.phase)[0].source,
                             'Error message from hard error'),
                         conf.expected_steps,
                         False))

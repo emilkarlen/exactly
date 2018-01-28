@@ -32,7 +32,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.SETUP__MAIN,
-                            test_case.the_extra(PartialPhase.SETUP)[0].first_line,
+                            test_case.the_extra(PartialPhase.SETUP)[0].source,
                             'hard error msg from setup'),
                         [phase_step.ACT__PARSE] +
                         SYMBOL_VALIDATION_STEPS__TWICE +
@@ -76,7 +76,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.BEFORE_ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
+                            test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
                             'hard error msg'),
                         [phase_step.ACT__PARSE] +
 
@@ -149,7 +149,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.FAIL,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
+                            test_case.the_extra(PartialPhase.ASSERT)[0].source,
                             'fail msg from ASSERT'),
 
                         [phase_step.ACT__PARSE] +
@@ -188,7 +188,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
+                            test_case.the_extra(PartialPhase.ASSERT)[0].source,
                             'hard error msg from ASSERT'),
 
                         [phase_step.ACT__PARSE] +
@@ -266,7 +266,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.CLEANUP__MAIN,
-                            test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
+                            test_case.the_extra(PartialPhase.CLEANUP)[0].source,
                             'hard error msg from CLEANUP'),
 
                         [phase_step.ACT__PARSE] +

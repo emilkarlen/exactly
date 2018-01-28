@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import SectionContentElement
@@ -42,10 +44,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForFullExecutionBa
         self.__extra[phase].append(instruction)
         return self
 
-    def the_extra(self, phase: phase_identifier.Phase) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
+    def the_extra(self, phase: phase_identifier.Phase) -> List[SectionContentElement]:
         if phase not in self.__the_extra:
             self.__the_extra[phase] = self.ilc.apply_list(self.__extra[phase])
         return self.__the_extra[phase]
