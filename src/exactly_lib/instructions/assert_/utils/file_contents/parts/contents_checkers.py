@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
@@ -8,6 +9,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
     DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties
@@ -51,7 +53,7 @@ class FileExistenceAssertionPart(AssertionPart):
         self._actual_file = actual_file
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._actual_file.references
 
     def check(self,

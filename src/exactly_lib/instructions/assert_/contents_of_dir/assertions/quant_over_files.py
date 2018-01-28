@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import config
@@ -11,6 +12,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checker
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import StackedFileRef
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
@@ -31,7 +33,7 @@ class QuantifiedAssertion(DirContentsAssertionPart):
         self._assertion_on_file_to_check = assertion_on_file_to_check
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._settings.file_matcher.references + self._assertion_on_file_to_check.references
 
     def check(self,

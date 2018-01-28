@@ -1,8 +1,10 @@
 import types
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences, \
     references_from_objects_with_symbol_references
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -82,7 +84,7 @@ class SequenceOfCooperativeAssertionParts(AssertionPart):
         return value_to_check
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
 

@@ -1,7 +1,10 @@
+from typing import Sequence
+
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties, pre_or_post_validation
@@ -48,7 +51,7 @@ class DirContentsAssertionPart(AssertionPart):
 
 class AssertPathIsExistingDirectory(DirContentsAssertionPart):
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._settings.path_to_check.references
 
     def check(self,

@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
@@ -8,6 +9,7 @@ from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as 
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import property_description, diff_msg
@@ -112,7 +114,7 @@ class _EmptinessChecker:
 
 class EmptinessAssertion(DirContentsAssertionPart):
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._settings.file_matcher.references
 
     def check(self,

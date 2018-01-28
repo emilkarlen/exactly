@@ -1,6 +1,7 @@
 import difflib
 import filecmp
 import pathlib
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE, \
     FilePropertyDescriptorConstructor
@@ -8,6 +9,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
     FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_utils.err_msg import diff_msg
@@ -36,7 +38,7 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
                                              self.validator_of_expected))
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._expected_contents.symbol_usages
 
     def check(self,

@@ -23,7 +23,7 @@ class SymbolValueResolver(ObjectWithSymbolReferences):
     @property
     def references(self) -> list:
         """
-        All :class:`NamedElementReference` directly referenced by this object.
+        All :class:`SymbolReference` directly referenced by this object.
 
         :type: [`SymbolReference`]
         """

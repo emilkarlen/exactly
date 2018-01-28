@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils import assertion_part as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
@@ -321,12 +322,12 @@ class CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart)
 
 
 class CheckerWithReference(sut.AssertionPart):
-    def __init__(self, references: list):
+    def __init__(self, references: Sequence[SymbolReference]):
         super().__init__()
         self._references = references
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
     def check(self,

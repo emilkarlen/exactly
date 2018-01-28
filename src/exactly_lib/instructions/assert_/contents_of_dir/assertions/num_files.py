@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
@@ -7,6 +8,7 @@ from exactly_lib.instructions.utils.validators import PreOrPostSdsValidatorFromV
     SvhValidatorViaExceptionsFromPreAndPostSdsValidators
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition import comparison_structures
@@ -48,7 +50,7 @@ class NumFilesAssertion(DirContentsAssertionPart):
                                  pre_sds=self._comparison_handler.validator)))
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._comparison_handler.references + self._settings.file_matcher.references
 
     def check(self,
