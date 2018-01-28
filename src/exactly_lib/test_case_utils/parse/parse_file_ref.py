@@ -1,6 +1,7 @@
 import functools
 import pathlib
 import types
+from typing import Sequence
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
@@ -267,7 +268,7 @@ class _FileRefResolverOfRelativityOptionAndSuffixResolver(FileRefResolver):
                                        self.path_suffix_resolver.resolve(symbols))
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self.path_suffix_resolver.references
 
 

@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.value_resolvers.path_part_resolver import PathPartResolver
@@ -29,7 +30,7 @@ class _FileRefResolverRelSymbol(FileRefResolver):
         return StackedFileRef(base_file_ref, self.path_suffix.resolve(symbols))
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return [self.symbol_reference_of_path] + self.path_suffix.references
 
 

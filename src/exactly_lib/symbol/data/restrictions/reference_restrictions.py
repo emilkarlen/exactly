@@ -193,7 +193,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
         lines = ([
                      'Invalid type, of symbol "{}"'.format(symbol_name)
                  ] +
-                 defined_at_line__err_msg_lines(container.definition_source) +
+                 defined_at_line__err_msg_lines(container.definition_source_lines) +
                  [
                      '',
                      'Accepted : ' + accepted_value_types,

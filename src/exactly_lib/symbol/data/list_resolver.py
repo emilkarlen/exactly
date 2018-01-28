@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.symbol.data.string_resolver import StringResolver, string_constant
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -116,7 +118,7 @@ class ListResolver(DataValueResolver):
         return self._elements
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         ret_val = []
         for string_resolver in self._elements:
             ret_val.extend(string_resolver.references)

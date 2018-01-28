@@ -1,3 +1,5 @@
+from typing import Any
+
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
@@ -12,10 +14,7 @@ def matches_resolver_of_logic_type(resolver_type: type,
                                    value_type: ValueType,
                                    resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
                                    references: asrt.ValueAssertion = asrt.is_empty_list,
-                                   symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
-    """
-    :return: A assertion on a :class:`LinesTransformerResolver`
-    """
+                                   symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion[Any]:
     named_elements = symbol_table.symbol_table_from_none_or_value(symbols)
 
     def resolve_value(resolver: LineMatcherResolver) -> LineMatcher:

@@ -1,6 +1,7 @@
 import types
 import unittest
 from collections import Counter
+from typing import Sequence
 
 from exactly_lib.help_texts import type_system
 from exactly_lib.help_texts.type_system import DATA_TYPE_2_VALUE_TYPE
@@ -580,7 +581,7 @@ class DataValueResolverForTest(DataValueResolver):
         raise NotImplementedError('It is an error if this method is called')
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
 

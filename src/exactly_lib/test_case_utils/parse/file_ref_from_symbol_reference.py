@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.symbol.data.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
@@ -40,7 +41,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
         return symbol_value_2_file_ref.visit(resolver)
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return [self._file_ref_or_string_symbol] + self._suffix_resolver.references
 
 
