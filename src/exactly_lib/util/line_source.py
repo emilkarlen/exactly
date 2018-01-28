@@ -79,36 +79,6 @@ class LineInFile(tuple):
         return self[1]
 
 
-class LinesInFile(tuple):
-    def __new__(cls,
-                lines: LineSequence,
-                file_path: pathlib.Path):
-        """
-        :param lines: None iff source if not relevant
-        :param file_path: None iff source does not originate from a file
-        """
-        return tuple.__new__(cls, (lines, file_path))
-
-    @property
-    def lines(self) -> LineSequence:
-        """
-        :return: None iff source if not relevant
-        """
-        return self[0]
-
-    @property
-    def file_path(self) -> pathlib.Path:
-        """
-        :return: None iff source does not originate from a file
-        """
-        return self[1]
-
-
-def lines_in_file_from_line(line: LineInFile) -> LinesInFile:
-    return LinesInFile(line_sequence_from_line(line.line),
-                       line.file_path)
-
-
 class SourceLocation(tuple):
     """A location in a file."""
 
@@ -173,15 +143,6 @@ def source_location_path_of_line_in_file(line_in_file: LineInFile) -> SourceLoca
     return source_location_path_without_inclusions(
         SourceLocation(line_sequence_from_line(line_in_file.line),
                        line_in_file.file_path)
-    )
-
-
-def source_location_path_of_lines_in_file(lines_in_file: LinesInFile) -> SourceLocationPath:
-    if lines_in_file is None:
-        return None
-    return source_location_path_without_inclusions(
-        SourceLocation(lines_in_file.lines,
-                       lines_in_file.file_path)
     )
 
 
