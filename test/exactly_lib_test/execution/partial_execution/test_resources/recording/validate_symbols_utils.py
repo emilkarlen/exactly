@@ -71,7 +71,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
             Expectation(PartialResultStatus.VALIDATE,
                         ExpectedFailureForInstructionFailure.new_with_message_assertion(
                             conf.step,
-                            test_case.the_extra(conf.phase)[0].first_line,
+                            test_case.the_extra(conf.phase)[0].source,
                             asrt.is_instance(str)),
                         conf.expected_steps_before_failing_instruction,
                         sandbox_directory_structure_should_exist=False)
@@ -118,7 +118,7 @@ class TestImplementationError(TestCaseBase):
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             conf.step,
-                            test_case.the_extra(conf.phase)[0].first_line,
+                            test_case.the_extra(conf.phase)[0].source,
                             test.ImplementationErrorTestException),
                         conf.expected_steps_before_failing_instruction,
                         sandbox_directory_structure_should_exist=False))

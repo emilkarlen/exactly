@@ -53,7 +53,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.SETUP__MAIN,
-                            test_case.the_extra(PartialPhase.SETUP)[0].first_line,
+                            test_case.the_extra(PartialPhase.SETUP)[0].source,
                             test.ImplementationErrorTestException),
 
                         [phase_step.ACT__PARSE] +
@@ -112,7 +112,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.BEFORE_ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].first_line,
+                            test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
                             test.ImplementationErrorTestException),
 
                         [phase_step.ACT__PARSE] +
@@ -227,7 +227,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.ASSERT)[0].first_line,
+                            test_case.the_extra(PartialPhase.ASSERT)[0].source,
                             test.ImplementationErrorTestException),
 
                         [phase_step.ACT__PARSE] +
@@ -305,7 +305,7 @@ class Test(TestCaseBase):
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.CLEANUP__MAIN,
-                            test_case.the_extra(PartialPhase.CLEANUP)[0].first_line,
+                            test_case.the_extra(PartialPhase.CLEANUP)[0].source,
                             test.ImplementationErrorTestException),
 
                         [phase_step.ACT__PARSE] +

@@ -88,7 +88,7 @@ class TestImplementationError(TestCaseBase):
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             conf.step,
-                            test_case.the_extra(conf.phase)[0].first_line,
+                            test_case.the_extra(conf.phase)[0].source,
                             test.ImplementationErrorTestException),
                         conf.expected_steps,
                         False))
