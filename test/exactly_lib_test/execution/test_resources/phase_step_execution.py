@@ -101,8 +101,8 @@ class ElementHeaderExecutorThatRecordsHeaderAndLineNumber(ElementHeaderExecutor)
                  recorder: Recorder):
         self.__recorder = recorder
 
-    def apply(self, line: line_source.Line):
-        self.__recorder.record_header_value(str(line.line_number))
+    def apply(self, line: line_source.LineSequence):
+        self.__recorder.record_header_value(str(line.first_line_number))
 
 
 class InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(ControlledInstructionExecutor):
