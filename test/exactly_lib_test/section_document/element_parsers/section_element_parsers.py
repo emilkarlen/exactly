@@ -142,11 +142,13 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
 class TestStandardSyntaxElementParser(unittest.TestCase):
     def test_parse_empty_line(self):
         parser = sut.standard_syntax_element_parser(_InstructionParserForInstructionLineThatStartsWith('I'))
-        test_cases = [([' '], ''),
-                      (['  \t  '], ''),
-                      (['  ', 'remaining'], 'remaining'),
+        test_cases = [([' '], 1, ''),
+                      (['  \t  '], 1, ''),
+                      (['  ', '', 'remaining'], 2, 'remaining'),
+                      (['  ', '', ''], 3, ''),
+                      (['  ', 'remaining'], 1, 'remaining'),
                       ]
-        for source_lines, remaining_source in test_cases:
+        for source_lines, num_empty_lines, remaining_source in test_cases:
             with self.subTest(source_lines=source_lines,
                               remaining_source=remaining_source):
                 # ARRANGE #
@@ -154,19 +156,21 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ACT #
                 element = parser.parse(pathlib.Path(), source)
                 # ASSERT #
-                element_assertion = equals_empty_element(LineSequence(1, (source_lines[0],)))
+                element_assertion = equals_empty_element(LineSequence(1, source_lines[:num_empty_lines]))
                 element_assertion.apply_with_message(self, element, 'element')
-                self.assertEqual('\n'.join(source_lines[1:]),
+                self.assertEqual(remaining_source,
                                  source.remaining_source,
                                  'Remaining source')
 
     def test_parse_comment_line(self):
         parser = sut.standard_syntax_element_parser(_InstructionParserForInstructionLineThatStartsWith('I'))
-        test_cases = [(['# comment'], ''),
-                      (['  #  comment'], ''),
-                      (['#   ', 'remaining'], 'remaining'),
+        test_cases = [(['# comment'], 1, ''),
+                      (['  #  comment'], 1, ''),
+                      (['# A', '  # B'], 2, ''),
+                      (['# A', '  # B', ' '], 2, ' '),
+                      (['#   ', 'remaining'], 1, 'remaining'),
                       ]
-        for source_lines, remaining_source in test_cases:
+        for source_lines, num_comment_lines, remaining_source in test_cases:
             with self.subTest(source_lines=source_lines,
                               remaining_source=remaining_source):
                 # ARRANGE #
@@ -174,7 +178,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ACT #
                 element = parser.parse(pathlib.Path(), source)
                 # ASSERT #
-                element_assertion = equals_comment_element(LineSequence(1, (source_lines[0],)))
+                element_assertion = equals_comment_element(LineSequence(1, source_lines[:num_comment_lines]))
                 element_assertion.apply_with_message(self, element, 'element')
                 self.assertEqual(remaining_source,
                                  source.remaining_source,

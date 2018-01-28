@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
@@ -92,18 +92,28 @@ class StandardSyntaxCommentAndEmptyLineParser(SectionElementParser):
               source: ParseSource) -> ParsedNonInstructionElement:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):
-            return new_empty_element(self._consume_and_return_current_line(source))
+            return new_empty_element(self._consume_and_return_current_line(source,
+                                                                           syntax.is_empty_line))
         if syntax.is_comment_line(first_line.text):
-            return new_comment_element(self._consume_and_return_current_line(source))
+            return new_comment_element(self._consume_and_return_current_line(source,
+                                                                             syntax.is_comment_line))
         else:
             return None
 
     @staticmethod
-    def _consume_and_return_current_line(source: ParseSource) -> line_source.LineSequence:
+    def _consume_and_return_current_line(source: ParseSource,
+                                         line_predicate_for_line_to_consume: Callable[[str], bool],
+                                         ) -> line_source.LineSequence:
         current_line = source.current_line
+        lines = [current_line.text]
         source.consume_current_line()
+
+        while source.has_current_line and line_predicate_for_line_to_consume(source.current_line_text):
+            lines.append(source.current_line_text)
+            source.consume_current_line()
+
         return line_source.LineSequence(current_line.line_number,
-                                        (current_line.text,))
+                                        tuple(lines))
 
 
 def standard_syntax_element_parser(instruction_or_directive_parser: SectionElementParser) -> SectionElementParser:
