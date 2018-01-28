@@ -101,10 +101,7 @@ class TestCaseGeneratorWithRecordingInstrFollowedByExtraInstrsInEachPhase(TestCa
                  recorder: ListRecorder = None):
         super().__init__(recorder)
 
-    def _all_elements_for(self, phase: phase_identifier.Phase) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
+    def _all_elements_for(self, phase: phase_identifier.Phase) -> List[SectionContentElement]:
         return [self.recorder_for(phase)] + self.the_extra(phase)
 
 
@@ -113,10 +110,7 @@ class TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(TestCaseGeneratorFor
                  recorder: ListRecorder = None):
         super().__init__(recorder)
 
-    def _all_elements_for(self, phase: phase_identifier.Phase) -> list:
-        """
-        :rtype [PhaseContentElement]
-        """
+    def _all_elements_for(self, phase: phase_identifier.Phase) -> List[SectionContentElement]:
         return [self.recorder_for(phase)] + self.the_extra(phase) + [self.recorder_for(phase)]
 
 
