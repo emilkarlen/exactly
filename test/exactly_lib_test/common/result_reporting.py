@@ -85,7 +85,7 @@ class TestOutputLocation(unittest.TestCase):
                         file_and_line_num_line(file_path_a, line_sequence_a),
                         '',
                     ] +
-                    source_line(line_sequence_a) +
+                    source_lines(line_sequence_a) +
                     [
                         ''
                     ]
@@ -109,7 +109,7 @@ class TestOutputLocation(unittest.TestCase):
                         file_and_line_num_line(file_path_a, line_sequence_a),
                         '',
                     ] +
-                    source_line(line_sequence_a) +
+                    source_lines(line_sequence_a) +
                     [
                         ''
                     ]
@@ -132,7 +132,7 @@ class TestOutputLocation(unittest.TestCase):
                         file_and_line_num_line(file_path_a, line_sequence_a),
                         '',
                     ] +
-                    source_line(line_sequence_a) +
+                    source_lines(line_sequence_a) +
                     [
                         '',
                     ]
@@ -176,7 +176,7 @@ def file_inclusion_chain_location(location: SourceLocation) -> List[str]:
     )
 
 
-def source_line(line_sequence: LineSequence) -> List[str]:
+def source_lines(line_sequence: LineSequence) -> List[str]:
     return list(line_sequence.lines)
 
 
