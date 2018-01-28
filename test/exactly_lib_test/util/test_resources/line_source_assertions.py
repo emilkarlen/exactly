@@ -31,6 +31,19 @@ def is_line(description: str = '') -> asrt.ValueAssertion[Any]:
                                  description)
 
 
+def is_line_sequence(description: str = '') -> asrt.ValueAssertion[Any]:
+    return asrt.is_instance_with(LineSequence,
+                                 asrt.And([
+                                     asrt.sub_component('line_number',
+                                                        LineSequence.first_line_number.fget,
+                                                        asrt.is_instance(int)),
+                                     asrt.sub_component_list('lines',
+                                                             LineSequence.lines.fget,
+                                                             asrt.is_instance(str))
+                                 ]),
+                                 description)
+
+
 def matches_line_sequence(first_line_number: asrt.ValueAssertion[int] = asrt.anything_goes(),
                           lines: asrt.ValueAssertion[Sequence[str]] = asrt.anything_goes(),
                           ) -> asrt.ValueAssertion[LineSequence]:

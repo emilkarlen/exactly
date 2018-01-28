@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -235,12 +236,12 @@ def resolver_from_constants(file_ref: FileRef, references: list) -> FileRefResol
 class _FileRefResolverWithConstantFileRefAndSymbolReferences(FileRefResolver):
     def __init__(self,
                  file_ref: FileRef,
-                 references: list):
+                 references: Sequence[SymbolReference]):
         self._file_ref = file_ref
         self._references = references
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
     def resolve(self, symbols: SymbolTable) -> FileRef:

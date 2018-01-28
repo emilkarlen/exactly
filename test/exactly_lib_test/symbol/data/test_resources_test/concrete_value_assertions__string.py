@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -252,5 +253,5 @@ class _StringResolverTestImpl(StringResolver):
         return StringValue((ConstantFragment(self.value),))
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self.explicit_references
