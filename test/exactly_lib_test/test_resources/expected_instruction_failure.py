@@ -5,7 +5,6 @@ from exactly_lib.execution.result import InstructionFailureInfo, FullResultStatu
     PhaseFailureInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
-from exactly_lib.util.line_source import line_sequence_from_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
 
@@ -123,10 +122,10 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
 
     @staticmethod
     def new_with_message_assertion(phase_step: PhaseStep,
-                                   source_line: line_source.Line,
+                                   source_line: line_source.LineSequence,
                                    error_message: asrt.ValueAssertion):
         return ExpectedFailureForInstructionFailure(phase_step,
-                                                    line_sequence_from_line(source_line),
+                                                    source_line,
                                                     error_message,
                                                     None)
 
@@ -140,10 +139,10 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
 
     @staticmethod
     def new_with_exception(phase_step: PhaseStep,
-                           source_line: line_source.Line,
+                           source_line: line_source.LineSequence,
                            exception_class):
         return ExpectedFailureForInstructionFailure(phase_step,
-                                                    line_sequence_from_line(source_line),
+                                                    source_line,
                                                     None,
                                                     exception_class)
 

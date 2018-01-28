@@ -128,7 +128,7 @@ class Test(TestCaseBase):
             Expectation(FullResultStatus.IMPLEMENTATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.CLEANUP__MAIN,
-                            test_case.the_extra(phase_identifier.CLEANUP)[0].first_line,
+                            test_case.the_extra(phase_identifier.CLEANUP)[0].source,
                             test.ImplementationErrorTestException),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +
