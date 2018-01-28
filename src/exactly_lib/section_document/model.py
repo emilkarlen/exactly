@@ -117,10 +117,6 @@ class SectionContentElement:
         return self._source
 
     @property
-    def first_line(self) -> line_source.Line:
-        return self._source.first_line
-
-    @property
     def element_type(self) -> ElementType:
         return self._element_type
 
