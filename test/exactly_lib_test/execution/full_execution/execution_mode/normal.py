@@ -64,7 +64,7 @@ class Test(TestCaseBase):
             Expectation(FullResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.CONFIGURATION__MAIN,
-                            test_case_generator.the_extra(phase_identifier.CONFIGURATION)[0].first_line,
+                            test_case_generator.the_extra(phase_identifier.CONFIGURATION)[0].source,
                             'hard error msg'),
                         [phase_step.CONFIGURATION__MAIN],
                         False))

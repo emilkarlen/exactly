@@ -5,8 +5,9 @@ from exactly_lib.execution.result import InstructionFailureInfo, FullResultStatu
     PhaseFailureInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
+from exactly_lib.util.line_source import line_sequence_from_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_single_line
+from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
 
 
 class ExpectedFailureDetails(tuple):
@@ -103,7 +104,7 @@ class ExpectedFailureForNoFailure(ExpectedFailure):
 class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
     def __new__(cls,
                 phase_step: PhaseStep,
-                source_line: line_source.Line,
+                source_line: line_source.LineSequence,
                 error_message_or_none: asrt.ValueAssertion,
                 exception_class_or_none):
         return tuple.__new__(cls, (phase_step,
@@ -113,10 +114,10 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
 
     @staticmethod
     def new_with_message(phase_step: PhaseStep,
-                         source_line: line_source.Line,
+                         source: line_source.LineSequence,
                          error_message: str):
         return ExpectedFailureForInstructionFailure(phase_step,
-                                                    source_line,
+                                                    source,
                                                     asrt.equals(error_message),
                                                     None)
 
@@ -125,7 +126,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
                                    source_line: line_source.Line,
                                    error_message: asrt.ValueAssertion):
         return ExpectedFailureForInstructionFailure(phase_step,
-                                                    source_line,
+                                                    line_sequence_from_line(source_line),
                                                     error_message,
                                                     None)
 
@@ -142,7 +143,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
                            source_line: line_source.Line,
                            exception_class):
         return ExpectedFailureForInstructionFailure(phase_step,
-                                                    source_line,
+                                                    line_sequence_from_line(source_line),
                                                     None,
                                                     exception_class)
 
@@ -158,9 +159,9 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
                                   phase_step.step,
                                   'Step')
         if self.source_line is not None:
-            assert_equals_single_line(unittest_case,
-                                      self.source_line,
-                                      actual_line)
+            assert_equals_line_sequence(unittest_case,
+                                        self.source_line,
+                                        actual_line)
         self.expected_failure.assertions(unittest_case,
                                          actual_details)
 
@@ -182,7 +183,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
         return self[0]
 
     @property
-    def source_line(self) -> line_source.Line:
+    def source_line(self) -> line_source.LineSequence:
         return self[1]
 
     @property

@@ -35,7 +35,7 @@ class Test(TestCaseBase):
                     Expectation(FullResultStatus.XFAIL,
                                 ExpectedFailureForInstructionFailure.new_with_message(
                                     phase_step.ASSERT__MAIN,
-                                    test_case.the_extra(phase_identifier.ASSERT)[0].first_line,
+                                    test_case.the_extra(phase_identifier.ASSERT)[0].source,
                                     'fail message'),
                                 [phase_step.CONFIGURATION__MAIN,
                                  phase_step.CONFIGURATION__MAIN] +
@@ -111,7 +111,7 @@ class Test(TestCaseBase):
             Expectation(FullResultStatus.HARD_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.CONFIGURATION__MAIN,
-                            test_case.the_extra(phase_identifier.CONFIGURATION)[1].first_line,
+                            test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
                             'hard error msg'),
                         [phase_step.CONFIGURATION__MAIN],
                         False))
