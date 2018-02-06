@@ -11,10 +11,13 @@ great Lapierre
 EOF
 
 
+[before-assert]
+
+
+file great-bikes.txt  = --transformed-by select regex '^great'
+                        --file bike-ratings.txt
+
 [assert]
-
-
-transform  bike-ratings.txt  great-bikes.txt  select regex 'great'
 
 
 contents  great-bikes.txt  num-lines == 2
