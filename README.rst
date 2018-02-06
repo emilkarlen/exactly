@@ -477,7 +477,8 @@ it just displays some of Exactly's features.)
     run --python --interpret custom-assertion.py
 
 
-    transform  --rel-result stdout  --rel-tmp modified-stdout.txt  select line-num >= 10
+    file --rel-tmp modified-stdout.txt = --transformed-by select line-num >= 10
+                                         --file --rel-result stdout
 
     contents  --rel-tmp modified-stdout.txt  equals <<EOF
     this should be line 10 of original stdout.txt
