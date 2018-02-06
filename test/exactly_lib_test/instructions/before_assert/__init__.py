@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.instructions.before_assert import test_resources, utils, \
-    change_dir, env, run, shell, new_file, new_dir, transform
+    change_dir, env, run, shell, new_file, new_dir
 
 
 def suite() -> unittest.TestSuite:
@@ -14,7 +14,6 @@ def suite() -> unittest.TestSuite:
         shell.suite(),
         run.suite(),
         env.suite(),
-        transform.suite(),
     ])
 
 

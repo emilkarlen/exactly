@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.instructions.cleanup import change_dir, env, run, new_file, new_dir, shell, transform
+from exactly_lib_test.instructions.cleanup import change_dir, env, run, new_file, new_dir, shell
 from exactly_lib_test.instructions.cleanup import test_resources, utils
 
 
@@ -14,7 +14,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(change_dir.suite())
     ret_val.addTest(new_file.suite())
     ret_val.addTest(new_dir.suite())
-    ret_val.addTest(transform.suite())
     return ret_val
 
 
