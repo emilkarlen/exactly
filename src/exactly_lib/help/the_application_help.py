@@ -2,6 +2,7 @@ from typing import Sequence, Dict
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.contents_structure.application import ApplicationHelp
+from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.help.entities.builtin.entity_configuration import builtin_symbols_entity_configuration
@@ -10,7 +11,7 @@ from exactly_lib.help.entities.configuration_parameters.entity_configuration imp
 from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
-from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
+from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.help.program_modes.test_case.contents.phase import act, assert_, before_assert, configuration, \
@@ -38,7 +39,7 @@ def new_application_help(instructions_setup: InstructionsSetup,
                            entity_name_2_entity_configuration(list(builtin_symbol_documentation_list)))
 
 
-def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list):
+def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list) -> Dict[str, EntityTypeConfiguration]:
     return {
         CONCEPT_ENTITY_TYPE_NAMES.identifier: CONCEPT_ENTITY_CONFIGURATION,
 
@@ -57,9 +58,9 @@ def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list):
     }
 
 
-def test_suite_help(configuration_section_instructions: dict) -> TestSuiteHelp:
+def test_suite_help(configuration_section_instructions: Dict[str, SingleInstructionSetup]) -> TestSuiteHelp:
     """
-    :param configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
+    :param configuration_section_instructions: instruction-name -> setup
     """
     return TestSuiteHelp([
         ConfigurationSectionDocumentation(SECTION_NAME__CONF,
@@ -69,7 +70,7 @@ def test_suite_help(configuration_section_instructions: dict) -> TestSuiteHelp:
     ])
 
 
-def phase_helps_for(instructions_setup: InstructionsSetup) -> iter:
+def phase_helps_for(instructions_setup: InstructionsSetup) -> Sequence[SectionDocumentation]:
     return [
         configuration.ConfigurationPhaseDocumentation(phase_help_name(phase_identifier.CONFIGURATION),
                                                       instruction_set_help(

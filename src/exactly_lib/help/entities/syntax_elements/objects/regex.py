@@ -1,5 +1,5 @@
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, cli_argument_syntax_element_description
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_elements
@@ -43,8 +43,8 @@ DOCUMENTATION = syntax_element_documentation(
         ),
     ],
     [
-        cl_syntax.cli_argument_syntax_element_description(_IGNORE_CASE_ARGUMENT,
-                                                          _TEXT_PARSER.fnap(_DESCRIPTION_OF_IGNORE_CASE_OPTION))
+        cli_argument_syntax_element_description(_IGNORE_CASE_ARGUMENT,
+                                                _TEXT_PARSER.fnap(_DESCRIPTION_OF_IGNORE_CASE_OPTION))
     ],
     [
         syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,

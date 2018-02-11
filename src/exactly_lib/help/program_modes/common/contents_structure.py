@@ -1,4 +1,4 @@
-from typing import Sequence, Dict, Callable, List
+from typing import Sequence, Dict, Callable, List, Iterable
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help_texts import doc_format
@@ -10,7 +10,7 @@ from exactly_lib.util.textformat.structure.paragraph import Paragraph
 
 
 class SectionInstructionSet(tuple):
-    def __new__(cls, instruction_descriptions: Sequence[InstructionDocumentation]):
+    def __new__(cls, instruction_descriptions: Iterable[InstructionDocumentation]):
         description_list = list(instruction_descriptions)
         description_list.sort(key=InstructionDocumentation.instruction_name)
         return tuple.__new__(cls, (description_list,))

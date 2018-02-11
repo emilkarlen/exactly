@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Sequence
 
 
 class Argument:
@@ -217,7 +218,7 @@ class CommandLine:
     """
 
     def __init__(self,
-                 argument_usages: list,
+                 argument_usages: Sequence[ArgumentUsage],
                  prefix: str = '',
                  suffix: str = ''):
         self._argument_usages = argument_usages
@@ -233,10 +234,7 @@ class CommandLine:
         return self._suffix
 
     @property
-    def argument_usages(self) -> list:
-        """
-        :rtype: [`ArgumentUsage`]
-        """
+    def argument_usages(self) -> Sequence[ArgumentUsage]:
         return self._argument_usages
 
     def __str__(self):

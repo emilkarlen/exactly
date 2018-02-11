@@ -1,6 +1,6 @@
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args, \
+    cli_argument_syntax_element_description
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
@@ -104,7 +104,7 @@ class FileContentsDocumentation:
                                         invokation_variants)
 
     def _transformation_sed(self) -> SyntaxElementDescription:
-        return cl_syntax.cli_argument_syntax_element_description(
+        return cli_argument_syntax_element_description(
             instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
             self._tp.fnap(_TRANSFORMATION_DESCRIPTION),
             [

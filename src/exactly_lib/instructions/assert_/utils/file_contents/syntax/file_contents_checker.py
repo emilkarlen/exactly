@@ -1,4 +1,5 @@
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    cli_argument_syntax_element_description
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity import syntax_elements, types
@@ -61,9 +62,9 @@ class FileContentsCheckerHelp:
 
     def see_also_targets(self) -> list:
         return (
-            [types.LINES_TRANSFORMER_TYPE_INFO.cross_reference_target]
-            +
-            self.contents_matcher_help.see_also_targets()
+                [types.LINES_TRANSFORMER_TYPE_INFO.cross_reference_target]
+                +
+                self.contents_matcher_help.see_also_targets()
         )
 
 
@@ -77,7 +78,7 @@ def transformation_syntax_element_description(the_tested_file: str) -> SyntaxEle
         'the_tested_file': the_tested_file,
         'transformer': syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
     })
-    return cl_syntax.cli_argument_syntax_element_description(
+    return cli_argument_syntax_element_description(
         instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
         text_parser.fnap(_TRANSFORMATION_DESCRIPTION),
         [

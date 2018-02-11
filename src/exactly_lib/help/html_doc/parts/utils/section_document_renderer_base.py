@@ -1,4 +1,5 @@
 import types
+from typing import Sequence
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help import std_tags
@@ -19,7 +20,7 @@ _INSTRUCTIONS_IN = 'The instructions in the {section} {section_concept}.'
 class HtmlDocGeneratorForSectionDocumentBase:
     def __init__(self,
                  section_concept_name: str,
-                 sections: list,
+                 sections: Sequence[SectionDocumentation],
                  get_article_contents_constructor_for_section_document: types.FunctionType):
         self.section_concept_name = section_concept_name
         self.sections = sections
