@@ -1,22 +1,20 @@
+from typing import Dict, Sequence
+
+from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+
+
 class TestCaseHelp(tuple):
     def __new__(cls,
-                phase_helps: iter):
-        """
-        :type phase_helps: [`SectionDocumentation`]
-        """
+                phase_helps: Sequence[SectionDocumentation]):
         return tuple.__new__(cls, (list(phase_helps),))
 
     @property
-    def phase_helps_in_order_of_execution(self) -> list:
-        """
-        :type: [`SectionDocumentation`]
-        """
+    def phase_helps_in_order_of_execution(self) -> Sequence[SectionDocumentation]:
         return self[0]
 
     @property
-    def phase_name_2_phase_help(self) -> dict:
-        """
-        :type: `str` -> `SectionDocumentation`
-        """
-        return dict(map(lambda ph_help: (ph_help.name.plain, ph_help),
-                        self.phase_helps_in_order_of_execution))
+    def phase_name_2_phase_help(self) -> Dict[str, SectionDocumentation]:
+        return {
+            ph_help.name.plain: ph_help
+            for ph_help in self.phase_helps_in_order_of_execution
+        }
