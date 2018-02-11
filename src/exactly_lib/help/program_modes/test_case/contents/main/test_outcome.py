@@ -321,13 +321,13 @@ def _other_non_cli_errors() -> ParagraphItem:
         list_item('Preprocessing',
                   step_with_single_exit_value(
                       [],
-                      FAILURE_CONDITION_OF_PREPROCESSING,
+                      _TEXT_PARSER.para(FAILURE_CONDITION_OF_PREPROCESSING),
                       exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
                   ),
         list_item('Syntax checking',
                   step_with_single_exit_value(
                       [],
-                      para('Fails if the test case contains {an_error_in_source}.'),
+                      _TEXT_PARSER.para('Fails if the test case contains {an_error_in_source}.'),
                       exit_values.NO_EXECUTION__SYNTAX_ERROR)
                   ),
     ]

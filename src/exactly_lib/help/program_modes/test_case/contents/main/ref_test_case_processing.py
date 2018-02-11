@@ -40,13 +40,13 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
             docs.list_item('preprocessing',
                            step_with_single_exit_value(
                                self.fnap(PURPOSE_OF_PREPROCESSING),
-                               FAILURE_CONDITION_OF_PREPROCESSING,
+                               self.text_parser.para(FAILURE_CONDITION_OF_PREPROCESSING),
                                exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
                            ),
             docs.list_item('syntax checking',
                            step_with_single_exit_value(
                                self.fnap(PURPOSE_OF_SYNTAX_CHECKING),
-                               FAILURE_CONDITION_OF_SYNTAX_CHECKING,
+                               self.text_parser.para(FAILURE_CONDITION_OF_SYNTAX_CHECKING),
                                exit_values.NO_EXECUTION__SYNTAX_ERROR)
                            ),
             docs.list_item('validation',
@@ -99,13 +99,14 @@ This step is applied only if a preprocessor has been given by {cli_option_for_pr
 or set in a test suite.
 """
 
-FAILURE_CONDITION_OF_PREPROCESSING = docs.para(
-    'Fails if the preprocessor program cannot be executed, '
-    'or if it exits with a non-zero exit code.')
+FAILURE_CONDITION_OF_PREPROCESSING = """\
+Fails if the preprocessor program cannot be executed, 
+or if it exits with a non-zero exit code.
+"""
 
 PURPOSE_OF_SYNTAX_CHECKING = 'Checks the syntax of all elements in the test case file.'
 
-FAILURE_CONDITION_OF_SYNTAX_CHECKING = docs.para('Fails if {an_error_in_source} is found.')
+FAILURE_CONDITION_OF_SYNTAX_CHECKING = 'Fails if {an_error_in_source} is found.'
 
 PURPOSE_OF_VALIDATION = """\
 Checks references to {symbols} and external resources (files etc).
