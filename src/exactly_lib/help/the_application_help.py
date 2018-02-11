@@ -63,30 +63,41 @@ def test_suite_help(configuration_section_instructions: Dict[str, SingleInstruct
     :param configuration_section_instructions: instruction-name -> setup
     """
     return TestSuiteHelp([
-        ConfigurationSectionDocumentation(SECTION_NAME__CONF,
-                                          instruction_set_help(configuration_section_instructions)),
+        ConfigurationSectionDocumentation(
+            SECTION_NAME__CONF,
+            _instruction_set_help(configuration_section_instructions)),
+
         CasesSectionDocumentation(SECTION_NAME__CASES),
+
         SuitesSectionDocumentation(SECTION_NAME__SUITS),
     ])
 
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> Sequence[SectionDocumentation]:
     return [
-        configuration.ConfigurationPhaseDocumentation(phase_help_name(phase_identifier.CONFIGURATION),
-                                                      instruction_set_help(
-                                                          instructions_setup.config_instruction_set)),
-        setup.SetupPhaseDocumentation(phase_help_name(phase_identifier.SETUP),
-                                      instruction_set_help(instructions_setup.setup_instruction_set)),
+        configuration.ConfigurationPhaseDocumentation(
+            phase_help_name(phase_identifier.CONFIGURATION),
+            _instruction_set_help(instructions_setup.config_instruction_set)),
+
+        setup.SetupPhaseDocumentation(
+            phase_help_name(phase_identifier.SETUP),
+            _instruction_set_help(instructions_setup.setup_instruction_set)),
+
         act.ActPhaseDocumentation(phase_help_name(phase_identifier.ACT)),
-        before_assert.BeforeAssertPhaseDocumentation(phase_help_name(phase_identifier.BEFORE_ASSERT),
-                                                     instruction_set_help(
-                                                         instructions_setup.before_assert_instruction_set)),
-        assert_.AssertPhaseDocumentation(phase_help_name(phase_identifier.ASSERT),
-                                         instruction_set_help(instructions_setup.assert_instruction_set)),
-        cleanup.CleanupPhaseDocumentation(phase_help_name(phase_identifier.CLEANUP),
-                                          instruction_set_help(instructions_setup.cleanup_instruction_set)),
+
+        before_assert.BeforeAssertPhaseDocumentation(
+            phase_help_name(phase_identifier.BEFORE_ASSERT),
+            _instruction_set_help(instructions_setup.before_assert_instruction_set)),
+
+        assert_.AssertPhaseDocumentation(
+            phase_help_name(phase_identifier.ASSERT),
+            _instruction_set_help(instructions_setup.assert_instruction_set)),
+
+        cleanup.CleanupPhaseDocumentation(
+            phase_help_name(phase_identifier.CLEANUP),
+            _instruction_set_help(instructions_setup.cleanup_instruction_set)),
     ]
 
 
-def instruction_set_help(single_instruction_setup_dic: dict) -> SectionInstructionSet:
+def _instruction_set_help(single_instruction_setup_dic: Dict[str, SingleInstructionSetup]) -> SectionInstructionSet:
     return SectionInstructionSet(map(lambda x: x.documentation, single_instruction_setup_dic.values()))
