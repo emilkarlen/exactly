@@ -1,13 +1,15 @@
+from typing import Sequence
+
 from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.help_texts.argument_rendering.cl_syntax import arg_syntax
+from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class InvokationVariant(tuple):
     def __new__(cls,
                 syntax: str,
-                description_rest: list = None):
-        """
-        :type description_rest: [`ParagraphItem`]
-        """
+                description_rest: Sequence[ParagraphItem] = None):
         return tuple.__new__(cls, (syntax, [] if description_rest is None else description_rest))
 
     @property
@@ -15,18 +17,18 @@ class InvokationVariant(tuple):
         return self[0]
 
     @property
-    def description_rest(self) -> list:
+    def description_rest(self) -> Sequence[ParagraphItem]:
         return self[1]
 
 
 def invokation_variant_from_string(syntax: str,
-                                   description_rest: list = None) -> InvokationVariant:
+                                   description_rest: Sequence[ParagraphItem] = None) -> InvokationVariant:
     return InvokationVariant(syntax,
                              description_rest)
 
 
-def invokation_variant_from_args(argument_usages: list,
-                                 description_rest: list = None) -> InvokationVariant:
+def invokation_variant_from_args(argument_usages: Sequence[a.ArgumentUsage],
+                                 description_rest: Sequence[ParagraphItem] = None) -> InvokationVariant:
     return InvokationVariant(cl_syntax.cl_syntax_for_args(argument_usages),
                              description_rest)
 
@@ -34,12 +36,8 @@ def invokation_variant_from_args(argument_usages: list,
 class SyntaxElementDescription(tuple):
     def __new__(cls,
                 element_name: str,
-                description_rest: list,
-                invokation_variants: list = None):
-        """
-        :type description_rest: [`ParagraphItem`]
-        :type invokation_variants: [`InvokationVariant`]
-        """
+                description_rest: Sequence[ParagraphItem],
+                invokation_variants: Sequence[InvokationVariant] = None):
         return tuple.__new__(cls, (element_name,
                                    description_rest,
                                    [] if invokation_variants is None else invokation_variants))
@@ -49,15 +47,18 @@ class SyntaxElementDescription(tuple):
         return self[0]
 
     @property
-    def description_rest(self) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def description_rest(self) -> Sequence[ParagraphItem]:
         return self[1]
 
     @property
-    def invokation_variants(self) -> list:
-        """
-        :rtype: [`InvokationVariant`]
-        """
+    def invokation_variants(self) -> Sequence[InvokationVariant]:
         return self[2]
+
+
+def cli_argument_syntax_element_description(argument: a.Argument,
+                                            description_rest: Sequence[ParagraphItem],
+                                            invokation_variants: Sequence[InvokationVariant] = None
+                                            ) -> SyntaxElementDescription:
+    return SyntaxElementDescription(arg_syntax(argument),
+                                    description_rest,
+                                    invokation_variants)

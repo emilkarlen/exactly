@@ -1,6 +1,7 @@
 import itertools
 
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
+    cli_argument_syntax_element_description
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.argument_rendering import cl_syntax
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
@@ -26,7 +27,7 @@ class Syntax:
         })
 
     def syntax_element_description(self) -> SyntaxElementDescription:
-        return cl_syntax.cli_argument_syntax_element_description(
+        return cli_argument_syntax_element_description(
             self.grammar.concept.syntax_element,
             [],
             self.invokation_variants()

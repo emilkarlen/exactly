@@ -1,5 +1,6 @@
 """Functionality for accessing a subset of the files in a directory."""
-from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
+    cli_argument_syntax_element_description
 from exactly_lib.help_texts import doc_format
 from exactly_lib.help_texts import expression, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax
@@ -48,7 +49,7 @@ _TEXT_PARSER = TextParser({
 
 
 def selection_syntax_element_description() -> SyntaxElementDescription:
-    return cl_syntax.cli_argument_syntax_element_description(
+    return cli_argument_syntax_element_description(
         SELECTION,
         _TEXT_PARSER.fnap(_SELECTION_DESCRIPTION),
         [

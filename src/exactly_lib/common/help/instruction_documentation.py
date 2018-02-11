@@ -1,5 +1,9 @@
+from typing import List, Sequence
+
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.help_texts.doc_format import syntax_text
-from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
 
 class InstructionDocumentation:
@@ -22,26 +26,17 @@ class InstructionDocumentation:
     def single_line_description(self) -> str:
         raise NotImplementedError()
 
-    def main_description_rest(self) -> list:
-        """
-        :rtype [`ParagraphItem`]
-        """
+    def main_description_rest(self) -> List[ParagraphItem]:
         return []
 
-    def invokation_variants(self) -> list:
-        """
-        :rtype [`InvokationVariant`]
-        """
+    def invokation_variants(self) -> Sequence[InvokationVariant]:
         return []
 
-    def syntax_element_descriptions(self) -> list:
-        """
-        :rtype [`SyntaxElementDescription`]
-        """
+    def syntax_element_descriptions(self) -> Sequence[SyntaxElementDescription]:
         return []
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         """
-        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
+        :returns: A new list of see-also-targets, which may contain duplicate elements.
         """
         return []
