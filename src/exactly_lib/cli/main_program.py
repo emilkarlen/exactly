@@ -2,7 +2,6 @@ import os
 import types
 from typing import List, Dict
 
-import exactly_lib.cli.program_modes.help.error
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
@@ -179,19 +178,21 @@ class MainProgram:
         from exactly_lib.cli.program_modes.help import argument_parsing
         from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
         from exactly_lib.help.the_application_help import new_application_help
+        from exactly_lib.cli.program_modes.help.error import HelpError
+
         builtin_symbol_documentation_list = [
             builtin_symbol.documentation
             for builtin_symbol in self._test_case_def_for_m_p.builtin_symbols
         ]
+        application_help = new_application_help(
+            self._test_case_def_for_m_p.test_case_parsing_setup.instruction_setup,
+            self._test_suite_definition.configuration_section_instructions,
+            builtin_symbol_documentation_list,
+        )
         try:
-            application_help = new_application_help(
-                self._test_case_def_for_m_p.test_case_parsing_setup.instruction_setup,
-                self._test_suite_definition.configuration_section_instructions,
-                builtin_symbol_documentation_list,
-            )
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
-        except exactly_lib.cli.program_modes.help.error.HelpError as ex:
+        except HelpError as ex:
             self._output.err.write(ex.msg + os.linesep)
             return exit_codes.EXIT_INVALID_USAGE
         handle_help_request(self._output, application_help, help_request)

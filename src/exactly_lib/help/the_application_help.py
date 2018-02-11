@@ -1,5 +1,9 @@
+from typing import Sequence, Dict
+
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
+from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.help.entities.builtin.entity_configuration import builtin_symbols_entity_configuration
 from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.configuration_parameters.entity_configuration import CONF_PARAM_ENTITY_CONFIGURATION
@@ -25,13 +29,9 @@ from exactly_lib.test_case import phase_identifier
 
 
 def new_application_help(instructions_setup: InstructionsSetup,
-                         suite_configuration_section_instructions: dict,
-                         builtin_symbol_documentation_list: list = ()) -> ApplicationHelp:
-    """
-    :param builtin_symbol_documentation_list: [`BuiltinSymbolDocumentation`]
-    :param instructions_setup: Test case instruction set
-    :param suite_configuration_section_instructions: instruction-name -> `SingleInstructionSetup`
-    """
+                         suite_configuration_section_instructions: Dict[str, SingleInstructionSetup],
+                         builtin_symbol_documentation_list: Sequence[BuiltinSymbolDocumentation] = ()
+                         ) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp(phase_helps_for(instructions_setup)),
                            test_suite_help(suite_configuration_section_instructions),
