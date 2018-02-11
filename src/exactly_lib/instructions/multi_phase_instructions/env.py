@@ -4,6 +4,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.help_texts.entity.syntax_elements import SYMBOL_REFERENCE_SYNTAX_ELEMENT
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \
@@ -42,6 +43,11 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             InvokationVariant(
                 _format('unset {NAME}'),
                 paras(_format('Removes the environment variable {NAME}.'))),
+        ]
+
+    def see_also_targets(self) -> list:
+        return [
+            SYMBOL_REFERENCE_SYNTAX_ELEMENT.cross_reference_target
         ]
 
 
