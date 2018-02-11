@@ -1,32 +1,30 @@
-import types
+from typing import Sequence, Dict, Callable, List
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help_texts import doc_format
 from exactly_lib.help_texts import formatting
+from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.paragraph import Paragraph
 
 
 class SectionInstructionSet(tuple):
-    def __new__(cls, instruction_descriptions: iter):
-        """
-        :type instruction_descriptions: [`InstructionDocumentation`]
-        """
+    def __new__(cls, instruction_descriptions: Sequence[InstructionDocumentation]):
         description_list = list(instruction_descriptions)
         description_list.sort(key=InstructionDocumentation.instruction_name)
         return tuple.__new__(cls, (description_list,))
 
     @property
-    def instruction_documentations(self) -> list:
-        """
-        :type: [`InstructionDocumentation`]
-        """
+    def instruction_documentations(self) -> Sequence[InstructionDocumentation]:
         return self[0]
 
     @property
-    def name_2_description(self) -> dict:
-        return dict(map(lambda description: (description.instruction_name(), description),
-                        self.instruction_documentations))
+    def name_2_description(self) -> Dict[str, InstructionDocumentation]:
+        return {
+            description.instruction_name(): description
+            for description in self.instruction_documentations
+        }
 
 
 class InstructionGroup(tuple):
@@ -35,8 +33,8 @@ class InstructionGroup(tuple):
     def __new__(cls,
                 header: str,
                 identifier: str,
-                description_paragraphs: list,
-                instruction_documentations: list):
+                description_paragraphs: Sequence[Paragraph],
+                instruction_documentations: Sequence[InstructionDocumentation]):
         return tuple.__new__(cls, (header,
                                    identifier,
                                    description_paragraphs,
@@ -51,11 +49,11 @@ class InstructionGroup(tuple):
         return self[1]
 
     @property
-    def description_paragraphs(self) -> list:
+    def description_paragraphs(self) -> Sequence[Paragraph]:
         return self[2]
 
     @property
-    def instruction_documentations(self) -> list:
+    def instruction_documentations(self) -> Sequence[InstructionDocumentation]:
         return self[3]
 
 
@@ -93,19 +91,18 @@ class SectionDocumentation:
         raise NotImplementedError('abstract method')
 
     @property
-    def instruction_group_by(self) -> types.FunctionType:
+    def instruction_group_by(self) -> Callable[[List[InstructionDocumentation]], List[InstructionGroup]]:
         """
         A function group instructions for presentation.
 
         Should return a list with at least one element = one group.
 
-        :rtype: [InstructionDocumentation] -> [InstructionGroup]
         :return:  None if the instructions have no grouping.
         """
         return None
 
     @property
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         """
         :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
         """
