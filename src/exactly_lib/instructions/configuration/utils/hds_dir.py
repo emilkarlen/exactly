@@ -1,5 +1,6 @@
 import pathlib
 
+from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
@@ -8,10 +9,8 @@ from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants
-from exactly_lib.instructions.utils.documentation import documentation_text
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.textformat.parse import normalize_and_parse
 
 
 class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextParserBase):
@@ -33,8 +32,9 @@ class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextP
     def syntax_element_descriptions(self) -> list:
         return [
             SyntaxElementDescription(_DIR_ARG.name,
-                                     self._paragraphs(_PATH_DESCRIPTION) +
-                                     documentation_text.paths_uses_posix_syntax()),
+                                     abs_or_rel_path_of_existing('directory',
+                                                                 _DIR_ARG.name,
+                                                                 'current ' + formatting.conf_param_(self.conf_param))),
         ]
 
     def see_also_targets(self) -> list:
@@ -45,21 +45,6 @@ class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextP
 
 
 _DIR_ARG = instruction_arguments.DIR_WITHOUT_RELATIVITY_OPTIONS_ARGUMENT
-
-
-def path_description_paragraphs(conf_param: ConfigurationParameterInfo) -> list:
-    return normalize_and_parse(_PATH_DESCRIPTION.format(
-        PATH=_DIR_ARG.name,
-        conf_param=formatting.conf_param_(conf_param),
-    ))
-
-
-_PATH_DESCRIPTION = """\
-The absolute or relative path of an existing directory.
-
-
-If {DIR} is relative, then it's relative to the current {conf_param}.
-"""
 
 
 class InstructionBase(ConfigurationPhaseInstruction):
