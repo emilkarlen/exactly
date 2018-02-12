@@ -55,7 +55,7 @@ def path_description_paragraphs(conf_param: ConfigurationParameterInfo) -> list:
 
 
 _PATH_DESCRIPTION = """\
-The absolute or relative name of an existing directory.
+The absolute or relative path of an existing directory.
 
 
 If {DIR} is relative, then it's relative to the current {conf_param}.
