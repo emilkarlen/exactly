@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase_instructions.new_file import contents_from_file, no_contents, \
     contents_from_process, contents_from_string
-from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 
 
 def suite() -> unittest.TestSuite:

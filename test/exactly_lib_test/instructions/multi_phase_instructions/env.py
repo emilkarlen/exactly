@@ -8,10 +8,10 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.util.parse.token import HARD_QUOTE_CHAR, SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \

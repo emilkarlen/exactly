@@ -7,8 +7,8 @@ from exactly_lib.test_suite.instruction_set.sections.configuration import actor 
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.configuration.actor.test_resources import shell_command_syntax_for
-from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source

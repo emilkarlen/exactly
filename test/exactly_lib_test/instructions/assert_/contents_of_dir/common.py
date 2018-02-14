@@ -4,12 +4,12 @@ from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.logic_types import ExpectationType
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources import tr
 from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instruction_arguments import \
     AssertionVariantArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
-from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import equivalent_source_variants
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 

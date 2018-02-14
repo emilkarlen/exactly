@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_file as sut
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.contents_of_file import parse
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file import \
     any_line_matches as any_line_matches_with_relative_actual, \
@@ -8,7 +9,6 @@ from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_fo
     equals as equals_with_relative_actual
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.misc import TestConfigurationForFile
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import common_tests
-from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_instruction_documentation
 
 
 def suite() -> unittest.TestSuite:

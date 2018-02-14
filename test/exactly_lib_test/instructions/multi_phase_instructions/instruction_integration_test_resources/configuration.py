@@ -6,8 +6,8 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
-from exactly_lib_test.instructions.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
