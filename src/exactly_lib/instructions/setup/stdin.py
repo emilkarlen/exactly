@@ -66,16 +66,17 @@ class Parser(InstructionParser):
     def parse(self, source: ParseSource) -> SetupPhaseInstruction:
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser, TokenParser), 'Must have a TokenParser'  # Type info for IDE
-            token_parser.require_is_not_at_eol('Missing file comparison argument')
 
             string_or_file_ref = parse_here_doc_or_file_ref.parse_from_token_parser(token_parser,
                                                                                     RELATIVITY_OPTIONS_CONFIGURATION)
             if string_or_file_ref.source_type is not SourceType.HERE_DOC:
                 token_parser.report_superfluous_arguments_if_not_at_eol()
                 token_parser.consume_current_line_as_plain_string()
-            if not string_or_file_ref.is_file_ref:
+
+            if string_or_file_ref.is_file_ref:
+                return _InstructionForFileRef(string_or_file_ref.file_reference_resolver)
+            else:
                 return _InstructionForStringResolver(string_or_file_ref.string_resolver)
-            return _InstructionForFileRef(string_or_file_ref.file_reference_resolver)
 
 
 class _InstructionForStringResolver(SetupPhaseInstruction):
