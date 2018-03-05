@@ -14,10 +14,16 @@ Remove them using:
 > python3 make-executables.py clean
 
 
-All examples can be run using:
+Examples can be run using:
 
-> exactly suite examples.suite
+> exactly suite exactly.suite
+
+or
+
+> exactly suite intro/exactly.suite
+> exactly suite readme-file-examples/exactly.suite
+
 
 or, if an executable has not been installed:
 
-> python3 ../src/default-main-program-runner.py suite examples.suite
+> python3 ../src/default-main-program-runner.py suite exactly.suite

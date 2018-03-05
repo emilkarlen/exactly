@@ -3,6 +3,7 @@ import os
 import pathlib
 import stat
 import sys
+from typing import List, Tuple
 
 
 def _msg(msg: str):
@@ -27,16 +28,27 @@ class SourceAndTarget(tuple):
 class SourceAndTargetSetup(tuple):
     def __new__(cls,
                 base_dir: pathlib.Path,
+                installation_sub_dir: str,
                 source_and_target: SourceAndTarget):
-        return tuple.__new__(cls, (base_dir, source_and_target))
+        return tuple.__new__(cls, (base_dir,
+                                   pathlib.Path(installation_sub_dir),
+                                   source_and_target))
 
     @property
     def base_dir(self) -> pathlib.Path:
         return self[0]
 
     @property
-    def source_and_target(self) -> SourceAndTarget:
+    def installation_sub_dir(self) -> pathlib.Path:
         return self[1]
+
+    @property
+    def installation_dir(self) -> pathlib.Path:
+        return self.base_dir / self.installation_sub_dir
+
+    @property
+    def source_and_target(self) -> SourceAndTarget:
+        return self[2]
 
     @property
     def source(self) -> pathlib.Path:
@@ -44,7 +56,7 @@ class SourceAndTargetSetup(tuple):
 
     @property
     def target(self) -> pathlib.Path:
-        return self.base_dir / self.source_and_target.target
+        return self.installation_dir / self.source_and_target.target
 
     @property
     def source_plain(self) -> pathlib.Path:
@@ -52,7 +64,7 @@ class SourceAndTargetSetup(tuple):
 
     @property
     def target_plain(self) -> pathlib.Path:
-        return self.source_and_target.target
+        return self.installation_sub_dir / self.source_and_target.target
 
 
 class UnixMake:
@@ -68,10 +80,18 @@ class UnixMake:
             return
         self._generate(setup)
 
-    def make_all(self, base_dir: pathlib.Path,
-                 setups: iter):
+    def make_sub_dir(self,
+                     base_dir: pathlib.Path,
+                     installation_sub_dir: str,
+                     setups: List[SourceAndTarget]):
         for setup in setups:
-            self.make(SourceAndTargetSetup(base_dir, setup))
+            self.make(SourceAndTargetSetup(base_dir, installation_sub_dir, setup))
+
+    def make_all(self,
+                 base_dir: pathlib.Path,
+                 sub_dir_configs: List[Tuple[str, List[SourceAndTarget]]]):
+        for sub_dir_config in sub_dir_configs:
+            self.make_sub_dir(base_dir, sub_dir_config[0], sub_dir_config[1])
 
     def clean(self,
               setup: SourceAndTargetSetup):
@@ -79,9 +99,18 @@ class UnixMake:
             _msg('Removing: ' + str(setup.target_plain))
             setup.target.unlink()
 
-    def clean_all(self, base_dir: pathlib.Path, setups: iter):
+    def clean_sub_dir(self,
+                      base_dir: pathlib.Path,
+                      installation_sub_dir: str,
+                      setups: List[SourceAndTarget]):
         for setup in setups:
-            self.clean(SourceAndTargetSetup(base_dir, setup))
+            self.clean(SourceAndTargetSetup(base_dir, installation_sub_dir, setup))
+
+    def clean_all(self,
+                  base_dir: pathlib.Path,
+                  sub_dir_configs: List[Tuple[str, List[SourceAndTarget]]]):
+        for sub_dir_config in sub_dir_configs:
+            self.clean_sub_dir(base_dir, sub_dir_config[0], sub_dir_config[1])
 
     def _is_fresh(self, setup: SourceAndTargetSetup):
         source_file = self._source_file(setup)
@@ -126,6 +155,8 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
     return script_file_path.resolve().parent
 
 
+intro_sub_dir = 'intro'
+
 src_base_dir = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
 sandbox_dir = pathlib.Path('sandbox-directories')
@@ -137,9 +168,10 @@ external_programs_dir = pathlib.Path('external-programs')
 setup_dir = pathlib.Path('setup')
 file_transformations_dir = pathlib.Path('file-transformations')
 
-readme_examples_root_dir = pathlib.Path('readme-file-examples')
-readme_contacts_dir = readme_examples_root_dir / 'contacts'
-readme_classify_dir = readme_examples_root_dir / 'classify'
+readme_examples_root_dir = 'readme-file-examples'
+
+readme_contacts_dir = pathlib.Path('contacts')
+readme_classify_dir = pathlib.Path('classify')
 
 
 def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
@@ -147,7 +179,7 @@ def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
                            target_base / file_name)
 
 
-def sts(target_base: pathlib.Path, file_names: list) -> list:
+def sts(target_base: pathlib.Path, file_names: List[str]) -> List[SourceAndTarget]:
     return [st(target_base, file_name) for file_name in file_names]
 
 
@@ -160,16 +192,16 @@ def do_nothing_list(target_base: pathlib.Path, target_file_names: list) -> list:
     return [do_nothing(target_base / file_name) for file_name in target_file_names]
 
 
-readme_files = [
+readme_files = itertools.chain.from_iterable([
     sts(readme_contacts_dir,
         ['my-contacts-program',
          ]),
     sts(readme_classify_dir,
         ['classify-files-by-moving-to-appropriate-dir',
          ]),
-]
+])
 
-files = itertools.chain.from_iterable(
+intro_files = itertools.chain.from_iterable(
     [
         sts(first_step_dir,
             ['hello-world',
@@ -215,7 +247,13 @@ files = itertools.chain.from_iterable(
              'print-environment-variables',
              'list-files-under-current-directory',
              ]),
-    ] + readme_files)
+    ])
+
+sub_dir_configs = [
+    (intro_sub_dir, intro_files),
+    (readme_examples_root_dir, readme_files),
+    # (intro_sub_dir, readme_files),
+]
 
 if __name__ == '__main__':
     base_dir = _resolve_root(sys.argv[0])
@@ -228,9 +266,9 @@ if __name__ == '__main__':
     cmd = sys.argv[1]
     maker = UnixMake('.py', sys.executable)
     if cmd == 'all':
-        maker.make_all(base_dir, files)
+        maker.make_all(base_dir, sub_dir_configs)
     elif cmd == 'clean':
-        maker.clean_all(base_dir, files)
+        maker.clean_all(base_dir, sub_dir_configs)
     else:
         _msg('Not a command: ' + cmd)
-    sys.exit(1)
+        sys.exit(1)
