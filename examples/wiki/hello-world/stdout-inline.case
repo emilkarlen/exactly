@@ -1,0 +1,11 @@
+[act]
+
+hello-world
+
+[assert]
+
+stdout equals <<EOF
+Hello, World!
+EOF
+
+exitcode == 0

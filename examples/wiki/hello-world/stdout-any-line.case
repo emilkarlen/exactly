@@ -1,0 +1,9 @@
+[act]
+
+hello-world
+
+[assert]
+
+stdout any line : matches regex 'Hello'
+
+exitcode == 0

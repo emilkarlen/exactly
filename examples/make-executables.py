@@ -156,6 +156,9 @@ def _resolve_root(script_file_path_name: str) -> pathlib.Path:
 
 
 intro_sub_dir = 'intro'
+wiki_sub_dir = 'wiki'
+
+wiki_hello_world_dir = pathlib.Path('hello-world')
 
 src_base_dir = pathlib.Path('executables-src')
 first_step_dir = pathlib.Path('first-step')
@@ -249,10 +252,18 @@ intro_files = itertools.chain.from_iterable(
              ]),
     ])
 
+wiki_files = itertools.chain.from_iterable(
+    [
+        sts(wiki_hello_world_dir,
+            ['hello-world',
+             ]),
+
+    ])
+
 sub_dir_configs = [
     (intro_sub_dir, intro_files),
     (readme_examples_root_dir, readme_files),
-    # (intro_sub_dir, readme_files),
+    (wiki_sub_dir, wiki_files),
 ]
 
 if __name__ == '__main__':
