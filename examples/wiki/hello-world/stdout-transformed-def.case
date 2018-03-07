@@ -1,0 +1,11 @@
+[setup]
+
+def lines-transformer MY_TRANSFORMATION = TO_UPPER_CASE | replace '^HELLO, ' ''
+
+[act]
+
+hello-world
+
+[assert]
+
+stdout  --transformed-by MY_TRANSFORMATION  every line : matches regex "^WORLD!$"

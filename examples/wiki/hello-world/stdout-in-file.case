@@ -1,0 +1,9 @@
+[act]
+
+hello-world
+
+[assert]
+
+stdout equals --file hello-world-output.txt
+
+exitcode == 0
