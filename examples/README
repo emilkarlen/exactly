@@ -22,6 +22,7 @@ or
 
 > exactly suite intro/exactly.suite
 > exactly suite readme-file-examples/exactly.suite
+> exactly suite wiki/exactly.suite
 
 
 or, if an executable has not been installed:
