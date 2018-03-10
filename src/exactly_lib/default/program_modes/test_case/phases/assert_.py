@@ -1,9 +1,9 @@
 from exactly_lib.common.instruction_setup import instruction_set_from_name_and_setup_constructor_list
 from exactly_lib.help_texts.test_case.instructions import instruction_names
-from exactly_lib.instructions.assert_ import change_dir, \
+from exactly_lib.instructions.assert_ import contents_of_dir
+from exactly_lib.instructions.assert_ import define_symbol, change_dir, \
     contents_of_file, env, run, exitcode, new_file, new_dir, \
     shell, existence_of_file, stdout, stderr
-from exactly_lib.instructions.assert_ import contents_of_dir
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
@@ -13,6 +13,7 @@ INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
         ('contents', contents_of_file.setup),
         ('exists', existence_of_file.setup),
         ('dir-contents', contents_of_dir.setup),
+        (instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME, define_symbol.setup),
         (instruction_names.CHANGE_DIR_INSTRUCTION_NAME, change_dir.setup),
         (instruction_names.NEW_FILE_INSTRUCTION_NAME, new_file.setup),
         (instruction_names.NEW_DIR_INSTRUCTION_NAME, new_dir.setup),

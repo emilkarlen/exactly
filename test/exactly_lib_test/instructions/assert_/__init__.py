@@ -11,6 +11,7 @@ from exactly_lib_test.instructions.assert_ import \
     shell, \
     existence_of_file, \
     env, \
+    define_symbol, \
     utils
 from exactly_lib_test.instructions.assert_ import stdout, stderr
 from exactly_lib_test.instructions.assert_ import test_resources
@@ -20,6 +21,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         test_resources.suite(),
         utils.suite(),
+        define_symbol.suite(),
         exitcode.suite(),
         contents_of_file.suite(),
         contents_of_dir.suite(),
