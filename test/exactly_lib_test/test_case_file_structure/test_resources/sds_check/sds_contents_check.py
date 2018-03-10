@@ -1,6 +1,6 @@
 import pathlib
-import types
 import unittest
+from typing import Callable
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
@@ -54,7 +54,7 @@ def cwd_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.
                               DirContainsExactly(expected_contents))
 
 
-def sub_dir_of_sds_contains_exactly(sds__2__root_dir_path: types.FunctionType,
+def sub_dir_of_sds_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDirectoryStructure], pathlib.Path],
                                     expected_contents: file_structure.DirContents,
                                     description: str = 'custom sub dir of sds') -> asrt.ValueAssertion:
     return asrt.sub_component(description,
@@ -64,7 +64,7 @@ def sub_dir_of_sds_contains_exactly(sds__2__root_dir_path: types.FunctionType,
 
 class SubDirOfSdsContainsExactly(asrt.ValueAssertion):
     def __init__(self,
-                 sds__2__root_dir_path: types.FunctionType,
+                 sds__2__root_dir_path: Callable[[SandboxDirectoryStructure], pathlib.Path],
                  expected_contents: file_structure.DirContents,
                  description: str = 'custom sub dir of sds'):
         self._description = description
@@ -83,7 +83,7 @@ class SubDirOfSdsContainsExactly(asrt.ValueAssertion):
 
 class NonHomeDirContainsExactly(asrt.ValueAssertion):
     def __init__(self,
-                 sds__2__root_dir_path: types.FunctionType,
+                 sds__2__root_dir_path: Callable[[SandboxDirectoryStructure], pathlib.Path],
                  expected_contents: file_structure.DirContents,
                  description: str = 'custom non-home directory'):
         self._description = description
@@ -100,6 +100,6 @@ class NonHomeDirContainsExactly(asrt.ValueAssertion):
         assertion.apply(put, sds, message_builder)
 
 
-def non_home_dir_contains_exactly(sds__2__root_dir_path: types.FunctionType,
+def non_home_dir_contains_exactly(sds__2__root_dir_path: Callable[[SandboxDirectoryStructure], pathlib.Path],
                                   expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
     return NonHomeDirContainsExactly(sds__2__root_dir_path, expected_contents)

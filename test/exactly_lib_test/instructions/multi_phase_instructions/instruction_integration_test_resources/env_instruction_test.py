@@ -9,6 +9,15 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
 
+def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
+    return suite_for_cases(conf,
+                           [
+                               TestSet,
+                               TestUnsetExistingVariable,
+                               TestUnsetNonExistingVariable,
+                           ])
+
+
 class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
     def __init__(self, conf: ConfigurationBase):
         super().__init__(conf)
@@ -55,12 +64,3 @@ class TestUnsetNonExistingVariable(TestCaseBase):
                 self.conf.expect_success())
             self.assertEqual(environ,
                              {'a': 'A'})
-
-
-def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    return suite_for_cases(conf,
-                           [
-                               TestSet,
-                               TestUnsetExistingVariable,
-                               TestUnsetNonExistingVariable,
-                           ])

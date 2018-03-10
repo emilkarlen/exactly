@@ -25,6 +25,19 @@ class Configuration(ConfigurationBase):
         raise NotImplementedError()
 
 
+def suite_for(conf: Configuration) -> unittest.TestSuite:
+    test_cases = [
+        TestCreationOfDirectory,
+        TestArgumentExistsAsNonDirectory,
+    ]
+    suites = []
+    for test_case in test_cases:
+        for rel_opt in new_dir.RELATIVITY_OPTIONS:
+            suites.append(test_case(conf, rel_opt))
+    suites.append(suite_for_documentation_instance(conf.documentation()))
+    return unittest.TestSuite(suites)
+
+
 class TestCaseBase(unittest.TestCase):
     def __init__(self,
                  conf: Configuration,
@@ -92,16 +105,3 @@ class TestArgumentExistsAsNonDirectory(TestCaseBase):
                     symbol_usages=self.relativity_option.symbols.usages_expectation(),
                 )
             )
-
-
-def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    test_cases = [
-        TestCreationOfDirectory,
-        TestArgumentExistsAsNonDirectory,
-    ]
-    suites = []
-    for test_case in test_cases:
-        for rel_opt in new_dir.RELATIVITY_OPTIONS:
-            suites.append(test_case(conf, rel_opt))
-    suites.append(suite_for_documentation_instance(conf.documentation()))
-    return unittest.TestSuite(suites)

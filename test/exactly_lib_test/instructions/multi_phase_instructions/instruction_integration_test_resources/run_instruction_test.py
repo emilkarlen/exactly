@@ -22,6 +22,20 @@ class Configuration(ConfigurationBase):
         raise NotImplementedError()
 
 
+def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
+    return suite_for_cases(conf,
+                           [
+                               TestSuccessfulExecution,
+                               TestFailingExecution,
+                               TestFailingValidationOfAbsolutePath,
+                               TestFailingValidationOfRelHomePath,
+                               TestFailingValidationOfRelTmpPath,
+                               TestSuccessfulValidation,
+                               TestFailingValidationOfRelSymbol,
+                               TestSuccessAndSymbolUsages,
+                           ])
+
+
 class TestCaseBase(unittest.TestCase):
     def __init__(self, conf: Configuration):
         super().__init__()
@@ -132,17 +146,3 @@ class TestSuccessfulValidation(TestCaseBase):
                 DirContents([empty_file('existing-file.py')]))),
             self.conf.expect_success(),
         )
-
-
-def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    return suite_for_cases(conf,
-                           [
-                               TestSuccessfulExecution,
-                               TestFailingExecution,
-                               TestFailingValidationOfAbsolutePath,
-                               TestFailingValidationOfRelHomePath,
-                               TestFailingValidationOfRelTmpPath,
-                               TestSuccessfulValidation,
-                               TestFailingValidationOfRelSymbol,
-                               TestSuccessAndSymbolUsages,
-                           ])
