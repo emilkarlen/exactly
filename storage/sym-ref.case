@@ -1,0 +1,7 @@
+[setup]
+
+def string T = @[S]@
+
+[before-assert]
+
+def string S = s

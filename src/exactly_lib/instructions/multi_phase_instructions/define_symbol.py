@@ -132,9 +132,9 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         self.custom_main(environment.symbols)
         return None
 
-    def custom_main(self, named_elems: SymbolTable):
-        named_elems.put(self.symbol.name,
-                        self.symbol.resolver_container)
+    def custom_main(self, symbols: SymbolTable):
+        symbols.put(self.symbol.name,
+                    self.symbol.resolver_container)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
