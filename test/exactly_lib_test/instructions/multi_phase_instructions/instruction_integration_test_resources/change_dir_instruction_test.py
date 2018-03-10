@@ -23,6 +23,15 @@ class Configuration(ConfigurationBase):
         raise NotImplementedError()
 
 
+def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
+    return suite_for_cases(conf,
+                           [
+                               TestExistingDirectoryWithMultiplePathComponents,
+                               TestArgumentExistsAsNonDirectory,
+                               TestExistingDirectorySpecifiedRelativeSymbol,
+                           ])
+
+
 class TestCaseBase(unittest.TestCase):
     def __init__(self, conf: Configuration):
         super().__init__()
@@ -79,12 +88,3 @@ class TestExistingDirectorySpecifiedRelativeSymbol(TestCaseBase):
                 symbol_usages=relativity_option.symbols.usages_expectation()
             )
         )
-
-
-def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
-    return suite_for_cases(conf,
-                           [
-                               TestExistingDirectoryWithMultiplePathComponents,
-                               TestArgumentExistsAsNonDirectory,
-                               TestExistingDirectorySpecifiedRelativeSymbol,
-                           ])
