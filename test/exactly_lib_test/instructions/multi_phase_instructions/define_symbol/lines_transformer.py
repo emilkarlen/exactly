@@ -8,9 +8,8 @@ from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransfo
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *
-from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
-    instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_ne
@@ -35,17 +34,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class TestCaseBase(unittest.TestCase):
-    def _check(self,
-               source: ParseSource,
-               arrangement: ArrangementWithSds,
-               expectation: Expectation,
-               ):
-        parser = sut.EmbryoParser()
-        embryo_check.check(self, parser, source, arrangement, expectation)
-
-
-class TestSuccessfulScenarios(TestCaseBase):
+class TestSuccessfulScenarios(TestCaseBaseForParser):
     def test_successful_parse_WHEN_rhs_is_empty_THEN_result_SHOULD_be_identity_transformer(self):
         defined_name = 'defined_name'
 
@@ -140,7 +129,7 @@ class TestSuccessfulScenarios(TestCaseBase):
         self._check(source, ArrangementWithSds(), expectation)
 
 
-class TestUnsuccessfulScenarios(TestCaseBase):
+class TestUnsuccessfulScenarios(TestCaseBaseForParser):
     def test_failing_parse(self):
         cases = [
             (

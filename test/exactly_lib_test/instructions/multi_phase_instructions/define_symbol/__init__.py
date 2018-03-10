@@ -3,12 +3,16 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import define_symbol as sut
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol import \
-    line_matcher, file_matcher, lines_transformer
+    common_failing_cases, string_type, path_type, list_type, line_matcher, file_matcher, lines_transformer
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
+        common_failing_cases.suite(),
+        string_type.suite(),
+        path_type.suite(),
+        list_type.suite(),
         line_matcher.suite(),
         file_matcher.suite(),
         lines_transformer.suite(),
