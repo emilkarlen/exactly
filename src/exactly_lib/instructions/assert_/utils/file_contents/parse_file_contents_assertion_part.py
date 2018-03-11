@@ -21,8 +21,11 @@ def parse(token_parser: TokenParser) -> AssertionPart:
     """
     :return: A :class:`AssertionPart` that takes an ResolvedComparisonActualFile as (last) argument.
     """
+
     actual_lines_transformer = parse_lines_transformer.parse_optional_transformer_resolver(token_parser)
+    token_parser.consume_space_until_mandatory_token(COMPARISON_OPERATOR)
     expectation_type = token_parser.consume_optional_negation_operator()
+    token_parser.consume_space_until_mandatory_token(COMPARISON_OPERATOR)
     parser_of_contents_assertion_part = ParseFileContentsAssertionPart(expectation_type)
     file_contents_assertion_part = parser_of_contents_assertion_part.parse(token_parser)
     return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),

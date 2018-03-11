@@ -421,6 +421,11 @@ class TokenParser:
     def _lookahead_token_has_invalid_syntax(self) -> bool:
         return self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR
 
+    def consume_space_until_mandatory_token(self, syntax_element: str):
+        while self.has_current_line and self.is_at_eol:
+            self.consume_current_line_as_plain_string()
+        self.require_is_not_at_eol('Missing ' + syntax_element)
+
 
 def new_token_parser(source: str,
                      error_message_format_map: dict = None) -> TokenParser:

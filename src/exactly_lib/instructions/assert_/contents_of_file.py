@@ -75,7 +75,6 @@ class Parser(InstructionParser):
                 'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
 
             comparison_target = parse_actual_file_argument_from_token_parser(token_parser)
-            token_parser.require_is_not_at_eol('Missing file comparison argument')
             return parse_instruction.parse_instruction(comparison_target,
                                                        token_parser)
 
