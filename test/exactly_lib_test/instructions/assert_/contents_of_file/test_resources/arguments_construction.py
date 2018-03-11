@@ -6,6 +6,7 @@ from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
+from exactly_lib_test.section_document.test_resources.parse_source import ParseSourceBuilder
 
 
 class FileContentsArgumentsConstructor:
@@ -126,3 +127,5 @@ _FORMAT_MAP = {
     'rel_tmp_option': file_ref_texts.REL_TMP_OPTION,
     'rel_symbol_option': file_ref_texts.REL_symbol_OPTION,
 }
+
+SB = ParseSourceBuilder(_FORMAT_MAP)
