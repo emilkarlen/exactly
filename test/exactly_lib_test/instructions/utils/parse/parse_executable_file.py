@@ -7,7 +7,7 @@ from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.instructions.utils.parse import parse_executable_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     is_any_data_type
@@ -29,9 +29,7 @@ from exactly_lib_test.instructions.test_resources import executable_file_test_ut
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
     ExpectationOnExeFile
-from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
-    assert_token_stream, \
-    assert_token_string_is
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
@@ -109,11 +107,11 @@ class Case:
                  name: str,
                  source: str,
                  expectation: ExpectationOnExeFile,
-                 expected_token_stream_after_parse: asrt.ValueAssertion):
+                 source_after_parse: asrt.ValueAssertion[ParseSource]):
         self.name = name
         self.source = source
         self.expectation = expectation
-        self.expected_token_stream_after_parse = expected_token_stream_after_parse
+        self.source_after_parse = source_after_parse
 
 
 class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
@@ -128,7 +126,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('without_option',
                  source='file arg2',
@@ -139,7 +137,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=has_head_with_string('arg2'),
+                 source_after_parse=has_remaining_part_of_first_line('arg2'),
                  ),
             Case('relative_file_name_with_space',
                  source='"the file"',
@@ -150,7 +148,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('relative_file_name_with_space_and_arguments',
                  source='"the file" "an argument"',
@@ -161,7 +159,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=has_head_with_string('an argument'),
+                 source_after_parse=has_remaining_part_of_first_line('"an argument"'),
                  ),
             Case('option_without_tail',
                  source='%s THE_FILE' % file_ref_texts.REL_HOME_CASE_OPTION,
@@ -172,7 +170,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('option_with_tail',
                  source='%s FILE tail' % file_ref_texts.REL_CWD_OPTION,
@@ -183,7 +181,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=has_head_with_string('tail'),
+                 source_after_parse=has_remaining_part_of_first_line('tail'),
                  ),
         ]
         for case in cases:
@@ -203,7 +201,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('test_plain_path_with_space',
                  source='( "A FILE" )',
@@ -214,7 +212,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('test_plain_path_with_tail',
                  source='( FILE ) tail arguments',
@@ -225,7 +223,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=has_remaining_source('tail arguments'),
+                 source_after_parse=has_remaining_part_of_first_line('tail arguments'),
                  ),
             Case('test_path_with_option',
                  source='( %s FILE )' % file_ref_texts.REL_HOME_CASE_OPTION,
@@ -236,7 +234,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('test_path_with_option_and_arguments',
                  source='( %s FILE arg1 arg2 )' % file_ref_texts.REL_HOME_CASE_OPTION,
@@ -247,7 +245,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('test_path_without_option_with_arguments',
                  source='( FILE arg1 arg2 )',
@@ -258,7 +256,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('test_path_without_option_with_arguments_with_tail',
                  source='( FILE arg1 arg2 arg3 ) tail1 tail2',
@@ -269,7 +267,7 @@ class TestParseValidSyntaxWithArguments(unittest.TestCase):
                      expected_symbol_references_of_file=[],
                      expected_symbol_references_of_argument=[],
                  ),
-                 expected_token_stream_after_parse=has_remaining_source('tail1 tail2'),
+                 source_after_parse=has_remaining_part_of_first_line('tail1 tail2'),
                  ),
         ]
         for case in cases:
@@ -297,8 +295,8 @@ class TestParseWithSymbols(unittest.TestCase):
             ))
         reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
                                                                             ReferenceRestrictionsOnDirectAndIndirect(
-                                                                                      direct=StringRestriction(),
-                                                                                      indirect=StringRestriction()),
+                                                                                direct=StringRestriction(),
+                                                                                indirect=StringRestriction()),
                                                                             )
         reference_of_string_symbol_as_argument = SymbolReference(string_symbol.name,
                                                                  is_any_data_type(),
@@ -324,7 +322,7 @@ class TestParseWithSymbols(unittest.TestCase):
                      expected_symbol_references_of_argument=[],
                      symbol_for_value_checks=symbols,
                  ),
-                 expected_token_stream_after_parse=assert_token_stream(is_null=asrt.is_true),
+                 source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
             Case('symbol references in file  and argument',
                  source=' ( {file_symbol} {a_string_constant} {string_symbol} ) following arg'.format(
@@ -343,7 +341,7 @@ class TestParseWithSymbols(unittest.TestCase):
                      expected_symbol_references_of_argument=[reference_of_string_symbol_as_argument],
                      symbol_for_value_checks=symbols,
                  ),
-                 expected_token_stream_after_parse=has_remaining_source('following arg'),
+                 source_after_parse=has_remaining_part_of_first_line('following arg'),
                  ),
         ]
         for case in cases:
@@ -354,25 +352,25 @@ class TestParseWithSymbols(unittest.TestCase):
 class TestParseInvalidSyntaxWithArguments(unittest.TestCase):
     def test_just_begin_delimiter(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream('('))
+            sut.parse_from_parse_source(ParseSource('('))
 
     def test_empty_executable(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream('( )'))
+            sut.parse_from_parse_source(ParseSource('( )'))
 
     def test_missing_end_delimiter(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream('( FILE arg1 arg2'))
+            sut.parse_from_parse_source(ParseSource('( FILE arg1 arg2'))
 
 
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream(file_ref_texts.REL_HOME_CASE_OPTION))
+            sut.parse_from_parse_source(ParseSource(file_ref_texts.REL_HOME_CASE_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse(TokenStream('--invalid-option FILE'))
+            sut.parse_from_parse_source(ParseSource('--invalid-option FILE'))
 
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
@@ -420,7 +418,7 @@ class NoParenthesesAndNoFollowingArguments(ExecutableTestBase):
                     utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      remaining_argument=utils.token_stream_is_null,
+                                      source=asrt_source.is_at_end_of_line(1),
                                       validation_result=self.configuration.validation_result,
                                       argument_resolver_value=empty_list_value()))
 
@@ -434,7 +432,7 @@ class NoParenthesesAndFollowingArguments(ExecutableTestBase):
                     utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      remaining_argument=has_remaining_source('arg1 -arg2'),
+                                      source=has_remaining_part_of_first_line('arg1 -arg2'),
                                       validation_result=self.configuration.validation_result,
                                       argument_resolver_value=empty_list_value()))
 
@@ -448,7 +446,7 @@ class ParenthesesWithNoArgumentsInsideAndNoFollowingArguments(ExecutableTestBase
                     utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      remaining_argument=utils.token_stream_is_null,
+                                      source=asrt_source.is_at_end_of_line(1),
                                       validation_result=self.configuration.validation_result,
                                       argument_resolver_value=empty_list_value(),
                                       ))
@@ -463,7 +461,7 @@ class ParenthesesWithNoArgumentsInsideAndFollowingArguments(ExecutableTestBase):
                     utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      remaining_argument=has_remaining_source('arg1 -arg2'),
+                                      source=has_remaining_part_of_first_line('arg1 -arg2'),
                                       validation_result=self.configuration.validation_result,
                                       argument_resolver_value=empty_list_value()))
 
@@ -477,7 +475,7 @@ class ParenthesesWithArgumentsInsideAndNoFollowingArguments(ExecutableTestBase):
                     utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      remaining_argument=utils.token_stream_is_null,
+                                      source=asrt_source.is_at_end_of_line(1),
                                       validation_result=self.configuration.validation_result,
                                       argument_resolver_value=list_value_of_string_constants(['inside1', '--inside2'])))
 
@@ -491,7 +489,7 @@ class ParenthesesWithArgumentsInsideAndWithFollowingArguments(ExecutableTestBase
                     utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
                                       expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
                                       expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      remaining_argument=has_remaining_source('--outside1 outside2'),
+                                      source=has_remaining_part_of_first_line('--outside1 outside2'),
                                       validation_result=self.configuration.validation_result,
                                       argument_resolver_value=list_value_of_string_constants(['inside'])))
 
@@ -585,7 +583,7 @@ class TestParseAbsolutePath(unittest.TestCase):
                                                            passes_post_sds=True)
 
         self._check(arguments_str,
-                    expected_token_stream_after_parse=has_remaining_source('remaining args'),
+                    expected_source_after_parse=has_remaining_part_of_first_line('remaining args'),
                     expectation_on_exe_file=expectation_on_exe_file,
                     validator_expectation=validator_expectation)
 
@@ -604,48 +602,34 @@ class TestParseAbsolutePath(unittest.TestCase):
                                                            passes_post_sds=True)
 
         self._check(arguments_str,
-                    expected_token_stream_after_parse=has_remaining_source('remaining args'),
+                    expected_source_after_parse=has_remaining_part_of_first_line('remaining args'),
                     expectation_on_exe_file=expectation_on_exe_file,
                     validator_expectation=validator_expectation)
 
     def _check(self,
                arguments_str: str,
-               expected_token_stream_after_parse: asrt.ValueAssertion,
+               expected_source_after_parse: asrt.ValueAssertion[ParseSource],
                expectation_on_exe_file: ExpectationOnExeFile,
                validator_expectation: validator_util.Expectation):
         # ARRANGE #
-        source = TokenStream(arguments_str)
+        source = ParseSource(arguments_str)
         # ACT #
-        exe_file = sut.parse(source)
+        exe_file = sut.parse_from_parse_source(source)
         # ASSERT #
         utils.check_exe_file(self, expectation_on_exe_file, exe_file)
-        expected_token_stream_after_parse.apply_with_message(self, source, 'token_stream')
+        expected_source_after_parse.apply_with_message(self, source, 'parse source')
 
         with home_and_sds_with_act_as_curr_dir() as environment:
             validator_util.check(self, exe_file.validator, environment, validator_expectation)
 
 
-def _remaining_source(ts: TokenStream) -> str:
-    return ts.source[ts.position:]
-
-
-def has_remaining_source(expected_remaining_source: str) -> asrt.ValueAssertion:
-    return assert_token_stream(is_null=asrt.is_false,
-                               remaining_source=asrt.equals(expected_remaining_source))
-
-
-def has_head_with_string(expected_head_string: str) -> asrt.ValueAssertion:
-    return assert_token_stream(is_null=asrt.is_false,
-                               head_token=assert_token_string_is(expected_head_string))
-
-
 def _parse_and_check(put: unittest.TestCase,
                      case: Case):
-    ts = TokenStream(case.source)
-    ef = sut.parse(ts)
+    source = ParseSource(case.source)
+    ef = sut.parse_from_parse_source(source)
     utils.check_exe_file(put, case.expectation, ef)
-    case.expected_token_stream_after_parse.apply_with_message(put, ts,
-                                                              'token stream after parse')
+    case.source_after_parse.apply_with_message(put, source,
+                                               'parse source after parse')
 
 
 def file_ref_of(rel_option: RelOptionType,
@@ -656,6 +640,12 @@ def file_ref_of(rel_option: RelOptionType,
 def file_ref_of_default_relativity(path_suffix: str) -> FileRef:
     return file_refs.of_rel_option(sut.PARSE_FILE_REF_CONFIGURATION.options.default_option,
                                    PathPartAsFixedPath(path_suffix))
+
+
+def has_remaining_part_of_first_line(remaining_part: str) -> asrt.ValueAssertion[ParseSource]:
+    return asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                            remaining_part_of_current_line=asrt.equals(
+                                                remaining_part))
 
 
 if __name__ == '__main__':

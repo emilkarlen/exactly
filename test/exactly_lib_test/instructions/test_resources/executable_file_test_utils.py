@@ -3,7 +3,7 @@ import pathlib
 import unittest
 
 from exactly_lib.instructions.utils.parse import parse_executable_file as sut
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
@@ -13,6 +13,7 @@ from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbo
 from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.symbol.data.test_resources.list_assertions import matches_list_resolver
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
@@ -39,6 +40,15 @@ class RelativityConfiguration:
                             file_name: str,
                             home_and_sds: HomeAndSds) -> pathlib.Path:
         raise NotImplementedError()
+
+
+def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
+    ret_val = unittest.TestSuite()
+    ret_val.addTests([CheckExistingFile(configuration),
+                      CheckExistingFileWithArguments(configuration),
+                      CheckExistingButNonExecutableFile(configuration),
+                      CheckNonExistingFile(configuration)])
+    return ret_val
 
 
 class Arrangement:
@@ -79,13 +89,13 @@ class ExpectationOnExeFile:
 
 class Expectation:
     def __init__(self,
-                 remaining_argument: asrt.ValueAssertion,
+                 source: asrt.ValueAssertion[ParseSource],
                  validation_result: validator_util.Expectation,
                  file_resolver_value: FileRef,
                  expected_symbol_references_of_file: list,
                  argument_resolver_value: ListValue,
                  expected_symbol_references_of_argument: list):
-        self.remaining_argument = remaining_argument
+        self.source = source
         self.validation_result = validation_result
         self.expectation_on_exe_file = ExpectationOnExeFile(file_resolver_value=file_resolver_value,
                                                             expected_symbol_references_of_file=expected_symbol_references_of_file,
@@ -123,13 +133,13 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
     # ARRANGE #
-    source = TokenStream(instruction_argument_string)
+    source = ParseSource(instruction_argument_string)
     # ACT #
-    actual_exe_file = sut.parse(source)
+    actual_exe_file = sut.parse_from_parse_source(source)
     # ASSERT #
-    expectation.remaining_argument.apply_with_message(put,
-                                                      source,
-                                                      'Remaining arguments')
+    expectation.source.apply_with_message(put,
+                                          source,
+                                          'parse source')
     check_exe_file(put, expectation.expectation_on_exe_file,
                    actual_exe_file)
     with home_and_sds_with_act_as_curr_dir(
@@ -183,10 +193,10 @@ class CheckExistingFile(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        exe_file = sut.parse(arguments)
-        source_assertion = assert_token_stream(remaining_source=asrt.equals('remaining args'))
-        source_assertion.apply_with_message(self, arguments, 'source after parse')
+        source = ParseSource(arguments_str)
+        exe_file = sut.parse_from_parse_source(source)
+        source_assertion = has_remaining_part_of_first_line('remaining args')
+        source_assertion.apply_with_message(self, source, 'source after parse')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as environment:
             self._check_file_path('file.exe', exe_file, environment)
@@ -200,15 +210,15 @@ class CheckExistingFileWithArguments(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '( {} file.exe arg1 -arg2 ) remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        exe_file = sut.parse(arguments)
+        source = ParseSource(arguments_str)
+        exe_file = sut.parse_from_parse_source(source)
         expected_arguments = list_value_of_string_constants(['arg1', '-arg2'])
         arguments_assertion = matches_list_resolver(expected_arguments,
                                                     expected_symbol_references=asrt.is_empty_list)
         arguments_assertion.apply_with_message(self, exe_file.arguments,
                                                'arguments')
-        source_assertion = assert_token_stream(remaining_source=asrt.equals('remaining args'))
-        source_assertion.apply_with_message(self, arguments, 'source after parse')
+        source_assertion = has_remaining_part_of_first_line('remaining args')
+        source_assertion.apply_with_message(self, source, 'source after parse')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
         with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as environment:
             self._check_file_path('file.exe', exe_file, environment)
@@ -222,8 +232,8 @@ class CheckExistingButNonExecutableFile(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        exe_file = sut.parse(arguments)
+        source = ParseSource(arguments_str)
+        exe_file = sut.parse_from_parse_source(source)
         with self._home_and_sds_and_test_as_curr_dir(empty_file('file.exe')) as environment:
             self._assert_does_not_pass_validation(exe_file, environment)
 
@@ -235,10 +245,10 @@ class CheckNonExistingFile(CheckBase):
     def runTest(self):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
-        arguments = TokenStream(arguments_str)
-        exe_file = sut.parse(arguments)
-        source_assertion = assert_token_stream(remaining_source=asrt.equals('remaining args'))
-        source_assertion.apply_with_message(self, arguments, 'source after parse')
+        source = ParseSource(arguments_str)
+        exe_file = sut.parse_from_parse_source(source)
+        source_assertion = has_remaining_part_of_first_line('remaining args')
+        source_assertion.apply_with_message(self, source, 'source after parse')
         symbols = empty_symbol_table()
         self._check_expectance_to_exist_pre_sds(exe_file, symbols)
         with home_and_sds_with_act_as_curr_dir(symbols=symbols) as environment:
@@ -246,14 +256,7 @@ class CheckNonExistingFile(CheckBase):
             self._assert_does_not_pass_validation(exe_file, environment)
 
 
-def _remaining_source(ts: TokenStream) -> str:
-    return ts.source[ts.position:]
-
-
-def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTests([CheckExistingFile(configuration),
-                      CheckExistingFileWithArguments(configuration),
-                      CheckExistingButNonExecutableFile(configuration),
-                      CheckNonExistingFile(configuration)])
-    return ret_val
+def has_remaining_part_of_first_line(remaining_part: str) -> asrt.ValueAssertion[ParseSource]:
+    return asrt_source.source_is_not_at_end(current_line_number=asrt.equals(1),
+                                            remaining_part_of_current_line=asrt.equals(
+                                                remaining_part))
