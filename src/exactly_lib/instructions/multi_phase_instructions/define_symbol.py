@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -20,7 +22,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
-    FileMatcherResolver, LineMatcherResolver
+    FileMatcherResolver, LineMatcherResolver, SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
@@ -34,7 +36,7 @@ from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.util.line_source import line_sequence_from_line, Line
+from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -135,18 +137,33 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
     def parse(self, source: ParseSource) -> TheInstructionEmbryo:
+        first_line_number = source.current_line_number
+        instruction_name_prefix = source.current_line_text[:source.column_index]
+        remaining_source_before = source.remaining_source
+
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True,
                                consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            definition = _parse(token_parser, source.current_line)
-            return TheInstructionEmbryo(definition)
+            symbol_name, value_resolver = _parse(token_parser)
+
+        remaining_source_after = source.remaining_source
+        num_chars_consumed = len(remaining_source_before) - len(remaining_source_after)
+        parsed_str = remaining_source_before[:num_chars_consumed]
+        source_lines = LineSequence(first_line_number,
+                                    (instruction_name_prefix + parsed_str).splitlines())
+
+        sym_def = SymbolDefinition(symbol_name,
+                                   SymbolContainer(value_resolver,
+                                                   source_lines))
+
+        return TheInstructionEmbryo(sym_def)
 
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
-def _parse(parser: TokenParser, current_line: Line) -> SymbolDefinition:
+def _parse(parser: TokenParser) -> Tuple[str, SymbolValueResolver]:
     type_str = parser.consume_mandatory_unquoted_string('SYMBOL-TYPE', True)
 
     if type_str not in _TYPE_SETUPS:
@@ -168,9 +185,8 @@ def _parse(parser: TokenParser, current_line: Line) -> SymbolDefinition:
     if not parser.is_at_eol:
         msg = 'Superfluous arguments: ' + parser.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return SymbolDefinition(name_str,
-                            SymbolContainer(value_resolver,
-                                            line_sequence_from_line(current_line)))
+
+    return name_str, value_resolver
 
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT

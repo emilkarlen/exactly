@@ -2,7 +2,8 @@
 
 [setup]
 
-def string x = 'first definition'
+def lines-transformer x = select line-num == 1 |
+                          select line-num == 2
 
 # Cause of error: x has already been defined
 
