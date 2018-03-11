@@ -3,7 +3,8 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import REPLACE_TRANSFORMER_NAME
+from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import REPLACE_TRANSFORMER_NAME, \
+    SEQUENCE_OPERATOR_NAME
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
     SequenceLinesTransformer
@@ -12,6 +13,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_c
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_ne
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
@@ -21,6 +23,7 @@ from exactly_lib_test.test_case_utils.lines_transformers import parse_lines_tran
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.resolver_assertions import \
     resolved_value_equals_lines_transformer
+from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -78,20 +81,46 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         replace_transformer_syntax = argument_syntax.syntax_for_replace_transformer(regex_str,
                                                                                     replacement_str)
 
-        transformer_argument = argument_syntax.syntax_for_sequence_of_transformers([
-            symbol.name,
-            replace_transformer_syntax,
-        ])
-
         defined_name = 'defined_name'
 
-        source = remaining_source(
-            src('{lines_trans_type} {defined_name} = {transformer_argument}',
-                defined_name=defined_name,
-                transformer_argument=transformer_argument),
-            following_lines=['following line'],
-        )
-
+        cases = [
+            SourceCase('Expression on single line',
+                       source=
+                       remaining_source(
+                           src('{lines_trans_type} {defined_name} = {transformer_argument}',
+                               defined_name=defined_name,
+                               transformer_argument=argument_syntax.syntax_for_sequence_of_transformers([
+                                   symbol.name,
+                                   replace_transformer_syntax,
+                               ])),
+                           following_lines=['following line'],
+                       ),
+                       source_assertion=asrt_source.is_at_beginning_of_line(2)
+                       ),
+            SourceCase('1st expr on first line followed by operator, 2nd expr on next line',
+                       source=
+                       remaining_source(
+                           src('{lines_trans_type} {defined_name} = {symbol_name} {sequence_operator}',
+                               defined_name=defined_name,
+                               symbol_name=symbol.name,
+                               sequence_operator=SEQUENCE_OPERATOR_NAME),
+                           following_lines=[replace_transformer_syntax],
+                       ),
+                       source_assertion=asrt_source.source_is_at_end
+                       ),
+            SourceCase('1st expr on first line followed by operator, 2nd expr on next line, non-exr on 3rd line',
+                       source=
+                       remaining_source(
+                           src('{lines_trans_type} {defined_name} = {symbol_name} {sequence_operator}',
+                               defined_name=defined_name,
+                               symbol_name=symbol.name,
+                               sequence_operator=SEQUENCE_OPERATOR_NAME),
+                           following_lines=[replace_transformer_syntax,
+                                            'following line'],
+                       ),
+                       source_assertion=asrt_source.is_at_beginning_of_line(3)
+                       ),
+        ]
         # EXPECTATION #
 
         the_sequence_transformer = SequenceLinesTransformer([
@@ -113,20 +142,23 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
             )
         )
 
-        expectation = Expectation(
-            symbol_usages=asrt.matches_sequence([
-                asrt_ne.matches_definition(asrt.equals(defined_name),
-                                           expected_container)
-            ]),
-            symbols_after_main=assert_symbol_table_is_singleton(
-                defined_name,
-                expected_container,
-            )
-        )
+        for source_case in cases:
+            with self.subTest(source_case.name):
+                expectation = Expectation(
+                    symbol_usages=asrt.matches_sequence([
+                        asrt_ne.matches_definition(asrt.equals(defined_name),
+                                                   expected_container)
+                    ]),
+                    symbols_after_main=assert_symbol_table_is_singleton(
+                        defined_name,
+                        expected_container,
+                    ),
+                    source=source_case.source_assertion
+                )
 
-        # ACT & ASSERT #
+                # ACT & ASSERT #
 
-        self._check(source, ArrangementWithSds(), expectation)
+                self._check(source_case.source, ArrangementWithSds(), expectation)
 
 
 class TestUnsuccessfulScenarios(TestCaseBaseForParser):
