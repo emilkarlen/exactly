@@ -1,8 +1,11 @@
 import sys
 
+from exactly_lib.instructions.utils.parse.token_stream_parse import from_parse_source
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.concrete_resolvers import list_constant
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
@@ -20,6 +23,15 @@ PARSE_FILE_REF_CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 
 PYTHON_EXECUTABLE_OPTION_NAME = argument.OptionName(long_name='python')
 PYTHON_EXECUTABLE_OPTION_STRING = long_option_syntax(PYTHON_EXECUTABLE_OPTION_NAME.long)
+
+
+def parse_from_parse_source(source: ParseSource) -> ExecutableFile:
+    with from_parse_source(source) as token_parser:
+        return parse_from_token_parser(token_parser)
+
+
+def parse_from_token_parser(token_parser: TokenParser) -> ExecutableFile:
+    return parse(token_parser.token_stream)
 
 
 def parse(tokens: TokenStream) -> ExecutableFile:
