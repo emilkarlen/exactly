@@ -16,7 +16,7 @@ from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util import symbol_table
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
-from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser_prime \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
