@@ -1,5 +1,5 @@
-from exactly_lib.section_document.element_parsers import token_parse as tp
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
@@ -24,27 +24,28 @@ def parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(source: To
 
 
 def parse_list(source: ParseSource) -> ListResolver:
-    if source.is_at_eof:
-        return ListResolver([])
+    with from_parse_source(source) as token_parser:
+        return parse_list_from_token_parser(token_parser)
 
-    if source.is_at_eol__except_for_space:
-        source.consume_current_line()
-        return ListResolver([])
 
-    elements = _consume_elements(source)
-    if not source.is_at_eof:
-        source.consume_current_line()
+def parse_list_from_token_parser(token_parser: TokenParser) -> ListResolver:
+    elements = []
+
+    if not token_parser.is_at_eol:
+        elements = _consume_elements_from_token_parser(token_parser)
+
+    if token_parser.has_current_line:
+        token_parser.consume_current_line_as_plain_string()
+
     return ListResolver(elements)
 
 
-def _consume_elements(source: ParseSource) -> list:
+def _consume_elements_from_token_parser(token_parser: TokenParser) -> list:
     elements = []
 
-    next_token = tp.parse_token_on_current_line(source)
-
-    while next_token is not None:
+    while not token_parser.is_at_eol:
+        next_token = token_parser.consume_mandatory_token('Invalid list element')
         elements.append(element_of(next_token))
-        next_token = tp.parse_token_or_none_on_current_line(source)
 
     return elements
 
