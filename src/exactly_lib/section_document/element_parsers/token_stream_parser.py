@@ -1,6 +1,6 @@
 import types
 from contextlib import contextmanager
-from typing import Callable, TypeVar, Iterable, Sequence, Tuple
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict
 
 from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
@@ -16,6 +16,8 @@ from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
 
 T = TypeVar('T')
+
+TokenParserType = TypeVar('TokenParserType')  # Substitute for TokenParser, since cannot be used inside class
 
 
 class TokenParser:
@@ -193,7 +195,8 @@ class TokenParser:
                 expected_string,
                 actual_string))
 
-    def consume_optional_constant_string_that_must_be_unquoted_and_equal(self, expected_constants) -> str:
+    def consume_optional_constant_string_that_must_be_unquoted_and_equal(self,
+                                                                         expected_constants: Sequence[str]) -> str:
         """
         Consumes the first token if it is an unquoted string that is equal to one of the expected string constants.
         :param expected_constants: collection of names=strings. Must support the Python 'in' operator
@@ -309,7 +312,7 @@ class TokenParser:
             return False
         return matches(option_name, self.token_stream.head.source_string)
 
-    def parse_optional_command(self, command_name_2_parser: dict):
+    def parse_optional_command(self, command_name_2_parser: Dict[str, Callable[[TokenParserType], T]]) -> T:
         """
         Checks if the first token is one of a given set of commands.  If the token
         matches a command, then invokes the parser that belongs to the command.
@@ -331,7 +334,7 @@ class TokenParser:
         return command_name_2_parser[command](self)
 
     def parse_mandatory_command(self,
-                                command_name_2_parser: dict,
+                                command_name_2_parser: Dict[str, Callable[[TokenParserType], T]],
                                 error_message_format_string: str):
         """
         A variant of parse_optional_command ,where the command is mandatory.
