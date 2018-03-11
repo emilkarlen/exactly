@@ -1,3 +1,5 @@
+from typing import Tuple
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -19,24 +21,21 @@ from exactly_lib.instructions.utils.parse.parse_executable_file import PARSE_FIL
 from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
+from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
-from exactly_lib.test_case_utils.parse.parse_list import parse_list, \
-    parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE
-from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator
+from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
 from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
     ValidationAndSubProcessExecutionSetup
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CmdAndArgsResolver
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.structure import structures as docs
@@ -223,56 +222,56 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
 
 class SetupParser(ValidationAndSubProcessExecutionSetupParser):
     def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
-        tokens = new_token_stream(parser.consume_current_line_as_plain_string())
-        exe_file = parse_executable_file.parse(tokens)
-        (validator, cmd_and_args_resolver) = self._validator__cmd_and_args_resolver(exe_file, tokens)
+        exe_file = parse_executable_file.parse_from_token_parser(parser)
+        (validator, cmd_and_args_resolver) = _ValidatorAndArgsResolverParsing(exe_file).parse(parser)
         return ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
 
-    def _validator__cmd_and_args_resolver(self,
-                                          exe_file: ExecutableFile,
-                                          arg_tokens: TokenStream):
-        if arg_tokens.is_null:
-            return self._execute(exe_file, '')
-        if arg_tokens.head.source_string == INTERPRET_OPTION:
-            arg_tokens.consume()
-            return self._interpret(exe_file, arg_tokens)
-        if arg_tokens.head.source_string == SOURCE_OPTION:
-            arg_tokens.consume()
-            return self._source(exe_file, arg_tokens.remaining_source)
-        if arg_tokens.head.source_string == OPTIONS_SEPARATOR_ARGUMENT:
-            arg_tokens.consume()
-            return self._execute(exe_file, arg_tokens.remaining_source)
-        return self._execute(exe_file, arg_tokens.remaining_source)
 
-    @staticmethod
-    def _execute(exe_file: ExecutableFile,
-                 remaining_arguments_str: str):
-        arguments = parse_list(ParseSource(remaining_arguments_str))
-        cmd_resolver = CmdAndArgsResolverForExecute(exe_file, arguments)
-        return exe_file.validator, cmd_resolver
+class _ValidatorAndArgsResolverParsing:
+    def __init__(self, exe_file: ExecutableFile):
+        self.exe_file = exe_file
 
-    @staticmethod
-    def _interpret(exe_file: ExecutableFile,
-                   arg_tokens: TokenStream):
-        file_to_interpret = parse_file_ref.parse_file_ref(arg_tokens, parse_file_ref.ALL_REL_OPTIONS_CONFIG)
+    def parse(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+        if token_parser.is_at_eol:
+            return self.execute(token_parser)
+
+        setup = {
+            INTERPRET_OPTION: self.interpret,
+            SOURCE_OPTION: self.source,
+            OPTIONS_SEPARATOR_ARGUMENT: self.execute,
+        }
+
+        option = token_parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(setup.keys())
+        if option is not None:
+            return setup[option](token_parser)
+        else:
+            return self.execute(token_parser)
+
+    def execute(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+        arguments = parse_list.parse_list_from_token_parser(token_parser)
+        cmd_resolver = CmdAndArgsResolverForExecute(self.exe_file, arguments)
+        return self.exe_file.validator, cmd_resolver
+
+    def interpret(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+        file_to_interpret = parse_file_ref.parse_file_ref_from_token_parser(parse_file_ref.ALL_REL_OPTIONS_CONFIG,
+                                                                            token_parser)
         file_to_interpret_check = FileRefCheck(file_to_interpret,
                                                file_properties.must_exist_as(file_properties.FileType.REGULAR))
-        validator = AndValidator((exe_file.validator,
+        validator = AndValidator((self.exe_file.validator,
                                   FileRefCheckValidator(file_to_interpret_check)))
-        remaining_arguments = parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(arg_tokens)
-        cmd_resolver = CmdAndArgsResolverForInterpret(exe_file, file_to_interpret, remaining_arguments)
+        remaining_arguments = parse_list.parse_list_from_token_parser(token_parser)
+        cmd_resolver = CmdAndArgsResolverForInterpret(self.exe_file, file_to_interpret, remaining_arguments)
         return validator, cmd_resolver
 
-    @staticmethod
-    def _source(exe_file: ExecutableFile,
-                remaining_arguments_str: str):
-        if not remaining_arguments_str:
+    def source(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+        if token_parser.is_at_eol:
             msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=_SOURCE_SYNTAX_ELEMENT_NAME,
                                                                          option=SOURCE_OPTION)
             raise SingleInstructionInvalidArgumentException(msg)
+        remaining_arguments_str = token_parser.consume_current_line_as_plain_string()
         source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
-        cmd_resolver = CmdAndArgsResolverForSource(exe_file, source_resolver)
-        return exe_file.validator, cmd_resolver
+        cmd_resolver = CmdAndArgsResolverForSource(self.exe_file, source_resolver)
+        return self.exe_file.validator, cmd_resolver
 
 
 _DESCRIPTION_OF_EXECUTABLE_ARG = """\

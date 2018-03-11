@@ -1,6 +1,6 @@
 import types
 from contextlib import contextmanager
-from typing import Any, Callable
+from typing import Callable, TypeVar, Iterable, Sequence, Tuple
 
 from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
@@ -14,6 +14,8 @@ from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.messages import expected_found
 from exactly_lib.util.parse.token import Token
+
+T = TypeVar('T')
 
 
 class TokenParser:
@@ -101,9 +103,9 @@ class TokenParser:
 
     def consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
             self,
-            expected_constants,
-            constant_2_ret_val: types.FunctionType = None,
-            error_message_header_template: str = ''):
+            expected_constants: Iterable[str],
+            constant_2_ret_val: Callable[[str], T],
+            error_message_header_template: str = '') -> T:
         """
         Consumes the first token if it is an unquoted string that is equal to the expected string.
 
@@ -141,10 +143,7 @@ class TokenParser:
                                })
         self.token_stream.consume()
 
-        if constant_2_ret_val is not None:
-            return constant_2_ret_val(plain_head)
-
-        return plain_head
+        return constant_2_ret_val(plain_head)
 
     def consume_mandatory_unquoted_string(self,
                                           syntax_element_name: str,
@@ -212,8 +211,8 @@ class TokenParser:
 
     def parse_mandatory_string_that_must_be_unquoted(self,
                                                      syntax_element_name: str,
-                                                     string_handler: Callable[[str], Any],
-                                                     must_be_on_current_line: bool):
+                                                     string_handler: Callable[[str], T],
+                                                     must_be_on_current_line: bool) -> T:
         """
         Consumes the first token if it is an unquoted string.
         :param must_be_on_current_line: If True, the string must appear on the current line.
@@ -225,9 +224,9 @@ class TokenParser:
         return string_handler(string)
 
     def consume_and_handle_first_matching_option(self,
-                                                 return_value_if_no_match,
-                                                 key_handler: types.FunctionType,
-                                                 key_and_option_name_list: list,
+                                                 return_value_if_no_match: T,
+                                                 key_handler: Callable[[str], T],
+                                                 key_and_option_name_list: Sequence[Tuple[str, OptionName]],
                                                  ):
         """
         Looks at the current argument and checks if it is any of a given set of options,

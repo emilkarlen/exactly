@@ -80,9 +80,10 @@ class _Parser:
                 expression = self.parse_mandatory_simple(must_be_on_current_line=True)
                 return mk_prefix_expr(expression)
             else:
-                return self.parser.parse_mandatory_string_that_must_be_unquoted(self.grammar.concept.name.singular,
-                                                                                self.parse_simple,
-                                                                                must_be_on_current_line=must_be_on_current_line)
+                return self.parser.parse_mandatory_string_that_must_be_unquoted(
+                    self.grammar.concept.name.singular,
+                    self.parse_simple,
+                    must_be_on_current_line=must_be_on_current_line)
 
     def parse_simple(self, simple_name: str):
         if simple_name in self.grammar.simple_expressions:
@@ -108,9 +109,5 @@ class _Parser:
 
     def consume_mandatory_end_parentheses(self):
         self.parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal([')'],
-                                                                                      _do_nothing,
+                                                                                      lambda x: None,
                                                                                       'Expression inside ( )')
-
-
-def _do_nothing(*arg, **kwargs):
-    return None
