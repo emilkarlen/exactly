@@ -16,13 +16,9 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
     FileMatcherResolver, LineMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
@@ -35,10 +31,10 @@ from exactly_lib.test_case_utils.lines_transformer import resolvers as line_tran
     parse_lines_transformer
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
-from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
+from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.util.line_source import line_sequence_from_line
+from exactly_lib.util.line_source import line_sequence_from_line, Line
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -139,47 +135,42 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
     def parse(self, source: ParseSource) -> TheInstructionEmbryo:
-        definition = _parse(source)
-        return TheInstructionEmbryo(definition)
+        with from_parse_source(source,
+                               consume_last_line_if_is_at_eol_after_parse=True) as token_parser:
+            definition = _parse(token_parser, source.current_line)
+            return TheInstructionEmbryo(definition)
 
 
 PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
-def _parse(source: ParseSource) -> SymbolDefinition:
-    source_line = source.current_line
-    token_stream = new_token_stream(source.remaining_part_of_current_line)
-    source.consume_current_line()
-    if token_stream.is_null:
-        err_msg = 'Missing symbol type.\nExpecting one of ' + _TYPES_LIST_IN_ERR_MSG
+def _parse(parser: TokenParser, current_line: Line) -> SymbolDefinition:
+    type_str = parser.consume_mandatory_unquoted_string('SYMBOL-TYPE', True)
+
+    if type_str not in _TYPE_SETUPS:
+        err_msg = 'Invalid type :{}\nExpecting one of {}'.format(type_str, _TYPES_LIST_IN_ERR_MSG)
         raise SingleInstructionInvalidArgumentException(err_msg)
-    type_token = token_stream.head
-    if type_token.source_string not in _TYPE_SETUPS:
-        err_msg = 'Invalid type :{}\nExpecting one of {}'.format(type_token.source_string, _TYPES_LIST_IN_ERR_MSG)
-        raise SingleInstructionInvalidArgumentException(err_msg)
-    value_parser = _TYPE_SETUPS[type_token.source_string]
-    token_stream.consume()
-    if token_stream.is_null:
-        err_msg = 'Missing symbol name.'
-        raise SingleInstructionInvalidArgumentException(err_msg)
-    name_token = token_stream.head
-    if name_token.is_quoted:
-        raise SingleInstructionInvalidArgumentException('Name cannot be quoted: ' + name_token.source_string)
-    name_str = name_token.string
+
+    value_parser = _TYPE_SETUPS[type_str]
+
+    name_str = parser.consume_mandatory_unquoted_string('SYMBOL-NAME', True)
+
     if not symbol_syntax.is_symbol_name(name_str):
         err_msg = symbol_syntax.invalid_symbol_name_error(name_str)
         raise SingleInstructionInvalidArgumentException(err_msg)
-    token_stream.consume()
-    if token_stream.is_null or token_stream.head.source_string != syntax.EQUALS_ARGUMENT:
-        raise SingleInstructionInvalidArgumentException('Missing ' + syntax.EQUALS_ARGUMENT)
-    token_stream.consume()
-    value_resolver = value_parser(token_stream)
-    if not token_stream.is_null:
-        msg = 'Superfluous arguments: ' + token_stream.remaining_part_of_current_line
+
+    parser.consume_mandatory_constant_unquoted_string(syntax.EQUALS_ARGUMENT, True)
+
+    value_resolver = value_parser(parser)
+
+    if not parser.is_at_eol:
+        msg = 'Superfluous arguments: ' + parser.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    return SymbolDefinition(name_str, SymbolContainer(value_resolver,
-                                                      line_sequence_from_line(source_line)))
+    parser.consume_current_line_as_plain_string()
+    return SymbolDefinition(name_str,
+                            SymbolContainer(value_resolver,
+                                            line_sequence_from_line(current_line)))
 
 
 _PATH_ARGUMENT = instruction_arguments.PATH_ARGUMENT
@@ -208,36 +199,30 @@ not when it is defined!
 """
 
 
-def _parse_path(token_stream: TokenStream) -> DataValueResolver:
-    return parse_file_ref.parse_file_ref(token_stream, REL_OPTION_ARGUMENT_CONFIGURATION)
+def _parse_path(token_parser: TokenParser) -> DataValueResolver:
+    return parse_file_ref.parse_file_ref_from_token_parser(REL_OPTION_ARGUMENT_CONFIGURATION, token_parser)
 
 
-def _parse_string(token_stream: TokenStream) -> StringResolver:
-    return parse_string_resolver(token_stream)
+def _parse_list(token_parser: TokenParser) -> DataValueResolver:
+    return parse_list.parse_list_from_token_parser(token_parser,
+                                                   advance_to_following_line=False)
 
 
-def _parse_list(token_stream: TokenStream) -> ListResolver:
-    return parse_list.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
-
-
-def _parse_line_matcher(token_stream: TokenStream) -> LineMatcherResolver:
-    token_parser = TokenParser(token_stream)
+def _parse_line_matcher(token_parser: TokenParser) -> LineMatcherResolver:
     if token_parser.is_at_eol:
         return parse_line_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
     else:
         return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
 
 
-def _parse_file_matcher(token_stream: TokenStream) -> FileMatcherResolver:
-    token_parser = TokenParser(token_stream)
+def _parse_file_matcher(token_parser: TokenParser) -> FileMatcherResolver:
     if token_parser.is_at_eol:
         return parse_file_matcher.SELECTION_OF_ALL_FILES
     else:
         return parse_file_matcher.parse_resolver(token_parser)
 
 
-def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_resolvers.LinesTransformerResolver:
-    token_parser = TokenParser(token_stream)
+def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_resolvers.LinesTransformerResolver:
     if token_parser.is_at_eol:
         return line_transformer_resolvers.LinesTransformerConstant(IdentityLinesTransformer())
     return parse_lines_transformer.parse_lines_transformer_from_token_parser(token_parser)
@@ -245,7 +230,7 @@ def _parse_lines_transformer(token_stream: TokenStream) -> line_transformer_reso
 
 _TYPE_SETUPS = {
     types.PATH_TYPE_INFO.identifier: _parse_path,
-    types.STRING_TYPE_INFO.identifier: _parse_string,
+    types.STRING_TYPE_INFO.identifier: parse_string.parse_string_from_token_parser,
     types.LIST_TYPE_INFO.identifier: _parse_list,
     types.LINE_MATCHER_TYPE_INFO.identifier: _parse_line_matcher,
     types.FILE_MATCHER_TYPE_INFO.identifier: _parse_file_matcher,

@@ -1,4 +1,3 @@
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
@@ -10,31 +9,16 @@ from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.util.parse.token import Token
 
 
-def parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(source: TokenStream) -> ListResolver:
-    """
-    Variant of parse_list that exists just so that can be used by the
-    current design of the assign_symbol instruction.
-
-    TODO Rewrite assign_symbol so that it uses a ParseSource for parsing!
-    """
-    ret_val = parse_list(ParseSource(source.remaining_source))
-    while not source.is_null:
-        source.consume()
-    return ret_val
-
-
 def parse_list(source: ParseSource) -> ListResolver:
     with from_parse_source(source) as token_parser:
         return parse_list_from_token_parser(token_parser)
 
 
-def parse_list_from_token_parser(token_parser: TokenParser) -> ListResolver:
-    elements = []
+def parse_list_from_token_parser(token_parser: TokenParser,
+                                 advance_to_following_line: bool = True) -> ListResolver:
+    elements = _consume_elements_from_token_parser(token_parser)
 
-    if not token_parser.is_at_eol:
-        elements = _consume_elements_from_token_parser(token_parser)
-
-    if token_parser.has_current_line:
+    if advance_to_following_line and token_parser.has_current_line:
         token_parser.consume_current_line_as_plain_string()
 
     return ListResolver(elements)
