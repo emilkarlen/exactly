@@ -107,11 +107,6 @@ class TestFailuresCommonToAllGrammars(TestCaseBase):
                     'missing )',
                     remaining_source('( {simple} '.format(simple=ast.SIMPLE_SANS_ARG)),
                 ),
-                (
-                    'missing ), but found on following line',
-                    remaining_source('( {simple} '.format(simple=ast.SIMPLE_SANS_ARG),
-                                     [')']),
-                ),
             ]
             for case_name, source in cases:
                 with self.subTest(grammar=grammar_description,
@@ -463,13 +458,6 @@ class TestSinglePrefixExpression(TestCaseBase):
                             op=prefix_operator,
                             non_expr=str(surrounded_by_soft_quotes(ast.SIMPLE_SANS_ARG)))),
                     ),
-                    (
-                        'operator followed by expr in ( ), but ) is missing (but one is found on following line)',
-                        remaining_source('{op} ( {expr} '.format(
-                            op=prefix_operator,
-                            expr=ast.SIMPLE_SANS_ARG),
-                            [')']),
-                    ),
                 ]
                 for case_name, source in cases:
                     with self.subTest(grammar=grammar_description,
@@ -768,6 +756,94 @@ class TestComplexExpression(unittest.TestCase):
                        expectation
                        )
 
+    def test_success_of_expression_within_parentheses_spanning_several_lines(self):
+        s = ast.SimpleSansArg()
+        cases = [
+            (
+                'simple expr and ) on following line',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('(',
+                                            ['{s} )'.format(s=ast.SIMPLE_SANS_ARG)]),
+                ),
+                Expectation(
+                    expression=s,
+                    source=asrt_source.is_at_end_of_line(2),
+                ),
+            ),
+            (
+                'simple expr and ) on following line, followed by non-expr',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('(',
+                                            ['{s} ) non-expr'.format(s=ast.SIMPLE_SANS_ARG)]),
+                ),
+                Expectation(
+                    expression=s,
+                    source=asrt_source.source_is_not_at_end(current_line_number=asrt.equals(2),
+                                                            remaining_part_of_current_line=asrt.equals('non-expr')),
+                ),
+            ),
+            (
+                'simple expr with ) on following line',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('( {s}'.format(s=ast.SIMPLE_SANS_ARG),
+                                            [' )']),
+                ),
+                Expectation(
+                    expression=s,
+                    source=asrt_source.is_at_end_of_line(2),
+                ),
+            ),
+            (
+                'simple expr with ) on following line, and non-expr on line after that',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('( {s}'.format(s=ast.SIMPLE_SANS_ARG),
+                                            [' )',
+                                             'non-expr']),
+                ),
+                Expectation(
+                    expression=s,
+                    source=asrt_source.is_at_end_of_line(2),
+                ),
+            ),
+            (
+                'binary op with only ( on first line',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('(',
+                                            [' {s} {op} {s} )'.format(s=ast.SIMPLE_SANS_ARG,
+                                                                      op=ast.COMPLEX_A)
+                                             ]),
+                ),
+                Expectation(
+                    expression=ComplexA([s, s]),
+                    source=asrt_source.is_at_end_of_line(2),
+                ),
+            ),
+            (
+                'binary op with ) on following line',
+                Arrangement(
+                    grammar=ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                    source=remaining_source('( {s} {op} {s}'.format(s=ast.SIMPLE_SANS_ARG,
+                                                                    op=ast.COMPLEX_A),
+                                            [' ) ']),
+                ),
+                Expectation(
+                    expression=ComplexA([s, s]),
+                    source=asrt_source.is_at_end_of_line(2),
+                ),
+            ),
+        ]
+        for case_name, arrangement, expectation in cases:
+            with self.subTest(name=case_name):
+                _check(self,
+                       arrangement,
+                       expectation
+                       )
+
     def test_fail_parse_of_complex_expression(self):
         valid_simple_expressions = [
             '{simple_expression}'.format(simple_expression=ast.SIMPLE_SANS_ARG),
@@ -813,25 +889,11 @@ class TestComplexExpression(unittest.TestCase):
                             []),
                     ),
                     (
-                        '( at start of expr: missing ), but found on following line',
-                        remaining_source('( {simple_expr} {operator} {simple_expr} '.format(
-                            simple_expr=valid_simple_expr,
-                            operator=operator),
-                            [')']),
-                    ),
-                    (
                         '( in middle of expr: missing )',
                         remaining_source('( {simple_expr} {operator} ( {simple_expr} '.format(
                             simple_expr=valid_simple_expr,
                             operator=operator),
                             []),
-                    ),
-                    (
-                        '( in middle of expr: missing ), but found on following line',
-                        remaining_source(' {simple_expr} {operator} ( {simple_expr} '.format(
-                            simple_expr=valid_simple_expr,
-                            operator=operator),
-                            [')']),
                     ),
                 ]
                 for case_name, source in cases:
