@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
 from exactly_lib.symbol.data.restrictions import reference_restrictions
@@ -10,8 +9,6 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_list as sut
 from exactly_lib.util.parse import token as token_syntax
-from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
-    assert_token_stream
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
@@ -27,72 +24,8 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestEmptyList)),
     ret_val.addTest(unittest.makeSuite(TestSingleElementList)),
     ret_val.addTest(unittest.makeSuite(TestMultipleElementList)),
-    ret_val.addTest(unittest.makeSuite(TestBadMethodThatParsesFromTokenStream)),
 
     return ret_val
-
-
-class TestBadMethodThatParsesFromTokenStream(unittest.TestCase):
-    def test_raise_exception_WHEN_quoting_is_invalid(self):
-        cases = [
-            TokenStream('valid_token \'unmatchedSingleQuote'),
-            TokenStream('valid_token \''),
-        ]
-        for token_stream in cases:
-            with self.subTest(source=repr(token_stream.source)):
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    sut.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
-
-    def test_parse_of_empty_list(self):
-        self._check('', [])
-
-    def test_parse_of_empty_list__line_with_only_space(self):
-        self._check('   ', [])
-
-    def test_parse_of_non_empty_list(self):
-        token_without_space = 'token_without_space'
-        token_with_space = 'token with space'
-        cases = [
-            (
-                'single token without space',
-                token_without_space,
-                [lr.string_element(sr.string_constant(token_without_space))]
-            ),
-            (
-                'single token with space, at end of line',
-                _src('{soft_quote}{value}{soft_quote}', value=token_with_space),
-                [lr.string_element(sr.string_constant(token_with_space))]
-            ),
-            (
-                'single token with space, followed by space',
-                _src('{soft_quote}{value}{soft_quote}   ', value=token_with_space),
-                [lr.string_element(sr.string_constant(token_with_space))]
-            ),
-            (
-                'multiple tokens, followed by space',
-                _src('{soft_quote}{value_with_space}{soft_quote}  {value_without_space} ',
-                     value_with_space=token_with_space,
-                     value_without_space=token_without_space),
-                [lr.string_element(sr.string_constant(token_with_space)),
-                 lr.string_element(sr.string_constant(token_without_space))]
-            ),
-        ]
-        for name, source, expected_elements in cases:
-            with self.subTest(name=name, source=source):
-                self._check(source, expected_elements)
-
-    def _check(self,
-               source: str,
-               expected_elements: list):
-        token_stream = TokenStream(source)
-        actual = sut.parse_list_from_token_stream_that_consume_whole_source__TO_REMOVE(token_stream)
-
-        assertion_on_parsed_resolver = equals_list_resolver(lr.ListResolver(expected_elements))
-        assertion_on_parsed_resolver.apply_with_message(self, actual, 'parsed list resolver')
-
-        assertion_on_token_stream = assert_token_stream(is_null=asrt.is_true)
-        assertion_on_token_stream.apply_with_message(self, token_stream, 'token stream')
-
 
 
 class TestInvalidSyntax(unittest.TestCase):
