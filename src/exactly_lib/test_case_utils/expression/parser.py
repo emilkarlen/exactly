@@ -15,7 +15,7 @@ def parse_from_parse_source(grammar: Grammar,
 
 def parse(grammar: Grammar,
           parser: TokenParser):
-    return _Parser(grammar, parser).parse()
+    return _Parser(grammar, parser).parse(must_be_on_current_line=True)
 
 
 class _Parser:
@@ -28,14 +28,14 @@ class _Parser:
         self.prefix_expressions_keys = self.grammar.prefix_expressions.keys()
         self.missing_expression = 'Missing ' + self.grammar.concept.syntax_element.name
 
-    def parse(self):
+    def parse(self, must_be_on_current_line: bool):
         if not self.grammar.complex_expressions:
-            return self.parse_mandatory_simple()
+            return self.parse_mandatory_simple(must_be_on_current_line=must_be_on_current_line)
         else:
-            return self.parse_with_complex_expressions()
+            return self.parse_with_complex_expressions(must_be_on_current_line=must_be_on_current_line)
 
-    def parse_with_complex_expressions(self):
-        expression = self.parse_mandatory_simple()
+    def parse_with_complex_expressions(self, must_be_on_current_line: bool = True):
+        expression = self.parse_mandatory_simple(must_be_on_current_line)
 
         complex_operator_name = self.parse_optional_complex_operator_name()
 
@@ -71,13 +71,13 @@ class _Parser:
             self.parser.require_is_not_at_eol(self.missing_expression)
 
         if self.consume_optional_start_parentheses():
-            expression = self.parse()
+            expression = self.parse(must_be_on_current_line=False)
             self.consume_mandatory_end_parentheses()
             return expression
         else:
             mk_prefix_expr = self.consume_optional_prefix_operator()
             if mk_prefix_expr:
-                expression = self.parse_mandatory_simple()
+                expression = self.parse_mandatory_simple(must_be_on_current_line=True)
                 return mk_prefix_expr(expression)
             else:
                 return self.parser.parse_mandatory_string_that_must_be_unquoted(self.grammar.concept.name.singular,
@@ -104,12 +104,9 @@ class _Parser:
 
     def consume_optional_start_parentheses(self) -> bool:
         start_parenthesis = self.parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(['('])
-        if start_parenthesis:
-            self.parser.require_is_not_at_eol(self.missing_expression + ' after ' + start_parenthesis)
         return start_parenthesis is not None
 
     def consume_mandatory_end_parentheses(self):
-        self.parser.require_is_not_at_eol('Missing )')
         self.parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal([')'],
                                                                                       _do_nothing,
                                                                                       'Expression inside ( )')
