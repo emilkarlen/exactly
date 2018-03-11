@@ -74,3 +74,14 @@ def source_is_not_at_end(is_at_eol: asrt.ValueAssertion = asrt.anything_goes(),
         remaining_part_of_current_line=remaining_part_of_current_line,
         remaining_source=remaining_source,
     )
+
+
+def is_at_line(current_line_number: int,
+               remaining_part_of_current_line: str,
+               ) -> asrt.ValueAssertion:
+    return assert_source(
+        is_at_eof=asrt.is_false,
+        has_current_line=asrt.is_true,
+        current_line_number=asrt.equals(current_line_number),
+        remaining_part_of_current_line=asrt.equals(remaining_part_of_current_line),
+    )

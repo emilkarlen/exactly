@@ -14,14 +14,8 @@ def parse_list(source: ParseSource) -> ListResolver:
         return parse_list_from_token_parser(token_parser)
 
 
-def parse_list_from_token_parser(token_parser: TokenParser,
-                                 advance_to_following_line: bool = True) -> ListResolver:
-    elements = _consume_elements_from_token_parser(token_parser)
-
-    if advance_to_following_line and token_parser.has_current_line:
-        token_parser.consume_current_line_as_plain_string()
-
-    return ListResolver(elements)
+def parse_list_from_token_parser(token_parser: TokenParser) -> ListResolver:
+    return ListResolver(_consume_elements_from_token_parser(token_parser))
 
 
 def _consume_elements_from_token_parser(token_parser: TokenParser) -> list:

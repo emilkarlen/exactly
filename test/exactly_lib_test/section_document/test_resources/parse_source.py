@@ -1,4 +1,5 @@
 import shlex
+from typing import Dict, Any, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 
@@ -50,3 +51,27 @@ def _quote(s: str) -> str:
     if s.find(' ') != -1:
         return shlex.quote(s)
     return s
+
+
+class ParseSourceBuilder:
+    def __init__(self, format_map: Dict[str, Any]):
+        self.format_map = format_map
+
+    def single_line(self, first_line: str, **kwargs) -> ParseSource:
+        return self.lines([first_line], **kwargs)
+
+    def multi_line(self,
+                   first_line: str,
+                   following_lines: List[str],
+                   **kwargs) -> ParseSource:
+        return self.lines([first_line] + following_lines, **kwargs)
+
+    def lines(self, lines: List[str], **kwargs) -> ParseSource:
+        format_map = self.format_map
+        if kwargs:
+            format_map = dict(self.format_map, **kwargs)
+        return source_of_lines([line.format_map(format_map)
+                                for line in lines])
+
+    def new_with(self, **kwargs):
+        return ParseSourceBuilder(dict(self.format_map, **kwargs))

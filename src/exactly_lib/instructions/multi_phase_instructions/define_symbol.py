@@ -136,7 +136,8 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 class EmbryoParser(embryo.InstructionEmbryoParser):
     def parse(self, source: ParseSource) -> TheInstructionEmbryo:
         with from_parse_source(source,
-                               consume_last_line_if_is_at_eol_after_parse=True) as token_parser:
+                               consume_last_line_if_is_at_eol_after_parse=True,
+                               consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             definition = _parse(token_parser, source.current_line)
             return TheInstructionEmbryo(definition)
 
@@ -167,7 +168,6 @@ def _parse(parser: TokenParser, current_line: Line) -> SymbolDefinition:
     if not parser.is_at_eol:
         msg = 'Superfluous arguments: ' + parser.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
-    parser.consume_current_line_as_plain_string()
     return SymbolDefinition(name_str,
                             SymbolContainer(value_resolver,
                                             line_sequence_from_line(current_line)))
@@ -203,11 +203,6 @@ def _parse_path(token_parser: TokenParser) -> DataValueResolver:
     return parse_file_ref.parse_file_ref_from_token_parser(REL_OPTION_ARGUMENT_CONFIGURATION, token_parser)
 
 
-def _parse_list(token_parser: TokenParser) -> DataValueResolver:
-    return parse_list.parse_list_from_token_parser(token_parser,
-                                                   advance_to_following_line=False)
-
-
 def _parse_line_matcher(token_parser: TokenParser) -> LineMatcherResolver:
     if token_parser.is_at_eol:
         return parse_line_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
@@ -231,7 +226,7 @@ def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_reso
 _TYPE_SETUPS = {
     types.PATH_TYPE_INFO.identifier: _parse_path,
     types.STRING_TYPE_INFO.identifier: parse_string.parse_string_from_token_parser,
-    types.LIST_TYPE_INFO.identifier: _parse_list,
+    types.LIST_TYPE_INFO.identifier: parse_list.parse_list_from_token_parser,
     types.LINE_MATCHER_TYPE_INFO.identifier: _parse_line_matcher,
     types.FILE_MATCHER_TYPE_INFO.identifier: _parse_file_matcher,
     types.LINES_TRANSFORMER_TYPE_INFO.identifier: _parse_lines_transformer,
