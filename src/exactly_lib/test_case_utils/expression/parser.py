@@ -57,7 +57,7 @@ class _Parser:
         expressions = [first_expression]
 
         def parse_mandatory_simple_and_append():
-            next_expression = self.parse_mandatory_simple()
+            next_expression = self.parse_mandatory_simple(must_be_on_current_line=False)
             expressions.append(next_expression)
 
         parse_mandatory_simple_and_append()
@@ -66,8 +66,9 @@ class _Parser:
 
         return self.grammar.complex_expressions[complex_operator_name].mk_complex(expressions)
 
-    def parse_mandatory_simple(self):
-        self.parser.require_is_not_at_eol(self.missing_expression)
+    def parse_mandatory_simple(self, must_be_on_current_line: bool = True):
+        if must_be_on_current_line:
+            self.parser.require_is_not_at_eol(self.missing_expression)
 
         if self.consume_optional_start_parentheses():
             expression = self.parse()
@@ -81,7 +82,7 @@ class _Parser:
             else:
                 return self.parser.parse_mandatory_string_that_must_be_unquoted(self.grammar.concept.name.singular,
                                                                                 self.parse_simple,
-                                                                                must_be_on_current_line=True)
+                                                                                must_be_on_current_line=must_be_on_current_line)
 
     def parse_simple(self, simple_name: str):
         if simple_name in self.grammar.simple_expressions:

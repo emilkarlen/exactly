@@ -59,6 +59,24 @@ class TestCaseBase(unittest.TestCase):
                                               'source after parse')
 
 
+def _check(put: unittest.TestCase,
+           arrangement: Arrangement,
+           expectation: Expectation):
+    actual = sut.parse_from_parse_source(arrangement.grammar,
+                                         arrangement.source)
+    if expectation.expression != actual:
+        put.fail('Unexpected expression.\nExpected: {}\nActual  : {}'.format(
+            str(expectation.expression),
+            str(actual),
+        ))
+    put.assertEqual(expectation.expression,
+                    actual,
+                    'parsed expression: ' + str(actual))
+    expectation.source.apply_with_message(put,
+                                          arrangement.source,
+                                          'source after parse')
+
+
 class TestFailuresCommonToAllGrammars(TestCaseBase):
     def test(self):
         grammars = [
@@ -541,7 +559,7 @@ class TestSingleRefExpression(TestCaseBase):
                                                     source)
 
 
-class TestComplexExpression(TestCaseBase):
+class TestComplexExpression(unittest.TestCase):
     def test_success_of_single_operator(self):
         space_after = '           '
         quoted_string = str(surrounded_by_hard_quotes('quoted string'))
@@ -669,24 +687,32 @@ class TestComplexExpression(TestCaseBase):
                         source_assertion=
                         asrt_source.is_at_end_of_line(1)
                     ),
+                    SourceCase(
+                        'second expr on following line',
+                        source=
+                        remaining_source(valid_simple_expr_source + ' ' + operator_source,
+                                         [valid_simple_expr_source]),
+                        source_assertion=
+                        asrt_source.is_at_end_of_line(2)
+                    ),
                 ]
                 for case in cases:
                     with self.subTest(name=case.name,
                                       operator_source=operator_source,
                                       valid_simple_expr_source=valid_simple_expr_source):
-                        self._check(
-                            Arrangement(
-                                grammar=
-                                ast.GRAMMAR_WITH_ALL_COMPONENTS,
-                                source=
-                                case.source),
-                            Expectation(
-                                expression=
-                                expected_expression,
-                                source=
-                                case.source_assertion,
-                            )
-                        )
+                        _check(self,
+                               Arrangement(
+                                   grammar=
+                                   ast.GRAMMAR_WITH_ALL_COMPONENTS,
+                                   source=
+                                   case.source),
+                               Expectation(
+                                   expression=
+                                   expected_expression,
+                                   source=
+                                   case.source_assertion,
+                               )
+                               )
 
     def test_success_of_expression_within_parentheses(self):
         s = ast.SimpleSansArg()
@@ -737,10 +763,10 @@ class TestComplexExpression(TestCaseBase):
         ]
         for case_name, arrangement, expectation in cases:
             with self.subTest(name=case_name):
-                self._check(
-                    arrangement,
-                    expectation
-                )
+                _check(self,
+                       arrangement,
+                       expectation
+                       )
 
     def test_fail_parse_of_complex_expression(self):
         valid_simple_expressions = [
@@ -778,20 +804,6 @@ class TestComplexExpression(TestCaseBase):
                             operator=operator,
                             non_expr=ast.NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME,
                         )),
-                    ),
-                    (
-                        'operator followed by expression, but following expression is on next line',
-                        remaining_source('{simple_expr} {operator} '.format(
-                            simple_expr=valid_simple_expr,
-                            operator=operator),
-                            [valid_simple_expr]),
-                    ),
-                    (
-                        'operator followed by expression, but following expression is on next line/two operators',
-                        remaining_source('{simple_expr} {operator} {simple_expr} {operator} '.format(
-                            simple_expr=valid_simple_expr,
-                            operator=operator),
-                            [valid_simple_expr]),
                     ),
                     (
                         '( at start of expr: missing )',
