@@ -3,7 +3,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
 
 
 def src(s: str,
@@ -42,3 +42,6 @@ def multi_line_source(first_line: str,
 def resolver_container(value_resolver: SymbolValueResolver) -> SymbolContainer:
     return SymbolContainer(value_resolver,
                            single_line_sequence(1, 'source line'))
+
+
+SB = ParseSourceBuilder(_STD_FORMAT_MAP)

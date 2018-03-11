@@ -9,6 +9,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.parse import parse_list as sut
 from exactly_lib.util.parse import token as token_syntax
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
@@ -48,29 +49,25 @@ class TestEmptyList(unittest.TestCase):
                  source=
                  remaining_source(''),
                  expectation=
-                 Expectation(elements=
-                             [],
-                             source=assert_source(is_at_eof=asrt.is_true)),
+                 Expectation(elements=[],
+                             source=asrt_source.is_at_end_of_line(1)),
                  ),
             Case('only white space on current line, with no following lines',
                  source=
                  remaining_source('   '),
                  expectation=
-                 Expectation(elements=
-                             [],
-                             source=assert_source(is_at_eof=asrt.is_true)),
+                 Expectation(elements=[],
+                             source=asrt_source.source_is_not_at_end(
+                                 current_line_number=asrt.equals(1),
+                                 remaining_part_of_current_line=asrt.equals('   '))),
                  ),
             Case('empty line, with following lines',
                  source=
                  remaining_source('', ['contents of following line']),
                  expectation=
-                 Expectation(elements=
-                             [],
-                             source=assert_source(
-                                 is_at_eof=asrt.is_false,
-                                 current_line_number=asrt.equals(2),
-                                 column_index=asrt.equals(0),
-                             )),
+                 Expectation(elements=[],
+                             source=asrt_source.is_at_end_of_line(1),
+                             )
                  ),
         ]
         for case in cases:
@@ -117,10 +114,9 @@ class TestSingleElementList(unittest.TestCase):
                              ),
                          ]))],
                      source=
-                     assert_source(
-                         is_at_eof=asrt.is_true)),
+                     asrt_source.is_at_end_of_line(1)),
                  ),
-            Case('single element, followed by space, on the last line',
+            Case('single element, followed by more than one space, on the last line',
                  source=
                  remaining_source(single_token_value + '  ',
                                   []),
@@ -128,8 +124,17 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [lr.string_element(sr.string_constant(single_token_value))],
                              source=
-                             assert_source(
-                                 is_at_eof=asrt.is_true)),
+                             asrt_source.is_at_line(1, ' ')),
+                 ),
+            Case('single element, followed by single space, on the last line',
+                 source=
+                 remaining_source(single_token_value + ' ',
+                                  []),
+                 expectation=
+                 Expectation(elements=
+                             [lr.string_element(sr.string_constant(single_token_value))],
+                             source=
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('single element, followed by space, followed by empty line',
                  source=
@@ -139,8 +144,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [lr.string_element(sr.string_constant(single_token_value))],
                              source=
-                             assert_source(
-                                 is_at_eof=asrt.is_true)),
+                             asrt_source.is_at_line(1, ' ')),
                  ),
             Case('single element, at end of line, followed by line with only space',
                  source=
@@ -150,11 +154,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [lr.string_element(sr.string_constant(single_token_value))],
                              source=
-                             assert_source(
-                                 is_at_eof=asrt.is_false,
-                                 current_line_number=asrt.equals(2),
-                                 column_index=asrt.equals(0),
-                             )),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('single element, followed by space, followed by line with only space',
                  source=
@@ -164,11 +164,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [lr.string_element(sr.string_constant(single_token_value))],
                              source=
-                             assert_source(
-                                 is_at_eof=asrt.is_false,
-                                 current_line_number=asrt.equals(2),
-                                 column_index=asrt.equals(0),
-                             )),
+                             asrt_source.is_at_line(1, ' ')),
                  ),
             Case('single element, at end of line, followed by line with invalid quoting',
                  source=
@@ -178,11 +174,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [lr.string_element(sr.string_constant(single_token_value))],
                              source=
-                             assert_source(
-                                 is_at_eof=asrt.is_false,
-                                 current_line_number=asrt.equals(2),
-                                 column_index=asrt.equals(0),
-                             )),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
         ]
         for case in cases:
@@ -205,8 +197,7 @@ class TestMultipleElementList(unittest.TestCase):
                              [lr.string_element(sr.string_constant(single_token_value_1)),
                               lr.string_element(sr.string_constant(single_token_value_2))
                               ],
-                             source=
-                             assert_source(is_at_eof=asrt.is_true)),
+                             source=asrt_source.is_at_end_of_line(1)),
                  ),
             Case('multiple string constants on line that is followed by an empty line',
                  source=
@@ -218,10 +209,7 @@ class TestMultipleElementList(unittest.TestCase):
                               lr.string_element(sr.string_constant(single_token_value_2))
                               ],
                              source=
-                             assert_source(
-                                 current_line_number=asrt.equals(2),
-                                 column_index=asrt.equals(0),
-                                 is_at_eof=asrt.is_true)),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('multiple string constants on line that is followed by a non-empty line',
                  source=
@@ -233,10 +221,7 @@ class TestMultipleElementList(unittest.TestCase):
                               lr.string_element(sr.string_constant(single_token_value_2))
                               ],
                              source=
-                             assert_source(
-                                 current_line_number=asrt.equals(2),
-                                 column_index=asrt.equals(0),
-                                 is_at_eof=asrt.is_false)),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('symbol-reference and string constant on first line',
                  source=
@@ -249,7 +234,7 @@ class TestMultipleElementList(unittest.TestCase):
                               lr.string_element(sr.string_constant(single_token_value))
                               ],
                              source=
-                             assert_source(is_at_eof=asrt.is_true)),
+                             asrt_source.is_at_end_of_line(1)),
                  ),
             Case('complex element (sym-ref and str const) and string constant, '
                  'followed by space, '
@@ -271,10 +256,7 @@ class TestMultipleElementList(unittest.TestCase):
                      lr.string_element(sr.string_constant(single_token_value_1)),
                  ],
                      source=
-                     assert_source(
-                         current_line_number=asrt.equals(2),
-                         column_index=asrt.equals(0),
-                         is_at_eof=asrt.is_false)),
+                     asrt_source.is_at_end_of_line(1)),
                  ),
         ]
         for case in cases:
