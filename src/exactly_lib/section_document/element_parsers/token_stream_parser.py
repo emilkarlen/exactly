@@ -1,5 +1,6 @@
 import types
 from contextlib import contextmanager
+from typing import Any, Callable
 
 from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
@@ -211,7 +212,7 @@ class TokenParser:
 
     def parse_mandatory_string_that_must_be_unquoted(self,
                                                      syntax_element_name: str,
-                                                     string_handler: types.FunctionType,
+                                                     string_handler: Callable[[str], Any],
                                                      must_be_on_current_line: bool):
         """
         Consumes the first token if it is an unquoted string.
