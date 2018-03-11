@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.test_case_utils.parse import parse_reg_ex as sut
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
-from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser_prime \
+from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
