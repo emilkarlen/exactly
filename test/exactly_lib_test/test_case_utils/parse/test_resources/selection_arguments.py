@@ -22,11 +22,13 @@ def selection_arguments(name_pattern: str = '',
                                                     type_match,
                                                     named_matcher)
     if the_matchers_arguments:
-        selector_option = option_syntax.option_syntax(
-            instruction_arguments.SELECTION_OPTION.name)
-        return selector_option + ' ' + the_matchers_arguments
+        return selection_arguments_for_matcher(the_matchers_arguments)
     else:
         return ''
+
+
+def selection_arguments_for_matcher(matcher: str) -> str:
+    return option_syntax.option_syntax(instruction_arguments.SELECTION_OPTION.name) + ' ' + matcher
 
 
 def file_matcher_arguments(name_pattern: str = '',

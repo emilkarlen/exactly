@@ -1,4 +1,4 @@
-import types
+from typing import Callable
 
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
@@ -149,7 +149,7 @@ class OrRestrictionPart(tuple):
 class OrReferenceRestrictions(DataTypeReferenceRestrictions):
     def __init__(self,
                  or_restriction_parts: list,
-                 sym_name_and_container_2_err_msg_if_no_matching_part: types.FunctionType = None):
+                 sym_name_and_container_2_err_msg_if_no_matching_part: Callable[[str, SymbolContainer], str] = None):
         self._parts = tuple(or_restriction_parts)
         self._sym_name_and_container_2_err_msg_if_no_matching_part = \
             sym_name_and_container_2_err_msg_if_no_matching_part

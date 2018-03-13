@@ -1,16 +1,15 @@
-import exactly_lib.help_texts.instruction_arguments
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
-from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_construction
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
-from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import file_matcher_arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.selection_arguments import file_matcher_arguments, \
+    selection_arguments_for_matcher
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 
 
@@ -53,7 +52,7 @@ class CommonArgumentsConstructor(InstructionArgumentsVariantConstructor):
 
     def _empty_if_no_file_matcher_otherwise_selection(self) -> str:
         if self._file_matcher:
-            return option_syntax(instruction_arguments.SELECTION_OPTION.name) + ' ' + self._file_matcher
+            return selection_arguments_for_matcher(self._file_matcher)
         else:
             return ''
 
@@ -108,7 +107,7 @@ class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
         return '{quantifier} {file} {separator} {contents_assertion}'.format(
             quantifier=instruction_arguments.QUANTIFIER_ARGUMENTS[self._quantifier],
             file=config.QUANTIFICATION_OVER_FILE_ARGUMENT,
-            separator=exactly_lib.help_texts.instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
+            separator=instruction_arguments.QUANTIFICATION_SEPARATOR_ARGUMENT,
             contents_assertion=self._file_contents_assertion.apply(self._contents_argument_expectation_type))
 
 

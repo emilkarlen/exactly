@@ -21,16 +21,17 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from . import config
 
+DIR_CONTENTS_MATCHER = a.Named('DIR-CONTENTS-MATCHER')
+
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
                                   WithAssertPhasePurpose):
-    DIR_CONTENTS_MATCHER = a.Named('DIR-CONTENTS-MATCHER')
 
     def __init__(self, name: str):
         super().__init__(name, {
             'checked_file': _PATH_ARGUMENT.name,
             'selection': instruction_arguments.SELECTION.name,
-            'dir_contents_matcher': self.DIR_CONTENTS_MATCHER.name,
+            'dir_contents_matcher': DIR_CONTENTS_MATCHER.name,
             'file_matcher': FILE_MATCHER_TYPE_INFO.name.singular,
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
@@ -54,7 +55,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         selection_arg = a.Single(a.Multiplicity.OPTIONAL,
                                  instruction_arguments.SELECTION)
         dir_contents_matcher_arg = a.Single(a.Multiplicity.MANDATORY,
-                                            self.DIR_CONTENTS_MATCHER)
+                                            DIR_CONTENTS_MATCHER)
 
         arguments = [self.actual_file,
                      selection_arg,
@@ -126,7 +127,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                               self._paragraphs(_DESCRIPTION_OF_FILE_QUANTIFICATION))
         ]
         return SyntaxElementDescription(
-            self.DIR_CONTENTS_MATCHER.name,
+            DIR_CONTENTS_MATCHER.name,
             [],
             invokation_variants
         )
