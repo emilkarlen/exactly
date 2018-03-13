@@ -1,17 +1,17 @@
-from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.section_document.element_parsers.token_stream import TokenStream, LookAheadState
 from exactly_lib.util.parse.token import TokenType, Token
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def assert_token_stream(
-        source: asrt.ValueAssertion = asrt.anything_goes(),
-        remaining_source: asrt.ValueAssertion = asrt.anything_goes(),
-        remaining_part_of_current_line: asrt.ValueAssertion = asrt.anything_goes(),
-        remaining_source_after_head: asrt.ValueAssertion = asrt.anything_goes(),
-        is_null: asrt.ValueAssertion = asrt.anything_goes(),
-        head_token: asrt.ValueAssertion = asrt.anything_goes(),
-        look_ahead_state: asrt.ValueAssertion = asrt.anything_goes(),
-        position: asrt.ValueAssertion = asrt.anything_goes()) -> asrt.ValueAssertion:
+        source: asrt.ValueAssertion[str] = asrt.anything_goes(),
+        remaining_source: asrt.ValueAssertion[str] = asrt.anything_goes(),
+        remaining_part_of_current_line: asrt.ValueAssertion[str] = asrt.anything_goes(),
+        remaining_source_after_head: asrt.ValueAssertion[str] = asrt.anything_goes(),
+        is_null: asrt.ValueAssertion[bool] = asrt.anything_goes(),
+        head_token: asrt.ValueAssertion[Token] = asrt.anything_goes(),
+        look_ahead_state: asrt.ValueAssertion[LookAheadState] = asrt.anything_goes(),
+        position: asrt.ValueAssertion[int] = asrt.anything_goes()) -> asrt.ValueAssertion:
     return asrt.is_instance_with(
         TokenStream,
         asrt.and_([

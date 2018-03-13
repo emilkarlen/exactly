@@ -1,5 +1,5 @@
 import shlex
-from typing import Dict, Any, List
+from typing import Dict, Any, List, Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
 
@@ -14,7 +14,7 @@ def source4(first_line: str,
 
 
 def remaining_source(remaining_contents_of_first_line: str,
-                     following_lines: list = ()) -> ParseSource:
+                     following_lines: Sequence[str] = ()) -> ParseSource:
     """
     :param remaining_contents_of_first_line: Part of the first line that has not been consumed.
     :return: Source with some initial content of the first line that has been consumed.
@@ -27,7 +27,7 @@ def remaining_source(remaining_contents_of_first_line: str,
     return ret_val
 
 
-def remaining_source_lines(lines: list) -> ParseSource:
+def remaining_source_lines(lines: List[str]) -> ParseSource:
     """
     A variant of 'remaining_source'.
     """

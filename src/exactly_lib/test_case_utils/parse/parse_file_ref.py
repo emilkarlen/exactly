@@ -98,26 +98,6 @@ def parse_file_ref_from_parse_source(source: ParseSource,
         return parse_file_ref(ts, conf)
 
 
-def parse_file_ref(tokens: TokenStream,
-                   conf: RelOptionArgumentConfiguration) -> FileRefResolver:
-    """
-    :param tokens: Argument list
-    :raises SingleInstructionInvalidArgumentException: Invalid arguments
-    """
-
-    if tokens.is_null:
-        if conf.path_suffix_is_required:
-            _raise_missing_arguments_exception(conf)
-        else:
-            return _result_from_no_arguments(conf)
-
-    try:
-        return _parse_with_non_empty_token_stream(tokens, conf)
-    except TokenSyntaxError as ex:
-        raise SingleInstructionInvalidArgumentException(
-            std_error_message_text_for_token_syntax_error_from_exception(ex))
-
-
 def parse_file_ref_from_token_parser(conf: RelOptionArgumentConfiguration,
                                      token_parser: TokenParser
                                      ) -> FileRefResolver:
@@ -127,21 +107,63 @@ def parse_file_ref_from_token_parser(conf: RelOptionArgumentConfiguration,
     return parse_file_ref(token_parser.token_stream, conf)
 
 
+def parse_file_ref(tokens: TokenStream,
+                   conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+    """
+    :param tokens: Argument list
+    :raises SingleInstructionInvalidArgumentException: Invalid arguments
+    """
+
+    try:
+        if conf.path_suffix_is_required:
+            return _parse_with_required_suffix(tokens, conf)
+        else:
+            return _parse_with_optional_suffix(tokens, conf)
+    except TokenSyntaxError as ex:
+        raise SingleInstructionInvalidArgumentException(
+            std_error_message_text_for_token_syntax_error_from_exception(ex))
+
+
+def _parse_with_required_suffix(tokens: TokenStream,
+                                conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+    """
+    :param tokens: Argument list
+    :raises SingleInstructionInvalidArgumentException: Invalid arguments
+    """
+
+    if tokens.is_null:
+        _raise_missing_arguments_exception(conf)
+    return _parse_with_non_empty_token_stream(tokens, conf)
+
+
+def _parse_with_optional_suffix(tokens: TokenStream,
+                                conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+    """
+    :param tokens: Argument list
+    :raises SingleInstructionInvalidArgumentException: Invalid arguments
+    """
+
+    if tokens.is_null or tokens.remaining_part_of_current_line_is_empty:
+        return _result_from_no_arguments(conf)
+    return _parse_with_non_empty_token_stream(tokens, conf)
+
+
 def _parse_with_non_empty_token_stream(tokens: TokenStream,
                                        conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     initial_argument_string = tokens.remaining_part_of_current_line
     relativity_info = parse_explicit_relativity_info(conf.options, tokens)
-    if tokens.look_ahead_state is LookAheadState.NULL:
-        if conf.path_suffix_is_required:
-            raise SingleInstructionInvalidArgumentException(
-                'Missing {} argument: {}'.format(conf.argument_syntax_name,
-                                                 initial_argument_string))
+
+    if not conf.path_suffix_is_required and tokens.remaining_part_of_current_line_is_empty:
+        if relativity_info is None:
+            return _result_from_no_arguments(conf)
         else:
-            if relativity_info is None:
-                return _result_from_no_arguments(conf)
-            else:
-                path_part_resolver2_file_ref_resolver = _file_ref_constructor(relativity_info)
-                return path_part_resolver2_file_ref_resolver(PathPartResolverAsNothing())
+            path_part_resolver2_file_ref_resolver = _file_ref_constructor(relativity_info)
+            return path_part_resolver2_file_ref_resolver(PathPartResolverAsNothing())
+
+    if tokens.look_ahead_state is LookAheadState.NULL:
+        raise SingleInstructionInvalidArgumentException(
+            'Missing {} argument: {}'.format(conf.argument_syntax_name,
+                                             initial_argument_string))
     elif tokens.look_ahead_state is LookAheadState.SYNTAX_ERROR:
         SingleInstructionInvalidArgumentException(
             std_error_message_text_for_token_syntax_error(tokens.head_syntax_error_description))
