@@ -1,11 +1,11 @@
 import unittest
 
-import exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr
 from exactly_lib.instructions.assert_ import stdout as sut
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import stdout_stderr
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr import \
     TestConfigurationForStdFile, ActResultProducerFromHomeAndSds2Str
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
@@ -18,8 +18,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr.suite_for(
-            TestConfigurationForStdout()),
+        stdout_stderr.suite_for(TestConfigurationForStdout()),
         suite_for_instruction_documentation(sut.setup_for_stdout('instruction name').documentation),
     ])
 

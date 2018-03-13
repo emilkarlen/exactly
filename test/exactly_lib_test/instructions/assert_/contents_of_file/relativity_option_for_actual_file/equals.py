@@ -9,7 +9,7 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args, SB
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -39,7 +39,6 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
                                                     _ErrorWhenActualFileIsADirectory,
                                                     _ContentsDiffer,
                                                     _ContentsEquals,
-                                                    _ContentsEqualsWithComparisonArgumentTokenOnFollowingLine,
                                                     _ContentsEqualsWithExpectedFileRelHomeSymbol,
                                                     _ContentsEqualsWithExpectedFileRelTmpSymbol,
                                                 ]
@@ -111,33 +110,6 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
                 '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
                 relativity_option=self.rel_opt.option_string,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
-            ArrangementPostAct(
-                hds_contents=case_home_dir_contents(
-                    DirContents([File('expected.txt', 'expected contents')])),
-                home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
-                    DirContents([File('actual.txt', 'expected contents')])),
-                post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
-                symbols=self.rel_opt.symbols.in_arrangement(),
-            ),
-            Expectation(
-                main_result=self.not_opt.pass__if_positive__fail__if_negative,
-                symbol_usages=self.rel_opt.symbols.usages_expectation(),
-            ),
-        )
-
-
-class _ContentsEqualsWithComparisonArgumentTokenOnFollowingLine(
-    TestWithConfigurationAndRelativityOptionAndNegationBase):
-    def runTest(self):
-        sb = SB.new_with(
-            relativity_option=self.rel_opt.option_string,
-            maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-        )
-        self._check(
-            sb.lines([
-                '{relativity_option} actual.txt',
-                '{maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
-            ]),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
                     DirContents([File('expected.txt', 'expected contents')])),
