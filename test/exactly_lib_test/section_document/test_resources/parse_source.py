@@ -55,7 +55,16 @@ def _quote(s: str) -> str:
 
 class ParseSourceBuilder:
     def __init__(self, format_map: Dict[str, Any]):
-        self.format_map = format_map
+        self._format_map = format_map
+
+    def format(self, template_string: str, **kwargs) -> str:
+        return template_string.format_map(self.format_dict(**kwargs))
+
+    def format_dict(self, **kwargs) -> Dict[str, Any]:
+        if kwargs:
+            return dict(self._format_map, **kwargs)
+        else:
+            return self._format_map
 
     def single_line(self, first_line: str, **kwargs) -> ParseSource:
         return self.lines([first_line], **kwargs)
@@ -67,11 +76,12 @@ class ParseSourceBuilder:
         return self.lines([first_line] + following_lines, **kwargs)
 
     def lines(self, lines: List[str], **kwargs) -> ParseSource:
-        format_map = self.format_map
-        if kwargs:
-            format_map = dict(self.format_map, **kwargs)
-        return source_of_lines([line.format_map(format_map)
-                                for line in lines])
+        return remaining_source_lines(self.format_lines(lines, **kwargs))
+
+    def format_lines(self, lines: List[str], **kwargs) -> List[str]:
+        format_map = self.format_dict(**kwargs)
+        return [line.format_map(format_map)
+                for line in lines]
 
     def new_with(self, **kwargs):
-        return ParseSourceBuilder(dict(self.format_map, **kwargs))
+        return ParseSourceBuilder(dict(self._format_map, **kwargs))

@@ -22,10 +22,11 @@ def parse(token_parser: TokenParser) -> AssertionPart:
     :return: A :class:`AssertionPart` that takes an ResolvedComparisonActualFile as (last) argument.
     """
 
-    actual_lines_transformer = parse_lines_transformer.parse_optional_transformer_resolver(token_parser)
-    token_parser.consume_space_until_mandatory_token(COMPARISON_OPERATOR)
+    actual_lines_transformer = parse_lines_transformer.parse_optional_transformer_resolver_preceding_mandatory_element(
+        token_parser,
+        COMPARISON_OPERATOR,
+    )
     expectation_type = token_parser.consume_optional_negation_operator()
-    token_parser.consume_space_until_mandatory_token(COMPARISON_OPERATOR)
     parser_of_contents_assertion_part = ParseFileContentsAssertionPart(expectation_type)
     file_contents_assertion_part = parser_of_contents_assertion_part.parse(token_parser)
     return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),
@@ -58,7 +59,7 @@ class ParseFileContentsAssertionPart:
 
     def parse(self, token_parser: TokenParser) -> FileContentsAssertionPart:
         token_parser = token_parser_with_additional_error_message_format_map(token_parser, _FORMAT_MAP)
-        return token_parser.parse_mandatory_command(self.parsers, 'Missing {_CHECK_}')
+        return token_parser.parse_mandatory_command(self.parsers, _FORMAT_MAP['_CHECK_'])
 
     def _parse_emptiness_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
         token_parser.report_superfluous_arguments_if_not_at_eol()

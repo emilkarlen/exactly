@@ -58,6 +58,16 @@ def parse_optional_transformer_resolver(parser: TokenParser) -> LinesTransformer
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
+def parse_optional_transformer_resolver_preceding_mandatory_element(parser: TokenParser,
+                                                                    mandatory_element_name: str
+                                                                    ) -> LinesTransformerResolver:
+    """
+    :return: The identity transformer, if transformer option is not given.
+    """
+    parser.require_existing_valid_head_token(mandatory_element_name)
+    return parse_optional_transformer_resolver(parser)
+
+
 def parse_lines_transformer_from_token_parser(parser: TokenParser) -> LinesTransformerResolver:
     return parse_expression.parse(GRAMMAR, parser)
 

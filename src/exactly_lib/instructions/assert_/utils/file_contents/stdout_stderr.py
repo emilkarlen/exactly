@@ -53,6 +53,5 @@ class ParserForContentsForActualValue(InstructionParser):
     def parse(self, source: ParseSource) -> AssertPhaseInstruction:
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser, TokenParser), 'Must have a TokenParser'  # Type info for IDE
-            token_parser.require_is_not_at_eol('Missing file comparison argument')
             return parse_instruction.parse_instruction(self.comparison_actual_value,
                                                        token_parser)

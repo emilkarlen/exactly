@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -35,6 +36,10 @@ class InstructionTestConfiguration:
 class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
     def first_line_argument(self, argument_tail: str) -> str:
         raise NotImplementedError()
+
+    def source_for_lines(self, argument_lines: List[str]) -> ParseSource:
+        return remaining_source(self.first_line_argument(argument_lines[0]),
+                                argument_lines[1:])
 
     def source_for(self, argument_tail: str, following_lines=()) -> ParseSource:
         return remaining_source(self.first_line_argument(argument_tail),
@@ -83,7 +88,7 @@ class TestWithConfigurationAndNegationArgumentBase(TestWithConfigurationBase):
 
 
 def suite_for__conf__not_argument(configuration: InstructionTestConfiguration,
-                                  test_cases: list) -> unittest.TestSuite:
+                                  test_cases: List[TestWithConfigurationAndNegationArgumentBase]) -> unittest.TestSuite:
     return unittest.TestSuite(
         [tc(configuration, ExpectationType.POSITIVE) for tc in test_cases] +
         [tc(configuration, ExpectationType.NEGATIVE) for tc in test_cases])

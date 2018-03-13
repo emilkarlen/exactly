@@ -43,6 +43,11 @@ class TokenParser:
         if self._token_stream.is_null:
             self.error(error_message_format_string)
 
+    def require_existing_valid_head_token(self, syntax_element_name: str):
+        if self._token_stream.is_null:
+            self.error('Missing ' + syntax_element_name)
+        self.require_head_token_has_valid_syntax(syntax_element_name)
+
     @property
     def is_at_eol(self) -> bool:
         remaining_part_of_current_line = self.token_stream.remaining_part_of_current_line
@@ -163,6 +168,8 @@ class TokenParser:
 
         if self.token_stream.is_null:
             return self.error('Missing argument for ' + syntax_element_name)
+        if self._lookahead_token_has_invalid_syntax():
+            return self.error('Invalid syntax of ' + syntax_element_name)
         if self.is_at_eol and must_be_on_current_line:
             return self.error('Missing argument for ' + syntax_element_name)
 
@@ -335,23 +342,17 @@ class TokenParser:
 
     def parse_mandatory_command(self,
                                 command_name_2_parser: Dict[str, Callable[[TokenParserType], T]],
-                                error_message_format_string: str):
+                                syntax_element_name: str) -> T:
         """
         A variant of parse_optional_command ,where the command is mandatory.
 
         :raises `SingleInstructionInvalidArgumentException': The command is not found
         """
-        command = self.parse_optional_command(command_name_2_parser)
-        if command is None:
-            if self.token_stream.is_null:
-                err_msg = self.error(error_message_format_string)
-            else:
-                err_msg = expected_found.unexpected_lines(
-                    expected=self.error(error_message_format_string),
-                    found=self.token_stream.head.source_string)
-            raise SingleInstructionInvalidArgumentException(err_msg)
-
-        return command
+        self.require_existing_valid_head_token(syntax_element_name)
+        command_name = self.consume_mandatory_unquoted_string(syntax_element_name, False)
+        if command_name not in command_name_2_parser:
+            return self.error('Invalid ' + syntax_element_name)
+        return command_name_2_parser[command_name](self)
 
     def parse_mandatory_option(self, option_name_2_parser: dict):
         """
@@ -420,11 +421,6 @@ class TokenParser:
 
     def _lookahead_token_has_invalid_syntax(self) -> bool:
         return self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR
-
-    def consume_space_until_mandatory_token(self, syntax_element: str):
-        while self.has_current_line and self.is_at_eol:
-            self.consume_current_line_as_plain_string()
-        self.require_is_not_at_eol('Missing ' + syntax_element)
 
 
 def new_token_parser(source: str,

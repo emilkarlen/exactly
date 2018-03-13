@@ -25,7 +25,7 @@ class Expectation:
     def __init__(self,
                  validation_post_sds: asrt.ValueAssertion = svh_assertions.is_success(),
                  validation_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
-                 main_result: asrt.ValueAssertion = pfh_check.is_pass(),
+                 main_result: asrt.ValueAssertion[pfh.PassOrFailOrHardError] = pfh_check.is_pass(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
                  main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
