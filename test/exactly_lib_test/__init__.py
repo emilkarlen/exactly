@@ -13,7 +13,7 @@ from exactly_lib_test import symbol
 from exactly_lib_test import test_case
 from exactly_lib_test import test_case_file_structure
 from exactly_lib_test import test_case_utils
-from exactly_lib_test import test_resources
+from exactly_lib_test import test_resources_test
 from exactly_lib_test import test_suite
 from exactly_lib_test import type_system
 from exactly_lib_test import util
@@ -24,7 +24,7 @@ from exactly_lib_test.test_resources.main_program.main_program_runners import Ru
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     from exactly_lib_test import cli
     ret_val = unittest.TestSuite()
-    ret_val.addTest(test_resources.suite())
+    ret_val.addTest(test_resources_test.suite())
     ret_val.addTest(util.suite())
     ret_val.addTest(section_document.suite())
     ret_val.addTest(common.suite())

@@ -2,6 +2,7 @@ import shlex
 from typing import Dict, Any, List, Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib_test.test_resources.string_formatting import StringFormatter
 
 
 def source_of_lines(lines: list) -> ParseSource:
@@ -55,16 +56,13 @@ def _quote(s: str) -> str:
 
 class ParseSourceBuilder:
     def __init__(self, format_map: Dict[str, Any]):
-        self._format_map = format_map
+        self._string_formatter = StringFormatter(format_map)
 
     def format(self, template_string: str, **kwargs) -> str:
-        return template_string.format_map(self.format_dict(**kwargs))
+        return self._string_formatter.format(template_string, **kwargs)
 
     def format_dict(self, **kwargs) -> Dict[str, Any]:
-        if kwargs:
-            return dict(self._format_map, **kwargs)
-        else:
-            return self._format_map
+        return self._string_formatter.format_dict(**kwargs)
 
     def single_line(self, first_line: str, **kwargs) -> ParseSource:
         return self.lines([first_line], **kwargs)
@@ -79,9 +77,7 @@ class ParseSourceBuilder:
         return remaining_source_lines(self.format_lines(lines, **kwargs))
 
     def format_lines(self, lines: List[str], **kwargs) -> List[str]:
-        format_map = self.format_dict(**kwargs)
-        return [line.format_map(format_map)
-                for line in lines]
+        return self._string_formatter.format_strings(lines, **kwargs)
 
     def new_with(self, **kwargs):
-        return ParseSourceBuilder(dict(self._format_map, **kwargs))
+        return ParseSourceBuilder(self._string_formatter.format_dict(**kwargs))

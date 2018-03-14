@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_resources.value_assertions_test import value_assertion
+from exactly_lib_test.test_resources_test.value_assertions import value_assertion
 
 
 def suite() -> unittest.TestSuite:
