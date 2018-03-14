@@ -5,5 +5,3 @@ hello-world
 [assert]
 
 stdout every line : matches regex 'Hello'
-
-exitcode == 0

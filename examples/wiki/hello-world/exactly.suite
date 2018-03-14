@@ -1,1 +1,8 @@
-*.case
+stdout-inline.case
+stdout-in-file.case
+stdout-any-line.case
+stdout-every-line.case
+stdout-transformed.case
+stdout-transformed-def.case
+file-and-stderr.case
+file-and-stderr-default-phase-and-phase-order.case
