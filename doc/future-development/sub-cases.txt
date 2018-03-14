@@ -1,0 +1,161 @@
+-*- org -*-
+
+<2018-03-14 ons>
+
+
+Posibility to "generate" test cases from data sets could be usefull -
+some kind of "Data Driven tests".
+
+Aka subTest in Python, and also like the "Robot framework" and
+"Gherkin"/"Cucumber"(?)
+
+One example is to check option handling of both short and long options.
+
+E.g., the following executions should have the same behaviour:
+
+--------------------
+my-prog -h
+my-prog --help
+--------------------
+
+Here the setup and the assertions would be the same.
+The only thing that differs are the arguments.
+
+These arguments could be assigned to a symbol HELP_OPTION.
+So each test would test
+
+--------------------
+my-prog @[HELP_OPTION]@
+--------------------
+
+The HELP_OPTION symbol would get its values from some kind of "data set".
+
+But sometimes the setup and assertions would need to differ.
+One natural way to express these differences would be to have
+different values of symbols.
+But except for the values in the symbols, the cases would be identical.
+
+
+* Syntax
+
+The definition of sub cases does not (currently) fit well into any of
+the phases.  On the contrary, it feels natural to let/require the
+phases to be identical.
+
+Technically, it feels natural to let each sub-case be executed as
+a "partial execution".
+
+Solutions:
+
+** Put the sub test definition in a separate file
+
+Having a separate file introduces a natural division of
+the definition of the data sets and the test.
+A new kind of file (not suite, not test case) could
+be introduced.
+
+A drawback is that it could be hard to work with multiple files -
+more difficult to read and maintain.
+
+** Put the sub test definitions in a separate phase
+
+A phase for defining the data set could be introduced.
+This would be a pseudo phase, like "conf", that is
+not executed.
+Instead it defines sequence of sub cases, by means
+of values of symbols.  Each element becomes a
+sub case for which the "normal" phases of the
+test case is executed.
+
+
+E.g.
+
+--------------------
+[sub-cases]
+
+cases def string HELP_OPTION <- -h --help
+
+[act]
+
+my-prog @[HELP_OPTION]@
+
+[assert]
+
+exitcode == 0
+
+stdout empty
+--------------------
+
+Here a string symbol HELP_OPTION "iterates" over a list of values (-h --help)
+
+
+*** "Multiplication" of cases:
+
+
+--------------------
+[sub-cases]
+
+cases def string PREFIX <- '' '--'
+cases def string HELP_OPTION <- -h --help
+
+[act]
+
+my-prog @[PREFIX]@ @[HELP_OPTION]@
+...
+--------------------
+
+This would test every combination of PREFIX and HELP_OPTION.
+
+
+*** Tabular data
+
+
+Some kind of tabular cases is probably needed:
+
+--------------------
+[sub-cases]
+
+cases table | string ARGUMENT | string EXIT_CODE | line-matcher STATUS_OUTPUT |
+            | good            | 0                | regex OK                   |
+            | bad             | 1                | regex FAIL                 |
+
+
+[act]
+
+my-prog @[ARGUMENT]@
+
+[assert]
+
+exitcode == @[EXIT_CODE]@
+
+stdout --transformation line-num == 1
+       every line : matches @[STATUS_OUTPUT]@
+--------------------
+
+alt
+
+--------------------
+[sub-cases]
+
+cases table | string ARGUMENT            | good     | bad        |
+            | string EXIT_CODE           | 0        | 1          |
+            | line-matcher STATUS_OUTPUT | regex OK | regex FAIL |
+...
+--------------------
+
+Ordinary symbols could be defined in [sub-cases] as helpers.
+Perhaps (probably?) these should not be available in the execution of
+each sub case (since they are just helpers for defining
+the data set):
+
+--------------------
+[sub-cases]
+
+def line-matcher OK   = regex OK
+def line-matcher FAIL = regex FAIL
+
+cases table | string ARGUMENT            | good | bad |
+            | string EXIT_CODE           |  0 |    1 |
+            | line-matcher STATUS_OUTPUT | OK | FAIL |
+...
+--------------------
