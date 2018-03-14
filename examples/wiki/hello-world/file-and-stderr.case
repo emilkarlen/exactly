@@ -4,12 +4,14 @@ hello-world -o output.txt
 
 [before-assert]
 
-def lines-transformer MY_TRANSFORMER = TO_UPPER_CASE | replace '^HELLO, ' ''
+def lines-transformer MY_TRANSFORMER  = TO_UPPER_CASE | replace '^HELLO, ' ''
+
+def line-matcher      MY_LINE_MATCHER = regex ^WORLD!$
 
 [assert]
 
 contents output.txt
          --transformed-by MY_TRANSFORMER
-         every line : matches regex "^WORLD!$"
+         every line : matches MY_LINE_MATCHER
 
 stderr empty
