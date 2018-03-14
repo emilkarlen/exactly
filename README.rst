@@ -33,7 +33,7 @@ and is able to find the email of a person::
 
     [setup]
 
-    stdin --file some-test-contacts.txt
+    stdin = --file some-test-contacts.txt
 
     [act]
 

@@ -6,7 +6,7 @@
 [setup]
 
 
-stdin --file stdin-contents.txt
+stdin = --file stdin-contents.txt
 
 
 [act]
