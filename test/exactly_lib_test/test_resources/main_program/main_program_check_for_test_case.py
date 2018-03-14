@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
-from exactly_lib_test.test_resources import quoting
+from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.file_structure import File, DirContents
 from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.process import SubProcessResult, SubProcessResultInfo
@@ -80,8 +80,8 @@ class SetupWithPreprocessorAndTestActor(SetupForTestCaseBase, main_program_check
                         python_executable_file_name: str,
                         preprocessor_source_file_name: str) -> list:
         return [OPTION_FOR_PREPROCESSOR,
-                '%s %s' % (quoting.file_name(python_executable_file_name),
-                           quoting.file_name(preprocessor_source_file_name))
+                '%s %s' % (string_formatting.file_name(python_executable_file_name),
+                           string_formatting.file_name(preprocessor_source_file_name))
                 ]
 
     def file_structure(self,

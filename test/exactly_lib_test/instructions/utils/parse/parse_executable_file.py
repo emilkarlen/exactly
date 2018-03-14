@@ -33,7 +33,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
-from exactly_lib_test.test_resources import quoting
+from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -112,7 +112,7 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
     def test(self):
         cases = [
             Case('absolute_path',
-                 source=quoting.file_name(sys.executable),
+                 source=string_formatting.file_name(sys.executable),
                  expectation=
                  ExpectationOnExeFile(
                      argument_resolver_value=empty_list_value(),
@@ -376,7 +376,7 @@ CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
 )
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_EXISTING_EXECUTABLE_FILE = TestCaseConfiguration(
-    quoting.file_name(sys.executable),
+    string_formatting.file_name(sys.executable),
     validation_result=validator_util.expect_passes_all_validations(),
     file_resolver_value=file_refs.absolute_file_name(sys.executable),
     expected_symbol_references_of_file=[],
@@ -386,7 +386,7 @@ CONFIGURATION_FOR_ABSOLUTE_PATH_OF_EXISTING_EXECUTABLE_FILE = TestCaseConfigurat
 _ABSOLUT_PATH_THAT_DOES_NOT_EXIST = str(non_existing_absolute_path('/absolute/path/that/is/expected/to/not/exist'))
 
 CONFIGURATION_FOR_ABSOLUTE_PATH_OF_NON_EXISTING_FILE = TestCaseConfiguration(
-    quoting.file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
+    string_formatting.file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
     validation_result=validator_util.expect_validation_pre_eds(False),
     file_resolver_value=file_refs.absolute_file_name(_ABSOLUT_PATH_THAT_DOES_NOT_EXIST),
     expected_symbol_references_of_file=[],
@@ -521,7 +521,7 @@ class TestParseAbsolutePath(unittest.TestCase):
     def test_non_existing_file(self):
         non_existing_file_path = non_existing_absolute_path('/this/file/is/assumed/to/not/exist')
         non_existing_file_path_str = str(non_existing_file_path)
-        arguments_str = '{} remaining args'.format(quoting.file_name(non_existing_file_path_str))
+        arguments_str = '{} remaining args'.format(string_formatting.file_name(non_existing_file_path_str))
 
         expectation_on_exe_file = ExpectationOnExeFile(
             argument_resolver_value=empty_list_value(),
