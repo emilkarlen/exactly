@@ -19,7 +19,8 @@ from exactly_lib_test.symbol.data.test_resources.list_assertions import matches_
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
-from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
+from exactly_lib_test.test_resources.file_structure import File, executable_file, empty_file, DirContents
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -27,19 +28,22 @@ from exactly_lib_test.type_system.data.test_resources.list_values import list_va
 
 
 class RelativityConfiguration:
-    def __init__(self,
-                 option: str,
-                 exists_pre_sds: bool):
-        self.option = option
-        self.exists_pre_sds = exists_pre_sds
+    def __init__(self, rel_opt_conf: RelativityOptionConfiguration):
+        self._rel_opt_conf = rel_opt_conf
+
+    @property
+    def option(self) -> str:
+        return self._rel_opt_conf.option_string
+
+    @property
+    def exists_pre_sds(self) -> bool:
+        return self._rel_opt_conf.exists_pre_sds
 
     def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        raise NotImplementedError()
+        return self._rel_opt_conf.populator_for_relativity_option_root(DirContents([file]))
 
-    def installed_file_path(self,
-                            file_name: str,
-                            home_and_sds: HomeAndSds) -> pathlib.Path:
-        raise NotImplementedError()
+    def installation_dir(self, home_and_sds: HomeAndSds) -> pathlib.Path:
+        return self._rel_opt_conf.population_dir(home_and_sds)
 
 
 def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
@@ -164,7 +168,7 @@ class CheckBase(unittest.TestCase):
 
     def _check_file_path(self, file_name: str, actual: ExecutableFile,
                          environment: PathResolvingEnvironmentPreOrPostSds):
-        self.assertEqual(str(self.configuration.installed_file_path(file_name, environment.home_and_sds)),
+        self.assertEqual(str(self.configuration.installation_dir(environment.home_and_sds) / file_name),
                          actual.path_string(environment),
                          'Path string')
 

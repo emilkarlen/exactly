@@ -1,6 +1,6 @@
-import pathlib
 import sys
 import unittest
+from typing import Sequence
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
@@ -17,8 +17,7 @@ from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefCo
 from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
 from exactly_lib.type_system.data import file_refs
@@ -31,15 +30,10 @@ from exactly_lib_test.instructions.test_resources.executable_file_test_utils imp
     ExpectationOnExeFile
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    HomeOrSdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
+from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources import quoting
-from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -494,78 +488,15 @@ class ParenthesesWithArgumentsInsideAndWithFollowingArguments(ExecutableTestBase
                                       argument_resolver_value=list_value_of_string_constants(['inside'])))
 
 
-class RelHomeConfiguration(RelativityConfiguration):
-    def __init__(self):
-        super().__init__(file_ref_texts.REL_HOME_CASE_OPTION, True)
+def configurations() -> Sequence[RelativityConfiguration]:
+    all_except_rel_result = set(RelOptionType).difference({RelOptionType.REL_RESULT})
 
-    def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return home_populators.case_home_dir_contents(DirContents([file]))
-
-    def installed_file_path(self,
-                            file_name: str,
-                            home_and_sds: HomeAndSds) -> pathlib.Path:
-        return home_and_sds.hds.case_dir / file_name
-
-
-class DefaultConfiguration(RelativityConfiguration):
-    def __init__(self):
-        super().__init__('', True)
-
-    def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return home_populators.case_home_dir_contents(DirContents([file]))
-
-    def installed_file_path(self,
-                            file_name: str,
-                            home_and_sds: HomeAndSds) -> pathlib.Path:
-        return home_and_sds.hds.case_dir / file_name
-
-
-class RelActConfiguration(RelativityConfiguration):
-    def __init__(self):
-        super().__init__(file_ref_texts.REL_ACT_OPTION, False)
-
-    def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return sds_populator.contents_in(RelSdsOptionType.REL_ACT, DirContents([file]))
-
-    def installed_file_path(self,
-                            file_name: str,
-                            home_and_sds: HomeAndSds) -> pathlib.Path:
-        return home_and_sds.sds.act_dir / file_name
-
-
-class RelTmpConfiguration(RelativityConfiguration):
-    def __init__(self):
-        super().__init__(file_ref_texts.REL_TMP_OPTION, False)
-
-    def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return contents_in(RelSdsOptionType.REL_TMP, DirContents([file]))
-
-    def installed_file_path(self,
-                            file_name: str,
-                            home_and_sds: HomeAndSds) -> pathlib.Path:
-        return home_and_sds.sds.tmp.user_dir / file_name
-
-
-class RelCwdConfiguration(RelativityConfiguration):
-    def __init__(self):
-        super().__init__(file_ref_texts.REL_CWD_OPTION, False)
-
-    def file_installation(self, file: File) -> HomeOrSdsPopulator:
-        return sds_populator.contents_in(RelSdsOptionType.REL_ACT, DirContents([file]))
-
-    def installed_file_path(self,
-                            file_name: str,
-                            home_and_sds: HomeAndSds) -> pathlib.Path:
-        return home_and_sds.sds.act_dir / file_name
-
-
-def configurations() -> list:
-    return [
-        RelHomeConfiguration(),
-        RelActConfiguration(),
-        RelTmpConfiguration(),
-        RelCwdConfiguration(),
-        DefaultConfiguration(),
+    for_non_default = [
+        RelativityConfiguration(relativity_options.conf_rel_any(rel_option_type))
+        for rel_option_type in all_except_rel_result
+    ]
+    return for_non_default + [
+        RelativityConfiguration(relativity_options.default_conf_rel_any(RelOptionType.REL_HOME_CASE)),
     ]
 
 

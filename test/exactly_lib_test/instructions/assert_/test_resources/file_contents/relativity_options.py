@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.logic_types import ExpectationType
@@ -92,6 +93,9 @@ class RelativityOptionConfigurationForRelCwdForTestCwdDir(RelativityOptionConfig
     def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
         return sub_dir_of_sds_contains_exactly(SUB_DIR_RESOLVER.population_dir,
                                                contents)
+
+    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
+        return SUB_DIR_RESOLVER.population_dir(tds.sds)
 
 
 MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY = MkSubDirAndMakeItCurrentDirectory(SUB_DIR_RESOLVER)
