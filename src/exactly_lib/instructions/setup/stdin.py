@@ -1,6 +1,6 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
@@ -49,10 +49,13 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return 'Sets the contents of stdin for the act phase program'
 
     def invokation_variants(self) -> list:
-        contents_arg = self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY)
+        args = [a.Single(a.Multiplicity.MANDATORY, a.Constant(instruction_arguments.ASSIGNMENT_OPERATOR)),
+                self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY),
+                ]
         return [
-            InvokationVariant(self._cl_syntax_for_args([contents_arg]),
-                              docs.paras('Sets stdin to be the contents of a string, "here document" or file')),
+            invokation_variant_from_args(args,
+                                         docs.paras(
+                                             'Sets stdin to be the contents of a string, "here document" or file')),
         ]
 
     def syntax_element_descriptions(self) -> list:
@@ -67,6 +70,10 @@ class Parser(InstructionParser):
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser, TokenParser), 'Must have a TokenParser'  # Type info for IDE
 
+            token_parser.consume_mandatory_constant_string_that_must_be_unquoted_and_equal(
+                [instruction_arguments.ASSIGNMENT_OPERATOR],
+                lambda x: x
+            )
             string_or_file_ref = parse_here_doc_or_file_ref.parse_from_token_parser(token_parser,
                                                                                     RELATIVITY_OPTIONS_CONFIGURATION)
             if string_or_file_ref.source_type is not SourceType.HERE_DOC:

@@ -42,7 +42,7 @@ def single_line_source(arguments: str) -> ParseSource:
     return source4(remaining_part_of_current_line)
 
 
-def argument_list_source(arguments: list,
+def argument_list_source(arguments: List[str],
                          following_lines: iter = ()) -> ParseSource:
     return source4(' '.join(map(_quote, arguments)),
                    following_lines)
