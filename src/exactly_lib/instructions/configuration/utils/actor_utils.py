@@ -7,7 +7,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.help.entities.actors.objects import command_line as command_line_actor_help
-from exactly_lib.help_texts import formatting
+from exactly_lib.help_texts import formatting, instruction_arguments
 from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.entity import concepts, actors
 from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
@@ -139,11 +139,13 @@ def parse(instruction_argument: str) -> ActPhaseHandling:
         args = arg.split(maxsplit=2)
     except Exception as ex:
         raise SingleInstructionInvalidArgumentException(str(ex))
-    if args[0] != '=':
-        raise SingleInstructionInvalidArgumentException('Missing =')
+    if args[0] != instruction_arguments.ASSIGNMENT_OPERATOR:
+        raise SingleInstructionInvalidArgumentException('Missing ' +
+                                                        instruction_arguments.ASSIGNMENT_OPERATOR)
     del args[0]
     if not args:
-        raise SingleInstructionInvalidArgumentException('Missing arguments after =')
+        raise SingleInstructionInvalidArgumentException('Missing arguments after ' +
+                                                        instruction_arguments.ASSIGNMENT_OPERATOR)
     if matches(COMMAND_LINE_ACTOR_OPTION_NAME, args[0]):
         if len(args) > 1:
             raise SingleInstructionInvalidArgumentException('Superfluous arguments to ' + args[0])

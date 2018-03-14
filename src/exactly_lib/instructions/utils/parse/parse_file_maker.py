@@ -26,7 +26,7 @@ from exactly_lib.util.cli_syntax.option_syntax import is_option_string
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-CONTENTS_ASSIGNMENT_TOKEN = '='
+CONTENTS_ASSIGNMENT_TOKEN = instruction_arguments.ASSIGNMENT_OPERATOR
 SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
 STDOUT_OPTION = a.OptionName(long_name='stdout')
 FILE_OPTION = a.OptionName(long_name='file')
