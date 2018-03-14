@@ -178,7 +178,7 @@ def _parse(parser: TokenParser) -> Tuple[str, SymbolValueResolver]:
         err_msg = symbol_syntax.invalid_symbol_name_error(name_str)
         raise SingleInstructionInvalidArgumentException(err_msg)
 
-    parser.consume_mandatory_constant_unquoted_string(syntax.EQUALS_ARGUMENT, True)
+    parser.consume_mandatory_constant_unquoted_string(syntax.ASSIGNMENT_ARGUMENT, True)
 
     value_resolver = value_parser(parser)
 

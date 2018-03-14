@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.configuration.utils.actor_utils import COMMAND_LINE_ACTOR_OPTION
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -34,7 +35,7 @@ class TestParse(unittest.TestCase):
         test_cases = [
             '   ',
             'argument-1 "argument-2',
-            '=',
+            instruction_arguments.ASSIGNMENT_OPERATOR,
         ]
         parser = sut.Parser()
         for instruction_argument in test_cases:
@@ -45,7 +46,9 @@ class TestParse(unittest.TestCase):
 
     def test_success_when_argument_is_valid(self):
         parser = sut.Parser()
-        for source in equivalent_source_variants__with_source_check(self, '= ' + COMMAND_LINE_ACTOR_OPTION):
+        for source in equivalent_source_variants__with_source_check(self, instruction_arguments.ASSIGNMENT_OPERATOR +
+                                                                          ' ' +
+                                                                          COMMAND_LINE_ACTOR_OPTION):
             parser.parse(source)
 
 

@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import type_system
+from exactly_lib.help_texts import type_system, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import syntax_elements
@@ -11,7 +11,7 @@ from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
-EQUALS_ARGUMENT = '='
+ASSIGNMENT_ARGUMENT = instruction_arguments.ASSIGNMENT_OPERATOR
 
 TYPE_SYNTAX_ELEMENT = 'TYPE'
 
@@ -32,7 +32,7 @@ def def_instruction_argument_syntax() -> list:
                  syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument),
 
         a.Single(a.Multiplicity.MANDATORY,
-                 a.Constant(EQUALS_ARGUMENT)),
+                 a.Constant(ASSIGNMENT_ARGUMENT)),
 
         a.Single(a.Multiplicity.MANDATORY,
                  a.Named(VALUE_SYNTAX_ELEMENT)),
@@ -79,7 +79,7 @@ _SYMBOL_NAME = a.Single(a.Multiplicity.MANDATORY,
                         syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument)
 
 _EQUALS = a.Single(a.Multiplicity.MANDATORY,
-                   a.Constant(EQUALS_ARGUMENT))
+                   a.Constant(ASSIGNMENT_ARGUMENT))
 
 DATA_TYPE_INFO_DICT = {
     DataValueType.STRING:
@@ -127,7 +127,7 @@ def def_syntax_table_row(value_type: ValueType) -> list:
         instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
         type_info.identifier,
         syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
-        EQUALS_ARGUMENT,
+        ASSIGNMENT_ARGUMENT,
         cl_syntax.cl_syntax_for_args(type_info.value_arguments),
     ]
     return list(map(docs.text_cell, arg_parts))

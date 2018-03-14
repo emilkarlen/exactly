@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.help_texts.instruction_arguments import ASSIGNMENT_OPERATOR
 from exactly_lib.instructions.configuration import test_case_status as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -27,8 +28,8 @@ class TestParse(unittest.TestCase):
     def test_invalid_syntax(self):
         cases = [
             '   ',
-            '= ',
-            ' '.join(['=', tcs.NAME_SKIP, tcs.NAME_PASS]),
+            ASSIGNMENT_OPERATOR + ' ',
+            ' '.join([ASSIGNMENT_OPERATOR, tcs.NAME_SKIP, tcs.NAME_PASS]),
         ]
         for argument_str in cases:
             with self.subTest(argument_str):

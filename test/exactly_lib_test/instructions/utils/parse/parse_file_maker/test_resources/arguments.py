@@ -22,7 +22,7 @@ def empty_file_contents_arguments() -> Arguments:
 
 
 def explicit_contents_of(contents_arguments: Arguments) -> Arguments:
-    return Arguments('=').followed_by(contents_arguments)
+    return Arguments(instruction_arguments.ASSIGNMENT_OPERATOR).followed_by(contents_arguments)
 
 
 def here_document_contents_arguments(lines: list) -> Arguments:
