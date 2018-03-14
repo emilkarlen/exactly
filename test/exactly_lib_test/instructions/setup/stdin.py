@@ -1,6 +1,9 @@
 import unittest
+from typing import List
 
+from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION_NAME
+from exactly_lib.help_texts.instruction_arguments import ASSIGNMENT_OPERATOR
 from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -22,8 +25,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
     Expectation, SettingsBuilderAssertionModel
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source, source4, \
-    remaining_source
+from exactly_lib_test.section_document.test_resources.parse_source import argument_list_source, source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, here_doc_assertion_utils as hd
@@ -49,16 +51,16 @@ class TestParse(unittest.TestCase):
     def test_invalid_syntax(self):
         test_cases = [
             source4(''),
-            source4('string superfluous-argument'),
-            source4('{file_option} --rel-home file superfluous-argument'.format(
+            assignment_of('string superfluous-argument'),
+            assignment_of('{file_option} --rel-home file superfluous-argument'.format(
                 file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
             )),
-            remaining_source('<<MARKER superfluous argument',
-                             ['single line',
-                              'MARKER']),
-            remaining_source('<<MARKER ',
-                             ['single line',
-                              'NOT_MARKER']),
+            assignment_of('<<MARKER superfluous argument',
+                          ['single line',
+                           'MARKER']),
+            assignment_of('<<MARKER ',
+                          ['single line',
+                           'NOT_MARKER']),
         ]
         parser = sut.Parser()
         for source in test_cases:
@@ -74,19 +76,14 @@ class TestParse(unittest.TestCase):
                 file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
                 rel_option=option_string)
             with self.subTest(msg='Argument ' + instruction_argument):
-                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                for source in equivalent_source_variants__with_source_check(self,
+                                                                            assignment_str_of(instruction_argument)):
                     parser.parse(source)
 
     def test_succeed_when_syntax_is_correct__string(self):
         parser = sut.Parser()
-        for rel_option_type in sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_options:
-            option_string = long_option_syntax(REL_OPTIONS_MAP[rel_option_type].option_name.long)
-            instruction_argument = 'string'.format(
-                file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-                rel_option=option_string)
-            with self.subTest(msg='Argument ' + instruction_argument):
-                for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                    parser.parse(source)
+        for source in equivalent_source_variants__with_source_check(self, assignment_str_of('string')):
+            parser.parse(source)
 
     def test_successful_single_last_line(self):
         test_cases = [
@@ -100,14 +97,14 @@ class TestParse(unittest.TestCase):
         ]
         parser = sut.Parser()
         for instruction_argument in test_cases:
-            for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            for source in equivalent_source_variants__with_source_check(self, assignment_str_of(instruction_argument)):
                 parser.parse(source)
 
     def test_here_document(self):
-        source = argument_list_source(['<<MARKER'],
-                                      ['single line',
-                                       'MARKER',
-                                       'following line'])
+        source = assignment_of_list_of_args(['<<MARKER'],
+                                            ['single line',
+                                             'MARKER',
+                                             'following line'])
         sut.Parser().parse(source)
         is_at_beginning_of_line(4).apply_with_message(self, source, 'source')
 
@@ -132,7 +129,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
         ]
         for rel_opt in accepted_relativity_options:
             with self.subTest(option_string=rel_opt.option_string):
-                self._run(source4('{file_option} {relativity_option} file.txt'.format(
+                self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
                     file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
                     relativity_option=rel_opt.option_string),
                     ['following line']),
@@ -160,7 +157,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
         ]
         for rel_opt in accepted_relativity_options:
             with self.subTest(option_string=rel_opt.option_string):
-                self._run(source4('{file_option} {relativity_option} file.txt'.format(
+                self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
                     file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
                     relativity_option=rel_opt.option_string),
                     ['following line']),
@@ -181,10 +178,10 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
 class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
     def test_doc_without_symbol_references(self):
         content_line_of_here_doc = 'content line of here doc'
-        self._run(source4(' <<MARKER  ',
-                          [content_line_of_here_doc,
-                           'MARKER',
-                           'following line']),
+        self._run(assignment_of(' <<MARKER  ',
+                                [content_line_of_here_doc,
+                                 'MARKER',
+                                 'following line']),
                   Arrangement(),
                   Expectation(
                       settings_builder=AssertStdinIsSetToContents(
@@ -210,11 +207,11 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
         ]
         for case in cases:
             with self.subTest(case[0]):
-                self._run(source4(' <<MARKER  ',
-                                  [content_line_of_here_doc_template.format(
-                                      symbol=symbol_reference_syntax_for_name(symbol_name)),
-                                      'MARKER',
-                                      'following line']),
+                self._run(assignment_of(' <<MARKER  ',
+                                        [content_line_of_here_doc_template.format(
+                                            symbol=symbol_reference_syntax_for_name(symbol_name)),
+                                            'MARKER',
+                                            'following line']),
                           Arrangement(
                               symbols=SymbolTable({
                                   symbol_name: case[1]
@@ -232,7 +229,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
 
 class TestFailingInstructionExecution(TestCaseBaseForParser):
     def test_referenced_file_does_not_exist(self):
-        self._run(source4('{file_option} --rel-home non-existing-file'.format(
+        self._run(assignment_of('{file_option} --rel-home non-existing-file'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
         )),
             Arrangement(),
@@ -245,7 +242,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             RelOptionType.REL_HOME_CASE,
             'SYMBOL',
             sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
-        self._run(source4('{file_option} {relativity_option} file.txt'.format(
+        self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
             relativity_option=symbol_rel_opt.option_string)),
             Arrangement(
@@ -262,7 +259,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             RelOptionType.REL_ACT,
             'SYMBOL',
             sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
-        self._run(source4('{file_option} {relativity_option} file.txt'.format(
+        self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
             relativity_option=symbol_rel_opt.option_string)),
             Arrangement(
@@ -275,7 +272,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         )
 
     def test_referenced_file_is_a_directory(self):
-        self._run(source4('{file_option} --rel-home directory'.format(
+        self._run(assignment_of('{file_option} --rel-home directory'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
         )),
             Arrangement(
@@ -324,6 +321,22 @@ class AssertStdinIsSetToContents(asrt.ValueAssertion):
         put.assertEqual(expected_contents_str,
                         model.actual.stdin.contents,
                         'stdin as contents')
+
+
+def assignment_of_list_of_args(arguments: List[str],
+                               following_lines: iter = ()) -> ParseSource:
+    return argument_list_source([instruction_arguments.ASSIGNMENT_OPERATOR] + arguments,
+                                following_lines)
+
+
+def assignment_str_of(argument: str) -> str:
+    return ASSIGNMENT_OPERATOR + ' ' + argument
+
+
+def assignment_of(first_line: str,
+                  following_lines: list = ()) -> ParseSource:
+    return ParseSource(
+        instruction_arguments.ASSIGNMENT_OPERATOR + ' ' + '\n'.join([first_line] + list(following_lines)))
 
 
 if __name__ == '__main__':
