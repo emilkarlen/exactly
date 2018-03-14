@@ -4,9 +4,11 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelat
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType
+from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HOME_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
@@ -140,6 +142,9 @@ class RelativityOptionConfiguration:
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         raise NotImplementedError()
 
+    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
+        raise NotImplementedError()
+
     @property
     def symbols(self) -> SymbolsConfiguration:
         return self._symbols_configuration
@@ -170,6 +175,9 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
 
     def populator_for_relativity_option_root(self, contents: DirContents) -> HomeOrSdsPopulator:
         return HomeOrSdsPopulatorForRelOptionType(self.relativity, contents)
+
+    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
+        return REL_OPTIONS_MAP[self.relativity].root_resolver.from_home_and_sds(tds)
 
 
 class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOptionType):
@@ -265,6 +273,9 @@ class RelativityOptionConfigurationForRelNonHomeBase(RelativityOptionConfigurati
     def assert_root_dir_contains_exactly(self, contents: DirContents) -> asrt.ValueAssertion:
         return sds_contents_check.non_home_dir_contains_exactly(self.root_dir__non_home,
                                                                 contents)
+
+    def population_dir(self, tds: HomeAndSds) -> pathlib.Path:
+        return REL_NON_HOME_OPTIONS_MAP[self.relativity_non_home].root_resolver.from_home_and_sds(tds)
 
 
 class RelativityOptionConfigurationForRelSds(RelativityOptionConfigurationForRelNonHomeBase):
