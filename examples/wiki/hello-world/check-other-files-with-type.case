@@ -1,0 +1,12 @@
+[act]
+
+hello-world -o output.txt
+
+[assert]
+
+exists --file output.txt
+
+contents output.txt
+         every line : matches regex 'Hello'
+
+stderr empty

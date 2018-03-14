@@ -1,0 +1,17 @@
+[act]
+
+hello-world
+
+[before-assert]
+
+file transformed-output.txt = --transformed-by TO_UPPER_CASE | replace '^HELLO, ' ''
+                              --file
+                              --rel-result stdout
+
+[assert]
+
+contents transformed-output.txt
+         every line : matches regex ^WORLD!$
+
+contents transformed-output.txt
+         num-lines == 1

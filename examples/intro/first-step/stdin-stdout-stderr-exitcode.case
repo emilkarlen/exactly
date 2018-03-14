@@ -5,7 +5,7 @@
 [setup]
 
 
-stdin <<EOF
+stdin = <<EOF
 first line
 first good line
 a bad line

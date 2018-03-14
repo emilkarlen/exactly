@@ -1,12 +1,16 @@
 stdout-inline.case
-stdout-in-file.case
+stdout-expected-contents-in-file.case
 stdout-any-line.case
 stdout-every-line.case
+
+check-other-files.case
+check-other-files-with-type.case
+
 stdout-transformed.case
 stdout-transformed-immutable.case
+stdout-transformed-to-file.case
 
 stdout-transformed-def.case
 stdout-transformed-def-and-matcher.case
 
-file-and-stderr.case
 file-and-stderr-default-phase-and-phase-order.case

@@ -6,7 +6,7 @@
 [setup]
 
 
-stdin <<EOF
+stdin = <<EOF
 The contents of stdin.
 EOF
 
