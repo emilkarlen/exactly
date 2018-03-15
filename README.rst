@@ -454,7 +454,8 @@ it just displays some of Exactly's features.)
     This is the expected output from the-system-under-test
     EOF
 
-    stdout --transformed-by REPLACE_TEST_CASE_DIRS any line : matches regex 'EXACTLY_ACT:[0-9]+'
+    stdout --transformed-by REPLACE_TEST_CASE_DIRS
+           any line : matches regex 'EXACTLY_ACT:[0-9]+'
 
     stderr empty
 
@@ -462,7 +463,9 @@ it just displays some of Exactly's features.)
 
     contents a-second-file.txt ! empty
 
-    contents another-file.txt --transformed-by REPLACE_TEST_CASE_DIRS equals --file expected-content.txt
+    contents another-file.txt
+             --transformed-by REPLACE_TEST_CASE_DIRS
+             equals --file expected-content.txt
 
     contents file.txt any line : matches regex 'my .* reg ex'
 
@@ -480,7 +483,8 @@ it just displays some of Exactly's features.)
     file --rel-tmp modified-stdout.txt = --transformed-by select line-num >= 10
                                          --file --rel-result stdout
 
-    contents  --rel-tmp modified-stdout.txt  equals <<EOF
+    contents --rel-tmp modified-stdout.txt
+             equals <<EOF
     this should be line 10 of original stdout.txt
     this should be line 11 of original stdout.txt
     EOF
