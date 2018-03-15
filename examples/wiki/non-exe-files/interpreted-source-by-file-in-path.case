@@ -1,0 +1,15 @@
+[conf]
+
+actor = --file python
+
+[act]
+
+my-argument-printer.py 'an argument' more arguments
+
+[assert]
+
+stdout equals <<EOF
+Argument 1: an argument
+Argument 2: more
+Argument 3: arguments
+EOF

@@ -1,0 +1,7 @@
+[conf]
+
+act-home = /etc
+
+[assert]
+
+exists --file --rel-act-home passwd

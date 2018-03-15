@@ -1,0 +1,9 @@
+[act]
+
+$ echo 'Hello, World!'
+
+[assert]
+
+stdout equals <<EOF
+Hello, World!
+EOF
