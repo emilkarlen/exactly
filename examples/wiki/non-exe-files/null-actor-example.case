@@ -1,0 +1,3 @@
+[assert]
+
+exists --file --rel-act-home null-actor-example.case
