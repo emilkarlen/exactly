@@ -21,7 +21,7 @@ from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParseDueToInvalidSyntax),
-        unittest.makeSuite(TestSuccessfulParse),
+        unittest.makeSuite(TestSuccessfulDefinition),
     ])
 
 
@@ -46,7 +46,7 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
                     parser.parse(source)
 
 
-class TestSuccessfulParse(TestCaseBaseForParser):
+class TestSuccessfulDefinition(TestCaseBaseForParser):
     def test_assignment_of_single_constant_word(self):
         source = single_line_source('{string_type} name1 = v1')
         expected_definition = SymbolDefinition('name1', string_constant_container('v1'))
