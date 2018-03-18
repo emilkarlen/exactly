@@ -2,6 +2,7 @@ import enum
 import functools
 import pathlib
 import shlex
+from typing import Tuple
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
@@ -98,12 +99,20 @@ def parse_from_token_parser(token_parser: TokenParser,
         FILE_ARGUMENT_OPTION)
     if file_ref:
         return StringResolverOrFileRef(SourceType.PATH, None, file_ref)
-    elif token_parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
+    else:
+        source_type, resolver = parse_string_or_here_doc_from_token_parser(token_parser)
+        return StringResolverOrFileRef(source_type, resolver, None)
+
+
+def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser) -> Tuple[SourceType, StringResolver]:
+    token_parser.require_is_not_at_eol(MISSING_SOURCE)
+    token_parser.require_head_token_has_valid_syntax()
+    if token_parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
         here_doc = parse_here_document.parse_as_last_argument_from_token_parser(False, token_parser)
-        return StringResolverOrFileRef(SourceType.HERE_DOC, here_doc, None)
+        return SourceType.HERE_DOC, here_doc
     else:
         string_resolver = parse_string.parse_string_from_token_parser(token_parser)
-        return StringResolverOrFileRef(SourceType.STRING, string_resolver, None)
+        return SourceType.STRING, string_resolver
 
 
 class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
