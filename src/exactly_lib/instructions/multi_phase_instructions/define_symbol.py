@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
@@ -33,9 +33,12 @@ from exactly_lib.test_case_utils.lines_transformer import resolvers as line_tran
     parse_lines_transformer
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
-from exactly_lib.test_case_utils.parse import parse_string
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser, \
+    SourceType
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
+from exactly_lib.type_system.value_type import ValueType
+from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure import structures as docs
@@ -61,14 +64,14 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def _main_description_rest_body(self) -> list:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
             InvokationVariant(
                 cl_syntax.cl_syntax_for_args(syntax.def_instruction_argument_syntax())
             )
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return ([
                     SyntaxElementDescription(', '.join([syntax.TYPE_SYNTAX_ELEMENT,
                                                         syntax.VALUE_SYNTAX_ELEMENT]),
@@ -88,6 +91,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def see_also_targets(self) -> list:
         name_and_cross_refs = [concepts.SYMBOL_CONCEPT_INFO,
                                syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
+                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
                                concepts.TYPE_CONCEPT_INFO,
                                concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
                                ]
@@ -98,9 +102,20 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def _types_table() -> docs.ParagraphItem:
         def type_row(type_info: TypeNameAndCrossReferenceId) -> list:
             type_syntax_info = syntax.ANY_TYPE_INFO_DICT[type_info.value_type]
+
+            first_column = docs.text_cell(syntax_text(type_info.identifier))
+
+            if type_info.value_type == ValueType.STRING:
+                arg = a.Choice(a.Multiplicity.MANDATORY,
+                               [instruction_arguments.STRING,
+                                instruction_arguments.HERE_DOCUMENT])
+                second_column = [arg]
+            else:
+                second_column = type_syntax_info.value_arguments
+
             return [
-                docs.text_cell(syntax_text(type_info.identifier)),
-                docs.text_cell(syntax_text(cl_syntax.cl_syntax_for_args(type_syntax_info.value_arguments))),
+                first_column,
+                docs.text_cell(syntax_text(cl_syntax.cl_syntax_for_args(second_column))),
             ]
 
         rows = [
@@ -180,9 +195,9 @@ def _parse(parser: TokenParser) -> Tuple[str, SymbolValueResolver]:
 
     parser.consume_mandatory_constant_unquoted_string(syntax.ASSIGNMENT_ARGUMENT, True)
 
-    value_resolver = value_parser(parser)
+    consumes_whole_line, value_resolver = value_parser(parser)
 
-    if not parser.is_at_eol:
+    if not consumes_whole_line and not parser.is_at_eol:
         msg = 'Superfluous arguments: ' + parser.remaining_part_of_current_line
         raise SingleInstructionInvalidArgumentException(msg)
 
@@ -215,6 +230,19 @@ not when it is defined!
 """
 
 
+def _parse_string(token_parser: TokenParser) -> Tuple[bool, DataValueResolver]:
+    source_type, resolver = parse_string_or_here_doc_from_token_parser(token_parser)
+    return source_type == SourceType.HERE_DOC, resolver
+
+
+def _parse_not_whole_line(parser: Callable[[TokenParser], SymbolValueResolver]
+                          ) -> Callable[[TokenParser], Tuple[bool, SymbolValueResolver]]:
+    def f(tp: TokenParser) -> Tuple[bool, SymbolValueResolver]:
+        return False, parser(tp)
+
+    return f
+
+
 def _parse_path(token_parser: TokenParser) -> DataValueResolver:
     return parse_file_ref.parse_file_ref_from_token_parser(REL_OPTION_ARGUMENT_CONFIGURATION, token_parser)
 
@@ -240,12 +268,12 @@ def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_reso
 
 
 _TYPE_SETUPS = {
-    types.PATH_TYPE_INFO.identifier: _parse_path,
-    types.STRING_TYPE_INFO.identifier: parse_string.parse_string_from_token_parser,
-    types.LIST_TYPE_INFO.identifier: parse_list.parse_list_from_token_parser,
-    types.LINE_MATCHER_TYPE_INFO.identifier: _parse_line_matcher,
-    types.FILE_MATCHER_TYPE_INFO.identifier: _parse_file_matcher,
-    types.LINES_TRANSFORMER_TYPE_INFO.identifier: _parse_lines_transformer,
+    types.PATH_TYPE_INFO.identifier: _parse_not_whole_line(_parse_path),
+    types.STRING_TYPE_INFO.identifier: _parse_string,
+    types.LIST_TYPE_INFO.identifier: _parse_not_whole_line(parse_list.parse_list_from_token_parser),
+    types.LINE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_line_matcher),
+    types.FILE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_file_matcher),
+    types.LINES_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_lines_transformer),
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))
