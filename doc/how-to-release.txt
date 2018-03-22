@@ -1,26 +1,33 @@
 -*- org -*-
 
-* https://packaging.python.org/
+https://packaging.python.org/
 
+* Run tests
 
-** Set version number in src/exactly_lib/program_info.py
+* Run tests towards installed program
 
-** 0. Remove existing distributables
+* Set version number in src/exactly_lib/program_info.py
+
+* 0. Remove existing distributables
 
 > rm -rf dist
+> rm -rf build
 
-** 1. Make distributables
+* Make distributables
 Distribute source and wheel
 
 > python3 setup.py sdist
 > python3 setup.py bdist_wheel
 
-** 2. Upload
+* Upload
 
 > twine upload dist/*
 
-** wiki: Generate new Reference.html
+* wiki: Generate new Reference.html
 
+* Tag repo with version
+
+* Make release on github
 
 * http://peterdowns.com/posts/first-time-with-pypi.html
 
