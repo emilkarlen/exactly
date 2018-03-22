@@ -121,7 +121,7 @@ Men det skulle dra ner prestanda rejält, samt ev göra det krångligare
 (syntaxmässigt) att ha sym-ref-syntax i filer som inte ska substitueras.
 Kan alltså vara motiverat att kräva att subst måste anges explicit,
 även om det är lite krångligare.
-* Testa innehållet i script mot befintlig fil
+* Testa innehållet i fil mot befintlig fil som innehåller symbol-referenser
  - Symbol-substitution i godtyckliga filer (för jämförelse)
 
 ** Lösning m lines-transformer
