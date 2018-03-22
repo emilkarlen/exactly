@@ -2,7 +2,8 @@ from typing import Tuple
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
+    invokation_variant_from_args
 from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
@@ -93,8 +94,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         self.generic_arg = a.Named('ARGUMENT')
         self.zero_or_more_generic_args = a.Single(a.Multiplicity.ZERO_OR_MORE,
                                                   self.generic_arg)
-        self.optional_arg_sep = a.Single(a.Multiplicity.OPTIONAL,
-                                         a.Constant(OPTIONS_SEPARATOR_ARGUMENT))
         self._single_line_description = single_line_description
 
     def single_line_description(self) -> str:
@@ -107,22 +106,23 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
     def invokation_variants(self) -> list:
         return [
-            InvokationVariant(self._cl_syntax_for_args([
+            invokation_variant_from_args([
                 self.mandatory_executable,
-                self.optional_arg_sep,
-                self.zero_or_more_generic_args]),
+                a.Single(a.Multiplicity.OPTIONAL, a.Constant(OPTIONS_SEPARATOR_ARGUMENT)),
+                self.zero_or_more_generic_args],
                 self._paragraphs(_EXECUTABLE_FILE)),
-            InvokationVariant(self._cl_syntax_for_args([
+
+            invokation_variant_from_args([
                 self.mandatory_executable,
                 a.Single(a.Multiplicity.MANDATORY, a.Option(INTERPRET_OPTION_NAME)),
                 self.mandatory_path,
-                self.optional_arg_sep,
-                self.zero_or_more_generic_args]),
+                self.zero_or_more_generic_args],
                 self._paragraphs(_SOURCE_FILE)),
-            InvokationVariant(self._cl_syntax_for_args([
+
+            invokation_variant_from_args([
                 self.mandatory_executable,
                 a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_OPTION_NAME)),
-                a.Single(a.Multiplicity.MANDATORY, a.Named(_SOURCE_SYNTAX_ELEMENT_NAME))]),
+                a.Single(a.Multiplicity.MANDATORY, a.Named(_SOURCE_SYNTAX_ELEMENT_NAME))],
                 self._paragraphs(_SOURCE_STRING)),
         ]
 
