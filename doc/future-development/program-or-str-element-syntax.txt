@@ -1,0 +1,70 @@
+-*- org -*-
+
+<2018-03-22 tor>
+
+Definitions of strings with possibility of output from program.
+
+* Usages
+** File creation
+
+file PATH = STRING-PRODUCER
+
+** EXPECTED in File contents comparison
+
+contents FILE [TRANSFORMATION] COMPARISON
+COMPARISON ::= ...|equals STRING-PRODUCER
+
+STRING-PRODUCER ::= STRING
+                ::| HERE-DOCUMENT
+                ::| [TRANSFORMATION] FILE
+                ::| PROGRAM-OUTPUT-WITH-TRANS
+
+** Actual in program result assertions (exitcode, stdout, stderr)
+
+stdout   [--from PROGRAM-INVOKATION] [TRANSFORMATION] FILE-CONTENTS-MATCHER
+
+stderr   [--from PROGRAM-INVOKATION] [TRANSFORMATION] FILE-CONTENTS-MATCHER
+
+exitcode [--from PROGRAM-INVOKATION] [!] INTEGER-COMPARISON
+
+** run
+
+run NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
+
+** $
+
+$ SHELL-COMMAND-LINE
+
+** def
+
+def program SYMBOL-NAME ::= PROGRAM-VALUE
+
+* Syntax elements
+
+PROGRAM-VALUE ::= $ SHELL-COMMAND-LINE
+              ::| NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
+
+NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
+   ::= EXECUTABLE [--]             [ARGUMENT...]
+   ::| EXECUTABLE --interpret PATH [ARGUMENT...]
+   ::| --shell                PATH [ARGUMENT...]
+   ::| EXECUTABLE --source SOURCE  [ARGUMENT...]
+   ::| PROGRAM-SYM-REF             [ARGUMENT...]
+
+SHELL-COMMAND-LINE ::= everything until end of line
+
+PROGRAM-OUTPUT-WITH-TRANS ::= [TRANSFORMATION] PROGRAM-OUTPUT
+
+PROGRAM-OUTPUT            ::= (--stdout|--stderr) PROGRAM-VALUE
+
+EXECUTABLE ::= PATH
+           ::| STRING  (rel ?? --rel-home? "globalt" i system-PATH?)
+           ::| ( PATH   [ARGUMENT...] )
+           ::| ( STRING [ARGUMENT...] )
+           ::| --python
+           ::| ( --python [ARGUMENT...] )
+
+
+
+PROGRAM-INVOKATION
+may need to use end-of-line as end-token for [ARGUMENT...]
