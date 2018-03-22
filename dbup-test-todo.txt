@@ -1,0 +1,149 @@
+-*- org -*-
+
+* --shell för att ange shell source code pss --python
+<2018-03-20 tis>
+Är användbart att enkelt kunna köra shell-script utan att behöva
+göra script exekverbara genom shebang som reffar interpretatorn.
+
+----------------------------------------
+run --shell my-pgm.sh arg1 arg2
+----------------------------------------
+
+En sådan konstruktion skulle inte vara porterbar,
+och Exactly skulle behöva bestämma hur en källkodsfil troligtvis
+körs av shellet.
+För unix: "source FILE"
+För Windows: något annat anpassat till CMD.EXE
+* Enklare sätt att testa stdout/stderr från program
+<2018-03-20 tis>
+Nu krävs två steg:
+----------------------------------------
+[before-assert]
+
+file actual.txt = --stdout PROGRAM
+
+[asert]
+
+contents actual.txt equals <<EOF ... EOF
+----------------------------------------
+
+Vill ha:
+----------------------------------------
+[assert]
+
+stdout --from PROGRAM
+       equals <<EOF ... EOF
+----------------------------------------
+* Köra program med stdin angiven inline pss som shellets möjligheter
+<2018-03-20 tis>
+Dvs liknande shell:
+----------------------------------------
+prog arg1 arg2 <<EOF
+stdin till prog
+EOF
+----------------------------------------
+
+Tänker mig typ:
+----------------------------------------
+run PROGRAM
+    <<EOF
+stdin till program
+EOF
+----------------------------------------
+
+Här måste "<<EOF" skrivas på ny rad, eftersom
+parsningen av PROGRAM är "rad-baserad":
+  - för shell: programmet är all text fram till radslut
+  - för pgm  : argumenten till programmet avslutas av radslut
+
+Ev ny växel "--stdin":
+----------------------------------------
+run PROGRAM
+    --stdin <<EOF
+stdin till program
+EOF
+----------------------------------------
+
+----------------------------------------
+run PROGRAM
+    --stdin 'stdin till program'
+----------------------------------------
+
+* Appenda till befintlig fil
+<2018-03-20 tis>
+
+Kan vara bra då in/ut-data etc skapas från flera delar:
+----------------------------------------
+file f.txt += CONTENTS
+----------------------------------------
+
+* lines-transformer för symbol-substitution
+<2018-03-20 tis>
+Vill kunna använda symboler i strängar som ligger i separata filer.
+T ex
+expected-script.sql =
+----------------------------------------
+...
+@[RELEASE]@
+...
+----------------------------------------
+
+Vill införa en inbyggd lines-transformer "SUBSTITUTE_SYMBOL_REFERENCES"
+som substituerar data-symboler.
+
+Den skulle orsaka HARD_ERROR om odef symboler påträffas och om
+icke-data-symboler påträffas.
+
+Men vill ju även ha validering då det är möjligt - för filer som existerar
+pre-sds.
+Och det innebär att symbol-referenser tillkommer under valideringens gång.
+T ex
+
+----------------------------------------
+def string MY_SYM = --file @[EXPECTED_OUTPUT_DIR]@/the-file.txt
+
+stdout equals --file --transformed-by SUBSTITUTE_SYMBOL_REFERENCES
+                     @[EXPECTED_OUTPUT_DIR]@/the-file.txt
+----------------------------------------
+
+I båda dessa fallen finns sym-reffen direkt efter parsning.
+Men om valideringen av den referenses är giltig så inträder ett steg två
+då in där filen läses in och referenser i den valideras.
+
+En impplementation skulle förenklas av att evalueringen av symbol-värden
+flyttas till en "referens-behållare", så som jag klurat på för att
+göra möjligt att ha slumptal som strängvärden, och som ju då måste
+evalueras en och endast en gång.
+
+** Alt - alltid substituera sym-ref i externa filer
+Ett alt är att alltid substituera sym-reffar i externa filer.
+Men det skulle dra ner prestanda rejält, samt ev göra det krångligare
+(syntaxmässigt) att ha sym-ref-syntax i filer som inte ska substitueras.
+Kan alltså vara motiverat att kräva att subst måste anges explicit,
+även om det är lite krångligare.
+* Testa innehållet i script mot befintlig fil
+ - Symbol-substitution i godtyckliga filer (för jämförelse)
+
+** Lösning m lines-transformer
+
+*** Göra det möjligt att transformera även EXPECTED
+
+contents ...
+         equals --file --transformed-by T expected.txt
+
+*** Ny lines-transformer för variabelsubstitution
+
+SUBSTITUTE_SYMBOL_REFERENCES
+
+* Testa innehållet i fil mot symbol
+ - Enklare def av stora strängar.
+
+* DONE Göra möjligt att tilldela symbol värde enl HERE-DOC
+* Göra möjligt att läsa in innehållet i fil till symbol
+
+def string S = (STRING|HERE-DOCUMENT|--file FILE)
+
+Behövs steg:
+ 1. Validering av existens av filen
+ 2. Inläsning av filens innehåll
+ 3. Validering av referenser i filen
