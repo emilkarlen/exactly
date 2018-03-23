@@ -13,6 +13,16 @@ be applied to stdout, i.e. will the program-value know
 which of stdout/err to transform?  Or, if it is possible,
 will it be difficult to understand the behaviour for a user?
 
+TODO: Think about how it will be possible to
+add specification of stdin for arbitrary programs,
+as part of the program definition.
+Currently it feels like it will be impossible to
+restrict def of such a stdin to be defined only once.
+(at least in terms of grammar).  If this proves to be true,
+it might be easiest to allow multiple definitions of stdin,
+and that the final stdin would then be the concatenation of
+all these defined stdin:s.
+
 * Usages
 ** File creation
 
