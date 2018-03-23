@@ -4,6 +4,15 @@
 
 Definitions of strings with possibility of output from program.
 
+NOTE <2018-03-23 fre>:
+Program def with an associated transformation:
+There might be a problem with allowing instructions to use
+either stdin or stdout when a transformation is associated
+with a program - since the transformation might only
+be applied to stdout, i.e. will the program-value know
+which of stdout/err to transform?  Or, if it is possible,
+will it be difficult to understand the behaviour for a user?
+
 * Usages
 ** File creation
 
@@ -12,25 +21,30 @@ file PATH = STRING-PRODUCER
 ** EXPECTED in File contents comparison
 
 contents FILE [TRANSFORMATION] COMPARISON
-COMPARISON ::= ...|equals STRING-PRODUCER
 
-STRING-PRODUCER ::= STRING
-                ::| HERE-DOCUMENT
-                ::| [TRANSFORMATION] FILE
-                ::| PROGRAM-OUTPUT-WITH-TRANS
+COMPARISON        ::= EQUALS-COMPARISON|...
+EQUALS-COMPARISON ::= equals STRING-PRODUCER
 
 ** Actual in program result assertions (exitcode, stdout, stderr)
 
-stdout   [--from PROGRAM-INVOKATION] [TRANSFORMATION] FILE-CONTENTS-MATCHER
+stdout   [--from PROGRAM-VALUE] [TRANSFORMATION] FILE-CONTENTS-MATCHER
 
-stderr   [--from PROGRAM-INVOKATION] [TRANSFORMATION] FILE-CONTENTS-MATCHER
+stderr   [--from PROGRAM-VALUE] [TRANSFORMATION] FILE-CONTENTS-MATCHER
 
-exitcode [--from PROGRAM-INVOKATION] [!] INTEGER-COMPARISON
+exitcode [--from PROGRAM-VALUE] [!] INTEGER-COMPARISON
 
 ** run
 
 run NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
 
+If argument is an PROGRAM-SYM-REF then a transformation
+may be included in the definition.
+But for "run", this transformation is irrelevant(?).
+So it would be good (perhaps for performance) to be able
+to ignore the transformation.  On the other hand, such a
+transformation will do no harm since in this context it is
+only the exit code, and sideeffects that are relevant
+(stdout and stderr are ignored).
 ** $
 
 $ SHELL-COMMAND-LINE
@@ -39,10 +53,49 @@ $ SHELL-COMMAND-LINE
 
 def program SYMBOL-NAME ::= PROGRAM-VALUE
 
+* Examples
+** dbupgrade
+----------------------------------------
+def program MYSQL_EXECUTE = --system mysql @[MYSQL_DB_ARGS]@ --execute
+
+stdout --from @[MYSQL_EXECUTE]@ "SELECT * from db_upgrade_exe_files ORDER BY file_name"
+       equals <<eof
+@[DDL_FILE_NAME]@
+eof
+----------------------------------------
+** git-hook
+Version 1, with need for explicit transformation:
+----------------------------------------
+def program GET_LOGS = --system git log
+<alt>
+def program GET_LOGS = $ git log
+
+stdout --from @[GET_LOGS]@
+       --transformed-by EXTRACT_FIRST_LOG_MESSAGE
+       equals <<eof
+Expected log message
+eof
+----------------------------------------
+
+Version 2, with "builtin" transformation into the program:
+----------------------------------------
+def program GET_FIRST_LOG_MESSAGE = --system git log
+                                    --transformed-by EXTRACT_FIRST_LOG_MESSAGE
+
+stdout --from @[GET_FIRST_LOG_MESSAGE]@
+       equals <<eof
+Expected log message
+eof
+----------------------------------------
 * Syntax elements
 
-PROGRAM-VALUE ::= $ SHELL-COMMAND-LINE
-              ::| NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
+STRING-PRODUCER ::= STRING
+                ::| HERE-DOCUMENT
+                ::| --file              [TRANSFORMATION] FILE
+                ::| (--stdout|--stderr) [TRANSFORMATION] PROGRAM-VALUE
+
+PROGRAM-VALUE ::= ($ SHELL-COMMAND-LINE|NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS)
+                  [TRANSFORMATION]
 
 NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
    ::= EXECUTABLE [--]             [ARGUMENT...]
@@ -51,19 +104,19 @@ NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
    ::| EXECUTABLE --source SOURCE  [ARGUMENT...]
    ::| PROGRAM-SYM-REF             [ARGUMENT...]
 
-SHELL-COMMAND-LINE ::= everything until end of line
+SHELL-COMMAND-LINE ::= <everything until end of line>
 
 PROGRAM-OUTPUT-WITH-TRANS ::= [TRANSFORMATION] PROGRAM-OUTPUT
 
 PROGRAM-OUTPUT            ::= (--stdout|--stderr) PROGRAM-VALUE
 
 EXECUTABLE ::= PATH
-           ::| STRING  (rel ?? --rel-home? "globalt" i system-PATH?)
+           ::| STRING   (rel ?? --rel-home? "globalt" i system-PATH?)
            ::| ( PATH   [ARGUMENT...] )
            ::| ( STRING [ARGUMENT...] )
            ::| --python
            ::| ( --python [ARGUMENT...] )
-
+           ::| --system STRING
 
 
 PROGRAM-INVOKATION
