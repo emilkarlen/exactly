@@ -4,7 +4,6 @@ from typing import Sequence
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
-from exactly_lib.instructions.utils.parse import parse_executable_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
@@ -18,21 +17,22 @@ from exactly_lib.symbol.data.value_resolvers.file_ref_with_symbol import Stacked
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.parse import parse_executable_file as sut
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.test_resources import executable_file_test_utils as utils
-from exactly_lib_test.instructions.test_resources import pre_or_post_sds_validator as validator_util
-from exactly_lib_test.instructions.test_resources.executable_file_test_utils import RelativityConfiguration, suite_for, \
-    ExpectationOnExeFile
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
-from exactly_lib_test.test_case_utils.test_resources import relativity_options
+from exactly_lib_test.test_case_utils.test_resources import relativity_options, \
+    pre_or_post_sds_validator as validator_util, executable_file_test_utils as utils
+from exactly_lib_test.test_case_utils.test_resources.executable_file_test_utils import RelativityConfiguration, \
+    suite_for, \
+    ExpectationOnExeFile
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
