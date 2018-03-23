@@ -8,7 +8,6 @@ from exactly_lib.help_texts import instruction_arguments, formatting
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.entity import concepts
 from exactly_lib.instructions.utils.documentation import src_dst
-from exactly_lib.instructions.utils.parse.token_stream_parse import TokenParserExtra
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -23,6 +22,7 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSetti
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
+from exactly_lib.test_case_utils.parse.token_parser_extra import TokenParserExtra
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.failure_details import new_failure_details_from_message
 

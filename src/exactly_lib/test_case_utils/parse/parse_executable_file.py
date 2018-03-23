@@ -1,6 +1,5 @@
 import sys
 
-from exactly_lib.instructions.utils.parse.token_stream_parse import from_parse_source
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
@@ -11,6 +10,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
+from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
