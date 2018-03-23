@@ -46,7 +46,7 @@ exitcode [--from PROGRAM-VALUE] [!] INTEGER-COMPARISON
 ** run
 
 run NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
-
+*** Notes
 If argument is an PROGRAM-SYM-REF then a transformation
 may be included in the definition.
 But for "run", this transformation is irrelevant(?).
@@ -107,27 +107,24 @@ STRING-PRODUCER ::= STRING
 PROGRAM-VALUE ::= ($ SHELL-COMMAND-LINE|NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS)
                   [TRANSFORMATION]
 
-NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
-   ::= EXECUTABLE [--]             [ARGUMENT...]
-   ::| EXECUTABLE --interpret PATH [ARGUMENT...]
-   ::| --shell                PATH [ARGUMENT...]
-   ::| EXECUTABLE --source SOURCE  [ARGUMENT...]
-   ::| PROGRAM-SYM-REF             [ARGUMENT...]
-
 SHELL-COMMAND-LINE ::= <everything until end of line>
+                       [STDIN]
 
-PROGRAM-OUTPUT-WITH-TRANS ::= [TRANSFORMATION] PROGRAM-OUTPUT
+NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS ::= PROGRAM [ARGUMENT...] [STDIN]
 
-PROGRAM-OUTPUT            ::= (--stdout|--stderr) PROGRAM-VALUE
+PROGRAM ::= EXECUTABLE [--]
+        ::| EXECUTABLE --source SOURCE
+        ::| EXECUTABLE --interpret PATH
+        ::| --shell                PATH
+        ::| PROGRAM-VALUE-SYM-REF
 
-EXECUTABLE ::= PATH
-           ::| STRING   (rel ?? --rel-home? "globalt" i system-PATH?)
-           ::| ( PATH   [ARGUMENT...] )
-           ::| ( STRING [ARGUMENT...] )
-           ::| --python
-           ::| ( --python [ARGUMENT...] )
-           ::| --system STRING
 
+EXECUTABLE ::= EXECUTABLE'
+           ::| ( EXECUTABLE' [ARGUMENT...] )
+
+EXECUTABLE' ::= PATH
+            ::| --python
+            ::| --system STRING
 
 PROGRAM-INVOKATION
 may need to use end-of-line as end-token for [ARGUMENT...]
