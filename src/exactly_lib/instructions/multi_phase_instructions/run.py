@@ -32,7 +32,6 @@ from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, Fi
 from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
-from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import CmdAndArgsResolverForExecutableFileBase
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
     ValidationAndSubProcessExecutionSetup
@@ -168,6 +167,25 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             concepts.SHELL_SYNTAX_CONCEPT_INFO,
         ]
         return cross_reference_id_list(name_and_cross_ref_list)
+
+
+class CmdAndArgsResolverForExecutableFileBase(CmdAndArgsResolver):
+    def __init__(self, executable: ExecutableFile):
+        self.__executable = executable
+
+    @property
+    def symbol_usages(self) -> list:
+        return self.__executable.symbol_usages
+
+    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+        raise NotImplementedError()
+
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+        arguments_list_value = self.__executable.arguments.resolve(environment.symbols)
+        argument_strings = arguments_list_value.value_of_any_dependency(environment.home_and_sds)
+        return [self.__executable.path_string(environment)] + \
+               argument_strings + \
+               self._arguments(environment)
 
 
 class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
