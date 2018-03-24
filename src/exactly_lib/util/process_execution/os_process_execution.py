@@ -80,7 +80,13 @@ class ShellCommand(Command):
         return self._command_line
 
 
-class ExecutableProgramCommand(Command):
+class ProgramCommand(Command):
+    @property
+    def shell(self) -> bool:
+        return False
+
+
+class ExecutableProgramCommand(ProgramCommand):
     def __init__(self, program_and_args: List[str]):
         self._program_and_args = program_and_args
 
@@ -89,16 +95,12 @@ class ExecutableProgramCommand(Command):
         return self._program_and_args
 
     @property
-    def shell(self) -> bool:
-        return False
-
-    @property
     def program_and_arguments(self) -> ProgramAndArguments:
         return ProgramAndArguments(self._program_and_args[0],
                                    self._program_and_args[1:])
 
 
-class ExecutableFileCommand(Command):
+class ExecutableFileCommand(ProgramCommand):
     def __init__(self,
                  executable_file: pathlib.Path,
                  arguments: List[str]):
@@ -110,28 +112,24 @@ class ExecutableFileCommand(Command):
         return [str(self._executable_file)] + self._arguments
 
     @property
-    def shell(self) -> bool:
-        return False
-
-    @property
     def program_and_arguments(self) -> ProgramAndArguments:
         return ProgramAndArguments(str(self._executable_file),
                                    self._arguments)
 
 
-def executable_program_command(program_and_args: List[str]) -> Command:
+def executable_program_command2(program_and_args: List[str]) -> ProgramCommand:
     return ExecutableProgramCommand(program_and_args)
 
 
-def executable_program_command2(program: str,
-                                args: List[str]) -> Command:
+def executable_program_command(program: str,
+                               args: List[str]) -> ProgramCommand:
     return ExecutableProgramCommand([program] + args)
 
 
 def executable_file_command(program_file: pathlib.Path,
-                            arguments: List[str]) -> Command:
+                            arguments: List[str]) -> ProgramCommand:
     return ExecutableFileCommand(program_file, arguments)
 
 
-def shell_command(command: str) -> Command:
+def shell_command(command: str) -> ShellCommand:
     return ShellCommand(command)
