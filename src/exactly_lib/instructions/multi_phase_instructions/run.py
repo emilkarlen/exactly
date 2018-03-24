@@ -190,7 +190,7 @@ class SetupParser(ValidationAndSubProcessExecutionSetupParser):
     def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         exe_file = parse_executable_file.parse_from_token_parser(parser)
         (validator, cmd_and_args_resolver) = _ValidatorAndArgsResolverParsing(exe_file).parse(parser)
-        return ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver, False)
+        return ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver)
 
 
 class _ValidatorAndArgsResolverParsing:

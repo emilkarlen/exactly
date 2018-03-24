@@ -280,8 +280,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
         instruction_argument = parser.consume_current_line_as_plain_string()
         return ValidationAndSubProcessExecutionSetup(
             self.validator,
-            command_resolver_for_source_on_command_line(instruction_argument),
-            is_shell=False)
+            command_resolver_for_source_on_command_line(instruction_argument))
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
@@ -294,8 +293,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = concrete_string_resolvers.string_constant(instruction_argument)
         return ValidationAndSubProcessExecutionSetup(self.validator,
-                                                     CommandResolverForShell(argument_resolver),
-                                                     is_shell=True)
+                                                     CommandResolverForShell(argument_resolver))
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'
