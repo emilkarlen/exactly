@@ -9,7 +9,6 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import concrete_string_resolvers
-from exactly_lib.symbol.data.concrete_resolvers import list_constant
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
@@ -18,7 +17,6 @@ from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
-from exactly_lib.test_case_utils.sub_proc.cmd_and_args_resolvers import ConstantCmdAndArgsResolverForProgramAndArguments
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CmdAndArgsResolverForShell
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup, \
     ValidationAndSubProcessExecutionSetupParser
@@ -29,10 +27,9 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
 from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.test_case_utils.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.test_case_utils.test_resources import py_program as py
+from exactly_lib_test.test_case_utils.test_resources.executable_files import command_resolver_for_source_on_command_line
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import shell_commands
-from exactly_lib_test.test_resources.programs.python_program_execution import \
-    non_shell_args_for_that_executes_source_on_command_line
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -281,10 +278,10 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
 
     def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        return ValidationAndSubProcessExecutionSetup(self.validator,
-                                                     _resolver_for_execute_py_on_command_line(
-                                                         instruction_argument),
-                                                     is_shell=False)
+        return ValidationAndSubProcessExecutionSetup(
+            self.validator,
+            command_resolver_for_source_on_command_line(instruction_argument),
+            is_shell=False)
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
@@ -299,11 +296,6 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
         return ValidationAndSubProcessExecutionSetup(self.validator,
                                                      CmdAndArgsResolverForShell(argument_resolver),
                                                      is_shell=True)
-
-
-def _resolver_for_execute_py_on_command_line(python_source: str) -> spe.CmdAndArgsResolver:
-    argument_list_resolver = list_constant(non_shell_args_for_that_executes_source_on_command_line(python_source))
-    return ConstantCmdAndArgsResolverForProgramAndArguments(argument_list_resolver)
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'

@@ -6,15 +6,19 @@ import unittest
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os
 
+PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE = '-c'
+
 
 def interpreter_that_executes_argument() -> str:
-    return '{} -c'.format(sys.executable)
+    return ' '.join([sys.executable,
+                     PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE])
 
 
 def command_line_for_executing_program_via_command_line(command_argument: str,
                                                         args_directly_after_interpreter: str = '') -> str:
-    return '"{}" {} -c "{}"'.format(sys.executable,
+    return '"{}" {} {} "{}"'.format(sys.executable,
                                     args_directly_after_interpreter,
+                                    PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE,
                                     command_argument)
 
 
@@ -47,7 +51,7 @@ def args_for_interpreting(python_source_file,
 
 
 def non_shell_args_for_that_executes_source_on_command_line(python_source: str) -> list:
-    return [sys.executable, '-c', python_source]
+    return [sys.executable, PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE, python_source]
 
 
 def args_for_running_with_arguments(arguments: list) -> list:
