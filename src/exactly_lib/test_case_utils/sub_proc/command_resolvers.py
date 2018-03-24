@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data import list_resolver
+from exactly_lib.symbol.data import list_resolver, concrete_string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -74,3 +74,20 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
     def arguments(self) -> ListResolver:
         return list_resolver.concat_lists([self.__executable.arguments,
                                            self.__additional_arguments])
+
+
+def command_resolver_for_interpret(interpreter: ExecutableFileWithArgs,
+                                   file_to_interpret: FileRefResolver,
+                                   argument_list: ListResolver) -> CommandResolverForExecutableFile:
+    file_to_interpret_as_string = concrete_string_resolvers.from_file_ref_resolver(file_to_interpret)
+    additional_arguments = list_resolver.concat_lists([
+        list_resolver.from_strings([file_to_interpret_as_string]),
+        argument_list,
+    ])
+    return CommandResolverForExecutableFile(interpreter, additional_arguments)
+
+
+def command_resolver_for_source_as_command_line_argument(interpreter: ExecutableFileWithArgs,
+                                                         source: StringResolver) -> CommandResolverForExecutableFile:
+    additional_arguments = list_resolver.from_strings([source])
+    return CommandResolverForExecutableFile(interpreter, additional_arguments)
