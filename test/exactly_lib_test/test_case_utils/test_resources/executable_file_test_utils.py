@@ -128,7 +128,7 @@ def check_exe_file(put: unittest.TestCase,
                                                     'arguments')
     assertion_on_all_references = equals_symbol_references(expectation.expected_symbol_references_of_file +
                                                            expectation.expected_symbol_references_of_argument)
-    assertion_on_all_references.apply_with_message(put, actual.symbol_usages,
+    assertion_on_all_references.apply_with_message(put, actual.references,
                                                    'references')
 
 

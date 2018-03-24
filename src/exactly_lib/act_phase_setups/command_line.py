@@ -78,7 +78,7 @@ class CommandConfigurationForExecutableFile(CommandConfiguration):
         self.executable_file = executable_file
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self.executable_file.symbol_usages
+        return self.executable_file.references
 
     def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
         return _ExecutableFileValidator(self.executable_file.validator)
