@@ -14,10 +14,13 @@ from exactly_lib.util.process_execution.os_process_execution import Command
 
 
 class CommandResolverForProgramAndArguments(CommandResolver):
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        return self.resolve_program_and_arguments(environment)
+    """
+    Base class for resolvers that gives a command that is a list of arguments
 
-    def resolve_program_and_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
+    (opposed to a shell command which is just a string).
+    """
+
+    def _resolve_program_and_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
         raise NotImplementedError('abstract method')
 
 
@@ -25,10 +28,10 @@ class CommandResolverForShell(CommandResolver):
     def __init__(self, cmd_resolver: StringResolver):
         self.__cmd_resolver = cmd_resolver
 
-    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return os_process_execution.shell_command(self.resolve(environment))
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        return os_process_execution.shell_command(self._resolve_args(environment))
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+    def _resolve_args(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         value = self.__cmd_resolver.resolve(environment.symbols)
         return value.value_of_any_dependency(environment.home_and_sds)
 
@@ -38,8 +41,8 @@ class CommandResolverForShell(CommandResolver):
 
 
 class CommandResolverForExecutableFileAndArguments(CommandResolverForProgramAndArguments):
-    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return os_process_execution.executable_program_command(self.resolve(environment))
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        return os_process_execution.executable_program_command(self._resolve_program_and_arguments(environment))
 
     @property
     def executable_file(self) -> FileRefResolver:
@@ -53,7 +56,7 @@ class CommandResolverForExecutableFileAndArguments(CommandResolverForProgramAndA
     def symbol_usages(self) -> Sequence[SymbolReference]:
         return references_from_objects_with_symbol_references([self.executable_file, self.arguments])
 
-    def resolve_program_and_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
+    def _resolve_program_and_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
         argument_strings = self.arguments.resolve_value_of_any_dependency(environment)
         executable_file_path = self.executable_file.resolve_value_of_any_dependency(environment)
         return [str(executable_file_path)] + argument_strings
