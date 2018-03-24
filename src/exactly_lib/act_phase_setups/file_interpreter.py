@@ -1,7 +1,6 @@
 import functools
 import pathlib
 import shlex
-from copy import copy
 from typing import Sequence
 
 from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
@@ -30,7 +29,8 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.util.process_execution.os_process_execution import Command, executable_program_command, shell_command
+from exactly_lib.util.process_execution.os_process_execution import Command, shell_command, \
+    ProgramAndArguments, executable_program_command2
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
 
@@ -45,23 +45,23 @@ def act_phase_handling(interpreter: Command) -> ActPhaseHandling:
 
 def constructor(interpreter: Command) -> parts.Constructor:
     if interpreter.shell:
-        return ConstructorForInterpreterThatIsAShellCommand(interpreter.args)
+        return ConstructorForInterpreterThatIsAShellCommand(interpreter.shell_command_line)
     else:
-        return ConstructorForInterpreterThatIsAnExecutableFile(interpreter.args)
+        return ConstructorForInterpreterThatIsAnExecutableFile(interpreter.program_and_arguments)
 
 
 class ConstructorForInterpreterThatIsAnExecutableFile(parts.Constructor):
-    def __init__(self, cmd_and_args: list):
+    def __init__(self, cmd_and_args: ProgramAndArguments):
         super().__init__(_Parser(is_shell=False),
                          _Validator,
-                         functools.partial(_ExecutableFileExecutor, cmd_and_args))
+                         functools.partial(_ProgramExecutor, cmd_and_args))
 
 
 class ConstructorForInterpreterThatIsAShellCommand(parts.Constructor):
-    def __init__(self, shell_command: str):
+    def __init__(self, shell_command_line: str):
         super().__init__(_Parser(is_shell=True),
                          _Validator,
-                         functools.partial(_ShellCommandExecutor, shell_command))
+                         functools.partial(_ShellCommandExecutor, shell_command_line))
 
 
 class _SourceInfo(SymbolUser):
@@ -154,29 +154,28 @@ class _Validator(parts.Validator):
         return svh.new_svh_success()
 
 
-class _ExecutableFileExecutor(CommandExecutor):
+class _ProgramExecutor(CommandExecutor):
     def __init__(self,
-                 cmd_and_args_of_interpreter: list,
+                 interpreter: ProgramAndArguments,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
                  source: _SourceInfoForInterpreterThatIsAnExecutableFile):
         super().__init__(os_process_executor)
-        self.cmd_and_args_of_interpreter = cmd_and_args_of_interpreter
+        self.interpreter = interpreter
         self.source = source
 
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        cmd_and_args = copy(self.cmd_and_args_of_interpreter)
-
-        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.hds)
-        cmd_and_args.append(str(src_path))
-
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        args = self.source.arguments.resolve_value_of_any_dependency(path_resolving_env)
-        cmd_and_args.extend(args)
 
-        return executable_program_command(cmd_and_args)
+        src_path = self.source.file_reference.resolve_value_of_any_dependency(path_resolving_env)
+        args = self.source.arguments.resolve_value_of_any_dependency(path_resolving_env)
+
+        return executable_program_command2(self.interpreter.program,
+                                           list(self.interpreter.arguments) +
+                                           [str(src_path)] +
+                                           list(args))
 
 
 class _ShellCommandExecutor(CommandExecutor):

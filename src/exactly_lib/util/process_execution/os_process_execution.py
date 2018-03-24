@@ -1,5 +1,5 @@
 import pathlib
-from typing import List, Tuple
+from typing import List
 
 
 class ProcessExecutionSettings(tuple):
@@ -31,6 +31,14 @@ def with_environ(environ: dict) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(environ=environ)
 
 
+class ProgramAndArguments:
+    def __init__(self,
+                 program: str,
+                 arguments: List[str]):
+        self.program = program
+        self.arguments = arguments
+
+
 class Command:
     @property
     def args(self):
@@ -51,7 +59,7 @@ class Command:
         raise ValueError('this object is not a shell command: ' + str(self.args))
 
     @property
-    def program_and_arguments(self) -> Tuple[str, List[str]]:
+    def program_and_arguments(self) -> ProgramAndArguments:
         raise ValueError('this object is not a program with arguments: ' + str(self.args))
 
 
@@ -85,8 +93,9 @@ class ExecutableProgramCommand(Command):
         return False
 
     @property
-    def program_and_arguments(self) -> Tuple[str, List[str]]:
-        return self._program_and_args[0], self._program_and_args[1:]
+    def program_and_arguments(self) -> ProgramAndArguments:
+        return ProgramAndArguments(self._program_and_args[0],
+                                   self._program_and_args[1:])
 
 
 class ExecutableFileCommand(Command):
@@ -105,19 +114,22 @@ class ExecutableFileCommand(Command):
         return False
 
     @property
-    def program_and_arguments(self) -> Tuple[str, List[str]]:
-        return str(self._executable_file), self._arguments
+    def program_and_arguments(self) -> ProgramAndArguments:
+        return ProgramAndArguments(str(self._executable_file),
+                                   self._arguments)
 
 
 def executable_program_command(program_and_args: List[str]) -> Command:
     return ExecutableProgramCommand(program_and_args)
 
 
-def executable_program_command2(program: str, args: List[str]) -> Command:
+def executable_program_command2(program: str,
+                                args: List[str]) -> Command:
     return ExecutableProgramCommand([program] + args)
 
 
-def executable_file_command(program_file: pathlib.Path, arguments: List[str]) -> Command:
+def executable_file_command(program_file: pathlib.Path,
+                            arguments: List[str]) -> Command:
     return ExecutableFileCommand(program_file, arguments)
 
 
