@@ -20,7 +20,7 @@ from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.os_process_execution import Command, shell_command, executable_program_command
 
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
 COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
@@ -175,11 +175,11 @@ def _parse_interpreter_command(arg: str) -> Command:
         if len(args) == 1:
             raise SingleInstructionInvalidArgumentException('Missing shell command for interpreter')
         else:
-            return Command(args[1], shell=True)
+            return shell_command(args[1])
     command_and_arguments = shlex_split(arg)
     if not command_and_arguments:
         raise SingleInstructionInvalidArgumentException('Missing interpreter')
-    return Command(command_and_arguments, shell=False)
+    return executable_program_command(command_and_arguments)
 
 
 def shlex_split(s: str) -> list:
