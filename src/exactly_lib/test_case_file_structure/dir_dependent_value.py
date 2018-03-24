@@ -1,5 +1,6 @@
 import pathlib
 from enum import Enum
+from typing import TypeVar, Generic
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -39,7 +40,10 @@ class DirDependencyError(ValueError):
                                               super().__str__())
 
 
-class DirDependentValue:
+RESOLVED_TYPE = TypeVar('RESOLVED_TYPE')
+
+
+class DirDependentValue(Generic[RESOLVED_TYPE]):
     """A value that may refer to the test case directories."""
 
     def resolving_dependencies(self) -> set:
@@ -57,18 +61,18 @@ class DirDependentValue:
     def exists_pre_sds(self) -> bool:
         return ResolvingDependency.NON_HOME not in self.resolving_dependencies()
 
-    def value_when_no_dir_dependencies(self):
+    def value_when_no_dir_dependencies(self) -> RESOLVED_TYPE:
         """
         :raises DirDependencyError: This value has dir dependencies.
         """
         raise NotImplementedError()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
         """Gives the value, regardless of actual dependency."""
         raise NotImplementedError()
 
 
-class SingleDirDependentValue(DirDependentValue):
+class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
     """A :class:`DirDependentValue` that depends at most on a single :class:`ResolvingDependency`."""
 
     def resolving_dependency(self) -> ResolvingDependency:
@@ -89,14 +93,14 @@ class SingleDirDependentValue(DirDependentValue):
         """
         raise NotImplementedError()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> pathlib.Path:
         if self.exists_pre_sds():
             return self.value_pre_sds(home_and_sds.hds)
         else:
             return self.value_post_sds(home_and_sds.sds)
 
 
-class MultiDirDependentValue(DirDependentValue):
+class MultiDirDependentValue(Generic[RESOLVED_TYPE], DirDependentValue[RESOLVED_TYPE]):
     """A :class:`DirDependentValue` that may depend on a multiple :class:`ResolvingDependency`."""
 
     def dir_dependency(self) -> DirDependencies:
@@ -105,5 +109,5 @@ class MultiDirDependentValue(DirDependentValue):
     def has_dir_dependency(self) -> bool:
         return self.dir_dependency() is not DirDependencies.NONE
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds):
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
         raise NotImplementedError()

@@ -189,7 +189,7 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
             self._resolving_dependency)
 
 
-class AMultiDirDependentValue(sut.MultiDirDependentValue):
+class AMultiDirDependentValue(sut.MultiDirDependentValue[None]):
     def __init__(self,
                  resolving_dependencies: set,
                  value_when_no_dir_dependencies=do_raise(_ShouldNotBeInvokedTestException()),
