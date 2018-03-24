@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system import utils
@@ -15,11 +17,11 @@ class StringFragment(StringWithDirDependency):
 
 
 class StringValue(StringWithDirDependency):
-    def __init__(self, fragments: tuple):
+    def __init__(self, fragments: Sequence[StringFragment]):
         self._fragments = fragments
 
     @property
-    def fragments(self) -> tuple:
+    def fragments(self) -> Sequence[StringFragment]:
         return self._fragments
 
     def resolving_dependencies(self) -> set:

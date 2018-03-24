@@ -1,4 +1,5 @@
-from typing import Sequence
+import itertools
+from typing import Sequence, List
 
 from exactly_lib.symbol.data.string_resolver import StringResolver, string_constant
 from exactly_lib.symbol.resolver_structure import DataValueResolver
@@ -99,10 +100,7 @@ class ListResolver(DataValueResolver):
     Resolver who's resolved value is of type `ValueType.LIST` / :class:`ListValue`
     """
 
-    def __init__(self, elements: list):
-        """
-        :param elements: List of :class:`Element`
-        """
+    def __init__(self, elements: List[Element]):
         self._elements = tuple(elements)
 
     @property
@@ -114,7 +112,7 @@ class ListResolver(DataValueResolver):
         return ValueType.LIST
 
     @property
-    def elements(self) -> tuple:
+    def elements(self) -> Sequence[Element]:
         return self._elements
 
     @property
@@ -131,6 +129,15 @@ class ListResolver(DataValueResolver):
         return ListValue(value_elements)
 
 
-def list_resolver_constant(str_elements: list) -> ListResolver:
+def concat_lists(lists: Sequence[ListResolver]) -> ListResolver:
+    return ListResolver(itertools.chain.from_iterable([x.elements for x in lists]))
+
+
+def from_strings(elements: Sequence[StringResolver]) -> ListResolver:
+    return ListResolver([string_element(element)
+                         for element in elements])
+
+
+def list_resolver_constant(str_elements: Sequence[str]) -> ListResolver:
     return ListResolver([string_element(string_constant(element))
                          for element in str_elements])
