@@ -44,7 +44,7 @@ class CommandResolverForProgramAndArguments(CommandResolver):
         self.__additional_arguments = additional_arguments
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return os_process_execution.executable_program_command2(
+        return os_process_execution.executable_program_command(
             self.__program_with_args.program.resolve_value_of_any_dependency(environment),
             self.arguments.resolve_value_of_any_dependency(environment)
         )

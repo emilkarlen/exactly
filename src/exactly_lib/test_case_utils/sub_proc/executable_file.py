@@ -9,7 +9,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.util.process_execution.os_process_execution import Command, executable_program_command
+from exactly_lib.util.process_execution.os_process_execution import Command, executable_program_command2
 
 
 class ExecutableFileWithArgs(ObjectWithSymbolReferences):
@@ -51,7 +51,7 @@ class ExecutableFileWithArgs(ObjectWithSymbolReferences):
         cmd_and_args = [str(cmd_path)]
         cmd_and_args.extend(self.arguments.resolve_value_of_any_dependency(environment))
 
-        return executable_program_command(cmd_and_args)
+        return executable_program_command2(cmd_and_args)
 
 
 class ExistingExecutableFileValidator(FileRefValidatorBase):
