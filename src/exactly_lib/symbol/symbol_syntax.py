@@ -1,4 +1,5 @@
 from itertools import takewhile
+from typing import Tuple, List
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -80,7 +81,7 @@ def symbol(s: str) -> Fragment:
     return Fragment(s, True)
 
 
-def split(s: str) -> list:
+def split(s: str) -> List[Fragment]:
     """
     Splits a string into fragments, according to the syntax of symbol references.
 
@@ -95,7 +96,7 @@ def split(s: str) -> list:
     return ret_val
 
 
-def _extract_fragment(s: str):
+def _extract_fragment(s: str) -> Tuple[str, List[Fragment]]:
     pos, name, rest = _find_symbol_reference(s)
     if pos == -1:
         return '', [Fragment(s, False)]

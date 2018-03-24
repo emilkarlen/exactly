@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -60,7 +62,7 @@ def parse_string_resolver_from_token(token: Token,
 
 
 def parse_fragments_from_tokens(tokens: TokenStream,
-                                conf: Configuration = DEFAULT_CONFIGURATION) -> list:
+                                conf: Configuration = DEFAULT_CONFIGURATION) -> List[symbol_syntax.Fragment]:
     """
     Consumes a single token.
     :raises SingleInstructionInvalidArgumentException: Missing argument
@@ -73,7 +75,7 @@ def parse_fragments_from_tokens(tokens: TokenStream,
     return parse_fragments_from_token(string_token)
 
 
-def parse_fragments_from_token(token: Token) -> list:
+def parse_fragments_from_token(token: Token) -> List[symbol_syntax.Fragment]:
     """
     :rtype [symbol_syntax.Fragment]
     """

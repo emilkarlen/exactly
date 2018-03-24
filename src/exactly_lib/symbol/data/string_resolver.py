@@ -50,8 +50,8 @@ class ConstantStringFragmentResolver(StringFragmentResolver):
     A fragment that is a string constant.
     """
 
-    def __init__(self, string_constant: str):
-        self._string_constant = string_constant
+    def __init__(self, constant: str):
+        self._constant = constant
 
     @property
     def is_string_constant(self) -> bool:
@@ -59,14 +59,14 @@ class ConstantStringFragmentResolver(StringFragmentResolver):
 
     @property
     def string_constant(self) -> str:
-        return self._string_constant
+        return self._constant
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
-        return csv.ConstantFragment(self._string_constant)
+        return csv.ConstantFragment(self._constant)
 
 
 class SymbolStringFragmentResolver(StringFragmentResolver):
@@ -93,7 +93,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
         container = symbols.lookup(self._symbol_reference.name)
         assert isinstance(container, struct.SymbolContainer), 'Value in SymTbl must be SymbolContainer'
         value_resolver = container.resolver
-        assert isinstance(value_resolver, DataValueResolver), 'Value must be a SymbolValueResolver'
+        assert isinstance(value_resolver, DataValueResolver), 'Value must be a DataValueResolver'
         value = value_resolver.resolve(symbols)
         if isinstance(value, sv.StringValue):
             return csv.StringValueFragment(value)
@@ -112,9 +112,6 @@ class StringResolver(DataValueResolver):
     """
 
     def __init__(self, fragment_resolvers: Sequence[StringFragmentResolver]):
-        """
-        :param fragment_resolvers: Tuple of `StringFragmentResolver`
-        """
         self._fragment_resolvers = fragment_resolvers
 
     @property
@@ -135,13 +132,11 @@ class StringResolver(DataValueResolver):
         return references_from_objects_with_symbol_references(self._fragment_resolvers)
 
     @property
-    def fragments(self) -> tuple:
+    def fragments(self) -> Sequence[StringFragmentResolver]:
         """
         The sequence of fragments that makes up the value.
 
         The resolved value is the concatenation of all fragments.
-
-        :rtype: (`StringFragmentResolver`)
         """
         return self._fragment_resolvers
 
@@ -175,5 +170,5 @@ def symbol_reference(symbol_ref: su.SymbolReference) -> StringResolver:
     return StringResolver((SymbolStringFragmentResolver(symbol_ref),))
 
 
-def resolver_from_fragments(fragments: list) -> StringResolver:
+def resolver_from_fragments(fragments: Sequence[StringFragmentResolver]) -> StringResolver:
     return StringResolver(tuple(fragments))

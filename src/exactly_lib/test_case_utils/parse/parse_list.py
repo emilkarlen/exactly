@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
@@ -18,7 +20,7 @@ def parse_list_from_token_parser(token_parser: TokenParser) -> ListResolver:
     return ListResolver(_consume_elements_from_token_parser(token_parser))
 
 
-def _consume_elements_from_token_parser(token_parser: TokenParser) -> list:
+def _consume_elements_from_token_parser(token_parser: TokenParser) -> List[lr.Element]:
     elements = []
 
     while not token_parser.is_at_eol:
