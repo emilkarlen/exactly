@@ -8,12 +8,10 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.type_system.data import file_ref
 from exactly_lib.util.process_execution.os_process_execution import Command
-from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ExecutableFile:
+class ExecutableFileAndArgs:
     def __init__(self,
                  file_reference_resolver: FileRefResolver,
                  arguments: ListResolver):
@@ -42,9 +40,6 @@ class ExecutableFile:
 
     def path_string(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         return str(self.path(environment))
-
-    def file_reference(self, symbols: SymbolTable) -> file_ref.FileRef:
-        return self._file_reference_resolver.resolve(symbols)
 
     def non_shell_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         cmd_path = self.file_resolver.resolve_value_of_any_dependency(environment)

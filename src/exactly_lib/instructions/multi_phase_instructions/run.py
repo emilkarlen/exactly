@@ -1,4 +1,4 @@
-from typing import Tuple, Sequence
+from typing import Tuple, Sequence, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -32,10 +32,10 @@ from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileAndArgs
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
     ValidationAndSubProcessExecutionSetup
-from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CmdAndArgsResolver
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CmdAndArgsResolverForExecutableFile
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.structure import structures as docs
@@ -169,28 +169,9 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
-class CmdAndArgsResolverForExecutableFile(CmdAndArgsResolver):
-    def __init__(self, executable: ExecutableFile):
-        self.__executable = executable
-
-    @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
-        return self.__executable.symbol_usages
-
-    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
-        raise NotImplementedError()
-
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
-        arguments_list_value = self.__executable.arguments.resolve(environment.symbols)
-        argument_strings = arguments_list_value.value_of_any_dependency(environment.home_and_sds)
-        return [self.__executable.path_string(environment)] + \
-               argument_strings + \
-               self._arguments(environment)
-
-
 class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFile):
     def __init__(self,
-                 executable: ExecutableFile,
+                 executable: ExecutableFileAndArgs,
                  argument_list: ListResolver):
         super().__init__(executable)
         self.argument_list = argument_list
@@ -199,13 +180,13 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFile):
     def symbol_usages(self) -> Sequence[SymbolReference]:
         return tuple(super().symbol_usages) + tuple(self.argument_list.references)
 
-    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+    def _additional_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
         return self.argument_list.resolve_value_of_any_dependency(environment)
 
 
 class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFile):
     def __init__(self,
-                 executable: ExecutableFile,
+                 executable: ExecutableFileAndArgs,
                  file_to_interpret: FileRefResolver,
                  argument_list: ListResolver):
         super().__init__(executable)
@@ -219,7 +200,7 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFile):
                 tuple(self.argument_list.references)
                 )
 
-    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+    def _additional_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
         file_ref_path = self.file_to_interpret.resolve_value_of_any_dependency(environment)
         file_path_str = str(file_ref_path)
         argument_str_list = self.argument_list.resolve_value_of_any_dependency(environment)
@@ -228,7 +209,7 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFile):
 
 class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFile):
     def __init__(self,
-                 executable: ExecutableFile,
+                 executable: ExecutableFileAndArgs,
                  source: StringResolver):
         super().__init__(executable)
         self.source = source
@@ -237,7 +218,7 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFile):
     def symbol_usages(self) -> Sequence[SymbolReference]:
         return tuple(super().symbol_usages) + tuple(self.source.references)
 
-    def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
+    def _additional_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
         return [self.source.resolve_value_of_any_dependency(environment)]
 
 
@@ -249,7 +230,7 @@ class SetupParser(ValidationAndSubProcessExecutionSetupParser):
 
 
 class _ValidatorAndArgsResolverParsing:
-    def __init__(self, exe_file: ExecutableFile):
+    def __init__(self, exe_file: ExecutableFileAndArgs):
         self.exe_file = exe_file
 
     def parse(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
