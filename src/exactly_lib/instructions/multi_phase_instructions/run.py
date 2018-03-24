@@ -20,11 +20,6 @@ from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import concrete_string_resolvers
-from exactly_lib.symbol.data import list_resolver
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
-from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list, parse_executable_file
@@ -32,7 +27,8 @@ from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
-from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForExecutableFile
+from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForExecutableFile, \
+    command_resolver_for_interpret, command_resolver_for_source_as_command_line_argument
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
     ValidationAndSubProcessExecutionSetup
@@ -169,23 +165,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
-def cmd_and_args_resolver_for_interpret(executable: ExecutableFileWithArgs,
-                                        file_to_interpret: FileRefResolver,
-                                        argument_list: ListResolver) -> CommandResolverForExecutableFile:
-    file_to_interpret_as_string = concrete_string_resolvers.from_file_ref_resolver(file_to_interpret)
-    additional_arguments = list_resolver.concat_lists([
-        list_resolver.from_strings([file_to_interpret_as_string]),
-        argument_list,
-    ])
-    return CommandResolverForExecutableFile(executable, additional_arguments)
-
-
-def cmd_and_args_resolver_for_source(executable: ExecutableFileWithArgs,
-                                     source: StringResolver) -> CommandResolverForExecutableFile:
-    additional_arguments = list_resolver.from_strings([source])
-    return CommandResolverForExecutableFile(executable, additional_arguments)
-
-
 class SetupParser(ValidationAndSubProcessExecutionSetupParser):
     def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         exe_file = parse_executable_file.parse_from_token_parser(parser)
@@ -226,7 +205,7 @@ class _ValidatorAndArgsResolverParsing:
         validator = AndValidator((self.exe_file.validator,
                                   FileRefCheckValidator(file_to_interpret_check)))
         remaining_arguments = parse_list.parse_list_from_token_parser(token_parser)
-        cmd_resolver = cmd_and_args_resolver_for_interpret(self.exe_file, file_to_interpret, remaining_arguments)
+        cmd_resolver = command_resolver_for_interpret(self.exe_file, file_to_interpret, remaining_arguments)
         return validator, cmd_resolver
 
     def source(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CommandResolverForExecutableFile]:
@@ -236,7 +215,7 @@ class _ValidatorAndArgsResolverParsing:
             raise SingleInstructionInvalidArgumentException(msg)
         remaining_arguments_str = token_parser.consume_current_line_as_plain_string()
         source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
-        cmd_resolver = cmd_and_args_resolver_for_source(self.exe_file, source_resolver)
+        cmd_resolver = command_resolver_for_source_as_command_line_argument(self.exe_file, source_resolver)
         return self.exe_file.validator, cmd_resolver
 
 
