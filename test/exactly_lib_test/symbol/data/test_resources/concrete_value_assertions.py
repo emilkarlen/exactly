@@ -140,9 +140,6 @@ class _EqualsStringFragmentAssertionForStringConstant(asrt.ValueAssertion):
         put.assertTrue(value.is_string_constant,
                        'is_string_constant')
 
-        put.assertFalse(value.is_symbol,
-                        'is_symbol')
-
         put.assertEqual(self.expected.string_constant,
                         value.string_constant,
                         'string_constant')
@@ -161,9 +158,6 @@ class _EqualsStringFragmentAssertionForSymbolReference(asrt.ValueAssertion):
 
         put.assertFalse(value.is_string_constant,
                         'is_string_constant')
-
-        put.assertTrue(value.is_symbol,
-                       'is_symbol')
 
         put.assertEqual(self.expected.symbol_name,
                         value.symbol_name,

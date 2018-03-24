@@ -33,10 +33,6 @@ class StringFragmentResolver(DataValueResolver):
         """
         raise ValueError('The object is not a string constant')
 
-    @property
-    def is_symbol(self) -> bool:
-        return False
-
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
         raise NotImplementedError()
 
