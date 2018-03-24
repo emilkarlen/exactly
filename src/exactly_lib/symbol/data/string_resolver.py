@@ -1,5 +1,9 @@
+from typing import Sequence
+
 from exactly_lib.symbol import resolver_structure as struct, symbol_usage as su
+from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.resolver_structure import DataValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data import concrete_string_values as csv
 from exactly_lib.type_system.data import string_value as sv
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -37,15 +41,6 @@ class StringFragmentResolver(DataValueResolver):
     def is_symbol(self) -> bool:
         return False
 
-    @property
-    def references(self) -> tuple:
-        """
-        Values in the symbol table used by this object.
-
-        :type: (SymbolReference)
-        """
-        raise NotImplementedError()
-
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
         raise NotImplementedError()
 
@@ -67,7 +62,7 @@ class ConstantStringFragmentResolver(StringFragmentResolver):
         return self._string_constant
 
     @property
-    def references(self) -> tuple:
+    def references(self) -> Sequence[SymbolReference]:
         return ()
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
@@ -91,7 +86,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
         return self._symbol_reference.name
 
     @property
-    def references(self) -> tuple:
+    def references(self) -> Sequence[SymbolReference]:
         return self._symbol_reference,
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
@@ -116,7 +111,7 @@ class StringResolver(DataValueResolver):
     Resolver who's resolved value is of type `ValueType.STRING` / :class:`StringValue`
     """
 
-    def __init__(self, fragment_resolvers: tuple):
+    def __init__(self, fragment_resolvers: Sequence[StringFragmentResolver]):
         """
         :param fragment_resolvers: Tuple of `StringFragmentResolver`
         """
@@ -136,11 +131,8 @@ class StringResolver(DataValueResolver):
         return sv.StringValue(tuple(fragments))
 
     @property
-    def references(self) -> list:
-        ret_val = []
-        for fragment in self._fragment_resolvers:
-            ret_val.extend(fragment.references)
-        return ret_val
+    def references(self) -> Sequence[SymbolReference]:
+        return references_from_objects_with_symbol_references(self._fragment_resolvers)
 
     @property
     def fragments(self) -> tuple:

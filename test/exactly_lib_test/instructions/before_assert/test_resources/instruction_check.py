@@ -56,7 +56,7 @@ class Expectation(ExpectationBase):
                  validation_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
                  validation_post_setup: asrt.ValueAssertion = svh_assertions.is_success(),
                  main_result: asrt.ValueAssertion = sh_assertions.is_success(),
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
                  main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),

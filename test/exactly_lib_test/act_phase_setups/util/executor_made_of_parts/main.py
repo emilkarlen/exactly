@@ -1,10 +1,11 @@
 import pathlib
 import unittest
+from typing import Sequence
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case import eh
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -126,7 +127,7 @@ class SymbolThatRemembersSource(SymbolUser):
     def __init__(self, source: str):
         self._source = source
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return []
 
     @property
@@ -135,10 +136,10 @@ class SymbolThatRemembersSource(SymbolUser):
 
 
 class SymbolUserWithConstantSymbolReferences(SymbolUser):
-    def __init__(self, symbol_usages: list):
+    def __init__(self, symbol_usages: Sequence[SymbolUsage]):
         self._symbol_usages = symbol_usages
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._symbol_usages
 
 

@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
@@ -20,7 +22,7 @@ class FileMatcherConstantResolver(FileMatcherResolver):
         return self._value
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return []
 
     def __str__(self):
@@ -44,7 +46,7 @@ class FileMatcherReferenceResolver(FileMatcherResolver):
         return resolver.resolve(symbols)
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
     def __str__(self):
@@ -63,7 +65,7 @@ class FileMatcherNotResolver(FileMatcherResolver):
         return file_matchers.FileMatcherNot(self._resolver.resolve(symbols))
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._resolver.references
 
 
@@ -83,7 +85,7 @@ class FileMatcherAndResolver(FileMatcherResolver):
         ])
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
 
@@ -103,5 +105,5 @@ class FileMatcherOrResolver(FileMatcherResolver):
         ])
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references

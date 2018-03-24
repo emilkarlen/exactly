@@ -1,4 +1,7 @@
+from typing import Sequence
+
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -9,7 +12,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
     def __init__(self, resolved_value: FileMatcher,
-                 references: list = ()):
+                 references: Sequence[SymbolReference] = ()):
         self._resolved_value = resolved_value
         self._references = list(references)
 
@@ -18,7 +21,7 @@ class FileMatcherResolverConstantTestImpl(FileMatcherResolver):
         return self._resolved_value
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
     def resolve(self, named_elements: SymbolTable) -> FileMatcher:

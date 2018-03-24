@@ -32,7 +32,7 @@ class CleanupConfigurationBase(ConfigurationBase):
 
     def expect_success(self,
                        main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+                       symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         return Expectation(main_side_effects_on_sds=main_side_effects_on_sds,
                            symbol_usages=symbol_usages)
 

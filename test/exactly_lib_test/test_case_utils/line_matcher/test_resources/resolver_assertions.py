@@ -8,7 +8,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def resolved_value_equals_line_matcher(value: LineMatcher,
-                                       references: asrt.ValueAssertion = asrt.is_empty_list,
+                                       references: asrt.ValueAssertion = asrt.is_empty_sequence,
                                        symbols: symbol_table.SymbolTable = None
                                        ) -> asrt.ValueAssertion[LineMatcherResolver]:
     return resolved_value_matches_line_matcher(equals_line_matcher(value),
@@ -17,7 +17,7 @@ def resolved_value_equals_line_matcher(value: LineMatcher,
 
 
 def resolved_value_matches_line_matcher(line_matcher: asrt.ValueAssertion,
-                                        references: asrt.ValueAssertion = asrt.is_empty_list,
+                                        references: asrt.ValueAssertion = asrt.is_empty_sequence,
                                         symbols: symbol_table.SymbolTable = None,
                                         ) -> asrt.ValueAssertion[LineMatcherResolver]:
     return matches_resolver_of_logic_type(LineMatcherResolver,

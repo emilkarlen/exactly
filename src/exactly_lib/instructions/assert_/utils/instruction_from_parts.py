@@ -1,7 +1,10 @@
+from typing import Sequence
+
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
@@ -17,7 +20,7 @@ class AssertPhaseInstructionFromParts(AssertPhaseInstruction):
         self.setup = instruction_setup
         self._validator = PreOrPostSdsSvhValidationErrorValidator(instruction_setup.validator)
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.setup.symbol_usages
 
     def validate_pre_sds(self,

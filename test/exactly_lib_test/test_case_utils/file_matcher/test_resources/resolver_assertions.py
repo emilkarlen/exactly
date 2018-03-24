@@ -8,7 +8,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def resolved_value_equals_file_matcher(expected: FileMatcher,
-                                       expected_references: asrt.ValueAssertion = asrt.is_empty_list,
+                                       expected_references: asrt.ValueAssertion = asrt.is_empty_sequence,
                                        symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
     """
     :return: A assertion on a :class:`FileMatcherResolver`

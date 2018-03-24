@@ -16,7 +16,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 class Configuration(ConfigurationBase):
     def expect_successful_execution_with_side_effect(self,
                                                      side_effects_check: asrt.ValueAssertion,
-                                                     symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+                                                     symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         raise NotImplementedError()
 
     def expect_target_is_not_a_directory(self):

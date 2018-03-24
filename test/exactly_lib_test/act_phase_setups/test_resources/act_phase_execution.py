@@ -54,7 +54,7 @@ class Expectation:
                  result_of_validate_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
                  result_of_prepare: asrt.ValueAssertion = sh_assertions.is_success(),
                  result_of_execute: asrt.ValueAssertion = eh_assertions.is_any_exit_code,
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
                  side_effects_on_files_after_execute: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_files_after_prepare: asrt.ValueAssertion = asrt.anything_goes(),
                  sub_process_result_from_execute: asrt.ValueAssertion = asrt.anything_goes()):

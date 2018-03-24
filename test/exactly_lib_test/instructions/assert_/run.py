@@ -19,7 +19,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expect_failure_because_specified_file_under_sds_is_missing(self,
-                                                                   symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+                                                                   symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         return Expectation(validation_post_sds=svh_assertions.is_validation_error(),
                            symbol_usages=symbol_usages)
 

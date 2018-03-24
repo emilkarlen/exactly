@@ -1,5 +1,8 @@
+from typing import Sequence
+
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.instructions.utils import return_svh_via_exceptions
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -14,7 +17,7 @@ class Instruction(AssertPhaseInstruction):
                  comparison_handler: ComparisonHandler):
         self.comparison_setup = comparison_handler
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.comparison_setup.references
 
     def validate_pre_sds(self,

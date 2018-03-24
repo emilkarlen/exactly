@@ -1,4 +1,6 @@
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from typing import Sequence
+
+from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.result import sh
@@ -22,5 +24,5 @@ class _SetupPhaseInstructionThatSetsSymbol(SetupPhaseInstruction):
                                 self.symbol_definition.resolver_container)
         return sh.new_sh_success()
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return [self.symbol_definition]

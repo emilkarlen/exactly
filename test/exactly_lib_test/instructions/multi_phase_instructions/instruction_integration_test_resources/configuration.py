@@ -69,7 +69,7 @@ class ConfigurationBase:
 
     def expect_success(self,
                        main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                       symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+                       symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         raise NotImplementedError()
 
     def expect_failure_of_main(self,

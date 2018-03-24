@@ -1,8 +1,10 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as _sds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -173,7 +175,7 @@ class SymbolUser:
     Such an object must be able to tell which symbols are used and how they are used.
     """
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         """
         Gives information about all symbols that this instruction uses.
 

@@ -70,7 +70,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         ArrangementPostAct(),
                         Expectation(
                             validation_pre_sds=svh_asrt.is_validation_error(),
-                            symbol_usages=asrt.is_empty_list,
+                            symbol_usages=asrt.is_empty_sequence,
                         ),
                     )
 
@@ -88,7 +88,7 @@ class TestFailingValidationPreSdsAbstract(unittest.TestCase):
                         ArrangementPostAct(),
                         Expectation(
                             validation_pre_sds=svh_asrt.is_validation_error(),
-                            symbol_usages=asrt.is_empty_list,
+                            symbol_usages=asrt.is_empty_sequence,
                         ),
                     )
 

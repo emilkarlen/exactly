@@ -1,8 +1,10 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -14,7 +16,7 @@ class SourceInfo(SymbolUser):
     def __init__(self, source: StringResolver):
         self.source = source
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.source.references
 
 

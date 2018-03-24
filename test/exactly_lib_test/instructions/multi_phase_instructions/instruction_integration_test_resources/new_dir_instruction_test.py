@@ -21,7 +21,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class Configuration(ConfigurationBase):
     def expect_failure_to_create_dir(self,
-                                     symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+                                     symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         raise NotImplementedError()
 
 

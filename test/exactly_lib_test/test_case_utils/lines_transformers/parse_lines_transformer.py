@@ -369,7 +369,7 @@ class TestParseLineTransformer(unittest.TestCase):
 
 def resolved_value_is_replace_transformer(regex_str: str,
                                           replacement_str: str,
-                                          references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+                                          references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
     expected_transformer = replace_transformer(regex_str, replacement_str)
     return resolved_value_equals_lines_transformer(expected_transformer,
                                                    references=references)
@@ -381,14 +381,14 @@ def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceLinesTra
 
 
 def resolved_value_is_select_regex_transformer(regex_str: str,
-                                               references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+                                               references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
     expected_transformer = select_regex_transformer(regex_str)
     return resolved_value_equals_lines_transformer(expected_transformer,
                                                    references=references)
 
 
 def resolved_value_is_select_transformer(line_matcher: LineMatcher,
-                                         references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+                                         references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
     expected_transformer = select_transformer(line_matcher)
     return resolved_value_equals_lines_transformer(expected_transformer,
                                                    references=references)

@@ -1,5 +1,7 @@
 import pathlib
+from typing import Sequence
 
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError
@@ -39,7 +41,7 @@ class ActSourceAndExecutorThatRunsConstantActions(ActSourceAndExecutor):
     def parse(self, environment: InstructionEnvironmentForPreSdsStep):
         self.__parse_action(environment)
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.__symbol_usages_action()
 
     def validate_pre_sds(self,

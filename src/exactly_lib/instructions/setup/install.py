@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -12,6 +13,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -132,7 +134,7 @@ class _InstallSourceWithoutExplicitDestinationInstruction(_InstallInstructionBas
     def __init__(self, source_file_ref: FileRefResolver):
         super().__init__(source_file_ref)
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.source_file_ref.references
 
     def main(self,
@@ -155,8 +157,8 @@ class _InstallSourceWithExplicitDestinationInstruction(_InstallInstructionBase):
         super().__init__(source_file_ref)
         self.destination_file_ref = destination_file_ref
 
-    def symbol_usages(self) -> list:
-        return self.source_file_ref.references + self.destination_file_ref.references
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
+        return tuple(self.source_file_ref.references) + tuple(self.destination_file_ref.references)
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,

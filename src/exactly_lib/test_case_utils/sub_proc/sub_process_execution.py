@@ -1,8 +1,10 @@
 import os
 import pathlib
 import subprocess
+from typing import Sequence
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
@@ -77,7 +79,7 @@ class CmdAndArgsResolver:
     """
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolReference]:
         return []
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds):

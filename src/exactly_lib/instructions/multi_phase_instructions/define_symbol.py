@@ -1,4 +1,4 @@
-from typing import Tuple, Callable, List
+from typing import Tuple, Callable, List, Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
@@ -23,7 +23,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
     FileMatcherResolver, LineMatcherResolver, SymbolValueResolver
-from exactly_lib.symbol.symbol_usage import SymbolDefinition
+from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -135,7 +135,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         self.symbol = symbol
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return [self.symbol]
 
     def main(self,

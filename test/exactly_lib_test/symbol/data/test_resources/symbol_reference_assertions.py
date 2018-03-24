@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -29,7 +30,7 @@ def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
 class _EqualsSymbolReferences(asrt.ValueAssertion):
     def __init__(self, expected: list):
         self._expected = expected
-        assert isinstance(expected, list), 'Symbol reference list must be a list'
+        assert isinstance(expected, Sequence), 'Symbol reference list must be a Sequence'
         for idx, element in enumerate(expected):
             assert isinstance(element,
                               su.SymbolReference), 'Element must be a SymbolReference #' + str(idx)
@@ -38,8 +39,8 @@ class _EqualsSymbolReferences(asrt.ValueAssertion):
               put: unittest.TestCase,
               value,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        put.assertIsInstance(value, list,
-                             'Expects a list of symbol references')
+        put.assertIsInstance(value, Sequence,
+                             'Expects a Sequence of symbol references')
         put.assertEqual(len(self._expected),
                         len(value),
                         message_builder.apply('Number of symbol references'))

@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -11,6 +13,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
@@ -171,7 +174,7 @@ class _Instruction(AssertPhaseInstruction):
         self._file_ref_resolver = file_ref_resolver
         self._expected_file_properties = expected_file_properties
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._file_ref_resolver.references
 
     def main(self,

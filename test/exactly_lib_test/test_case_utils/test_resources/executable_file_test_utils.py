@@ -218,7 +218,7 @@ class CheckExistingFileWithArguments(CheckBase):
         exe_file = sut.parse_from_parse_source(source)
         expected_arguments = list_value_of_string_constants(['arg1', '-arg2'])
         arguments_assertion = matches_list_resolver(expected_arguments,
-                                                    expected_symbol_references=asrt.is_empty_list)
+                                                    expected_symbol_references=asrt.is_empty_sequence)
         arguments_assertion.apply_with_message(self, exe_file.arguments,
                                                'arguments')
         source_assertion = has_remaining_part_of_first_line('remaining args')

@@ -1,8 +1,11 @@
+from typing import Sequence
+
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import MainStepResultTranslator, \
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     instruction_log_dir
@@ -23,7 +26,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
         self.setup = sub_process_execution_setup
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.setup.symbol_usages
 
     @property

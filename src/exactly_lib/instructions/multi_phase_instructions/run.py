@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -24,6 +24,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list, parse_executable_file
@@ -173,7 +174,7 @@ class CmdAndArgsResolverForExecutableFile(CmdAndArgsResolver):
         self.__executable = executable
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolReference]:
         return self.__executable.symbol_usages
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
@@ -195,8 +196,8 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFile):
         self.argument_list = argument_list
 
     @property
-    def symbol_usages(self) -> list:
-        return super().symbol_usages + self.argument_list.references
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        return tuple(super().symbol_usages) + tuple(self.argument_list.references)
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         return self.argument_list.resolve_value_of_any_dependency(environment)
@@ -212,8 +213,11 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFile):
         self.argument_list = argument_list
 
     @property
-    def symbol_usages(self) -> list:
-        return super().symbol_usages + self.file_to_interpret.references + self.argument_list.references
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        return (tuple(super().symbol_usages) +
+                tuple(self.file_to_interpret.references) +
+                tuple(self.argument_list.references)
+                )
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         file_ref_path = self.file_to_interpret.resolve_value_of_any_dependency(environment)
@@ -230,8 +234,8 @@ class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFile):
         self.source = source
 
     @property
-    def symbol_usages(self) -> list:
-        return super().symbol_usages + self.source.references
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        return tuple(super().symbol_usages) + tuple(self.source.references)
 
     def _arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> list:
         return [self.source.resolve_value_of_any_dependency(environment)]

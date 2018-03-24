@@ -127,7 +127,7 @@ class TestSelectTransformerResolver(unittest.TestCase):
         resolved_value = SelectLinesTransformer(line_matcher)
         assertion_on_resolver = asrt_resolver.resolved_value_equals_lines_transformer(
             resolved_value,
-            references=asrt.is_empty_list)
+            references=asrt.is_empty_sequence)
 
         actual_resolver = LinesTransformerSelectResolver(
             LineMatcherResolverConstantTestImpl(line_matcher))

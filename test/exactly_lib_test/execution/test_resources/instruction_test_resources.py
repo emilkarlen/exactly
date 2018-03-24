@@ -1,4 +1,7 @@
+from typing import Sequence
+
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -128,7 +131,7 @@ class _SetupPhaseInstructionThat(SetupPhaseInstruction):
             -> svh.SuccessOrValidationErrorOrHardError:
         return self._validate_post_setup(environment)
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._symbol_usages()
 
 
@@ -143,7 +146,7 @@ class _BeforeAssertPhaseInstructionThat(BeforeAssertPhaseInstruction):
         self._main = main
         self._symbol_usages = symbol_usages
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._symbol_usages()
 
     def validate_pre_sds(self,
@@ -173,7 +176,7 @@ class _AssertPhaseInstructionThat(AssertPhaseInstruction):
         self._main = main
         self._symbol_usages = symbol_usages
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._symbol_usages()
 
     def validate_pre_sds(self,
@@ -201,7 +204,7 @@ class _CleanupPhaseInstructionThat(CleanupPhaseInstruction):
         self.do_main = main
         self._symbol_usages = symbol_usages
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._symbol_usages()
 
     def validate_pre_sds(self,

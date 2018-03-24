@@ -1,4 +1,7 @@
+from typing import Sequence
+
 from exactly_lib.symbol.resolver_structure import DataValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -21,7 +24,7 @@ class FileRefResolver(DataValueResolver):
         raise NotImplementedError()
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         raise NotImplementedError()
 
     def __str__(self):

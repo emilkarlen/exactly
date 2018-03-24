@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
@@ -12,6 +14,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
@@ -90,7 +93,7 @@ class _InstructionForStringResolver(SetupPhaseInstruction):
     def __init__(self, contents: StringResolver):
         self.contents = contents
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.contents.references
 
     def main(self,
@@ -108,7 +111,7 @@ class _InstructionForFileRef(InstructionWithFileRefsBase):
                                        file_properties.must_exist_as(FileType.REGULAR)),))
         self.redirect_file = redirect_file
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.redirect_file.references
 
     def main(self,
