@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su, resolver_structure as struct
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -67,12 +68,32 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
                                                   value))
 
 
+class FileRefStringFragmentResolver(StringFragmentResolver):
+    """
+    A fragment that represents a reference to a symbol.
+    """
+
+    def __init__(self, file_ref: FileRefResolver):
+        self._file_ref = file_ref
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._file_ref.references
+
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+        return csv.FileRefFragment(self._file_ref.resolve(symbols))
+
+
 def string_constant(string: str) -> StringResolver:
     return StringResolver((ConstantStringFragmentResolver(string),))
 
 
 def symbol_reference(symbol_ref: su.SymbolReference) -> StringResolver:
     return StringResolver((SymbolStringFragmentResolver(symbol_ref),))
+
+
+def from_file_ref_resolver(file_ref: FileRefResolver) -> StringResolver:
+    return StringResolver((FileRefStringFragmentResolver(file_ref),))
 
 
 def resolver_from_fragments(fragments: Sequence[StringFragmentResolver]) -> StringResolver:
