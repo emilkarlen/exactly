@@ -73,7 +73,7 @@ class ResultAndStderr:
         self.stderr_contents = stderr_contents
 
 
-class CmdAndArgsResolver:
+class CommandResolver:
     """
     Resolves the command string to execute.
     """
@@ -89,6 +89,9 @@ class CmdAndArgsResolver:
         :return: Either a string or a list consisting of the name of the command
         followed by arguments.
         """
+        raise NotImplementedError('abstract method')
+
+    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         raise NotImplementedError('abstract method')
 
 

@@ -17,7 +17,7 @@ from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
-from exactly_lib.test_case_utils.sub_proc.command_resolvers import CmdAndArgsResolverForShell
+from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForShell
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup, \
     ValidationAndSubProcessExecutionSetupParser
 from exactly_lib.util.string import lines_content
@@ -294,7 +294,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = concrete_string_resolvers.string_constant(instruction_argument)
         return ValidationAndSubProcessExecutionSetup(self.validator,
-                                                     CmdAndArgsResolverForShell(argument_resolver),
+                                                     CommandResolverForShell(argument_resolver),
                                                      is_shell=True)
 
 

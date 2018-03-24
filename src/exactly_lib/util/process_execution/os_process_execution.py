@@ -1,3 +1,6 @@
+from typing import List
+
+
 class ProcessExecutionSettings(tuple):
     def __new__(cls,
                 timeout_in_seconds: int = None,
@@ -48,7 +51,7 @@ class Command(tuple):
         return self[1]
 
 
-def executable_program_command(program_and_args: list) -> Command:
+def executable_program_command(program_and_args: List[str]) -> Command:
     return Command(program_and_args, False)
 
 
