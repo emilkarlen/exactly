@@ -1,3 +1,6 @@
+from exactly_lib.util.process_execution.os_process_execution import ProgramAndArguments
+
+
 class SourceFileManager:
     """
     Manages generation of a file-name and execution of an existing file.
@@ -6,7 +9,7 @@ class SourceFileManager:
     def base_name_from_stem(self, stem: str) -> str:
         raise NotImplementedError()
 
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
+    def command_and_args_for_executing_script_file(self, script_file_name: str) -> ProgramAndArguments:
         """
         :returns The list of the command and it's arguments for executing the given
         script file (that is a program in the language defined by this object).
@@ -21,7 +24,7 @@ class SourceInterpreterSetup:
     def base_name_from_stem(self, stem: str) -> str:
         return self.__file_manager.base_name_from_stem(stem)
 
-    def command_and_args_for_executing_script_file(self, file_name: str) -> list:
+    def command_and_args_for_executing_script_file(self, file_name: str) -> ProgramAndArguments:
         return self.__file_manager.command_and_args_for_executing_script_file(file_name)
 
 
@@ -37,5 +40,6 @@ class StandardSourceFileManager(SourceFileManager):
     def base_name_from_stem(self, stem: str) -> str:
         return stem + '.' + self.extension_after_dot
 
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
-        return [self.interpreter] + self.command_line_options_before_file_argument + [script_file_name]
+    def command_and_args_for_executing_script_file(self, script_file_name: str) -> ProgramAndArguments:
+        return ProgramAndArguments(self.interpreter,
+                                   self.command_line_options_before_file_argument + [script_file_name])

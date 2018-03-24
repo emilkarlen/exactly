@@ -87,17 +87,17 @@ class ProgramCommand(Command):
 
 
 class ExecutableProgramCommand(ProgramCommand):
-    def __init__(self, program_and_args: List[str]):
-        self._program_and_args = program_and_args
+    def __init__(self,
+                 program_and_arguments: ProgramAndArguments):
+        self._program_and_arguments = program_and_arguments
 
     @property
     def args(self) -> List[str]:
-        return self._program_and_args
+        return [self._program_and_arguments.program] + self._program_and_arguments.arguments
 
     @property
     def program_and_arguments(self) -> ProgramAndArguments:
-        return ProgramAndArguments(self._program_and_args[0],
-                                   self._program_and_args[1:])
+        return self._program_and_arguments
 
 
 class ExecutableFileCommand(ProgramCommand):
@@ -117,18 +117,19 @@ class ExecutableFileCommand(ProgramCommand):
                                    self._arguments)
 
 
-def executable_program_command2(program_and_args: List[str]) -> ProgramCommand:
+def executable_program_command(program: str,
+                               arguments: List[str] = None) -> ProgramCommand:
+    return ExecutableProgramCommand(ProgramAndArguments(program,
+                                                        [] if arguments is None else arguments))
+
+
+def executable_program_command2(program_and_args: ProgramAndArguments) -> ProgramCommand:
     return ExecutableProgramCommand(program_and_args)
 
 
-def executable_program_command(program: str,
-                               args: List[str]) -> ProgramCommand:
-    return ExecutableProgramCommand([program] + args)
-
-
 def executable_file_command(program_file: pathlib.Path,
-                            arguments: List[str]) -> ProgramCommand:
-    return ExecutableFileCommand(program_file, arguments)
+                            arguments: List[str] = None) -> ProgramCommand:
+    return ExecutableFileCommand(program_file, [] if arguments is None else arguments)
 
 
 def shell_command(command: str) -> ShellCommand:

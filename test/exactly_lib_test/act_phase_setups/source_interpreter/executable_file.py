@@ -6,6 +6,7 @@ from exactly_lib.act_phase_setups.source_interpreter import executable_file as s
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceFileManager, \
     SourceInterpreterSetup
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.util.process_execution.os_process_execution import ProgramAndArguments
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.source_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
@@ -114,9 +115,10 @@ class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
 
 
 class _SourceFileManagerWithNonExistingInterpreter(SourceFileManager):
-    def command_and_args_for_executing_script_file(self, script_file_name: str) -> list:
+    def command_and_args_for_executing_script_file(self, script_file_name: str) -> ProgramAndArguments:
         interpreter_path = pathlib.Path().cwd().resolve() / 'non-existing-interpreter'
-        return [str(interpreter_path), script_file_name]
+        return ProgramAndArguments(str(interpreter_path),
+                                   [script_file_name])
 
     def base_name_from_stem(self, stem: str) -> str:
         return stem + '.src'
