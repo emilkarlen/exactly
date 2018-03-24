@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system import utils
 
 
-class StringWithDirDependency(MultiDirDependentValue):
+class StringWithDirDependency(MultiDirDependentValue[str]):
     pass
 
 

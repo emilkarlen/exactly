@@ -1,9 +1,11 @@
+from typing import List
+
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system import utils
 
 
-class ListValue(MultiDirDependentValue):
+class ListValue(MultiDirDependentValue[List[str]]):
     def __init__(self, string_value_elements: list):
         """
         :param string_value_elements: list of :class:`StringValue`
