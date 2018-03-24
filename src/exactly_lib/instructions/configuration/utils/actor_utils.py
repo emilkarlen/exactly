@@ -1,3 +1,4 @@
+import pathlib
 import shlex
 
 from exactly_lib.act_phase_setups import command_line
@@ -20,7 +21,7 @@ from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.util.process_execution.os_process_execution import Command, shell_command, executable_program_command
+from exactly_lib.util.process_execution.os_process_execution import Command, shell_command, executable_file_command
 
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
 COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)
@@ -179,7 +180,8 @@ def _parse_interpreter_command(arg: str) -> Command:
     command_and_arguments = shlex_split(arg)
     if not command_and_arguments:
         raise SingleInstructionInvalidArgumentException('Missing interpreter')
-    return executable_program_command(command_and_arguments)
+    return executable_file_command(pathlib.Path(command_and_arguments[0]),
+                                   command_and_arguments[1:])
 
 
 def shlex_split(s: str) -> list:
