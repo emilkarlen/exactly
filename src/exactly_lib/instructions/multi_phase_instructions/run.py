@@ -1,4 +1,4 @@
-from typing import Tuple, Sequence, List
+from typing import Tuple
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
@@ -20,11 +20,11 @@ from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.data import concrete_string_resolvers
+from exactly_lib.symbol.data import list_resolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list, parse_executable_file
@@ -33,7 +33,7 @@ from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_R
     PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CmdAndArgsResolverForExecutableFile
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileAndArgs
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -169,57 +169,21 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
-class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFile):
-    def __init__(self,
-                 executable: ExecutableFileAndArgs,
-                 argument_list: ListResolver):
-        super().__init__(executable)
-        self.argument_list = argument_list
-
-    @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
-        return tuple(super().symbol_usages) + tuple(self.argument_list.references)
-
-    def _additional_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        return self.argument_list.resolve_value_of_any_dependency(environment)
+def cmd_and_args_resolver_for_interpret(executable: ExecutableFileWithArgs,
+                                        file_to_interpret: FileRefResolver,
+                                        argument_list: ListResolver) -> CmdAndArgsResolverForExecutableFile:
+    file_to_interpret_as_string = concrete_string_resolvers.from_file_ref_resolver(file_to_interpret)
+    additional_arguments = list_resolver.concat_lists([
+        list_resolver.from_strings([file_to_interpret_as_string]),
+        argument_list,
+    ])
+    return CmdAndArgsResolverForExecutableFile(executable, additional_arguments)
 
 
-class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFile):
-    def __init__(self,
-                 executable: ExecutableFileAndArgs,
-                 file_to_interpret: FileRefResolver,
-                 argument_list: ListResolver):
-        super().__init__(executable)
-        self.file_to_interpret = file_to_interpret
-        self.argument_list = argument_list
-
-    @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
-        return (tuple(super().symbol_usages) +
-                tuple(self.file_to_interpret.references) +
-                tuple(self.argument_list.references)
-                )
-
-    def _additional_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        file_ref_path = self.file_to_interpret.resolve_value_of_any_dependency(environment)
-        file_path_str = str(file_ref_path)
-        argument_str_list = self.argument_list.resolve_value_of_any_dependency(environment)
-        return [file_path_str] + argument_str_list
-
-
-class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFile):
-    def __init__(self,
-                 executable: ExecutableFileAndArgs,
-                 source: StringResolver):
-        super().__init__(executable)
-        self.source = source
-
-    @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
-        return tuple(super().symbol_usages) + tuple(self.source.references)
-
-    def _additional_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        return [self.source.resolve_value_of_any_dependency(environment)]
+def cmd_and_args_resolver_for_source(executable: ExecutableFileWithArgs,
+                                     source: StringResolver) -> CmdAndArgsResolverForExecutableFile:
+    additional_arguments = list_resolver.from_strings([source])
+    return CmdAndArgsResolverForExecutableFile(executable, additional_arguments)
 
 
 class SetupParser(ValidationAndSubProcessExecutionSetupParser):
@@ -230,7 +194,7 @@ class SetupParser(ValidationAndSubProcessExecutionSetupParser):
 
 
 class _ValidatorAndArgsResolverParsing:
-    def __init__(self, exe_file: ExecutableFileAndArgs):
+    def __init__(self, exe_file: ExecutableFileWithArgs):
         self.exe_file = exe_file
 
     def parse(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
@@ -251,7 +215,7 @@ class _ValidatorAndArgsResolverParsing:
 
     def execute(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
         arguments = parse_list.parse_list_from_token_parser(token_parser)
-        cmd_resolver = CmdAndArgsResolverForExecute(self.exe_file, arguments)
+        cmd_resolver = CmdAndArgsResolverForExecutableFile(self.exe_file, arguments)
         return self.exe_file.validator, cmd_resolver
 
     def interpret(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
@@ -262,7 +226,7 @@ class _ValidatorAndArgsResolverParsing:
         validator = AndValidator((self.exe_file.validator,
                                   FileRefCheckValidator(file_to_interpret_check)))
         remaining_arguments = parse_list.parse_list_from_token_parser(token_parser)
-        cmd_resolver = CmdAndArgsResolverForInterpret(self.exe_file, file_to_interpret, remaining_arguments)
+        cmd_resolver = cmd_and_args_resolver_for_interpret(self.exe_file, file_to_interpret, remaining_arguments)
         return validator, cmd_resolver
 
     def source(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
@@ -272,7 +236,7 @@ class _ValidatorAndArgsResolverParsing:
             raise SingleInstructionInvalidArgumentException(msg)
         remaining_arguments_str = token_parser.consume_current_line_as_plain_string()
         source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
-        cmd_resolver = CmdAndArgsResolverForSource(self.exe_file, source_resolver)
+        cmd_resolver = cmd_and_args_resolver_for_source(self.exe_file, source_resolver)
         return self.exe_file.validator, cmd_resolver
 
 

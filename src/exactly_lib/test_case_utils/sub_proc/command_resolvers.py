@@ -1,9 +1,13 @@
 from typing import List, Sequence
 
+from exactly_lib.symbol.data import list_resolver
+from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileAndArgs
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CmdAndArgsResolver
 
 
@@ -28,21 +32,41 @@ class CmdAndArgsResolverForShell(CmdAndArgsResolver):
         return self.__cmd_resolver.references
 
 
-class CmdAndArgsResolverForExecutableFile(CmdAndArgsResolverForProgramAndArguments):
-    def __init__(self, executable: ExecutableFileAndArgs):
-        self.__executable = executable
+class CmdAndArgsResolverForExecutableFileAndArguments(CmdAndArgsResolverForProgramAndArguments):
+    @property
+    def executable_file(self) -> FileRefResolver:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def arguments(self) -> ListResolver:
+        raise NotImplementedError('abstract method')
 
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
-        return self.__executable.symbol_usages
-
-    def _additional_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        return []
+        return references_from_objects_with_symbol_references([self.executable_file, self.arguments])
 
     def resolve_program_and_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        arguments_list_value = self.__executable.arguments.resolve(environment.symbols)
-        argument_strings = arguments_list_value.value_of_any_dependency(environment.home_and_sds)
-        return ([self.__executable.path_string(environment)] +
-                argument_strings +
-                self._additional_arguments(environment)
-                )
+        argument_strings = self.arguments.resolve_value_of_any_dependency(environment)
+        executable_file_path = self.executable_file.resolve_value_of_any_dependency(environment)
+        return [str(executable_file_path)] + argument_strings
+
+
+class CmdAndArgsResolverForExecutableFile(CmdAndArgsResolverForExecutableFileAndArguments):
+    def __init__(self,
+                 executable: ExecutableFileWithArgs,
+                 additional_arguments: ListResolver):
+        self.__executable = executable
+        self.__additional_arguments = additional_arguments
+
+    @property
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        return tuple(self.__executable.symbol_usages) + tuple(self.__additional_arguments.references)
+
+    @property
+    def executable_file(self) -> FileRefResolver:
+        return self.__executable.file_resolver
+
+    @property
+    def arguments(self) -> ListResolver:
+        return list_resolver.concat_lists([self.__executable.arguments,
+                                           self.__additional_arguments])

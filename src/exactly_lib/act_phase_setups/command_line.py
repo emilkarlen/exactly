@@ -23,7 +23,7 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileAndArgs
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
@@ -74,7 +74,7 @@ class CommandConfigurationForShell(CommandConfiguration):
 
 class CommandConfigurationForExecutableFile(CommandConfiguration):
     def __init__(self,
-                 executable_file: ExecutableFileAndArgs):
+                 executable_file: ExecutableFileWithArgs):
         self.executable_file = executable_file
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -117,7 +117,7 @@ class _Parser(Parser):
             executable_resolver = parse_file_ref_from_parse_source(source,
                                                                    RELATIVITY_CONFIGURATION)
             arguments_resolver = parse_list(source)
-            executable_file = ExecutableFileAndArgs(executable_resolver, arguments_resolver)
+            executable_file = ExecutableFileWithArgs(executable_resolver, arguments_resolver)
             return CommandConfigurationForExecutableFile(executable_file)
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))
@@ -152,7 +152,7 @@ class _ExecutableFileValidator(parts.Validator):
 class _ExecutableFileExecutor(CommandExecutor):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
-                 executable_file: ExecutableFileAndArgs):
+                 executable_file: ExecutableFileWithArgs):
         super().__init__(os_process_executor)
         self.executable_file = executable_file
 

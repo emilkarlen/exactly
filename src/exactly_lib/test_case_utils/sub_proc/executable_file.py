@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
-class ExecutableFileAndArgs:
+class ExecutableFileWithArgs:
     def __init__(self,
                  file_reference_resolver: FileRefResolver,
                  arguments: ListResolver):
