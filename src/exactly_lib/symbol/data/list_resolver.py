@@ -1,6 +1,7 @@
 import itertools
 from typing import Sequence, List
 
+from exactly_lib.symbol.data import concrete_string_resolvers
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -136,3 +137,9 @@ def concat_lists(lists: Sequence[ListResolver]) -> ListResolver:
 def from_strings(elements: Sequence[StringResolver]) -> ListResolver:
     return ListResolver([string_element(element)
                          for element in elements])
+
+
+def from_constants(str_list: Sequence[str]) -> ListResolver:
+    return ListResolver([string_element(
+        concrete_string_resolvers.string_constant(s))
+        for s in str_list])

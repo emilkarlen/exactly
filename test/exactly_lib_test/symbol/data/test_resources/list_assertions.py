@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.symbol.data import list_resolver, concrete_resolvers
+import exactly_lib.symbol.data.list_resolver
+from exactly_lib.symbol.data import list_resolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.type_system.data.list_value import ListValue
@@ -75,7 +76,7 @@ def matches_list_resolver(expected_resolved_value: ListValue,
 
 
 def equals_constant_list(expected_str_list: list) -> asrt.ValueAssertion:
-    return equals_list_resolver(concrete_resolvers.list_constant(expected_str_list))
+    return equals_list_resolver(exactly_lib.symbol.data.list_resolver.from_constants(expected_str_list))
 
 
 class _EqualsListValueResolverAssertion(_EqualsSymbolValueResolverBase):
