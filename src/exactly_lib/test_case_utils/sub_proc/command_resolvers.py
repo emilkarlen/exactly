@@ -1,4 +1,4 @@
-from typing import List, Sequence
+from typing import Sequence
 
 from exactly_lib.symbol.data import list_resolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
@@ -11,17 +11,6 @@ from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileW
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib.util.process_execution.os_process_execution import Command
-
-
-class CommandResolverForProgramAndArguments(CommandResolver):
-    """
-    Base class for resolvers that gives a command that is a list of arguments
-
-    (opposed to a shell command which is just a string).
-    """
-
-    def _resolve_program_and_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        raise NotImplementedError('abstract method')
 
 
 class CommandResolverForShell(CommandResolver):
@@ -40,9 +29,18 @@ class CommandResolverForShell(CommandResolver):
         return self.__cmd_resolver.references
 
 
-class CommandResolverForExecutableFileAndArguments(CommandResolverForProgramAndArguments):
+class CommandResolverForExecutableFileAndArguments(CommandResolver):
+    """
+    A resolver that gives a command that is an executable file followed by a list arguments
+
+    (opposed to a shell command which is just a string).
+    """
+
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return os_process_execution.executable_program_command(self._resolve_program_and_arguments(environment))
+        return os_process_execution.executable_file_command(
+            self.executable_file.resolve_value_of_any_dependency(environment),
+            self.arguments.resolve_value_of_any_dependency(environment)
+        )
 
     @property
     def executable_file(self) -> FileRefResolver:
@@ -55,11 +53,6 @@ class CommandResolverForExecutableFileAndArguments(CommandResolverForProgramAndA
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
         return references_from_objects_with_symbol_references([self.executable_file, self.arguments])
-
-    def _resolve_program_and_arguments(self, environment: PathResolvingEnvironmentPreOrPostSds) -> List[str]:
-        argument_strings = self.arguments.resolve_value_of_any_dependency(environment)
-        executable_file_path = self.executable_file.resolve_value_of_any_dependency(environment)
-        return [str(executable_file_path)] + argument_strings
 
 
 class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArguments):

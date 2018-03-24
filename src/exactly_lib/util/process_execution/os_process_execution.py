@@ -1,3 +1,4 @@
+import pathlib
 from typing import List
 
 
@@ -72,8 +73,28 @@ class ExecutableProgramCommand(Command):
         return False
 
 
+class ExecutableFileCommand(Command):
+    def __init__(self,
+                 executable_file: pathlib.Path,
+                 arguments: List[str]):
+        self._executable_file = executable_file
+        self._arguments = arguments
+
+    @property
+    def args(self) -> List[str]:
+        return [str(self._executable_file)] + self._arguments
+
+    @property
+    def shell(self) -> bool:
+        return False
+
+
 def executable_program_command(program_and_args: List[str]) -> Command:
     return ExecutableProgramCommand(program_and_args)
+
+
+def executable_file_command(program_file: pathlib.Path, arguments: List[str]) -> Command:
+    return ExecutableFileCommand(program_file, arguments)
 
 
 def shell_command(command: str) -> Command:

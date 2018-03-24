@@ -1,8 +1,9 @@
+import pathlib
 import shlex
 
 from exactly_lib.act_phase_setups.source_interpreter import act_phase_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.util.process_execution.os_process_execution import executable_program_command
+from exactly_lib.util.process_execution.os_process_execution import executable_file_command
 
 
 def resolve_act_phase_setup_from_argparse_argument(default_setup: ActPhaseSetup,
@@ -22,5 +23,6 @@ def _resolve_act_phase_setup(default_setup: ActPhaseSetup,
 
 def _new_for_generic_script_language_setup(interpreter: str) -> ActPhaseSetup:
     cmd_and_args = shlex.split(interpreter)
-    command = executable_program_command(cmd_and_args)
+    command = executable_file_command(pathlib.Path(cmd_and_args[0]),
+                                      cmd_and_args[1:])
     return act_phase_setup(command)
