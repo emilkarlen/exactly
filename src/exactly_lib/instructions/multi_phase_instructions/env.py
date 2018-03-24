@@ -173,10 +173,8 @@ class _SetExecutor(Executor):
         for fragment in self.value_resolver.fragments:
             if fragment.is_string_constant:
                 fragment_value = _expand_vars(fragment.string_constant, environ)
-            elif fragment.is_symbol:
-                fragment_value = fragment.resolve_value_of_any_dependency(resolving_environment)
             else:
-                raise TypeError('Unknown String Fragment: ' + str(fragment))
+                fragment_value = fragment.resolve_value_of_any_dependency(resolving_environment)
             fragments.append(fragment_value)
         return ''.join(fragments)
 

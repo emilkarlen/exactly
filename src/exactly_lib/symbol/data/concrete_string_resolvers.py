@@ -43,10 +43,6 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
         self._symbol_reference = symbol_reference
 
     @property
-    def is_symbol(self) -> bool:
-        return True
-
-    @property
     def symbol_name(self) -> str:
         return self._symbol_reference.name
 
