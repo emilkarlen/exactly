@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.symbol.data import string_resolver, list_resolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
@@ -32,6 +34,6 @@ class SymbolValueResolverVisitor:
         raise NotImplementedError()
 
 
-def list_constant(str_list: list) -> ListResolver:
+def list_constant(str_list: Sequence[str]) -> ListResolver:
     return ListResolver([list_resolver.string_element(string_resolver.string_constant(s))
                          for s in str_list])
