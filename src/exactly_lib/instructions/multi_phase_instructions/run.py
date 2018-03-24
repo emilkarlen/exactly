@@ -168,7 +168,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
-class CmdAndArgsResolverForExecutableFileBase(CmdAndArgsResolver):
+class CmdAndArgsResolverForExecutableFile(CmdAndArgsResolver):
     def __init__(self, executable: ExecutableFile):
         self.__executable = executable
 
@@ -187,7 +187,7 @@ class CmdAndArgsResolverForExecutableFileBase(CmdAndArgsResolver):
                self._arguments(environment)
 
 
-class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
+class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFile):
     def __init__(self,
                  executable: ExecutableFile,
                  argument_list: ListResolver):
@@ -202,7 +202,7 @@ class CmdAndArgsResolverForExecute(CmdAndArgsResolverForExecutableFileBase):
         return self.argument_list.resolve_value_of_any_dependency(environment)
 
 
-class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
+class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFile):
     def __init__(self,
                  executable: ExecutableFile,
                  file_to_interpret: FileRefResolver,
@@ -222,7 +222,7 @@ class CmdAndArgsResolverForInterpret(CmdAndArgsResolverForExecutableFileBase):
         return [file_path_str] + argument_str_list
 
 
-class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFileBase):
+class CmdAndArgsResolverForSource(CmdAndArgsResolverForExecutableFile):
     def __init__(self,
                  executable: ExecutableFile,
                  source: StringResolver):
@@ -248,7 +248,7 @@ class _ValidatorAndArgsResolverParsing:
     def __init__(self, exe_file: ExecutableFile):
         self.exe_file = exe_file
 
-    def parse(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+    def parse(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
         if token_parser.is_at_eol:
             return self.execute(token_parser)
 
@@ -264,12 +264,12 @@ class _ValidatorAndArgsResolverParsing:
         else:
             return self.execute(token_parser)
 
-    def execute(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+    def execute(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
         arguments = parse_list.parse_list_from_token_parser(token_parser)
         cmd_resolver = CmdAndArgsResolverForExecute(self.exe_file, arguments)
         return self.exe_file.validator, cmd_resolver
 
-    def interpret(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+    def interpret(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
         file_to_interpret = parse_file_ref.parse_file_ref_from_token_parser(parse_file_ref.ALL_REL_OPTIONS_CONFIG,
                                                                             token_parser)
         file_to_interpret_check = FileRefCheck(file_to_interpret,
@@ -280,7 +280,7 @@ class _ValidatorAndArgsResolverParsing:
         cmd_resolver = CmdAndArgsResolverForInterpret(self.exe_file, file_to_interpret, remaining_arguments)
         return validator, cmd_resolver
 
-    def source(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolver]:
+    def source(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CmdAndArgsResolverForExecutableFile]:
         if token_parser.is_at_eol:
             msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=_SOURCE_SYNTAX_ELEMENT_NAME,
                                                                          option=SOURCE_OPTION)
