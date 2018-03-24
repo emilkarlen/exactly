@@ -6,7 +6,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.parse import parse_executable_file as sut
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFile
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileAndArgs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
@@ -109,7 +109,7 @@ class Expectation:
 
 def check_exe_file(put: unittest.TestCase,
                    expectation: ExpectationOnExeFile,
-                   actual: ExecutableFile):
+                   actual: ExecutableFileAndArgs):
     file_resolver_assertion = matches_file_ref_resolver(
         expectation.file_resolver_value,
         expected_symbol_references=equals_symbol_references(expectation.expected_symbol_references_of_file),
@@ -161,12 +161,12 @@ class CheckBase(unittest.TestCase):
         super().__init__()
         self.configuration = configuration
 
-    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFile, symbols: SymbolTable):
+    def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFileAndArgs, symbols: SymbolTable):
         self.assertEqual(self.configuration.exists_pre_sds,
                          actual.file_resolver.resolve(symbols).exists_pre_sds(),
                          'Existence pre SDS')
 
-    def _check_file_path(self, file_name: str, actual: ExecutableFile,
+    def _check_file_path(self, file_name: str, actual: ExecutableFileAndArgs,
                          environment: PathResolvingEnvironmentPreOrPostSds):
         self.assertEqual(str(self.configuration.installation_dir(environment.home_and_sds) / file_name),
                          actual.path_string(environment),
@@ -176,12 +176,12 @@ class CheckBase(unittest.TestCase):
         contents = self.configuration.file_installation(file)
         return home_and_sds_with_act_as_curr_dir(home_or_sds_contents=contents)
 
-    def _assert_passes_validation(self, actual: ExecutableFile,
+    def _assert_passes_validation(self, actual: ExecutableFileAndArgs,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
         validator_util.check(self, actual.validator, environment,
                              validator_util.expect_passes_all_validations())
 
-    def _assert_does_not_pass_validation(self, actual: ExecutableFile,
+    def _assert_does_not_pass_validation(self, actual: ExecutableFileAndArgs,
                                          environment: PathResolvingEnvironmentPreOrPostSds):
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds
