@@ -30,30 +30,51 @@ def with_environ(environ: dict) -> ProcessExecutionSettings:
     return ProcessExecutionSettings(environ=environ)
 
 
-class Command(tuple):
-    def __new__(cls,
-                args,
-                shell: bool):
-        return tuple.__new__(cls, (args, shell))
-
+class Command:
     @property
     def args(self):
         """
         :return: Either a string or an iterable of strings
         """
-        return self[0]
+        raise NotImplementedError('abstract method')
 
     @property
     def shell(self) -> bool:
         """
         Tells whether args should be executed as a shell command.
         """
-        return self[1]
+        raise NotImplementedError('abstract method')
+
+
+class ShellCommand(Command):
+    def __init__(self, command_line: str):
+        self._command_line = command_line
+
+    @property
+    def args(self) -> str:
+        return self._command_line
+
+    @property
+    def shell(self) -> bool:
+        return True
+
+
+class ExecutableProgramCommand(Command):
+    def __init__(self, program_and_args: List[str]):
+        self._program_and_args = program_and_args
+
+    @property
+    def args(self) -> List[str]:
+        return self._program_and_args
+
+    @property
+    def shell(self) -> bool:
+        return False
 
 
 def executable_program_command(program_and_args: List[str]) -> Command:
-    return Command(program_and_args, False)
+    return ExecutableProgramCommand(program_and_args)
 
 
 def shell_command(command: str) -> Command:
-    return Command(command, True)
+    return ShellCommand(command)
