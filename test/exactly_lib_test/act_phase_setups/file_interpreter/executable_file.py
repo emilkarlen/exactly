@@ -8,7 +8,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
-from exactly_lib.util.process_execution.os_process_execution import executable_program_command2
+from exactly_lib.util.process_execution.os_process_execution import executable_file_command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
@@ -35,7 +35,7 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
-COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_program_command2([sys.executable])
+COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(sys.executable, [])
 
 
 class TheConfiguration(TheConfigurationBase):
