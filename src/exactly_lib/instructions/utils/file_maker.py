@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils import file_ref_check, file_properties
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
     SingleStepValidator, ValidationStep
-from exactly_lib.test_case_utils.sub_proc.execution_setup import SubProcessExecutionSetup
+from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
 
@@ -65,7 +65,7 @@ class FileMakerForContentsFromSubProcess(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
                  output_transformer: LinesTransformerResolver,
-                 sub_process: SubProcessExecutionSetup):
+                 sub_process: ValidationAndSubProcessExecutionSetup):
         self._source_info = source_info
         self._output_transformer = output_transformer
         self._sub_process = sub_process
@@ -76,7 +76,7 @@ class FileMakerForContentsFromSubProcess(FileMaker):
              ) -> str:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        command = self._sub_process.resolve_command(path_resolving_env)
+        command = self._sub_process.command_resolver.resolve(path_resolving_env)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
         result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
@@ -92,6 +92,10 @@ class FileMakerForContentsFromSubProcess(FileMaker):
                                                                 dst_path,
                                                                 transformer,
                                                                 path_resolving_env.home_and_sds)
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._sub_process.validator
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
