@@ -8,6 +8,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
+from exactly_lib.test_case_utils.sub_proc.program_with_args import ProgramWithArgs
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib.util.process_execution.os_process_execution import Command
@@ -27,6 +28,40 @@ class CommandResolverForShell(CommandResolver):
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
         return self.__cmd_resolver.references
+
+
+class CommandResolverForProgramAndArguments(CommandResolver):
+    """
+    A resolver that gives a command that is an executable file followed by a list arguments
+
+    (opposed to a shell command which is just a string).
+    """
+
+    def __init__(self,
+                 program: ProgramWithArgs,
+                 additional_arguments: ListResolver):
+        self.__program_with_args = program
+        self.__additional_arguments = additional_arguments
+
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        return os_process_execution.executable_program_command2(
+            self.__program_with_args.program.resolve_value_of_any_dependency(environment),
+            self.arguments.resolve_value_of_any_dependency(environment)
+        )
+
+    @property
+    def program(self) -> StringResolver:
+        return self.__program_with_args.program
+
+    @property
+    def arguments(self) -> ListResolver:
+        return list_resolver.concat_lists([self.__program_with_args.arguments,
+                                           self.__additional_arguments])
+
+    @property
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        return references_from_objects_with_symbol_references([self.__program_with_args,
+                                                               self.__additional_arguments])
 
 
 class CommandResolverForExecutableFileAndArguments(CommandResolver):
@@ -63,10 +98,6 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
         self.__additional_arguments = additional_arguments
 
     @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
-        return tuple(self.__executable.symbol_usages) + tuple(self.__additional_arguments.references)
-
-    @property
     def executable_file(self) -> FileRefResolver:
         return self.__executable.file_resolver
 
@@ -79,15 +110,29 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
 def command_resolver_for_interpret(interpreter: ExecutableFileWithArgs,
                                    file_to_interpret: FileRefResolver,
                                    argument_list: ListResolver) -> CommandResolverForExecutableFile:
-    file_to_interpret_as_string = concrete_string_resolvers.from_file_ref_resolver(file_to_interpret)
-    additional_arguments = list_resolver.concat_lists([
-        list_resolver.from_strings([file_to_interpret_as_string]),
-        argument_list,
-    ])
-    return CommandResolverForExecutableFile(interpreter, additional_arguments)
+    return CommandResolverForExecutableFile(interpreter,
+                                            _file_interpreter_arguments(file_to_interpret,
+                                                                        argument_list))
+
+
+def command_resolver_for_interpret_by_program(interpreter: ProgramWithArgs,
+                                              file_to_interpret: FileRefResolver,
+                                              argument_list: ListResolver) -> CommandResolverForProgramAndArguments:
+    return CommandResolverForProgramAndArguments(interpreter,
+                                                 _file_interpreter_arguments(file_to_interpret,
+                                                                             argument_list))
 
 
 def command_resolver_for_source_as_command_line_argument(interpreter: ExecutableFileWithArgs,
                                                          source: StringResolver) -> CommandResolverForExecutableFile:
     additional_arguments = list_resolver.from_strings([source])
     return CommandResolverForExecutableFile(interpreter, additional_arguments)
+
+
+def _file_interpreter_arguments(file_to_interpret: FileRefResolver,
+                                argument_list: ListResolver) -> ListResolver:
+    file_to_interpret_as_string = concrete_string_resolvers.from_file_ref_resolver(file_to_interpret)
+    return list_resolver.concat_lists([
+        list_resolver.from_strings([file_to_interpret_as_string]),
+        argument_list,
+    ])
