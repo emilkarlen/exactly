@@ -4,11 +4,13 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
+    SymbolStringFragmentResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_resolver import SymbolStringFragmentResolver, StringFragmentResolver, \
-    ConstantStringFragmentResolver, StringResolver
+from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, \
+    StringResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax, \
     symbol_reference_syntax_for_name, \

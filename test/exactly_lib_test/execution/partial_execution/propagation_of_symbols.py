@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
 from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
+from exactly_lib.symbol.data import concrete_string_resolvers
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
@@ -339,7 +340,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
                                          'predefined string constant symbol value')
 
         expected_predefined_symbols = SymbolTable({
-            predefined_symbol.name: data_symbol_utils.string_constant(predefined_symbol.value)
+            predefined_symbol.name: concrete_string_resolvers.string_constant(predefined_symbol.value)
         })
         all_predefined_symbols = frozenset((predefined_symbol.name,))
 
@@ -389,7 +390,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
         defined_symbol = NameAndValue('defined symbol',
                                       'value of symbol defined in the setup phase (not used in this test)')
         predefined_symbols_table = SymbolTable({
-            predefined_symbol.name: data_symbol_utils.string_constant(predefined_symbol.value)
+            predefined_symbol.name: concrete_string_resolvers.string_constant(predefined_symbol.value)
         })
         predefined_symbols = frozenset((predefined_symbol.name,))
         predefined_and_defined_symbols = frozenset((predefined_symbol.name, defined_symbol.name))

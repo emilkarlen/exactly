@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data.string_resolver import string_constant
+from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition

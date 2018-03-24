@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.data import string_resolver as sr, path_resolver as pr, list_resolver as lr, \
     concrete_resolvers as sut
-from exactly_lib.symbol.data.string_resolver import string_constant
+from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \

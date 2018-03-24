@@ -9,7 +9,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromSubProcess, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import string_resolver
+from exactly_lib.symbol.data import concrete_string_resolvers
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -130,7 +130,7 @@ def parse_file_contents(instruction_config: InstructionConfig,
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
     if parser.is_at_eol:
-        return FileMakerForConstantContents(string_resolver.string_constant(''))
+        return FileMakerForConstantContents(concrete_string_resolvers.string_constant(''))
     else:
         parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
         parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)

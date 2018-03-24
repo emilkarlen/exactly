@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import string_resolver
+from exactly_lib.symbol.data import concrete_string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.value_resolvers import path_part_resolvers as sut
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -51,8 +51,8 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
         symbol1_ref = self._symbol_reference(symbol1.name)
         symbol2 = NameAndValue('symbol_2_name', 'symbol 2 value')
         symbol2_ref = self._symbol_reference(symbol2.name)
-        fragments = [string_resolver.SymbolStringFragmentResolver(symbol1_ref),
-                     string_resolver.SymbolStringFragmentResolver(symbol2_ref)]
+        fragments = [concrete_string_resolvers.SymbolStringFragmentResolver(symbol1_ref),
+                     concrete_string_resolvers.SymbolStringFragmentResolver(symbol2_ref)]
         resolver = sut.StringResolver(tuple(fragments))
         path_part = sut.PathPartResolverAsStringResolver(resolver)
         # ACT #
@@ -70,8 +70,8 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
         symbol1_ref = self._symbol_reference(symbol1.name)
         symbol2 = NameAndValue('symbol_2_name', 'symbol 2 value')
         symbol2_ref = self._symbol_reference(symbol2.name)
-        fragments = [string_resolver.SymbolStringFragmentResolver(symbol1_ref),
-                     string_resolver.SymbolStringFragmentResolver(symbol2_ref)]
+        fragments = [concrete_string_resolvers.SymbolStringFragmentResolver(symbol1_ref),
+                     concrete_string_resolvers.SymbolStringFragmentResolver(symbol2_ref)]
         resolver = sut.StringResolver(tuple(fragments))
         path_part = sut.PathPartResolverAsStringResolver(resolver)
         symbol_table_entries = [symbol1, symbol2]

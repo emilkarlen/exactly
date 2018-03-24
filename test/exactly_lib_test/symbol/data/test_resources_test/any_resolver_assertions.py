@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
-from exactly_lib.symbol.data.string_resolver import string_constant
+from exactly_lib.symbol.data import list_resolver as lr
+from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib_test.symbol.data.test_resources import any_resolver_assertions as sut
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
@@ -30,7 +30,8 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_equals__list(self):
         # ARRANGE #
-        value = lr.ListResolver([lr.StringResolverElement(sr.string_constant('value'))])
+        value = lr.ListResolver([lr.StringResolverElement(
+            string_constant('value'))])
         # ACT & ASSERT #
         sut.equals_resolver(value).apply_without_message(self, value)
 
@@ -64,7 +65,7 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_not_equals__list(self):
         # ARRANGE #
-        expected = lr.ListResolver([lr.StringResolverElement(sr.string_constant('value'))])
+        expected = lr.ListResolver([lr.StringResolverElement(string_constant('value'))])
         actual = lr.ListResolver([lr.SymbolReferenceElement(su.symbol_reference('symbol_name'))])
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)

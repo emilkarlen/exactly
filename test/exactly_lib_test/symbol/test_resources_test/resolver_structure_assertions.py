@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
 from exactly_lib.symbol.data.restrictions import reference_restrictions as r, value_restrictions as vr
-from exactly_lib.symbol.data.string_resolver import string_constant
 from exactly_lib.symbol.resolver_structure import SymbolContainer, container_of_builtin
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.util.line_source import single_line_sequence

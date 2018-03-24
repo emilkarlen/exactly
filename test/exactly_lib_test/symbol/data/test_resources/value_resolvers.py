@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.help_texts.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol import symbol_usage
-from exactly_lib.symbol.data import string_resolver
+from exactly_lib.symbol.data import concrete_string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
@@ -19,7 +19,7 @@ def string_resolver_of_single_symbol_reference(
     symbol_reference = symbol_usage.SymbolReference(symbol_name,
                                                     restrictions)
     fragments = [
-        string_resolver.SymbolStringFragmentResolver(symbol_reference)
+        concrete_string_resolvers.SymbolStringFragmentResolver(symbol_reference)
     ]
     return StringResolver(tuple(fragments))
 
