@@ -34,10 +34,6 @@ class ExecutableFileWithArgs(ObjectWithSymbolReferences):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self.symbol_usages
-
-    @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
         return tuple(self._file_reference_resolver.references) + tuple(self._arguments.references)
 
     def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
