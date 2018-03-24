@@ -32,10 +32,10 @@ from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
+from exactly_lib.test_case_utils.sub_proc.command_resolvers import CmdAndArgsResolverForExecutableFile
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileAndArgs
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
     ValidationAndSubProcessExecutionSetup
-from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CmdAndArgsResolverForExecutableFile
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.structure import structures as docs
