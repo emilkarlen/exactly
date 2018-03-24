@@ -82,16 +82,7 @@ class CommandResolver:
     def symbol_usages(self) -> Sequence[SymbolReference]:
         return []
 
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds):
-        """
-        Resolves the "thing" to execute by Python's subprocess module.
-
-        :return: Either a string or a list consisting of the name of the command
-        followed by arguments.
-        """
-        raise NotImplementedError('abstract method')
-
-    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         raise NotImplementedError('abstract method')
 
 

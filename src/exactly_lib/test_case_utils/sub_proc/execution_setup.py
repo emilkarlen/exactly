@@ -20,7 +20,7 @@ class SubProcessExecutionSetup:
         return self.cmd_and_args_resolver.symbol_usages
 
     def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return self.cmd_and_args_resolver.resolve_command(environment)
+        return self.cmd_and_args_resolver.resolve(environment)
 
 
 class ValidationAndSubProcessExecutionSetup(SubProcessExecutionSetup):
