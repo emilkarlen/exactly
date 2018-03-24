@@ -12,6 +12,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.data import list_resolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
@@ -23,7 +24,9 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForExecutableFile
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 from exactly_lib.util.process_execution.os_process_execution import Command, shell_command
 
 
@@ -159,7 +162,12 @@ class _ExecutableFileExecutor(CommandExecutor):
     def _command_to_execute(self,
                             environment: InstructionEnvironmentForPostSdsStep,
                             script_output_dir_path: pathlib.Path) -> Command:
-        return self.executable_file.non_shell_command(environment.path_resolving_environment_pre_or_post_sds)
+        command_resolver = self._command_resolver(script_output_dir_path)
+        return command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
+
+    def _command_resolver(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+        return CommandResolverForExecutableFile(self.executable_file,
+                                                list_resolver.empty())
 
 
 class _ShellCommandExecutor(CommandExecutor):
