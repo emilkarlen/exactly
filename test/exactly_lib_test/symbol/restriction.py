@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import restriction as sut
+from exactly_lib.symbol.data import concrete_string_resolvers
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.type_system.data import file_refs
@@ -8,7 +9,6 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl
@@ -29,7 +29,7 @@ def suite() -> unittest.TestSuite:
 class TestElementTypeRestriction(unittest.TestCase):
     element_type_2_resolver_of_type = {
         TypeCategory.DATA:
-            data_symbol_utils.string_constant('string value'),
+            concrete_string_resolvers.string_constant('string value'),
 
         TypeCategory.LOGIC:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
@@ -75,7 +75,7 @@ class TestValueTypeRestriction(unittest.TestCase):
     value_type_2_resolver_of_type = {
 
         ValueType.STRING:
-            data_symbol_utils.string_constant('string value'),
+            concrete_string_resolvers.string_constant('string value'),
 
         ValueType.LIST:
             ListResolverTestImplForConstantListValue(ListValue([])),

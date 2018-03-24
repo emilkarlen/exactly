@@ -1,10 +1,11 @@
 import unittest
 
-from exactly_lib.symbol.data import string_resolver as sr, list_resolver as lr
+from exactly_lib.symbol.data import concrete_string_resolvers
+from exactly_lib.symbol.data import list_resolver as lr
+from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, \
     ReferenceRestrictionsOnDirectAndIndirect, is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_resolver import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
@@ -33,8 +34,10 @@ class TestEqualsConstantList(unittest.TestCase):
                 []
             ),
             (
-                lr.ListResolver([lr.StringResolverElement(sr.string_constant('value 1')),
-                                 lr.StringResolverElement(sr.string_constant('value 2'))]),
+                lr.ListResolver([lr.StringResolverElement(
+                    concrete_string_resolvers.string_constant('value 1')),
+                    lr.StringResolverElement(
+                        concrete_string_resolvers.string_constant('value 2'))]),
                 ['value 1', 'value 2']
             ),
         ]
@@ -49,8 +52,10 @@ class TestEqualsConstantList(unittest.TestCase):
                 ['non empty']
             ),
             (
-                lr.ListResolver([lr.StringResolverElement(sr.string_constant('value 1')),
-                                 lr.StringResolverElement(sr.string_constant('value 2 actual'))]),
+                lr.ListResolver([lr.StringResolverElement(
+                    concrete_string_resolvers.string_constant('value 1')),
+                    lr.StringResolverElement(
+                        concrete_string_resolvers.string_constant('value 2 actual'))]),
                 ['value 1', 'value 2 expected']
             ),
         ]
@@ -63,7 +68,7 @@ class TestEqualsConstantList(unittest.TestCase):
 class TestEqualsElement(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            lr.StringResolverElement(sr.string_constant('value')),
+            lr.StringResolverElement(concrete_string_resolvers.string_constant('value')),
             lr.SymbolReferenceElement(symbol_reference('symbol_name')),
         ]
         for element in test_cases:
@@ -72,7 +77,8 @@ class TestEqualsElement(unittest.TestCase):
 
     def test_string_not_equals_symbol_ref(self):
         # ARRANGE #
-        string_element = lr.StringResolverElement(sr.string_constant('value'))
+        string_element = lr.StringResolverElement(
+            concrete_string_resolvers.string_constant('value'))
         symbol_reference_element = lr.SymbolReferenceElement(symbol_reference('symbol_name'))
         assertion = sut.equals_list_resolver_element(string_element)
         # ACT & ASSERT #
@@ -80,7 +86,8 @@ class TestEqualsElement(unittest.TestCase):
 
     def test_symbol_ref_not_equals_string(self):
         # ARRANGE #
-        string_element = lr.StringResolverElement(sr.string_constant('value'))
+        string_element = lr.StringResolverElement(
+            concrete_string_resolvers.string_constant('value'))
         symbol_reference_element = lr.SymbolReferenceElement(symbol_reference('symbol_name'))
         assertion = sut.equals_list_resolver_element(symbol_reference_element)
         # ACT & ASSERT #
@@ -88,8 +95,10 @@ class TestEqualsElement(unittest.TestCase):
 
     def test_string_not_equals_string_with_different_value(self):
         # ARRANGE #
-        expected = lr.StringResolverElement(sr.string_constant('expected value'))
-        actual = lr.StringResolverElement(sr.string_constant('actual value'))
+        expected = lr.StringResolverElement(
+            concrete_string_resolvers.string_constant('expected value'))
+        actual = lr.StringResolverElement(
+            concrete_string_resolvers.string_constant('actual value'))
         assertion = sut.equals_list_resolver_element(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -106,7 +115,8 @@ class TestEqualsElement(unittest.TestCase):
 class TestEqualsResolver(unittest.TestCase):
     def test_equals(self):
         cases = [
-            lr.ListResolver([lr.StringResolverElement(sr.string_constant('value'))]),
+            lr.ListResolver([lr.StringResolverElement(
+                concrete_string_resolvers.string_constant('value'))]),
             lr.ListResolver([lr.SymbolReferenceElement(symbol_reference('symbol_name'))]),
         ]
         for resolver in cases:
@@ -120,17 +130,21 @@ class TestEqualsResolver(unittest.TestCase):
                  expected=
                  lr.ListResolver([]),
                  actual=
-                 lr.ListResolver([lr.StringResolverElement(sr.string_constant('value'))]),
+                 lr.ListResolver([lr.StringResolverElement(
+                     concrete_string_resolvers.string_constant('value'))]),
                  ),
             Case('different value of single string',
                  expected=
-                 lr.ListResolver([lr.StringResolverElement(sr.string_constant('expected value'))]),
+                 lr.ListResolver([lr.StringResolverElement(
+                     concrete_string_resolvers.string_constant('expected value'))]),
                  actual=
-                 lr.ListResolver([lr.StringResolverElement(sr.string_constant('actual value'))]),
+                 lr.ListResolver([lr.StringResolverElement(
+                     concrete_string_resolvers.string_constant('actual value'))]),
                  ),
             Case('different element types, but same resolved value',
                  expected=
-                 lr.ListResolver([lr.StringResolverElement(sr.string_constant(string_symbol.value))]),
+                 lr.ListResolver([lr.StringResolverElement(
+                     concrete_string_resolvers.string_constant(string_symbol.value))]),
                  actual=
                  lr.ListResolver([lr.SymbolReferenceElement(su.symbol_reference(string_symbol.name))]),
                  symbols=
@@ -161,7 +175,8 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        lr.ListResolver([lr.StringResolverElement(sr.string_constant('expected value'))]),
+                        lr.ListResolver([lr.StringResolverElement(
+                            concrete_string_resolvers.string_constant('expected value'))]),
                         ),
             MatchesCase('symbol reference',
                         expected=
@@ -170,10 +185,11 @@ class TestMatchesResolver(unittest.TestCase):
                         equals_symbol_references([SymbolReference(string_symbol.name,
                                                                   is_any_data_type())]),
                         actual=
-                        lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
-                            SymbolReference(string_symbol.name,
-                                            is_any_data_type()),
-                        ))]),
+                        lr.ListResolver([lr.StringResolverElement(
+                            concrete_string_resolvers.symbol_reference(
+                                SymbolReference(string_symbol.name,
+                                                is_any_data_type()),
+                            ))]),
                         symbols=
                         singleton_symbol_table_2(string_symbol.name,
                                                  su.container(string_constant(string_symbol.value))),
@@ -193,7 +209,8 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        lr.ListResolver([lr.StringResolverElement(sr.string_constant('value'))]),
+                        lr.ListResolver([lr.StringResolverElement(
+                            concrete_string_resolvers.string_constant('value'))]),
                         ),
             MatchesCase('different value of single string',
                         expected=
@@ -201,7 +218,8 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        lr.ListResolver([lr.StringResolverElement(sr.string_constant('actual value'))]),
+                        lr.ListResolver([lr.StringResolverElement(
+                            concrete_string_resolvers.string_constant('actual value'))]),
                         ),
             MatchesCase('different references',
                         expected=
@@ -211,10 +229,11 @@ class TestMatchesResolver(unittest.TestCase):
                                                                   ReferenceRestrictionsOnDirectAndIndirect(
                                                                       AnyDataTypeRestriction()))]),
                         actual=
-                        lr.ListResolver([lr.StringResolverElement(sr.symbol_reference(
-                            SymbolReference(string_symbol.name,
-                                            OrReferenceRestrictions([])),
-                        ))]),
+                        lr.ListResolver([lr.StringResolverElement(
+                            concrete_string_resolvers.symbol_reference(
+                                SymbolReference(string_symbol.name,
+                                                OrReferenceRestrictions([])),
+                            ))]),
                         symbols=
                         singleton_symbol_table_2(string_symbol.name,
                                                  su.container(string_constant(string_symbol.value))),

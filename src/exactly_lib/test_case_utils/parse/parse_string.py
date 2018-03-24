@@ -8,10 +8,10 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.data.string_resolver import StringResolver, ConstantStringFragmentResolver, \
-    StringFragmentResolver, \
+from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver
+from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.data.string_resolver import StringResolver, StringFragmentResolver
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.util.parse.token import Token

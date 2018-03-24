@@ -1,12 +1,12 @@
 import unittest
 from typing import Sequence
 
+from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
+    SymbolStringFragmentResolver, string_constant
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_resolver import ConstantStringFragmentResolver, \
-    SymbolStringFragmentResolver, \
-    StringResolver, string_constant
+from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.concrete_string_values import ConstantFragment
 from exactly_lib.type_system.data.string_value import StringValue

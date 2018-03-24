@@ -1,9 +1,10 @@
 import unittest
 
 from exactly_lib.help_texts import type_system
+from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
+    SymbolStringFragmentResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
-from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, ConstantStringFragmentResolver, \
-    SymbolStringFragmentResolver, StringResolver
+from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.data.file_ref import FileRef

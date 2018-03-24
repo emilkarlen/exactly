@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.utils.return_svh_via_exceptions import SvhValidationException
-from exactly_lib.symbol.data import string_resolver
+from exactly_lib.symbol.data import concrete_string_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.condition.integer import integer_resolver as sut
@@ -121,7 +121,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
-            string_resolver.string_constant(str(1)))
+            concrete_string_resolvers.string_constant(str(1)))
 
         # ACT #
 
@@ -137,7 +137,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         reference_of_string_resolver = data_symbol_utils.symbol_reference('symbol name')
 
-        the_string_resolver = string_resolver.symbol_reference(reference_of_string_resolver)
+        the_string_resolver = concrete_string_resolvers.symbol_reference(reference_of_string_resolver)
 
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
@@ -175,7 +175,7 @@ class TestValidationPreSds(unittest.TestCase):
                         resolved_value=resolved_value):
                     # ARRANGE #
                     resolver_to_check = sut.IntegerResolver('the property to check',
-                                                            string_resolver.string_constant(resolved_value),
+                                                            concrete_string_resolvers.string_constant(resolved_value),
                                                             custom_validator)
                     # ACT & ASSERT #
                     with self.assertRaises(SvhValidationException) as cm:
@@ -195,7 +195,7 @@ class TestValidationPreSds(unittest.TestCase):
         error_message_from_custom_validator = 'error message'
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
-            string_resolver.string_constant(str(resolved_value)),
+            concrete_string_resolvers.string_constant(str(resolved_value)),
             CustomValidator(value_that_makes_the_validation_succeed=resolved_value + 1,
                             error_message=error_message_from_custom_validator))
         # ACT & ASSERT #
@@ -226,7 +226,7 @@ class TestValidationPreSds(unittest.TestCase):
             for custom_validator in custom_validator_cases:
                 resolver_to_check = sut.IntegerResolver(
                     'the property to check',
-                    string_resolver.string_constant(str(value_string)),
+                    concrete_string_resolvers.string_constant(str(value_string)),
                     custom_validator)
                 with self.subTest(custom_validator_is_none=str(custom_validator is None),
                                   value_string=value_string):
