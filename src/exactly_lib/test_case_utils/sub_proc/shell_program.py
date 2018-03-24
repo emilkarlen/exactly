@@ -20,8 +20,7 @@ class ShellCommandSetupParser(ValidationAndSubProcessExecutionSetupParser):
             raise SingleInstructionInvalidArgumentException(msg)
         return ValidationAndSubProcessExecutionSetup(
             ConstantSuccessValidator(),
-            CommandResolverForShell(argument),
-            is_shell=True)
+            CommandResolverForShell(argument))
 
 
 _PARSE_FORMAT_MAP = {

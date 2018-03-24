@@ -12,10 +12,8 @@ from exactly_lib.util.process_execution.os_process_execution import Command
 
 class SubProcessExecutionSetup:
     def __init__(self,
-                 cmd_and_args_resolver: spe.CommandResolver,
-                 is_shell: bool):
+                 cmd_and_args_resolver: spe.CommandResolver):
         self.cmd_and_args_resolver = cmd_and_args_resolver
-        self.is_shell = is_shell
 
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
@@ -28,9 +26,8 @@ class SubProcessExecutionSetup:
 class ValidationAndSubProcessExecutionSetup(SubProcessExecutionSetup):
     def __init__(self,
                  validator: PreOrPostSdsValidator,
-                 cmd_and_args_resolver: spe.CommandResolver,
-                 is_shell: bool):
-        super().__init__(cmd_and_args_resolver, is_shell)
+                 cmd_and_args_resolver: spe.CommandResolver):
+        super().__init__(cmd_and_args_resolver)
         self.validator = validator
 
 
