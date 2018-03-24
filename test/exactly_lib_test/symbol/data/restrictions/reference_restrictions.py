@@ -587,7 +587,7 @@ class DataValueResolverForTest(DataValueResolver):
 
 class LogicValueResolverForTest(LogicValueResolver):
     def __init__(self,
-                 references: list,
+                 references: Sequence[SymbolReference],
                  logic_value_type: LogicValueType):
         self._logic_value_type = logic_value_type
         self._references = references
@@ -604,7 +604,7 @@ class LogicValueResolverForTest(LogicValueResolver):
         raise NotImplementedError('It is an error if this method is called')
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
 

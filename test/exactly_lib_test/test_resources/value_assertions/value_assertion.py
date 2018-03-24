@@ -356,6 +356,11 @@ def is_list_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[List[T]]:
                             every_element('', element_assertion, component_separator=''))
 
 
+def is_sequence_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[List[T]]:
+    return is_instance_with(Sequence,
+                            every_element('', element_assertion, component_separator=''))
+
+
 class _IsInstanceWith(ValueAssertion[Any]):
     def __init__(self,
                  expected_type: Type[T],
@@ -600,6 +605,8 @@ def casted_to_boolean_is(expected: bool) -> ValueAssertion[T]:
 
 is_empty = len_equals(0)
 is_empty_list = is_instance_with(list, is_empty)
+
+is_empty_sequence = is_instance_with(Sequence, is_empty)
 
 ignore = Constant(True)
 

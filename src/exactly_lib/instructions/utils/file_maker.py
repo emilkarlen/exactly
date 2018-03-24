@@ -1,10 +1,12 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.instructions.utils import file_creation
 from exactly_lib.instructions.utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
 from exactly_lib.test_case_utils import file_ref_check, file_properties
@@ -23,7 +25,7 @@ class FileMaker:
     """
 
     @property
-    def symbol_references(self) -> list:
+    def symbol_references(self) -> Sequence[SymbolReference]:
         raise NotImplementedError('abstract method')
 
     @property
@@ -55,7 +57,7 @@ class FileMakerForConstantContents(FileMaker):
         return create_file(dst_path, contents_str)
 
     @property
-    def symbol_references(self) -> list:
+    def symbol_references(self) -> Sequence[SymbolReference]:
         return self._contents.references
 
 
@@ -92,9 +94,8 @@ class FileMakerForContentsFromSubProcess(FileMaker):
                                                                 path_resolving_env.home_and_sds)
 
     @property
-    def symbol_references(self) -> list:
-        return (self._output_transformer.references +
-                self._sub_process.symbol_usages)
+    def symbol_references(self) -> Sequence[SymbolReference]:
+        return tuple(self._output_transformer.references) + tuple(self._sub_process.symbol_usages)
 
 
 class FileMakerForContentsFromExistingFile(FileMaker):
@@ -112,8 +113,8 @@ class FileMakerForContentsFromExistingFile(FileMaker):
                                                                       follow_symlinks=True)))
 
     @property
-    def symbol_references(self) -> list:
-        return self._transformer.references + self._src_path.references
+    def symbol_references(self) -> Sequence[SymbolReference]:
+        return tuple(self._transformer.references) + tuple(self._src_path.references)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

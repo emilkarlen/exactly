@@ -21,7 +21,7 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
 
     def expect_failure_because_specified_file_under_sds_is_missing(
             self,
-            symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+            symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         return Expectation(main_result=sh_assertions.is_hard_error(),
                            symbol_usages=symbol_usages)
 

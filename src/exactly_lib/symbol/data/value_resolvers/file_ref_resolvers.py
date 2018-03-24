@@ -1,4 +1,7 @@
+from typing import Sequence
+
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
@@ -24,8 +27,8 @@ class FileRefConstant(FileRefResolver):
         return self._file_ref
 
     @property
-    def references(self) -> list:
-        return []
+    def references(self) -> Sequence[SymbolReference]:
+        return ()
 
     def __str__(self):
         return str(type(self)) + '\'' + str(self._file_ref) + '\''

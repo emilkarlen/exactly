@@ -25,7 +25,7 @@ class Expectation:
                  validation_pre_sds: asrt.ValueAssertion = asrt.is_none,
                  validation_post_sds: asrt.ValueAssertion = asrt.is_none,
                  main_result: asrt.ValueAssertion = asrt.anything_goes(),
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_list,
+                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
                  symbols_after_main: asrt.ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),

@@ -227,7 +227,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                         ),
                         Expectation(
                             main_result=IS_SUCCESS,
-                            symbol_usages=asrt.is_empty_list,
+                            symbol_usages=asrt.is_empty_sequence,
                             main_side_effects_on_sds=expected_non_home_contents,
                         ))
 
@@ -356,7 +356,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
     @staticmethod
     def _expect_failure_in(step_of_expected_failure: Step) -> Expectation:
-        symbol_usages_expectation = asrt.is_list_of(asrt.is_instance(SymbolReference))
+        symbol_usages_expectation = asrt.is_sequence_of(asrt.is_instance(SymbolReference))
 
         if step_of_expected_failure is Step.VALIDATE_PRE_SDS:
             return Expectation(validation_pre_sds=IS_FAILURE_OF_VALIDATION,

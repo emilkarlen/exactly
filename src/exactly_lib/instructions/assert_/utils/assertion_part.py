@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences, \
     references_from_objects_with_symbol_references
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -104,7 +104,7 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
         self._get_argument_to_assertion_part = get_argument_to_checker
         self._validator = PreOrPostSdsSvhValidationErrorValidator(assertion_part.validator)
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._assertion_part.references
 
     def validate_pre_sds(self,

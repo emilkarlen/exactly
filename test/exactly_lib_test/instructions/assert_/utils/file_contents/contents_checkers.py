@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts import contents_checkers as sut
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
@@ -83,14 +84,14 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
 
 
 class LinesTransformerResolverWithReferences(LinesTransformerResolver):
-    def __init__(self, references: list):
+    def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
     def resolve(self, named_elements: SymbolTable) -> LinesTransformer:
         raise NotImplementedError('should not be used in these tests')
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._references
 
 

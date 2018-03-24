@@ -22,7 +22,7 @@ class Configuration:
         raise NotImplementedError('abstract method')
 
     def resolved_value_equals(self, value: Matcher,
-                              references: asrt.ValueAssertion = asrt.is_empty_list,
+                              references: asrt.ValueAssertion = asrt.is_empty_sequence,
                               symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
         raise NotImplementedError('abstract method')
 

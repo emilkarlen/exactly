@@ -1,4 +1,5 @@
 import re
+from typing import Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
@@ -18,6 +19,7 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     PhaseLoggingPaths
@@ -89,7 +91,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         self.executor = executor
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.symbol_references
 
     def main(self,

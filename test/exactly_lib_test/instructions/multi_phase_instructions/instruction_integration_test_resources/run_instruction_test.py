@@ -18,7 +18,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 class Configuration(ConfigurationBase):
     def expect_failure_because_specified_file_under_sds_is_missing(
             self,
-            symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+            symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         raise NotImplementedError()
 
 

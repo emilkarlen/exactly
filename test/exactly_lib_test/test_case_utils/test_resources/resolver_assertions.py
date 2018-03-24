@@ -14,7 +14,7 @@ def matches_resolver_of_logic_type(resolver_type: type,
                                    logic_value_type: LogicValueType,
                                    value_type: ValueType,
                                    resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
-                                   references: asrt.ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_list,
+                                   references: asrt.ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence,
                                    symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion[Any]:
     named_elements = symbol_table.symbol_table_from_none_or_value(symbols)
 

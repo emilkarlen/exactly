@@ -151,7 +151,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListValue([]),
                         expected_references=
-                        asrt.is_empty_list,
+                        asrt.is_empty_sequence,
                         actual=
                         lr.ListResolver([]),
                         ),
@@ -159,7 +159,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListValue([string_value_of_single_string('expected value')]),
                         expected_references=
-                        asrt.is_empty_list,
+                        asrt.is_empty_sequence,
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.string_constant('expected value'))]),
                         ),
@@ -191,7 +191,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListValue([]),
                         expected_references=
-                        asrt.is_empty_list,
+                        asrt.is_empty_sequence,
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.string_constant('value'))]),
                         ),
@@ -199,7 +199,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected=
                         lr.ListValue([string_value_of_single_string('expected value')]),
                         expected_references=
-                        asrt.is_empty_list,
+                        asrt.is_empty_sequence,
                         actual=
                         lr.ListResolver([lr.StringResolverElement(sr.string_constant('actual value'))]),
                         ),

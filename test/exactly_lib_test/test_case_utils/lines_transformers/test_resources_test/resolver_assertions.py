@@ -114,7 +114,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
 
         cases = [
             NameAndValue('assert no references',
-                         asrt.is_empty_list),
+                         asrt.is_empty_sequence),
             NameAndValue('assert single invalid reference',
                          asrt.matches_sequence([
                              asrt.not_(asrt.is_(actual_reference))

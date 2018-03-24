@@ -2,6 +2,7 @@ import functools
 import pathlib
 import shlex
 from copy import copy
+from typing import Sequence
 
 from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
@@ -20,6 +21,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -75,8 +77,8 @@ class _SourceInfoForInterpreterThatIsAnExecutableFile(_SourceInfo):
         super().__init__(file_name)
         self.arguments = arguments
 
-    def symbol_usages(self) -> list:
-        return self.file_reference.references + self.arguments.references
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
+        return tuple(self.file_reference.references) + tuple(self.arguments.references)
 
 
 class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
@@ -86,8 +88,8 @@ class _SourceInfoForInterpreterThatIsAShellCommand(_SourceInfo):
         super().__init__(file_name)
         self.arguments = arguments
 
-    def symbol_usages(self) -> list:
-        return self.file_reference.references + self.arguments.references
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
+        return tuple(self.file_reference.references) + tuple(self.arguments.references)
 
 
 class _Parser(Parser):

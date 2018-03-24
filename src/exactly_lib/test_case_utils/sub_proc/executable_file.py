@@ -1,9 +1,11 @@
 import pathlib
 import stat
+from typing import Sequence
 
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.data import file_ref
@@ -32,8 +34,8 @@ class ExecutableFile:
         return self._validator
 
     @property
-    def symbol_usages(self) -> list:
-        return self._file_reference_resolver.references + self._arguments.references
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        return tuple(self._file_reference_resolver.references) + tuple(self._arguments.references)
 
     def path(self, environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
         return self._file_reference_resolver.resolve_value_of_any_dependency(environment)

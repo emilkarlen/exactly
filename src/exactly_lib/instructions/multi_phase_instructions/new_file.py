@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
@@ -21,6 +23,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     InstructionSourceInfo
@@ -93,8 +96,8 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         self._file_maker = file_maker
 
     @property
-    def symbol_usages(self) -> list:
-        return self._path_to_create.references + self._file_maker.symbol_references
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
+        return tuple(self._path_to_create.references) + tuple(self._file_maker.symbol_references)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

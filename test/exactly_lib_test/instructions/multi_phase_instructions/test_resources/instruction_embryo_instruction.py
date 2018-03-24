@@ -1,4 +1,7 @@
+from typing import Sequence, Callable
+
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_embryo import InstructionEmbryo
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
@@ -26,13 +29,13 @@ class _InstructionEmbryoThat(InstructionEmbryo):
     def __init__(self,
                  validator: PreOrPostSdsValidator,
                  main,
-                 symbol_usages):
+                 symbol_usages: Callable[[], Sequence[SymbolUsage]]):
         self._validator = validator
         self._main = main
         self._symbol_usages = symbol_usages
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._symbol_usages()
 
     @property

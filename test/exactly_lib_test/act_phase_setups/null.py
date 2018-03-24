@@ -79,7 +79,7 @@ class TestNoSymbolsAreReferenced(unittest.TestCase):
         for case_name, act_phase_instructions in cases:
             with self.subTest(case_name=case_name):
                 arrangement = Arrangement()
-                expectation = Expectation(symbol_usages=asrt.is_empty_list)
+                expectation = Expectation(symbol_usages=asrt.is_empty_sequence)
                 check_execution(self,
                                 executor_constructor,
                                 act_phase_instructions,

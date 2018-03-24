@@ -44,7 +44,7 @@ class Configuration(matcher_parse_check.Configuration):
 
     def resolved_value_equals(self,
                               value: LineMatcher,
-                              references: asrt.ValueAssertion = asrt.is_empty_list,
+                              references: asrt.ValueAssertion = asrt.is_empty_sequence,
                               symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
         return resolved_value_equals_line_matcher(
             value,
@@ -325,7 +325,7 @@ class TestParseLineMatcher(matcher_parse_check.TestParseStandardExpressionsBase)
 
 
 def resolved_value_is_regex_matcher(regex_str: str,
-                                    references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+                                    references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
     expected_matcher = regex_matcher(regex_str)
     return resolved_value_equals_line_matcher(expected_matcher,
                                               references=references)
@@ -333,7 +333,7 @@ def resolved_value_is_regex_matcher(regex_str: str,
 
 def resolved_value_is_line_number_matcher(integer_matcher: IntegerMatcher,
                                           model_infos: list,
-                                          references: asrt.ValueAssertion = asrt.is_empty_list) -> asrt.ValueAssertion:
+                                          references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
     expected_matcher = is_equivalent_to(LineMatcherLineNumber(integer_matcher),
                                         model_infos)
     return resolved_value_matches_line_matcher(expected_matcher,

@@ -83,7 +83,7 @@ class TestCaseBase(unittest.TestCase):
             expected_result_of_positive_test: PassOrFail,
             actual_file_contents: str,
             symbols: SymbolTable = None,
-            expected_symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+            expected_symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         for expectation_type in ExpectationType:
             etc = ExpectationTypeConfig(expectation_type)
             with self.subTest(expectation_type=expectation_type):

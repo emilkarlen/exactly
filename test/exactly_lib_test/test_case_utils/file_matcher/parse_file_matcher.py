@@ -38,7 +38,7 @@ class Configuration(matcher_parse_check.Configuration):
 
     def resolved_value_equals(self,
                               value: FileMatcher,
-                              references: asrt.ValueAssertion = asrt.is_empty_list,
+                              references: asrt.ValueAssertion = asrt.is_empty_sequence,
                               symbols: symbol_table.SymbolTable = None) -> asrt.ValueAssertion:
         return resolved_value_equals_file_matcher(
             value,

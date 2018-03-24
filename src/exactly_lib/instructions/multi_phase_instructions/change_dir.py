@@ -1,4 +1,5 @@
 import os
+from typing import Sequence
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
@@ -15,6 +16,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -74,7 +76,7 @@ class InstructionEmbryo(embryo.InstructionEmbryo):
         self.destination = destination
 
     @property
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.destination.references
 
     def main(self,

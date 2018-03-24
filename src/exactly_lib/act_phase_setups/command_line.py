@@ -1,4 +1,5 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check, SHELL_COMMAND_MARKER
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
@@ -12,6 +13,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
@@ -57,7 +59,7 @@ class CommandConfigurationForShell(CommandConfiguration):
     def __init__(self, command_line_resolver: StringResolver):
         self._command_line_resolver = command_line_resolver
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._command_line_resolver.references
 
     def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
@@ -75,7 +77,7 @@ class CommandConfigurationForExecutableFile(CommandConfiguration):
                  executable_file: ExecutableFile):
         self.executable_file = executable_file
 
-    def symbol_usages(self) -> list:
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self.executable_file.symbol_usages
 
     def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:

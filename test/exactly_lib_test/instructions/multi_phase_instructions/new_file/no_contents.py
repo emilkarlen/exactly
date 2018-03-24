@@ -89,7 +89,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     Expectation(
                         main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
-                        symbol_usages=asrt.is_empty_list,
+                        symbol_usages=asrt.is_empty_sequence,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                                fs.DirContents([expected_file])),
                     ))
@@ -110,7 +110,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     Expectation(
                         main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
-                        symbol_usages=asrt.is_empty_list,
+                        symbol_usages=asrt.is_empty_sequence,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(
                             rel_opt_conf.root_dir__non_home,
                             fs.DirContents([fs.Dir(sub_dir_name,
@@ -136,7 +136,7 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
                     Expectation(
                         main_result=IS_SUCCESS,
                         side_effects_on_home=f_asrt.dir_is_empty(),
-                        symbol_usages=asrt.is_empty_list,
+                        symbol_usages=asrt.is_empty_sequence,
                         main_side_effects_on_sds=non_home_dir_contains_exactly(
                             rel_opt_conf.root_dir__non_home,
                             fs.DirContents([fs.Dir(sub_dir_name,

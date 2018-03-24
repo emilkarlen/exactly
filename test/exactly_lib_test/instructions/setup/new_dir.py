@@ -17,7 +17,7 @@ class TheConfiguration(SetupConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expect_failure_to_create_dir(self,
-                                     symbol_usages: asrt.ValueAssertion = asrt.is_empty_list):
+                                     symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence):
         return Expectation(main_result=sh_assertions.is_hard_error(),
                            symbol_usages=symbol_usages)
 
