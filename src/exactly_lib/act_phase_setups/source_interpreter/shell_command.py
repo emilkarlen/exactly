@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.os_process_execution import Command, shell_command
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
@@ -37,4 +37,4 @@ class Executor(pa.ExecutorBase):
         script_file_path = self._source_file_path(script_output_dir_path)
         script_file_argument = shlex.quote(str(script_file_path))
         cmd = self.interpreter_shell_command + ' ' + script_file_argument
-        return Command(cmd, shell=True)
+        return shell_command(cmd)

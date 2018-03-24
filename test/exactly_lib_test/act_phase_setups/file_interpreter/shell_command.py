@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.os_process_execution import shell_command
 from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
@@ -17,7 +17,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_populators im
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
-COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = Command(abs_path_to_interpreter_quoted_for_exactly(), shell=True)
+COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = shell_command(abs_path_to_interpreter_quoted_for_exactly())
 
 
 class TheConfiguration(TheConfigurationBase):

@@ -2,7 +2,7 @@ import shlex
 
 from exactly_lib.act_phase_setups.source_interpreter import act_phase_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.os_process_execution import executable_program_command
 
 
 def resolve_act_phase_setup_from_argparse_argument(default_setup: ActPhaseSetup,
@@ -22,5 +22,5 @@ def _resolve_act_phase_setup(default_setup: ActPhaseSetup,
 
 def _new_for_generic_script_language_setup(interpreter: str) -> ActPhaseSetup:
     cmd_and_args = shlex.split(interpreter)
-    command = Command(cmd_and_args, shell=False)
+    command = executable_program_command(cmd_and_args)
     return act_phase_setup(command)

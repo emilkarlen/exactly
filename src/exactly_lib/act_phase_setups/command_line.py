@@ -24,7 +24,7 @@ from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.os_process_execution import Command, shell_command
 
 
 def act_phase_setup() -> ActPhaseSetup:
@@ -174,5 +174,4 @@ class _ShellCommandExecutor(CommandExecutor):
                             script_output_dir_path: pathlib.Path) -> Command:
         command_line = self._command_line_resolver.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
-        return Command(command_line,
-                       shell=True)
+        return shell_command(command_line)

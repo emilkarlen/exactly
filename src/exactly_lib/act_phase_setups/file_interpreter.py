@@ -30,7 +30,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.os_process_execution import Command, executable_program_command, shell_command
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
 
@@ -176,7 +176,7 @@ class _ExecutableFileExecutor(CommandExecutor):
         args = self.source.arguments.resolve_value_of_any_dependency(path_resolving_env)
         cmd_and_args.extend(args)
 
-        return Command(cmd_and_args, shell=False)
+        return executable_program_command(cmd_and_args)
 
 
 class _ShellCommandExecutor(CommandExecutor):
@@ -203,4 +203,4 @@ class _ShellCommandExecutor(CommandExecutor):
             source_file=quoted_src_path,
             command_line_arguments=remaining_arguments,
         )
-        return Command(command_string, shell=True)
+        return shell_command(command_string)

@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.os_process_execution import Command, executable_program_command
 
 
 def new_for_script_language_setup(script_language_setup: SourceInterpreterSetup) -> ActPhaseSetup:
@@ -49,4 +49,4 @@ class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
                             script_output_dir_path: pathlib.Path) -> Command:
         script_file_path = self._source_file_path(script_output_dir_path)
         cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
-        return Command(cmd_and_args, shell=False)
+        return executable_program_command(cmd_and_args)
