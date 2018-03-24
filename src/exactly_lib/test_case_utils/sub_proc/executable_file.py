@@ -4,6 +4,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
@@ -11,7 +12,7 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
 from exactly_lib.util.process_execution.os_process_execution import Command, executable_program_command
 
 
-class ExecutableFileWithArgs:
+class ExecutableFileWithArgs(ObjectWithSymbolReferences):
     def __init__(self,
                  file_reference_resolver: FileRefResolver,
                  arguments: ListResolver):
@@ -30,6 +31,10 @@ class ExecutableFileWithArgs:
     @property
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self.symbol_usages
 
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:

@@ -1,5 +1,5 @@
 import pathlib
-from typing import List
+from typing import List, Tuple
 
 
 class ProcessExecutionSettings(tuple):
@@ -46,6 +46,14 @@ class Command:
         """
         raise NotImplementedError('abstract method')
 
+    @property
+    def shell_command_line(self) -> str:
+        raise ValueError('this object is not a shell command: ' + str(self.args))
+
+    @property
+    def program_and_arguments(self) -> Tuple[str, List[str]]:
+        raise ValueError('this object is not a program with arguments: ' + str(self.args))
+
 
 class ShellCommand(Command):
     def __init__(self, command_line: str):
@@ -59,6 +67,10 @@ class ShellCommand(Command):
     def shell(self) -> bool:
         return True
 
+    @property
+    def shell_command_line(self) -> str:
+        return self._command_line
+
 
 class ExecutableProgramCommand(Command):
     def __init__(self, program_and_args: List[str]):
@@ -71,6 +83,10 @@ class ExecutableProgramCommand(Command):
     @property
     def shell(self) -> bool:
         return False
+
+    @property
+    def program_and_arguments(self) -> Tuple[str, List[str]]:
+        return self._program_and_args[0], self._program_and_args[1:]
 
 
 class ExecutableFileCommand(Command):
@@ -88,9 +104,17 @@ class ExecutableFileCommand(Command):
     def shell(self) -> bool:
         return False
 
+    @property
+    def program_and_arguments(self) -> Tuple[str, List[str]]:
+        return str(self._executable_file), self._arguments
+
 
 def executable_program_command(program_and_args: List[str]) -> Command:
     return ExecutableProgramCommand(program_and_args)
+
+
+def executable_program_command2(program: str, args: List[str]) -> Command:
+    return ExecutableProgramCommand([program] + args)
 
 
 def executable_file_command(program_file: pathlib.Path, arguments: List[str]) -> Command:
