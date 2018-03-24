@@ -5,8 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.concrete_resolvers import list_constant
-from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.data.list_resolver import ListResolver, from_constants
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
@@ -48,7 +47,7 @@ def parse(tokens: TokenStream) -> ExecutableFileWithArgs:
         return ExecutableFileWithArgs(the_file_ref, exe_argument_list)
     else:
         the_file_ref = _parse_exe_file_ref(tokens)
-        return ExecutableFileWithArgs(the_file_ref, list_constant([]))
+        return ExecutableFileWithArgs(the_file_ref, from_constants([]))
 
 
 def _parse_exe_file_ref(tokens: TokenStream) -> FileRefResolver:

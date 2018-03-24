@@ -1,5 +1,6 @@
 import unittest
 
+import exactly_lib.symbol.data.list_resolver
 from exactly_lib.symbol.data import string_resolver as sr, path_resolver as pr, list_resolver as lr, \
     concrete_resolvers as sut
 from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
@@ -24,7 +25,7 @@ class TestConstants(unittest.TestCase):
         # ARRANGE #
         constant = ['a', 'b' 'c']
         # ACT #
-        actual = sut.list_constant(constant)
+        actual = exactly_lib.symbol.data.list_resolver.from_constants(constant)
         # ASSERT #
         self.assertEqual([], actual.references,
                          'references')
