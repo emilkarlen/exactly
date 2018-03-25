@@ -6,9 +6,9 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import list_resolvers
+from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
-from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver

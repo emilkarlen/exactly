@@ -1,7 +1,7 @@
 import sys
 
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForExecutableFile
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.type_system.data import file_refs

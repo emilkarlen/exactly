@@ -1,14 +1,14 @@
 import pathlib
 import unittest
 
+from exactly_lib.symbol.data.file_ref_resolver_impls import file_ref_with_symbol as sut
+from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolvers import PathPartResolverAsFixedPath, \
+    PathPartResolverAsStringResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     FileRefRelativityRestriction
-from exactly_lib.symbol.data.value_resolvers import file_ref_with_symbol as sut
-from exactly_lib.symbol.data.value_resolvers.path_part_resolvers import PathPartResolverAsFixedPath, \
-    PathPartResolverAsStringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds

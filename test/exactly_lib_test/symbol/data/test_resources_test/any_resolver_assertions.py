@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.symbol.data import list_resolver as lr
+from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.string_resolvers import string_constant
-from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib_test.symbol.data.test_resources import any_resolver_assertions as sut
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
