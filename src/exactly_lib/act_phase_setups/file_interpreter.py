@@ -25,6 +25,7 @@ from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
@@ -70,8 +71,7 @@ class ConstructorForInterpreterThatIsAShellCommand(parts.Constructor):
 
 
 class _SourceInfo(SymbolUser):
-    def __init__(self,
-                 file_name: FileRefResolver):
+    def __init__(self, file_name: FileRefResolver):
         self.file_reference = file_name
 
 
@@ -101,7 +101,7 @@ class _Parser(Parser):
     def __init__(self, is_shell: bool):
         self.is_shell = is_shell
 
-    def apply(self, act_phase_instructions: list) -> _SourceInfo:
+    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> _SourceInfo:
         single_line_parser = ParserForSingleLineUsingStandardSyntax()
         single_line = single_line_parser.apply(act_phase_instructions)
         single_line = single_line.strip()

@@ -5,6 +5,7 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ActSourceAndExecutorConstructor, \
     ActPhaseOsProcessExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
@@ -49,7 +50,7 @@ class Executor:
 
 
 class Parser:
-    def apply(self, act_phase_instructions: list) -> SymbolUser:
+    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> SymbolUser:
         """
         :raises ParseException
 
