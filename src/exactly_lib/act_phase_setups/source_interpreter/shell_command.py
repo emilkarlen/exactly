@@ -3,7 +3,7 @@ import shlex
 
 from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor as pa
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
-from exactly_lib.symbol.data import concrete_string_resolvers as csr, list_resolver
+from exactly_lib.symbol.data import string_resolvers as csr, list_resolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForShell
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver

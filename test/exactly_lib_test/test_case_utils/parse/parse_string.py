@@ -4,7 +4,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
+from exactly_lib.symbol.data.string_resolvers import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect

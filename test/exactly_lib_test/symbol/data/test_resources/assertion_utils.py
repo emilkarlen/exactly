@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
+from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \

@@ -1,5 +1,5 @@
 from exactly_lib.symbol import resolver_structure
-from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
+from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction

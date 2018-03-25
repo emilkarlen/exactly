@@ -8,7 +8,7 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
+from exactly_lib.symbol.data.string_resolvers import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver, StringFragmentResolver

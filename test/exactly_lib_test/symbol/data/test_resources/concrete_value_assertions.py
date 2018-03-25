@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.help_texts import type_system
-from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
+from exactly_lib.symbol.data.string_resolvers import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, StringResolver

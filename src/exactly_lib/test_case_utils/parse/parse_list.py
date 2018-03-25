@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data import concrete_string_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data import list_resolver as lr
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
@@ -47,7 +47,7 @@ def element_of(token: Token) -> lr.Element:
 
 
 def _string_constant_element(s: str) -> lr.Element:
-    return lr.StringResolverElement(concrete_string_resolvers.string_constant(s))
+    return lr.StringResolverElement(string_resolvers.string_constant(s))
 
 
 def _symbol_reference_element(s: str) -> lr.Element:

@@ -1,7 +1,7 @@
 import itertools
 from typing import Sequence, List
 
-from exactly_lib.symbol.data import concrete_string_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -141,7 +141,7 @@ def from_strings(elements: Sequence[StringResolver]) -> ListResolver:
 
 def from_str_constants(str_list: Sequence[str]) -> ListResolver:
     return ListResolver([string_element(
-        concrete_string_resolvers.string_constant(s))
+        string_resolvers.string_constant(s))
         for s in str_list])
 
 

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import restriction as sut
-from exactly_lib.symbol.data import concrete_string_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.type_system.data import file_refs
@@ -29,7 +29,7 @@ def suite() -> unittest.TestSuite:
 class TestElementTypeRestriction(unittest.TestCase):
     element_type_2_resolver_of_type = {
         TypeCategory.DATA:
-            concrete_string_resolvers.string_constant('string value'),
+            string_resolvers.string_constant('string value'),
 
         TypeCategory.LOGIC:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
@@ -75,7 +75,7 @@ class TestValueTypeRestriction(unittest.TestCase):
     value_type_2_resolver_of_type = {
 
         ValueType.STRING:
-            concrete_string_resolvers.string_constant('string value'),
+            string_resolvers.string_constant('string value'),
 
         ValueType.LIST:
             ListResolverTestImplForConstantListValue(ListValue([])),

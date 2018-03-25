@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import concrete_string_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data import list_resolver as lr
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
@@ -63,9 +63,9 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         value_without_space = 'value_without_space'
         value_with_space = 'value with space'
         expected_resolver = lr.ListResolver([lr.StringResolverElement(
-            concrete_string_resolvers.string_constant(value_without_space)),
+            string_resolvers.string_constant(value_without_space)),
             lr.StringResolverElement(
-                concrete_string_resolvers.string_constant(value_with_space))])
+                string_resolvers.string_constant(value_with_space))])
         expected_resolver_container = container(expected_resolver)
 
         sb = SB.new_with(symbol_name=symbol_name,
