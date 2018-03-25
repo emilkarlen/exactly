@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.symbol.data.concrete_resolvers import SymbolValueResolverVisitor
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.type_system.value_type import TypeCategory

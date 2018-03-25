@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreOrPostSds, PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.phases.result import svh

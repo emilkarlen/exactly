@@ -14,7 +14,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     MainStepResultTranslatorForErrorMessageStringResultAsHardError
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices

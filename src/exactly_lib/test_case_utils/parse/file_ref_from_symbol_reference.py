@@ -2,9 +2,9 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.symbol.data.concrete_resolvers import SymbolValueResolverVisitor
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolver import PathPartResolver
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference

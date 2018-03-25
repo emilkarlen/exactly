@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices

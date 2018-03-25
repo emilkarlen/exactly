@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.type_system.data import file_refs

@@ -1,5 +1,5 @@
 from exactly_lib.help_texts import type_system
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import error_messages
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.err_msg import error_messages as err_msg_for_any_type

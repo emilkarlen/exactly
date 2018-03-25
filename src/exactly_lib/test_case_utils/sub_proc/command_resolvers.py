@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds

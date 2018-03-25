@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.instructions.utils import file_creation
 from exactly_lib.instructions.utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.symbol.data import string_resolver
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \

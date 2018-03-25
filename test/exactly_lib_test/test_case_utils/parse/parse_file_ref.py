@@ -6,10 +6,10 @@ from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTI
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolvers import PathPartResolverAsFixedPath
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart

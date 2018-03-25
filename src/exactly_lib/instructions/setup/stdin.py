@@ -12,7 +12,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices

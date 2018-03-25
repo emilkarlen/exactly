@@ -7,7 +7,7 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import S
     DirContentsAssertionPart
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as pfh_ex_method
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_EXPECTED_VALUE
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
