@@ -139,7 +139,7 @@ def from_strings(elements: Sequence[StringResolver]) -> ListResolver:
                          for element in elements])
 
 
-def from_constants(str_list: Sequence[str]) -> ListResolver:
+def from_str_constants(str_list: Sequence[str]) -> ListResolver:
     return ListResolver([string_element(
         concrete_string_resolvers.string_constant(s))
         for s in str_list])

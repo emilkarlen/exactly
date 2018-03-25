@@ -76,7 +76,7 @@ def matches_list_resolver(expected_resolved_value: ListValue,
 
 
 def equals_constant_list(expected_str_list: list) -> asrt.ValueAssertion:
-    return equals_list_resolver(exactly_lib.symbol.data.list_resolver.from_constants(expected_str_list))
+    return equals_list_resolver(exactly_lib.symbol.data.list_resolver.from_str_constants(expected_str_list))
 
 
 class _EqualsListValueResolverAssertion(_EqualsSymbolValueResolverBase):

@@ -3,12 +3,12 @@ import pathlib
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 from exactly_lib.util.std import StdFiles
 from . import parts
 
 
-class CommandExecutor(parts.Executor):
+class SubProcessExecutor(parts.Executor):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor):
         self.os_process_executor = os_process_executor
@@ -17,14 +17,14 @@ class CommandExecutor(parts.Executor):
                 environment: InstructionEnvironmentForPostSdsStep,
                 script_output_dir_path: pathlib.Path,
                 std_files: StdFiles) -> ExitCodeOrHardError:
-        return self.os_process_executor.execute(self._command_to_execute(environment, script_output_dir_path),
+        command_resolver = self._command_to_execute(script_output_dir_path)
+        command = command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
+        return self.os_process_executor.execute(command,
                                                 std_files,
                                                 environment.process_execution_settings)
 
-    def _command_to_execute(self,
-                            environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path) -> Command:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         """
         Called after prepare, to get the command to execute
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')

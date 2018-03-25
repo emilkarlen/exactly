@@ -3,9 +3,10 @@ import shlex
 
 from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor as pa
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
+from exactly_lib.symbol.data import concrete_string_resolvers as csr, list_resolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.process_execution.os_process_execution import Command, shell_command
+from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForShell
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
@@ -31,10 +32,13 @@ class Executor(pa.ExecutorBase):
                          source_info)
         self.interpreter_shell_command = interpreter_shell_command
 
-    def _command_to_execute(self,
-                            environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path) -> Command:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         script_file_path = self._source_file_path(script_output_dir_path)
         script_file_argument = shlex.quote(str(script_file_path))
-        cmd = self.interpreter_shell_command + ' ' + script_file_argument
-        return shell_command(cmd)
+
+        command_line_elements = list_resolver.from_strings([
+            csr.string_constant(self.interpreter_shell_command),
+            csr.string_constant(script_file_argument),
+        ])
+
+        return CommandResolverForShell(csr.from_list_resolver(command_line_elements))

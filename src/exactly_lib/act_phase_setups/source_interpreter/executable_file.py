@@ -2,11 +2,13 @@ import pathlib
 
 from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor as pa
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup
+from exactly_lib.act_phase_setups.util.command_resolvers import program_with_args
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
+from exactly_lib.symbol.data import list_resolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.util.process_execution.os_process_execution import Command, executable_program_command2
+from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForProgramAndArguments
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 
 
 def new_for_script_language_setup(script_language_setup: SourceInterpreterSetup) -> ActPhaseSetup:
@@ -44,9 +46,10 @@ class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
                          source_info)
         self.script_language_setup = script_language_setup
 
-    def _command_to_execute(self,
-                            environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path) -> Command:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         script_file_path = self._source_file_path(script_output_dir_path)
-        cmd_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
-        return executable_program_command2(cmd_and_args)
+        pgm_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
+        return CommandResolverForProgramAndArguments(
+            program_with_args(pgm_and_args),
+            list_resolver.empty(),
+        )
