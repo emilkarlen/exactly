@@ -171,7 +171,7 @@ class _ProgramExecutor(SubProcessExecutor):
         self.source = source
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        arguments = list_resolvers.concat_lists([
+        arguments = list_resolvers.concat([
             list_resolvers.from_strings([csr.from_file_ref_resolver(self.source.file_reference)]),
             self.source.arguments,
         ])

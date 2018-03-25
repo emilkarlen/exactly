@@ -56,8 +56,8 @@ class CommandResolverForProgramAndArguments(CommandResolver):
 
     @property
     def arguments(self) -> ListResolver:
-        return list_resolvers.concat_lists([self.__program_with_args.arguments,
-                                            self.__additional_arguments])
+        return list_resolvers.concat([self.__program_with_args.arguments,
+                                      self.__additional_arguments])
 
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
@@ -104,8 +104,8 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
 
     @property
     def arguments(self) -> ListResolver:
-        return list_resolvers.concat_lists([self.__executable.arguments,
-                                            self.__additional_arguments])
+        return list_resolvers.concat([self.__executable.arguments,
+                                      self.__additional_arguments])
 
 
 def command_resolver_for_interpret(interpreter: ExecutableFileWithArgsResolver,
@@ -133,7 +133,7 @@ def command_resolver_for_source_as_command_line_argument(interpreter: Executable
 def _file_interpreter_arguments(file_to_interpret: FileRefResolver,
                                 argument_list: ListResolver) -> ListResolver:
     file_to_interpret_as_string = string_resolvers.from_file_ref_resolver(file_to_interpret)
-    return list_resolvers.concat_lists([
+    return list_resolvers.concat([
         list_resolvers.from_strings([file_to_interpret_as_string]),
         argument_list,
     ])
