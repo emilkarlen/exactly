@@ -1,7 +1,8 @@
 import unittest
 
-from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data import list_resolver as sut
+from exactly_lib.symbol.data import list_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.type_system.data import list_value as lv
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string, \
@@ -50,7 +51,7 @@ class ListResolverTest(unittest.TestCase):
             Case(
                 'single constant element',
                 resolver_to_check=
-                sut.ListResolver([sut.string_element(
+                sut.ListResolver([list_resolvers.string_element(
                     string_resolvers.string_constant(string_constant_1))]),
                 symbols=
                 empty_symbol_table(),
@@ -60,9 +61,9 @@ class ListResolverTest(unittest.TestCase):
             Case(
                 'multiple constant elements',
                 resolver_to_check=
-                sut.ListResolver([sut.string_element(
+                sut.ListResolver([list_resolvers.string_element(
                     string_resolvers.string_constant(string_constant_1)),
-                    sut.string_element(string_resolvers.string_constant(string_constant_2))]),
+                    list_resolvers.string_element(string_resolvers.string_constant(string_constant_2))]),
                 symbols=
                 empty_symbol_table(),
                 expected_resolved_value=
@@ -72,7 +73,7 @@ class ListResolverTest(unittest.TestCase):
             Case(
                 'single string symbol reference element',
                 resolver_to_check=
-                sut.ListResolver([sut.symbol_element(su.symbol_reference(string_symbol.name))]),
+                sut.ListResolver([list_resolvers.symbol_element(su.symbol_reference(string_symbol.name))]),
                 symbols=
                 su.symbol_table_with_single_string_value(string_symbol.name,
                                                          string_symbol.value),
@@ -93,7 +94,7 @@ class ListResolverTest(unittest.TestCase):
                 'THEN resolved value'
                 'SHOULD be an empty list',
                 resolver_to_check=
-                sut.ListResolver([sut.symbol_element(su.symbol_reference(empty_list_symbol.name))]),
+                sut.ListResolver([list_resolvers.symbol_element(su.symbol_reference(empty_list_symbol.name))]),
                 symbols=
                 su.symbol_table_with_single_list_value(empty_list_symbol.name,
                                                        empty_list_symbol.value),
@@ -105,7 +106,7 @@ class ListResolverTest(unittest.TestCase):
                 'THEN resolved value'
                 'SHOULD be equal to the non-empty list',
                 resolver_to_check=
-                sut.ListResolver([sut.symbol_element(su.symbol_reference(multi_element_list_symbol.name))]),
+                sut.ListResolver([list_resolvers.symbol_element(su.symbol_reference(multi_element_list_symbol.name))]),
                 symbols=
                 su.symbol_table_with_single_list_value(multi_element_list_symbol.name,
                                                        multi_element_list_symbol.value),
@@ -117,9 +118,9 @@ class ListResolverTest(unittest.TestCase):
                 'THEN resolved value'
                 'SHOULD be equal to the concatenation of referenced lists',
                 resolver_to_check=
-                sut.ListResolver([sut.symbol_element(su.symbol_reference(multi_element_list_symbol.name)),
-                                  sut.symbol_element(su.symbol_reference(empty_list_symbol.name)),
-                                  sut.symbol_element(su.symbol_reference(multi_element_list_symbol.name))]),
+                sut.ListResolver([list_resolvers.symbol_element(su.symbol_reference(multi_element_list_symbol.name)),
+                                  list_resolvers.symbol_element(su.symbol_reference(empty_list_symbol.name)),
+                                  list_resolvers.symbol_element(su.symbol_reference(multi_element_list_symbol.name))]),
                 symbols=
                 su.symbol_table_from_symbol_definitions([
                     su.list_symbol_definition(multi_element_list_symbol.name,
@@ -144,7 +145,7 @@ class ListResolverTest(unittest.TestCase):
             Case(
                 'reference to string symbol',
                 resolver_to_check=
-                sut.ListResolver([sut.symbol_element(su.symbol_reference(string_symbol.name))]),
+                sut.ListResolver([list_resolvers.symbol_element(su.symbol_reference(string_symbol.name))]),
                 symbols=
                 su.symbol_table_from_symbol_definitions([
                     su.string_value_symbol_definition(string_symbol.name,
@@ -156,7 +157,7 @@ class ListResolverTest(unittest.TestCase):
                 'reference to path symbol '
                 'SHOULD resolve to string representation of the path value',
                 resolver_to_check=
-                sut.ListResolver([sut.symbol_element(su.symbol_reference(path_symbol.name))]),
+                sut.ListResolver([list_resolvers.symbol_element(su.symbol_reference(path_symbol.name))]),
                 symbols=
                 su.symbol_table_from_symbol_definitions([
                     su.file_ref_symbol_definition(path_symbol.name,
@@ -167,8 +168,8 @@ class ListResolverTest(unittest.TestCase):
             Case(
                 'combination of string and path value',
                 resolver_to_check=
-                sut.ListResolver([sut.symbol_element(su.symbol_reference(string_symbol.name)),
-                                  sut.symbol_element(su.symbol_reference(path_symbol.name))]),
+                sut.ListResolver([list_resolvers.symbol_element(su.symbol_reference(string_symbol.name)),
+                                  list_resolvers.symbol_element(su.symbol_reference(path_symbol.name))]),
                 symbols=
                 su.symbol_table_from_symbol_definitions([
                     su.string_value_symbol_definition(string_symbol.name,
@@ -201,17 +202,17 @@ class ListResolverTest(unittest.TestCase):
             ),
             (
                 'single string constant element',
-                sut.ListResolver([sut.string_element(
+                sut.ListResolver([list_resolvers.string_element(
                     string_resolvers.string_constant('string value'))]),
                 [],
             ),
             (
                 'multiple elements with multiple references',
                 sut.ListResolver([
-                    sut.symbol_element(reference_1),
-                    sut.string_element(
+                    list_resolvers.symbol_element(reference_1),
+                    list_resolvers.string_element(
                         string_resolvers.string_constant('constant value')),
-                    sut.symbol_element(reference_2),
+                    list_resolvers.symbol_element(reference_2),
                 ]),
                 [reference_1, reference_2],
             ),
@@ -224,9 +225,9 @@ class ListResolverTest(unittest.TestCase):
 
     def test_elements(self):
         # ARRANGE #
-        element_1 = sut.string_element(
+        element_1 = list_resolvers.string_element(
             string_resolvers.string_constant('constant value'))
-        element_2 = sut.symbol_element(su.symbol_reference('symbol_name'))
+        element_2 = list_resolvers.symbol_element(su.symbol_reference('symbol_name'))
         resolver = sut.ListResolver([element_1, element_2])
         # ACT #
         actual = resolver.elements

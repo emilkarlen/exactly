@@ -38,14 +38,6 @@ class Element:
         raise NotImplementedError()
 
 
-def string_element(string_resolver: StringResolver) -> Element:
-    return StringResolverElement(string_resolver)
-
-
-def symbol_element(symbol_reference: SymbolReference) -> Element:
-    return SymbolReferenceElement(symbol_reference)
-
-
 class StringResolverElement(Element):
     """ An element that is a string. """
 

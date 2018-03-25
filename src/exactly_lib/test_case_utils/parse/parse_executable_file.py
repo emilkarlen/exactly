@@ -74,4 +74,4 @@ def _parse_arguments_and_end_delimiter(tokens: TokenStream) -> ListResolver:
         else:
             arguments.append(parse_list.element_of(tokens.head))
         tokens.consume()
-    return ListResolver(arguments)
+    return list_resolvers.from_elements(arguments)
