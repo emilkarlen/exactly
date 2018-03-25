@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.symbol.data.concrete_string_resolvers import SymbolStringFragmentResolver
+from exactly_lib.symbol.data.string_resolvers import SymbolStringFragmentResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction

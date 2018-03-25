@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFragmentResolver, \
+from exactly_lib.symbol.data.string_resolvers import ConstantStringFragmentResolver, \
     SymbolStringFragmentResolver, string_constant
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect

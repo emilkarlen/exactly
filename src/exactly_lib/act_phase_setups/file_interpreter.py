@@ -19,7 +19,7 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import concrete_string_resolvers as csr, list_resolver
+from exactly_lib.symbol.data import string_resolvers as csr, list_resolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
+from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure

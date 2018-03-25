@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import concrete_string_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data import list_resolver as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.type_system.data import list_value as lv
@@ -51,7 +51,7 @@ class ListResolverTest(unittest.TestCase):
                 'single constant element',
                 resolver_to_check=
                 sut.ListResolver([sut.string_element(
-                    concrete_string_resolvers.string_constant(string_constant_1))]),
+                    string_resolvers.string_constant(string_constant_1))]),
                 symbols=
                 empty_symbol_table(),
                 expected_resolved_value=
@@ -61,8 +61,8 @@ class ListResolverTest(unittest.TestCase):
                 'multiple constant elements',
                 resolver_to_check=
                 sut.ListResolver([sut.string_element(
-                    concrete_string_resolvers.string_constant(string_constant_1)),
-                    sut.string_element(concrete_string_resolvers.string_constant(string_constant_2))]),
+                    string_resolvers.string_constant(string_constant_1)),
+                    sut.string_element(string_resolvers.string_constant(string_constant_2))]),
                 symbols=
                 empty_symbol_table(),
                 expected_resolved_value=
@@ -202,7 +202,7 @@ class ListResolverTest(unittest.TestCase):
             (
                 'single string constant element',
                 sut.ListResolver([sut.string_element(
-                    concrete_string_resolvers.string_constant('string value'))]),
+                    string_resolvers.string_constant('string value'))]),
                 [],
             ),
             (
@@ -210,7 +210,7 @@ class ListResolverTest(unittest.TestCase):
                 sut.ListResolver([
                     sut.symbol_element(reference_1),
                     sut.string_element(
-                        concrete_string_resolvers.string_constant('constant value')),
+                        string_resolvers.string_constant('constant value')),
                     sut.symbol_element(reference_2),
                 ]),
                 [reference_1, reference_2],
@@ -225,7 +225,7 @@ class ListResolverTest(unittest.TestCase):
     def test_elements(self):
         # ARRANGE #
         element_1 = sut.string_element(
-            concrete_string_resolvers.string_constant('constant value'))
+            string_resolvers.string_constant('constant value'))
         element_2 = sut.symbol_element(su.symbol_reference('symbol_name'))
         resolver = sut.ListResolver([element_1, element_2])
         # ACT #
