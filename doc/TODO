@@ -1,5 +1,10 @@
 -*- org -*-
 
+* Introduce LinesTransformerValue to remove dep on HomeAndSds
+<2018-03-25 sön>
+It seems as a mistake in the design of LinesTransformer (and also LineMatcher,
+and FileMatcher) that this intermediate representation does not exist -
+as it does with data values.
 * remove setup/validate_post_setup
 <2017-12-10 Sun>
 It is confusing that an instruction can report VALIDATION_ERROR
