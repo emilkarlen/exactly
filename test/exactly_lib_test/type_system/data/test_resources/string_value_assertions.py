@@ -7,11 +7,11 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_valu
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def equals_string_value(expected: StringValue) -> asrt.ValueAssertion:
+def equals_string_value(expected: StringValue) -> asrt.ValueAssertion[StringValue]:
     return _AssertStringValueHasSpecifiedProperties(expected)
 
 
-def equals_string_fragment(expected: MultiDirDependentValue) -> asrt.ValueAssertion:
+def equals_string_fragment(expected: MultiDirDependentValue) -> asrt.ValueAssertion[StringFragment]:
     return _AssertStringFragmentHasSpecifiedProperties(expected)
 
 

@@ -3,9 +3,12 @@ from typing import Sequence
 from exactly_lib.symbol import symbol_usage as su, resolver_structure as struct
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, StringResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data import string_value as sv, concrete_string_values as csv
+from exactly_lib.type_system.data.concrete_string_values import StrValueTransformer, TransformedStringFragment, \
+    StringValueFragment
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -82,6 +85,37 @@ class FileRefStringFragmentResolver(StringFragmentResolver):
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
         return csv.FileRefFragment(self._file_ref.resolve(symbols))
+
+
+class TransformedStringFragmentResolver(StringFragmentResolver):
+    """
+    A fragment who's string is transformed by a function.
+    """
+
+    def __init__(self,
+                 string_resolver: StringFragmentResolver,
+                 transformer: StrValueTransformer):
+        self._string_resolver = string_resolver
+        self._transformer = transformer
+
+    @property
+    def is_string_constant(self) -> bool:
+        return self._string_resolver.is_string_constant
+
+    @property
+    def string_constant(self) -> str:
+        return self._transformer(self._string_resolver.string_constant)
+
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+        return TransformedStringFragment(StringValueFragment(self._string_resolver.resolve(symbols)),
+                                         self._transformer)
+
+    @property
+    def references(self) -> list:
+        return self._string_resolver.references
+
+    def resolve_value_of_any_dependency(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+        return self.resolve(environment.symbols).value_of_any_dependency(environment)
 
 
 def string_constant(string: str) -> StringResolver:

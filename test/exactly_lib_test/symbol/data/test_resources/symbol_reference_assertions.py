@@ -1,5 +1,5 @@
 import unittest
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -23,12 +23,12 @@ def equals_symbol_reference(expected: SymbolReference) -> asrt.ValueAssertion:
                                equals_data_type_reference_restrictions(expected.restrictions))
 
 
-def equals_symbol_references(expected: list) -> asrt.ValueAssertion:
+def equals_symbol_references(expected: Sequence[SymbolReference]) -> asrt.ValueAssertion[List[SymbolReference]]:
     return _EqualsSymbolReferences(expected)
 
 
 class _EqualsSymbolReferences(asrt.ValueAssertion):
-    def __init__(self, expected: list):
+    def __init__(self, expected: Sequence[SymbolReference]):
         self._expected = expected
         assert isinstance(expected, Sequence), 'Symbol reference list must be a Sequence'
         for idx, element in enumerate(expected):
