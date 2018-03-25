@@ -21,11 +21,11 @@ class FileRefResolver(DataValueResolver):
         return ValueType.PATH
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
     def __str__(self):
         return str(type(self))

@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import resolver_of_rel_option
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import resolver_of_rel_option
+from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType

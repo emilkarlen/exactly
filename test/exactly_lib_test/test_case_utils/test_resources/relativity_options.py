@@ -1,7 +1,7 @@
 import pathlib
 
+from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
-from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds

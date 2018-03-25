@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data.value_resolvers import file_ref_resolvers as sut
+from exactly_lib.symbol.data.file_ref_resolver_impls import file_ref_resolvers as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.value_type import DataValueType, ValueType, TypeCategory

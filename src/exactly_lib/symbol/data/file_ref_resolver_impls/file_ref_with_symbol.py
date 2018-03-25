@@ -1,8 +1,8 @@
 import pathlib
 from typing import Sequence
 
+from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
-from exactly_lib.symbol.data.value_resolvers.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
