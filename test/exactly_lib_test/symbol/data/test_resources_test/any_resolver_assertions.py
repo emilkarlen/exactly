@@ -29,8 +29,7 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_equals__list(self):
         # ARRANGE #
-        value = list_resolvers.from_elements([list_resolvers.string_element(
-            string_constant('value'))])
+        value = list_resolvers.from_str_constants(['value'])
         # ACT & ASSERT #
         sut.equals_resolver(value).apply_without_message(self, value)
 
@@ -64,7 +63,7 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_not_equals__list(self):
         # ARRANGE #
-        expected = list_resolvers.from_elements([list_resolvers.string_element(string_constant('value'))])
+        expected = list_resolvers.from_str_constants(['value'])
         actual = list_resolvers.from_elements([list_resolvers.symbol_element(su.symbol_reference('symbol_name'))])
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)

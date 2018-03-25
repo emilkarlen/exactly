@@ -30,14 +30,12 @@ class TestEqualsConstantList(unittest.TestCase):
     def test_equals(self):
         test_cases = [
             (
-                list_resolvers.from_elements([]),
+                list_resolvers.empty(),
                 []
             ),
             (
-                list_resolvers.from_elements([list_resolvers.string_element(
-                    string_resolvers.string_constant('value 1')),
-                    list_resolvers.string_element(
-                        string_resolvers.string_constant('value 2'))]),
+                list_resolvers.from_str_constants(['value 1',
+                                                   'value 2']),
                 ['value 1', 'value 2']
             ),
         ]
@@ -52,10 +50,8 @@ class TestEqualsConstantList(unittest.TestCase):
                 ['non empty']
             ),
             (
-                list_resolvers.from_elements([list_resolvers.string_element(
-                    string_resolvers.string_constant('value 1')),
-                    list_resolvers.string_element(
-                        string_resolvers.string_constant('value 2 actual'))]),
+                list_resolvers.from_str_constants(['value 1',
+                                                   'value 2 actual']),
                 ['value 1', 'value 2 expected']
             ),
         ]
@@ -68,7 +64,7 @@ class TestEqualsConstantList(unittest.TestCase):
 class TestEqualsElement(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            list_resolvers.string_element(string_resolvers.string_constant('value')),
+            list_resolvers.str_element('value'),
             list_resolvers.symbol_element(symbol_reference('symbol_name')),
         ]
         for element in test_cases:
@@ -77,8 +73,7 @@ class TestEqualsElement(unittest.TestCase):
 
     def test_string_not_equals_symbol_ref(self):
         # ARRANGE #
-        string_element = list_resolvers.string_element(
-            string_resolvers.string_constant('value'))
+        string_element = list_resolvers.str_element('value')
         symbol_reference_element = list_resolvers.symbol_element(symbol_reference('symbol_name'))
         assertion = sut.equals_list_resolver_element(string_element)
         # ACT & ASSERT #
@@ -86,8 +81,7 @@ class TestEqualsElement(unittest.TestCase):
 
     def test_symbol_ref_not_equals_string(self):
         # ARRANGE #
-        string_element = list_resolvers.string_element(
-            string_resolvers.string_constant('value'))
+        string_element = list_resolvers.str_element('value')
         symbol_reference_element = list_resolvers.symbol_element(symbol_reference('symbol_name'))
         assertion = sut.equals_list_resolver_element(symbol_reference_element)
         # ACT & ASSERT #
@@ -95,10 +89,8 @@ class TestEqualsElement(unittest.TestCase):
 
     def test_string_not_equals_string_with_different_value(self):
         # ARRANGE #
-        expected = list_resolvers.string_element(
-            string_resolvers.string_constant('expected value'))
-        actual = list_resolvers.string_element(
-            string_resolvers.string_constant('actual value'))
+        expected = list_resolvers.str_element('expected value')
+        actual = list_resolvers.str_element('actual value')
         assertion = sut.equals_list_resolver_element(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -115,8 +107,7 @@ class TestEqualsElement(unittest.TestCase):
 class TestEqualsResolver(unittest.TestCase):
     def test_equals(self):
         cases = [
-            list_resolvers.from_elements([list_resolvers.string_element(
-                string_resolvers.string_constant('value'))]),
+            list_resolvers.from_str_constants(['value']),
             list_resolvers.from_elements([list_resolvers.symbol_element(symbol_reference('symbol_name'))]),
         ]
         for resolver in cases:
@@ -130,21 +121,17 @@ class TestEqualsResolver(unittest.TestCase):
                  expected=
                  list_resolvers.empty(),
                  actual=
-                 list_resolvers.from_elements([list_resolvers.string_element(
-                     string_resolvers.string_constant('value'))]),
+                 list_resolvers.from_str_constants(['value']),
                  ),
             Case('different value of single string',
                  expected=
-                 list_resolvers.from_elements([list_resolvers.string_element(
-                     string_resolvers.string_constant('expected value'))]),
+                 list_resolvers.from_str_constants(['expected value']),
                  actual=
-                 list_resolvers.from_elements([list_resolvers.string_element(
-                     string_resolvers.string_constant('actual value'))]),
+                 list_resolvers.from_str_constants(['actual value']),
                  ),
             Case('different element types, but same resolved value',
                  expected=
-                 list_resolvers.from_elements([list_resolvers.string_element(
-                     string_resolvers.string_constant(string_symbol.value))]),
+                 list_resolvers.from_str_constants([string_symbol.value]),
                  actual=
                  list_resolvers.from_elements([list_resolvers.symbol_element(su.symbol_reference(string_symbol.name))]),
                  symbols=
@@ -175,8 +162,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        list_resolvers.from_elements([list_resolvers.string_element(
-                            string_resolvers.string_constant('expected value'))]),
+                        list_resolvers.from_str_constants(['expected value']),
                         ),
             MatchesCase('symbol reference',
                         expected=
@@ -209,8 +195,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        list_resolvers.from_elements([list_resolvers.string_element(
-                            string_resolvers.string_constant('value'))]),
+                        list_resolvers.from_str_constants(['value']),
                         ),
             MatchesCase('different value of single string',
                         expected=
@@ -218,8 +203,7 @@ class TestMatchesResolver(unittest.TestCase):
                         expected_references=
                         asrt.is_empty_sequence,
                         actual=
-                        list_resolvers.from_elements([list_resolvers.string_element(
-                            string_resolvers.string_constant('actual value'))]),
+                        list_resolvers.from_str_constants(['actual value']),
                         ),
             MatchesCase('different references',
                         expected=

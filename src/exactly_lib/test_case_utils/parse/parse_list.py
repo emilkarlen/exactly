@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
-from exactly_lib.symbol.data import string_resolvers, list_resolvers as lrs
+from exactly_lib.symbol.data import list_resolvers as lrs
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -36,17 +36,13 @@ def element_of(token: Token) -> lrs.Element:
         single_fragment = string_fragments[0]
         assert isinstance(single_fragment, symbol_syntax.Fragment)
         if single_fragment.is_constant:
-            return _string_constant_element(single_fragment.value)
+            return lrs.str_element(single_fragment.value)
         else:
             return _symbol_reference_element(single_fragment.value)
     else:
         string_resolver = parse_string.string_resolver_from_fragments(string_fragments,
                                                                       is_any_data_type())
         return lrs.string_element(string_resolver)
-
-
-def _string_constant_element(s: str) -> lrs.Element:
-    return lrs.string_element(string_resolvers.string_constant(s))
 
 
 def _symbol_reference_element(s: str) -> lrs.Element:
