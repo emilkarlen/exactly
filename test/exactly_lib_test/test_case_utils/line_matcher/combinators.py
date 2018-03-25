@@ -1,6 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_utils.line_matcher import line_matchers as sut
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 from exactly_lib_test.test_case_utils.test_resources import matcher_combinators_check
 
 
@@ -59,6 +60,6 @@ class TestNot(matcher_combinators_check.TestNotBase):
 
 class LineMatcherThatRegistersModelArgument(sut.LineMatcher,
                                             matcher_combinators_check.MatcherThatRegistersModelArgument):
-    def matches(self, line: str) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         self.register_argument(line)
         return self._constant_result

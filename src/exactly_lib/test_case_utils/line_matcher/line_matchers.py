@@ -1,6 +1,8 @@
+from typing import Sequence
+
 from exactly_lib.help_texts import expression
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 
 
 class LineMatcherConstant(LineMatcher):
@@ -17,7 +19,7 @@ class LineMatcherConstant(LineMatcher):
     def result_constant(self) -> bool:
         return self._result
 
-    def matches(self, line: str) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         return self._result
 
 
@@ -35,7 +37,7 @@ class LineMatcherRegex(LineMatcher):
     def regex_pattern_string(self) -> str:
         return self._compiled_regular_expression.pattern
 
-    def matches(self, line: tuple) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         return bool(self._compiled_regular_expression.search(line[1]))
 
 
@@ -49,7 +51,7 @@ class LineMatcherLineNumber(LineMatcher):
     def option_description(self) -> str:
         return self._integer_matcher.option_description
 
-    def matches(self, line: tuple) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         return self._integer_matcher.matches(line[0])
 
 
@@ -67,14 +69,14 @@ class LineMatcherNot(LineMatcher):
     def negated_matcher(self) -> LineMatcher:
         return self._matcher
 
-    def matches(self, line: tuple) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         return not self._matcher.matches(line)
 
 
 class LineMatcherAnd(LineMatcher):
     """Matcher that and:s a list of matchers."""
 
-    def __init__(self, matchers: list):
+    def __init__(self, matchers: Sequence[LineMatcher]):
         self._matchers = tuple(matchers)
 
     @property
@@ -83,10 +85,10 @@ class LineMatcherAnd(LineMatcher):
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
-    def matchers(self) -> list:
+    def matchers(self) -> Sequence[LineMatcher]:
         return list(self._matchers)
 
-    def matches(self, line: str) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         return all([matcher.matches(line)
                     for matcher in self._matchers])
 
@@ -94,7 +96,7 @@ class LineMatcherAnd(LineMatcher):
 class LineMatcherOr(LineMatcher):
     """Matcher that or:s a list of matchers."""
 
-    def __init__(self, matchers: list):
+    def __init__(self, matchers: Sequence[LineMatcher]):
         self._matchers = tuple(matchers)
 
     @property
@@ -103,10 +105,10 @@ class LineMatcherOr(LineMatcher):
         return '({})'.format(op.join(map(lambda fm: fm.option_description, self.matchers)))
 
     @property
-    def matchers(self) -> list:
+    def matchers(self) -> Sequence[LineMatcher]:
         return list(self._matchers)
 
-    def matches(self, line: str) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         return any([matcher.matches(line)
                     for matcher in self._matchers])
 

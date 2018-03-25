@@ -1,4 +1,8 @@
+from typing import Tuple
+
 from exactly_lib.type_system.logic.matcher_base_class import Matcher
+
+LineMatcherLine = Tuple[int, str]
 
 
 class LineMatcher(Matcher):
@@ -10,7 +14,7 @@ class LineMatcher(Matcher):
     Line numbers start at 1.
     """
 
-    def matches(self, line: tuple) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         """
         :param line: (int, string) - (line number, line contents)
         :return: If the line matches the condition represented by the matcher

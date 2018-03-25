@@ -4,7 +4,7 @@ import types
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer import transformers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
-from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 
 
 class FakeLinesTransformer(sut.LinesTransformer):
@@ -29,7 +29,7 @@ class LineMatcherNotImplementedTestImpl(LineMatcher):
     def option_description(self) -> str:
         return str(type(self))
 
-    def matches(self, line: str) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         raise NotImplementedError('should never be used')
 
 
@@ -45,7 +45,7 @@ class LineMatcherFromPredicates(LineMatcher):
         self.line_num = line_num_predicate
         self.line_contents = line_contents_predicate
 
-    def matches(self, line: tuple) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         return self.line_num(line[0]) and \
                self.line_contents(line[1])
 
