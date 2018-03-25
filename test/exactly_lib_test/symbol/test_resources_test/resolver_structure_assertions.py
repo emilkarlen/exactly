@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions import reference_restrictions as r, value_restrictions as vr
 from exactly_lib.symbol.resolver_structure import SymbolContainer, container_of_builtin
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
 class TestMatchesContainer(unittest.TestCase):
     def test_resolver_SHOULD_be_given_as_argument_to_resolver_assertion(self):
         # ARRANGE #
-        actual_resolver = string_constant('s')
+        actual_resolver = string_resolvers.str_constant('s')
         actual_container = container_of_builtin(actual_resolver)
         assertion_that_is_expected_to_succeed = asrt.is_(actual_resolver)
         assertion_to_check = sut.matches_container(assertion_that_is_expected_to_succeed,
@@ -33,7 +33,7 @@ class TestMatchesContainer(unittest.TestCase):
 
     def test_source_line_SHOULD_be_given_as_argument_to_source_line_assertion(self):
         # ARRANGE #
-        actual_resolver = string_constant('s')
+        actual_resolver = string_resolvers.str_constant('s')
         source_line = single_line_sequence(1, 'source line')
         actual_container = SymbolContainer(actual_resolver,
                                            source_line)
@@ -46,7 +46,7 @@ class TestMatchesContainer(unittest.TestCase):
 
     def test_arbitrary_failure(self):
         # ARRANGE #
-        actual_resolver = string_constant('s')
+        actual_resolver = string_resolvers.str_constant('s')
         source_line = single_line_sequence(1, 'source line')
         actual_container = SymbolContainer(actual_resolver,
                                            source_line)
@@ -62,7 +62,7 @@ class TestMatchesDefinition(unittest.TestCase):
         # ARRANGE #
         actual_name = 'the name'
         actual_definition = SymbolDefinition(actual_name,
-                                             container_of_builtin(string_constant('s')))
+                                             container_of_builtin(string_resolvers.str_constant('s')))
 
         assertion_that_is_expected_to_succeed = asrt.is_(actual_name)
 
@@ -74,7 +74,7 @@ class TestMatchesDefinition(unittest.TestCase):
 
     def test_container_SHOULD_be_given_as_argument_to_assertion_on_container(self):
         # ARRANGE #
-        actual_container = container_of_builtin(string_constant('s'))
+        actual_container = container_of_builtin(string_resolvers.str_constant('s'))
         actual_definition = SymbolDefinition('the name',
                                              actual_container)
 
@@ -88,7 +88,7 @@ class TestMatchesDefinition(unittest.TestCase):
 
     def test_arbitrary_failure(self):
         # ARRANGE #
-        actual_container = container_of_builtin(string_constant('s'))
+        actual_container = container_of_builtin(string_resolvers.str_constant('s'))
         actual_definition = SymbolDefinition('the name',
                                              actual_container)
 

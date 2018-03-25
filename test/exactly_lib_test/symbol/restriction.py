@@ -28,7 +28,7 @@ def suite() -> unittest.TestSuite:
 class TestElementTypeRestriction(unittest.TestCase):
     element_type_2_resolver_of_type = {
         TypeCategory.DATA:
-            string_resolvers.string_constant('string value'),
+            string_resolvers.str_constant('string value'),
 
         TypeCategory.LOGIC:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
@@ -74,7 +74,7 @@ class TestValueTypeRestriction(unittest.TestCase):
     value_type_2_resolver_of_type = {
 
         ValueType.STRING:
-            string_resolvers.string_constant('string value'),
+            string_resolvers.str_constant('string value'),
 
         ValueType.LIST:
             ListResolverTestImplForConstantListValue(ListValue([])),

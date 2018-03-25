@@ -6,7 +6,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data.string_resolvers import str_constant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -40,10 +40,10 @@ def file_ref_resolver_test_impl(valid_relativities: PathRelativityVariants) -> F
 
 class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):
     def visit_none(self, x: vr.AnyDataTypeRestriction) -> DataValueResolver:
-        return string_constant('a string (from <no restriction>)')
+        return str_constant('a string (from <no restriction>)')
 
     def visit_string(self, x: vr.StringRestriction) -> DataValueResolver:
-        return string_constant('a string (from <string value restriction>)')
+        return str_constant('a string (from <string value restriction>)')
 
     def visit_file_ref_relativity(self, x: vr.FileRefRelativityRestriction) -> DataValueResolver:
         return file_ref_resolver_test_impl(x.accepted)

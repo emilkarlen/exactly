@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
 from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as pr, list_resolver as lr, \
     visitor as sut
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data.string_resolvers import str_constant
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     equals_multi_dir_dependent_value
@@ -52,7 +52,7 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
-        ret_val = visitor.visit(string_constant('string'))
+        ret_val = visitor.visit(str_constant('string'))
         # ASSERT #
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')

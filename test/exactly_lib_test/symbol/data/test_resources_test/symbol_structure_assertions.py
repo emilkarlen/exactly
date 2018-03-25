@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data import file_ref_resolvers2
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib.util.line_source import single_line_sequence
@@ -20,7 +20,7 @@ def suite() -> unittest.TestSuite:
 class TestEqualsValueContainer(unittest.TestCase):
     def test_pass(self):
         value_cases = [
-            string_constant('s'),
+            string_resolvers.str_constant('s'),
             file_ref_resolvers2.constant(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
@@ -34,7 +34,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
-        common_value = string_constant('common string value')
+        common_value = string_resolvers.str_constant('common string value')
         expected = SymbolContainer(common_value, single_line_sequence(4, 'source code 4'))
         actual = SymbolContainer(common_value, single_line_sequence(5, 'source code 5'))
         assertion = sut.equals_container(expected, ignore_source_line=True)
@@ -52,7 +52,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 class TestEqualsValueDefinition(unittest.TestCase):
     def test_pass(self):
         value_cases = [
-            string_constant('s'),
+            string_resolvers.str_constant('s'),
             file_ref_resolvers2.constant(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
@@ -67,7 +67,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
 
     def test_pass__different_string_but_source_line_check_is_ignored(self):
         # ARRANGE #
-        common_value_resolver = string_constant('common string value')
+        common_value_resolver = string_resolvers.str_constant('common string value')
         expected_container = SymbolContainer(common_value_resolver, single_line_sequence(4, 'source code 4'))
         actual_container = SymbolContainer(common_value_resolver, single_line_sequence(5, 'source code 5'))
         common_name = 'value name'
@@ -79,7 +79,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
 
     def test_fail__different_name(self):
         # ARRANGE #
-        common_container = SymbolContainer(string_constant('common string value'),
+        common_container = SymbolContainer(string_resolvers.str_constant('common string value'),
                                            single_line_sequence(1, 'source code'))
         expected_symbol = SymbolDefinition('expected value name', common_container)
         actual_symbol = SymbolDefinition('actual value name', common_container)
@@ -91,10 +91,10 @@ class TestEqualsValueDefinition(unittest.TestCase):
         common_name_source = single_line_sequence(1, 'source code')
         common_name = 'value name'
         expected_symbol = SymbolDefinition(common_name,
-                                           SymbolContainer(string_constant('expected string value'),
+                                           SymbolContainer(string_resolvers.str_constant('expected string value'),
                                                            common_name_source))
         actual_symbol = SymbolDefinition(common_name,
-                                         SymbolContainer(string_constant('actual string value'),
+                                         SymbolContainer(string_resolvers.str_constant('actual string value'),
                                                          common_name_source))
         assertion = sut.equals_symbol(expected_symbol)
         assert_that_assertion_fails(assertion, actual_symbol)

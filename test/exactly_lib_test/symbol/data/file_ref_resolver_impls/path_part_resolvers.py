@@ -51,8 +51,8 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
         symbol1_ref = self._symbol_reference(symbol1.name)
         symbol2 = NameAndValue('symbol_2_name', 'symbol 2 value')
         symbol2_ref = self._symbol_reference(symbol2.name)
-        fragments = [string_resolvers.SymbolStringFragmentResolver(symbol1_ref),
-                     string_resolvers.SymbolStringFragmentResolver(symbol2_ref)]
+        fragments = [string_resolvers.symbol_fragment(symbol1_ref),
+                     string_resolvers.symbol_fragment(symbol2_ref)]
         resolver = sut.StringResolver(tuple(fragments))
         path_part = sut.PathPartResolverAsStringResolver(resolver)
         # ACT #
@@ -70,8 +70,8 @@ class TestPathPartResolverAsStringResolver(unittest.TestCase):
         symbol1_ref = self._symbol_reference(symbol1.name)
         symbol2 = NameAndValue('symbol_2_name', 'symbol 2 value')
         symbol2_ref = self._symbol_reference(symbol2.name)
-        fragments = [string_resolvers.SymbolStringFragmentResolver(symbol1_ref),
-                     string_resolvers.SymbolStringFragmentResolver(symbol2_ref)]
+        fragments = [string_resolvers.symbol_fragment(symbol1_ref),
+                     string_resolvers.symbol_fragment(symbol2_ref)]
         resolver = sut.StringResolver(tuple(fragments))
         path_part = sut.PathPartResolverAsStringResolver(resolver)
         symbol_table_entries = [symbol1, symbol2]

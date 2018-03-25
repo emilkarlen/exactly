@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
-from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType
@@ -88,7 +88,7 @@ class TestSymbolUsages(TestCaseBase):
                 container(to_upper_transformer.value),
 
             text_printed_by_shell_command_symbol.name:
-                container(string_constant(text_printed_by_shell_command_symbol.value))
+                container(string_resolvers.str_constant(text_printed_by_shell_command_symbol.value))
         })
 
         # ACT & ASSERT #

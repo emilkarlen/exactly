@@ -291,7 +291,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
 
     def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        argument_resolver = string_resolvers.string_constant(instruction_argument)
+        argument_resolver = string_resolvers.str_constant(instruction_argument)
         return ValidationAndSubProcessExecutionSetup(self.validator,
                                                      CommandResolverForShell(argument_resolver))
 

@@ -7,13 +7,13 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data import file_ref_resolvers2, path_part_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction, \
     FileRefRelativityRestriction
-from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import ReferenceRestrictions, DataTypeReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -530,7 +530,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  symbol_table=
                  symbol_table_from_entries([
                      entry(defined_path_symbol.name, file_ref_resolvers2.constant(relativity_file_ref)),
-                     entry(suffix_symbol.name, string_constant(suffix_symbol.value)),
+                     entry(suffix_symbol.name, string_resolvers.str_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
@@ -568,7 +568,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  symbol_table=
                  symbol_table_from_entries([
                      entry(defined_path_symbol.name, file_ref_resolvers2.constant(relativity_file_ref)),
-                     entry(suffix_symbol.name, string_constant(suffix_symbol.value)),
+                     entry(suffix_symbol.name, string_resolvers.str_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),
@@ -985,7 +985,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                            file_ref_resolvers2.constant(file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
                                                                                 PathPartAsFixedPath(
                                                                                     'suffix-from-path-symbol')))),
-                     entry(symbol_2.name, string_constant('string-symbol-value')),
+                     entry(symbol_2.name, string_resolvers.str_constant('string-symbol-value')),
                  ]),
                  token_stream=
                  assert_token_stream(is_null=asrt.is_true),

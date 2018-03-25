@@ -8,7 +8,7 @@ from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -186,7 +186,7 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
                   Arrangement(),
                   Expectation(
                       settings_builder=AssertStdinIsSetToContents(
-                          string_constant(hd.contents_str_from_lines([content_line_of_here_doc])),
+                          string_resolvers.str_constant(hd.contents_str_from_lines([content_line_of_here_doc])),
                       ),
                       source=is_at_beginning_of_line(4)),
                   )

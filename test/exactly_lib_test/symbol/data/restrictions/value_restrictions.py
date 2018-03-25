@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
-from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction, ValueRestrictionFailure
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
@@ -30,7 +30,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
     def test_pass_WHEN_type_category_is_data(self):
         # ARRANGE #
         test_cases = [
-            string_constant('string'),
+            string_resolvers.str_constant('string'),
             file_ref_constant_resolver(),
             ListResolverTestImplForConstantListValue(ListValue([])),
         ]
@@ -66,8 +66,8 @@ class TestStringRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            string_constant('string'),
-            string_constant(''),
+            string_resolvers.str_constant('string'),
+            string_resolvers.str_constant(''),
         ]
         restriction = vr.StringRestriction()
         symbols = empty_symbol_table()

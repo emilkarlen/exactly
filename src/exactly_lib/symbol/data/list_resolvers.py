@@ -44,4 +44,4 @@ def symbol_element(symbol_reference: SymbolReference) -> Element:
 
 
 def str_element(s: str) -> Element:
-    return string_element(_string_resolvers.string_constant(s))
+    return string_element(_string_resolvers.str_constant(s))

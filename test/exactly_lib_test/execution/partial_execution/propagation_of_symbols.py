@@ -340,7 +340,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
                                          'predefined string constant symbol value')
 
         expected_predefined_symbols = SymbolTable({
-            predefined_symbol.name: string_resolvers.string_constant(predefined_symbol.value)
+            predefined_symbol.name: string_resolvers.str_constant(predefined_symbol.value)
         })
         all_predefined_symbols = frozenset((predefined_symbol.name,))
 
@@ -390,7 +390,7 @@ class TestPropagationOfSymbolsPredefinedInConfiguration(unittest.TestCase):
         defined_symbol = NameAndValue('defined symbol',
                                       'value of symbol defined in the setup phase (not used in this test)')
         predefined_symbols_table = SymbolTable({
-            predefined_symbol.name: string_resolvers.string_constant(predefined_symbol.value)
+            predefined_symbol.name: string_resolvers.str_constant(predefined_symbol.value)
         })
         predefined_symbols = frozenset((predefined_symbol.name,))
         predefined_and_defined_symbols = frozenset((predefined_symbol.name, defined_symbol.name))

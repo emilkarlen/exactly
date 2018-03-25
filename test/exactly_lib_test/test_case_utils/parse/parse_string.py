@@ -4,8 +4,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.string_resolvers import ConstantStringFragmentResolver, \
-    SymbolStringFragmentResolver
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -268,20 +267,20 @@ def string_resolver_from_fragments(fragments: list) -> StringResolver:
 
 def fragment_resolver_from_fragment(fragment: Fragment) -> StringFragmentResolver:
     if fragment.is_constant:
-        return ConstantStringFragmentResolver(fragment.value)
+        return string_resolvers.str_fragment(fragment.value)
     else:
         sr = SymbolReference(fragment.value,
                              ReferenceRestrictionsOnDirectAndIndirect(direct=AnyDataTypeRestriction(),
                                                                       indirect=None))
-        return SymbolStringFragmentResolver(sr)
+        return string_resolvers.symbol_fragment(sr)
 
 
 def single_symbol_reference(symbol_name: str,
                             reference_restrictions: ReferenceRestrictions = None) -> sut.StringResolver:
     if reference_restrictions is None:
         reference_restrictions = no_restrictions()
-    fragments = (SymbolStringFragmentResolver(SymbolReference(symbol_name,
-                                                              reference_restrictions)),)
+    fragments = (string_resolvers.symbol_fragment(SymbolReference(symbol_name,
+                                                                  reference_restrictions)),)
     return sut.StringResolver(fragments)
 
 

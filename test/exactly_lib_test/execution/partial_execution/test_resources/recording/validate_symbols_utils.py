@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.result import PartialResultStatus
-from exactly_lib.symbol.data.string_resolvers import SymbolStringFragmentResolver
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -137,5 +137,5 @@ def definition_with_reference(name_of_defined: str,
                                                                                 indirect=AnyDataTypeRestriction()))
     return SymbolDefinition(name_of_defined,
                             data_symbol_utils.container(
-                                      StringResolver((SymbolStringFragmentResolver(symbol_reference),))
-                                  ))
+                                StringResolver((string_resolvers.symbol_fragment(symbol_reference),))
+                            ))

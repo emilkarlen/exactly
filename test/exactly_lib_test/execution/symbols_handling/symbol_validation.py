@@ -4,9 +4,9 @@ from exactly_lib.execution.instruction_execution.single_instruction_executor imp
 from exactly_lib.execution.symbols_handling import symbol_validation as sut
 from exactly_lib.symbol import resolver_structure as vs, symbol_usage as su
 from exactly_lib.symbol.data import file_ref_resolvers2, path_part_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -175,7 +175,7 @@ class TestValidationOfList(unittest.TestCase):
 
 def symbol_of(name: str) -> su.SymbolDefinition:
     return su.SymbolDefinition(name,
-                               vs.SymbolContainer(string_constant('string value'),
+                               vs.SymbolContainer(string_resolvers.str_constant('string value'),
                                                   single_line_sequence(1, 'source code')))
 
 
@@ -185,7 +185,7 @@ def file_ref_entry(name: str, file_ref_value: FileRef) -> Entry:
 
 def string_entry(name: str, constant: str = 'string value') -> Entry:
     return Entry(name,
-                 vs.SymbolContainer(string_constant(constant),
+                 vs.SymbolContainer(string_resolvers.str_constant(constant),
                                     single_line_sequence(1, 'source code')))
 
 
