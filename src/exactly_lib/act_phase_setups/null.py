@@ -1,10 +1,12 @@
 import pathlib
+from typing import Sequence
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser, UnconditionallySuccessfulValidator
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case import eh
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.util.std import StdFiles
@@ -30,7 +32,7 @@ class Constructor(parts.Constructor):
 
 
 class _Parser(Parser):
-    def apply(self, act_phase_instructions: list) -> _ObjectToExecute:
+    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> _ObjectToExecute:
         return _ObjectToExecute()
 
 

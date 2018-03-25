@@ -1,6 +1,6 @@
 import pathlib
 import unittest
-from typing import Sequence
+from typing import Sequence, Dict
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
 from exactly_lib.execution.phase_step_identifiers import phase_step
@@ -107,15 +107,15 @@ class ParserThatRaisesException(sut.Parser):
     def __init__(self, cause: svh.SuccessOrValidationErrorOrHardError):
         self.cause = cause
 
-    def apply(self, act_phase_instructions: list):
+    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]):
         raise ParseException(self.cause)
 
 
 class ParserThatExpectsSingleInstructionAndRecordsAndReturnsTheTextOfThatInstruction(sut.Parser):
-    def __init__(self, recorder: dict):
+    def __init__(self, recorder: Dict[phase_step.PhaseStep, str]):
         self.recorder = recorder
 
-    def apply(self, act_phase_instructions: list):
+    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]):
         instruction = act_phase_instructions[0]
         assert isinstance(instruction, ActPhaseInstruction)
         source_text = instruction.source_code().text
@@ -147,7 +147,7 @@ class ParserWithConstantResult(sut.Parser):
     def __init__(self, constant_result: SymbolUser):
         self._constant_result = constant_result
 
-    def apply(self, act_phase_instructions: list) -> SymbolUser:
+    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> SymbolUser:
         return self._constant_result
 
 
