@@ -6,8 +6,8 @@ from exactly_lib.symbol.data.list_resolver import ListResolver, string_element
 from exactly_lib.symbol.data.string_resolver import StringResolver
 
 
-def concat_lists(lists: Sequence[ListResolver]) -> ListResolver:
-    return ListResolver(itertools.chain.from_iterable([x.elements for x in lists]))
+def empty() -> ListResolver:
+    return from_strings(())
 
 
 def from_strings(elements: Sequence[StringResolver]) -> ListResolver:
@@ -21,5 +21,5 @@ def from_str_constants(str_list: Sequence[str]) -> ListResolver:
         for s in str_list])
 
 
-def empty() -> ListResolver:
-    return from_strings(())
+def concat(lists: Sequence[ListResolver]) -> ListResolver:
+    return ListResolver(itertools.chain.from_iterable([x.elements for x in lists]))
