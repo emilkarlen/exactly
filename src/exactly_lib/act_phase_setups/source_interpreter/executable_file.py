@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.source_interpreter.source_file_management impo
 from exactly_lib.act_phase_setups.util.command_resolvers import program_with_args
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.symbol.data import list_resolver
+from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForProgramAndArguments
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
@@ -51,5 +51,5 @@ class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):
         pgm_and_args = self.script_language_setup.command_and_args_for_executing_script_file(str(script_file_path))
         return CommandResolverForProgramAndArguments(
             program_with_args(pgm_and_args),
-            list_resolver.empty(),
+            list_resolvers.empty(),
         )

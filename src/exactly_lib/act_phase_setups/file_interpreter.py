@@ -19,7 +19,8 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_resolvers as csr, list_resolver
+from exactly_lib.symbol.data import list_resolvers
+from exactly_lib.symbol.data import string_resolvers as csr
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -170,8 +171,8 @@ class _ProgramExecutor(SubProcessExecutor):
         self.source = source
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        arguments = list_resolver.concat_lists([
-            list_resolver.from_strings([csr.from_file_ref_resolver(self.source.file_reference)]),
+        arguments = list_resolvers.concat_lists([
+            list_resolvers.from_strings([csr.from_file_ref_resolver(self.source.file_reference)]),
             self.source.arguments,
         ])
 
@@ -192,7 +193,7 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
         self.source = source
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        command_line_elements = list_resolver.from_strings([
+        command_line_elements = list_resolvers.from_strings([
             csr.string_constant(self.shell_command_of_interpreter),
 
             csr.from_fragments([

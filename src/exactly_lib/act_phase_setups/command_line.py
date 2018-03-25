@@ -13,7 +13,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import list_resolver
+from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
@@ -162,7 +162,7 @@ class _ExecutableFileExecutor(SubProcessExecutor):
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         return CommandResolverForExecutableFile(self.executable_file,
-                                                list_resolver.empty())
+                                                list_resolvers.empty())
 
 
 class _ShellSubProcessExecutor(SubProcessExecutor):
