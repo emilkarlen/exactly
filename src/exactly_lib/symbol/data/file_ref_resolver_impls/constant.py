@@ -2,17 +2,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure import relativity_root
-from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
-
-
-def resolver_of_rel_option(rel_option: relativity_root.RelOptionType,
-                           path_suffix: PathPart = PathPartAsNothing()) -> FileRefResolver:
-    return FileRefConstant(file_refs.of_rel_option(rel_option, path_suffix))
 
 
 class FileRefConstant(FileRefResolver):

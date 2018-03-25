@@ -1,4 +1,4 @@
-from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolver import PathPartResolver
+from exactly_lib.symbol.data.file_ref_resolver import PathPartResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system.data.path_part import PathPart

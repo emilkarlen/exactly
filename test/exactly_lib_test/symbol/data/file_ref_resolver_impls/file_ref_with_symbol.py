@@ -1,9 +1,8 @@
 import pathlib
 import unittest
 
+from exactly_lib.symbol.data import path_part_resolvers
 from exactly_lib.symbol.data.file_ref_resolver_impls import file_ref_with_symbol as sut
-from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolvers import PathPartResolverAsFixedPath, \
-    PathPartResolverAsStringResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     is_any_data_type
@@ -32,9 +31,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestRelSymbol))
-    return ret_val
+    return unittest.makeSuite(TestRelSymbol)
 
 
 class TestRelSymbol(unittest.TestCase):
@@ -54,10 +51,10 @@ class TestRelSymbol(unittest.TestCase):
         symbol_ref_of_path = SymbolReference(symbol_name_of_rel_path,
                                              ReferenceRestrictionsOnDirectAndIndirect(expected_restriction))
         path_suffix_test_cases = [
-            (PathPartResolverAsFixedPath('file.txt'),
+            (path_part_resolvers.from_constant_str('file.txt'),
              [],
              ),
-            (PathPartResolverAsStringResolver(
+            (path_part_resolvers.from_string(
                 string_resolver_of_single_symbol_reference(symbol_name_of_path_suffix,
                                                            restrictions_on_path_suffix_symbol)),
              [resolver_structure_assertions.matches_reference_2(
@@ -66,7 +63,7 @@ class TestRelSymbol(unittest.TestCase):
             ),
         ]
         for path_suffix_resolver, additional_expected_references in path_suffix_test_cases:
-            file_ref_resolver = sut.rel_symbol(symbol_ref_of_path, path_suffix_resolver)
+            file_ref_resolver = sut.FileRefResolverRelSymbol(path_suffix_resolver, symbol_ref_of_path)
             # ACT #
             actual = file_ref_resolver.references
             # ASSERT #
@@ -85,11 +82,11 @@ class TestRelSymbol(unittest.TestCase):
              ),
         ]
         path_suffix_test_cases = [
-            (PathPartResolverAsFixedPath('file.txt'),
+            (path_part_resolvers.from_constant_str('file.txt'),
              ()
              ),
-            (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol_name',
-                                                                                         is_any_data_type())),
+            (path_part_resolvers.from_string(string_resolver_of_single_symbol_reference('path_suffix_symbol_name',
+                                                                                        is_any_data_type())),
              (Entry('path_suffix_symbol_name',
                     string_constant_container('path-suffix')),),
              ),
@@ -106,10 +103,10 @@ class TestRelSymbol(unittest.TestCase):
                 with self.subTest(msg='rel_option_type={} ,path_suffix_type={}'.format(
                         rel_option_type_of_referenced_symbol,
                         path_suffix)):
-                    file_ref_resolver_to_check = sut.rel_symbol(
+                    file_ref_resolver_to_check = sut.FileRefResolverRelSymbol(
+                        path_suffix,
                         _symbol_reference_of_path_with_accepted(file_ref_symbol_name,
-                                                                rel_option_type_of_referenced_symbol),
-                        path_suffix)
+                                                                rel_option_type_of_referenced_symbol))
                     # ACT #
                     actual = file_ref_resolver_to_check.resolve(symbol_table).exists_pre_sds()
                     # ASSERT #
@@ -124,10 +121,10 @@ class TestRelSymbol(unittest.TestCase):
         ]
         path_suffix_str = 'path-suffix-file.txt'
         path_suffix_test_cases = [
-            (PathPartResolverAsFixedPath(path_suffix_str), ()
+            (path_part_resolvers.from_constant_str(path_suffix_str), ()
              ),
-            (PathPartResolverAsStringResolver(string_resolver_of_single_symbol_reference('path_suffix_symbol',
-                                                                                         is_any_data_type())),
+            (path_part_resolvers.from_string(string_resolver_of_single_symbol_reference('path_suffix_symbol',
+                                                                                        is_any_data_type())),
              (Entry('path_suffix_symbol',
                     string_constant_container(path_suffix_str)),)
              ),
@@ -142,10 +139,10 @@ class TestRelSymbol(unittest.TestCase):
                                                                           path_component_from_referenced_file_ref))
                                           ))
             for path_suffix, symbol_table_entries in path_suffix_test_cases:
-                fr_resolver_to_check = sut.rel_symbol(
+                fr_resolver_to_check = sut.FileRefResolverRelSymbol(
+                    path_suffix,
                     _symbol_reference_of_path_with_accepted(referenced_sym.name,
-                                                            rel_option),
-                    path_suffix)
+                                                            rel_option))
                 symbol_table = singleton_symbol_table_2(referenced_sym.name,
                                                         referenced_sym.value)
                 symbol_table.add_all(symbol_table_entries)
@@ -183,7 +180,7 @@ def _symbol_reference_of_path_with_accepted(value_name: str,
                                             accepted: RelOptionType) -> SymbolReference:
     return SymbolReference(value_name,
                            ReferenceRestrictionsOnDirectAndIndirect(
-                                     FileRefRelativityRestriction(_path_relativity_variants_with(accepted))))
+                               FileRefRelativityRestriction(_path_relativity_variants_with(accepted))))
 
 
 def _path_relativity_variants_with(accepted: RelOptionType) -> PathRelativityVariants:

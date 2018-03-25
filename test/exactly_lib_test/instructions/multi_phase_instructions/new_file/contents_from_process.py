@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import resolver_of_rel_option
+from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -81,8 +81,8 @@ class TestSymbolUsages(TestCaseBase):
 
         symbols = SymbolTable({
             dst_file_symbol.name:
-                container(resolver_of_rel_option(RelOptionType.REL_ACT,
-                                                 PathPartAsFixedPath(dst_file_symbol.value))),
+                container(file_ref_resolvers2.of_rel_option(RelOptionType.REL_ACT,
+                                                            PathPartAsFixedPath(dst_file_symbol.value))),
 
             to_upper_transformer.name:
                 container(to_upper_transformer.value),

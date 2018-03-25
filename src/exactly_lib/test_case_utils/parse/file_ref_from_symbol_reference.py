@@ -1,11 +1,11 @@
 import pathlib
 from typing import Sequence
 
-from exactly_lib.symbol.data.concrete_resolvers import SymbolValueResolverVisitor
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
-from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolver import PathPartResolver
+from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.visitor import DataValueResolverVisitor
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -31,9 +31,9 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
         self.default_relativity = default_relativity
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
-        symbol_value_2_file_ref = _SymbolSymbolValue2FileRefResolverVisitor(self._suffix_resolver,
-                                                                            self.default_relativity,
-                                                                            symbols)
+        symbol_value_2_file_ref = _DataValueSymbol2FileRefResolverVisitor(self._suffix_resolver,
+                                                                          self.default_relativity,
+                                                                          symbols)
         container = symbols.lookup(self._file_ref_or_string_symbol.name)
         assert isinstance(container, SymbolContainer), 'Implementation consistency/SymbolContainer'
         resolver = container.resolver
@@ -45,7 +45,7 @@ class _ResolverThatIsIdenticalToReferencedFileRefOrWithStringValueAsSuffix(FileR
         return [self._file_ref_or_string_symbol] + self._suffix_resolver.references
 
 
-class _SymbolSymbolValue2FileRefResolverVisitor(SymbolValueResolverVisitor):
+class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
     def __init__(self,
                  suffix_resolver: PathPartResolver,
                  default_relativity: RelOptionType,
@@ -73,3 +73,6 @@ class _SymbolSymbolValue2FileRefResolverVisitor(SymbolValueResolverVisitor):
         else:
             return file_refs.of_rel_option(self.default_relativity,
                                            PathPartAsFixedPath(path_str))
+
+    def _visit_list(self, value: ListResolver) -> FileRef:
+        raise ValueError('Impossible to convert a list to a file ref')

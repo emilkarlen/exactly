@@ -122,7 +122,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
                  environment: InstructionEnvironmentForPostSdsStep,
                  file_to_transform: ResolvedComparisonActualFile,
                  actual_file_properties: file_properties.Properties) -> str:
-        from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
+        from exactly_lib.symbol.data import file_ref_resolvers2
         from exactly_lib.util.logic_types import ExpectationType
 
         def actual_info_single_line_value() -> str:
@@ -130,7 +130,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
 
         property_descriptor = path_description.path_value_description(
             actual_files.PLAIN_FILE_OBJECT_NAME,
-            FileRefConstant(file_to_transform.actual_file))
+            file_ref_resolvers2.constant(file_to_transform.actual_file))
         diff_failure_resolver = diff_msg_utils.DiffFailureInfoResolver(
             property_descriptor,
             ExpectationType.POSITIVE,

@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
@@ -317,8 +317,8 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
     def entries_for_arrangement(self) -> list:
         return [
             data_symbol_utils.entry(self.symbol_name,
-                                    FileRefConstant(file_refs.of_rel_option(self.relativity,
-                                                                            PathPartAsNothing())))
+                                    file_ref_resolvers2.constant(file_refs.of_rel_option(self.relativity,
+                                                                                         PathPartAsNothing())))
         ]
 
 

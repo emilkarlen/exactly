@@ -1,7 +1,7 @@
 import pathlib
 
+from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import resolver_of_rel_option
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
@@ -98,8 +98,8 @@ class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
         return None
 
     def file_ref_resolver(self) -> FileRefResolver:
-        return resolver_of_rel_option(RelOptionType.REL_RESULT,
-                                      PathPartAsFixedPath(self.checked_file_name))
+        return file_ref_resolvers2.of_rel_option(RelOptionType.REL_RESULT,
+                                                 PathPartAsFixedPath(self.checked_file_name))
 
 
 class StdoutComparisonActualFile(ActComparisonActualFileForStdFileBase):

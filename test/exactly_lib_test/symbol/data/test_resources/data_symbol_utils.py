@@ -1,6 +1,6 @@
 from exactly_lib.symbol import resolver_structure
+from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -96,7 +96,7 @@ def file_ref_constant_container(
                                                                relativity=RelOptionType.REL_CWD),
         line_num: int = 1,
         source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(FileRefConstant(file_ref_value),
+    return SymbolContainer(file_ref_resolvers2.constant(file_ref_value),
                            single_line_sequence(line_num, source_line))
 
 
