@@ -1,7 +1,5 @@
-import itertools
 from typing import Sequence, List
 
-from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -128,22 +126,3 @@ class ListResolver(DataValueResolver):
         for resolver_element in self._elements:
             value_elements.extend(resolver_element.resolve(symbols))
         return ListValue(value_elements)
-
-
-def concat_lists(lists: Sequence[ListResolver]) -> ListResolver:
-    return ListResolver(itertools.chain.from_iterable([x.elements for x in lists]))
-
-
-def from_strings(elements: Sequence[StringResolver]) -> ListResolver:
-    return ListResolver([string_element(element)
-                         for element in elements])
-
-
-def from_str_constants(str_list: Sequence[str]) -> ListResolver:
-    return ListResolver([string_element(
-        string_resolvers.string_constant(s))
-        for s in str_list])
-
-
-def empty() -> ListResolver:
-    return from_strings(())

@@ -1,6 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data import list_resolver, string_resolvers
+from exactly_lib.symbol.data import list_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -55,8 +56,8 @@ class CommandResolverForProgramAndArguments(CommandResolver):
 
     @property
     def arguments(self) -> ListResolver:
-        return list_resolver.concat_lists([self.__program_with_args.arguments,
-                                           self.__additional_arguments])
+        return list_resolvers.concat_lists([self.__program_with_args.arguments,
+                                            self.__additional_arguments])
 
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
@@ -103,8 +104,8 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
 
     @property
     def arguments(self) -> ListResolver:
-        return list_resolver.concat_lists([self.__executable.arguments,
-                                           self.__additional_arguments])
+        return list_resolvers.concat_lists([self.__executable.arguments,
+                                            self.__additional_arguments])
 
 
 def command_resolver_for_interpret(interpreter: ExecutableFileWithArgsResolver,
@@ -125,14 +126,14 @@ def command_resolver_for_interpret_by_program(interpreter: ProgramWithArgsResolv
 
 def command_resolver_for_source_as_command_line_argument(interpreter: ExecutableFileWithArgsResolver,
                                                          source: StringResolver) -> CommandResolverForExecutableFile:
-    additional_arguments = list_resolver.from_strings([source])
+    additional_arguments = list_resolvers.from_strings([source])
     return CommandResolverForExecutableFile(interpreter, additional_arguments)
 
 
 def _file_interpreter_arguments(file_to_interpret: FileRefResolver,
                                 argument_list: ListResolver) -> ListResolver:
     file_to_interpret_as_string = string_resolvers.from_file_ref_resolver(file_to_interpret)
-    return list_resolver.concat_lists([
-        list_resolver.from_strings([file_to_interpret_as_string]),
+    return list_resolvers.concat_lists([
+        list_resolvers.from_strings([file_to_interpret_as_string]),
         argument_list,
     ])
