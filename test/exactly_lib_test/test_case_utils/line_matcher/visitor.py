@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcherFromComparisonOperator
 from exactly_lib.test_case_utils.line_matcher import line_matchers as sut
+from exactly_lib.type_system.logic.line_matcher import LineMatcherLine
 
 
 def suite() -> unittest.TestSuite:
@@ -131,5 +132,5 @@ class AVisitorThatRecordsVisitedMethods(sut.LineMatcherStructureVisitor):
 
 
 class UnknownLineMatcher(sut.LineMatcher):
-    def matches(self, line: str) -> bool:
+    def matches(self, line: LineMatcherLine) -> bool:
         raise NotImplementedError('this method should never be called')
