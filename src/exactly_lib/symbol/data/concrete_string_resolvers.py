@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su, resolver_structure as struct
+from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
@@ -71,11 +72,7 @@ class SymbolStringFragmentResolver(StringFragmentResolver):
                                                   value))
 
 
-class FileRefStringFragmentResolver(StringFragmentResolver):
-    """
-    A fragment that represents a reference to a symbol.
-    """
-
+class FileRefAsStringFragmentResolver(StringFragmentResolver):
     def __init__(self, file_ref: FileRefResolver):
         self._file_ref = file_ref
 
@@ -85,6 +82,18 @@ class FileRefStringFragmentResolver(StringFragmentResolver):
 
     def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
         return csv.FileRefFragment(self._file_ref.resolve(symbols))
+
+
+class ListAsStringFragmentResolver(StringFragmentResolver):
+    def __init__(self, list_resolver: ListResolver):
+        self._list_resolver = list_resolver
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._list_resolver.references
+
+    def resolve(self, symbols: SymbolTable) -> sv.StringFragment:
+        return csv.ListValueFragment(self._list_resolver.resolve(symbols))
 
 
 class TransformedStringFragmentResolver(StringFragmentResolver):
@@ -127,8 +136,21 @@ def symbol_reference(symbol_ref: su.SymbolReference) -> StringResolver:
 
 
 def from_file_ref_resolver(file_ref: FileRefResolver) -> StringResolver:
-    return StringResolver((FileRefStringFragmentResolver(file_ref),))
+    return StringResolver((FileRefAsStringFragmentResolver(file_ref),))
 
 
-def resolver_from_fragments(fragments: Sequence[StringFragmentResolver]) -> StringResolver:
+def from_list_resolver(list_resolver: ListResolver) -> StringResolver:
+    return StringResolver((ListAsStringFragmentResolver(list_resolver),))
+
+
+def from_fragments(fragments: Sequence[StringFragmentResolver]) -> StringResolver:
     return StringResolver(tuple(fragments))
+
+
+def transformed_fragment(fragment: StringFragmentResolver,
+                         transformer: StrValueTransformer) -> StringFragmentResolver:
+    return TransformedStringFragmentResolver(fragment, transformer)
+
+
+def file_ref_as_fragment(file_ref: FileRefResolver) -> StringFragmentResolver:
+    return FileRefAsStringFragmentResolver(file_ref)

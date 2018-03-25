@@ -25,7 +25,7 @@ class TestConstants(unittest.TestCase):
         # ARRANGE #
         constant = ['a', 'b' 'c']
         # ACT #
-        actual = exactly_lib.symbol.data.list_resolver.from_constants(constant)
+        actual = exactly_lib.symbol.data.list_resolver.from_str_constants(constant)
         # ASSERT #
         self.assertEqual([], actual.references,
                          'references')

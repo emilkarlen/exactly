@@ -122,7 +122,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         return str(type(self)) + '/' + str(type(self.configuration))
 
     def runTest(self):
-        act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double-quoted" """]),
+        act_phase_instructions = [instr(["""existing-file.src un-quoted 'single quoted' "double quoted" """]),
                                   instr([''])]
         executor_that_records_arguments = ActPhaseOsProcessExecutorThatRecordsArguments()
         arrangement = act_phase_execution.Arrangement(
@@ -139,7 +139,7 @@ class TestArgumentsAreParsedAndPassedToExecutor(unittest.TestCase):
         self.assertEqual(5,
                          len(executor_that_records_arguments.command.args),
                          'Number of command-and-arguments, including interpreter')
-        self.assertListEqual(['un-quoted', 'single quoted', 'double-quoted'],
+        self.assertListEqual(['un-quoted', 'single quoted', 'double quoted'],
                              executor_that_records_arguments.command.args[2:])
 
 

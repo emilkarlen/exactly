@@ -4,11 +4,13 @@ import shlex
 from typing import Sequence
 
 from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
+from exactly_lib.act_phase_setups.util.command_resolvers import program_with_args
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
-from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
+    SubProcessExecutor
 from exactly_lib.help_texts.test_case.actors import file_interpreter as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
@@ -17,6 +19,7 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.data import concrete_string_resolvers as csr, list_resolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -29,8 +32,10 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.util.process_execution.os_process_execution import Command, shell_command, \
-    ProgramAndArguments, executable_program_command
+from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForShell, \
+    CommandResolverForProgramAndArguments
+from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
+from exactly_lib.util.process_execution.os_process_execution import Command, ProgramAndArguments
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
 
@@ -51,17 +56,17 @@ def constructor(interpreter: Command) -> parts.Constructor:
 
 
 class ConstructorForInterpreterThatIsAnExecutableFile(parts.Constructor):
-    def __init__(self, cmd_and_args: ProgramAndArguments):
+    def __init__(self, pgm_and_args: ProgramAndArguments):
         super().__init__(_Parser(is_shell=False),
                          _Validator,
-                         functools.partial(_ProgramExecutor, cmd_and_args))
+                         functools.partial(_ProgramExecutor, pgm_and_args))
 
 
 class ConstructorForInterpreterThatIsAShellCommand(parts.Constructor):
     def __init__(self, shell_command_line: str):
         super().__init__(_Parser(is_shell=True),
                          _Validator,
-                         functools.partial(_ShellCommandExecutor, shell_command_line))
+                         functools.partial(_ShellSubProcessExecutor, shell_command_line))
 
 
 class _SourceInfo(SymbolUser):
@@ -154,7 +159,7 @@ class _Validator(parts.Validator):
         return svh.new_svh_success()
 
 
-class _ProgramExecutor(CommandExecutor):
+class _ProgramExecutor(SubProcessExecutor):
     def __init__(self,
                  interpreter: ProgramAndArguments,
                  os_process_executor: ActPhaseOsProcessExecutor,
@@ -164,42 +169,38 @@ class _ProgramExecutor(CommandExecutor):
         self.interpreter = interpreter
         self.source = source
 
-    def _command_to_execute(self,
-                            environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path) -> Command:
-        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+        arguments = list_resolver.concat_lists([
+            list_resolver.from_strings([csr.from_file_ref_resolver(self.source.file_reference)]),
+            self.source.arguments,
+        ])
 
-        src_path = self.source.file_reference.resolve_value_of_any_dependency(path_resolving_env)
-        args = self.source.arguments.resolve_value_of_any_dependency(path_resolving_env)
-
-        return executable_program_command(self.interpreter.program,
-                                          list(self.interpreter.arguments) +
-                                          [str(src_path)] +
-                                          list(args))
+        return CommandResolverForProgramAndArguments(
+            program_with_args(self.interpreter),
+            arguments,
+        )
 
 
-class _ShellCommandExecutor(CommandExecutor):
+class _ShellSubProcessExecutor(SubProcessExecutor):
     def __init__(self,
                  shell_command_of_interpreter: str,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
-                 source: _SourceInfoForInterpreterThatIsAnExecutableFile):
+                 source: _SourceInfoForInterpreterThatIsAShellCommand):
         super().__init__(os_process_executor)
         self.shell_command_of_interpreter = shell_command_of_interpreter
         self.source = source
 
-    def _command_to_execute(self,
-                            environment: InstructionEnvironmentForPostSdsStep,
-                            script_output_dir_path: pathlib.Path) -> Command:
-        path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        remaining_arguments = self.source.arguments.resolve_value_of_any_dependency(path_resolving_env)
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+        command_line_elements = list_resolver.from_strings([
+            csr.string_constant(self.shell_command_of_interpreter),
 
-        src_path = self.source.file_reference.resolve(environment.symbols).value_pre_sds(environment.hds)
-        quoted_src_path = shlex.quote(str(src_path))
+            csr.from_fragments([
+                csr.transformed_fragment(
+                    csr.file_ref_as_fragment(self.source.file_reference),
+                    shlex.quote)
+            ]),
 
-        command_string = '{interpreter} {source_file} {command_line_arguments}'.format(
-            interpreter=self.shell_command_of_interpreter,
-            source_file=quoted_src_path,
-            command_line_arguments=remaining_arguments,
-        )
-        return shell_command(command_string)
+            self.source.arguments,
+        ])
+        return CommandResolverForShell(csr.from_list_resolver(command_line_elements))

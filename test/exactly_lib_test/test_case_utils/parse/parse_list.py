@@ -107,7 +107,7 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(
                      elements=
                      [
-                         lr.string_element(concrete_string_resolvers.resolver_from_fragments([
+                         lr.string_element(concrete_string_resolvers.from_fragments([
                              concrete_string_resolvers.ConstantStringFragmentResolver(single_token_value),
                              concrete_string_resolvers.SymbolStringFragmentResolver(
                                  SymbolReference(string_symbol.name,
@@ -250,7 +250,7 @@ class TestMultipleElementList(unittest.TestCase):
                  expectation=
                  Expectation(elements=
                  [
-                     lr.string_element(concrete_string_resolvers.resolver_from_fragments([
+                     lr.string_element(concrete_string_resolvers.from_fragments([
                          concrete_string_resolvers.SymbolStringFragmentResolver(SymbolReference(symbol_name,
                                                                                                 reference_restrictions.is_any_data_type())),
                          concrete_string_resolvers.ConstantStringFragmentResolver(single_token_value),

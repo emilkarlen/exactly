@@ -2,7 +2,8 @@ import pathlib
 from typing import Sequence
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
-from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import CommandExecutor
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
+    SubProcessExecutor
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
@@ -58,7 +59,7 @@ class ActSourceFileNameGeneratorForConstantFileName(ActSourceFileNameGenerator):
         return self._base_name
 
 
-class ExecutorBase(CommandExecutor):
+class ExecutorBase(SubProcessExecutor):
     """
     Base class for executors that executes source code by putting it in a file
     and then interpreting this file.
