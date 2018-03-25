@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.symbol.data import list_resolvers as lrs
-from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.symbol_syntax import SymbolWithReferenceSyntax
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
@@ -62,10 +61,8 @@ class TestListSuccessfulParse(TestCaseBaseForParser):
         symbol_name = 'the_symbol_name'
         value_without_space = 'value_without_space'
         value_with_space = 'value with space'
-        expected_resolver = lrs.from_elements([lrs.string_element(
-            string_resolvers.string_constant(value_without_space)),
-            lrs.string_element(
-                string_resolvers.string_constant(value_with_space))])
+        expected_resolver = lrs.from_str_constants([value_without_space,
+                                                    value_with_space])
         expected_resolver_container = container(expected_resolver)
 
         sb = SB.new_with(symbol_name=symbol_name,

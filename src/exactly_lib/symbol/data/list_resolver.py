@@ -1,4 +1,4 @@
-from typing import Sequence, List
+from typing import Sequence, Iterable
 
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
@@ -91,7 +91,7 @@ class ListResolver(DataValueResolver):
     Resolver who's resolved value is of type `ValueType.LIST` / :class:`ListValue`
     """
 
-    def __init__(self, elements: List[Element]):
+    def __init__(self, elements: Iterable[Element]):
         self._elements = tuple(elements)
 
     @property

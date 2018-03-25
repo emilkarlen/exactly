@@ -87,7 +87,7 @@ class TestSingleElementList(unittest.TestCase):
                  remaining_source(single_token_value),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value))],
+                             [list_resolvers.str_element(single_token_value)],
                              source=
                              assert_source(is_at_eof=asrt.is_true)),
                  ),
@@ -124,7 +124,7 @@ class TestSingleElementList(unittest.TestCase):
                                   []),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value))],
+                             [list_resolvers.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_line(1, ' ')),
                  ),
@@ -134,7 +134,7 @@ class TestSingleElementList(unittest.TestCase):
                                   []),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value))],
+                             [list_resolvers.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_end_of_line(1)),
                  ),
@@ -144,7 +144,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value))],
+                             [list_resolvers.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_line(1, ' ')),
                  ),
@@ -154,7 +154,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['   ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value))],
+                             [list_resolvers.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_end_of_line(1)),
                  ),
@@ -164,7 +164,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['   ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value))],
+                             [list_resolvers.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_line(1, ' ')),
                  ),
@@ -174,7 +174,7 @@ class TestSingleElementList(unittest.TestCase):
                                   ['"   ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value))],
+                             [list_resolvers.str_element(single_token_value)],
                              source=
                              asrt_source.is_at_end_of_line(1)),
                  ),
@@ -196,8 +196,8 @@ class TestMultipleElementList(unittest.TestCase):
                  remaining_source(single_token_value_1 + ' ' + single_token_value_2),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value_1)),
-                              list_resolvers.string_element(string_resolvers.string_constant(single_token_value_2))
+                             [list_resolvers.str_element(single_token_value_1),
+                              list_resolvers.str_element(single_token_value_2)
                               ],
                              source=asrt_source.is_at_end_of_line(1)),
                  ),
@@ -207,8 +207,8 @@ class TestMultipleElementList(unittest.TestCase):
                                   ['']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value_1)),
-                              list_resolvers.string_element(string_resolvers.string_constant(single_token_value_2))
+                             [list_resolvers.str_element(single_token_value_1),
+                              list_resolvers.str_element(single_token_value_2)
                               ],
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -219,8 +219,8 @@ class TestMultipleElementList(unittest.TestCase):
                                   ['  ']),
                  expectation=
                  Expectation(elements=
-                             [list_resolvers.string_element(string_resolvers.string_constant(single_token_value_1)),
-                              list_resolvers.string_element(string_resolvers.string_constant(single_token_value_2))
+                             [list_resolvers.str_element(single_token_value_1),
+                              list_resolvers.str_element(single_token_value_2)
                               ],
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -233,8 +233,7 @@ class TestMultipleElementList(unittest.TestCase):
                  expectation=
                  Expectation(elements=
                              [list_resolvers.symbol_element(symbol_reference(symbol_name)),
-                              list_resolvers.string_element(
-                                  string_resolvers.string_constant(single_token_value))
+                              list_resolvers.str_element(single_token_value)
                               ],
                              source=
                              asrt_source.is_at_end_of_line(1)),
@@ -256,8 +255,7 @@ class TestMultipleElementList(unittest.TestCase):
                                                                                        reference_restrictions.is_any_data_type())),
                          string_resolvers.ConstantStringFragmentResolver(single_token_value),
                      ])),
-                     list_resolvers.string_element(
-                         string_resolvers.string_constant(single_token_value_1)),
+                     list_resolvers.str_element(single_token_value_1),
                  ],
                      source=
                      asrt_source.is_at_end_of_line(1)),
