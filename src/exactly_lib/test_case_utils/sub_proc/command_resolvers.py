@@ -99,7 +99,7 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
 
     @property
     def executable_file(self) -> FileRefResolver:
-        return self.__executable.file_resolver
+        return self.__executable.executable_file
 
     @property
     def arguments(self) -> ListResolver:

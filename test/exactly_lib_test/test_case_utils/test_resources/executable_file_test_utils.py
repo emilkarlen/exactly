@@ -114,10 +114,10 @@ def check_exe_file(put: unittest.TestCase,
         expectation.file_resolver_value,
         expected_symbol_references=equals_symbol_references(expectation.expected_symbol_references_of_file),
         symbol_table=expectation.symbol_for_value_checks)
-    file_resolver_assertion.apply_with_message(put, actual.file_resolver,
+    file_resolver_assertion.apply_with_message(put, actual.executable_file,
                                                'file_resolver')
     file_ref_symbols = equals_symbol_references(expectation.expected_symbol_references_of_file)
-    file_ref_symbols.apply_with_message(put, actual.file_resolver.references,
+    file_ref_symbols.apply_with_message(put, actual.executable_file.references,
                                         'file-resolver/references')
     arguments_resolver_assertion = matches_list_resolver(
         expectation.argument_resolver_value,
@@ -163,13 +163,13 @@ class CheckBase(unittest.TestCase):
 
     def _check_expectance_to_exist_pre_sds(self, actual: ExecutableFileWithArgs, symbols: SymbolTable):
         self.assertEqual(self.configuration.exists_pre_sds,
-                         actual.file_resolver.resolve(symbols).exists_pre_sds(),
+                         actual.executable_file.resolve(symbols).exists_pre_sds(),
                          'Existence pre SDS')
 
     def _check_file_path(self, file_name: str, actual: ExecutableFileWithArgs,
                          environment: PathResolvingEnvironmentPreOrPostSds):
-        self.assertEqual(str(self.configuration.installation_dir(environment.home_and_sds) / file_name),
-                         actual.path_string(environment),
+        self.assertEqual(self.configuration.installation_dir(environment.home_and_sds) / file_name,
+                         actual.executable_file.resolve_value_of_any_dependency(environment),
                          'Path string')
 
     def _home_and_sds_and_test_as_curr_dir(self, file: File) -> PathResolvingEnvironmentPreOrPostSds:
