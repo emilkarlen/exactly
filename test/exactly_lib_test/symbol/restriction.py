@@ -1,8 +1,7 @@
 import unittest
 
 from exactly_lib.symbol import restriction as sut
-from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data import string_resolvers, file_ref_resolvers2
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
@@ -81,7 +80,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             ListResolverTestImplForConstantListValue(ListValue([])),
 
         ValueType.PATH:
-            FileRefConstant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, PathPartAsNothing())),
+            file_ref_resolvers2.constant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, PathPartAsNothing())),
 
         ValueType.LINE_MATCHER:
             LineMatcherResolverConstantTestImpl(LineMatcherNotImplementedTestImpl()),

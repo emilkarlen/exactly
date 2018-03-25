@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.data.file_ref_resolver_impls import path_part_resolvers as sut
+from exactly_lib.symbol.data.file_ref_resolver_impls import path_part_resolver_impls as sut
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.path_part import PathPart

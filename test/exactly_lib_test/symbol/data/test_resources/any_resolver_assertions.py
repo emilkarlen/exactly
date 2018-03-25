@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.symbol.data.concrete_resolvers import SymbolValueResolverVisitor
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.data.visitor import DataValueResolverVisitor
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
@@ -16,7 +16,7 @@ def equals_resolver(expected: DataValueResolver) -> asrt.ValueAssertion:
     return _EqualsResolver(expected)
 
 
-class _EqualsSymbolValueResolverVisitor(SymbolValueResolverVisitor):
+class _EqualsDataValueResolverVisitor(DataValueResolverVisitor):
     def __init__(self,
                  actual,
                  put: unittest.TestCase,
@@ -54,7 +54,7 @@ class _EqualsResolver(asrt.ValueAssertion):
         put.assertIs(self.expected.value_type,
                      value.value_type,
                      'value_type')
-        _EqualsSymbolValueResolverVisitor(value, put, message_builder).visit(self.expected)
+        _EqualsDataValueResolverVisitor(value, put, message_builder).visit(self.expected)
 
 
 _ELEMENT_TYPE_ERROR_MESSAGE = 'the {} of a {} must be {}'.format(

@@ -1,7 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import list_resolver as lr
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
+from exactly_lib.symbol.data import list_resolver as lr, file_ref_resolvers2
 from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib_test.symbol.data.test_resources import any_resolver_assertions as sut
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
@@ -18,7 +17,7 @@ def suite() -> unittest.TestSuite:
 class TestEqualsResolver(unittest.TestCase):
     def test_equals__file_ref(self):
         # ARRANGE #
-        value = FileRefConstant(file_ref_test_impl('file-name'))
+        value = file_ref_resolvers2.constant(file_ref_test_impl('file-name'))
         # ACT & ASSERT #
         sut.equals_resolver(value).apply_without_message(self, value)
 
@@ -37,22 +36,22 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_not_equals__different_symbol_types(self):
         # ARRANGE #
-        expected = FileRefConstant(file_ref_test_impl('file-name'))
+        expected = file_ref_resolvers2.constant(file_ref_test_impl('file-name'))
         actual = string_constant('string value')
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)
 
     def test_not_equals__non_symbol_type(self):
         # ARRANGE #
-        expected = FileRefConstant(file_ref_test_impl('file-name'))
+        expected = file_ref_resolvers2.constant(file_ref_test_impl('file-name'))
         actual = FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl())
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)
 
     def test_not_equals__file_ref(self):
         # ARRANGE #
-        expected = FileRefConstant(file_ref_test_impl('expected-file-name'))
-        actual = FileRefConstant(file_ref_test_impl('actual-file-name'))
+        expected = file_ref_resolvers2.constant(file_ref_test_impl('expected-file-name'))
+        actual = file_ref_resolvers2.constant(file_ref_test_impl('actual-file-name'))
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)
 

@@ -1,8 +1,7 @@
 import pathlib
 from typing import Sequence
 
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolver import PathPartResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -14,11 +13,7 @@ from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def rel_symbol(symbol_reference2: SymbolReference, path_suffix: PathPartResolver) -> FileRefResolver:
-    return _FileRefResolverRelSymbol(path_suffix, symbol_reference2)
-
-
-class _FileRefResolverRelSymbol(FileRefResolver):
+class FileRefResolverRelSymbol(FileRefResolver):
     def __init__(self,
                  path_suffix: PathPartResolver,
                  symbol_reference_of_path: SymbolReference):

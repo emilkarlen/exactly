@@ -1,3 +1,9 @@
+"""
+All construction of :class:`ListResolver` should be done via this module.
+
+Import qualified!
+"""
+
 import itertools
 from typing import Sequence
 

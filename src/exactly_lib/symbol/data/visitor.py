@@ -4,9 +4,9 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 
 
-class SymbolValueResolverVisitor:
+class DataValueResolverVisitor:
     """
-    Visitor of `SymbolValueResolver`
+    Visitor of `DataValueResolver`
     """
 
     def visit(self, value: DataValueResolver):

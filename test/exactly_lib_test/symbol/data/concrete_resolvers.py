@@ -1,9 +1,8 @@
 import unittest
 
-from exactly_lib.symbol.data import list_resolvers
+from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
 from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as pr, list_resolver as lr, \
-    concrete_resolvers as sut
-from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
+    visitor as sut
 from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
@@ -41,7 +40,7 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('ret-val')
         # ACT #
-        ret_val = visitor.visit(FileRefConstant(file_ref_test_impl()))
+        ret_val = visitor.visit(file_ref_resolvers2.constant(file_ref_test_impl()))
         # ASSERT #
         self.assertEqual('ret-val', ret_val,
                          'Visitor is expected to return value from visit-method')
@@ -81,7 +80,7 @@ class TestValueVisitor(unittest.TestCase):
             visitor.visit('a string is not a SymbolReference')
 
 
-class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.SymbolValueResolverVisitor):
+class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.DataValueResolverVisitor):
     def __init__(self, ret_val):
         self.ret_val = ret_val
         self.visited_classes = []
