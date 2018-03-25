@@ -7,8 +7,8 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
-from exactly_lib.test_case_utils.sub_proc.program_with_args import ProgramWithArgs
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.sub_proc.program_with_args import ProgramWithArgsResolver
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib.util.process_execution.os_process_execution import Command
@@ -38,7 +38,7 @@ class CommandResolverForProgramAndArguments(CommandResolver):
     """
 
     def __init__(self,
-                 program: ProgramWithArgs,
+                 program: ProgramWithArgsResolver,
                  additional_arguments: ListResolver):
         self.__program_with_args = program
         self.__additional_arguments = additional_arguments
@@ -92,7 +92,7 @@ class CommandResolverForExecutableFileAndArguments(CommandResolver):
 
 class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArguments):
     def __init__(self,
-                 executable: ExecutableFileWithArgs,
+                 executable: ExecutableFileWithArgsResolver,
                  additional_arguments: ListResolver):
         self.__executable = executable
         self.__additional_arguments = additional_arguments
@@ -107,7 +107,7 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
                                            self.__additional_arguments])
 
 
-def command_resolver_for_interpret(interpreter: ExecutableFileWithArgs,
+def command_resolver_for_interpret(interpreter: ExecutableFileWithArgsResolver,
                                    file_to_interpret: FileRefResolver,
                                    argument_list: ListResolver) -> CommandResolverForExecutableFile:
     return CommandResolverForExecutableFile(interpreter,
@@ -115,7 +115,7 @@ def command_resolver_for_interpret(interpreter: ExecutableFileWithArgs,
                                                                         argument_list))
 
 
-def command_resolver_for_interpret_by_program(interpreter: ProgramWithArgs,
+def command_resolver_for_interpret_by_program(interpreter: ProgramWithArgsResolver,
                                               file_to_interpret: FileRefResolver,
                                               argument_list: ListResolver) -> CommandResolverForProgramAndArguments:
     return CommandResolverForProgramAndArguments(interpreter,
@@ -123,7 +123,7 @@ def command_resolver_for_interpret_by_program(interpreter: ProgramWithArgs,
                                                                              argument_list))
 
 
-def command_resolver_for_source_as_command_line_argument(interpreter: ExecutableFileWithArgs,
+def command_resolver_for_source_as_command_line_argument(interpreter: ExecutableFileWithArgsResolver,
                                                          source: StringResolver) -> CommandResolverForExecutableFile:
     additional_arguments = list_resolver.from_strings([source])
     return CommandResolverForExecutableFile(interpreter, additional_arguments)

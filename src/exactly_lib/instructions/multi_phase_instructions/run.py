@@ -29,7 +29,7 @@ from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_R
 from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForExecutableFile, \
     command_resolver_for_interpret, command_resolver_for_source_as_command_line_argument
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
     ValidationAndSubProcessExecutionSetup
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -173,7 +173,7 @@ class SetupParser(ValidationAndSubProcessExecutionSetupParser):
 
 
 class _ValidatorAndArgsResolverParsing:
-    def __init__(self, exe_file: ExecutableFileWithArgs):
+    def __init__(self, exe_file: ExecutableFileWithArgsResolver):
         self.exe_file = exe_file
 
     def parse(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CommandResolverForExecutableFile]:
