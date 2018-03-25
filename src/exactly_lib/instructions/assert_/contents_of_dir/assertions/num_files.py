@@ -6,7 +6,7 @@ from exactly_lib.instructions.assert_.contents_of_dir.assertions import common
 from exactly_lib.instructions.assert_.contents_of_dir.assertions.common import DirContentsAssertionPart
 from exactly_lib.instructions.utils.validators import PreOrPostSdsValidatorFromValidatorViaExceptions, \
     SvhValidatorViaExceptionsFromPreAndPostSdsValidators
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices

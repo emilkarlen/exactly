@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure import path_relativity as pr
 from exactly_lib.test_case_file_structure import relative_path_options as rpo

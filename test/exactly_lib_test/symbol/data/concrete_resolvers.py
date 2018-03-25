@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.data import string_resolver as sr, path_resolver as pr, list_resolver as lr, \
+from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as pr, list_resolver as lr, \
     concrete_resolvers as sut
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.string_resolvers import string_constant

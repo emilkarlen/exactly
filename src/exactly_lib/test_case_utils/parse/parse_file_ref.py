@@ -15,12 +15,12 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
     LookAheadState
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import rel_symbol
 from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolver import PathPartResolver
 from exactly_lib.symbol.data.file_ref_resolver_impls.path_part_resolvers import PathPartResolverAsFixedPath, \
     PathPartResolverAsNothing, PathPartResolverAsStringResolver
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart, string_made_up_by_just_strings

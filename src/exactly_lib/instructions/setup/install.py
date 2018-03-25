@@ -12,7 +12,7 @@ from exactly_lib.instructions.utils.documentation import src_dst
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.os_services import OsServices

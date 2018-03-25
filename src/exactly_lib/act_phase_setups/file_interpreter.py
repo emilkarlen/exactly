@@ -21,8 +21,8 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenSynta
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers as csr
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
