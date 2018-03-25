@@ -4,13 +4,14 @@ from typing import Sequence
 
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
-from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
+from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences, \
+    references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 
 
-class ExecutableFileWithArgs(ObjectWithSymbolReferences):
+class ExecutableFileWithArgsResolver(ObjectWithSymbolReferences):
     def __init__(self,
                  executable_file: FileRefResolver,
                  arguments: ListResolver):
@@ -32,7 +33,9 @@ class ExecutableFileWithArgs(ObjectWithSymbolReferences):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return tuple(self._executable_file.references) + tuple(self._arguments.references)
+        return references_from_objects_with_symbol_references([
+            self._executable_file,
+            self._arguments])
 
 
 class ExistingExecutableFileValidator(FileRefValidatorBase):

@@ -10,7 +10,7 @@ from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgs
+from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument
@@ -24,16 +24,16 @@ PYTHON_EXECUTABLE_OPTION_NAME = argument.OptionName(long_name='python')
 PYTHON_EXECUTABLE_OPTION_STRING = long_option_syntax(PYTHON_EXECUTABLE_OPTION_NAME.long)
 
 
-def parse_from_parse_source(source: ParseSource) -> ExecutableFileWithArgs:
+def parse_from_parse_source(source: ParseSource) -> ExecutableFileWithArgsResolver:
     with from_parse_source(source) as token_parser:
         return parse_from_token_parser(token_parser)
 
 
-def parse_from_token_parser(token_parser: TokenParser) -> ExecutableFileWithArgs:
+def parse_from_token_parser(token_parser: TokenParser) -> ExecutableFileWithArgsResolver:
     return parse(token_parser.token_stream)
 
 
-def parse(tokens: TokenStream) -> ExecutableFileWithArgs:
+def parse(tokens: TokenStream) -> ExecutableFileWithArgsResolver:
     """
     :param tokens: instruction argument
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
@@ -44,10 +44,10 @@ def parse(tokens: TokenStream) -> ExecutableFileWithArgs:
         tokens.consume()
         the_file_ref = _parse_exe_file_ref(tokens)
         exe_argument_list = _parse_arguments_and_end_delimiter(tokens)
-        return ExecutableFileWithArgs(the_file_ref, exe_argument_list)
+        return ExecutableFileWithArgsResolver(the_file_ref, exe_argument_list)
     else:
         the_file_ref = _parse_exe_file_ref(tokens)
-        return ExecutableFileWithArgs(the_file_ref, from_str_constants([]))
+        return ExecutableFileWithArgsResolver(the_file_ref, from_str_constants([]))
 
 
 def _parse_exe_file_ref(tokens: TokenStream) -> FileRefResolver:

@@ -7,7 +7,7 @@ from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolRef
 from exactly_lib.symbol.symbol_usage import SymbolReference
 
 
-class ProgramWithArgs(ObjectWithSymbolReferences):
+class ProgramWithArgsResolver(ObjectWithSymbolReferences):
     def __init__(self,
                  program: StringResolver,
                  arguments: ListResolver):
