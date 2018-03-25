@@ -5,6 +5,7 @@ from exactly_lib.symbol.data.concrete_string_resolvers import ConstantStringFrag
     SymbolStringFragmentResolver
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringFragmentResolver, StringResolver
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.resolver_structure import DataValueResolver
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -13,9 +14,11 @@ from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.assertion_utils import \
     symbol_table_with_values_matching_references
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources.file_ref_assertions import equals_file_ref
-from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value
+from exactly_lib_test.type_system.data.test_resources.string_value_assertions import equals_string_value, \
+    equals_string_fragment
 
 
 def equals_file_ref_resolver(expected: FileRefResolver) -> asrt.ValueAssertion:
@@ -39,12 +42,16 @@ def matches_file_ref_resolver(expected_resolved_value: FileRef,
                                      symbol_table)
 
 
-def equals_string_fragment(expected: StringFragmentResolver) -> asrt.ValueAssertion:
+def equals_string_fragment_resolver_with_exact_type(expected: StringFragmentResolver) -> asrt.ValueAssertion:
     if isinstance(expected, ConstantStringFragmentResolver):
         return _EqualsStringFragmentAssertionForStringConstant(expected)
     if isinstance(expected, SymbolStringFragmentResolver):
         return _EqualsStringFragmentAssertionForSymbolReference(expected)
-    raise TypeError('Not a StringResolver: ' + str(expected))
+    raise TypeError('Not a StringFragmentResolver: ' + str(expected))
+
+
+def equals_string_fragment_resolver(expected: StringFragmentResolver) -> asrt.ValueAssertion[StringFragmentResolver]:
+    return _EqualsStringFragmentAssertion(expected)
 
 
 def equals_string_fragments(expected_fragments) -> asrt.ValueAssertion:
@@ -164,6 +171,63 @@ class _EqualsStringFragmentAssertionForSymbolReference(asrt.ValueAssertion):
                         'symbol_name')
 
 
+class _EqualsStringFragmentAssertion(asrt.ValueAssertion[StringFragmentResolver]):
+    def __init__(self,
+                 expected: StringFragmentResolver):
+        self.expected = expected
+
+    def apply(self,
+              put: unittest.TestCase,
+              value,
+              message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
+        put.assertIsInstance(value, StringFragmentResolver)
+        assert isinstance(value, StringFragmentResolver)  # Type info for IDE
+        symbols = symbol_table_with_values_matching_references(self.expected.references)
+        tcds = fake_home_and_sds()
+        environment = PathResolvingEnvironmentPreOrPostSds(tcds, symbols)
+
+        assertions = [
+            asrt.sub_component('type_category',
+                               lambda sfr: sfr.type_category,
+                               asrt.equals(self.expected.type_category)
+                               ),
+            asrt.sub_component('data_value_type',
+                               lambda sfr: sfr.data_value_type,
+                               asrt.equals(self.expected.data_value_type)
+                               ),
+            asrt.sub_component('value_type',
+                               lambda sfr: sfr.value_type,
+                               asrt.equals(self.expected.value_type)
+                               ),
+            asrt.sub_component('is_string_constant',
+                               lambda sfr: sfr.is_string_constant,
+                               asrt.equals(self.expected.is_string_constant)
+                               ),
+            asrt.sub_component('resolve',
+                               lambda sfr: sfr.resolve(environment.symbols),
+                               equals_string_fragment(self.expected.resolve(environment.symbols))
+                               ),
+
+            asrt.sub_component('resolve_value_of_any_dependency',
+                               lambda sfr: sfr.resolve_value_of_any_dependency(environment),
+                               asrt.equals(
+                                   self.expected.resolve_value_of_any_dependency(environment))
+                               ),
+        ]
+
+        if self.expected.is_string_constant:
+            assertions.append(
+                asrt.sub_component('string_constant',
+                                   lambda sfr: sfr.string_constant,
+                                   asrt.equals(self.expected.string_constant)
+                                   )
+            )
+
+        assertion = asrt.and_(assertions)
+
+        assertion.apply(put, value, message_builder)
+
+
 class _EqualsStringFragments(asrt.ValueAssertion):
     def __init__(self, expected: tuple):
         self._expected = expected
@@ -171,7 +235,7 @@ class _EqualsStringFragments(asrt.ValueAssertion):
         self._sequence_of_element_assertions = []
         for idx, element in enumerate(expected):
             assert isinstance(element, StringFragmentResolver), 'Element must be a StringFragment #' + str(idx)
-            self._sequence_of_element_assertions.append(equals_string_fragment(element))
+            self._sequence_of_element_assertions.append(equals_string_fragment_resolver_with_exact_type(element))
 
     def apply(self,
               put: unittest.TestCase,

@@ -38,8 +38,8 @@ class TestEqualsFragment(unittest.TestCase):
         ]
         for fragment1, fragment2 in test_cases:
             with self.subTest(msg=str(fragment1) + ' ' + str(fragment2)):
-                sut.equals_string_fragment(fragment1).apply_without_message(self, fragment2)
-                sut.equals_string_fragment(fragment2).apply_without_message(self, fragment1)
+                sut.equals_string_fragment_resolver_with_exact_type(fragment1).apply_without_message(self, fragment2)
+                sut.equals_string_fragment_resolver_with_exact_type(fragment2).apply_without_message(self, fragment1)
 
     def test_string_not_equals_symbol_ref(self):
         # ARRANGE #
@@ -47,7 +47,7 @@ class TestEqualsFragment(unittest.TestCase):
         string_fragment = ConstantStringFragmentResolver(value)
         symbol_fragment = SymbolStringFragmentResolver(
             SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))
-        assertion = sut.equals_string_fragment(string_fragment)
+        assertion = sut.equals_string_fragment_resolver_with_exact_type(string_fragment)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, symbol_fragment)
 
@@ -57,7 +57,7 @@ class TestEqualsFragment(unittest.TestCase):
         string_fragment = ConstantStringFragmentResolver(value)
         symbol_fragment = SymbolStringFragmentResolver(
             SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))
-        assertion = sut.equals_string_fragment(symbol_fragment)
+        assertion = sut.equals_string_fragment_resolver_with_exact_type(symbol_fragment)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, string_fragment)
 
@@ -65,7 +65,7 @@ class TestEqualsFragment(unittest.TestCase):
         # ARRANGE #
         fragment1 = ConstantStringFragmentResolver('value 1')
         fragment2 = ConstantStringFragmentResolver('value 2')
-        assertion = sut.equals_string_fragment(fragment1)
+        assertion = sut.equals_string_fragment_resolver_with_exact_type(fragment1)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, fragment2)
 
@@ -77,7 +77,7 @@ class TestEqualsFragment(unittest.TestCase):
         fragment2 = SymbolStringFragmentResolver(SymbolReference('symbol_name_2',
                                                                  ReferenceRestrictionsOnDirectAndIndirect(
                                                                      AnyDataTypeRestriction())))
-        assertion = sut.equals_string_fragment(fragment1)
+        assertion = sut.equals_string_fragment_resolver_with_exact_type(fragment1)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, fragment2)
 

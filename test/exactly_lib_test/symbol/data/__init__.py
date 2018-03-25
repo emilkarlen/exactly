@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.symbol.data import restrictions, test_resources_test, value_resolvers, concrete_resolvers
-from exactly_lib_test.symbol.data import string_resolver, list_resolver
+from exactly_lib_test.symbol.data import string_resolver, list_resolver, concrete_string_resolvers
 from exactly_lib_test.symbol.data import symbol_usage
 
 
@@ -14,6 +14,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(list_resolver.suite())
     ret_val.addTest(concrete_resolvers.suite())
     ret_val.addTest(value_resolvers.suite())
+    ret_val.addTest(concrete_string_resolvers.suite())
     return ret_val
 
 

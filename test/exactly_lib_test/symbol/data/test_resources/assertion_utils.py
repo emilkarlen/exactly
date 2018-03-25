@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.data.concrete_string_resolvers import string_constant
 from exactly_lib.symbol.data.path_resolver import FileRefResolver
@@ -7,6 +9,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.value_resolvers.file_ref_resolvers import FileRefConstant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
 from exactly_lib.util.line_source import single_line_sequence
@@ -14,7 +17,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 
-def symbol_table_with_values_matching_references(references: list) -> SymbolTable:
+def symbol_table_with_values_matching_references(references: Sequence[SymbolReference]) -> SymbolTable:
     value_constructor = _ValueCorrespondingToValueRestriction()
     elements = {}
     for ref in references:
