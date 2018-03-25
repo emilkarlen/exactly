@@ -19,7 +19,7 @@ def string_resolver_of_single_symbol_reference(
     symbol_reference = symbol_usage.SymbolReference(symbol_name,
                                                     restrictions)
     fragments = [
-        string_resolvers.SymbolStringFragmentResolver(symbol_reference)
+        string_resolvers.symbol_fragment(symbol_reference)
     ]
     return StringResolver(tuple(fragments))
 

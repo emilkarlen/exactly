@@ -121,7 +121,7 @@ class TestSymbolReferences(unittest.TestCase):
 
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
-            string_resolvers.string_constant(str(1)))
+            string_resolvers.str_constant(str(1)))
 
         # ACT #
 
@@ -175,7 +175,7 @@ class TestValidationPreSds(unittest.TestCase):
                         resolved_value=resolved_value):
                     # ARRANGE #
                     resolver_to_check = sut.IntegerResolver('the property to check',
-                                                            string_resolvers.string_constant(resolved_value),
+                                                            string_resolvers.str_constant(resolved_value),
                                                             custom_validator)
                     # ACT & ASSERT #
                     with self.assertRaises(SvhValidationException) as cm:
@@ -195,7 +195,7 @@ class TestValidationPreSds(unittest.TestCase):
         error_message_from_custom_validator = 'error message'
         resolver_to_check = sut.IntegerResolver(
             'the property to check',
-            string_resolvers.string_constant(str(resolved_value)),
+            string_resolvers.str_constant(str(resolved_value)),
             CustomValidator(value_that_makes_the_validation_succeed=resolved_value + 1,
                             error_message=error_message_from_custom_validator))
         # ACT & ASSERT #
@@ -226,7 +226,7 @@ class TestValidationPreSds(unittest.TestCase):
             for custom_validator in custom_validator_cases:
                 resolver_to_check = sut.IntegerResolver(
                     'the property to check',
-                    string_resolvers.string_constant(str(value_string)),
+                    string_resolvers.str_constant(str(value_string)),
                     custom_validator)
                 with self.subTest(custom_validator_is_none=str(custom_validator is None),
                                   value_string=value_string):

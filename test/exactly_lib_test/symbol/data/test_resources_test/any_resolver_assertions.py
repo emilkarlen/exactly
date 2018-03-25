@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.symbol.data import file_ref_resolvers2, list_resolvers
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data.string_resolvers import str_constant
 from exactly_lib_test.symbol.data.test_resources import any_resolver_assertions as sut
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
@@ -23,7 +23,7 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_equals__string(self):
         # ARRANGE #
-        value = string_constant('string')
+        value = str_constant('string')
         # ACT & ASSERT #
         sut.equals_resolver(value).apply_without_message(self, value)
 
@@ -36,7 +36,7 @@ class TestEqualsResolver(unittest.TestCase):
     def test_not_equals__different_symbol_types(self):
         # ARRANGE #
         expected = file_ref_resolvers2.constant(file_ref_test_impl('file-name'))
-        actual = string_constant('string value')
+        actual = str_constant('string value')
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)
 
@@ -56,8 +56,8 @@ class TestEqualsResolver(unittest.TestCase):
 
     def test_not_equals__string(self):
         # ARRANGE #
-        expected = string_constant('expected string')
-        actual = string_constant('actual string')
+        expected = str_constant('expected string')
+        actual = str_constant('actual string')
         # ACT & ASSERT #
         assert_that_assertion_fails(sut.equals_resolver(expected), actual)
 

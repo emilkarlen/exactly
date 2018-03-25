@@ -5,7 +5,6 @@ from exactly_lib.symbol.data import string_resolvers, list_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions, \
     ReferenceRestrictionsOnDirectAndIndirect, is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.util.symbol_table import SymbolTable, singleton_symbol_table_2
@@ -178,7 +177,7 @@ class TestMatchesResolver(unittest.TestCase):
                             ))]),
                         symbols=
                         singleton_symbol_table_2(string_symbol.name,
-                                                 su.container(string_constant(string_symbol.value))),
+                                                 su.container(string_resolvers.str_constant(string_symbol.value))),
                         ),
         ]
         for case in cases:
@@ -220,7 +219,7 @@ class TestMatchesResolver(unittest.TestCase):
                             ))]),
                         symbols=
                         singleton_symbol_table_2(string_symbol.name,
-                                                 su.container(string_constant(string_symbol.value))),
+                                                 su.container(string_resolvers.str_constant(string_symbol.value))),
                         ),
         ]
         for case in cases:

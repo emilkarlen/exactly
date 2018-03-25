@@ -130,7 +130,7 @@ def parse_file_contents(instruction_config: InstructionConfig,
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
     if parser.is_at_eol:
-        return FileMakerForConstantContents(string_resolvers.string_constant(''))
+        return FileMakerForConstantContents(string_resolvers.str_constant(''))
     else:
         parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
         parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)

@@ -109,8 +109,8 @@ class TestSingleElementList(unittest.TestCase):
                      elements=
                      [
                          list_resolvers.string_element(string_resolvers.from_fragments([
-                             string_resolvers.ConstantStringFragmentResolver(single_token_value),
-                             string_resolvers.SymbolStringFragmentResolver(
+                             string_resolvers.str_fragment(single_token_value),
+                             string_resolvers.symbol_fragment(
                                  SymbolReference(string_symbol.name,
                                                  reference_restrictions.is_any_data_type())
                              ),
@@ -251,9 +251,9 @@ class TestMultipleElementList(unittest.TestCase):
                  Expectation(elements=
                  [
                      list_resolvers.string_element(string_resolvers.from_fragments([
-                         string_resolvers.SymbolStringFragmentResolver(SymbolReference(symbol_name,
-                                                                                       reference_restrictions.is_any_data_type())),
-                         string_resolvers.ConstantStringFragmentResolver(single_token_value),
+                         string_resolvers.symbol_fragment(SymbolReference(symbol_name,
+                                                                          reference_restrictions.is_any_data_type())),
+                         string_resolvers.str_fragment(single_token_value),
                      ])),
                      list_resolvers.str_element(single_token_value_1),
                  ],

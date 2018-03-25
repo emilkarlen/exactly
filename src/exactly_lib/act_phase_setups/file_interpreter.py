@@ -20,7 +20,7 @@ from exactly_lib.section_document.element_parsers.misc_utils import \
 from exactly_lib.section_document.element_parsers.token_stream import TokenSyntaxError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.data import string_resolvers as csr
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -172,7 +172,7 @@ class _ProgramExecutor(SubProcessExecutor):
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         arguments = list_resolvers.concat([
-            list_resolvers.from_strings([csr.from_file_ref_resolver(self.source.file_reference)]),
+            list_resolvers.from_strings([string_resolvers.from_file_ref_resolver(self.source.file_reference)]),
             self.source.arguments,
         ])
 
@@ -194,14 +194,14 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         command_line_elements = list_resolvers.from_strings([
-            csr.string_constant(self.shell_command_of_interpreter),
+            string_resolvers.str_constant(self.shell_command_of_interpreter),
 
-            csr.from_fragments([
-                csr.transformed_fragment(
-                    csr.file_ref_as_fragment(self.source.file_reference),
+            string_resolvers.from_fragments([
+                string_resolvers.transformed_fragment(
+                    string_resolvers.file_ref_fragment(self.source.file_reference),
                     shlex.quote)
             ]),
 
             self.source.arguments,
         ])
-        return CommandResolverForShell(csr.from_list_resolver(command_line_elements))
+        return CommandResolverForShell(string_resolvers.from_list_resolver(command_line_elements))

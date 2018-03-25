@@ -1,5 +1,5 @@
 from exactly_lib.symbol import resolver_structure
-from exactly_lib.symbol.data.string_resolvers import string_constant
+from exactly_lib.symbol.data import string_resolvers 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -28,7 +28,7 @@ def element_reference(name: str,
 
 
 def entry_with_arbitrary_element(name: str,
-                                 value_resolver: DataValueResolver = string_constant('string value'),
+                                 value_resolver: DataValueResolver = string_resolvers.str_constant('string value'),
                                  line_num: int = 1,
                                  source_line: str = 'value def line') -> Entry:
     return Entry(name, SymbolContainer(value_resolver,

@@ -1,10 +1,10 @@
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
-from exactly_lib.symbol.data.string_resolvers import string_constant
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
@@ -34,7 +34,7 @@ def container_of_builtin(value_resolver: DataValueResolver) -> SymbolContainer:
 def string_constant_container(constant_str: str,
                               line_num: int = 1,
                               source_line: str = 'value def line') -> SymbolContainer:
-    return SymbolContainer(string_constant(constant_str),
+    return SymbolContainer(string_resolvers.str_constant(constant_str),
                            single_line_sequence(line_num, source_line))
 
 
@@ -134,7 +134,7 @@ def symbol_reference(name: str,
 
 
 def entry(name: str,
-          value_resolver: DataValueResolver = string_constant('string value'),
+          value_resolver: DataValueResolver = string_resolvers.str_constant('string value'),
           line_num: int = 1,
           source_line: str = 'value def line') -> Entry:
     return Entry(name, SymbolContainer(value_resolver,

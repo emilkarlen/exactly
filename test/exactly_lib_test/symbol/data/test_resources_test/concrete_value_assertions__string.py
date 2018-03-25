@@ -1,8 +1,7 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol.data.string_resolvers import ConstantStringFragmentResolver, \
-    SymbolStringFragmentResolver, string_constant
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
@@ -27,12 +26,12 @@ def suite() -> unittest.TestSuite:
 class TestEqualsFragment(unittest.TestCase):
     def test_equals(self):
         test_cases = [
-            (ConstantStringFragmentResolver('abc'),
-             ConstantStringFragmentResolver('abc')),
-            (SymbolStringFragmentResolver(
+            (string_resolvers.str_fragment('abc'),
+             string_resolvers.str_fragment('abc')),
+            (string_resolvers.symbol_fragment(
                 SymbolReference('symbol_name',
                                 ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction()))),
-             SymbolStringFragmentResolver(
+             string_resolvers.symbol_fragment(
                  SymbolReference('symbol_name',
                                  ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))),
         ]
@@ -44,8 +43,8 @@ class TestEqualsFragment(unittest.TestCase):
     def test_string_not_equals_symbol_ref(self):
         # ARRANGE #
         value = 'a_value'
-        string_fragment = ConstantStringFragmentResolver(value)
-        symbol_fragment = SymbolStringFragmentResolver(
+        string_fragment = string_resolvers.str_fragment(value)
+        symbol_fragment = string_resolvers.symbol_fragment(
             SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))
         assertion = sut.equals_string_fragment_resolver_with_exact_type(string_fragment)
         # ACT & ASSERT #
@@ -54,8 +53,8 @@ class TestEqualsFragment(unittest.TestCase):
     def test_symbol_ref_not_equals_string(self):
         # ARRANGE #
         value = 'a_value'
-        string_fragment = ConstantStringFragmentResolver(value)
-        symbol_fragment = SymbolStringFragmentResolver(
+        string_fragment = string_resolvers.str_fragment(value)
+        symbol_fragment = string_resolvers.symbol_fragment(
             SymbolReference(value, ReferenceRestrictionsOnDirectAndIndirect(AnyDataTypeRestriction())))
         assertion = sut.equals_string_fragment_resolver_with_exact_type(symbol_fragment)
         # ACT & ASSERT #
@@ -63,20 +62,20 @@ class TestEqualsFragment(unittest.TestCase):
 
     def test_string_not_equals_string_with_different_value(self):
         # ARRANGE #
-        fragment1 = ConstantStringFragmentResolver('value 1')
-        fragment2 = ConstantStringFragmentResolver('value 2')
+        fragment1 = string_resolvers.str_fragment('value 1')
+        fragment2 = string_resolvers.str_fragment('value 2')
         assertion = sut.equals_string_fragment_resolver_with_exact_type(fragment1)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, fragment2)
 
     def test_symbol_ref_not_equals_symbol_ref_with_different_symbol_name(self):
         # ARRANGE #
-        fragment1 = SymbolStringFragmentResolver(SymbolReference('symbol_name_1',
-                                                                 ReferenceRestrictionsOnDirectAndIndirect(
-                                                                     AnyDataTypeRestriction())))
-        fragment2 = SymbolStringFragmentResolver(SymbolReference('symbol_name_2',
-                                                                 ReferenceRestrictionsOnDirectAndIndirect(
-                                                                     AnyDataTypeRestriction())))
+        fragment1 = string_resolvers.symbol_fragment(SymbolReference('symbol_name_1',
+                                                                     ReferenceRestrictionsOnDirectAndIndirect(
+                                                                         AnyDataTypeRestriction())))
+        fragment2 = string_resolvers.symbol_fragment(SymbolReference('symbol_name_2',
+                                                                     ReferenceRestrictionsOnDirectAndIndirect(
+                                                                         AnyDataTypeRestriction())))
         assertion = sut.equals_string_fragment_resolver_with_exact_type(fragment1)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, fragment2)
@@ -90,26 +89,26 @@ class TestEqualsFragments(unittest.TestCase):
                 (),
             ),
             (
-                (ConstantStringFragmentResolver('abc'),),
-                (ConstantStringFragmentResolver('abc'),),
+                (string_resolvers.str_fragment('abc'),),
+                (string_resolvers.str_fragment('abc'),),
             ),
             (
-                (SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  AnyDataTypeRestriction()))),),
-                (SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  AnyDataTypeRestriction()))),),
+                (string_resolvers.symbol_fragment(SymbolReference('symbol_name',
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                                                                      AnyDataTypeRestriction()))),),
+                (string_resolvers.symbol_fragment(SymbolReference('symbol_name',
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                                                                      AnyDataTypeRestriction()))),),
             ),
             (
-                (ConstantStringFragmentResolver('abc'),
-                 SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  AnyDataTypeRestriction()))),),
-                (ConstantStringFragmentResolver('abc'),
-                 SymbolStringFragmentResolver(SymbolReference('symbol_name',
-                                                              ReferenceRestrictionsOnDirectAndIndirect(
-                                                                  AnyDataTypeRestriction()))),),
+                (string_resolvers.str_fragment('abc'),
+                 string_resolvers.symbol_fragment(SymbolReference('symbol_name',
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                                                                      AnyDataTypeRestriction()))),),
+                (string_resolvers.str_fragment('abc'),
+                 string_resolvers.symbol_fragment(SymbolReference('symbol_name',
+                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                                                                      AnyDataTypeRestriction()))),),
             ),
         ]
         for fragments1, fragments2 in test_cases:
@@ -120,14 +119,14 @@ class TestEqualsFragments(unittest.TestCase):
     def test_not_equals__different_number_of_fragments__empty__non_empty(self):
         # ARRANGE #
         expected = ()
-        actual = (ConstantStringFragmentResolver('value'),)
+        actual = (string_resolvers.str_fragment('value'),)
         assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
     def test_not_equals__different_number_of_fragments__non_empty__empty(self):
         # ARRANGE #
-        expected = (ConstantStringFragmentResolver('value'),)
+        expected = (string_resolvers.str_fragment('value'),)
         actual = ()
         assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
@@ -135,18 +134,18 @@ class TestEqualsFragments(unittest.TestCase):
 
     def test_not_equals__same_length__different_values(self):
         # ARRANGE #
-        expected = (ConstantStringFragmentResolver('expected value'),)
-        actual = (ConstantStringFragmentResolver('actual value'),)
+        expected = (string_resolvers.str_fragment('expected value'),)
+        actual = (string_resolvers.str_fragment('actual value'),)
         assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
 
     def test_not_equals__same_length__different_types(self):
         # ARRANGE #
-        expected = (ConstantStringFragmentResolver('value'),)
-        actual = (SymbolStringFragmentResolver(SymbolReference('value',
-                                                               ReferenceRestrictionsOnDirectAndIndirect(
-                                                                   AnyDataTypeRestriction()))),)
+        expected = (string_resolvers.str_fragment('value'),)
+        actual = (string_resolvers.symbol_fragment(SymbolReference('value',
+                                                                   ReferenceRestrictionsOnDirectAndIndirect(
+                                                                       AnyDataTypeRestriction()))),)
         assertion = sut.equals_string_fragments(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -156,7 +155,7 @@ class TestEquals(unittest.TestCase):
     def test_with_and_without_references(self):
         test_cases = [
             ('Plain string',
-             string_constant('string value'),
+             string_resolvers.str_constant('string value'),
              empty_symbol_table(),
              ),
             ('String with reference',
@@ -178,8 +177,8 @@ class TestNotEquals3(unittest.TestCase):
     def test_differs__resolved_value(self):
         # ARRANGE #
         expected_string = 'expected value'
-        expected = string_constant(expected_string)
-        actual = string_constant('actual value')
+        expected = string_resolvers.str_constant(expected_string)
+        actual = string_resolvers.str_constant('actual value')
         assertion = sut.equals_string_resolver(expected)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, actual)
@@ -187,7 +186,7 @@ class TestNotEquals3(unittest.TestCase):
     def test_differs__number_of_references(self):
         # ARRANGE #
         expected_string = 'expected value'
-        expected = string_constant(expected_string)
+        expected = string_resolvers.str_constant(expected_string)
         actual = resolver_with_references([SymbolReference('symbol_name',
                                                            ReferenceRestrictionsOnDirectAndIndirect(
                                                                AnyDataTypeRestriction()))])
@@ -213,7 +212,7 @@ class TestNotEquals3(unittest.TestCase):
     def test_differs__different_number_of_fragments(self):
         # ARRANGE #
         expected_string = 'expected value'
-        expected_fragments = (ConstantStringFragmentResolver('value'),)
+        expected_fragments = (string_resolvers.str_fragment('value'),)
         actual_fragments = ()
         expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
@@ -224,8 +223,8 @@ class TestNotEquals3(unittest.TestCase):
     def test_differs__different_fragments(self):
         # ARRANGE #
         expected_string = 'expected value'
-        expected_fragments = (ConstantStringFragmentResolver('value 1'),)
-        actual_fragments = (ConstantStringFragmentResolver('value 2'),)
+        expected_fragments = (string_resolvers.str_fragment('value 1'),)
+        actual_fragments = (string_resolvers.str_fragment('value 2'),)
         expected = _StringResolverTestImpl(expected_string, [], expected_fragments)
         actual = _StringResolverTestImpl(expected_string, [], actual_fragments)
         assertion = sut.equals_string_resolver(expected)
@@ -234,7 +233,7 @@ class TestNotEquals3(unittest.TestCase):
 
 
 def resolver_with_references(symbol_references: list) -> StringResolver:
-    fragment_resolvers = tuple([SymbolStringFragmentResolver(sym_ref)
+    fragment_resolvers = tuple([string_resolvers.symbol_fragment(sym_ref)
                                 for sym_ref in symbol_references])
     return StringResolver(fragment_resolvers)
 

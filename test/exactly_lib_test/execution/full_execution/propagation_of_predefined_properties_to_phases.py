@@ -34,7 +34,7 @@ class TestPredefinedSymbols(unittest.TestCase):
             self):
         # ARRANGE #
         predefined_symbols_table = SymbolTable({
-            'predefined symbol': string_resolvers.string_constant(
+            'predefined symbol': string_resolvers.str_constant(
                 'predefined string value (not used by this test)')
         })
         predefined_properties = PredefinedProperties(predefined_symbols=predefined_symbols_table)
