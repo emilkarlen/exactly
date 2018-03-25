@@ -18,6 +18,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFileRefFragment),
         unittest.makeSuite(TestListFragment),
         unittest.makeSuite(TestStringValue),
+        unittest.makeSuite(TestTransformedFragment),
     ])
 
 
@@ -34,6 +35,26 @@ class TestConstantFragment(unittest.TestCase):
             ),
         ]
         for test_case_name, expected, actual in cases:
+            assertion = equals_multi_dir_dependent_value(expected)
+            with self.subTest(name=test_case_name,
+                              expected=str(expected)):
+                assertion.apply_without_message(self, actual)
+
+
+class TestTransformedFragment(unittest.TestCase):
+    def test(self):
+        cases = [
+            (
+                'single string constant fragment',
+                csv.TransformedStringFragment(csv.ConstantFragment('fragment'),
+                                              str.upper),
+                AMultiDirDependentValue(
+                    resolving_dependencies=set(),
+                    value_when_no_dir_dependencies=do_return('FRAGMENT'),
+                    value_of_any_dependency=do_return('FRAGMENT')),
+            ),
+        ]
+        for test_case_name, actual, expected in cases:
             assertion = equals_multi_dir_dependent_value(expected)
             with self.subTest(name=test_case_name,
                               expected=str(expected)):
@@ -179,8 +200,8 @@ class TestStringValue(unittest.TestCase):
                     resolving_dependencies={ResolvingDependency.HOME,
                                             ResolvingDependency.NON_HOME},
                     value_of_any_dependency=lambda h_s: (
-                        str(file_ref_rel_home.value_pre_sds(h_s.hds)) +
-                        str(file_ref_rel_sds.value_post_sds(h_s.sds)))
+                            str(file_ref_rel_home.value_pre_sds(h_s.hds)) +
+                            str(file_ref_rel_sds.value_post_sds(h_s.sds)))
                 ),
             ),
         ]

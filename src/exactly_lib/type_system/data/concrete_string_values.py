@@ -1,4 +1,6 @@
-from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from typing import Callable
+
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, DirDependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
@@ -86,6 +88,35 @@ class FileRefFragment(_StringFragmentFromDirDependentValue):
     def __str__(self):
         return '{}({})'.format('FileRefFragment',
                                repr(self.value))
+
+
+StrValueTransformer = Callable[[str], str]
+
+
+class TransformedStringFragment(StringFragment):
+    def __init__(self,
+                 string_fragment: StringFragment,
+                 transformer: StrValueTransformer):
+        self._string_fragment = string_fragment
+        self._transformer = transformer
+
+    def dir_dependency(self) -> DirDependencies:
+        return self._string_fragment.dir_dependency()
+
+    def has_dir_dependency(self) -> bool:
+        return self._string_fragment.has_dir_dependency()
+
+    def resolving_dependencies(self) -> set:
+        return self._string_fragment.resolving_dependencies()
+
+    def exists_pre_sds(self) -> bool:
+        return self._string_fragment.exists_pre_sds()
+
+    def value_when_no_dir_dependencies(self) -> str:
+        return self._transformer(self._string_fragment.value_when_no_dir_dependencies())
+
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> str:
+        return self._transformer(self._string_fragment.value_of_any_dependency(home_and_sds))
 
 
 def string_value_of_single_string(value: str) -> StringValue:

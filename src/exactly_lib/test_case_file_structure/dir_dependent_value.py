@@ -108,6 +108,3 @@ class MultiDirDependentValue(Generic[RESOLVED_TYPE], DirDependentValue[RESOLVED_
 
     def has_dir_dependency(self) -> bool:
         return self.dir_dependency() is not DirDependencies.NONE
-
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
-        raise NotImplementedError()
