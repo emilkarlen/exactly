@@ -176,11 +176,11 @@ class SetupParser(NewCommandResolverAndStdinParser):
     def parse_from_token_parser(self, parser: TokenParser) -> NewCommandResolverAndStdin:
         exe_file = parse_executable_file.parse_from_token_parser(parser)
         result = self._parse_additional_arguments(parser)
-        new_command_resolver = new_command_resolvers.for_executable_file(exe_file.executable_file)
-        new_command_resolver = new_command_resolver.new_with_additional_arguments(exe_file.arguments)
-        new_command_resolver = new_command_resolver.new_with_additional_arguments(result.arguments,
-                                                                                  result.arguments_validator)
-        return NewCommandResolverAndStdin(new_command_resolver)
+        command_resolver = new_command_resolvers.for_executable_file(exe_file.executable_file)
+        command_resolver = command_resolver.new_with_additional_arguments(exe_file.arguments)
+        command_resolver = command_resolver.new_with_additional_arguments(result.arguments,
+                                                                          result.arguments_validator)
+        return NewCommandResolverAndStdin(command_resolver)
 
     def _parse_additional_arguments(self, token_parser: TokenParser) -> _AdditionalArguments:
         if token_parser.is_at_eol:

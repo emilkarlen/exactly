@@ -37,10 +37,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> ResultAndStderr:
-        if self.setup.new_command_resolver is not None:
-            command = self.setup.new_command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
-        else:
-            command = self.setup.command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
+        command = self.setup.resolve_command(environment.path_resolving_environment_pre_or_post_sds)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
         return spe.execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
