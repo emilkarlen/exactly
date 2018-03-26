@@ -26,9 +26,8 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForExecutableFile, \
-    CommandResolverForShell
+from exactly_lib.test_case_utils.program.command import new_command_resolvers
+from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 
 
@@ -160,9 +159,8 @@ class _ExecutableFileExecutor(SubProcessExecutor):
         super().__init__(os_process_executor)
         self.executable_file = executable_file
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        return CommandResolverForExecutableFile(self.executable_file,
-                                                list_resolvers.empty())
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> NewCommandResolver:
+        return new_command_resolvers.from_old_executable_file(self.executable_file)
 
 
 class _ShellSubProcessExecutor(SubProcessExecutor):
@@ -172,5 +170,5 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
         super().__init__(os_process_executor)
         self._args = list_resolvers.from_string(command_line_resolver)
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        return CommandResolverForShell(self._args)
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> NewCommandResolver:
+        return new_command_resolvers.for_shell().new_with_additional_arguments(self._args)

@@ -5,7 +5,9 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.program.command import new_driver_resolvers as drivers
 from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
+from exactly_lib.util.process_execution.os_process_execution import ProgramAndArguments
 
 
 def for_shell() -> NewCommandResolver:
@@ -24,6 +26,16 @@ def for_system_program(program: StringResolver) -> NewCommandResolver:
     return NewCommandResolver(drivers.NewCommandDriverResolverForSystemProgram(program),
                               list_resolvers.empty(),
                               ConstantSuccessValidator())
+
+
+def from_old_executable_file(exe_file: ExecutableFileWithArgsResolver) -> NewCommandResolver:
+    return for_executable_file(exe_file.executable_file).new_with_additional_arguments(exe_file.arguments)
+
+
+def from_program_and_arguments(pgm_and_args: ProgramAndArguments) -> NewCommandResolver:
+    program_resolver = string_resolvers.str_constant(pgm_and_args.program)
+    arguments_resolver = list_resolvers.from_str_constants(pgm_and_args.arguments)
+    return for_system_program(program_resolver).new_with_additional_arguments(arguments_resolver)
 
 
 def for_interpret_file_with_arguments_wip(interpreter: NewCommandResolver,

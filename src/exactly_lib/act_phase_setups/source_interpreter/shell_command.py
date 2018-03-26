@@ -6,8 +6,8 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
-from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForShell
+from exactly_lib.test_case_utils.program.command import new_command_resolvers
+from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
@@ -33,7 +33,7 @@ class Executor(pa.ExecutorBase):
                          source_info)
         self.interpreter_shell_command = interpreter_shell_command
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> NewCommandResolver:
         script_file_path = self._source_file_path(script_output_dir_path)
         script_file_argument = shlex.quote(str(script_file_path))
 
@@ -42,4 +42,4 @@ class Executor(pa.ExecutorBase):
             string_resolvers.str_constant(script_file_argument),
         ])
 
-        return CommandResolverForShell(command_line_elements)
+        return new_command_resolvers.for_shell().new_with_additional_arguments(command_line_elements)
