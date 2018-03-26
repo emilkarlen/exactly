@@ -8,7 +8,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.test_case.phase_identifier import Phase
@@ -291,7 +291,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
 
     def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        argument_resolver = string_resolvers.str_constant(instruction_argument)
+        argument_resolver = list_resolvers.from_str_constant(instruction_argument)
         return ValidationAndSubProcessExecutionSetup(self.validator,
                                                      CommandResolverForShell(argument_resolver))
 

@@ -27,8 +27,16 @@ def from_strings(elements: Iterable[StringResolver]) -> ListResolver:
                          for element in elements])
 
 
+def from_string(element: StringResolver) -> ListResolver:
+    return from_strings([element])
+
+
 def from_str_constants(str_list: Iterable[str]) -> ListResolver:
     return ListResolver([str_element(e) for e in str_list])
+
+
+def from_str_constant(constant: str) -> ListResolver:
+    return from_str_constants([constant])
 
 
 def concat(lists: Iterable[ListResolver]) -> ListResolver:
