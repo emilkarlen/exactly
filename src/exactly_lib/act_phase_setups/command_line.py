@@ -29,7 +29,7 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
 from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForExecutableFile, \
     CommandResolverForShell
-from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.executable_file import NewCommandResolverForExecutableFileWip
 
 
 def act_phase_setup() -> ActPhaseSetup:
@@ -78,7 +78,7 @@ class CommandConfigurationForShell(CommandConfiguration):
 
 
 class CommandConfigurationForExecutableFile(CommandConfiguration):
-    def __init__(self, executable_file: ExecutableFileWithArgsResolver):
+    def __init__(self, executable_file: NewCommandResolverForExecutableFileWip):
         self.executable_file = executable_file
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -121,7 +121,7 @@ class _Parser(Parser):
             executable_resolver = parse_file_ref_from_parse_source(source,
                                                                    RELATIVITY_CONFIGURATION)
             arguments_resolver = parse_list(source)
-            executable_file = ExecutableFileWithArgsResolver(executable_resolver, arguments_resolver)
+            executable_file = NewCommandResolverForExecutableFileWip(executable_resolver, arguments_resolver)
             return CommandConfigurationForExecutableFile(executable_file)
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))
@@ -156,7 +156,7 @@ class _ExecutableFileValidator(parts.Validator):
 class _ExecutableFileExecutor(SubProcessExecutor):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
-                 executable_file: ExecutableFileWithArgsResolver):
+                 executable_file: NewCommandResolverForExecutableFileWip):
         super().__init__(os_process_executor)
         self.executable_file = executable_file
 
