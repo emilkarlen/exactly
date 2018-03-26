@@ -49,7 +49,7 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
 
     def new_with_additional_arguments(self,
                                       additional_arguments: ListResolver,
-                                      additional_validation: PreOrPostSdsValidator
+                                      additional_validation: PreOrPostSdsValidator = None
                                       ):
         """
         Creates a new resolver with additional arguments appended at the end of
@@ -57,11 +57,14 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
 
         :returns NewCommandResolver
         """
+        new_validator = self._validator
+        if additional_validation is not None:
+            new_validator = pre_or_post_validation.all_of([self.validator,
+                                                           additional_validation])
+
         return NewCommandResolver(self.driver,
                                   list_resolvers.concat([self.arguments, additional_arguments]),
-                                  pre_or_post_validation.all_of([self.validator,
-                                                                 additional_validation])
-                                  )
+                                  new_validator)
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         return self.driver.resolve(environment, self.arguments)
