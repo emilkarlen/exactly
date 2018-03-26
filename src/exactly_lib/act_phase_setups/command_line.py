@@ -26,10 +26,10 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case_utils.sub_proc.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForExecutableFile, \
     CommandResolverForShell
 from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
-from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 
 
 def act_phase_setup() -> ActPhaseSetup:

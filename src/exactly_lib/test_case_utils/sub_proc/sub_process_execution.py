@@ -1,10 +1,7 @@
 import os
 import pathlib
 import subprocess
-from typing import Sequence
 
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
@@ -71,19 +68,6 @@ class ResultAndStderr:
                  stderr_contents: str):
         self.result = result
         self.stderr_contents = stderr_contents
-
-
-class CommandResolver:
-    """
-    Resolves the command string to execute.
-    """
-
-    @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
-        return []
-
-    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        raise NotImplementedError('abstract method')
 
 
 class ExecutorThatStoresResultInFilesInDir:
