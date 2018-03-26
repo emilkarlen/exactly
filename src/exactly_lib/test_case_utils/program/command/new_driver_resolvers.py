@@ -6,12 +6,12 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandDriverResolver
+from exactly_lib.test_case_utils.program.command.new_command_resolver import CommandDriverResolver
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
-class NewCommandDriverResolverForExecutableFile(NewCommandDriverResolver):
+class CommandDriverResolverForExecutableFile(CommandDriverResolver):
     def __init__(self, executable_file: FileRefResolver):
         self._executable_file = executable_file
 
@@ -32,7 +32,7 @@ class NewCommandDriverResolverForExecutableFile(NewCommandDriverResolver):
         return self._executable_file.references
 
 
-class NewCommandDriverResolverForSystemProgram(NewCommandDriverResolver):
+class CommandDriverResolverForSystemProgram(CommandDriverResolver):
     def __init__(self, program: StringResolver):
         self._program = program
 
@@ -53,7 +53,7 @@ class NewCommandDriverResolverForSystemProgram(NewCommandDriverResolver):
         return self._program.references
 
 
-class NewCommandDriverResolverForShell(NewCommandDriverResolver):
+class CommandDriverResolverForShell(CommandDriverResolver):
     def resolve(self,
                 environment: PathResolvingEnvironmentPreOrPostSds,
                 arguments: ListResolver) -> Command:

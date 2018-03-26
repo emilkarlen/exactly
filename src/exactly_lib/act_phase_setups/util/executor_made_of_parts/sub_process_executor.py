@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
+from exactly_lib.test_case_utils.program.command.new_command_resolver import CommandResolver
 from exactly_lib.util.std import StdFiles
 from . import parts
 
@@ -22,7 +22,7 @@ class SubProcessExecutor(parts.Executor):
                                                 std_files,
                                                 environment.process_execution_settings)
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> NewCommandResolver:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         """
         Called after prepare, to get the command to execute
         """
