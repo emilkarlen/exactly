@@ -4,9 +4,9 @@ import stat
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils.file_ref_validator import FileRefValidatorBase
-from exactly_lib.test_case_utils.program.command.driver_resolvers import \
-    NewCommandDriverResolverForExecutableFile
 from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
+from exactly_lib.test_case_utils.program.command.new_driver_resolvers import \
+    NewCommandDriverResolverForExecutableFile
 
 
 class NewCommandResolverForExecutableFileWip(NewCommandResolver):
