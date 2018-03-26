@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -50,3 +51,16 @@ class NewCommandDriverResolverForSystemProgram(NewCommandDriverResolver):
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self._program.references
+
+
+class NewCommandDriverResolverForShell(NewCommandDriverResolver):
+    def resolve(self,
+                environment: PathResolvingEnvironmentPreOrPostSds,
+                arguments: ListResolver) -> Command:
+        arguments_as_string = string_resolvers.from_list_resolver(arguments)
+        arguments_as_str = arguments_as_string.resolve_value_of_any_dependency(environment)
+        return os_process_execution.shell_command(arguments_as_str)
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return ()
