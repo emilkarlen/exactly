@@ -17,8 +17,8 @@ from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForShell
-from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdin, \
-    NewCommandResolverAndStdinParser
+from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
+    CommandResolverAndStdin, OldCommandResolverAndStdin
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -276,9 +276,9 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> NewCommandResolverAndStdin:
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        return NewCommandResolverAndStdin(
+        return OldCommandResolverAndStdin(
             self.validator,
             command_resolver_for_source_on_command_line(instruction_argument))
 
@@ -289,10 +289,10 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> NewCommandResolverAndStdin:
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
-        return NewCommandResolverAndStdin(self.validator,
+        return OldCommandResolverAndStdin(self.validator,
                                           CommandResolverForShell(argument_resolver))
 
 
