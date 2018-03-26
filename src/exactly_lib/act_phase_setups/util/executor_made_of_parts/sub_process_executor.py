@@ -27,3 +27,14 @@ class SubProcessExecutor(parts.Executor):
         Called after prepare, to get the command to execute
         """
         raise NotImplementedError('abstract method')
+
+
+class CommandResolverExecutor(SubProcessExecutor):
+    def __init__(self,
+                 os_process_executor: ActPhaseOsProcessExecutor,
+                 command_resolver: CommandResolver):
+        super().__init__(os_process_executor)
+        self.command_resolver = command_resolver
+
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+        return self.command_resolver

@@ -1,4 +1,3 @@
-import pathlib
 from typing import Sequence
 
 from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check, SHELL_COMMAND_MARKER
@@ -7,14 +6,13 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
     ParserForSingleLineUsingStandardSyntax
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
-    SubProcessExecutor
+    CommandResolverExecutor
 from exactly_lib.help_texts.test_case.actors import command_line as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -50,47 +48,24 @@ class Constructor(parts.Constructor):
 
 
 class CommandConfiguration(SymbolUser):
-    def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
-        raise NotImplementedError()
-
-    def executor(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
-                 environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
-        raise NotImplementedError()
-
-
-class CommandConfigurationForShell(CommandConfiguration):
-    def __init__(self, command_line_resolver: StringResolver):
-        self._command_line_resolver = command_line_resolver
+    def __init__(self,
+                 command_resolver: CommandResolver,
+                 validator: parts.Validator,
+                 ):
+        self._validator = validator
+        self._command_resolver = command_resolver
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self._command_line_resolver.references
+        return self._command_resolver.references
 
-    def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
-        return parts.UnconditionallySuccessfulValidator()
-
-    def executor(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
-                 environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
-        return _ShellSubProcessExecutor(os_process_executor,
-                                        self._command_line_resolver)
-
-
-class CommandConfigurationForExecutableFile(CommandConfiguration):
-    def __init__(self, executable_file: CommandResolver):
-        self.executable_file = executable_file
-
-    def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self.executable_file.references
-
-    def validator(self, environment: InstructionEnvironmentForPreSdsStep) -> parts.Validator:
-        return _ExecutableFileValidator(self.executable_file.validator)
+    def validator(self) -> parts.Validator:
+        return self._validator
 
     def executor(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
-        return _CommandResolverExecutor(os_process_executor,
-                                        self.executable_file)
+        return CommandResolverExecutor(os_process_executor,
+                                       self._command_resolver)
 
 
 class _Parser(Parser):
@@ -111,7 +86,9 @@ class _Parser(Parser):
                 COMMAND=texts.COMMAND)
             raise ParseException(svh.new_svh_validation_error(msg))
         arg_resolver = parse_string.string_resolver_from_string(striped_argument)
-        return CommandConfigurationForShell(arg_resolver)
+        args_as_list = list_resolvers.from_string(arg_resolver)
+        command_resolver = new_command_resolvers.for_shell().new_with_additional_arguments(args_as_list)
+        return CommandConfiguration(command_resolver, parts.UnconditionallySuccessfulValidator())
 
     @staticmethod
     def _parse_executable_file(argument: str) -> CommandConfiguration:
@@ -121,20 +98,21 @@ class _Parser(Parser):
                                                                    RELATIVITY_CONFIGURATION)
             arguments_resolver = parse_list(source)
             executable_file = ExecutableFileWithArgsResolver(executable_resolver, arguments_resolver)
-            return CommandConfigurationForExecutableFile(executable_file)
+            return CommandConfiguration(executable_file,
+                                        _ExecutableFileValidator(executable_file.validator))
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))
 
 
 def _validator(environment: InstructionEnvironmentForPreSdsStep,
-               command_info: CommandConfiguration) -> parts.Validator:
-    return command_info.validator(environment)
+               command_configuration: CommandConfiguration) -> parts.Validator:
+    return command_configuration.validator()
 
 
 def _executor(os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              command_info: CommandConfiguration) -> parts.Executor:
-    return command_info.executor(os_process_executor, environment)
+              command_configuration: CommandConfiguration) -> parts.Executor:
+    return command_configuration.executor(os_process_executor, environment)
 
 
 class _ExecutableFileValidator(parts.Validator):
@@ -150,25 +128,3 @@ class _ExecutableFileValidator(parts.Validator):
                             environment: InstructionEnvironmentForPostSdsStep
                             ) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
-
-
-class _CommandResolverExecutor(SubProcessExecutor):
-    def __init__(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
-                 command_resolver: CommandResolver):
-        super().__init__(os_process_executor)
-        self.command_resolver = command_resolver
-
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        return self.command_resolver
-
-
-class _ShellSubProcessExecutor(SubProcessExecutor):
-    def __init__(self,
-                 os_process_executor: ActPhaseOsProcessExecutor,
-                 command_line_resolver: StringResolver):
-        super().__init__(os_process_executor)
-        self._args = list_resolvers.from_string(command_line_resolver)
-
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        return new_command_resolvers.for_shell().new_with_additional_arguments(self._args)
