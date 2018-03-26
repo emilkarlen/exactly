@@ -16,20 +16,19 @@ from exactly_lib.util.process_execution.os_process_execution import Command
 
 
 class CommandResolverForShell(CommandResolver):
-    def __init__(self, cmd_resolver: StringResolver):
-        super().__init__(list_resolvers.from_strings([cmd_resolver]))
-        self.__cmd_resolver = cmd_resolver
+    def __init__(self, cmd_line_argument_as_list: ListResolver):
+        super().__init__(cmd_line_argument_as_list)
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         return os_process_execution.shell_command(self._resolve_args(environment))
 
     def _resolve_args(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
-        value = self.__cmd_resolver.resolve(environment.symbols)
-        return value.value_of_any_dependency(environment.home_and_sds)
+        string_arg = string_resolvers.from_list_resolver(self.arguments)
+        return string_arg.resolve_value_of_any_dependency(environment)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return self.__cmd_resolver.references
+        return self.arguments.references
 
 
 class CommandResolverForProgramAndArguments(CommandResolver):

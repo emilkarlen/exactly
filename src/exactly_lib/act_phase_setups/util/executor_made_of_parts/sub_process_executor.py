@@ -9,8 +9,7 @@ from . import parts
 
 
 class SubProcessExecutor(parts.Executor):
-    def __init__(self,
-                 os_process_executor: ActPhaseOsProcessExecutor):
+    def __init__(self, os_process_executor: ActPhaseOsProcessExecutor):
         self.os_process_executor = os_process_executor
 
     def execute(self,

@@ -170,7 +170,7 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
                  os_process_executor: ActPhaseOsProcessExecutor,
                  command_line_resolver: StringResolver):
         super().__init__(os_process_executor)
-        self._command_line_resolver = command_line_resolver
+        self._args = list_resolvers.from_string(command_line_resolver)
 
     def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
-        return CommandResolverForShell(self._command_line_resolver)
+        return CommandResolverForShell(self._args)

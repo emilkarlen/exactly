@@ -204,4 +204,4 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
 
             self.source.arguments,
         ])
-        return CommandResolverForShell(string_resolvers.from_list_resolver(command_line_elements))
+        return CommandResolverForShell(command_line_elements)
