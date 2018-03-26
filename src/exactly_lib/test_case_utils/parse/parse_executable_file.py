@@ -11,7 +11,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
 from exactly_lib.test_case_utils.program.command import new_command_resolvers
-from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
+from exactly_lib.test_case_utils.program.command.new_command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
@@ -31,12 +31,12 @@ def parse_from_parse_source(source: ParseSource) -> ExecutableFileWithArgsResolv
         return parse_from_token_parser(token_parser)
 
 
-def parse_from_parse_source_new(source: ParseSource) -> NewCommandResolver:
+def parse_from_parse_source_new(source: ParseSource) -> CommandResolver:
     with from_parse_source(source) as token_parser:
         return parse_from_token_parser_new(token_parser)
 
 
-def parse_from_token_parser_new(token_parser: TokenParser) -> NewCommandResolver:
+def parse_from_token_parser_new(token_parser: TokenParser) -> CommandResolver:
     exe_file = parse(token_parser.token_stream)
     command_resolver = new_command_resolvers.for_executable_file(exe_file.executable_file)
     return command_resolver.new_with_additional_arguments(exe_file.arguments)

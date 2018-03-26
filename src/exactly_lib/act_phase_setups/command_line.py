@@ -27,7 +27,7 @@ from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.program.command import new_command_resolvers
-from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
+from exactly_lib.test_case_utils.program.command.new_command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 
 
@@ -77,7 +77,7 @@ class CommandConfigurationForShell(CommandConfiguration):
 
 
 class CommandConfigurationForExecutableFile(CommandConfiguration):
-    def __init__(self, executable_file: ExecutableFileWithArgsResolver):
+    def __init__(self, executable_file: CommandResolver):
         self.executable_file = executable_file
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -89,8 +89,8 @@ class CommandConfigurationForExecutableFile(CommandConfiguration):
     def executor(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep) -> parts.Executor:
-        return _ExecutableFileExecutor(os_process_executor,
-                                       self.executable_file)
+        return _CommandResolverExecutor(os_process_executor,
+                                        self.executable_file)
 
 
 class _Parser(Parser):
@@ -104,7 +104,7 @@ class _Parser(Parser):
             return self._parse_executable_file(single_line)
 
     @staticmethod
-    def _parse_shell_command(argument: str) -> CommandConfigurationForShell:
+    def _parse_shell_command(argument: str) -> CommandConfiguration:
         striped_argument = argument.strip()
         if not striped_argument:
             msg = SHELL_COMMAND_MARKER + ': {COMMAND} string is missing.'.format(
@@ -114,7 +114,7 @@ class _Parser(Parser):
         return CommandConfigurationForShell(arg_resolver)
 
     @staticmethod
-    def _parse_executable_file(argument: str) -> CommandConfigurationForExecutableFile:
+    def _parse_executable_file(argument: str) -> CommandConfiguration:
         try:
             source = ParseSource(argument)
             executable_resolver = parse_file_ref_from_parse_source(source,
@@ -152,15 +152,15 @@ class _ExecutableFileValidator(parts.Validator):
         return svh.new_svh_success()
 
 
-class _ExecutableFileExecutor(SubProcessExecutor):
+class _CommandResolverExecutor(SubProcessExecutor):
     def __init__(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
-                 executable_file: ExecutableFileWithArgsResolver):
+                 command_resolver: CommandResolver):
         super().__init__(os_process_executor)
-        self.executable_file = executable_file
+        self.command_resolver = command_resolver
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> NewCommandResolver:
-        return new_command_resolvers.from_old_executable_file(self.executable_file)
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
+        return self.command_resolver
 
 
 class _ShellSubProcessExecutor(SubProcessExecutor):
@@ -170,5 +170,5 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
         super().__init__(os_process_executor)
         self._args = list_resolvers.from_string(command_line_resolver)
 
-    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> NewCommandResolver:
+    def _command_to_execute(self, script_output_dir_path: pathlib.Path) -> CommandResolver:
         return new_command_resolvers.for_shell().new_with_additional_arguments(self._args)

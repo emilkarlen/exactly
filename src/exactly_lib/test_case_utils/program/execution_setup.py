@@ -6,7 +6,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
+from exactly_lib.test_case_utils.program.command.new_command_resolver import CommandResolver
 
 
 class CommandResolverAndStdin(ObjectWithTypedSymbolReferences):
@@ -17,7 +17,7 @@ class CommandResolverAndStdin(ObjectWithTypedSymbolReferences):
     mentioned in the name of the class to make the future purpose clear.
     """
 
-    def __init__(self, command_resolver: NewCommandResolver):
+    def __init__(self, command_resolver: CommandResolver):
         self._command_resolver = command_resolver
 
     @property
@@ -25,7 +25,7 @@ class CommandResolverAndStdin(ObjectWithTypedSymbolReferences):
         return self._command_resolver.references
 
     @property
-    def command_resolver(self) -> NewCommandResolver:
+    def command_resolver(self) -> CommandResolver:
         return self._command_resolver
 
     @property

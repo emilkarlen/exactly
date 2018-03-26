@@ -11,7 +11,7 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
-class NewCommandDriverResolver(ObjectWithTypedSymbolReferences):
+class CommandDriverResolver(ObjectWithTypedSymbolReferences):
     """
     Represents one variant of :class:`Command`,
     and is thus responsible for construct a :class:`Command` given
@@ -30,7 +30,7 @@ class NewCommandDriverResolver(ObjectWithTypedSymbolReferences):
         raise NotImplementedError('abstract method')
 
 
-class NewCommandResolver(ObjectWithTypedSymbolReferences):
+class CommandResolver(ObjectWithTypedSymbolReferences):
     """
     Resolves a :class:`Command`,
     and supplies a validator of the ingredients involved.
@@ -40,7 +40,7 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
     """
 
     def __init__(self,
-                 command_driver: NewCommandDriverResolver,
+                 command_driver: CommandDriverResolver,
                  arguments: ListResolver,
                  validator: PreOrPostSdsValidator):
         self._driver = command_driver
@@ -57,9 +57,9 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
 
         :returns NewCommandResolver
         """
-        with_additional_args = NewCommandResolver(self.driver,
-                                                  list_resolvers.concat([self.arguments, additional_arguments]),
-                                                  self.validator)
+        with_additional_args = CommandResolver(self.driver,
+                                               list_resolvers.concat([self.arguments, additional_arguments]),
+                                               self.validator)
 
         if additional_validation is not None:
             return with_additional_args.new_with_additional_validation(additional_validation)
@@ -71,16 +71,16 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
         :returns NewCommandResolver
         """
 
-        return NewCommandResolver(self.driver,
-                                  self.arguments,
-                                  pre_or_post_validation.all_of([self.validator,
-                                                                 additional_validation]))
+        return CommandResolver(self.driver,
+                               self.arguments,
+                               pre_or_post_validation.all_of([self.validator,
+                                                              additional_validation]))
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         return self.driver.resolve(environment, self.arguments)
 
     @property
-    def driver(self) -> NewCommandDriverResolver:
+    def driver(self) -> CommandDriverResolver:
         return self._driver
 
     @property
