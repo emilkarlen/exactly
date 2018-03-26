@@ -26,7 +26,6 @@ from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValid
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.program.command import command_resolvers
 from exactly_lib.test_case_utils.program.command.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 
 
 def act_phase_setup() -> ActPhaseSetup:
@@ -94,10 +93,10 @@ class _Parser(Parser):
     def _parse_executable_file(argument: str) -> CommandConfiguration:
         try:
             source = ParseSource(argument)
-            executable_resolver = parse_file_ref_from_parse_source(source,
-                                                                   RELATIVITY_CONFIGURATION)
-            arguments_resolver = parse_list(source)
-            executable_file = ExecutableFileWithArgsResolver(executable_resolver, arguments_resolver)
+            executable = parse_file_ref_from_parse_source(source,
+                                                          RELATIVITY_CONFIGURATION)
+            arguments = parse_list(source)
+            executable_file = command_resolvers.for_executable_file(executable).new_with_additional_arguments(arguments)
             return CommandConfiguration(executable_file,
                                         _ExecutableFileValidator(executable_file.validator))
         except SingleInstructionInvalidArgumentException as ex:
