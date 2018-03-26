@@ -27,7 +27,6 @@ from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.program.command import new_command_resolvers
 from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
     CommandResolverAndStdin
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -174,12 +173,10 @@ class _AdditionalArguments:
 
 class SetupParser(NewCommandResolverAndStdinParser):
     def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
-        exe_file = parse_executable_file.parse_from_token_parser(parser)
-        result = self._parse_additional_arguments(parser)
-        command_resolver = new_command_resolvers.for_executable_file(exe_file.executable_file)
-        command_resolver = command_resolver.new_with_additional_arguments(exe_file.arguments)
-        command_resolver = command_resolver.new_with_additional_arguments(result.arguments,
-                                                                          result.arguments_validator)
+        command_resolver = parse_executable_file.parse_from_token_parser_new(parser)
+        additional = self._parse_additional_arguments(parser)
+        command_resolver = command_resolver.new_with_additional_arguments(additional.arguments,
+                                                                          additional.arguments_validator)
         return CommandResolverAndStdin(command_resolver)
 
     def _parse_additional_arguments(self, token_parser: TokenParser) -> _AdditionalArguments:
