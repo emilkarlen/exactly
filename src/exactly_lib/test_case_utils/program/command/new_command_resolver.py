@@ -32,8 +32,11 @@ class NewCommandDriverResolver(ObjectWithTypedSymbolReferences):
 
 class NewCommandResolver(ObjectWithTypedSymbolReferences):
     """
-    Responsible for resolving a :class:`Command`,
-    and validation of
+    Resolves a :class:`Command`,
+    and supplies a validator of the ingredients involved.
+
+    This class should not be sub classed, as it should be possible
+    to
     """
 
     def __init__(self,
@@ -43,6 +46,25 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
         self._driver = command_driver
         self._arguments = arguments
         self._validator = validator
+
+    def new_with_additional_arguments(self,
+                                      additional_arguments: ListResolver,
+                                      additional_validation: PreOrPostSdsValidator
+                                      ):
+        """
+        Creates a new resolver with additional arguments appended at the end of
+        current argument list.
+
+        :returns NewCommandResolver
+        """
+        return NewCommandResolver(self.driver,
+                                  list_resolvers.concat([self.arguments, additional_arguments]),
+                                  pre_or_post_validation.all_of([self.validator,
+                                                                 additional_validation])
+                                  )
+
+    def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        return self.driver.resolve(environment, self.arguments)
 
     @property
     def driver(self) -> NewCommandDriverResolver:
@@ -61,15 +83,3 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
         return references_from_objects_with_symbol_references([
             self._driver,
             self._arguments])
-
-
-# D
-def append_arguments_wip(existing: NewCommandResolver,
-                         additional_arguments: ListResolver,
-                         additional_validation: PreOrPostSdsValidator,
-                         ) -> NewCommandResolver:
-    return NewCommandResolver(existing.driver,
-                              list_resolvers.concat([existing.arguments, additional_arguments]),
-                              pre_or_post_validation.all_of([existing.validator,
-                                                             additional_validation])
-                              )
