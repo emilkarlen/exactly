@@ -3,6 +3,7 @@ from typing import Sequence
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
@@ -11,13 +12,13 @@ from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
-class CommandResolverAndStdin:
+class CommandResolverAndStdin(ObjectWithTypedSymbolReferences):
     """
     TODO Replace hierarchy with a single class when done
     """
 
     @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
+    def references(self) -> Sequence[SymbolReference]:
         raise NotImplementedError('abstract method')
 
     @property
@@ -44,7 +45,7 @@ class OldCommandResolverAndStdin(CommandResolverAndStdin):
         self._validator = validator
 
     @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
+    def references(self) -> Sequence[SymbolReference]:
         return self._command_resolver.references
 
     @property
@@ -64,7 +65,7 @@ class NewCommandResolverAndStdin(CommandResolverAndStdin):
         self._command_resolver = command_resolver
 
     @property
-    def symbol_usages(self) -> Sequence[SymbolReference]:
+    def references(self) -> Sequence[SymbolReference]:
         return self._command_resolver.references
 
     @property

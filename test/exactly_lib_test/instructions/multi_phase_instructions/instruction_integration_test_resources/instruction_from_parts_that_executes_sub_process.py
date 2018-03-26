@@ -16,9 +16,9 @@ from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
-from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForShell
+from exactly_lib.test_case_utils.program.command import new_command_resolvers
 from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
-    CommandResolverAndStdin, OldCommandResolverAndStdin
+    CommandResolverAndStdin, NewCommandResolverAndStdin
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -27,7 +27,8 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
 from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.test_case_utils.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.test_case_utils.test_resources import py_program as py
-from exactly_lib_test.test_case_utils.test_resources.executable_files import command_resolver_for_source_on_command_line
+from exactly_lib_test.test_case_utils.test_resources.executable_files import \
+    command_resolver_for_source_on_command_line
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -278,9 +279,9 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
 
     def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        return OldCommandResolverAndStdin(
-            self.validator,
-            command_resolver_for_source_on_command_line(instruction_argument))
+        return NewCommandResolverAndStdin(
+            command_resolver_for_source_on_command_line(instruction_argument
+                                                        ).new_with_additional_validation(self.validator))
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
@@ -292,15 +293,17 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
     def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
-        return OldCommandResolverAndStdin(self.validator,
-                                          CommandResolverForShell(argument_resolver))
+        return NewCommandResolverAndStdin(
+            new_command_resolvers.for_shell().new_with_additional_arguments(argument_resolver,
+                                                                            self.validator))
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'
 
 
 class ConstantResultValidator(pre_or_post_validation.PreOrPostSdsValidator):
-    def __init__(self, pre_sds=None,
+    def __init__(self,
+                 pre_sds=None,
                  post_setup=None):
         self.pre_sds = pre_sds
         self.post_setup = post_setup
