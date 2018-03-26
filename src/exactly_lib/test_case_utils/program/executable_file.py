@@ -6,7 +6,7 @@ from exactly_lib.test_case_utils.program.command.new_driver_resolvers import \
 from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 
 
-class NewCommandResolverForExecutableFileWip(NewCommandResolver):
+class ExecutableFileWithArgsResolver(NewCommandResolver):
     def __init__(self,
                  executable_file: FileRefResolver,
                  arguments: ListResolver):
