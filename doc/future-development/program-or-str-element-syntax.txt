@@ -101,8 +101,8 @@ eof
 
 STRING-PRODUCER ::= STRING
                 ::| HERE-DOCUMENT
-                ::| --file              [TRANSFORMATION] FILE
-                ::| (--stdout|--stderr) [TRANSFORMATION] PROGRAM-VALUE
+                ::| --file              FILE [TRANSFORMATION]
+                ::| (--stdout|--stderr) PROGRAM-VALUE        (do not need TRANS, since part of PROGRAM-VALUE)
 
 PROGRAM-VALUE ::= ($ SHELL-COMMAND-LINE|NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS)
                   [TRANSFORMATION]
@@ -113,10 +113,12 @@ SHELL-COMMAND-LINE ::= <everything until end of line>
 NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS ::= PROGRAM [ARGUMENT...] [STDIN]
 
 PROGRAM ::= EXECUTABLE [--]
-        ::| EXECUTABLE --source SOURCE
+        ::| EXECUTABLE --source SOURCE  (syntax for rest of line is single arg)
         ::| EXECUTABLE --interpret PATH
-        ::| --shell                PATH
-        ::| PROGRAM-VALUE-SYM-REF
+        ::| --shell                PATH (a variant of --interpret where the interpreter is the system shell)
+        ::| SYM-REF/program             (the program to execute)
+        ::| SYM-REF/file                (the executable file to execute    - CommandDriverForExecutableFile)
+        ::| SYM-REF/string              (the "--system" command to execute - CommandDriverForSystemExecutable)
 
 
 EXECUTABLE ::= EXECUTABLE'
@@ -128,3 +130,17 @@ EXECUTABLE' ::= PATH
 
 PROGRAM-INVOKATION
 may need to use end-of-line as end-token for [ARGUMENT...]
+
+* Implementation
+
+EXECUTABLE'     <=> CommandDriverForNonShellSdv        + Validator = CommandDriver
+EXECUTABLE      <=> CommandDriverForNonShellSdv + Args + Validator = CommandResolver
+PROGRAM         <=> CommandDriverSdv            + Args + Validator = CommandResolver
+
+SHELL-COMMAND-LINE                    <=> CommandResolverAndStdin (with args, so higher elems may accumulate args)
+
+NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS <=> CommandResolverAndStdin
+
+PROGRAM-VALUE   <=> ProgramSdv (CommandResolver + StdinSetup + transformer)
+
+STRING-PRODUCER <=> StringProducer
