@@ -1,5 +1,3 @@
-from typing import Tuple
-
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
@@ -20,16 +18,16 @@ from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.symbol.data import list_resolvers, string_resolvers
+from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list, parse_executable_file
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
     PYTHON_EXECUTABLE_OPTION_NAME
-from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, PreOrPostSdsValidator
-from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForExecutableFile, \
-    command_resolver_for_interpret, command_resolver_for_source_as_command_line_argument
-from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.command import new_command_resolvers
 from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
     NewCommandResolverAndStdin
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -165,58 +163,70 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
+class _AdditionalArguments:
+    def __init__(self,
+                 arguments: ListResolver,
+                 arguments_validator: PreOrPostSdsValidator = None
+                 ):
+        self.arguments = arguments
+        self.arguments_validator = arguments_validator
+
+
 class SetupParser(NewCommandResolverAndStdinParser):
     def parse_from_token_parser(self, parser: TokenParser) -> NewCommandResolverAndStdin:
         exe_file = parse_executable_file.parse_from_token_parser(parser)
-        (validator, cmd_and_args_resolver) = _ValidatorAndArgsResolverParsing(exe_file).parse(parser)
-        return NewCommandResolverAndStdin(validator, cmd_and_args_resolver)
+        result = self._parse_additional_arguments(parser)
+        new_command_resolver = new_command_resolvers.for_executable_file(exe_file.executable_file)
+        new_command_resolver = new_command_resolver.new_with_additional_arguments(exe_file.arguments)
+        new_command_resolver = new_command_resolver.new_with_additional_arguments(result.arguments,
+                                                                                  result.arguments_validator)
+        return NewCommandResolverAndStdin(new_command_resolver)
 
-
-class _ValidatorAndArgsResolverParsing:
-    def __init__(self, exe_file: ExecutableFileWithArgsResolver):
-        self.exe_file = exe_file
-
-    def parse(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CommandResolverForExecutableFile]:
+    def _parse_additional_arguments(self, token_parser: TokenParser) -> _AdditionalArguments:
         if token_parser.is_at_eol:
-            return self.execute(token_parser)
+            return self._execute(token_parser)
 
         setup = {
-            INTERPRET_OPTION: self.interpret,
-            SOURCE_OPTION: self.source,
-            OPTIONS_SEPARATOR_ARGUMENT: self.execute,
+            INTERPRET_OPTION: self._interpret,
+            SOURCE_OPTION: self._source,
+            OPTIONS_SEPARATOR_ARGUMENT: self._execute,
         }
 
         option = token_parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(setup.keys())
         if option is not None:
             return setup[option](token_parser)
         else:
-            return self.execute(token_parser)
+            return self._execute(token_parser)
 
-    def execute(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CommandResolverForExecutableFile]:
+    @staticmethod
+    def _execute(token_parser: TokenParser) -> _AdditionalArguments:
         arguments = parse_list.parse_list_from_token_parser(token_parser)
-        cmd_resolver = CommandResolverForExecutableFile(self.exe_file, arguments)
-        return self.exe_file.validator, cmd_resolver
+        return _AdditionalArguments(arguments=arguments)
 
-    def interpret(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CommandResolverForExecutableFile]:
+    @staticmethod
+    def _interpret(token_parser: TokenParser) -> _AdditionalArguments:
         file_to_interpret = parse_file_ref.parse_file_ref_from_token_parser(parse_file_ref.ALL_REL_OPTIONS_CONFIG,
                                                                             token_parser)
         file_to_interpret_check = FileRefCheck(file_to_interpret,
                                                file_properties.must_exist_as(file_properties.FileType.REGULAR))
-        validator = AndValidator((self.exe_file.validator,
-                                  FileRefCheckValidator(file_to_interpret_check)))
+        file_to_interpret_validator = FileRefCheckValidator(file_to_interpret_check)
         remaining_arguments = parse_list.parse_list_from_token_parser(token_parser)
-        cmd_resolver = command_resolver_for_interpret(self.exe_file, file_to_interpret, remaining_arguments)
-        return validator, cmd_resolver
+        all_additional_arguments = list_resolvers.concat([
+            list_resolvers.from_string(string_resolvers.from_file_ref_resolver(file_to_interpret)),
+            remaining_arguments,
+        ])
+        return _AdditionalArguments(arguments=all_additional_arguments,
+                                    arguments_validator=file_to_interpret_validator)
 
-    def source(self, token_parser: TokenParser) -> Tuple[PreOrPostSdsValidator, CommandResolverForExecutableFile]:
+    @staticmethod
+    def _source(token_parser: TokenParser) -> _AdditionalArguments:
         if token_parser.is_at_eol:
             msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=_SOURCE_SYNTAX_ELEMENT_NAME,
                                                                          option=SOURCE_OPTION)
             raise SingleInstructionInvalidArgumentException(msg)
         remaining_arguments_str = token_parser.consume_current_line_as_plain_string()
         source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
-        cmd_resolver = command_resolver_for_source_as_command_line_argument(self.exe_file, source_resolver)
-        return self.exe_file.validator, cmd_resolver
+        return _AdditionalArguments(arguments=list_resolvers.from_string(source_resolver))
 
 
 _DESCRIPTION_OF_EXECUTABLE_ARG = """\

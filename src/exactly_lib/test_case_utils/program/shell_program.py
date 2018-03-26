@@ -7,11 +7,11 @@ from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForShell
 from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
-    NewCommandResolverAndStdin
+    OldCommandResolverAndStdin, CommandResolverAndStdin
 
 
 class ShellCommandSetupParser(NewCommandResolverAndStdinParser):
-    def parse_from_token_parser(self, parser: TokenParser) -> NewCommandResolverAndStdin:
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
         parser.require_is_not_at_eol('Missing {COMMAND}',
                                      _PARSE_FORMAT_MAP)
         argument_string = parser.consume_current_line_as_plain_string()
@@ -19,7 +19,7 @@ class ShellCommandSetupParser(NewCommandResolverAndStdinParser):
         if not argument_string:
             msg = instruction_arguments.COMMAND_ARGUMENT.name + ' must be given as argument'
             raise SingleInstructionInvalidArgumentException(msg)
-        return NewCommandResolverAndStdin(
+        return OldCommandResolverAndStdin(
             ConstantSuccessValidator(),
             CommandResolverForShell(list_resolvers.from_string(argument)))
 

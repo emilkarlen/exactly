@@ -5,10 +5,33 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
 from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
 
 
-class NewCommandResolverAndStdin:
+class CommandResolverAndStdin:
+    """
+    TODO Replace hierarchy with a single class when done
+    """
+
+    @property
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def command_resolver(self) -> CommandResolver:
+        return None
+
+    @property
+    def new_command_resolver(self) -> NewCommandResolver:
+        return None
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        raise NotImplementedError('abstract method')
+
+
+class OldCommandResolverAndStdin(CommandResolverAndStdin):
     def __init__(self,
                  validator: PreOrPostSdsValidator,
                  command_resolver: CommandResolver):
@@ -26,6 +49,23 @@ class NewCommandResolverAndStdin:
     @property
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
+
+
+class NewCommandResolverAndStdin(CommandResolverAndStdin):
+    def __init__(self, new_command_resolver: NewCommandResolver):
+        self._new_command_resolver = new_command_resolver
+
+    @property
+    def symbol_usages(self) -> Sequence[SymbolReference]:
+        return self._new_command_resolver.references
+
+    @property
+    def new_command_resolver(self) -> NewCommandResolver:
+        return self._new_command_resolver
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return self._new_command_resolver.validator
 
 
 class NewCommandResolverAndStdinParser:

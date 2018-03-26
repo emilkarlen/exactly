@@ -12,8 +12,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdin, \
-    NewCommandResolverAndStdinParser
+from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
+    CommandResolverAndStdin
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ResultAndStderr
 
@@ -21,7 +21,7 @@ from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ResultAnd
 class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
     def __init__(self,
                  source_info: spe.InstructionSourceInfo,
-                 sub_process_execution_setup: NewCommandResolverAndStdin):
+                 sub_process_execution_setup: CommandResolverAndStdin):
         self.source_info = source_info
         self.setup = sub_process_execution_setup
 
@@ -37,7 +37,10 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> ResultAndStderr:
-        command = self.setup.command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
+        if self.setup.new_command_resolver is not None:
+            command = self.setup.new_command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
+        else:
+            command = self.setup.command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
         return spe.execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
