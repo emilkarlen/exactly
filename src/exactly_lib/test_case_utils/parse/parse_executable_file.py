@@ -48,7 +48,7 @@ def parse(tokens: TokenStream) -> ExecutableFileWithArgsResolver:
     else:
         the_file_ref = _parse_exe_file_ref(tokens)
         return ExecutableFileWithArgsResolver(the_file_ref,
-                                              list_resolvers.from_str_constants([]))
+                                              list_resolvers.empty())
 
 
 def _parse_exe_file_ref(tokens: TokenStream) -> FileRefResolver:

@@ -30,8 +30,8 @@ from exactly_lib.test_case_utils.pre_or_post_validation import AndValidator, Pre
 from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForExecutableFile, \
     command_resolver_for_interpret, command_resolver_for_source_as_command_line_argument
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
-from exactly_lib.test_case_utils.program.execution_setup import ValidationAndSubProcessExecutionSetupParser, \
-    ValidationAndSubProcessExecutionSetup
+from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
+    NewCommandResolverAndStdin
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.structure import structures as docs
@@ -165,11 +165,11 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return cross_reference_id_list(name_and_cross_ref_list)
 
 
-class SetupParser(ValidationAndSubProcessExecutionSetupParser):
-    def parse_from_token_parser(self, parser: TokenParser) -> ValidationAndSubProcessExecutionSetup:
+class SetupParser(NewCommandResolverAndStdinParser):
+    def parse_from_token_parser(self, parser: TokenParser) -> NewCommandResolverAndStdin:
         exe_file = parse_executable_file.parse_from_token_parser(parser)
         (validator, cmd_and_args_resolver) = _ValidatorAndArgsResolverParsing(exe_file).parse(parser)
-        return ValidationAndSubProcessExecutionSetup(validator, cmd_and_args_resolver)
+        return NewCommandResolverAndStdin(validator, cmd_and_args_resolver)
 
 
 class _ValidatorAndArgsResolverParsing:
