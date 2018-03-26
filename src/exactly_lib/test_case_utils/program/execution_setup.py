@@ -3,10 +3,12 @@ from typing import Sequence
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command.new_command_resolver import NewCommandResolver
 from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
+from exactly_lib.util.process_execution.os_process_execution import Command
 
 
 class CommandResolverAndStdin:
@@ -25,6 +27,9 @@ class CommandResolverAndStdin:
     @property
     def new_command_resolver(self) -> NewCommandResolver:
         return None
+
+    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        raise NotImplementedError('abstract method')
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
@@ -50,22 +55,28 @@ class OldCommandResolverAndStdin(CommandResolverAndStdin):
     def validator(self) -> PreOrPostSdsValidator:
         return self._validator
 
+    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        return self._command_resolver.resolve(environment)
+
 
 class NewCommandResolverAndStdin(CommandResolverAndStdin):
-    def __init__(self, new_command_resolver: NewCommandResolver):
-        self._new_command_resolver = new_command_resolver
+    def __init__(self, command_resolver: NewCommandResolver):
+        self._command_resolver = command_resolver
 
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
-        return self._new_command_resolver.references
+        return self._command_resolver.references
 
     @property
     def new_command_resolver(self) -> NewCommandResolver:
-        return self._new_command_resolver
+        return self._command_resolver
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return self._new_command_resolver.validator
+        return self._command_resolver.validator
+
+    def resolve_command(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        return self._command_resolver.resolve(environment)
 
 
 class NewCommandResolverAndStdinParser:
