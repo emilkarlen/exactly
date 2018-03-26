@@ -9,7 +9,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.program.executable_file import NewCommandResolverForExecutableFileWip
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.program.program_with_args import ProgramWithArgsResolver
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib.util.process_execution.os_process_execution import Command
@@ -85,7 +85,7 @@ class CommandResolverForExecutableFileAndArguments(CommandResolver):
 
 class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArguments):
     def __init__(self,
-                 executable: NewCommandResolverForExecutableFileWip,
+                 executable: ExecutableFileWithArgsResolver,
                  additional_arguments: ListResolver):
         super().__init__(list_resolvers.concat([executable.arguments, additional_arguments]))
         self.__executable = executable
@@ -96,7 +96,7 @@ class CommandResolverForExecutableFile(CommandResolverForExecutableFileAndArgume
         return self.__executable.executable_file
 
 
-def command_resolver_for_interpret(interpreter: NewCommandResolverForExecutableFileWip,
+def command_resolver_for_interpret(interpreter: ExecutableFileWithArgsResolver,
                                    file_to_interpret: FileRefResolver,
                                    argument_list: ListResolver) -> CommandResolverForExecutableFile:
     return CommandResolverForExecutableFile(interpreter,
@@ -112,7 +112,7 @@ def command_resolver_for_interpret_by_program(interpreter: ProgramWithArgsResolv
                                                                              argument_list))
 
 
-def command_resolver_for_source_as_command_line_argument(interpreter: NewCommandResolverForExecutableFileWip,
+def command_resolver_for_source_as_command_line_argument(interpreter: ExecutableFileWithArgsResolver,
                                                          source: StringResolver) -> CommandResolverForExecutableFile:
     additional_arguments = list_resolvers.from_strings([source])
     return CommandResolverForExecutableFile(interpreter, additional_arguments)
