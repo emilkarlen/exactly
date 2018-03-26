@@ -10,7 +10,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 from exactly_lib.util.cli_syntax.elements import argument

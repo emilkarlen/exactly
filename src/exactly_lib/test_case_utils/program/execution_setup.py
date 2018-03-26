@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.sub_proc.command_resolver import CommandResolver
+from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
 
 
 class ValidationAndSubProcessExecutionSetup:
