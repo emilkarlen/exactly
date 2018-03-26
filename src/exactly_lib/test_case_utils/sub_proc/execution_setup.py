@@ -5,22 +5,22 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
+from exactly_lib.test_case_utils.sub_proc.command_resolver import CommandResolver
 
 
 class ValidationAndSubProcessExecutionSetup:
     def __init__(self,
                  validator: PreOrPostSdsValidator,
-                 command_resolver: spe.CommandResolver):
+                 command_resolver: CommandResolver):
         self._command_resolver = command_resolver
         self._validator = validator
 
     @property
     def symbol_usages(self) -> Sequence[SymbolReference]:
-        return self._command_resolver.symbol_usages
+        return self._command_resolver.references
 
     @property
-    def command_resolver(self) -> spe.CommandResolver:
+    def command_resolver(self) -> CommandResolver:
         return self._command_resolver
 
     @property

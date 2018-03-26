@@ -7,8 +7,8 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case_utils.sub_proc.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForProgramAndArguments
-from exactly_lib.test_case_utils.sub_proc.sub_process_execution import CommandResolver
 
 
 def new_for_script_language_setup(script_language_setup: SourceInterpreterSetup) -> ActPhaseSetup:
