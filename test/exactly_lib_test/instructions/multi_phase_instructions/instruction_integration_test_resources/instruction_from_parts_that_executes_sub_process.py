@@ -18,7 +18,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.program.command import new_command_resolvers
 from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdinParser, \
-    CommandResolverAndStdin, NewCommandResolverAndStdin
+    CommandResolverAndStdin
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -279,7 +279,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
 
     def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        return NewCommandResolverAndStdin(
+        return CommandResolverAndStdin(
             command_resolver_for_source_on_command_line(instruction_argument
                                                         ).new_with_additional_validation(self.validator))
 
@@ -293,7 +293,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
     def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
-        return NewCommandResolverAndStdin(
+        return CommandResolverAndStdin(
             new_command_resolvers.for_shell().new_with_additional_arguments(argument_resolver,
                                                                             self.validator))
 

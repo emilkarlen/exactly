@@ -19,7 +19,7 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdin
+from exactly_lib.test_case_utils.program.execution_setup import CommandResolverAndStdin
 from exactly_lib.test_case_utils.program.shell_program import ShellCommandSetupParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import is_option_string
@@ -181,7 +181,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
     })
 
 
-def _parse_sub_process_setup(parser: TokenParser) -> NewCommandResolverAndStdin:
+def _parse_sub_process_setup(parser: TokenParser) -> CommandResolverAndStdin:
     parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, False)
     setup_parser = ShellCommandSetupParser()
     return setup_parser.parse_from_token_parser(parser)
