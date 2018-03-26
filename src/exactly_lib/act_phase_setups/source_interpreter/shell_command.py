@@ -6,8 +6,8 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
-from exactly_lib.test_case_utils.program.command import new_command_resolvers
-from exactly_lib.test_case_utils.program.command.new_command_resolver import CommandResolver
+from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.command.command_resolver import CommandResolver
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
@@ -42,4 +42,4 @@ class Executor(pa.ExecutorBase):
             string_resolvers.str_constant(script_file_argument),
         ])
 
-        return new_command_resolvers.for_shell().new_with_additional_arguments(command_line_elements)
+        return command_resolvers.for_shell().new_with_additional_arguments(command_line_elements)
