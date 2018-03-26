@@ -12,8 +12,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.program.execution_setup import ValidationAndSubProcessExecutionSetup, \
-    ValidationAndSubProcessExecutionSetupParser
+from exactly_lib.test_case_utils.program.execution_setup import NewCommandResolverAndStdin, \
+    NewCommandResolverAndStdinParser
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ResultAndStderr
 
@@ -21,7 +21,7 @@ from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ResultAnd
 class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
     def __init__(self,
                  source_info: spe.InstructionSourceInfo,
-                 sub_process_execution_setup: ValidationAndSubProcessExecutionSetup):
+                 sub_process_execution_setup: NewCommandResolverAndStdin):
         self.source_info = source_info
         self.setup = sub_process_execution_setup
 
@@ -54,7 +54,7 @@ class ResultAndStderrTranslator(MainStepResultTranslator):
 class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParser):
     def __init__(self,
                  instruction_name: str,
-                 setup_parser: ValidationAndSubProcessExecutionSetupParser):
+                 setup_parser: NewCommandResolverAndStdinParser):
         self.instruction_name = instruction_name
         self.setup_parser = setup_parser
 
@@ -66,7 +66,7 @@ class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParser):
 
 
 def parts_parser(instruction_name: str,
-                 setup_parser: ValidationAndSubProcessExecutionSetupParser
+                 setup_parser: NewCommandResolverAndStdinParser
                  ) -> InstructionPartsParser:
     return PartsParserFromEmbryoParser(InstructionEmbryoParser(instruction_name,
                                                                setup_parser),
