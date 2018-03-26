@@ -99,7 +99,7 @@ class FileMakerForContentsFromSubProcess(FileMaker):
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
-        return tuple(self._output_transformer.references) + tuple(self._sub_process.symbol_usages)
+        return tuple(self._output_transformer.references) + tuple(self._sub_process.references)
 
 
 class FileMakerForContentsFromExistingFile(FileMaker):

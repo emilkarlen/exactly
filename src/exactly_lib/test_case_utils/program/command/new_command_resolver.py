@@ -57,14 +57,24 @@ class NewCommandResolver(ObjectWithTypedSymbolReferences):
 
         :returns NewCommandResolver
         """
-        new_validator = self._validator
+        with_additional_args = NewCommandResolver(self.driver,
+                                                  list_resolvers.concat([self.arguments, additional_arguments]),
+                                                  self.validator)
+
         if additional_validation is not None:
-            new_validator = pre_or_post_validation.all_of([self.validator,
-                                                           additional_validation])
+            return with_additional_args.new_with_additional_validation(additional_validation)
+        else:
+            return with_additional_args
+
+    def new_with_additional_validation(self, additional_validation: PreOrPostSdsValidator):
+        """
+        :returns NewCommandResolver
+        """
 
         return NewCommandResolver(self.driver,
-                                  list_resolvers.concat([self.arguments, additional_arguments]),
-                                  new_validator)
+                                  self.arguments,
+                                  pre_or_post_validation.all_of([self.validator,
+                                                                 additional_validation]))
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
         return self.driver.resolve(environment, self.arguments)

@@ -27,7 +27,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
 
     @property
     def symbol_usages(self) -> Sequence[SymbolUsage]:
-        return self.setup.symbol_usages
+        return self.setup.references
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
