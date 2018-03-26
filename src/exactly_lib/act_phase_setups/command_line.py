@@ -24,8 +24,8 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.test_case_utils.program.command import new_command_resolvers
-from exactly_lib.test_case_utils.program.command.new_command_resolver import CommandResolver
+from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 
 
@@ -87,7 +87,7 @@ class _Parser(Parser):
             raise ParseException(svh.new_svh_validation_error(msg))
         arg_resolver = parse_string.string_resolver_from_string(striped_argument)
         args_as_list = list_resolvers.from_string(arg_resolver)
-        command_resolver = new_command_resolvers.for_shell().new_with_additional_arguments(args_as_list)
+        command_resolver = command_resolvers.for_shell().new_with_additional_arguments(args_as_list)
         return CommandConfiguration(command_resolver, parts.UnconditionallySuccessfulValidator())
 
     @staticmethod
