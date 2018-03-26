@@ -3,7 +3,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.test_case_utils.program.command import new_driver_resolvers as drivers
+from exactly_lib.test_case_utils.program.command import driver_resolvers as drivers
 from exactly_lib.test_case_utils.program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator

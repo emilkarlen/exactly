@@ -55,7 +55,7 @@ class CommandResolver(ObjectWithTypedSymbolReferences):
         Creates a new resolver with additional arguments appended at the end of
         current argument list.
 
-        :returns NewCommandResolver
+        :returns CommandResolver
         """
         with_additional_args = CommandResolver(self.driver,
                                                list_resolvers.concat([self.arguments, additional_arguments]),
@@ -68,7 +68,7 @@ class CommandResolver(ObjectWithTypedSymbolReferences):
 
     def new_with_additional_validation(self, additional_validation: PreOrPostSdsValidator):
         """
-        :returns NewCommandResolver
+        :returns CommandResolver
         """
 
         return CommandResolver(self.driver,
