@@ -16,10 +16,10 @@ from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
-from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
-from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForShell
-from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup, \
+from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForShell
+from exactly_lib.test_case_utils.program.execution_setup import ValidationAndSubProcessExecutionSetup, \
     ValidationAndSubProcessExecutionSetupParser
+from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \

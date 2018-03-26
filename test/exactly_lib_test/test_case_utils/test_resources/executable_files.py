@@ -1,8 +1,8 @@
 import sys
 
 from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
-from exactly_lib.test_case_utils.sub_proc.command_resolvers import CommandResolverForExecutableFile
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.command_resolvers import CommandResolverForExecutableFile
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.type_system.data import file_refs
 from exactly_lib_test.test_resources.programs.python_program_execution import \
     PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE

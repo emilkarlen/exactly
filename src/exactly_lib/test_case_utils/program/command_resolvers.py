@@ -8,9 +8,9 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.sub_proc.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.sub_proc.executable_file import ExecutableFileWithArgsResolver
-from exactly_lib.test_case_utils.sub_proc.program_with_args import ProgramWithArgsResolver
+from exactly_lib.test_case_utils.program.command_resolver import CommandResolver
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.program_with_args import ProgramWithArgsResolver
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib.util.process_execution.os_process_execution import Command
 

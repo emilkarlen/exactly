@@ -19,8 +19,8 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from
 from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
-from exactly_lib.test_case_utils.sub_proc.execution_setup import ValidationAndSubProcessExecutionSetup
-from exactly_lib.test_case_utils.sub_proc.shell_program import ShellCommandSetupParser
+from exactly_lib.test_case_utils.program.execution_setup import ValidationAndSubProcessExecutionSetup
+from exactly_lib.test_case_utils.program.shell_program import ShellCommandSetupParser
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import is_option_string
 from exactly_lib.util.textformat.structure import structures as docs
