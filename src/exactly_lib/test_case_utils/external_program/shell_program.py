@@ -3,10 +3,10 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
-from exactly_lib.test_case_utils.program.command import command_resolvers
-from exactly_lib.test_case_utils.program.execution_setup import CommandResolverAndStdinParser, \
+from exactly_lib.test_case_utils.external_program.command import command_resolvers
+from exactly_lib.test_case_utils.external_program.execution_setup import CommandResolverAndStdinParser, \
     CommandResolverAndStdin
+from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 
 
 class ShellCommandSetupParser(CommandResolverAndStdinParser):

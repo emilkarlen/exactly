@@ -2,10 +2,10 @@ from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.test_case_utils.external_program.command import driver_resolvers as drivers
+from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
+from exactly_lib.test_case_utils.external_program.validators import ExistingExecutableFileValidator
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator
-from exactly_lib.test_case_utils.program.command import driver_resolvers as drivers
-from exactly_lib.test_case_utils.program.command.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 from exactly_lib.util.process_execution.os_process_execution import ProgramAndArguments
 
 
