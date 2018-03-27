@@ -4,7 +4,8 @@ from exactly_lib.act_phase_setups.common import relativity_configuration_of_acti
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_line import \
     ParserForSingleLineUsingStandardSyntax
-from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
+from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser, \
+    PartsValidatorFromPreOrPostSdsValidator
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
     CommandResolverExecutor
 from exactly_lib.help_texts.test_case.actors import command_line as texts
@@ -17,15 +18,13 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep, SymbolUser
+    SymbolUser
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_parse_source
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
-    PreOrPostSdsSvhValidationErrorValidator
 
 
 def act_phase_setup() -> ActPhaseSetup:
@@ -47,18 +46,14 @@ class Constructor(parts.Constructor):
 
 
 class CommandConfiguration(SymbolUser):
-    def __init__(self,
-                 command_resolver: CommandResolver,
-                 validator: parts.Validator,
-                 ):
-        self._validator = validator
+    def __init__(self, command_resolver: CommandResolver):
         self._command_resolver = command_resolver
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
         return self._command_resolver.references
 
     def validator(self) -> parts.Validator:
-        return self._validator
+        return PartsValidatorFromPreOrPostSdsValidator(self._command_resolver.validator)
 
     def executor(self,
                  os_process_executor: ActPhaseOsProcessExecutor,
@@ -87,7 +82,7 @@ class _Parser(Parser):
         arg_resolver = parse_string.string_resolver_from_string(striped_argument)
         args_as_list = list_resolvers.from_string(arg_resolver)
         command_resolver = command_resolvers.for_shell().new_with_additional_arguments(args_as_list)
-        return CommandConfiguration(command_resolver, parts.UnconditionallySuccessfulValidator())
+        return CommandConfiguration(command_resolver)
 
     @staticmethod
     def _parse_executable_file(argument: str) -> CommandConfiguration:
@@ -97,8 +92,7 @@ class _Parser(Parser):
                                                           RELATIVITY_CONFIGURATION)
             arguments = parse_list(source)
             executable_file = command_resolvers.for_executable_file(executable).new_with_additional_arguments(arguments)
-            return CommandConfiguration(executable_file,
-                                        _ExecutableFileValidator(executable_file.validator))
+            return CommandConfiguration(executable_file)
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))
 
@@ -112,18 +106,3 @@ def _executor(os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
               command_configuration: CommandConfiguration) -> parts.Executor:
     return command_configuration.executor(os_process_executor, environment)
-
-
-class _ExecutableFileValidator(parts.Validator):
-    def __init__(self, validator_that_must_validate_pre_sds: PreOrPostSdsValidator):
-        self.validator = PreOrPostSdsSvhValidationErrorValidator(validator_that_must_validate_pre_sds)
-
-    def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
-        env = environment.path_resolving_environment
-        return self.validator.validate_pre_sds_if_applicable(env)
-
-    def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep
-                            ) -> svh.SuccessOrValidationErrorOrHardError:
-        return svh.new_svh_success()

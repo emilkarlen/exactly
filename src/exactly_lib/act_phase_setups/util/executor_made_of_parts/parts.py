@@ -10,6 +10,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
+    PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.std import StdFiles
 
 
@@ -34,6 +36,22 @@ class UnconditionallySuccessfulValidator(Validator):
     def validate_post_setup(self,
                             environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
         return svh.new_svh_success()
+
+
+class PartsValidatorFromPreOrPostSdsValidator(Validator):
+    def __init__(self, validator_that_must_validate_pre_sds: PreOrPostSdsValidator):
+        self.validator = PreOrPostSdsSvhValidationErrorValidator(validator_that_must_validate_pre_sds)
+
+    def validate_pre_sds(self,
+                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+        env = environment.path_resolving_environment
+        return self.validator.validate_pre_sds_if_applicable(env)
+
+    def validate_post_setup(self,
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
+        env = environment.path_resolving_environment
+        return self.validator.validate_post_sds_if_applicable(env)
 
 
 class Executor:
