@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
@@ -45,8 +45,13 @@ class PreOrPostSdsValidator:
         return self.validate_post_sds_if_applicable(environment)
 
 
-def all_of(validators: Iterable[PreOrPostSdsValidator]) -> PreOrPostSdsValidator:
-    return AndValidator(validators)
+def all_of(validators: Sequence[PreOrPostSdsValidator]) -> PreOrPostSdsValidator:
+    if len(validators) == 0:
+        return ConstantSuccessValidator()
+    elif len(validators) == 1:
+        return validators[0]
+    else:
+        return AndValidator(validators)
 
 
 class ConstantSuccessValidator(PreOrPostSdsValidator):
