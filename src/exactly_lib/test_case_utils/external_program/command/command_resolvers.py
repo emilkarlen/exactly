@@ -1,6 +1,5 @@
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.test_case_utils.external_program.command import driver_resolvers as drivers
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver, ArgumentsResolver
@@ -29,24 +28,3 @@ def from_program_and_arguments(pgm_and_args: ProgramAndArguments) -> CommandReso
     program_resolver = string_resolvers.str_constant(pgm_and_args.program)
     arguments_resolver = list_resolvers.from_str_constants(pgm_and_args.arguments)
     return for_system_program(program_resolver).new_with_additional_arguments(arguments_resolver)
-
-
-def for_interpret_file_with_arguments_wip(interpreter: CommandResolver,
-                                          file_to_interpret: FileRefResolver,
-                                          argument_list: ListResolver) -> CommandResolver:
-    return interpreter.new_with_additional_arguments(_file_interpreter_arguments(file_to_interpret,
-                                                                                 argument_list))
-
-
-def for_source_as_command_line_argument_wip(interpreter: CommandResolver,
-                                            source: StringResolver) -> CommandResolver:
-    return interpreter.new_with_additional_arguments(list_resolvers.from_string(source))
-
-
-def _file_interpreter_arguments(file_to_interpret: FileRefResolver,
-                                argument_list: ListResolver) -> ListResolver:
-    file_to_interpret_as_string = string_resolvers.from_file_ref_resolver(file_to_interpret)
-    return list_resolvers.concat([
-        list_resolvers.from_strings([file_to_interpret_as_string]),
-        argument_list,
-    ])
