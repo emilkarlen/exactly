@@ -24,10 +24,45 @@ class CommandDriverResolver(ObjectWithTypedSymbolReferences):
     :class:`Command` (shell, executable file, OS command).
     """
 
+    def __init__(self, validators: Sequence[PreOrPostSdsValidator] = ()):
+        self._validators = validators
+
+    @property
+    def validators(self) -> Sequence[PreOrPostSdsValidator]:
+        return self._validators
+
     def resolve(self,
                 environment: PathResolvingEnvironmentPreOrPostSds,
                 arguments: ListResolver) -> Command:
         raise NotImplementedError('abstract method')
+
+
+class ArgumentsResolver(ObjectWithTypedSymbolReferences):
+    def __init__(self,
+                 arguments: ListResolver,
+                 validators: Sequence[PreOrPostSdsValidator] = ()):
+        self._arguments = arguments
+        self._validators = validators
+
+    @property
+    def arguments_list(self) -> ListResolver:
+        return self._arguments
+
+    @property
+    def validators(self) -> Sequence[PreOrPostSdsValidator]:
+        return self._validators
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._arguments.references
+
+    def new_with_appended(self,
+                          arguments: ListResolver,
+                          validators: Sequence[PreOrPostSdsValidator] = ()):
+        args = list_resolvers.concat([self.arguments_list, arguments])
+        validators = list(self._validators) + list(validators)
+
+        return ArgumentsResolver(args, validators)
 
 
 class CommandResolver(ObjectWithTypedSymbolReferences):
@@ -35,49 +70,33 @@ class CommandResolver(ObjectWithTypedSymbolReferences):
     Resolves a :class:`Command`,
     and supplies a validator of the ingredients involved.
 
-    This class should not be sub classed, as it should be possible
-    to
+    This class works a bit like a immutable builder of Command - new arguments
+    may be appended to form a new object representing a different command.
+
+    This is the way more complex commands are built from simpler ones.
     """
 
     def __init__(self,
                  command_driver: CommandDriverResolver,
-                 arguments: ListResolver,
-                 validator: PreOrPostSdsValidator):
+                 arguments: ArgumentsResolver):
         self._driver = command_driver
         self._arguments = arguments
-        self._validator = validator
 
     def new_with_additional_arguments(self,
                                       additional_arguments: ListResolver,
-                                      additional_validation: PreOrPostSdsValidator = None
-                                      ):
+                                      additional_validation: Sequence[PreOrPostSdsValidator] = ()):
         """
         Creates a new resolver with additional arguments appended at the end of
         current argument list.
 
         :returns CommandResolver
         """
-        with_additional_args = CommandResolver(self.driver,
-                                               list_resolvers.concat([self.arguments, additional_arguments]),
-                                               self.validator)
-
-        if additional_validation is not None:
-            return with_additional_args.new_with_additional_validation(additional_validation)
-        else:
-            return with_additional_args
-
-    def new_with_additional_validation(self, additional_validation: PreOrPostSdsValidator):
-        """
-        :returns CommandResolver
-        """
-
-        return CommandResolver(self.driver,
-                               self.arguments,
-                               pre_or_post_validation.all_of([self.validator,
-                                                              additional_validation]))
+        return CommandResolver(self._driver,
+                               self._arguments.new_with_appended(additional_arguments,
+                                                                 additional_validation))
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return self.driver.resolve(environment, self.arguments)
+        return self.driver.resolve(environment, self._arguments.arguments_list)
 
     @property
     def driver(self) -> CommandDriverResolver:
@@ -85,11 +104,12 @@ class CommandResolver(ObjectWithTypedSymbolReferences):
 
     @property
     def arguments(self) -> ListResolver:
-        return self._arguments
+        return self._arguments.arguments_list
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return self._validator
+        return pre_or_post_validation.all_of(list(self._driver.validators) +
+                                             list(self._arguments.validators))
 
     @property
     def references(self) -> Sequence[SymbolReference]:

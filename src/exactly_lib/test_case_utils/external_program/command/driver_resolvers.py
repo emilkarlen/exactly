@@ -7,12 +7,16 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandDriverResolver
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.process_execution import os_process_execution
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
 class CommandDriverResolverForExecutableFile(CommandDriverResolver):
-    def __init__(self, executable_file: FileRefResolver):
+    def __init__(self,
+                 executable_file: FileRefResolver,
+                 validators: Sequence[PreOrPostSdsValidator] = ()):
+        super().__init__(validators)
         self._executable_file = executable_file
 
     @property
@@ -33,7 +37,10 @@ class CommandDriverResolverForExecutableFile(CommandDriverResolver):
 
 
 class CommandDriverResolverForSystemProgram(CommandDriverResolver):
-    def __init__(self, program: StringResolver):
+    def __init__(self,
+                 program: StringResolver,
+                 validators: Sequence[PreOrPostSdsValidator] = ()):
+        super().__init__(validators)
         self._program = program
 
     @property
@@ -57,6 +64,7 @@ class CommandDriverResolverForShell(CommandDriverResolver):
     def resolve(self,
                 environment: PathResolvingEnvironmentPreOrPostSds,
                 arguments: ListResolver) -> Command:
+        super().__init__(())
         arguments_as_string = string_resolvers.from_list_resolver(arguments)
         arguments_as_str = arguments_as_string.resolve_value_of_any_dependency(environment)
         return os_process_execution.shell_command(arguments_as_str)

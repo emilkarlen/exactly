@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
@@ -165,7 +167,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 class _AdditionalArguments:
     def __init__(self,
                  arguments: ListResolver,
-                 arguments_validator: PreOrPostSdsValidator = None
+                 arguments_validator: Sequence[PreOrPostSdsValidator] = ()
                  ):
         self.arguments = arguments
         self.arguments_validator = arguments_validator
@@ -213,7 +215,7 @@ class SetupParser(CommandResolverAndStdinParser):
             remaining_arguments,
         ])
         return _AdditionalArguments(arguments=all_additional_arguments,
-                                    arguments_validator=file_to_interpret_validator)
+                                    arguments_validator=[file_to_interpret_validator])
 
     @staticmethod
     def _source(token_parser: TokenParser) -> _AdditionalArguments:
