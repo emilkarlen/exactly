@@ -60,7 +60,7 @@ class ArgumentsResolver(ObjectWithTypedSymbolReferences):
                           arguments: ListResolver,
                           validators: Sequence[PreOrPostSdsValidator] = ()):
         args = list_resolvers.concat([self.arguments_list, arguments])
-        validators = list(self._validators) + list(validators)
+        validators = tuple(self._validators) + tuple(validators)
 
         return ArgumentsResolver(args, validators)
 
@@ -108,8 +108,8 @@ class CommandResolver(ObjectWithTypedSymbolReferences):
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.all_of(list(self._driver.validators) +
-                                             list(self._arguments.validators))
+        return pre_or_post_validation.all_of(tuple(self._driver.validators) +
+                                             tuple(self._arguments.validators))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
