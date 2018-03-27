@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
 from exactly_lib.test_case_utils import file_ref_check, file_properties
-from exactly_lib.test_case_utils.external_program.execution_setup import CommandResolverAndStdin
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandResolverAndStdin
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
     SingleStepValidator, ValidationStep
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \

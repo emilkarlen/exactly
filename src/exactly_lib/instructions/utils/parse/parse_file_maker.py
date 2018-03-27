@@ -13,7 +13,7 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_utils.external_program.execution_setup import CommandResolverAndStdin
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandResolverAndStdin
 from exactly_lib.test_case_utils.external_program.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
 from exactly_lib.test_case_utils.parse import parse_here_document
