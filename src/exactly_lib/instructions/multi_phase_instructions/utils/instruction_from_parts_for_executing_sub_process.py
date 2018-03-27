@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     instruction_log_dir
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case_utils.external_program.execution_setup import CommandResolverAndStdinParser, \
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandResolverAndStdinParser, \
     CommandResolverAndStdin
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
