@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.external_program.command.command_resolver impor
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 
 
-class CommandResolverAndStdin(ObjectWithTypedSymbolReferences):
+class CommandAndStdinResolver(ObjectWithTypedSymbolReferences):
     """
     A command together with stdin contents.
 
@@ -33,11 +33,11 @@ class CommandResolverAndStdin(ObjectWithTypedSymbolReferences):
         return self._command_resolver.validator
 
 
-class CommandResolverAndStdinParser:
-    def parse(self, source: ParseSource) -> CommandResolverAndStdin:
+class CommandAndStdinResolverParser:
+    def parse(self, source: ParseSource) -> CommandAndStdinResolver:
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             return self.parse_from_token_parser(parser)
 
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
         raise NotImplementedError('abstract method')

@@ -4,13 +4,13 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandResolverAndStdinParser, \
-    CommandResolverAndStdin
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolverParser, \
+    CommandAndStdinResolver
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 
 
-class ShellCommandSetupParser(CommandResolverAndStdinParser):
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
+class ShellCommandSetupParser(CommandAndStdinResolverParser):
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
         parser.require_is_not_at_eol('Missing {COMMAND}',
                                      _PARSE_FORMAT_MAP)
         argument_string = parser.consume_current_line_as_plain_string()
@@ -23,7 +23,7 @@ class ShellCommandSetupParser(CommandResolverAndStdinParser):
         command_resolver = command_resolvers.for_shell()
         command_resolver = command_resolver.new_with_additional_arguments(list_resolvers.from_string(argument))
 
-        return CommandResolverAndStdin(command_resolver)
+        return CommandAndStdinResolver(command_resolver)
 
 
 _PARSE_FORMAT_MAP = {

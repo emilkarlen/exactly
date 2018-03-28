@@ -17,8 +17,8 @@ from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandResolverAndStdinParser, \
-    CommandResolverAndStdin
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolverParser, \
+    CommandAndStdinResolver
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -41,7 +41,7 @@ class Configuration(ConfigurationBase):
     def run_sub_process_test(self,
                              put: unittest.TestCase,
                              source: ParseSource,
-                             execution_setup_parser: CommandResolverAndStdinParser,
+                             execution_setup_parser: CommandAndStdinResolverParser,
                              arrangement,
                              expectation,
                              instruction_name: str = 'instruction-name'):
@@ -60,7 +60,7 @@ class Configuration(ConfigurationBase):
 
     def _parser(self,
                 instruction_name: str,
-                execution_setup_parser: CommandResolverAndStdinParser) -> InstructionParser:
+                execution_setup_parser: CommandAndStdinResolverParser) -> InstructionParser:
         parts_parser = spe_parts.parts_parser(instruction_name, execution_setup_parser)
         return self.instruction_from_parts_parser(parts_parser)
 
@@ -272,29 +272,29 @@ class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
 
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-    CommandResolverAndStdinParser):
+    CommandAndStdinResolverParser):
     def __init__(self,
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        return CommandResolverAndStdin(
+        return CommandAndStdinResolver(
             command_resolver_for_source_on_command_line(instruction_argument
                                                         ).new_with_additional_arguments(list_resolvers.empty(),
                                                                                         [self.validator]))
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
-    CommandResolverAndStdinParser):
+    CommandAndStdinResolverParser):
     def __init__(self,
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
-        return CommandResolverAndStdin(
+        return CommandAndStdinResolver(
             command_resolvers.for_shell().new_with_additional_arguments(argument_resolver,
                                                                         [self.validator]))
 
