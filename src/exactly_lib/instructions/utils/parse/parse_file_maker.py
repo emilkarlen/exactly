@@ -13,7 +13,7 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandResolverAndStdin
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolver
 from exactly_lib.test_case_utils.external_program.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
 from exactly_lib.test_case_utils.parse import parse_here_document
@@ -181,7 +181,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
     })
 
 
-def _parse_sub_process_setup(parser: TokenParser) -> CommandResolverAndStdin:
+def _parse_sub_process_setup(parser: TokenParser) -> CommandAndStdinResolver:
     parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, False)
     setup_parser = ShellCommandSetupParser()
     return setup_parser.parse_from_token_parser(parser)

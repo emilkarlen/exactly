@@ -23,8 +23,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandResolverAndStdinParser, \
-    CommandResolverAndStdin
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolverParser, \
+    CommandAndStdinResolver
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list, parse_executable_file
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
@@ -173,13 +173,13 @@ class _AdditionalArguments:
         self.arguments_validator = arguments_validator
 
 
-class SetupParser(CommandResolverAndStdinParser):
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandResolverAndStdin:
+class SetupParser(CommandAndStdinResolverParser):
+    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
         command_resolver = parse_executable_file.parse_from_token_parser_new(parser)
         additional = self._parse_additional_arguments(parser)
         command_resolver = command_resolver.new_with_additional_arguments(additional.arguments,
                                                                           additional.arguments_validator)
-        return CommandResolverAndStdin(command_resolver)
+        return CommandAndStdinResolver(command_resolver)
 
     def _parse_additional_arguments(self, token_parser: TokenParser) -> _AdditionalArguments:
         if token_parser.is_at_eol:
