@@ -76,7 +76,7 @@ class FileMakerForContentsFromSubProcess(FileMaker):
              ) -> str:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        command = self._sub_process.command_resolver.resolve(path_resolving_env)
+        command = self._sub_process.command_resolver.resolve_of_any_dep(path_resolving_env)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
         result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
