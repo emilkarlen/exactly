@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, specific_relative_relativity, \
@@ -25,7 +26,7 @@ class FileRefWithPathSuffixAndIsNotAbsoluteBase(FileRefWithPathSuffixBase):
     def __init__(self, path_part: PathPart):
         super().__init__(path_part)
 
-    def resolving_dependency(self) -> ResolvingDependency:
+    def resolving_dependency(self) -> Optional[ResolvingDependency]:
         return RESOLVING_DEPENDENCY_OF[self._relativity()]
 
     def has_dir_dependency(self) -> bool:
