@@ -1,8 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
-    TokenParser
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
@@ -31,13 +28,3 @@ class CommandAndStdinResolver(ObjectWithTypedSymbolReferences):
     @property
     def validator(self) -> PreOrPostSdsValidator:
         return self._command_resolver.validator
-
-
-class CommandAndStdinResolverParser:
-    def parse(self, source: ParseSource) -> CommandAndStdinResolver:
-        with from_parse_source(source,
-                               consume_last_line_if_is_at_eol_after_parse=True) as parser:
-            return self.parse_from_token_parser(parser)
-
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
-        raise NotImplementedError('abstract method')

@@ -1,4 +1,3 @@
-import enum
 import functools
 import pathlib
 import shlex
@@ -8,7 +7,6 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case.phases import common as i
@@ -17,6 +15,7 @@ from exactly_lib.test_case_utils.err_msg.path_description import path_value_with
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
+from exactly_lib.test_case_utils.string_or_file import SourceType, StringOrFileRefResolver
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
@@ -25,61 +24,13 @@ CONFIGURATION = parse_file_ref.ALL_REL_OPTIONS_CONFIG
 FILE_ARGUMENT_OPTION = a.OptionName(long_name='file')
 
 MISSING_SOURCE = 'Missing argument ({string}, {file_ref} or {here_doc})'.format(
-    string=instruction_arguments.STRING.name, file_ref=option_syntax(FILE_ARGUMENT_OPTION),
+    string=instruction_arguments.STRING.name,
+    file_ref=option_syntax(FILE_ARGUMENT_OPTION),
     here_doc=instruction_arguments.HERE_DOCUMENT.name, )
 
 
-class SourceType(enum.Enum):
-    STRING = 1
-    HERE_DOC = 2
-    PATH = 3
-
-
-class StringResolverOrFileRef(tuple):
-    def __new__(cls,
-                source_type: SourceType,
-                string_resolver: StringResolver,
-                file_reference: FileRefResolver):
-        return tuple.__new__(cls, (source_type,
-                                   string_resolver,
-                                   file_reference,
-                                   (string_resolver.references
-                                    if string_resolver is not None
-                                    else file_reference.references)))
-
-    @property
-    def source_type(self) -> SourceType:
-        return self[0]
-
-    @property
-    def is_file_ref(self) -> bool:
-        """
-        Tells if the source is a path.
-        If not, it is either a string or a here doc accessed via `string_resolver`
-        """
-        return self.source_type is SourceType.PATH
-
-    @property
-    def string_resolver(self) -> StringResolver:
-        """
-        :return: Not None iff :class:`SourceType` is NOT `SourceType.PATH`
-        """
-        return self[1]
-
-    @property
-    def file_reference_resolver(self) -> FileRefResolver:
-        """
-        :return: Not None iff :class:`SourceType` is `SourceType.PATH`
-        """
-        return self[2]
-
-    @property
-    def symbol_usages(self) -> list:
-        return self[3]
-
-
 def parse_from_parse_source(source: ParseSource,
-                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringResolverOrFileRef:
+                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringOrFileRefResolver:
     with from_parse_source(source,
                            consume_last_line_if_is_at_eol_after_parse=False) as token_parser:
         ret_val = parse_from_token_parser(token_parser, conf)
@@ -90,7 +41,7 @@ def parse_from_parse_source(source: ParseSource,
 
 
 def parse_from_token_parser(token_parser: TokenParser,
-                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringResolverOrFileRef:
+                            conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringOrFileRefResolver:
     token_parser.require_is_not_at_eol(MISSING_SOURCE)
     token_parser.require_head_token_has_valid_syntax()
     file_ref = token_parser.consume_and_handle_optional_option(
@@ -98,10 +49,10 @@ def parse_from_token_parser(token_parser: TokenParser,
         functools.partial(parse_file_ref.parse_file_ref_from_token_parser, conf),
         FILE_ARGUMENT_OPTION)
     if file_ref:
-        return StringResolverOrFileRef(SourceType.PATH, None, file_ref)
+        return StringOrFileRefResolver(SourceType.PATH, None, file_ref)
     else:
         source_type, resolver = parse_string_or_here_doc_from_token_parser(token_parser)
-        return StringResolverOrFileRef(source_type, resolver, None)
+        return StringOrFileRefResolver(source_type, resolver, None)
 
 
 def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser) -> Tuple[SourceType, StringResolver]:
@@ -118,7 +69,7 @@ def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser) -> Tup
 class ExpectedValueResolver(diff_msg_utils.ExpectedValueResolver):
     def __init__(self,
                  prefix: str,
-                 expected_contents: StringResolverOrFileRef):
+                 expected_contents: StringOrFileRefResolver):
         self._prefix = prefix
         self.expected_contents = expected_contents
 

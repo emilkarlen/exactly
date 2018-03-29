@@ -4,8 +4,8 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolverParser, \
-    CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinResolverParser
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 
 

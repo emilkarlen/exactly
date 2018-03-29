@@ -17,7 +17,8 @@ from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import StringResolverOrFileRef, ExpectedValueResolver
+from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
+from exactly_lib.test_case_utils.string_or_file import StringOrFileRefResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.util import file_utils
@@ -30,7 +31,7 @@ _EQUALITY_CHECK_EXPECTED_VALUE = 'equals'
 class EqualityContentsAssertionPart(FileContentsAssertionPart):
     def __init__(self,
                  expectation_type: ExpectationType,
-                 expected_contents: StringResolverOrFileRef):
+                 expected_contents: StringOrFileRefResolver):
         self._expectation_type = expectation_type
         self._expected_contents = expected_contents
         self.validator_of_expected = _validator_of_expected(expected_contents)
@@ -125,7 +126,7 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
         )
 
 
-def _validator_of_expected(expected_contents: StringResolverOrFileRef) -> PreOrPostSdsValidator:
+def _validator_of_expected(expected_contents: StringOrFileRefResolver) -> PreOrPostSdsValidator:
     if not expected_contents.is_file_ref:
         return ConstantSuccessValidator()
     file_ref_check = FileRefCheck(expected_contents.file_reference_resolver,

@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.test_case_utils import string_or_file
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
@@ -393,7 +394,7 @@ def _expect_file_ref(put: unittest.TestCase,
     # ACT #
     actual = sut.parse_from_parse_source(source, rel_opt_arg_conf)
     # ASSERT #
-    put.assertIs(sut.SourceType.PATH,
+    put.assertIs(string_or_file.SourceType.PATH,
                  actual.source_type,
                  'source type')
     put.assertTrue(actual.is_file_ref,
@@ -414,7 +415,7 @@ def _expect_here_doc(put: unittest.TestCase,
     # ACT #
     actual = sut.parse_from_parse_source(source)
     # ASSERT #
-    put.assertIs(sut.SourceType.HERE_DOC,
+    put.assertIs(string_or_file.SourceType.HERE_DOC,
                  actual.source_type,
                  'source type')
     put.assertFalse(actual.is_file_ref,
@@ -434,7 +435,7 @@ def _expect_string(put: unittest.TestCase,
     # ACT #
     actual = sut.parse_from_parse_source(source)
     # ASSERT #
-    put.assertIs(sut.SourceType.STRING,
+    put.assertIs(string_or_file.SourceType.STRING,
                  actual.source_type,
                  'source type')
     put.assertFalse(actual.is_file_ref,
@@ -450,7 +451,7 @@ def _expect_string(put: unittest.TestCase,
 
 def _expect_common(put: unittest.TestCase,
                    actual_source: ParseSource,
-                   actual_result: sut.StringResolverOrFileRef,
+                   actual_result: string_or_file.StringOrFileRefResolver,
                    expectation: CommonExpectation):
     symbol_references_assertion = equals_symbol_references(expectation.symbol_references)
     symbol_references_assertion.apply_with_message(put, actual_result.symbol_usages,
