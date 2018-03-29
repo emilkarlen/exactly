@@ -4,12 +4,12 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_utils.external_program.command import command_values
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandDriverResolver
+from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.util.process_execution import os_process_execution
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class CommandDriverResolverForExecutableFile(CommandDriverResolver):
@@ -20,20 +20,18 @@ class CommandDriverResolverForExecutableFile(CommandDriverResolver):
         self._executable_file = executable_file
 
     @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._executable_file.references
+
+    @property
     def executable_file(self) -> FileRefResolver:
         return self._executable_file
 
-    def resolve(self,
-                environment: PathResolvingEnvironmentPreOrPostSds,
-                arguments: ListResolver) -> Command:
-        return os_process_execution.executable_file_command(
-            self.executable_file.resolve_value_of_any_dependency(environment),
-            arguments.resolve_value_of_any_dependency(environment)
-        )
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._executable_file.references
+    def make(self,
+             symbols: SymbolTable,
+             arguments: ListResolver) -> CommandValue:
+        return command_values.CommandValueForExecutableFile(self._executable_file.resolve(symbols),
+                                                            arguments.resolve(symbols))
 
 
 class CommandDriverResolverForSystemProgram(CommandDriverResolver):
@@ -44,31 +42,28 @@ class CommandDriverResolverForSystemProgram(CommandDriverResolver):
         self._program = program
 
     @property
-    def program(self) -> StringResolver:
-        return self._program
-
-    def resolve(self,
-                environment: PathResolvingEnvironmentPreOrPostSds,
-                arguments: ListResolver) -> Command:
-        return os_process_execution.executable_program_command(
-            self._program.resolve_value_of_any_dependency(environment),
-            arguments.resolve_value_of_any_dependency(environment)
-        )
-
-    @property
     def references(self) -> Sequence[SymbolReference]:
         return self._program.references
 
+    @property
+    def program(self) -> StringResolver:
+        return self._program
+
+    def make(self,
+             symbols: SymbolTable,
+             arguments: ListResolver) -> CommandValue:
+        return command_values.CommandValueForSystemProgram(self._program.resolve(symbols),
+                                                           arguments.resolve(symbols))
+
 
 class CommandDriverResolverForShell(CommandDriverResolver):
-    def resolve(self,
-                environment: PathResolvingEnvironmentPreOrPostSds,
-                arguments: ListResolver) -> Command:
-        super().__init__(())
-        arguments_as_string = string_resolvers.from_list_resolver(arguments)
-        arguments_as_str = arguments_as_string.resolve_value_of_any_dependency(environment)
-        return os_process_execution.shell_command(arguments_as_str)
-
     @property
     def references(self) -> Sequence[SymbolReference]:
         return ()
+
+    def make(self,
+             symbols: SymbolTable,
+             arguments: ListResolver) -> CommandValue:
+        arguments_as_string = string_resolvers.from_list_resolver(arguments)
+        # Quoting list elements using shlex here?
+        return command_values.CommandValueForShell(arguments_as_string.resolve(symbols))
