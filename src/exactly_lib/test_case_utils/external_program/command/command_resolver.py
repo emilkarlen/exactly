@@ -8,6 +8,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.sym_ref_and_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
@@ -65,7 +66,7 @@ class ArgumentsResolver(ObjectWithTypedSymbolReferences):
         return ArgumentsResolver(args, validators)
 
 
-class CommandResolver(ObjectWithTypedSymbolReferences):
+class CommandResolver(ObjectWithSymbolReferencesAndValidation):
     """
     Resolves a :class:`Command`,
     and supplies a validator of the ingredients involved.
