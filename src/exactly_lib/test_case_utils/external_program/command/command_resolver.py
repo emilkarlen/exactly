@@ -7,9 +7,11 @@ from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTyp
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import pre_or_post_validation
+from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.sym_ref_and_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.symbol_table import SymbolTable
 
 
 class CommandDriverResolver(ObjectWithTypedSymbolReferences):
@@ -32,9 +34,9 @@ class CommandDriverResolver(ObjectWithTypedSymbolReferences):
     def validators(self) -> Sequence[PreOrPostSdsValidator]:
         return self._validators
 
-    def resolve(self,
-                environment: PathResolvingEnvironmentPreOrPostSds,
-                arguments: ListResolver) -> Command:
+    def make(self,
+             symbols: SymbolTable,
+             arguments: ListResolver) -> CommandValue:
         raise NotImplementedError('abstract method')
 
 
@@ -97,7 +99,7 @@ class CommandResolver(ObjectWithSymbolReferencesAndValidation):
                                                                  additional_validation))
 
     def resolve(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return self.driver.resolve(environment, self._arguments.arguments_list)
+        return self.driver.make(environment.symbols, self._arguments.arguments_list).value_of_any_dependency(environment.home_and_sds)
 
     @property
     def driver(self) -> CommandDriverResolver:
