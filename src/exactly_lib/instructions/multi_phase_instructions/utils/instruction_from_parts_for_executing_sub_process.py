@@ -5,6 +5,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
     PartsParserFromEmbryoParser
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
@@ -37,7 +38,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
              environment: InstructionEnvironmentForPostSdsStep,
              logging_paths: PhaseLoggingPaths,
              os_services: OsServices) -> ResultAndStderr:
-        command = self.setup.command_resolver.resolve(environment.path_resolving_environment_pre_or_post_sds)
+        command = self.setup.command_resolver.resolve_of_any_dep(environment.path_resolving_environment_pre_or_post_sds)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
         return spe.execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
@@ -54,7 +55,7 @@ class ResultAndStderrTranslator(MainStepResultTranslator):
 class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParser):
     def __init__(self,
                  instruction_name: str,
-                 setup_parser: CommandAndStdinParser):
+                 setup_parser: Parser[CommandAndStdinResolver]):
         self.instruction_name = instruction_name
         self.setup_parser = setup_parser
 
