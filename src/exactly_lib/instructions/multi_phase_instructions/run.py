@@ -23,8 +23,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolverParser, \
-    CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinResolverParser
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list, parse_executable_file
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref

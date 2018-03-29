@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.condition.integer.parse_integer_condition impor
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import SourceType
+from exactly_lib.test_case_utils.string_or_file import SourceType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax
 
