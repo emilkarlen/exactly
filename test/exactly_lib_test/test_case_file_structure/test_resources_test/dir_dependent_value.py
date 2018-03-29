@@ -1,6 +1,6 @@
 import pathlib
 import unittest
-from typing import Set, Generic, Callable
+from typing import Set, Generic, Callable, Optional
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies, \
     dir_dependency_of_resolving_dependencies, RESOLVED_TYPE
@@ -150,7 +150,7 @@ class _ShouldNotBeInvokedTestException(Exception):
 
 class ASingleDirDependentValue(sut.SingleDirDependentValue):
     def __init__(self,
-                 resolving_dependency: ResolvingDependency,
+                 resolving_dependency: Optional[ResolvingDependency],
                  value_when_no_dir_dependencies=do_raise(_ShouldNotBeInvokedTestException()),
                  value_pre_sds=do_raise(_ShouldNotBeInvokedTestException()),
                  value_post_sds=do_raise(_ShouldNotBeInvokedTestException()),
@@ -160,10 +160,10 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
         self._value_pre_sds = value_pre_sds
         self._value_post_sds = value_post_sds
 
-    def resolving_dependency(self) -> ResolvingDependency:
+    def resolving_dependency(self) -> Optional[ResolvingDependency]:
         return self._resolving_dependency
 
-    def resolving_dependencies(self) -> set:
+    def resolving_dependencies(self) -> Set[ResolvingDependency]:
         if self._resolving_dependency is None:
             return set()
         else:

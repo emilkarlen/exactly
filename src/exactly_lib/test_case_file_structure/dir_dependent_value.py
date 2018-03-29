@@ -1,6 +1,6 @@
 import pathlib
 from enum import Enum
-from typing import TypeVar, Generic, Set
+from typing import TypeVar, Generic, Set, Optional
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -72,7 +72,7 @@ class DirDependentValue(Generic[RESOLVED_TYPE]):
 class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
     """A :class:`DirDependentValue` that depends at most on a single :class:`ResolvingDependency`."""
 
-    def resolving_dependency(self) -> ResolvingDependency:
+    def resolving_dependency(self) -> Optional[ResolvingDependency]:
         """
         :rtype: None iff the value has no dependency
         """
