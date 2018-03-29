@@ -98,15 +98,15 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
 
     def _file_path_for_file_with_expected_contents(self,
                                                    environment: PathResolvingEnvironmentPreOrPostSds) -> pathlib.Path:
-        expected_contents = self._expected_contents
-        if not expected_contents.is_file_ref:
-            contents = expected_contents.string_resolver.resolve_value_of_any_dependency(environment)
+        expected_contents = self._expected_contents.resolve_value(environment.symbols)
+        if expected_contents.is_file_ref:
+            return expected_contents.file_ref_value.value_of_any_dependency(environment.home_and_sds)
+        else:
+            contents = expected_contents.string_value.value_of_any_dependency(environment.home_and_sds)
             return tmp_text_file_containing(contents,
                                             prefix='contents-',
                                             suffix='.txt',
                                             directory=str(environment.sds.tmp.internal_dir))
-        else:
-            return expected_contents.file_reference_resolver.resolve_value_of_any_dependency(environment)
 
     def _fail(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
