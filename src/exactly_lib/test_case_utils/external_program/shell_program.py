@@ -5,11 +5,11 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolver
-from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinResolverParser
+from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinParser
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 
 
-class ShellCommandSetupParser(CommandAndStdinResolverParser):
+class ShellCommandSetupParser(CommandAndStdinParser):
     def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
         parser.require_is_not_at_eol('Missing {COMMAND}',
                                      _PARSE_FORMAT_MAP)

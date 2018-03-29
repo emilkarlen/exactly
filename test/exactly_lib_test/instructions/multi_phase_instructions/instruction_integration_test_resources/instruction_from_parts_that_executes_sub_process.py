@@ -18,7 +18,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolver
-from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinResolverParser
+from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinParser
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -41,7 +41,7 @@ class Configuration(ConfigurationBase):
     def run_sub_process_test(self,
                              put: unittest.TestCase,
                              source: ParseSource,
-                             execution_setup_parser: CommandAndStdinResolverParser,
+                             execution_setup_parser: CommandAndStdinParser,
                              arrangement,
                              expectation,
                              instruction_name: str = 'instruction-name'):
@@ -60,7 +60,7 @@ class Configuration(ConfigurationBase):
 
     def _parser(self,
                 instruction_name: str,
-                execution_setup_parser: CommandAndStdinResolverParser) -> InstructionParser:
+                execution_setup_parser: CommandAndStdinParser) -> InstructionParser:
         parts_parser = spe_parts.parts_parser(instruction_name, execution_setup_parser)
         return self.instruction_from_parts_parser(parts_parser)
 
@@ -272,7 +272,7 @@ class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
 
 
 class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-    CommandAndStdinResolverParser):
+    CommandAndStdinParser):
     def __init__(self,
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
@@ -286,7 +286,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
-    CommandAndStdinResolverParser):
+    CommandAndStdinParser):
     def __init__(self,
                  validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
