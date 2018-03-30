@@ -24,7 +24,9 @@ from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.external_program import parse
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.command_and_stdin_resolver import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program import command_and_stdin_resolver
+from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
 from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinParser
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list
@@ -180,7 +182,7 @@ class SetupParser(CommandAndStdinParser):
         additional = self._parse_additional_arguments(parser)
         command_resolver = command_resolver.new_with_additional_arguments(additional.arguments,
                                                                           additional.arguments_validator)
-        return CommandAndStdinResolver(command_resolver)
+        return CommandAndStdinResolver(command_resolver, no_stdin())
 
     def _parse_additional_arguments(self, token_parser: TokenParser) -> _AdditionalArguments:
         if token_parser.is_at_eol:

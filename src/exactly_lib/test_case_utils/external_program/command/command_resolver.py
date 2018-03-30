@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
@@ -8,6 +7,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
+from exactly_lib.test_case_utils.external_program.component_resolvers import ArgumentsResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.resolver_with_validation import ResolverWithValidation
 from exactly_lib.util.process_execution.os_process_execution import Command
@@ -38,34 +38,6 @@ class CommandDriverResolver(ObjectWithTypedSymbolReferences):
              symbols: SymbolTable,
              arguments: ListResolver) -> CommandValue:
         raise NotImplementedError('abstract method')
-
-
-class ArgumentsResolver(ObjectWithTypedSymbolReferences):
-    def __init__(self,
-                 arguments: ListResolver,
-                 validators: Sequence[PreOrPostSdsValidator] = ()):
-        self._arguments = arguments
-        self._validators = validators
-
-    @property
-    def arguments_list(self) -> ListResolver:
-        return self._arguments
-
-    @property
-    def validators(self) -> Sequence[PreOrPostSdsValidator]:
-        return self._validators
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._arguments.references
-
-    def new_with_appended(self,
-                          arguments: ListResolver,
-                          validators: Sequence[PreOrPostSdsValidator] = ()):
-        args = list_resolvers.concat([self.arguments_list, arguments])
-        validators = tuple(self._validators) + tuple(validators)
-
-        return ArgumentsResolver(args, validators)
 
 
 class CommandResolver(ResolverWithValidation[CommandValue]):
@@ -103,8 +75,11 @@ class CommandResolver(ResolverWithValidation[CommandValue]):
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return pre_or_post_validation.all_of(tuple(self._driver.validators) +
-                                             tuple(self._arguments.validators))
+        return pre_or_post_validation.all_of(self.validators)
+
+    @property
+    def validators(self) -> Sequence[PreOrPostSdsValidator]:
+        return tuple(self._driver.validators) + tuple(self._arguments.validators)
 
     @property
     def references(self) -> Sequence[SymbolReference]:
