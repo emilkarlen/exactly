@@ -1,6 +1,6 @@
 *~
 __pycache__
-venv3.6/
+venv/
 .idea/workspace.xml
 .idea/shelf/
 test/exactly_lib_test/tmp/
