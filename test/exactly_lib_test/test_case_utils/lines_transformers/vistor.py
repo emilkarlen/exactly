@@ -9,11 +9,11 @@ from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTr
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestFileTransformerStructureVisitor),
+        unittest.makeSuite(TestLinesTransformerStructureVisitor),
     ])
 
 
-class TestFileTransformerStructureVisitor(unittest.TestCase):
+class TestLinesTransformerStructureVisitor(unittest.TestCase):
     def test_visit_identity(self):
         # ARRANGE #
         instance = sut.IdentityLinesTransformer()

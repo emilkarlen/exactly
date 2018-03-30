@@ -123,7 +123,7 @@ class Boolean(ValueAssertion[T]):
             put.assertFalse(value, msg)
 
 
-class IsInstance(ValueAssertion[Type]):
+class IsInstance(ValueAssertion[Any]):
     """
     Tests a boolean
     """

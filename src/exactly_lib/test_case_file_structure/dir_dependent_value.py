@@ -1,6 +1,6 @@
 import pathlib
 from enum import Enum
-from typing import TypeVar, Generic
+from typing import TypeVar, Generic, Set
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -46,10 +46,7 @@ RESOLVED_TYPE = TypeVar('RESOLVED_TYPE')
 class DirDependentValue(Generic[RESOLVED_TYPE]):
     """A value that may refer to the test case directories."""
 
-    def resolving_dependencies(self) -> set:
-        """
-        :rtype: set of :class:`ResolvingDependency`
-        """
+    def resolving_dependencies(self) -> Set[ResolvingDependency]:
         raise NotImplementedError()
 
     def has_dir_dependency(self) -> bool:
