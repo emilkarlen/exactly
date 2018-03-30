@@ -3,7 +3,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.external_program.command_and_stdin import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.command_and_stdin_resolver import CommandAndStdinResolver
 from exactly_lib.test_case_utils.external_program.program import ProgramResolver
 from exactly_lib.test_case_utils.parse.parse_executable_file import parse
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source

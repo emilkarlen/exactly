@@ -1,6 +1,7 @@
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver, ArgumentsResolver
+from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
+from exactly_lib.test_case_utils.external_program.component_resolvers import ArgumentsResolver
 from exactly_lib.test_case_utils.external_program.command.driver_resolvers import \
     CommandDriverResolverForExecutableFile
 from exactly_lib.test_case_utils.external_program.validators import ExistingExecutableFileValidator
