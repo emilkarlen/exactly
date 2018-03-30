@@ -30,8 +30,8 @@ class TestConstantFragment(unittest.TestCase):
                 csv.ConstantFragment('fragment'),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return('fragment'),
-                    value_of_any_dependency=do_return('fragment')),
+                    get_value_when_no_dir_dependencies=do_return('fragment'),
+                    get_value_of_any_dependency=do_return('fragment')),
             ),
         ]
         for test_case_name, expected, actual in cases:
@@ -50,8 +50,8 @@ class TestTransformedFragment(unittest.TestCase):
                                               str.upper),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return('FRAGMENT'),
-                    value_of_any_dependency=do_return('FRAGMENT')),
+                    get_value_when_no_dir_dependencies=do_return('FRAGMENT'),
+                    get_value_of_any_dependency=do_return('FRAGMENT')),
             ),
         ]
         for test_case_name, actual, expected in cases:
@@ -74,7 +74,7 @@ class TestFileRefFragment(unittest.TestCase):
                 csv.FileRefFragment(file_ref_rel_home),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME},
-                    value_of_any_dependency=lambda h_s: str(
+                    get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_home.value_pre_sds(h_s.hds))),
             ),
             (
@@ -82,7 +82,7 @@ class TestFileRefFragment(unittest.TestCase):
                 csv.FileRefFragment(file_ref_rel_sds),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.NON_HOME},
-                    value_of_any_dependency=lambda h_s: str(
+                    get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_sds.value_post_sds(h_s.sds))),
             ),
             (
@@ -90,8 +90,8 @@ class TestFileRefFragment(unittest.TestCase):
                 csv.FileRefFragment(file_ref_abs),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return(str(file_ref_abs.value_when_no_dir_dependencies())),
-                    value_of_any_dependency=lambda h_s: str(
+                    get_value_when_no_dir_dependencies=do_return(str(file_ref_abs.value_when_no_dir_dependencies())),
+                    get_value_of_any_dependency=lambda h_s: str(
                         file_ref_abs.value_when_no_dir_dependencies())),
             ),
         ]
@@ -115,8 +115,8 @@ class TestListFragment(unittest.TestCase):
                 csv.ListValueFragment(csv.ListValue([string_value_of_single_string(string_1)])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return(string_1),
-                    value_of_any_dependency=do_return(string_1)),
+                    get_value_when_no_dir_dependencies=do_return(string_1),
+                    get_value_of_any_dependency=do_return(string_1)),
             ),
             (
                 'multiple string constant element',
@@ -124,15 +124,15 @@ class TestListFragment(unittest.TestCase):
                                                      string_value_of_single_string(string_2)])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return(string_1 + ' ' + string_2),
-                    value_of_any_dependency=do_return(string_1 + ' ' + string_2)),
+                    get_value_when_no_dir_dependencies=do_return(string_1 + ' ' + string_2),
+                    get_value_of_any_dependency=do_return(string_1 + ' ' + string_2)),
             ),
             (
                 'dependency on ' + str(ResolvingDependency.HOME),
                 csv.ListValueFragment(csv.ListValue([string_of_file_ref_rel_home])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME},
-                    value_of_any_dependency=lambda h_s: str(
+                    get_value_of_any_dependency=lambda h_s: str(
                         string_of_file_ref_rel_home.value_of_any_dependency(h_s))),
             ),
         ]
@@ -156,16 +156,16 @@ class TestStringValue(unittest.TestCase):
                 sut.StringValue(tuple([])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return(''),
-                    value_of_any_dependency=do_return('')),
+                    get_value_when_no_dir_dependencies=do_return(''),
+                    get_value_of_any_dependency=do_return('')),
             ),
             (
                 'single string constant fragment',
                 sut.StringValue(tuple([csv.ConstantFragment(string_fragment_1)])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return(string_fragment_1),
-                    value_of_any_dependency=do_return(string_fragment_1)),
+                    get_value_when_no_dir_dependencies=do_return(string_fragment_1),
+                    get_value_of_any_dependency=do_return(string_fragment_1)),
             ),
             (
                 'multiple string constant fragment',
@@ -173,15 +173,15 @@ class TestStringValue(unittest.TestCase):
                                        csv.ConstantFragment(string_fragment_2)])),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return(string_fragment_1 + string_fragment_2),
-                    value_of_any_dependency=do_return(string_fragment_1 + string_fragment_2)),
+                    get_value_when_no_dir_dependencies=do_return(string_fragment_1 + string_fragment_2),
+                    get_value_of_any_dependency=do_return(string_fragment_1 + string_fragment_2)),
             ),
             (
                 'single dir dependent value/pre sds',
                 sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_home)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME},
-                    value_of_any_dependency=lambda h_s: str(
+                    get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_home.value_pre_sds(h_s.hds))),
             ),
             (
@@ -189,7 +189,7 @@ class TestStringValue(unittest.TestCase):
                 sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_sds)])),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.NON_HOME},
-                    value_of_any_dependency=lambda h_s: str(
+                    get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_sds.value_post_sds(h_s.sds))),
             ),
             (
@@ -199,7 +199,7 @@ class TestStringValue(unittest.TestCase):
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME,
                                             ResolvingDependency.NON_HOME},
-                    value_of_any_dependency=lambda h_s: (
+                    get_value_of_any_dependency=lambda h_s: (
                             str(file_ref_rel_home.value_pre_sds(h_s.hds)) +
                             str(file_ref_rel_sds.value_post_sds(h_s.sds)))
                 ),

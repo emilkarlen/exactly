@@ -6,7 +6,10 @@ from exactly_lib.help_texts.doc_format import directory_variable_name_text
 from exactly_lib.help_texts.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_utils.lines_transformer import values
 from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -15,9 +18,16 @@ HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CA
 
 
 class EnvVarReplacementLinesTransformer(CustomLinesTransformer):
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
-        name_and_value_list = _derive_name_and_value_list(tcds)
-        return (_replace(name_and_value_list, line) for line in lines)
+    def __init__(self, tcds: HomeAndSds):
+        self._name_and_value_list = _derive_name_and_value_list(tcds)
+
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+        return (_replace(self._name_and_value_list, line) for line in lines)
+
+
+def value() -> LinesTransformerValue:
+    return values.DirDependentLinesTransformerValue(ResolvingDependency,
+                                                    EnvVarReplacementLinesTransformer)
 
 
 def replace(home_and_sds: HomeAndSds,

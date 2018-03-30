@@ -127,7 +127,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         return True
 
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
-        raise DirDependencyError(ResolvingDependency.HOME)
+        raise DirDependencyError({ResolvingDependency.HOME})
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         suffix = self.path_suffix_path()
@@ -135,7 +135,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         return root / suffix
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        raise DirDependencyError(ResolvingDependency.HOME,
+        raise DirDependencyError({ResolvingDependency.HOME},
                                  'This file exists pre-SDS')
 
     def _relativity(self) -> RelOptionType:

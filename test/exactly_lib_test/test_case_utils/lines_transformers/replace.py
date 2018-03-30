@@ -10,8 +10,6 @@ def suite() -> unittest.TestSuite:
 
 
 class Test(unittest.TestCase):
-    tcds = fake_home_and_sds()
-
     def test_SHOULD_not_be_identity_transformer(self):
         transformer = sut.ReplaceLinesTransformer(re.compile('object'),
                                                   'transformer')
@@ -29,7 +27,7 @@ class Test(unittest.TestCase):
                                                   'transformer')
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 
@@ -61,7 +59,7 @@ class Test(unittest.TestCase):
                                                   'there')
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 
@@ -83,7 +81,7 @@ class Test(unittest.TestCase):
                                                   'is what I want')
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 
@@ -107,7 +105,7 @@ class Test(unittest.TestCase):
                                                   '')
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 

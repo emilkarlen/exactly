@@ -40,15 +40,14 @@ def resolve_and_create_file(path_resolver: FileRefResolver,
 
 def create_file_from_transformation_of_existing_file(src_path: pathlib.Path,
                                                      dst_path: pathlib.Path,
-                                                     transformer: LinesTransformer,
-                                                     tcds: HomeAndSds) -> str:
+                                                     transformer: LinesTransformer) -> str:
     """
     :return: Error message in case of failure
     """
 
     def write_file(output_file):
         with src_path.open() as in_file:
-            for line in transformer.transform(tcds, in_file):
+            for line in transformer.transform(in_file):
                 output_file.write(line)
 
     return create_file(dst_path,

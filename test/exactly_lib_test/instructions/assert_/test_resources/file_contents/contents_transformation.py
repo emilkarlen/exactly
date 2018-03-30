@@ -9,9 +9,7 @@ class ToUppercaseLinesTransformer(LinesTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self,
-                  tcds: HomeAndSds,
-                  lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 
 

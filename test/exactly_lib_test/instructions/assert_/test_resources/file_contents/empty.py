@@ -129,7 +129,5 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
 
 
 class DeleteEverythingLinesTransformer(LinesTransformer):
-    def transform(self,
-                  tcds: HomeAndSds,
-                  lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(lambda x: '', lines)

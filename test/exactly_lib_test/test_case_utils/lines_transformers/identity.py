@@ -9,7 +9,6 @@ def suite() -> unittest.TestSuite:
 
 
 class Test(unittest.TestCase):
-    tcds = fake_home_and_sds()
 
     def test_SHOULD_be_identity_transformer(self):
         transformer = sut.IdentityLinesTransformer()
@@ -22,7 +21,7 @@ class Test(unittest.TestCase):
         transformer = sut.IdentityLinesTransformer()
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 
@@ -44,7 +43,7 @@ class Test(unittest.TestCase):
         transformer = sut.IdentityLinesTransformer()
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 

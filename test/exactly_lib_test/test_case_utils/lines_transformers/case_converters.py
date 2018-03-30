@@ -12,8 +12,6 @@ def suite() -> unittest.TestSuite:
 
 
 class TestToUpper(unittest.TestCase):
-    tcds = fake_home_and_sds()
-
     def test_SHOULD_not_be_identity_transformer(self):
         transformer = sut.ToUpperCaseLinesTransformer()
         self.assertFalse(transformer.is_identity_transformer)
@@ -29,7 +27,7 @@ class TestToUpper(unittest.TestCase):
         transformer = sut.ToUpperCaseLinesTransformer()
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 
@@ -51,7 +49,7 @@ class TestToUpper(unittest.TestCase):
         transformer = sut.ToUpperCaseLinesTransformer()
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 
@@ -64,8 +62,6 @@ class TestToUpper(unittest.TestCase):
 
 
 class TestToLower(unittest.TestCase):
-    tcds = fake_home_and_sds()
-
     def test_SHOULD_not_be_identity_transformer(self):
         transformer = sut.ToLowerCaseLinesTransformer()
         self.assertFalse(transformer.is_identity_transformer)
@@ -81,7 +77,7 @@ class TestToLower(unittest.TestCase):
         transformer = sut.ToLowerCaseLinesTransformer()
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 
@@ -103,7 +99,7 @@ class TestToLower(unittest.TestCase):
         transformer = sut.ToLowerCaseLinesTransformer()
         # ACT #
 
-        actual = transformer.transform(self.tcds, input_lines_iter)
+        actual = transformer.transform(input_lines_iter)
 
         # ASSERT #
 

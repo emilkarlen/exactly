@@ -5,6 +5,7 @@ from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_utils.lines_transformer import env_vars_replacement as sut
+from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.replaced_env_vars import \
     ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHomeActAndCase, \
@@ -22,9 +23,9 @@ def suite() -> unittest.TestSuite:
 
 
 def _transform_string_to_string(home_and_sds: HomeAndSds, string_input: str) -> str:
-    transformer = sut.EnvVarReplacementLinesTransformer()
+    transformer = sut.EnvVarReplacementLinesTransformer(home_and_sds)
     lines = string_input.splitlines(keepends=True)
-    output_lines = transformer.transform(home_and_sds, lines)
+    output_lines = transformer.transform(lines)
     return ''.join(output_lines)
 
 
@@ -43,7 +44,7 @@ class TestMisc(unittest.TestCase):
                              actual)
 
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.EnvVarReplacementLinesTransformer()
+        transformer = sut.EnvVarReplacementLinesTransformer(fake_home_and_sds())
         self.assertFalse(transformer.is_identity_transformer)
 
 

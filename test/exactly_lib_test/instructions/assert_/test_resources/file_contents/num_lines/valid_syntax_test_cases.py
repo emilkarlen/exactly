@@ -142,7 +142,5 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
 
 
 class _DeleteAllButFirstLine(LinesTransformer):
-    def transform(self,
-                  tcds: HomeAndSds,
-                  lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return itertools.islice(lines, 1)
