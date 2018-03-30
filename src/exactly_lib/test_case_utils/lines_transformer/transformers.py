@@ -1,4 +1,5 @@
 import functools
+from typing import Sequence, Iterable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, original_and_model_iter_from_file_line_iter
@@ -11,12 +12,12 @@ class IdentityLinesTransformer(LinesTransformer):
     def is_identity_transformer(self) -> bool:
         return True
 
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
         return lines
 
 
 class SequenceLinesTransformer(LinesTransformer):
-    def __init__(self, transformers: list):
+    def __init__(self, transformers: Sequence[LinesTransformer]):
         self._transformers = tuple(transformers)
 
     @property
@@ -24,10 +25,10 @@ class SequenceLinesTransformer(LinesTransformer):
         return all([t.is_identity_transformer for t in self._transformers])
 
     @property
-    def transformers(self) -> tuple:
+    def transformers(self) -> Sequence[LinesTransformer]:
         return self._transformers
 
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
         if not self._transformers:
             return lines
         else:
@@ -57,7 +58,7 @@ class ReplaceLinesTransformer(LinesTransformer):
     def replacement(self) -> str:
         return self._replacement
 
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
         return (
             self._compiled_regular_expression.sub(self._replacement, line)
             for line in lines
@@ -81,7 +82,7 @@ class SelectLinesTransformer(LinesTransformer):
     def line_matcher(self) -> LineMatcher:
         return self._line_matcher
 
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
         return (
             line
             for line, line_matcher_model in original_and_model_iter_from_file_line_iter(lines)

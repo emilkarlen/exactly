@@ -4,8 +4,8 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver, LineMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.lines_transformer import transformers
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.test_case_utils.lines_transformer import transformers, values
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -16,9 +16,9 @@ class LinesTransformerConstant(LinesTransformerResolver):
     """
 
     def __init__(self, value: LinesTransformer):
-        self._value = value
+        self._value = values.LinesTransformerConstantValue(value)
 
-    def resolve(self, symbols: SymbolTable) -> LinesTransformer:
+    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
         return self._value
 
     @property
@@ -39,7 +39,7 @@ class LinesTransformerReference(LinesTransformerResolver):
         self._references = [SymbolReference(name_of_referenced_resolver,
                                             ValueTypeRestriction(ValueType.LINES_TRANSFORMER))]
 
-    def resolve(self, symbols: SymbolTable) -> LinesTransformer:
+    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
         container = symbols.lookup(self._name_of_referenced_resolver)
         resolver = container.resolver
         assert isinstance(resolver, LinesTransformerResolver)
@@ -62,7 +62,8 @@ class LinesTransformerSelectResolver(LinesTransformerResolver):
         self.line_matcher_resolver = line_matcher_resolver
 
     def resolve(self, symbols: SymbolTable) -> LinesTransformer:
-        return transformers.SelectLinesTransformer(self.line_matcher_resolver.resolve(symbols))
+        return values.LinesTransformerConstantValue(
+            transformers.SelectLinesTransformer(self.line_matcher_resolver.resolve(symbols)))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
@@ -70,16 +71,12 @@ class LinesTransformerSelectResolver(LinesTransformerResolver):
 
 
 class LinesTransformerSequenceResolver(LinesTransformerResolver):
-    """
-    Resolver of :class:`LinesTransformerSequence`
-    """
-
-    def __init__(self, transformer_resolver_list: list):
+    def __init__(self, transformer_resolver_list: Sequence[LinesTransformerResolver]):
         self.transformers = transformer_resolver_list
         self._references = references_from_objects_with_symbol_references(transformer_resolver_list)
 
-    def resolve(self, symbols: SymbolTable) -> LinesTransformer:
-        return transformers.SequenceLinesTransformer([
+    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
+        return values.LinesTransformerSequenceValue([
             transformer.resolve(symbols)
             for transformer in self.transformers
         ])

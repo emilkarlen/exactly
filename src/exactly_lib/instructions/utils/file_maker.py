@@ -86,7 +86,9 @@ class FileMakerForContentsFromSubProcess(FileMaker):
             return err_msg
 
         path_of_output = storage_dir / result_and_std_err.result.file_names.stdout
-        transformer = self._output_transformer.resolve(path_resolving_env.symbols)
+        transformer = self._output_transformer \
+            .resolve(path_resolving_env.symbols) \
+            .value_of_any_dependency(path_resolving_env.home_and_sds)
 
         return create_file_from_transformation_of_existing_file(path_of_output,
                                                                 dst_path,
@@ -134,7 +136,9 @@ class FileMakerForContentsFromExistingFile(FileMaker):
         if src_validation_res:
             return src_validation_res
 
-        transformer = self._transformer.resolve(path_resolving_env.symbols)
+        transformer = self._transformer \
+            .resolve(path_resolving_env.symbols) \
+            .value_of_any_dependency(path_resolving_env.home_and_sds)
         src_path = self._src_path.resolve_value_of_any_dependency(path_resolving_env)
 
         return create_file_from_transformation_of_existing_file(src_path,

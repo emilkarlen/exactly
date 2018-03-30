@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransfo
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
@@ -87,7 +87,7 @@ class LinesTransformerResolverWithReferences(LinesTransformerResolver):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
-    def resolve(self, named_elements: SymbolTable) -> LinesTransformer:
+    def resolve(self, named_elements: SymbolTable) -> LinesTransformerValue:
         raise NotImplementedError('should not be used in these tests')
 
     @property

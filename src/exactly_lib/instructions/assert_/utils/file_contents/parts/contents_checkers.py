@@ -111,7 +111,10 @@ class FileTransformerAsAssertionPart(AssertionPart):
             err_msg = self._err_msg(environment, file_to_transform, failure_info_properties)
             raise PfhHardErrorException(err_msg)
 
-        lines_transformer = self._lines_transformer_resolver.resolve(environment.symbols)
+        lines_transformer = self._lines_transformer_resolver \
+            .resolve(environment.symbols) \
+            .value_of_any_dependency(environment.home_and_sds)
+
         return FileToCheck(actual_file_path,
                            file_to_transform.checked_file_describer,
                            environment,

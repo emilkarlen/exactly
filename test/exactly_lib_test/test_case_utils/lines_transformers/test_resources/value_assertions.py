@@ -9,7 +9,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 def equals_lines_transformer(expected: LinesTransformer,
-                             description: str = '') -> asrt.ValueAssertion:
+                             description: str = '') -> asrt.ValueAssertion[LinesTransformer]:
     """
     :return: A assertion on a :class:`LinesTransformer`
     """
@@ -27,9 +27,10 @@ class _EqualsAssertion(asrt.ValueAssertion):
               put: unittest.TestCase,
               actual,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        assert_is_file_selector_type = asrt.is_instance(LinesTransformer, self.description)
-        assert_is_file_selector_type.apply_with_message(put, actual,
-                                                        'Value must be a ' + type(LinesTransformer).__name__)
+        assert_is_lines_transformer_type = asrt.is_instance(LinesTransformer, self.description)
+        assert_is_lines_transformer_type.apply_with_message(
+            put, actual,
+            message_builder.apply('Value must be a ' + str(LinesTransformer)))
         assert isinstance(actual, LinesTransformer)  # Type info for IDE
         checker = _EqualityChecker(put,
                                    message_builder,
