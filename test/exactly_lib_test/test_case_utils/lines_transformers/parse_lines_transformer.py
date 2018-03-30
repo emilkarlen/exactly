@@ -408,5 +408,5 @@ def select_transformer(line_matcher: LineMatcher) -> SelectLinesTransformer:
 
 
 class CustomLinesTransformerTestImpl(CustomLinesTransformer):
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should not be used')

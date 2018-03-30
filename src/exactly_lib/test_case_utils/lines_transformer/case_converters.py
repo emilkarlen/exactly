@@ -1,6 +1,5 @@
 from typing import Iterable
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer
 
 
@@ -9,9 +8,7 @@ class ToUpperCaseLinesTransformer(CustomLinesTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self,
-                  tcds: HomeAndSds,
-                  lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 
 
@@ -20,7 +17,5 @@ class ToLowerCaseLinesTransformer(CustomLinesTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self,
-                  tcds: HomeAndSds,
-                  lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.lower, lines)

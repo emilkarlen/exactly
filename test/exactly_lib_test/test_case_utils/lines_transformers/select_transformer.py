@@ -30,8 +30,6 @@ class TestSelectTransformer(unittest.TestCase):
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_select_with_sub_string_matcher(self):
-        home_and_sds = fake_home_and_sds()
-
         transformer = sut.SelectLinesTransformer(sub_string_line_matcher('MATCH'))
         cases = [
             NameAndValue('no lines',
@@ -63,15 +61,13 @@ class TestSelectTransformer(unittest.TestCase):
             input_lines, expected_output_lines = case.value
             with self.subTest(case_name=case.name):
                 # ACT #
-                actual = transformer.transform(home_and_sds, iter(input_lines))
+                actual = transformer.transform(iter(input_lines))
                 # ASSERT #
                 actual_lines = list(actual)
                 self.assertEqual(expected_output_lines,
                                  actual_lines)
 
     def test_other_scenarios(self):
-        home_and_sds = fake_home_and_sds()
-
         cases = [
             NameAndValue(
                 'trailing new lines should be removed from line matcher model, but not from transformer output',
@@ -113,7 +109,7 @@ class TestSelectTransformer(unittest.TestCase):
             with self.subTest(case_name=case.name):
                 transformer = sut.SelectLinesTransformer(line_matcher)
                 # ACT #
-                actual = transformer.transform(home_and_sds, iter(input_lines))
+                actual = transformer.transform(iter(input_lines))
                 # ASSERT #
                 actual_lines = list(actual)
                 self.assertEqual(expected_output_lines,

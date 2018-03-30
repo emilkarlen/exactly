@@ -29,6 +29,25 @@ class LinesTransformerConstant(LinesTransformerResolver):
         return str(type(self)) + '\'' + str(self._value) + '\''
 
 
+class LinesTransformerConstantOfValue(LinesTransformerResolver):
+    """
+    A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformerValue`
+    """
+
+    def __init__(self, value: LinesTransformerValue):
+        self._value = value
+
+    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
+        return self._value
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return []
+
+    def __str__(self):
+        return str(type(self)) + '\'' + str(self._value) + '\''
+
+
 class LinesTransformerReference(LinesTransformerResolver):
     """
     A :class:`LinesTransformerResolver` that is a reference to a symbol

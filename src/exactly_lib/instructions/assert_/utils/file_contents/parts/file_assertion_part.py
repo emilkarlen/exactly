@@ -85,7 +85,7 @@ class FileToCheck:
             if self._lines_transformer.is_identity_transformer:
                 yield f
             else:
-                yield self._lines_transformer.transform(self._environment.home_and_sds, f)
+                yield self._lines_transformer.transform(f)
 
     def _write_transformed_contents(self):
         with self._transformed_file_path.open('w') as dst_file:

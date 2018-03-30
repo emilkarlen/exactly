@@ -1,7 +1,6 @@
 import functools
 from typing import Sequence, Iterable
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, original_and_model_iter_from_file_line_iter
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.functional import compose_first_and_second
@@ -12,7 +11,7 @@ class IdentityLinesTransformer(LinesTransformer):
     def is_identity_transformer(self) -> bool:
         return True
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return lines
 
 
@@ -28,14 +27,14 @@ class SequenceLinesTransformer(LinesTransformer):
     def transformers(self) -> Sequence[LinesTransformer]:
         return self._transformers
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         if not self._transformers:
             return lines
         else:
-            return self._sequenced_transformers(tcds)(lines)
+            return self._sequenced_transformers()(lines)
 
-    def _sequenced_transformers(self, tcds: HomeAndSds):
-        lines_to_lines_transformers = [functools.partial(t.transform, tcds)
+    def _sequenced_transformers(self):
+        lines_to_lines_transformers = [t.transform
                                        for t in self._transformers]
 
         return functools.reduce(compose_first_and_second, lines_to_lines_transformers)
@@ -58,7 +57,7 @@ class ReplaceLinesTransformer(LinesTransformer):
     def replacement(self) -> str:
         return self._replacement
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return (
             self._compiled_regular_expression.sub(self._replacement, line)
             for line in lines
@@ -82,7 +81,7 @@ class SelectLinesTransformer(LinesTransformer):
     def line_matcher(self) -> LineMatcher:
         return self._line_matcher
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return (
             line
             for line, line_matcher_model in original_and_model_iter_from_file_line_iter(lines)

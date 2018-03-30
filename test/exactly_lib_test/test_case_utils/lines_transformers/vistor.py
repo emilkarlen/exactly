@@ -113,5 +113,5 @@ class MyCustomTransformer(sut.CustomLinesTransformer):
     def __init__(self):
         super().__init__()
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return iter

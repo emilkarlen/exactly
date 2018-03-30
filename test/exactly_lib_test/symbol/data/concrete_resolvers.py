@@ -30,8 +30,8 @@ class TestConstants(unittest.TestCase):
                          'references')
         actual_value = actual.resolve(empty_symbol_table())
         expected_value = AMultiDirDependentValue(resolving_dependencies=set(),
-                                                 value_when_no_dir_dependencies=do_return(constant),
-                                                 value_of_any_dependency=do_return(constant))
+                                                 get_value_when_no_dir_dependencies=do_return(constant),
+                                                 get_value_of_any_dependency=do_return(constant))
         equals_multi_dir_dependent_value(expected_value).apply_with_message(self, actual_value, 'resolve value')
 
 

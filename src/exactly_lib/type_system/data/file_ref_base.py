@@ -32,7 +32,7 @@ class FileRefWithPathSuffixAndIsNotAbsoluteBase(FileRefWithPathSuffixBase):
         return True
 
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
-        raise DirDependencyError(self.resolving_dependency())
+        raise DirDependencyError({self.resolving_dependency()})
 
     def relativity(self) -> SpecificPathRelativity:
         rel_option_type = self._relativity()

@@ -9,17 +9,17 @@ class MyNonIdentityTransformer(LinesTransformer):
     def is_identity_transformer(self) -> bool:
         return False
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(lambda s: 'not identity', lines)
 
 
 class MyToUppercaseTransformer(LinesTransformer):
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 
 
 class MyCountNumUppercaseCharactersTransformer(LinesTransformer):
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(get_number_of_uppercase_characters, lines)
 
 

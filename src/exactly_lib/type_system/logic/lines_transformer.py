@@ -17,7 +17,7 @@ class LinesTransformer:
         """
         return False
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('abstract method')
 
     def __str__(self):

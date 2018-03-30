@@ -29,16 +29,16 @@ class TestListValue(unittest.TestCase):
                 sut.ListValue([]),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return([]),
-                    value_of_any_dependency=do_return([])),
+                    get_value_when_no_dir_dependencies=do_return([]),
+                    get_value_of_any_dependency=do_return([])),
             ),
             (
                 'single string constant element',
                 sut.ListValue([sv.string_value_of_single_string(string_fragment_1)]),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return([string_fragment_1]),
-                    value_of_any_dependency=do_return([string_fragment_1])),
+                    get_value_when_no_dir_dependencies=do_return([string_fragment_1]),
+                    get_value_of_any_dependency=do_return([string_fragment_1])),
             ),
             (
                 'multiple string constant element',
@@ -46,15 +46,15 @@ class TestListValue(unittest.TestCase):
                                sv.string_value_of_single_string(string_fragment_2)]),
                 AMultiDirDependentValue(
                     resolving_dependencies=set(),
-                    value_when_no_dir_dependencies=do_return([string_fragment_1, string_fragment_2]),
-                    value_of_any_dependency=do_return([string_fragment_1, string_fragment_2])),
+                    get_value_when_no_dir_dependencies=do_return([string_fragment_1, string_fragment_2]),
+                    get_value_of_any_dependency=do_return([string_fragment_1, string_fragment_2])),
             ),
             (
                 'single dir dependent value/pre sds',
                 sut.ListValue([single_element_with_dep_on_home]),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME},
-                    value_of_any_dependency=lambda h_s:
+                    get_value_of_any_dependency=lambda h_s:
                     [single_element_with_dep_on_home.value_of_any_dependency(h_s)]),
             ),
             (
@@ -62,7 +62,7 @@ class TestListValue(unittest.TestCase):
                 sut.ListValue([single_element_with_dep_on_sds]),
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.NON_HOME},
-                    value_of_any_dependency=lambda h_s:
+                    get_value_of_any_dependency=lambda h_s:
                     [single_element_with_dep_on_sds.value_of_any_dependency(h_s)]),
             ),
             (
@@ -72,7 +72,7 @@ class TestListValue(unittest.TestCase):
                 AMultiDirDependentValue(
                     resolving_dependencies={ResolvingDependency.HOME,
                                             ResolvingDependency.NON_HOME},
-                    value_of_any_dependency=lambda h_s: [
+                    get_value_of_any_dependency=lambda h_s: [
                         single_element_with_dep_on_home.value_of_any_dependency(h_s),
                         single_element_with_dep_on_sds.value_of_any_dependency(h_s)]
                 ),

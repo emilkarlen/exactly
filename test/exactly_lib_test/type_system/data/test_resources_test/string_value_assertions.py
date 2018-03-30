@@ -22,8 +22,8 @@ class TestEqualsFragment(unittest.TestCase):
         actual = csv.ConstantFragment('fragment value')
         expected = AMultiDirDependentValue(
             resolving_dependencies=set(),
-            value_when_no_dir_dependencies=do_return('fragment value'),
-            value_of_any_dependency=do_return('fragment value'))
+            get_value_when_no_dir_dependencies=do_return('fragment value'),
+            get_value_of_any_dependency=do_return('fragment value'))
 
         assertion = sut.equals_string_fragment(expected)
         assertion.apply_without_message(self, actual)
@@ -32,8 +32,8 @@ class TestEqualsFragment(unittest.TestCase):
         actual = csv.ConstantFragment('actual value')
         expected = AMultiDirDependentValue(
             resolving_dependencies=set(),
-            value_when_no_dir_dependencies=do_return('expected value'),
-            value_of_any_dependency=do_return('expected value'))
+            get_value_when_no_dir_dependencies=do_return('expected value'),
+            get_value_of_any_dependency=do_return('expected value'))
         assertion = sut.equals_string_fragment(expected)
         assert_that_assertion_fails(assertion, actual)
 

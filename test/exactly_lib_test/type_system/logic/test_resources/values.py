@@ -12,7 +12,7 @@ class FakeLinesTransformer(sut.LinesTransformer):
     def __init__(self):
         pass
 
-    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should never be used')
 
 

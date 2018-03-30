@@ -29,7 +29,7 @@ def dir_dependency_of_resolving_dependencies(resolving_dependencies: set) -> Dir
 
 
 class DirDependencyError(ValueError):
-    def __init__(self, unexpected_dependency: ResolvingDependency,
+    def __init__(self, unexpected_dependency: Set[ResolvingDependency],
                  msg: str = ''):
         super().__init__(msg)
         self.unexpected_dependency = unexpected_dependency
@@ -62,7 +62,7 @@ class DirDependentValue(Generic[RESOLVED_TYPE]):
         """
         :raises DirDependencyError: This value has dir dependencies.
         """
-        raise NotImplementedError()
+        raise DirDependencyError(self.resolving_dependencies())
 
     def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> RESOLVED_TYPE:
         """Gives the value, regardless of actual dependency."""

@@ -92,8 +92,7 @@ class FileMakerForContentsFromSubProcess(FileMaker):
 
         return create_file_from_transformation_of_existing_file(path_of_output,
                                                                 dst_path,
-                                                                transformer,
-                                                                path_resolving_env.home_and_sds)
+                                                                transformer)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
@@ -143,8 +142,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
 
         return create_file_from_transformation_of_existing_file(src_path,
                                                                 dst_path,
-                                                                transformer,
-                                                                path_resolving_env.home_and_sds)
+                                                                transformer)
 
 
 def create_file(path_to_create: pathlib.Path,
