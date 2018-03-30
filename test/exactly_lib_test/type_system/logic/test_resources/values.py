@@ -1,5 +1,6 @@
 import pathlib
 import types
+from typing import Iterable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer import transformers as sut
@@ -11,7 +12,7 @@ class FakeLinesTransformer(sut.LinesTransformer):
     def __init__(self):
         pass
 
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should never be used')
 
 

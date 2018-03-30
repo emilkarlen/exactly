@@ -1,4 +1,5 @@
 import unittest
+from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -130,5 +131,5 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
 class DeleteEverythingLinesTransformer(LinesTransformer):
     def transform(self,
                   tcds: HomeAndSds,
-                  lines: iter) -> iter:
+                  lines: Iterable[str]) -> Iterable[str]:
         return map(lambda x: '', lines)
