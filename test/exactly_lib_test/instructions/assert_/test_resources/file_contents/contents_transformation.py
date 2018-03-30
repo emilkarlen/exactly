@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 
@@ -9,7 +11,7 @@ class ToUppercaseLinesTransformer(LinesTransformer):
 
     def transform(self,
                   tcds: HomeAndSds,
-                  lines: iter) -> iter:
+                  lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 
 

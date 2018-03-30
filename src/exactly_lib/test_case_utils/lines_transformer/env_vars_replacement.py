@@ -1,4 +1,5 @@
 import pathlib
+from typing import Iterable
 
 from exactly_lib import program_info
 from exactly_lib.help_texts.doc_format import directory_variable_name_text
@@ -14,7 +15,7 @@ HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CA
 
 
 class EnvVarReplacementLinesTransformer(CustomLinesTransformer):
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
         name_and_value_list = _derive_name_and_value_list(tcds)
         return (_replace(name_and_value_list, line) for line in lines)
 

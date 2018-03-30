@@ -1,5 +1,6 @@
 import itertools
 import unittest
+from typing import Iterable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition import comparators
@@ -143,5 +144,5 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
 class _DeleteAllButFirstLine(LinesTransformer):
     def transform(self,
                   tcds: HomeAndSds,
-                  lines: iter) -> iter:
+                  lines: Iterable[str]) -> Iterable[str]:
         return itertools.islice(lines, 1)

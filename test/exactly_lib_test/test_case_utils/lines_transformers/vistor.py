@@ -1,5 +1,6 @@
 import re
 import unittest
+from typing import Iterable
 
 import exactly_lib.test_case_utils.lines_transformer.transformers as sut
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -112,5 +113,5 @@ class MyCustomTransformer(sut.CustomLinesTransformer):
     def __init__(self):
         super().__init__()
 
-    def transform(self, tcds: HomeAndSds, lines: iter) -> iter:
+    def transform(self, tcds: HomeAndSds, lines: Iterable[str]) -> Iterable[str]:
         return iter
