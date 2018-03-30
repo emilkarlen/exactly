@@ -18,6 +18,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.command_and_stdin_resolver import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
 from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinParser
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
@@ -282,7 +283,8 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
         return CommandAndStdinResolver(
             command_resolver_for_source_on_command_line(instruction_argument
                                                         ).new_with_additional_arguments(list_resolvers.empty(),
-                                                                                        [self.validator]))
+                                                                                        [self.validator]),
+            no_stdin())
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
@@ -296,7 +298,8 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
         return CommandAndStdinResolver(
             command_resolvers.for_shell().new_with_additional_arguments(argument_resolver,
-                                                                        [self.validator]))
+                                                                        [self.validator]),
+            no_stdin())
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'

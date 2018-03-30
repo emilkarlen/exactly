@@ -30,7 +30,6 @@ class StdinResolver(ObjectWithTypedSymbolReferences):
         return [f.resolve_value(symbols) for f in self._fragments]
 
 
-
 def no_stdin() -> StdinResolver:
     return StdinResolver((), ())
 
