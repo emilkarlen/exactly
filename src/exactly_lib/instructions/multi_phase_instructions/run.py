@@ -17,7 +17,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.test_case_utils.external_program import parse
-from exactly_lib.test_case_utils.external_program import syntax_options
+from exactly_lib.test_case_utils.external_program import syntax_elements as pgm_syntax_elements
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
@@ -81,21 +81,21 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.OPTIONAL, a.Constant(syntax_options.OPTIONS_SEPARATOR_ARGUMENT)),
+                a.Single(a.Multiplicity.OPTIONAL, a.Constant(pgm_syntax_elements.OPTIONS_SEPARATOR_ARGUMENT)),
                 self.zero_or_more_generic_args],
                 self._paragraphs(_EXECUTABLE_FILE)),
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(syntax_options.INTERPRET_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, a.Option(pgm_syntax_elements.INTERPRET_OPTION_NAME)),
                 self.mandatory_path,
                 self.zero_or_more_generic_args],
                 self._paragraphs(_SOURCE_FILE)),
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(syntax_options.SOURCE_OPTION_NAME)),
-                a.Single(a.Multiplicity.MANDATORY, a.Named(syntax_options.SOURCE_SYNTAX_ELEMENT_NAME))],
+                a.Single(a.Multiplicity.MANDATORY, a.Option(pgm_syntax_elements.SOURCE_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, a.Named(pgm_syntax_elements.SOURCE_SYNTAX_ELEMENT_NAME))],
                 self._paragraphs(_SOURCE_STRING)),
         ]
 
@@ -108,7 +108,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                [self.zero_or_more_generic_args,
                                                 right_parenthesis])
         python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
-                                               a.Option(syntax_options.PYTHON_EXECUTABLE_OPTION_NAME))
+                                               a.Option(pgm_syntax_elements.PYTHON_EXECUTABLE_OPTION_NAME))
         python_interpreter_arguments = [python_interpreter_argument]
         python_interpreter_in_parenthesis_arguments = [left_parenthesis,
                                                        python_interpreter_argument,
@@ -132,7 +132,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                        ])
                ] + \
                rel_path_doc.path_elements(self.relativity_arg_path.name,
-                                          syntax_options.REL_OPTION_ARG_CONF.options,
+                                          pgm_syntax_elements.REL_OPTION_ARG_CONF.options,
                                           docs.paras(the_path_of('an existing file.')))
 
     def see_also_targets(self) -> list:

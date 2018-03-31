@@ -25,7 +25,7 @@ from exactly_lib_test.test_resources.programs import python_program_execution as
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib.test_case_utils.external_program import syntax_options
+from exactly_lib.test_case_utils.external_program import syntax_elements
 
 
 def suite() -> unittest.TestSuite:
@@ -114,7 +114,7 @@ class TestExecuteProgramWithShellArgumentList(TestCaseBase):
 class TestExecuteInterpret(TestCaseBase):
     def test_check_zero_exit_code__rel_home_default(self):
         self._check_single_line_arguments_with_source_variants(
-            py_exe.command_line_for_arguments([syntax_options.INTERPRET_OPTION,
+            py_exe.command_line_for_arguments([syntax_elements.INTERPRET_OPTION,
                                                'exit-with-value-on-command-line.py',
                                                0]),
             home_and_sds_test.Arrangement(
@@ -130,7 +130,7 @@ class TestExecuteInterpret(TestCaseBase):
 
     def test_check_zero_exit_code__rel_tmp(self):
         self._check_single_line_arguments_with_source_variants(
-            py_exe.command_line_for_arguments([syntax_options.INTERPRET_OPTION,
+            py_exe.command_line_for_arguments([syntax_elements.INTERPRET_OPTION,
                                                REL_TMP_OPTION,
                                                'exit-with-value-on-command-line.py',
                                                0]),
@@ -146,7 +146,7 @@ class TestExecuteInterpret(TestCaseBase):
 
     def test_check_non_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
-            py_exe.command_line_for_arguments([syntax_options.INTERPRET_OPTION,
+            py_exe.command_line_for_arguments([syntax_elements.INTERPRET_OPTION,
                                                'exit-with-value-on-command-line.py',
                                                2]),
             home_and_sds_test.Arrangement(
@@ -161,7 +161,7 @@ class TestExecuteInterpret(TestCaseBase):
         )
 
     def test_invalid_executable(self):
-        argument = '/not/an/executable/program {} {} {}'.format(syntax_options.INTERPRET_OPTION,
+        argument = '/not/an/executable/program {} {} {}'.format(syntax_elements.INTERPRET_OPTION,
                                                                 'exit-with-value-on-command-line.py',
                                                                 0)
         self._check_single_line_arguments_with_source_variants(
@@ -179,7 +179,7 @@ class TestExecuteInterpret(TestCaseBase):
 class TestSource(TestCaseBase):
     def test_parse_should_fail_when_no_source_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.program_parser().parse(single_line_source('EXECUTABLE %s' % syntax_options.SOURCE_OPTION))
+            sut.program_parser().parse(single_line_source('EXECUTABLE %s' % syntax_elements.SOURCE_OPTION))
 
     def test_check_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
@@ -206,7 +206,7 @@ class TestSource(TestCaseBase):
     @staticmethod
     def _python_interpreter_for_source_on_command_line(argument: str) -> str:
         return '( {} ) {} {}'.format(py_exe.interpreter_that_executes_argument(),
-                                     syntax_options.SOURCE_OPTION,
+                                     syntax_elements.SOURCE_OPTION,
                                      argument)
 
 

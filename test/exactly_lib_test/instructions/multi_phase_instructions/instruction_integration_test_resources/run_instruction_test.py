@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
-from exactly_lib.instructions.multi_phase_instructions import run
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
+from exactly_lib.test_case_utils.external_program import syntax_elements
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
@@ -13,7 +13,6 @@ from exactly_lib_test.test_case_utils.test_resources import relativity_options a
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, python_executable_file
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib.test_case_utils.external_program import syntax_options
 
 
 class Configuration(ConfigurationBase):
@@ -100,7 +99,7 @@ class TestFailingValidationOfRelSymbol(TestCaseBase):
         relativity_option = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_TMP,
             symbol_name,
-            syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants)
+            syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants)
         self.conf.run_test(
             self,
             single_line_source('{relativity_option} non-existing-file'.format(
@@ -120,7 +119,7 @@ class TestSuccessAndSymbolUsages(TestCaseBase):
         relativity_option = rel_opt_conf.symbol_conf_rel_any(
             RelOptionType.REL_TMP,
             symbol_name,
-            syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants)
+            syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants)
         self.conf.run_test(
             self,
             single_line_source('{relativity_option} {executable_file}'.format(

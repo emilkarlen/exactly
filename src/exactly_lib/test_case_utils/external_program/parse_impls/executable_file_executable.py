@@ -11,7 +11,7 @@ from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils.external_program import component_resolvers
-from exactly_lib.test_case_utils.external_program import syntax_options
+from exactly_lib.test_case_utils.external_program import syntax_elements
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
@@ -50,8 +50,8 @@ def parse(tokens: TokenStream) -> ExecutableFileWithArgsResolver:
     :raise SingleInstructionInvalidArgumentException: Invalid file syntax
     """
     if tokens.is_null:
-        parse_file_ref.parse_file_ref(tokens, conf=syntax_options.REL_OPTION_ARG_CONF)  # will raise exception
-    if tokens.head.source_string == syntax_options.LIST_DELIMITER_START:
+        parse_file_ref.parse_file_ref(tokens, conf=syntax_elements.REL_OPTION_ARG_CONF)  # will raise exception
+    if tokens.head.source_string == syntax_elements.LIST_DELIMITER_START:
         tokens.consume()
         the_file_ref = _parse_exe_file_ref(tokens)
         exe_argument_list = _parse_arguments_and_end_delimiter(tokens)
@@ -64,22 +64,22 @@ def parse(tokens: TokenStream) -> ExecutableFileWithArgsResolver:
 
 def _parse_exe_file_ref(tokens: TokenStream) -> FileRefResolver:
     if tokens.is_null:
-        parse_file_ref.parse_file_ref(tokens, conf=syntax_options.REL_OPTION_ARG_CONF)  # will raise exception
+        parse_file_ref.parse_file_ref(tokens, conf=syntax_elements.REL_OPTION_ARG_CONF)  # will raise exception
     token = tokens.head
-    if token.is_plain and option_parsing.matches(syntax_options.PYTHON_EXECUTABLE_OPTION_NAME, token.string):
+    if token.is_plain and option_parsing.matches(syntax_elements.PYTHON_EXECUTABLE_OPTION_NAME, token.string):
         tokens.consume()
         return file_ref_resolvers2.constant(file_refs.absolute_file_name(sys.executable))
     else:
-        return parse_file_ref.parse_file_ref(tokens, conf=syntax_options.REL_OPTION_ARG_CONF)
+        return parse_file_ref.parse_file_ref(tokens, conf=syntax_elements.REL_OPTION_ARG_CONF)
 
 
 def _parse_arguments_and_end_delimiter(tokens: TokenStream) -> ListResolver:
     arguments = []
     while True:
         if tokens.is_null:
-            msg = 'Missing end delimiter surrounding executable: %s' % syntax_options.LIST_DELIMITER_END
+            msg = 'Missing end delimiter surrounding executable: %s' % syntax_elements.LIST_DELIMITER_END
             raise SingleInstructionInvalidArgumentException(msg)
-        if tokens.head.is_plain and tokens.head.string == syntax_options.LIST_DELIMITER_END:
+        if tokens.head.is_plain and tokens.head.string == syntax_elements.LIST_DELIMITER_END:
             tokens.consume()
             break
         else:

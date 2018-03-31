@@ -8,7 +8,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.external_program import syntax_options
+from exactly_lib.test_case_utils.external_program import syntax_elements
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
 from exactly_lib.test_case_utils.external_program.parse_impls import executable_file_executable
@@ -49,9 +49,9 @@ def _parse_additional_arguments(token_parser: TokenParser) -> _AdditionalArgumen
         return _execute(token_parser)
 
     setup = {
-        syntax_options.INTERPRET_OPTION: _interpret,
-        syntax_options.SOURCE_OPTION: _source,
-        syntax_options.OPTIONS_SEPARATOR_ARGUMENT: _execute,
+        syntax_elements.INTERPRET_OPTION: _interpret,
+        syntax_elements.SOURCE_OPTION: _source,
+        syntax_elements.OPTIONS_SEPARATOR_ARGUMENT: _execute,
     }
 
     option = token_parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(setup.keys())
@@ -83,8 +83,8 @@ def _interpret(token_parser: TokenParser) -> _AdditionalArguments:
 
 def _source(token_parser: TokenParser) -> _AdditionalArguments:
     if token_parser.is_at_eol:
-        msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=syntax_options.SOURCE_SYNTAX_ELEMENT_NAME,
-                                                                     option=syntax_options.SOURCE_OPTION)
+        msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=syntax_elements.SOURCE_SYNTAX_ELEMENT_NAME,
+                                                                     option=syntax_elements.SOURCE_OPTION)
         raise SingleInstructionInvalidArgumentException(msg)
     remaining_arguments_str = token_parser.consume_current_line_as_plain_string()
     source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
