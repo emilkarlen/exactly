@@ -12,6 +12,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_utils.external_program import syntax_elements
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
@@ -22,10 +23,10 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_populators im
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
+from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
-from exactly_lib.test_case_utils.external_program import syntax_elements
 
 
 def suite() -> unittest.TestSuite:
@@ -208,16 +209,6 @@ class TestSource(TestCaseBase):
         return '( {} ) {} {}'.format(py_exe.interpreter_that_executes_argument(),
                                      syntax_elements.SOURCE_OPTION,
                                      argument)
-
-
-def py_pgm_that_exits_with_value_on_command_line(stderr_output) -> str:
-    return """
-import sys
-
-sys.stderr.write('{}');
-val = int(sys.argv[1])
-sys.exit(val)
-""".format(stderr_output)
 
 
 if __name__ == '__main__':
