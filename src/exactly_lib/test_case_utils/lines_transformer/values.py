@@ -4,6 +4,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
 from exactly_lib.test_case_utils.lines_transformer import transformers
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, LinesTransformer
+from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 
 
 class LinesTransformerConstantValue(LinesTransformerValue):
@@ -26,10 +27,7 @@ class LinesTransformerSequenceValue(LinesTransformerValue):
         self._sequence = sequence
 
     def resolving_dependencies(self) -> Set[ResolvingDependency]:
-        ret_val = set()
-        for transformer in self._sequence:
-            ret_val.update(transformer.resolving_dependencies())
-        return ret_val
+        return resolving_dependencies_from_sequence(self._sequence)
 
     def value_when_no_dir_dependencies(self) -> LinesTransformer:
         return transformers.SequenceLinesTransformer([

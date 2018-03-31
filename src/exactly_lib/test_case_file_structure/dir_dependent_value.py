@@ -43,9 +43,7 @@ class DirDependencyError(ValueError):
 RESOLVED_TYPE = TypeVar('RESOLVED_TYPE')
 
 
-class DirDependentValue(Generic[RESOLVED_TYPE]):
-    """A value that may refer to the test case directories."""
-
+class WithDirDependencies:
     def resolving_dependencies(self) -> Set[ResolvingDependency]:
         raise NotImplementedError()
 
@@ -57,6 +55,10 @@ class DirDependentValue(Generic[RESOLVED_TYPE]):
 
     def exists_pre_sds(self) -> bool:
         return ResolvingDependency.NON_HOME not in self.resolving_dependencies()
+
+
+class DirDependentValue(Generic[RESOLVED_TYPE], WithDirDependencies):
+    """A value that may refer to the test case directories."""
 
     def value_when_no_dir_dependencies(self) -> RESOLVED_TYPE:
         """

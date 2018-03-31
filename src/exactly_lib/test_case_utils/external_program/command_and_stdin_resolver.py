@@ -6,7 +6,7 @@ from exactly_lib.symbol.utils import ValueResolver
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.command_and_stdin_value import CommandAndStdinValue
-from exactly_lib.test_case_utils.external_program.component_resolvers import StdinResolver
+from exactly_lib.test_case_utils.external_program.component_resolvers import StdinDataResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -21,7 +21,7 @@ class CommandAndStdinResolver(ValueResolver[CommandAndStdinValue]):
 
     def __init__(self,
                  command: CommandResolver,
-                 stdin: StdinResolver):
+                 stdin: StdinDataResolver):
         self._command = command
         self._stdin = stdin
 
@@ -35,7 +35,7 @@ class CommandAndStdinResolver(ValueResolver[CommandAndStdinValue]):
         return self._command
 
     @property
-    def stdin(self) -> StdinResolver:
+    def stdin(self) -> StdinDataResolver:
         return self._stdin
 
     @property
