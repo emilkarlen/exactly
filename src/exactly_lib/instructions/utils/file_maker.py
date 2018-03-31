@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
 from exactly_lib.test_case_utils import file_ref_check, file_properties
-from exactly_lib.test_case_utils.external_program.command_and_stdin_resolver import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
     SingleStepValidator, ValidationStep
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
@@ -61,14 +61,14 @@ class FileMakerForConstantContents(FileMaker):
         return self._contents.references
 
 
-class FileMakerForContentsFromSubProcess(FileMaker):
+class FileMakerForContentsFromProgram(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
                  output_transformer: LinesTransformerResolver,
-                 sub_process: CommandAndStdinResolver):
+                 program: ProgramResolver):
         self._source_info = source_info
         self._output_transformer = output_transformer
-        self._sub_process = sub_process
+        self._program = program
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
@@ -76,7 +76,10 @@ class FileMakerForContentsFromSubProcess(FileMaker):
              ) -> str:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        command = self._sub_process.command_resolver.resolve_of_any_dep(path_resolving_env)
+        command = self._program \
+            .resolve_value(path_resolving_env.symbols) \
+            .command \
+            .value_of_any_dependency(path_resolving_env.home_and_sds)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
         result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
@@ -96,11 +99,11 @@ class FileMakerForContentsFromSubProcess(FileMaker):
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
-        return self._sub_process.validator
+        return self._program.validator
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
-        return tuple(self._output_transformer.references) + tuple(self._sub_process.references)
+        return tuple(self._output_transformer.references) + tuple(self._program.references)
 
 
 class FileMakerForContentsFromExistingFile(FileMaker):

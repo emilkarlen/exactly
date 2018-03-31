@@ -7,13 +7,14 @@ from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
-    FileMakerForContentsFromSubProcess, FileMakerForContentsFromExistingFile
+    FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.external_program.command_and_stdin_resolver import CommandAndStdinResolver
+from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.external_program.shell_program import ShellCommandSetupParser
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
 from exactly_lib.test_case_utils.parse import parse_here_document
@@ -162,10 +163,10 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                           parser: TokenParser,
                                           contents_transformer: LinesTransformerResolver) -> FileMaker:
     def parse_sub_process(my_parser: TokenParser) -> FileMaker:
-        sub_process = _parse_sub_process_setup(my_parser)
-        return FileMakerForContentsFromSubProcess(instruction_config.source_info,
-                                                  contents_transformer,
-                                                  sub_process)
+        sub_process = _parse_program(my_parser)
+        return FileMakerForContentsFromProgram(instruction_config.source_info,
+                                               contents_transformer,
+                                               sub_process)
 
     def parse_file(my_parser: TokenParser) -> FileMaker:
         src_file = parse_file_ref_from_token_parser(instruction_config.src_rel_opt_arg_conf,
@@ -181,10 +182,11 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
     })
 
 
-def _parse_sub_process_setup(parser: TokenParser) -> CommandAndStdinResolver:
+def _parse_program(parser: TokenParser) -> ProgramResolver:
     parser.consume_mandatory_constant_unquoted_string(SHELL_COMMAND_TOKEN, False)
     setup_parser = ShellCommandSetupParser()
-    return setup_parser.parse_from_token_parser(parser)
+    cmd_and_stdin = setup_parser.parse_from_token_parser(parser)
+    return ProgramResolver(cmd_and_stdin.command_resolver, cmd_and_stdin.stdin, ())
 
 
 def _src_rel_opt_arg_conf_for_phase(phase_is_after_act: bool) -> RelOptionArgumentConfiguration:
