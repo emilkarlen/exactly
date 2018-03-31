@@ -26,10 +26,5 @@ def parse_from_parse_source_new(source: ParseSource) -> CommandResolver:
 
 def command_from_token_parser(token_parser: TokenParser) -> CommandResolver:
     exe_file = parse(token_parser.token_stream)
-    command_resolver = command_resolvers.for_executable_file(exe_file.executable_file)
-    return command_resolver.new_with_additional_arguments(exe_file.arguments)
-
-
-def command_and_stdin_from_token_parser(token_parser: TokenParser) -> CommandAndStdinResolver:
-    command = command_from_token_parser(token_parser)
-    return CommandAndStdinResolver(command)
+    return command_resolvers.for_executable_file(exe_file.executable_file) \
+        .new_with_additional_arguments(exe_file.arguments)

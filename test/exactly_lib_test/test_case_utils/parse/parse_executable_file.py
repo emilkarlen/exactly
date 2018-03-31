@@ -551,7 +551,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         expected_source_after_parse.apply_with_message(self, source, 'parse source')
 
         with home_and_sds_with_act_as_curr_dir() as environment:
-            validator_util.check(self, exe_file.validator, environment, validator_expectation)
+            validator_util.check(self, exe_file.as_command.validator, environment, validator_expectation)
 
 
 def _parse_and_check(put: unittest.TestCase,

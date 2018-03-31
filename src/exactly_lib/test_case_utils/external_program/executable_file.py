@@ -1,22 +1,25 @@
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.external_program.component_resolvers import ArgumentsResolver
-from exactly_lib.test_case_utils.external_program.command.driver_resolvers import \
-    CommandDriverResolverForExecutableFile
-from exactly_lib.test_case_utils.external_program.validators import ExistingExecutableFileValidator
 
 
-class ExecutableFileWithArgsResolver(CommandResolver):
+class ExecutableFileWithArgsResolver:
     def __init__(self,
                  executable_file: FileRefResolver,
                  arguments: ListResolver):
-        super().__init__(CommandDriverResolverForExecutableFile(executable_file,
-                                                                [ExistingExecutableFileValidator(executable_file)]),
-                         ArgumentsResolver(arguments),
-                         )
         self._executable_file = executable_file
+        self._arguments = arguments
 
     @property
     def executable_file(self) -> FileRefResolver:
         return self._executable_file
+
+    @property
+    def arguments(self) -> ListResolver:
+        return self._arguments
+
+    @property
+    def as_command(self) -> CommandResolver:
+        return command_resolvers.for_executable_file(self.executable_file) \
+            .new_with_additional_arguments(self._arguments)

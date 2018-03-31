@@ -1,5 +1,5 @@
 import unittest
-from typing import Sequence, List
+from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -18,12 +18,12 @@ def equals_symbol_reference_with_restriction_on_direct_target(expected_name: str
                                    assertion_on_every=asrt.ValueIsNone()))
 
 
-def equals_symbol_reference(expected: SymbolReference) -> asrt.ValueAssertion:
+def equals_symbol_reference(expected: SymbolReference) -> asrt.ValueAssertion[SymbolReference]:
     return matches_reference_2(expected.name,
                                equals_data_type_reference_restrictions(expected.restrictions))
 
 
-def equals_symbol_references(expected: Sequence[SymbolReference]) -> asrt.ValueAssertion[List[SymbolReference]]:
+def equals_symbol_references(expected: Sequence[SymbolReference]) -> asrt.ValueAssertion[Sequence[SymbolReference]]:
     return _EqualsSymbolReferences(expected)
 
 
