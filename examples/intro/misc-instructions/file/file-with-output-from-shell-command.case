@@ -1,0 +1,9 @@
+[setup]
+
+file my-file.txt = --stdout $ echo "Hello, Shell World!"
+
+[assert]
+
+contents my-file.txt equals <<eof
+Hello, Shell World!
+eof

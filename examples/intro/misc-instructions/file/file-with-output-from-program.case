@@ -1,0 +1,9 @@
+[setup]
+
+file my-file.txt = --stdout --python --interpret hello-world.py
+
+[assert]
+
+contents my-file.txt equals <<eof
+Hello, Python World!
+eof
