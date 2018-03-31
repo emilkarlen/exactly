@@ -128,7 +128,7 @@ def check_exe_file(put: unittest.TestCase,
                                                     'arguments')
     assertion_on_all_references = equals_symbol_references(expectation.expected_symbol_references_of_file +
                                                            expectation.expected_symbol_references_of_argument)
-    assertion_on_all_references.apply_with_message(put, actual.references,
+    assertion_on_all_references.apply_with_message(put, actual.as_command.references,
                                                    'references')
 
 
@@ -151,7 +151,7 @@ def check(put: unittest.TestCase,
         os.mkdir('act-cwd')
         os.chdir('act-cwd')
         validator_util.check(put,
-                             actual_exe_file.validator,
+                             actual_exe_file.as_command.validator,
                              environment,
                              expectation.validation_result)
 
@@ -178,14 +178,14 @@ class CheckBase(unittest.TestCase):
 
     def _assert_passes_validation(self, actual: ExecutableFileWithArgsResolver,
                                   environment: PathResolvingEnvironmentPreOrPostSds):
-        validator_util.check(self, actual.validator, environment,
+        validator_util.check(self, actual.as_command.validator, environment,
                              validator_util.expect_passes_all_validations())
 
     def _assert_does_not_pass_validation(self, actual: ExecutableFileWithArgsResolver,
                                          environment: PathResolvingEnvironmentPreOrPostSds):
         passes_pre_sds = not self.configuration.exists_pre_sds
         passes_post_sds = not passes_pre_sds
-        validator_util.check(self, actual.validator, environment,
+        validator_util.check(self, actual.as_command.validator, environment,
                              validator_util.Expectation(passes_pre_sds=passes_pre_sds,
                                                         passes_post_sds=passes_post_sds))
 
