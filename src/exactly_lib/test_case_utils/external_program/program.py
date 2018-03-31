@@ -1,63 +1,65 @@
-from typing import Sequence
+from typing import Set
 
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
+from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
+from exactly_lib.test_case_utils.external_program.component_values import StdinDataValue, StdinData
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
+from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 from exactly_lib.util.process_execution.os_process_execution import Command
 
 
 class Program(tuple):
     def __new__(cls,
                 command: Command,
+                stdin: StdinData,
                 transformation: LinesTransformer):
-        return tuple.__new__(cls, (command, transformation))
+        return tuple.__new__(cls, (command, stdin, transformation))
 
     @property
     def command(self) -> Command:
         return self[0]
 
     @property
-    def transformation(self) -> LinesTransformer:
+    def stdin(self) -> StdinData:
         return self[1]
 
+    @property
+    def transformation(self) -> LinesTransformer:
+        return self[2]
 
-class ProgramResolver(ObjectWithTypedSymbolReferences):
-    def __init__(self,
-                 command: CommandResolver,
-                 transformations: Sequence[LinesTransformerResolver]
-                 ):
-        self._command = command
-        self._transformations = transformations
 
-    def new_with_additional_arguments(self,
-                                      additional_arguments: ListResolver,
-                                      additional_validation: Sequence[PreOrPostSdsValidator] = ()):
-        """
-        Creates a new resolver with additional arguments appended at the end of
-        current argument list.
-        """
-        return ProgramResolver(
-            self._command.new_with_additional_arguments(additional_arguments,
-                                                        additional_validation),
-            self._transformations)
-
-    def new_with_additional_transformations(self,
-                                            transformations: Sequence[LinesTransformerResolver]):
-        """
-        Creates a new resolver with additional transformation appended at the end of
-        current transformations.
-        """
-        return ProgramResolver(
-            self._command,
-            tuple(self._transformations) + tuple(transformations))
+class ProgramValue(MultiDirDependentValue[Program]):
+    def __new__(cls,
+                command: CommandValue,
+                stdin: StdinDataValue,
+                transformation: LinesTransformerValue):
+        return tuple.__new__(cls, (command, stdin, transformation))
 
     @property
-    def references(self) -> Sequence[SymbolReference]:
-        return references_from_objects_with_symbol_references([
-            self._command,
-            self._transformations])
+    def command(self) -> CommandValue:
+        return self[0]
+
+    @property
+    def stdin(self) -> StdinDataValue:
+        return self[1]
+
+    @property
+    def transformation(self) -> LinesTransformerValue:
+        return self[2]
+
+    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+        return resolving_dependencies_from_sequence([self.command,
+                                                     self.stdin,
+                                                     self.transformation])
+
+    def value_when_no_dir_dependencies(self) -> Program:
+        return Program(self.command.value_when_no_dir_dependencies(),
+                       self.stdin.value_when_no_dir_dependencies(),
+                       self.transformation.value_when_no_dir_dependencies())
+
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> Program:
+        return Program(self.command.value_of_any_dependency(home_and_sds),
+                       self.stdin.value_of_any_dependency(home_and_sds),
+                       self.transformation.value_of_any_dependency(home_and_sds))
