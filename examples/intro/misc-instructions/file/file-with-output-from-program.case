@@ -1,6 +1,6 @@
 [setup]
 
-file my-file.txt = --stdout --python --interpret hello-world.py
+file my-file.txt = --stdout --python --interpret print-arguments.py "Hello, Python World!"
 
 [assert]
 
