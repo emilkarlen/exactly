@@ -160,7 +160,7 @@ def parse_file_maker(instruction_config: InstructionConfig,
 def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                           parser: TokenParser,
                                           contents_transformer: LinesTransformerResolver) -> FileMaker:
-    def parse_sub_process(my_parser: TokenParser) -> FileMaker:
+    def parse_program(my_parser: TokenParser) -> FileMaker:
         program = parse.parse_program(my_parser)
         return FileMakerForContentsFromProgram(instruction_config.source_info,
                                                contents_transformer,
@@ -175,7 +175,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                                     src_file)
 
     return parser.parse_mandatory_option({
-        STDOUT_OPTION: parse_sub_process,
+        STDOUT_OPTION: parse_program,
         FILE_OPTION: parse_file,
     })
 
