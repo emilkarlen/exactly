@@ -1,5 +1,3 @@
-from typing import Sequence
-
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
@@ -17,24 +15,11 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
     InstructionPartsParser
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
-    SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data import list_resolvers, string_resolvers
-from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.external_program import parse
-from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
+from exactly_lib.test_case_utils.external_program import syntax_options
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
-from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
-from exactly_lib.test_case_utils.parse import parse_list
-from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
-from exactly_lib.test_case_utils.parse.parse_executable_file import PARSE_FILE_REF_CONFIGURATION, \
-    PYTHON_EXECUTABLE_OPTION_NAME
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.textformat.structure import structures as docs
 
 
@@ -45,24 +30,16 @@ def parts_parser(instruction_name: str) -> InstructionPartsParser:
 
 def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
     return spe_parts.InstructionEmbryoParser(instruction_name,
-                                             SetupParser())
+                                             program_parser())
 
 
-REL_OPTION_ARG_CONF = PARSE_FILE_REF_CONFIGURATION
+def program_parser() -> Parser[ProgramResolver]:
+    return parse.executable_file_program_parser()
 
-INTERPRET_OPTION_NAME = a.OptionName(long_name='interpret')
-INTERPRET_OPTION = long_option_syntax(INTERPRET_OPTION_NAME.long)
-
-SOURCE_OPTION_NAME = a.OptionName(long_name='source')
-SOURCE_OPTION = long_option_syntax(SOURCE_OPTION_NAME.long)
-
-OPTIONS_SEPARATOR_ARGUMENT = '--'
 
 NON_ASSERT_PHASE_DESCRIPTION_REST = """\
 It is considered an error if the program exits with a non-zero exit code.
 """
-
-_SOURCE_SYNTAX_ELEMENT_NAME = 'SOURCE'
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
@@ -104,21 +81,21 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return [
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.OPTIONAL, a.Constant(OPTIONS_SEPARATOR_ARGUMENT)),
+                a.Single(a.Multiplicity.OPTIONAL, a.Constant(syntax_options.OPTIONS_SEPARATOR_ARGUMENT)),
                 self.zero_or_more_generic_args],
                 self._paragraphs(_EXECUTABLE_FILE)),
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(INTERPRET_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, a.Option(syntax_options.INTERPRET_OPTION_NAME)),
                 self.mandatory_path,
                 self.zero_or_more_generic_args],
                 self._paragraphs(_SOURCE_FILE)),
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_OPTION_NAME)),
-                a.Single(a.Multiplicity.MANDATORY, a.Named(_SOURCE_SYNTAX_ELEMENT_NAME))],
+                a.Single(a.Multiplicity.MANDATORY, a.Option(syntax_options.SOURCE_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, a.Named(syntax_options.SOURCE_SYNTAX_ELEMENT_NAME))],
                 self._paragraphs(_SOURCE_STRING)),
         ]
 
@@ -131,7 +108,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                                                [self.zero_or_more_generic_args,
                                                 right_parenthesis])
         python_interpreter_argument = a.Single(a.Multiplicity.MANDATORY,
-                                               a.Option(PYTHON_EXECUTABLE_OPTION_NAME))
+                                               a.Option(syntax_options.PYTHON_EXECUTABLE_OPTION_NAME))
         python_interpreter_arguments = [python_interpreter_argument]
         python_interpreter_in_parenthesis_arguments = [left_parenthesis,
                                                        python_interpreter_argument,
@@ -155,7 +132,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                        ])
                ] + \
                rel_path_doc.path_elements(self.relativity_arg_path.name,
-                                          REL_OPTION_ARG_CONF.options,
+                                          syntax_options.REL_OPTION_ARG_CONF.options,
                                           docs.paras(the_path_of('an existing file.')))
 
     def see_also_targets(self) -> list:
@@ -164,70 +141,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             concepts.SHELL_SYNTAX_CONCEPT_INFO,
         ]
         return cross_reference_id_list(name_and_cross_ref_list)
-
-
-class _AdditionalArguments:
-    def __init__(self,
-                 arguments: ListResolver,
-                 arguments_validator: Sequence[PreOrPostSdsValidator] = ()
-                 ):
-        self.arguments = arguments
-        self.arguments_validator = arguments_validator
-
-
-class SetupParser(Parser[ProgramResolver]):
-    def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
-        command_resolver = parse.parse_executable_file(parser)
-        additional = self._parse_additional_arguments(parser)
-        command_resolver = command_resolver.new_with_additional_arguments(additional.arguments,
-                                                                          additional.arguments_validator)
-        return ProgramResolver(command_resolver, no_stdin())
-
-    def _parse_additional_arguments(self, token_parser: TokenParser) -> _AdditionalArguments:
-        if token_parser.is_at_eol:
-            return self._execute(token_parser)
-
-        setup = {
-            INTERPRET_OPTION: self._interpret,
-            SOURCE_OPTION: self._source,
-            OPTIONS_SEPARATOR_ARGUMENT: self._execute,
-        }
-
-        option = token_parser.consume_optional_constant_string_that_must_be_unquoted_and_equal(setup.keys())
-        if option is not None:
-            return setup[option](token_parser)
-        else:
-            return self._execute(token_parser)
-
-    @staticmethod
-    def _execute(token_parser: TokenParser) -> _AdditionalArguments:
-        arguments = parse_list.parse_list_from_token_parser(token_parser)
-        return _AdditionalArguments(arguments=arguments)
-
-    @staticmethod
-    def _interpret(token_parser: TokenParser) -> _AdditionalArguments:
-        file_to_interpret = parse_file_ref.parse_file_ref_from_token_parser(parse_file_ref.ALL_REL_OPTIONS_CONFIG,
-                                                                            token_parser)
-        file_to_interpret_check = FileRefCheck(file_to_interpret,
-                                               file_properties.must_exist_as(file_properties.FileType.REGULAR))
-        file_to_interpret_validator = FileRefCheckValidator(file_to_interpret_check)
-        remaining_arguments = parse_list.parse_list_from_token_parser(token_parser)
-        all_additional_arguments = list_resolvers.concat([
-            list_resolvers.from_string(string_resolvers.from_file_ref_resolver(file_to_interpret)),
-            remaining_arguments,
-        ])
-        return _AdditionalArguments(arguments=all_additional_arguments,
-                                    arguments_validator=[file_to_interpret_validator])
-
-    @staticmethod
-    def _source(token_parser: TokenParser) -> _AdditionalArguments:
-        if token_parser.is_at_eol:
-            msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=_SOURCE_SYNTAX_ELEMENT_NAME,
-                                                                         option=SOURCE_OPTION)
-            raise SingleInstructionInvalidArgumentException(msg)
-        remaining_arguments_str = token_parser.consume_current_line_as_plain_string()
-        source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
-        return _AdditionalArguments(arguments=list_resolvers.from_string(source_resolver))
 
 
 _DESCRIPTION_OF_EXECUTABLE_ARG = """\

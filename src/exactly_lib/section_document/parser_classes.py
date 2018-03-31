@@ -26,3 +26,11 @@ class ParserFromSimpleParser(Parser[PARSE_RESULT]):
 
     def parse_from_token_parser(self, parser: TokenParser) -> PARSE_RESULT:
         return self._transformer(self._simple.parse_from_token_parser(parser))
+
+
+class ParserFromTokenParserFunction(Parser[PARSE_RESULT]):
+    def __init__(self, parser_function: Callable[[TokenParser], PARSE_RESULT]):
+        self._parser_function = parser_function
+
+    def parse_from_token_parser(self, parser: TokenParser) -> PARSE_RESULT:
+        return self._parser_function(parser)

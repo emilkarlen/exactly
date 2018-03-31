@@ -5,8 +5,8 @@ import unittest
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
+from exactly_lib.test_case_utils.external_program import parse as sut
 from exactly_lib.test_case_utils.external_program.executable_file import ExecutableFileWithArgsResolver
-from exactly_lib.test_case_utils.parse import parse_executable_file as sut
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.util.symbol_table import SymbolTable, empty_symbol_table, symbol_table_from_none_or_value
@@ -139,7 +139,7 @@ def check(put: unittest.TestCase,
     # ARRANGE #
     source = ParseSource(instruction_argument_string)
     # ACT #
-    actual_exe_file = sut.parse_from_parse_source(source)
+    actual_exe_file = sut.parse_executable_file_with_args_from_parse_source(source)
     # ASSERT #
     expectation.source.apply_with_message(put,
                                           source,
@@ -198,7 +198,7 @@ class CheckExistingFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         source = ParseSource(arguments_str)
-        exe_file = sut.parse_from_parse_source(source)
+        exe_file = sut.parse_executable_file_with_args_from_parse_source(source)
         source_assertion = has_remaining_part_of_first_line('remaining args')
         source_assertion.apply_with_message(self, source, 'source after parse')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
@@ -215,7 +215,7 @@ class CheckExistingFileWithArguments(CheckBase):
         conf = self.configuration
         arguments_str = '( {} file.exe arg1 -arg2 ) remaining args'.format(conf.option)
         source = ParseSource(arguments_str)
-        exe_file = sut.parse_from_parse_source(source)
+        exe_file = sut.parse_executable_file_with_args_from_parse_source(source)
         expected_arguments = list_value_of_string_constants(['arg1', '-arg2'])
         arguments_assertion = matches_list_resolver(expected_arguments,
                                                     expected_symbol_references=asrt.is_empty_sequence)
@@ -237,7 +237,7 @@ class CheckExistingButNonExecutableFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         source = ParseSource(arguments_str)
-        exe_file = sut.parse_from_parse_source(source)
+        exe_file = sut.parse_executable_file_with_args_from_parse_source(source)
         with self._home_and_sds_and_test_as_curr_dir(empty_file('file.exe')) as environment:
             self._assert_does_not_pass_validation(exe_file, environment)
 
@@ -250,7 +250,7 @@ class CheckNonExistingFile(CheckBase):
         conf = self.configuration
         arguments_str = '{} file.exe remaining args'.format(conf.option)
         source = ParseSource(arguments_str)
-        exe_file = sut.parse_from_parse_source(source)
+        exe_file = sut.parse_executable_file_with_args_from_parse_source(source)
         source_assertion = has_remaining_part_of_first_line('remaining args')
         source_assertion.apply_with_message(self, source, 'source after parse')
         symbols = empty_symbol_table()

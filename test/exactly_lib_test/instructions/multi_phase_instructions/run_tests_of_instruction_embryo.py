@@ -8,6 +8,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
+from exactly_lib.test_case_utils.external_program import syntax_options
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.util.symbol_table import symbol_table_with_entries, SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
@@ -128,7 +129,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
                     python_interpreter_symbol.name,
                     equals_data_type_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
-                            sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                            syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     execute_program_option_symbol.name,
@@ -162,7 +163,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                     relativity_option_executable=roc_executable_file.option_string,
                     relativity_option_source_file=roc_source_file.option_string,
                     executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
-                    interpret_option=sut.INTERPRET_OPTION,
+                    interpret_option=syntax_options.INTERPRET_OPTION,
                     source_file=source_file.file_name,
                 )
 
@@ -199,7 +200,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             argument = '{relativity_option} non-existing-file {interpret_option}' \
                        ' {rel_home_case_option} {existing_file}'.format(
                 relativity_option=relativity_option_conf.option_string,
-                interpret_option=sut.INTERPRET_OPTION,
+                interpret_option=syntax_options.INTERPRET_OPTION,
                 rel_home_case_option=REL_HOME_CASE_OPTION,
                 existing_file=existing_file_to_interpret,
             )
@@ -219,7 +220,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '"{python_interpreter}" {interpret_option} {relativity_option} non-existing-file.py'.format(
                 python_interpreter=sys.executable,
-                interpret_option=sut.INTERPRET_OPTION,
+                interpret_option=syntax_options.INTERPRET_OPTION,
                 relativity_option=relativity_option_conf.option_string,
             )
 
@@ -243,7 +244,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
         argument = ' {python_interpreter} {interpret_option} {file_to_interpret}  "{exit_code}"'.format(
             python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
-            interpret_option=sut.INTERPRET_OPTION,
+            interpret_option=syntax_options.INTERPRET_OPTION,
             file_to_interpret=symbol_reference_syntax_for_name(file_to_interpret_symbol.name),
             exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
         )
@@ -270,7 +271,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                     python_interpreter_symbol.name,
                     equals_data_type_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
-                            sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                            syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     file_to_interpret_symbol.name,
@@ -296,7 +297,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             argument = '{relativity_option} {executable_file} {source_option} irrelevant-source'.format(
                 relativity_option=relativity_option_conf.option_string,
                 executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
-                source_option=sut.SOURCE_OPTION,
+                source_option=syntax_options.SOURCE_OPTION,
             )
 
             expectation = embryo_check.Expectation(
@@ -317,7 +318,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {source_option} irrelevant-source'.format(
                 relativity_option=relativity_option_conf.option_string,
-                source_option=sut.SOURCE_OPTION,
+                source_option=syntax_options.SOURCE_OPTION,
             )
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
@@ -338,7 +339,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
         argument = ' ( {python_interpreter} {execute_program_option} ) {source_option}   exit({exit_code})  '.format(
             python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
             execute_program_option=symbol_reference_syntax_for_name(execute_program_option_symbol.name),
-            source_option=sut.SOURCE_OPTION,
+            source_option=syntax_options.SOURCE_OPTION,
             exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
         )
 
@@ -362,7 +363,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
                     python_interpreter_symbol.name,
                     equals_data_type_reference_restrictions(
                         parse_file_ref.path_or_string_reference_restrictions(
-                            sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                            syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
                         ))),
                 matches_reference_2(
                     execute_program_option_symbol.name,
@@ -451,10 +452,10 @@ def relativity_options(symbol_name: str) -> list:
 
         rel_opt.symbol_conf_rel_any(RelOptionType.REL_TMP,
                                     symbol_name,
-                                    sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
+                                    syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
         rel_opt.symbol_conf_rel_any(RelOptionType.REL_HOME_CASE,
                                     symbol_name,
-                                    sut.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
+                                    syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants),
     ]
 
 
