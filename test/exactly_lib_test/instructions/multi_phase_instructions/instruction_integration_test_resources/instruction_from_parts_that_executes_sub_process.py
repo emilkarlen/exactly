@@ -19,7 +19,6 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
-from exactly_lib.test_case_utils.external_program.parse import ProgramParser
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
@@ -273,7 +272,7 @@ class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
                                                                                       message_builder)
 
 
-class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(ProgramParser):
+class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(Parser[ProgramResolver]):
     def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
@@ -286,7 +285,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
             no_stdin())
 
 
-class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(ProgramParser):
+class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramResolver]):
     def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 

@@ -20,12 +20,12 @@ from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.external_program import parse
 from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
-from exactly_lib.test_case_utils.external_program.parse import ProgramParser
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list
@@ -175,9 +175,9 @@ class _AdditionalArguments:
         self.arguments_validator = arguments_validator
 
 
-class SetupParser(ProgramParser):
+class SetupParser(Parser[ProgramResolver]):
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
-        command_resolver = parse.command_from_token_parser(parser)
+        command_resolver = parse.parse_executable_file(parser)
         additional = self._parse_additional_arguments(parser)
         command_resolver = command_resolver.new_with_additional_arguments(additional.arguments,
                                                                           additional.arguments_validator)
