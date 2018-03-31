@@ -1,0 +1,5 @@
+[cases]
+
+transform.case
+file-with-output-from-program.case
+file-with-output-from-shell-command.case
