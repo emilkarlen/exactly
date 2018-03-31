@@ -18,7 +18,7 @@ class ProgramResolver(DirDepValueResolverWithValidation[ProgramValue]):
     def __init__(self,
                  command: CommandResolver,
                  stdin: StdinDataResolver,
-                 transformations: Sequence[LinesTransformerResolver]
+                 transformations: Sequence[LinesTransformerResolver] = ()
                  ):
         self._stdin = stdin
         self._command = command
