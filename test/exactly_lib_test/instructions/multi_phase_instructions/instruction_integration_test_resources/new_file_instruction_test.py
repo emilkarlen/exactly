@@ -22,6 +22,7 @@ from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_tr
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
+from exactly_lib_test.test_case_utils.external_program.test_resources import arguments_building as pgm_arguments
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
@@ -226,7 +227,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
 
         shell_contents_arguments = arguments.TransformableContentsConstructor(
             arguments.stdout_from(
-                arguments.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
+                pgm_arguments.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
             )
         ).with_transformation(to_upper_transformer.name)
 
@@ -257,7 +258,7 @@ class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
     def runTest(self):
         shell_contents_arguments = arguments.TransformableContentsConstructor(
             arguments.stdout_from(
-                arguments.shell_command(command_that_exits_with_code(1))
+                pgm_arguments.shell_command(command_that_exits_with_code(1))
             )
         )
 

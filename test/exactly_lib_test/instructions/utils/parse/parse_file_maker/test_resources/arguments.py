@@ -44,10 +44,6 @@ def stdout_from(program: Arguments,
                          program.following_lines)
 
 
-def shell_command(command_line: str) -> Arguments:
-    return Arguments(parse_file_maker.SHELL_COMMAND_TOKEN + ' ' + command_line)
-
-
 def file(file_name: str,
          rel_option: RelativityOptionConfiguration = None,
          with_new_line_after_output_option: bool = False) -> Arguments:

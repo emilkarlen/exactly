@@ -18,8 +18,8 @@ from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resour
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import stdout_from, \
-    shell_command, \
     TransformableContentsConstructor
+from exactly_lib_test.test_case_utils.external_program.test_resources.arguments_building import shell_command
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
@@ -47,7 +47,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestSuccessfulScenarios),
+        unittest.makeSuite(TestSuccessfulScenariosWithShellCommandLine),
         unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestSymbolUsages),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
@@ -117,7 +117,7 @@ class TestSymbolUsages(TestCaseBase):
                     )
 
 
-class TestSuccessfulScenarios(TestCaseBase):
+class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
     def test_contents_from_stdout_of_shell_command__without_transformer(self):
         text_printed_by_shell_command = 'single line of output'
         expected_file_contents = text_printed_by_shell_command + '\n'
