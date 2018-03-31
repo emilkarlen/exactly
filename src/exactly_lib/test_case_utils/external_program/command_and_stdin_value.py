@@ -1,7 +1,5 @@
-from typing import Sequence
-
 from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
-from exactly_lib.test_case_utils.util_values import StringOrFileRefValue
+from exactly_lib.test_case_utils.external_program.component_values import StdinDataValue
 
 
 class CommandAndStdinValue:
@@ -11,8 +9,8 @@ class CommandAndStdinValue:
 
     def __init__(self,
                  command: CommandValue,
-                 stdin_fragments: Sequence[StringOrFileRefValue]):
-        self._stdin_fragments = stdin_fragments
+                 stdin: StdinDataValue):
+        self._stdin = stdin
         self._command = command
 
     @property
@@ -20,5 +18,5 @@ class CommandAndStdinValue:
         return self._command
 
     @property
-    def stdin_fragments(self) -> Sequence[StringOrFileRefValue]:
-        return self._stdin_fragments
+    def stdin(self) -> StdinDataValue:
+        return self._stdin

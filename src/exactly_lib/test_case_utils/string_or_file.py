@@ -4,7 +4,7 @@ from typing import Sequence
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.symbol.utils import ValueResolver
+from exactly_lib.symbol.utils import DirDepValueResolver
 from exactly_lib.test_case_utils.util_values import StringOrFileRefValue
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -15,7 +15,7 @@ class SourceType(enum.Enum):
     PATH = 3
 
 
-class StringOrFileRefResolver(ValueResolver[StringOrFileRefValue]):
+class StringOrFileRefResolver(DirDepValueResolver[StringOrFileRefValue]):
     def __init__(self,
                  source_type: SourceType,
                  string_resolver: StringResolver,
