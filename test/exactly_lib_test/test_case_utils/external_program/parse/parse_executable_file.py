@@ -18,7 +18,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.external_program import parse as sut
-from exactly_lib.test_case_utils.external_program import syntax_options
+from exactly_lib.test_case_utils.external_program import syntax_elements
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
 from exactly_lib.type_system.data import file_refs
@@ -281,12 +281,12 @@ class TestParseWithSymbols(unittest.TestCase):
         reference_of_relativity_symbol = SymbolReference(
             file_symbol.name,
             path_relativity_restriction(
-                syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
             ))
         reference_of_path_symbol = SymbolReference(
             file_symbol.name,
             path_or_string_reference_restrictions(
-                syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
+                syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
             ))
         reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
                                                                             ReferenceRestrictionsOnDirectAndIndirect(
@@ -369,7 +369,7 @@ class TestParseInvalidSyntax(unittest.TestCase):
 
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
-    syntax_options.PYTHON_EXECUTABLE_OPTION_STRING,
+    syntax_elements.PYTHON_EXECUTABLE_OPTION_STRING,
     validation_result=validator_util.expect_passes_all_validations(),
     file_resolver_value=file_refs.absolute_file_name(sys.executable),
     expected_symbol_references_of_file=[],
@@ -570,7 +570,7 @@ def file_ref_of(rel_option: RelOptionType,
 
 
 def file_ref_of_default_relativity(path_suffix: str) -> FileRef:
-    return file_refs.of_rel_option(syntax_options.REL_OPTION_ARG_CONF.options.default_option,
+    return file_refs.of_rel_option(syntax_elements.REL_OPTION_ARG_CONF.options.default_option,
                                    PathPartAsFixedPath(path_suffix))
 
 
