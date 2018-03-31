@@ -17,7 +17,8 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestri
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse import parse_executable_file as sut
+from exactly_lib.test_case_utils.external_program import parse as sut
+from exactly_lib.test_case_utils.external_program import syntax_options
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
 from exactly_lib.type_system.data import file_refs
@@ -280,12 +281,12 @@ class TestParseWithSymbols(unittest.TestCase):
         reference_of_relativity_symbol = SymbolReference(
             file_symbol.name,
             path_relativity_restriction(
-                sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
             ))
         reference_of_path_symbol = SymbolReference(
             file_symbol.name,
             path_or_string_reference_restrictions(
-                sut.PARSE_FILE_REF_CONFIGURATION.options.accepted_relativity_variants
+                syntax_options.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
             ))
         reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
                                                                             ReferenceRestrictionsOnDirectAndIndirect(
@@ -346,29 +347,29 @@ class TestParseWithSymbols(unittest.TestCase):
 class TestParseInvalidSyntaxWithArguments(unittest.TestCase):
     def test_just_begin_delimiter(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('('))
+            sut.parse_executable_file_with_args_from_parse_source(ParseSource('('))
 
     def test_empty_executable(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('( )'))
+            sut.parse_executable_file_with_args_from_parse_source(ParseSource('( )'))
 
     def test_missing_end_delimiter(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('( FILE arg1 arg2'))
+            sut.parse_executable_file_with_args_from_parse_source(ParseSource('( FILE arg1 arg2'))
 
 
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource(file_ref_texts.REL_HOME_CASE_OPTION))
+            sut.parse_executable_file_with_args_from_parse_source(ParseSource(file_ref_texts.REL_HOME_CASE_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('--invalid-option FILE'))
+            sut.parse_executable_file_with_args_from_parse_source(ParseSource('--invalid-option FILE'))
 
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
-    sut.PYTHON_EXECUTABLE_OPTION_STRING,
+    syntax_options.PYTHON_EXECUTABLE_OPTION_STRING,
     validation_result=validator_util.expect_passes_all_validations(),
     file_resolver_value=file_refs.absolute_file_name(sys.executable),
     expected_symbol_references_of_file=[],
@@ -545,7 +546,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         # ARRANGE #
         source = ParseSource(arguments_str)
         # ACT #
-        exe_file = sut.parse_from_parse_source(source)
+        exe_file = sut.parse_executable_file_with_args_from_parse_source(source)
         # ASSERT #
         utils.check_exe_file(self, expectation_on_exe_file, exe_file)
         expected_source_after_parse.apply_with_message(self, source, 'parse source')
@@ -557,7 +558,7 @@ class TestParseAbsolutePath(unittest.TestCase):
 def _parse_and_check(put: unittest.TestCase,
                      case: Case):
     source = ParseSource(case.source)
-    ef = sut.parse_from_parse_source(source)
+    ef = sut.parse_executable_file_with_args_from_parse_source(source)
     utils.check_exe_file(put, case.expectation, ef)
     case.source_after_parse.apply_with_message(put, source,
                                                'parse source after parse')
@@ -569,7 +570,7 @@ def file_ref_of(rel_option: RelOptionType,
 
 
 def file_ref_of_default_relativity(path_suffix: str) -> FileRef:
-    return file_refs.of_rel_option(sut.PARSE_FILE_REF_CONFIGURATION.options.default_option,
+    return file_refs.of_rel_option(syntax_options.REL_OPTION_ARG_CONF.options.default_option,
                                    PathPartAsFixedPath(path_suffix))
 
 
