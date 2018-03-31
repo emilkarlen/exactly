@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.help_texts.file_ref import REL_TMP_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_sub_process import \
+from exactly_lib.instructions.multi_phase_instructions.utils.instruction_from_parts_for_executing_program import \
     TheInstructionEmbryo
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

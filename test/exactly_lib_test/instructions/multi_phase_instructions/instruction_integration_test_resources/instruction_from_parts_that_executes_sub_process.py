@@ -2,12 +2,13 @@ import random
 import unittest
 
 from exactly_lib.instructions.multi_phase_instructions.utils import \
-    instruction_from_parts_for_executing_sub_process as spe_parts
+    instruction_from_parts_for_executing_program as spe_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
@@ -17,9 +18,9 @@ from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command_and_stdin_resolver import CommandAndStdinResolver
 from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
-from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinParser
+from exactly_lib.test_case_utils.external_program.parse import ProgramParser
+from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -42,13 +43,13 @@ class Configuration(ConfigurationBase):
     def run_sub_process_test(self,
                              put: unittest.TestCase,
                              source: ParseSource,
-                             execution_setup_parser: CommandAndStdinParser,
+                             program_parser: Parser[ProgramResolver],
                              arrangement,
                              expectation,
                              instruction_name: str = 'instruction-name'):
         self.run_test_with_parser(put,
                                   self._parser(instruction_name,
-                                               execution_setup_parser),
+                                               program_parser),
                                   source,
                                   arrangement,
                                   expectation)
@@ -61,8 +62,8 @@ class Configuration(ConfigurationBase):
 
     def _parser(self,
                 instruction_name: str,
-                execution_setup_parser: CommandAndStdinParser) -> InstructionParser:
-        parts_parser = spe_parts.parts_parser(instruction_name, execution_setup_parser)
+                program_parser: Parser[ProgramResolver]) -> InstructionParser:
+        parts_parser = spe_parts.parts_parser(instruction_name, program_parser)
         return self.instruction_from_parts_parser(parts_parser)
 
     def expect_failing_validation_post_setup(self,
@@ -241,13 +242,13 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
                                               stderr='output on stderr')
         program = py.program_that_prints_and_exits_with_exit_code(sub_process_result)
         program_source_as_single_line = program.replace('\n', ';')
-        execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
+        program_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
         source = source4(program_source_as_single_line)
         self.conf.run_sub_process_test(
             self,
             source,
-            execution_setup_parser,
+            program_parser,
             self.conf.arrangement(),
             self.conf.expect_failure_of_main(va_str.contains('output on stderr')))
 
@@ -272,31 +273,27 @@ class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
                                                                                       message_builder)
 
 
-class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
-    CommandAndStdinParser):
-    def __init__(self,
-                 validator: pre_or_post_validation.PreOrPostSdsValidator):
+class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(ProgramParser):
+    def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
+    def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        return CommandAndStdinResolver(
+        return ProgramResolver(
             command_resolver_for_source_on_command_line(instruction_argument
                                                         ).new_with_additional_arguments(list_resolvers.empty(),
                                                                                         [self.validator]),
             no_stdin())
 
 
-class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(
-    CommandAndStdinParser):
-    def __init__(self,
-                 validator: pre_or_post_validation.PreOrPostSdsValidator):
+class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(ProgramParser):
+    def __init__(self, validator: pre_or_post_validation.PreOrPostSdsValidator):
         self.validator = validator
 
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
+    def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
-        return CommandAndStdinResolver(
+        return ProgramResolver(
             command_resolvers.for_shell().new_with_additional_arguments(argument_resolver,
                                                                         [self.validator]),
             no_stdin())

@@ -9,7 +9,7 @@ from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.entity import concepts, syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import \
-    instruction_from_parts_for_executing_sub_process as spe_parts
+    instruction_from_parts_for_executing_program as spe_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import \
     IsBothAssertionAndHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser
@@ -24,10 +24,9 @@ from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.external_program import parse
-from exactly_lib.test_case_utils.external_program.command_and_stdin_resolver import CommandAndStdinResolver
-from exactly_lib.test_case_utils.external_program import command_and_stdin_resolver
 from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
-from exactly_lib.test_case_utils.external_program.parse import CommandAndStdinParser
+from exactly_lib.test_case_utils.external_program.parse import ProgramParser
+from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
@@ -176,13 +175,13 @@ class _AdditionalArguments:
         self.arguments_validator = arguments_validator
 
 
-class SetupParser(CommandAndStdinParser):
-    def parse_from_token_parser(self, parser: TokenParser) -> CommandAndStdinResolver:
+class SetupParser(ProgramParser):
+    def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         command_resolver = parse.command_from_token_parser(parser)
         additional = self._parse_additional_arguments(parser)
         command_resolver = command_resolver.new_with_additional_arguments(additional.arguments,
                                                                           additional.arguments_validator)
-        return CommandAndStdinResolver(command_resolver, no_stdin())
+        return ProgramResolver(command_resolver, no_stdin())
 
     def _parse_additional_arguments(self, token_parser: TokenParser) -> _AdditionalArguments:
         if token_parser.is_at_eol:
