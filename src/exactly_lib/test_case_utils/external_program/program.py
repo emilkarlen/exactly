@@ -31,23 +31,25 @@ class Program(tuple):
 
 
 class ProgramValue(MultiDirDependentValue[Program]):
-    def __new__(cls,
-                command: CommandValue,
-                stdin: StdinDataValue,
-                transformation: LinesTransformerValue):
-        return tuple.__new__(cls, (command, stdin, transformation))
+    def __init__(self,
+                 command: CommandValue,
+                 stdin: StdinDataValue,
+                 transformation: LinesTransformerValue):
+        self._command = command
+        self._stdin = stdin
+        self._transformation = transformation
 
     @property
     def command(self) -> CommandValue:
-        return self[0]
+        return self._command
 
     @property
     def stdin(self) -> StdinDataValue:
-        return self[1]
+        return self._stdin
 
     @property
     def transformation(self) -> LinesTransformerValue:
-        return self[2]
+        return self._transformation
 
     def resolving_dependencies(self) -> Set[ResolvingDependency]:
         return resolving_dependencies_from_sequence([self.command,

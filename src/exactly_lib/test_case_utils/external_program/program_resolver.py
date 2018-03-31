@@ -49,10 +49,8 @@ class ProgramResolver(DirDepValueResolverWithValidation[ProgramValue]):
 
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return references_from_objects_with_symbol_references([
-            self._command,
-            self._stdin,
-            self._transformations])
+        objects_with_refs = [self._command, self._stdin] + list(self._transformations)
+        return references_from_objects_with_symbol_references(objects_with_refs)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
