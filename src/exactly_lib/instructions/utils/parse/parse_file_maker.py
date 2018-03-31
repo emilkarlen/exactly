@@ -4,7 +4,6 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.help_texts.cross_ref import name_and_cross_ref
 from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
@@ -14,6 +13,7 @@ from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.external_program import parse
+from exactly_lib.test_case_utils.external_program.syntax_options import SHELL_COMMAND_TOKEN
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
 from exactly_lib.test_case_utils.parse import parse_here_document
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
@@ -26,7 +26,6 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONTENTS_ASSIGNMENT_TOKEN = instruction_arguments.ASSIGNMENT_OPERATOR
-SHELL_COMMAND_TOKEN = instruction_names.SHELL_INSTRUCTION_NAME
 STDOUT_OPTION = a.OptionName(long_name='stdout')
 FILE_OPTION = a.OptionName(long_name='file')
 CONTENTS_ARGUMENT = 'CONTENTS'
