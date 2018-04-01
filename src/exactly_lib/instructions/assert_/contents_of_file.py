@@ -4,14 +4,14 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef
+from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
+from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
-from exactly_lib.section_document.element_parsers import token_stream_parser
-from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction, WithAssertPhasePurpose
+from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
+from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -20,7 +20,7 @@ ACTUAL_PATH_ARGUMENT = a.Named('ACTUAL-PATH')
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(Parser(),
+    return SingleInstructionSetup(parser(),
                                   TheInstructionDocumentation(instruction_name))
 
 
@@ -64,19 +64,17 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._help_parts.see_also_targets()
 
 
-class Parser(InstructionParser):
-    def parse(self, source: ParseSource) -> AssertPhaseInstruction:
-        with token_stream_parser.from_parse_source(
-                source,
-                consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            assert isinstance(token_parser,
-                              token_stream_parser.TokenParser), 'Must have a TokenParser'  # Type info for IDE
-            token_parser.require_is_not_at_eol(
-                'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
+def parser() -> AssertPhaseInstructionParser:
+    return parse_instruction.Parser(_ActualFileParser())
 
-            comparison_target = parse_actual_file_argument_from_token_parser(token_parser)
-            return parse_instruction.parse_instruction(comparison_target,
-                                                       token_parser)
+
+class _ActualFileParser(ComparisonActualFileParser):
+    def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFile:
+        parser.require_is_not_at_eol(
+            'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
+        file_ref = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
+                                                                   parser)
+        return ActComparisonActualFileForFileRef(file_ref)
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
@@ -85,19 +83,6 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
         RelOptionType.REL_CWD),
     'PATH',
     True)
-
-
-def parse_actual_file_argument(source: ParseSource) -> ComparisonActualFile:
-    file_ref = parse_file_ref.parse_file_ref_from_parse_source(source,
-                                                               ACTUAL_RELATIVITY_CONFIGURATION)
-    return ActComparisonActualFileForFileRef(file_ref)
-
-
-def parse_actual_file_argument_from_token_parser(token_parser: token_stream_parser.TokenParser
-                                                 ) -> ComparisonActualFile:
-    file_ref = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
-                                                               token_parser)
-    return ActComparisonActualFileForFileRef(file_ref)
 
 
 _MAIN_DESCRIPTION_REST = """\

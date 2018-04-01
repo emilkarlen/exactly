@@ -1,15 +1,14 @@
 import pathlib
+from typing import Sequence
 
-from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
+from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases import common as i
-from exactly_lib.test_case_file_structure import sandbox_directory_structure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 
 CONTENTS_ATTRIBUTE = 'contents'
 
@@ -27,7 +26,7 @@ def file_property_name(contents_attribute: str, object_name: str) -> str:
     return contents_attribute + ' of ' + object_name
 
 
-class ComparisonActualFile:
+class ComparisonActualFile(ObjectWithTypedSymbolReferences):
     @property
     def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
         return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
@@ -50,7 +49,7 @@ class ComparisonActualFile:
         raise NotImplementedError('abstract method')
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return []
 
 
@@ -75,7 +74,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
         return PLAIN_FILE_OBJECT_NAME
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence[SymbolReference]:
         return self._file_ref_resolver.references
 
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
@@ -85,28 +84,3 @@ class ActComparisonActualFileForFileRef(ComparisonActualFile):
 
     def file_ref_resolver(self) -> FileRefResolver:
         return self._file_ref_resolver
-
-
-class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
-    def __init__(self, checked_file_name: str):
-        self.checked_file_name = checked_file_name
-
-    def object_name(self) -> str:
-        return self.checked_file_name
-
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
-        return None
-
-    def file_ref_resolver(self) -> FileRefResolver:
-        return file_ref_resolvers2.of_rel_option(RelOptionType.REL_RESULT,
-                                                 PathPartAsFixedPath(self.checked_file_name))
-
-
-class StdoutComparisonActualFile(ActComparisonActualFileForStdFileBase):
-    def __init__(self):
-        super().__init__(sandbox_directory_structure.RESULT_FILE__STDOUT)
-
-
-class StderrComparisonActualFile(ActComparisonActualFileForStdFileBase):
-    def __init__(self):
-        super().__init__(sandbox_directory_structure.RESULT_FILE__STDERR)

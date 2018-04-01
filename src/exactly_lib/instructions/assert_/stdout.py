@@ -1,13 +1,19 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.instructions.assert_.utils.file_contents import actual_files
+from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction, stdout_stderr
 from exactly_lib.instructions.assert_.utils.file_contents import stdout_stderr as utils
+from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
+from exactly_lib.test_case_file_structure import sandbox_directory_structure
 
 
 def setup_for_stdout(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
         parser(),
-        utils.TheInstructionDocumentation(instruction_name, 'stdout'))
+        utils.TheInstructionDocumentation(instruction_name,
+                                          sandbox_directory_structure.RESULT_FILE__STDOUT))
 
 
-def parser() -> utils.ParserForContentsForActualValue:
-    return utils.ParserForContentsForActualValue(actual_files.StdoutComparisonActualFile())
+def parser() -> AssertPhaseInstructionParser:
+    return parse_instruction.Parser(
+        utils.Parser(
+            stdout_stderr.ActComparisonActualFileForStdFileBase(
+                sandbox_directory_structure.RESULT_FILE__STDOUT)))
