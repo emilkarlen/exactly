@@ -1,27 +1,19 @@
-import unittest
-
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import common_tests
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
-from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducerFromActResult, ActResultProducer
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
-    HomeOrSdsPopulator
+from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducer, ActResultProducerFromActResult
+from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_resources.execution.utils import ProcessResult
-from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
-    HomeAndSdsAction
-
-
-def suite_for(configuration: InstructionTestConfigurationForEquals) -> unittest.TestSuite:
-    return common_tests.suite_for(configuration)
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import HomeAndSdsAction
 
 
 class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def first_line_argument(self, argument_tail: str) -> str:
         return argument_tail
 
-    def arrangement_for_contents(self, actual_contents: str,
+    def arrangement_for_contents(self,
+                                 actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                                  symbols: SymbolTable = None,
                                  ) -> instruction_check.ArrangementPostAct:
@@ -50,8 +42,3 @@ class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
     def _act_result_producer(self, contents_of_tested_file: str) -> ActResultProducer:
         act_result = self.act_result(contents_of_tested_file)
         return ActResultProducerFromActResult(act_result)
-
-
-class ActResultProducerFromHomeAndSds2Str(ActResultProducer):
-    def __init__(self, home_and_sds_2_str):
-        self.home_and_sds_2_str = home_and_sds_2_str

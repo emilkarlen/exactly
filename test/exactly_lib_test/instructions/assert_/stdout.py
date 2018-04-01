@@ -5,9 +5,10 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import stdout_stderr
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_stderr import \
-    TestConfigurationForStdFile, ActResultProducerFromHomeAndSds2Str
+from exactly_lib_test.instructions.assert_.test_resources import stdout_stderr
+from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configuration import TestConfigurationForStdFile
+from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
+    ActResultProducerFromHomeAndSds2Str
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts import file_assertion_part as sut
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.contents_transformation import \
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.contents_transformation import \
     ToUppercaseLinesTransformer
 from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
     FilePropertyDescriptorConstructorTestImpl

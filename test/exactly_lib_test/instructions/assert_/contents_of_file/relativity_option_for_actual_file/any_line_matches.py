@@ -5,7 +5,7 @@ from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_fo
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import \
     LineMatchesAssertionArgumentsConstructor
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration

@@ -1,12 +1,12 @@
 import unittest
 
-from exactly_lib_test.instructions.before_assert import test_resources, utils, \
+from exactly_lib_test.instructions.before_assert import test_resources_test, utils, \
     define_symbol, change_dir, env, run, shell, new_file, new_dir
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        test_resources.suite(),
+        test_resources_test.suite(),
         utils.suite(),
         define_symbol.suite(),
         change_dir.suite(),
