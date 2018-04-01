@@ -1,15 +1,16 @@
 from exactly_lib.instructions.assert_.utils.assertion_part import SequenceOfCooperativeAssertionParts, \
-    AssertionInstructionFromAssertionPart
+    AssertionInstructionFromAssertionPart, IdentityAssertionPartWithValidationAndReferences
 from exactly_lib.instructions.assert_.utils.file_contents import parse_file_contents_assertion_part
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
-from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileExistenceAssertionPart
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor
+from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import FileExistenceAssertionPart, \
+    FileConstructorAssertionPart
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionTokenParser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 
 
-class ComparisonActualFileParser(Parser[ComparisonActualFile]):
+class ComparisonActualFileParser(Parser[ComparisonActualFileConstructor]):
     pass
 
 
@@ -26,13 +27,16 @@ class Parser(AssertPhaseInstructionTokenParser):
         self._actual_file_parser = actual_file_parser
 
     def parse_from_token_parser(self, parser: TokenParser) -> AssertPhaseInstruction:
-        actual_file = self._actual_file_parser.parse_from_token_parser(parser)
+        actual_file_constructor = self._actual_file_parser.parse_from_token_parser(parser)
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
 
         return AssertionInstructionFromAssertionPart(
             SequenceOfCooperativeAssertionParts([
-                FileExistenceAssertionPart(actual_file),
+                IdentityAssertionPartWithValidationAndReferences(actual_file_constructor.validator,
+                                                                 actual_file_constructor.references),
+                FileConstructorAssertionPart(),
+                FileExistenceAssertionPart(),
                 actual_file_assertion_part,
             ]),
-            lambda env: 'initial assertion part argument - not used'
+            lambda env: actual_file_constructor
         )

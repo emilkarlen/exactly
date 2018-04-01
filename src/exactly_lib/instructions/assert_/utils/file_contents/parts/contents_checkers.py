@@ -1,15 +1,13 @@
 import pathlib
-from typing import Sequence
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile, \
-    FilePropertyDescriptorConstructor
+    FilePropertyDescriptorConstructor, ComparisonActualFileConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck, \
     DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils import file_properties
@@ -39,6 +37,18 @@ class ResolvedComparisonActualFile(tuple):
         return self[2]
 
 
+class FileConstructorAssertionPart(AssertionPart):
+    """
+    Constructs the actual file.
+    """
+
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFile:
+        return value_to_check.construct(environment)
+
+
 class FileExistenceAssertionPart(AssertionPart):
     """
     Checks existence of a :class:`ComparisonActualFile`,
@@ -48,30 +58,22 @@ class FileExistenceAssertionPart(AssertionPart):
     :raises PfhFailException: File does not exist.
     """
 
-    def __init__(self, actual_file: ComparisonActualFile):
-        super().__init__()
-        self._actual_file = actual_file
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._actual_file.references
-
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              not_used,
+              actual_file: ComparisonActualFile,
               ) -> ResolvedComparisonActualFile:
         """
         :return: The resolved path
         """
-        failure_message = self._actual_file.file_check_failure(environment)
+        failure_message = actual_file.file_check_failure(environment)
         if failure_message:
             raise PfhFailException(failure_message)
 
-        actual_path_value = self._actual_file.file_ref_resolver().resolve(environment.symbols)
+        actual_path_value = actual_file.file_ref_resolver().resolve(environment.symbols)
         return ResolvedComparisonActualFile(actual_path_value.value_of_any_dependency(environment.home_and_sds),
                                             actual_path_value,
-                                            self._actual_file.property_descriptor_constructor)
+                                            actual_file.property_descriptor_constructor)
 
 
 class FileTransformerAsAssertionPart(AssertionPart):

@@ -1,14 +1,15 @@
-import pathlib
 from typing import Sequence
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
-from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
+from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 
 CONTENTS_ATTRIBUTE = 'contents'
 
@@ -26,7 +27,7 @@ def file_property_name(contents_attribute: str, object_name: str) -> str:
     return contents_attribute + ' of ' + object_name
 
 
-class ComparisonActualFile(ObjectWithTypedSymbolReferences):
+class ComparisonActualFile:
     @property
     def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
         return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
@@ -41,16 +42,38 @@ class ComparisonActualFile(ObjectWithTypedSymbolReferences):
         """
         raise NotImplementedError()
 
-    def file_path(self, environment: i.InstructionEnvironmentForPostSdsStep) -> pathlib.Path:
-        file_ref = self.file_ref_resolver().resolve(environment.symbols)
-        return file_ref.value_of_any_dependency(environment.path_resolving_environment_pre_or_post_sds.home_and_sds)
-
     def file_ref_resolver(self) -> FileRefResolver:
         raise NotImplementedError('abstract method')
 
+
+class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation):
+    def construct(self, environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+        raise NotImplementedError('abstract method')
+
+
+class ComparisonActualFileConstantWithReferences(ComparisonActualFile):
+    def __init__(self, references: Sequence[SymbolReference]):
+        self._references = references
+
     @property
     def references(self) -> Sequence[SymbolReference]:
-        return []
+        return self._references
+
+
+class ComparisonActualFileConstructorForConstant(ComparisonActualFileConstructor):
+    def __init__(self, constructed_value: ComparisonActualFileConstantWithReferences):
+        self._constructed_value = constructed_value
+
+    def construct(self, environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+        return self._constructed_value
+
+    @property
+    def validator(self) -> PreOrPostSdsValidator:
+        return pre_or_post_validation.ConstantSuccessValidator()
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._constructed_value.references
 
 
 class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDescriptorConstructor):
@@ -65,22 +88,18 @@ class _ActualFilePropertyDescriptorConstructorForComparisonFile(FilePropertyDesc
                                       self._file_ref)
 
 
-class ActComparisonActualFileForFileRef(ComparisonActualFile):
-    def __init__(self,
-                 file_ref_resolver: FileRefResolver):
+class ActComparisonActualFileForFileRef(ComparisonActualFileConstantWithReferences):
+    def __init__(self, file_ref_resolver: FileRefResolver):
+        super().__init__(file_ref_resolver.references)
         self._file_ref_resolver = file_ref_resolver
 
     def object_name(self) -> str:
         return PLAIN_FILE_OBJECT_NAME
 
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._file_ref_resolver.references
+    def file_ref_resolver(self) -> FileRefResolver:
+        return self._file_ref_resolver
 
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
         return pre_or_post_sds_failure_message_or_none(FileRefCheck(self._file_ref_resolver,
                                                                     must_exist_as(FileType.REGULAR)),
                                                        environment.path_resolving_environment_pre_or_post_sds)
-
-    def file_ref_resolver(self) -> FileRefResolver:
-        return self._file_ref_resolver

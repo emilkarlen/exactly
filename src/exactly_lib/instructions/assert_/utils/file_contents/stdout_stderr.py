@@ -1,7 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
@@ -49,15 +49,18 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 
 class Parser(ComparisonActualFileParser):
-    def __init__(self, actual_value_if_not_output_from_program: actual_files.ComparisonActualFile):
+    def __init__(self,
+                 actual_value_if_not_output_from_program:
+                 actual_files.ComparisonActualFileConstantWithReferences):
         self._actual_value_if_not_output_from_program = actual_value_if_not_output_from_program
 
-    def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFile:
-        return self._actual_value_if_not_output_from_program
+    def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
+        return actual_files.ComparisonActualFileConstructorForConstant(self._actual_value_if_not_output_from_program)
 
 
-class ActComparisonActualFileForStdFileBase(ComparisonActualFile):
+class ActComparisonActualFileForStdFileBase(actual_files.ComparisonActualFileConstantWithReferences):
     def __init__(self, checked_file_name: str):
+        super().__init__(())
         self.checked_file_name = checked_file_name
 
     def object_name(self) -> str:
