@@ -19,6 +19,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instr
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import stdout_from, \
     TransformableContentsConstructor
+from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
@@ -28,10 +29,10 @@ from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransf
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptFileRefArgument
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
-    non_home_dir_contains_exactly
-from exactly_lib_test.test_case_utils.external_program.test_resources.arguments_building import shell_command, \
-    interpret_py_source
+    non_home_dir_contains_exactly, dir_contains_exactly
+from exactly_lib_test.test_case_utils.external_program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
@@ -39,11 +40,12 @@ from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building im
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
-from exactly_lib_test.test_resources.programs.py_programs import single_line_pgm_that_prints_to_stdout_no_new_line
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
+from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
 
 
@@ -51,6 +53,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestSuccessfulScenariosWithShellCommandLine),
         unittest.makeSuite(TestSuccessfulScenariosWithExecutableProgram),
+        unittest.makeSuite(TestSuccessfulScenariosWithProgram),
         unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestSymbolUsages),
         unittest.makeSuite(TestCommonFailingScenariosDueToInvalidDestinationFile),
@@ -69,9 +72,10 @@ class TestSymbolUsages(TestCaseBase):
 
         transformed_shell_contents_arguments = TransformableContentsConstructor(
             stdout_from(
-                shell_command(shell_commands.command_that_prints_line_to_stdout(
-                    symbol_reference_syntax_for_name(text_printed_by_shell_command_symbol.name)
-                ))
+                pgm_args.shell_command(
+                    shell_commands.command_that_prints_line_to_stdout(
+                        symbol_reference_syntax_for_name(text_printed_by_shell_command_symbol.name)
+                    ))
             )
         ).with_transformation(to_upper_transformer.name)
 
@@ -87,11 +91,11 @@ class TestSymbolUsages(TestCaseBase):
                 container(file_ref_resolvers2.of_rel_option(RelOptionType.REL_ACT,
                                                             PathPartAsFixedPath(dst_file_symbol.value))),
 
+            text_printed_by_shell_command_symbol.name:
+                container(string_resolvers.str_constant(text_printed_by_shell_command_symbol.value)),
+
             to_upper_transformer.name:
                 container(to_upper_transformer.value),
-
-            text_printed_by_shell_command_symbol.name:
-                container(string_resolvers.str_constant(text_printed_by_shell_command_symbol.value))
         })
 
         # ACT & ASSERT #
@@ -110,11 +114,11 @@ class TestSymbolUsages(TestCaseBase):
                                                     sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
                             ),
 
-                            is_lines_transformer_reference_to(to_upper_transformer.name),
-
                             matches_reference_2(
                                 text_printed_by_shell_command_symbol.name,
                                 equals_data_type_reference_restrictions(is_any_data_type())),
+
+                            is_lines_transformer_reference_to(to_upper_transformer.name),
                         ]),
                     )
                     )
@@ -128,7 +132,7 @@ class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
 
         shell_contents_arguments = TransformableContentsConstructor(
             stdout_from(
-                shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
+                pgm_args.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
             )
         ).without_transformation()
 
@@ -167,7 +171,7 @@ class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
 
         shell_contents_arguments = TransformableContentsConstructor(
             stdout_from(
-                shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
+                pgm_args.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
             )
         ).with_transformation(to_upper_transformer.name)
 
@@ -212,7 +216,7 @@ class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
 
         shell_contents_arguments_constructor = TransformableContentsConstructor(
             stdout_from(
-                shell_command(shell_commands.command_that_prints_line_to_stdout(text_to_print)),
+                pgm_args.shell_command(shell_commands.command_that_prints_line_to_stdout(text_to_print)),
                 with_new_line_after_output_option=True,
             ),
             with_new_line_after_transformer=True,
@@ -266,6 +270,126 @@ class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
                             )
 
 
+class TestSuccessfulScenariosWithProgram(TestCaseBase):
+    def test_contents_from_stdout__without_transformer(self):
+        text_printed_by_program = 'text printed by program'
+        expected_file_contents = text_printed_by_program + '\n'
+        expected_file = fs.File('a-file-name.txt', expected_file_contents)
+
+        program_cases = [
+            NameAndValue('executable file',
+                         pgm_args.interpret_py_source(
+                             py_programs.single_line_pgm_that_prints_to_stdout_with_new_line(text_printed_by_program))
+                         ),
+            NameAndValue('shell command line',
+                         pgm_args.shell_command(command_that_prints_line_to_stdout(text_printed_by_program)))
+        ]
+
+        for program_case in program_cases:
+            for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
+                program_contents_arguments = TransformableContentsConstructor(
+                    stdout_from(program_case.value)
+                ).without_transformation()
+
+                source = remaining_source(
+                    '{rel_opt} {file_name} {contents_arguments}'.format(rel_opt=rel_opt_conf.option_argument,
+                                                                        file_name=expected_file.file_name,
+                                                                        contents_arguments=program_contents_arguments.first_line),
+                    program_contents_arguments.following_lines)
+                with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
+                                  program=program_case.name,
+                                  remaining_source=source.remaining_source):
+                    self._check(
+                        source,
+                        ArrangementWithSds(
+                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                        ),
+                        Expectation(
+                            main_result=IS_SUCCESS,
+                            side_effects_on_home=f_asrt.dir_is_empty(),
+                            symbol_usages=asrt.is_empty_sequence,
+                            main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
+                                                                                   fs.DirContents([expected_file])),
+                        ))
+
+    def test_contents_from_stdout__with_transformer(self):
+        text_printed_by_program = 'single line of output'
+        expected_file_contents = text_printed_by_program.upper() + '\n'
+        file_arg = RelOptFileRefArgument('a-file-name.txt', RelOptionType.REL_TMP)
+
+        expected_file = fs.File(file_arg.name, expected_file_contents)
+
+        to_upper_transformer = NameAndValue('TO_UPPER_CASE',
+                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        symbols = SymbolTable({
+            to_upper_transformer.name: container(to_upper_transformer.value)
+        })
+
+        program_cases = [
+            NameAndValue(
+                'executable file',
+                pgm_args.program(pgm_args.interpret_py_source_arg(
+                    py_programs.single_line_pgm_that_prints_to_stdout_with_new_line(text_printed_by_program)),
+                    transformation=to_upper_transformer.name
+                )
+            ),
+            NameAndValue(
+                'shell command line',
+                pgm_args.program(pgm_args.shell_command_arg(
+                    command_that_prints_line_to_stdout(text_printed_by_program)),
+                    transformation=to_upper_transformer.name
+                )
+            ),
+        ]
+
+        source_cases = [
+            NIE('no following lines',
+                asrt_source.source_is_at_end,
+                []
+                ),
+            NIE('empty following line',
+                asrt_source.is_at_beginning_of_line(4),
+                ['',
+                 '   following line with text']
+                ),
+            NIE('with following lines',
+                asrt_source.is_at_beginning_of_line(3),
+                ['following line']
+                ),
+        ]
+        for source_case in source_cases:
+            for program_case in program_cases:
+                program_contents_arguments = TransformableContentsConstructor(
+                    stdout_from(program_case.value)
+                ).without_transformation()
+
+                source = remaining_source(
+                    '{file_arg} {program_contents_arguments}'.format(
+                        file_arg=file_arg,
+                        program_contents_arguments=program_contents_arguments.first_line),
+                    program_contents_arguments.following_lines + source_case.input_value)
+
+                with self.subTest(program=program_case.name,
+                                  following_source=source_case.name,
+                                  remaining_source=source.remaining_source):
+                    self._check(
+                        source,
+                        ArrangementWithSds(
+                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                            symbols=symbols
+                        ),
+                        Expectation(
+                            main_result=IS_SUCCESS,
+                            side_effects_on_home=f_asrt.dir_is_empty(),
+                            symbol_usages=asrt.matches_sequence([
+                                is_lines_transformer_reference_to(to_upper_transformer.name),
+                            ]),
+                            main_side_effects_on_sds=dir_contains_exactly(file_arg.relativity_option,
+                                                                          fs.DirContents([expected_file])),
+                            source=source_case.expected_value
+                        ))
+
+
 class TestSuccessfulScenariosWithExecutableProgram(TestCaseBase):
     def test_contents_from_stdout__without_transformer(self):
         text_printed_by_program = 'text printed by program'
@@ -274,7 +398,8 @@ class TestSuccessfulScenariosWithExecutableProgram(TestCaseBase):
 
         program_contents_arguments = TransformableContentsConstructor(
             stdout_from(
-                interpret_py_source(single_line_pgm_that_prints_to_stdout_no_new_line(text_printed_by_program))
+                pgm_args.interpret_py_source(
+                    py_programs.single_line_pgm_that_prints_to_stdout_no_new_line(text_printed_by_program))
             )
         ).without_transformation()
 
@@ -313,7 +438,8 @@ class TestSuccessfulScenariosWithExecutableProgram(TestCaseBase):
 
         program_contents_arguments = TransformableContentsConstructor(
             stdout_from(
-                interpret_py_source(single_line_pgm_that_prints_to_stdout_no_new_line(text_printed_by_program))
+                pgm_args.interpret_py_source(
+                    py_programs.single_line_pgm_that_prints_to_stdout_no_new_line(text_printed_by_program))
             )
         ).with_transformation(to_upper_transformer.name)
 
@@ -358,7 +484,8 @@ class TestSuccessfulScenariosWithExecutableProgram(TestCaseBase):
 
         program_contents_arguments_constructor = TransformableContentsConstructor(
             stdout_from(
-                interpret_py_source(single_line_pgm_that_prints_to_stdout_no_new_line(text_to_print)),
+                pgm_args.interpret_py_source(
+                    py_programs.single_line_pgm_that_prints_to_stdout_no_new_line(text_to_print)),
                 with_new_line_after_output_option=True,
             ),
             with_new_line_after_transformer=True,
@@ -446,7 +573,7 @@ class TestFailingScenarios(TestCaseBase):
     def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
         self._expect_failure(TransformableContentsConstructor(
             stdout_from(
-                shell_command(shell_commands.command_that_exits_with_code(1))
+                pgm_args.shell_command(shell_commands.command_that_exits_with_code(1))
             )
         ))
 
@@ -454,7 +581,7 @@ class TestFailingScenarios(TestCaseBase):
         non_executable_shell_command = '<'
         self._expect_failure(TransformableContentsConstructor(
             stdout_from(
-                shell_command(non_executable_shell_command)
+                pgm_args.shell_command(non_executable_shell_command)
             )
         ))
 
@@ -470,7 +597,7 @@ class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingSce
 
         shell_contents_arguments_constructor = TransformableContentsConstructor(
             stdout_from(
-                shell_command(shell_commands.command_that_exits_with_code(0))
+                pgm_args.shell_command(shell_commands.command_that_exits_with_code(0))
             )
         )
 

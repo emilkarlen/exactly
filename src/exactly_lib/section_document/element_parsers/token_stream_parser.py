@@ -260,10 +260,10 @@ class TokenParser:
         return return_value_if_no_match
 
     def consume_and_handle_optional_option(self,
-                                           return_value_if_no_match,
-                                           argument_parser: types.FunctionType,
+                                           return_value_if_no_match: T,
+                                           argument_parser: Callable[[TokenParserType], T],
                                            option_name: OptionName,
-                                           ):
+                                           ) -> T:
         """
         Looks at the current argument and checks if it is the given option,
         and, if it is, returns the value from the given parser.

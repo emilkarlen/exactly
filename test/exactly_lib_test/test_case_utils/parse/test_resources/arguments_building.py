@@ -46,6 +46,10 @@ class Arguments:
         return Arguments(self.first_line,
                          self.following_lines + following_lines)
 
+    @property
+    def num_lines(self) -> int:
+        return 1 + len(self.following_lines)
+
 
 def here_document(lines: List[str],
                   marker: str = 'EOF') -> Arguments:
