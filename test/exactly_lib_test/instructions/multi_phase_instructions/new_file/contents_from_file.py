@@ -208,14 +208,14 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                     src_rel_opt_conf,
                     src_file)
 
-                with self.subTest(dst_relativity=dst_rel_opt_conf.option_string,
-                                  src_relativity=src_rel_opt_conf.option_string):
+                with self.subTest(dst_relativity=dst_rel_opt_conf.option_argument,
+                                  src_relativity=src_rel_opt_conf.option_argument):
                     # ACT & ASSERT #
 
                     self._check(
                         remaining_source(
                             '{rel_opt} {file_name} {contents_arguments}'.format(
-                                rel_opt=dst_rel_opt_conf.option_string,
+                                rel_opt=dst_rel_opt_conf.option_argument,
                                 file_name=expected_file.file_name,
                                 contents_arguments=file_contents_arg.first_line
                             ),
@@ -256,14 +256,14 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                     src_rel_opt_conf,
                     src_file)
 
-                with self.subTest(dst_option_string=dst_rel_opt_conf.option_string,
-                                  src_option_string=src_rel_opt_conf.option_string):
+                with self.subTest(dst_option_string=dst_rel_opt_conf.option_argument,
+                                  src_option_string=src_rel_opt_conf.option_argument):
                     # ACT & ASSERT #
 
                     self._check(
                         remaining_source(
                             '{rel_opt} {file_name} {contents_arguments}'.format(
-                                rel_opt=dst_rel_opt_conf.option_string,
+                                rel_opt=dst_rel_opt_conf.option_argument,
                                 file_name=expected_file.file_name,
                                 contents_arguments=file_contents_arg.first_line
                             ),
@@ -326,7 +326,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                               first_line_argments=optional_arguments.first_line):
                 source = remaining_source(
                     '{rel_opt} {dst_file_name} {optional_arguments}'.format(
-                        rel_opt=dst_file_rel_opt_conf.option_string,
+                        rel_opt=dst_file_rel_opt_conf.option_argument,
                         dst_file_name=expected_dst_file.name,
                         optional_arguments=optional_arguments.first_line,
                     ),
@@ -393,7 +393,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                         arguments = complete_arguments(dst_file, contents_arguments)
                         source = source_of(arguments)
                         with self.subTest(phase_is_after_act=phase_is_after_act,
-                                          relativity_of_src_path=src_file.relativity.option_string,
+                                          relativity_of_src_path=src_file.relativity.option_argument,
                                           first_line=arguments.first_line):
                             # ACT & ASSERT #
                             self._check(
@@ -413,7 +413,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                     src_file_rel_opt_conf: RelativityOptionConfiguration,
                                     src_file: fs.File
                                     ) -> asrt.ValueAssertion:
-        if dst_file_rel_opt_conf.option_string == src_file_rel_opt_conf.option_string or \
+        if dst_file_rel_opt_conf.option_argument_str == src_file_rel_opt_conf.option_string or \
                 (dst_file_rel_opt_conf.is_rel_cwd and src_file_rel_opt_conf.is_rel_cwd):
             return dst_file_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([dst_file,
                                                                                           src_file]))

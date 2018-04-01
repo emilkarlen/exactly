@@ -33,7 +33,7 @@ class RelativityConfiguration:
 
     @property
     def option(self) -> str:
-        return self._rel_opt_conf.option_string
+        return self._rel_opt_conf.option_argument_str
 
     @property
     def exists_pre_sds(self) -> bool:

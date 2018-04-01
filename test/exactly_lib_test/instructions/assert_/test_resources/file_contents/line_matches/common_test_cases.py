@@ -4,7 +4,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_construction
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_building
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
@@ -78,7 +78,7 @@ class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
 
         lines_transformer_name = 'the_transformer'
 
-        common_arguments = arguments_construction.CommonArgumentsConstructor(lines_transformer_name)
+        common_arguments = arguments_building.CommonArgumentsConstructor(lines_transformer_name)
         expected_symbol_reference_to_transformer = is_lines_transformer_reference_to(lines_transformer_name)
 
         expected_symbol_usages = asrt.matches_sequence([
@@ -90,10 +90,10 @@ class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
                                   quantifier=quantifier.name):
-                    arguments_for_implicit_file = arguments_construction.ImplicitActualFileArgumentsConstructor(
+                    arguments_for_implicit_file = arguments_building.ImplicitActualFileArgumentsConstructor(
                         common_arguments,
-                        arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier,
-                                                                                        syntax_for_regex_matcher(
+                        arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
+                                                                                    syntax_for_regex_matcher(
                                                                                             'regex'))
                     ).apply(etc)
                     arguments = self.configuration.first_line_argument(arguments_for_implicit_file)
@@ -110,7 +110,7 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
 
         line_matcher_name = 'the_line_matcher'
 
-        common_arguments = arguments_construction.CommonArgumentsConstructor()
+        common_arguments = arguments_building.CommonArgumentsConstructor()
         expected_symbol_reference_to_transformer = is_line_matcher_reference_to(line_matcher_name)
 
         expected_symbol_usages = asrt.matches_sequence([
@@ -122,10 +122,10 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
             for quantifier in Quantifier:
                 with self.subTest(expectation_type=expectation_type,
                                   quantifier=quantifier.name):
-                    arguments_for_implicit_file = arguments_construction.ImplicitActualFileArgumentsConstructor(
+                    arguments_for_implicit_file = arguments_building.ImplicitActualFileArgumentsConstructor(
                         common_arguments,
-                        arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier,
-                                                                                        line_matcher_name)
+                        arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
+                                                                                    line_matcher_name)
                     ).apply(etc)
                     arguments = self.configuration.first_line_argument(arguments_for_implicit_file)
                     source = remaining_source(arguments)

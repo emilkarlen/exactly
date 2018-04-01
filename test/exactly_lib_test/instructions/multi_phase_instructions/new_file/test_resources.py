@@ -125,10 +125,10 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
 
                 with self.subTest(file_contents_variant=file_contents_case.name,
                                   first_line_argments=optional_arguments.first_line,
-                                  dst_file_variant=rel_opt_conf.option_string):
+                                  dst_file_variant=rel_opt_conf.option_argument):
                     source = remaining_source(
                         '{relativity_option_arg} {dst_file_argument} {optional_arguments}'.format(
-                            relativity_option_arg=rel_opt_conf.option_string,
+                            relativity_option_arg=rel_opt_conf.option_argument,
                             dst_file_argument=dst_file_name,
                             optional_arguments=optional_arguments.first_line,
                         ),

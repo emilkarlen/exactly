@@ -55,7 +55,7 @@ def file(file_name: str,
         file_args = following_line_args
 
     if rel_option is not None:
-        file_args.append(rel_option.option_string)
+        file_args.append(rel_option.option_argument_str)
     file_args.append(file_name)
 
     following_lines = [] \

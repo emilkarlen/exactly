@@ -89,7 +89,7 @@ class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConst
               etc: ExpectationTypeConfig,
               rel_opt_config: RelativityOptionConfiguration,
               ) -> str:
-        ret_val = self.instruction_argument_template.replace('<rel_opt>', rel_opt_config.option_string)
+        ret_val = self.instruction_argument_template.replace('<rel_opt>', str(rel_opt_config.option_argument))
         ret_val = etc.instruction_arguments(ret_val)
         return ret_val
 

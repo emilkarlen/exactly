@@ -13,6 +13,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import FileRefArgument
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check as sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
@@ -67,10 +68,10 @@ class TestParse(unittest.TestCase):
 
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
-             instruction_argument: str,
+             instruction_argument,
              arrangement: Arrangement,
              expectation: Expectation):
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+        for source in equivalent_source_variants__with_source_check(self, str(instruction_argument)):
             self._check(sut.Parser(), source, arrangement, expectation)
 
 
@@ -79,7 +80,7 @@ class TestValidationErrorScenarios(TestCaseBaseForParser):
         for relativity_option in source_relativity_options('SOURCE_SYMBOL_NAME'):
             with self.subTest(msg=relativity_option.test_case_description):
                 self._run('{relativity_option} source-that-do-not-exist'.format(
-                    relativity_option=relativity_option.option_string),
+                    relativity_option=relativity_option.option_argument),
                     Arrangement(
                         symbols=relativity_option.symbols.in_arrangement(),
                     ),
@@ -92,7 +93,7 @@ class TestValidationErrorScenarios(TestCaseBaseForParser):
         for relativity_option in source_relativity_options('SOURCE_SYMBOL_NAME'):
             with self.subTest(msg=relativity_option.test_case_description):
                 self._run('{relativity_option} source-that-do-not-exist destination'.format(
-                    relativity_option=relativity_option.option_string),
+                    relativity_option=relativity_option.option_argument),
                     Arrangement(
                         symbols=relativity_option.symbols.in_arrangement(),
                     ),
@@ -106,14 +107,10 @@ class TestSuccessfulScenariosWithoutExplicitDestination(TestCaseBaseForParser):
     def test_install_file(self):
         for relativity_option in source_relativity_options('SOURCE_SYMBOL_NAME'):
             with self.subTest(msg=relativity_option.test_case_description):
-                file_name = 'existing-file'
-                arguments = '{relativity_option} {source_file}'.format(
-                    relativity_option=relativity_option.option_string,
-                    source_file=file_name,
-                )
-                file_to_install = DirContents([(File(file_name,
+                file_arg = FileRefArgument('existing-file', relativity_option.option_argument)
+                file_to_install = DirContents([(File(file_arg.name,
                                                      'contents'))])
-                self._run(arguments,
+                self._run(file_arg,
                           Arrangement(
                               pre_contents_population_action=MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY,
                               hds_contents=case_home_dir_contents(file_to_install),
@@ -234,9 +231,9 @@ class TestSuccessfulScenariosWithExplicitDestination(TestCaseBaseForParser):
             dst_rel_option.test_case_description)
         with self.subTest(msg=test_case_name):
             arguments = '{src_relativity_option} {src_file} {dst_relativity_option} {dst_file}'.format(
-                src_relativity_option=src_rel_option.option_string,
+                src_relativity_option=src_rel_option.option_argument,
                 src_file=src_file_name,
-                dst_relativity_option=dst_rel_option.option_string,
+                dst_relativity_option=dst_rel_option.option_argument,
                 dst_file=dst_file_name,
             )
             symbols_in_arrangement = symbol_table_from_entries(
