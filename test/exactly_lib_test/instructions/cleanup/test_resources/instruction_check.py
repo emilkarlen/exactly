@@ -55,7 +55,7 @@ class Arrangement(ArrangementWithSds):
 
 class Expectation(ExpectationBase):
     def __init__(self,
-                 act_result: utils.ActResult = utils.ActResult(),
+                 act_result: utils.ProcessResult = utils.ProcessResult(),
                  validate_pre_sds_result: asrt.ValueAssertion = svh_assertions.is_success(),
                  main_result: asrt.ValueAssertion = sh_assertions.is_success(),
                  symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,

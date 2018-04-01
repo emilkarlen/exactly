@@ -11,7 +11,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.stdout_s
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds
-from exactly_lib_test.test_resources.execution.utils import ActResult
+from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 
@@ -24,8 +24,8 @@ def suite() -> unittest.TestSuite:
 
 
 class ActResultProducerForStderr(ActResultProducerFromHomeAndSds2Str):
-    def apply(self, act_environment: ActEnvironment) -> ActResult:
-        return ActResult(stderr_contents=self.home_and_sds_2_str(act_environment.home_and_sds))
+    def apply(self, act_environment: ActEnvironment) -> ProcessResult:
+        return ProcessResult(stderr_contents=self.home_and_sds_2_str(act_environment.home_and_sds))
 
 
 class TestConfigurationForStderr(TestConfigurationForStdFile):
@@ -45,8 +45,8 @@ class TestConfigurationForStderr(TestConfigurationForStdFile):
             symbols=symbols,
         )
 
-    def act_result(self, contents_of_tested_file: str) -> ActResult:
-        return ActResult(stderr_contents=contents_of_tested_file)
+    def act_result(self, contents_of_tested_file: str) -> ProcessResult:
+        return ProcessResult(stderr_contents=contents_of_tested_file)
 
 
 if __name__ == '__main__':

@@ -193,7 +193,7 @@ def _actual_exitcode(exit_code: int) -> ArrangementPostAct:
 
 
 def act_result_of(exit_code: int):
-    return ActResultProducerFromActResult(utils.ActResult(exitcode=exit_code))
+    return ActResultProducerFromActResult(utils.ProcessResult(exitcode=exit_code))
 
 
 def symbol_table_with_string_constant_symbols(symbol_name_and_value_list: list) -> SymbolTable:
