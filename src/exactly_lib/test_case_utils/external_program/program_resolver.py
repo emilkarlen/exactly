@@ -37,7 +37,7 @@ class ProgramResolver(DirDepValueResolverWithValidation[ProgramValue]):
             self._stdin,
             self._transformations)
 
-    def new_with_additional_transformations(self, transformations: Sequence[LinesTransformerResolver]):
+    def new_with_appended_transformations(self, transformations: Sequence[LinesTransformerResolver]):
         """
         Creates a new resolver with additional transformation appended at the end of
         current transformations.
@@ -46,6 +46,16 @@ class ProgramResolver(DirDepValueResolverWithValidation[ProgramValue]):
             self._command,
             self._stdin,
             tuple(self._transformations) + tuple(transformations))
+
+    def new_with_prepended_transformations(self, transformations: Sequence[LinesTransformerResolver]):
+        """
+        Creates a new resolver with additional transformation before
+        current transformations.
+        """
+        return ProgramResolver(
+            self._command,
+            self._stdin,
+            tuple(transformations) + tuple(self._transformations))
 
     @property
     def references(self) -> Sequence[SymbolReference]:

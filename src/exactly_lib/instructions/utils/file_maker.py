@@ -64,10 +64,8 @@ class FileMakerForConstantContents(FileMaker):
 class FileMakerForContentsFromProgram(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
-                 output_transformer: LinesTransformerResolver,
                  program: ProgramResolver):
         self._source_info = source_info
-        self._output_transformer = output_transformer
         self._program = program
 
     def make(self,
@@ -76,26 +74,21 @@ class FileMakerForContentsFromProgram(FileMaker):
              ) -> str:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
-        command = self._program \
+        program = self._program \
             .resolve_value(path_resolving_env.symbols) \
-            .command \
             .value_of_any_dependency(path_resolving_env.home_and_sds)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
-        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
+        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(program.command, executor, storage_dir)
 
         err_msg = result_for_non_success_or_non_zero_exit_code(result_and_std_err)
         if err_msg:
             return err_msg
 
         path_of_output = storage_dir / result_and_std_err.result.file_names.stdout
-        transformer = self._output_transformer \
-            .resolve(path_resolving_env.symbols) \
-            .value_of_any_dependency(path_resolving_env.home_and_sds)
-
         return create_file_from_transformation_of_existing_file(path_of_output,
                                                                 dst_path,
-                                                                transformer)
+                                                                program.transformation)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
@@ -103,7 +96,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 
     @property
     def symbol_references(self) -> Sequence[SymbolReference]:
-        return tuple(self._output_transformer.references) + tuple(self._program.references)
+        return self._program.references
 
 
 class FileMakerForContentsFromExistingFile(FileMaker):

@@ -161,8 +161,8 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                           contents_transformer: LinesTransformerResolver) -> FileMaker:
     def parse_program(my_parser: TokenParser) -> FileMaker:
         program = parse.parse_program(my_parser)
+        program = program.new_with_prepended_transformations([contents_transformer])
         return FileMakerForContentsFromProgram(instruction_config.source_info,
-                                               contents_transformer,
                                                program)
 
     def parse_file(my_parser: TokenParser) -> FileMaker:

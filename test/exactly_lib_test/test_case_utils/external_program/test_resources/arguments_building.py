@@ -29,11 +29,11 @@ def interpret_py_source_arg(python_source: str) -> ArgumentElementRenderer:
     )
 
 
-def program_arguments(program: ArgumentElementRenderer,
-                      transformation: ArgumentElementRenderer = None) -> Arguments:
+def program(program_arg: ArgumentElementRenderer,
+            transformation=None) -> Arguments:
     extra = []
     if transformation:
         extra.append(OptionWithArgument(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME,
                                         transformation))
 
-    return Arguments(program, extra)
+    return Arguments(program_arg, extra)
