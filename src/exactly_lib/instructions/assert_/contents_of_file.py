@@ -2,10 +2,11 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
+from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef
+from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef, \
+    ComparisonActualFileConstructor
 from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction import ComparisonActualFileParser
-from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFile
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
@@ -69,12 +70,12 @@ def parser() -> AssertPhaseInstructionParser:
 
 
 class _ActualFileParser(ComparisonActualFileParser):
-    def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFile:
+    def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
         parser.require_is_not_at_eol(
             'Missing {actual_file} argument'.format(actual_file=ACTUAL_PATH_ARGUMENT.name))
         file_ref = parse_file_ref.parse_file_ref_from_token_parser(ACTUAL_RELATIVITY_CONFIGURATION,
                                                                    parser)
-        return ActComparisonActualFileForFileRef(file_ref)
+        return actual_files.ComparisonActualFileConstructorForConstant(ActComparisonActualFileForFileRef(file_ref))
 
 
 ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfiguration(
@@ -83,7 +84,6 @@ ACTUAL_RELATIVITY_CONFIGURATION = rel_opts_configuration.RelOptionArgumentConfig
         RelOptionType.REL_CWD),
     'PATH',
     True)
-
 
 _MAIN_DESCRIPTION_REST = """\
 FAILs if {checked_file} is not an existing regular file.

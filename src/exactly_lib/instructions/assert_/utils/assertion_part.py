@@ -1,9 +1,7 @@
-import types
-from typing import Sequence
+from typing import Sequence, Any, Callable
 
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
-from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences, \
-    references_from_objects_with_symbol_references
+from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -13,9 +11,10 @@ from exactly_lib.test_case.phases.result import pfh, svh
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case_utils.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 
 
-class AssertionPart(ObjectWithSymbolReferences):
+class AssertionPart(ObjectWithSymbolReferencesAndValidation):
     """
     A part of an assertion instruction that
     executes one part of the whole assertion.
@@ -61,6 +60,25 @@ class AssertionPart(ObjectWithSymbolReferences):
                                               value_to_check)
 
 
+class IdentityAssertionPartWithValidationAndReferences(AssertionPart):
+    def __init__(self,
+                 validator: PreOrPostSdsValidator,
+                 references: Sequence[SymbolReference]):
+        super().__init__(validator)
+        self._references = references
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self._references
+
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              value_to_check
+              ):
+        return value_to_check
+
+
 class SequenceOfCooperativeAssertionParts(AssertionPart):
     """
     Executes a sequence of assertions,
@@ -94,7 +112,7 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
 
     def __init__(self,
                  assertion_part: AssertionPart,
-                 get_argument_to_checker: types.FunctionType,
+                 get_argument_to_checker: Callable[[InstructionEnvironmentForPostSdsStep], Any],
                  ):
         """
         :param get_argument_to_checker: Returns the argument to give to
