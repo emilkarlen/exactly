@@ -1,4 +1,4 @@
-class ActResult:
+class ProcessResult:
     def __init__(self,
                  exitcode: int = 0,
                  stdout_contents: str = '',

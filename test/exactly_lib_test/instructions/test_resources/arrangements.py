@@ -5,7 +5,7 @@ from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_resources.execution.utils import ActResult
+from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 
@@ -21,15 +21,15 @@ class ActEnvironment(tuple):
 
 
 class ActResultProducer:
-    def apply(self, act_environment: ActEnvironment) -> ActResult:
+    def apply(self, act_environment: ActEnvironment) -> ProcessResult:
         raise NotImplementedError()
 
 
 class ActResultProducerFromActResult(ActResultProducer):
-    def __init__(self, act_result: ActResult = ActResult()):
+    def __init__(self, act_result: ProcessResult = ProcessResult()):
         self.act_result = act_result
 
-    def apply(self, act_environment: ActEnvironment) -> ActResult:
+    def apply(self, act_environment: ActEnvironment) -> ProcessResult:
         return self.act_result
 
 
