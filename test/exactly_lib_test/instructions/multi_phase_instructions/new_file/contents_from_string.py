@@ -60,7 +60,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                                                   rel_opt_conf)
             arguments = complete_arguments(dst_file,
                                            string_contents_arguments(string_value))
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string,
+            with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
                               first_line=arguments.first_line):
                 self._check(
                     source_of(arguments),
@@ -84,7 +84,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                                                   rel_opt_conf)
             arguments = complete_arguments(dst_file,
                                            here_document_contents_arguments([here_doc_line]))
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string,
+            with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
                               first_line=arguments.first_line):
                 self._check(
                     source_of(arguments),
@@ -253,7 +253,7 @@ class TestFailingParse(unittest.TestCase):
                                       following_lines=repr(following_lines)):
                         option_conf = conf_rel_any(relativity)
                         source = remaining_source(
-                            '{rel_opt} file-name {contents}'.format(rel_opt=option_conf.option_string,
+                            '{rel_opt} file-name {contents}'.format(rel_opt=option_conf.option_argument,
                                                                     contents=arguments.first_line),
                             arguments.following_lines + following_lines)
                         with self.assertRaises(SingleInstructionInvalidArgumentException):

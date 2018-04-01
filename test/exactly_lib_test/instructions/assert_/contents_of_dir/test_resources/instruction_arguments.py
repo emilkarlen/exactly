@@ -3,7 +3,7 @@ from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_construction
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_building
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionArgumentsVariantConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -45,7 +45,7 @@ class CommonArgumentsConstructor(InstructionArgumentsVariantConstructor):
               etc: ExpectationTypeConfig,
               rel_opt_config: RelativityOptionConfiguration) -> str:
         return '{relativity} {path} {selection} {negation}'.format(
-            relativity=rel_opt_config.option_string,
+            relativity=rel_opt_config.option_argument,
             path=self._path,
             selection=self._empty_if_no_file_matcher_otherwise_selection(),
             negation=etc.nothing__if_positive__not_option__if_negative)
@@ -97,7 +97,7 @@ class NumFilesAssertionVariant(AssertionVariantArgumentsConstructor):
 class FilesContentsAssertionVariant(AssertionVariantArgumentsConstructor):
     def __init__(self,
                  quantifier: Quantifier,
-                 file_contents_assertion: arguments_construction.ImplicitActualFileArgumentsConstructor,
+                 file_contents_assertion: arguments_building.ImplicitActualFileArgumentsConstructor,
                  contents_argument_expectation_type: ExpectationType = ExpectationType.POSITIVE):
         self._quantifier = quantifier
         self._file_contents_assertion = file_contents_assertion

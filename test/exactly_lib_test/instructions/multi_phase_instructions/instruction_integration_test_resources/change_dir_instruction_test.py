@@ -76,7 +76,7 @@ class TestExistingDirectorySpecifiedRelativeSymbol(TestCaseBase):
             sut.relativity_options(self.conf.phase_is_after_act()).options.accepted_relativity_variants)
         self.conf.run_single_line_test_with_source_variants_and_source_check(
             self,
-            '{relativity_option} existing-dir'.format(relativity_option=relativity_option.option_string),
+            '{relativity_option} existing-dir'.format(relativity_option=relativity_option.option_argument),
             self.conf.arrangement(
                 sds_contents_before_main=relativity_option.populator_for_relativity_option_root__sds(
                     DirContents([empty_dir('existing-dir')])),

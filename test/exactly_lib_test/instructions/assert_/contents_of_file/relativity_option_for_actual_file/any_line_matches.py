@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import \
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import \
     LineMatchesAssertionArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
@@ -34,7 +34,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual.txt {maybe_not} {regex_line_matcher}'.format(
-                relativity_option=self.rel_opt.option_string,
+                relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                 regex_line_matcher=exists_line_matches_reg_ex('REG.*EX'),
             ),
@@ -50,7 +50,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual-dir {maybe_not} {regex_line_matcher}'.format(
-                relativity_option=self.rel_opt.option_string,
+                relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                 regex_line_matcher=exists_line_matches_reg_ex('REG.*EX'),
             ),
@@ -68,7 +68,7 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual.txt {maybe_not} {regex_line_matcher}'.format(
-                relativity_option=self.rel_opt.option_string,
+                relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                 regex_line_matcher=exists_line_matches_reg_ex('REG.*EX'),
             ),
@@ -89,7 +89,7 @@ class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOption
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual.txt {maybe_not} {regex_line_matcher}'.format(
-                relativity_option=self.rel_opt.option_string,
+                relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                 regex_line_matcher=exists_line_matches_reg_ex('REG.*EX'),
             ),

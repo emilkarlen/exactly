@@ -1,3 +1,5 @@
+from typing import Sequence, List
+
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 
@@ -6,13 +8,17 @@ class Arguments:
     """Instruction arguments, in the form of a first line and following lines."""
 
     def __init__(self,
-                 first_line: str,
-                 following_lines: list = ()):
-        self.first_line = first_line
-        self.following_lines = list(following_lines)
+                 first_line,
+                 following_lines: Sequence = ()):
+        """
+        :param first_line: rendered using __str__
+        :param following_lines: Every element is rendered using __str__
+        """
+        self.first_line = str(first_line)
+        self.following_lines = list(map(str, following_lines))
 
     @property
-    def lines(self) -> list:
+    def lines(self) -> List[str]:
         return [self.first_line] + self.following_lines
 
     @property
@@ -35,8 +41,13 @@ class Arguments:
         return Arguments(self.first_line + first_line_separator + arguments.first_line,
                          self.following_lines + arguments.following_lines)
 
+    def followed_by_lines(self,
+                          following_lines: List[str]):
+        return Arguments(self.first_line,
+                         self.following_lines + following_lines)
 
-def here_document(lines: list,
+
+def here_document(lines: List[str],
                   marker: str = 'EOF') -> Arguments:
     return Arguments('<<' + marker,
                      lines + [marker])

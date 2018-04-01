@@ -129,10 +129,10 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                 sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
         ]
         for rel_opt in accepted_relativity_options:
-            with self.subTest(option_string=rel_opt.option_string):
+            with self.subTest(option_string=rel_opt.option_argument):
                 self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
                     file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-                    relativity_option=rel_opt.option_string),
+                    relativity_option=rel_opt.option_argument),
                     ['following line']),
                     Arrangement(
                         home_or_sds_contents=rel_opt.populator_for_relativity_option_root(DirContents([
@@ -157,10 +157,10 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                 sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants),
         ]
         for rel_opt in accepted_relativity_options:
-            with self.subTest(option_string=rel_opt.option_string):
+            with self.subTest(option_string=rel_opt.option_argument):
                 self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
                     file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-                    relativity_option=rel_opt.option_string),
+                    relativity_option=rel_opt.option_argument),
                     ['following line']),
                     Arrangement(
                         hds_contents=case_home_dir_contents(
@@ -245,7 +245,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-            relativity_option=symbol_rel_opt.option_string)),
+            relativity_option=symbol_rel_opt.option_argument)),
             Arrangement(
                 symbols=symbol_rel_opt.symbols.in_arrangement(),
             ),
@@ -262,7 +262,7 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
             sut.RELATIVITY_OPTIONS_CONFIGURATION.options.accepted_relativity_variants)
         self._run(assignment_of('{file_option} {relativity_option} file.txt'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
-            relativity_option=symbol_rel_opt.option_string)),
+            relativity_option=symbol_rel_opt.option_argument)),
             Arrangement(
                 symbols=symbol_rel_opt.symbols.in_arrangement(),
             ),

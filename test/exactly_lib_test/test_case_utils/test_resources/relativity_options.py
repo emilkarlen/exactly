@@ -12,7 +12,6 @@ from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIO
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
-from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
@@ -21,6 +20,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
+from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as file_ref_args
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator, \
@@ -28,7 +28,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
 from exactly_lib_test.test_case_file_structure.test_resources.non_home_populator import NonHomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
-from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import rel_symbol_arg_str
+from exactly_lib_test.test_resources import arguments_building
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables
@@ -57,27 +58,30 @@ class OptionStringConfiguration:
     Configuration for the relativity option (for a path cli argument).
     """
 
-    def __init__(self, cli_option_string: str):
-        self._cli_option_string = cli_option_string
+    def __init__(self, argument: ArgumentElementRenderer):
+        self._argument = argument
+
+    @property
+    def argument(self) -> ArgumentElementRenderer:
+        return self._argument
 
     @property
     def option_string(self) -> str:
-        return self._cli_option_string
+        return str(self.argument)
 
     def __str__(self):
         return '{}(option_string={})'.format(type(self),
-                                             self._cli_option_string)
+                                             self.option_string)
 
 
 class OptionStringConfigurationForDefaultRelativity(OptionStringConfiguration):
     def __init__(self):
-        super().__init__('')
+        super().__init__(arguments_building.EmptyArgument())
 
 
 class OptionStringConfigurationForRelativityOption(OptionStringConfiguration):
     def __init__(self, relativity: RelOptionType):
-        super().__init__(
-            option_syntax.long_option_syntax(relative_path_options.REL_OPTIONS_MAP[relativity].option_name.long))
+        super().__init__(file_ref_args.rel_option_type_arg(relativity))
         self._relativity = relativity
 
     @property
@@ -105,7 +109,7 @@ class OptionStringConfigurationForRelativityOptionRelSds(OptionStringConfigurati
 
 class OptionStringConfigurationForRelSymbol(OptionStringConfiguration):
     def __init__(self, symbol_name: str):
-        super().__init__(rel_symbol_arg_str(symbol_name))
+        super().__init__(file_ref_args.rel_symbol_arg(symbol_name))
 
 
 class RelativityOptionConfiguration:
@@ -130,6 +134,14 @@ class RelativityOptionConfiguration:
     @property
     def option_string(self) -> str:
         return self._cli_option.option_string
+
+    @property
+    def option_argument(self) -> ArgumentElementRenderer:
+        return self._cli_option.argument
+
+    @property
+    def option_argument_str(self) -> str:
+        return str(self._cli_option.argument)
 
     @property
     def test_case_description(self) -> str:

@@ -57,7 +57,7 @@ class TestFailingParseWithNoContents(unittest.TestCase):
                 with self.subTest(relativity=str(relativity),
                                   following_lines=repr(following_lines)):
                     option_conf = conf_rel_any(relativity)
-                    source = remaining_source('{rel_opt} file-name'.format(rel_opt=option_conf.option_string),
+                    source = remaining_source('{rel_opt} file-name'.format(rel_opt=option_conf.option_argument),
                                               following_lines)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         just_parse(source)
@@ -76,12 +76,12 @@ class TestFailingParseWithNoContents(unittest.TestCase):
 class TestSuccessfulScenariosWithNoContents(TestCaseBase):
     def test_single_file_in_root_dir(self):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+            with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 file_name = 'file-name.txt'
                 expected_file = fs.empty_file(file_name)
                 self._check(
                     remaining_source('{relativity_option} {file_name}'.format(
-                        relativity_option=rel_opt_conf.option_string,
+                        relativity_option=rel_opt_conf.option_argument,
                         file_name=file_name)),
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
@@ -96,12 +96,12 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
 
     def test_single_file_in_non_existing_sub_dir(self):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+            with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 sub_dir_name = 'sub-dir'
                 expected_file = fs.empty_file('file-name.txt')
                 self._check(
                     remaining_source('{relativity_option} {sub_dir}/{file_name}'.format(
-                        relativity_option=rel_opt_conf.option_string,
+                        relativity_option=rel_opt_conf.option_argument,
                         sub_dir=sub_dir_name,
                         file_name=expected_file.file_name)),
                     ArrangementWithSds(
@@ -119,12 +119,12 @@ class TestSuccessfulScenariosWithNoContents(TestCaseBase):
 
     def test_single_file_in_existing_sub_dir(self):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+            with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 sub_dir_name = 'sub-dir'
                 expected_file = fs.empty_file('file-name.txt')
                 self._check(
                     remaining_source('{relativity_option} {sub_dir}/{file_name}'.format(
-                        relativity_option=rel_opt_conf.option_string,
+                        relativity_option=rel_opt_conf.option_argument,
                         sub_dir=sub_dir_name,
                         file_name=expected_file.file_name)),
                     ArrangementWithSds(

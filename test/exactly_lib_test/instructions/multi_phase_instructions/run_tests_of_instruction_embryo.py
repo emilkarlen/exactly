@@ -68,7 +68,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
     def test_validate_should_fail_when_executable_does_not_exist(self):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file'.format(
-                relativity_option=relativity_option_conf.option_string)
+                relativity_option=relativity_option_conf.option_argument)
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
 
@@ -83,7 +83,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
     def test_success_when_executable_does_exist(self):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} {executable_file}'.format(
-                relativity_option=relativity_option_conf.option_string,
+                relativity_option=relativity_option_conf.option_argument,
                 executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
             )
 
@@ -160,8 +160,8 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             for roc_source_file in relativity_options(symbol_name_for_source_file):
                 argument = '{relativity_option_executable} {executable_file} {interpret_option}' \
                            ' {relativity_option_source_file} {source_file}'.format(
-                    relativity_option_executable=roc_executable_file.option_string,
-                    relativity_option_source_file=roc_source_file.option_string,
+                    relativity_option_executable=roc_executable_file.option_argument,
+                    relativity_option_source_file=roc_source_file.option_argument,
                     executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
                     interpret_option=syntax_elements.INTERPRET_OPTION,
                     source_file=source_file.file_name,
@@ -199,7 +199,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {interpret_option}' \
                        ' {rel_home_case_option} {existing_file}'.format(
-                relativity_option=relativity_option_conf.option_string,
+                relativity_option=relativity_option_conf.option_argument,
                 interpret_option=syntax_elements.INTERPRET_OPTION,
                 rel_home_case_option=REL_HOME_CASE_OPTION,
                 existing_file=existing_file_to_interpret,
@@ -221,7 +221,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             argument = '"{python_interpreter}" {interpret_option} {relativity_option} non-existing-file.py'.format(
                 python_interpreter=sys.executable,
                 interpret_option=syntax_elements.INTERPRET_OPTION,
-                relativity_option=relativity_option_conf.option_string,
+                relativity_option=relativity_option_conf.option_argument,
             )
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
@@ -295,7 +295,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
     def test_success_when_executable_does_exist(self):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} {executable_file} {source_option} irrelevant-source'.format(
-                relativity_option=relativity_option_conf.option_string,
+                relativity_option=relativity_option_conf.option_argument,
                 executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
                 source_option=syntax_elements.SOURCE_OPTION,
             )
@@ -317,7 +317,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
     def test_validate_should_fail_when_executable_does_not_exist(self):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {source_option} irrelevant-source'.format(
-                relativity_option=relativity_option_conf.option_string,
+                relativity_option=relativity_option_conf.option_argument,
                 source_option=syntax_elements.SOURCE_OPTION,
             )
 

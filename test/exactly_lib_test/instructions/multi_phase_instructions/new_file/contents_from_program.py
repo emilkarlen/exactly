@@ -133,11 +133,11 @@ class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
         ).without_transformation()
 
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+            with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 self._check(
                     remaining_source(
                         '{rel_opt} {file_name} {contents_arguments}'.format(
-                            rel_opt=rel_opt_conf.option_string,
+                            rel_opt=rel_opt_conf.option_argument,
                             file_name=expected_file.file_name,
                             contents_arguments=shell_contents_arguments.first_line
                         ),
@@ -174,7 +174,7 @@ class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
         self._check(
             remaining_source(
                 '{rel_opt} {file_name} {shell_contents_arguments}'.format(
-                    rel_opt=rel_opt_conf.option_string,
+                    rel_opt=rel_opt_conf.option_argument,
                     file_name=expected_file.file_name,
                     shell_contents_arguments=shell_contents_arguments.first_line,
                 ),
@@ -239,7 +239,7 @@ class TestSuccessfulScenariosWithShellCommandLine(TestCaseBase):
                               first_line_argments=optional_arguments.first_line):
                 source = remaining_source(
                     '{rel_opt} {dst_file_name} {optional_arguments}'.format(
-                        rel_opt=dst_file_rel_opt_conf.option_string,
+                        rel_opt=dst_file_rel_opt_conf.option_argument,
                         dst_file_name=expected_dst_file.name,
                         optional_arguments=optional_arguments.first_line,
                     ),
@@ -279,11 +279,11 @@ class TestSuccessfulScenariosWithExecutableProgram(TestCaseBase):
         ).without_transformation()
 
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-            with self.subTest(relativity_option_string=rel_opt_conf.option_string):
+            with self.subTest(relativity_option_string=rel_opt_conf.option_argument):
                 self._check(
                     remaining_source(
                         '{rel_opt} {file_name} {contents_arguments}'.format(
-                            rel_opt=rel_opt_conf.option_string,
+                            rel_opt=rel_opt_conf.option_argument,
                             file_name=expected_file.file_name,
                             contents_arguments=program_contents_arguments.first_line
                         ),
@@ -320,7 +320,7 @@ class TestSuccessfulScenariosWithExecutableProgram(TestCaseBase):
         self._check(
             remaining_source(
                 '{rel_opt} {file_name} {program_contents_arguments}'.format(
-                    rel_opt=rel_opt_conf.option_string,
+                    rel_opt=rel_opt_conf.option_argument,
                     file_name=expected_file.file_name,
                     program_contents_arguments=program_contents_arguments.first_line,
                 ),
@@ -385,7 +385,7 @@ class TestSuccessfulScenariosWithExecutableProgram(TestCaseBase):
                               first_line_argments=optional_arguments.first_line):
                 source = remaining_source(
                     '{rel_opt} {dst_file_name} {optional_arguments}'.format(
-                        rel_opt=dst_file_rel_opt_conf.option_string,
+                        rel_opt=dst_file_rel_opt_conf.option_argument,
                         dst_file_name=expected_dst_file.name,
                         optional_arguments=optional_arguments.first_line,
                     ),

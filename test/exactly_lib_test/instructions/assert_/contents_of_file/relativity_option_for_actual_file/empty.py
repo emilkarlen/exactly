@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -35,7 +35,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
                     args('{relativity_option} actual.txt {maybe_with_transformer_option} {maybe_not} {empty}',
-                         relativity_option=self.rel_opt.option_string,
+                         relativity_option=self.rel_opt.option_argument,
                          maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
@@ -52,7 +52,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
                     args('{relativity_option} actual-dir {maybe_with_transformer_option} {maybe_not} {empty}',
-                         relativity_option=self.rel_opt.option_string,
+                         relativity_option=self.rel_opt.option_argument,
                          maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
@@ -71,7 +71,7 @@ class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationBas
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
                     args('{relativity_option} actual.txt {maybe_with_transformer_option} {maybe_not} {empty}',
-                         relativity_option=self.rel_opt.option_string,
+                         relativity_option=self.rel_opt.option_argument,
                          maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(
@@ -93,7 +93,7 @@ class _ContentsIsEmpty(TestWithConfigurationAndRelativityOptionAndNegationBase):
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
                 self._check_single_instruction_line_with_source_variants(
                     args('{relativity_option} actual.txt {maybe_with_transformer_option} {maybe_not} {empty}',
-                         relativity_option=self.rel_opt.option_string,
+                         relativity_option=self.rel_opt.option_argument,
                          maybe_with_transformer_option=maybe_with_transformer_option,
                          maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
                     ArrangementPostAct(

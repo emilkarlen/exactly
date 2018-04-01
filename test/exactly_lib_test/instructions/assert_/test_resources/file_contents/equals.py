@@ -9,7 +9,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import contents_transformation
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.arrangement_utils import \
@@ -102,7 +102,7 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {file_option} {relativity_option} non-existing-file.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                     relativity_option=self.rel_opt.option_string)),
+                     relativity_option=self.rel_opt.option_argument)),
             ArrangementPostAct(
                 post_sds_population_action=MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY,
                 symbols=self.rel_opt.symbols.in_arrangement(),
@@ -117,7 +117,7 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {file_option} {relativity_option} dir',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                     relativity_option=self.rel_opt.option_string)),
+                     relativity_option=self.rel_opt.option_argument)),
             ArrangementPostAct(
                 home_or_sds_contents=self.rel_opt.populator_for_relativity_option_root(
                     DirContents([empty_dir('dir')])),
@@ -134,7 +134,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                     relativity_option=self.rel_opt.option_string)),
+                     relativity_option=self.rel_opt.option_argument)),
             self.configuration.arrangement_for_actual_and_expected(
                 'actual',
                 self.rel_opt.populator_for_relativity_option_root(
@@ -155,7 +155,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
             self.configuration.first_line_argument(
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                     relativity_option=self.rel_opt.option_string)),
+                     relativity_option=self.rel_opt.option_argument)),
             self.configuration.arrangement_for_actual_and_expected(
                 'expected',
                 self.rel_opt.populator_for_relativity_option_root(
@@ -297,7 +297,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
                     '{file_option} {relativity_option} expected.txt',
                     transformer=named_transformer.name,
                     maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
-                    relativity_option=self.rel_opt.option_string)),
+                    relativity_option=self.rel_opt.option_argument)),
             self.configuration.arrangement_for_contents_from_fun(
                 contents_generator.contents_before_replacement,
                 home_or_sds_contents=populator_for_relativity_option_root_for_contents_from_fun(

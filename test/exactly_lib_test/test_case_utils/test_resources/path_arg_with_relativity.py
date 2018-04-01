@@ -18,4 +18,4 @@ class PathArgumentWithRelativity:
 
     @property
     def argument_str(self) -> str:
-        return self.relativity.option_string + ' ' + self.file_name
+        return self.relativity.option_argument_str + ' ' + self.file_name

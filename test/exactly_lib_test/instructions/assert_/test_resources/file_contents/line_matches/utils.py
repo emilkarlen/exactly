@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_construction
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_building
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
@@ -34,15 +34,15 @@ class ArgumentsConstructorForPossiblyInvalidSyntax(InstructionArgumentsConstruct
         self.transformer = transformer
         self.line_matcher = line_matcher
         self.superfluous_args_str = superfluous_args_str
-        self._common_arguments = arguments_construction.CommonArgumentsConstructor(transformer)
+        self._common_arguments = arguments_building.CommonArgumentsConstructor(transformer)
 
     def construct(self,
                   expectation_type: ExpectationType,
                   quantifier: Quantifier,
                   ) -> str:
-        arguments_constructor = arguments_construction.ImplicitActualFileArgumentsConstructor(
+        arguments_constructor = arguments_building.ImplicitActualFileArgumentsConstructor(
             self._common_arguments,
-            arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
+            arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
         )
         etc = ExpectationTypeConfig(expectation_type)
 
@@ -54,7 +54,7 @@ class ArgumentsConstructorForPossiblyInvalidSyntax(InstructionArgumentsConstruct
 
 class InstructionArgumentsConstructorForValidSyntax(InstructionArgumentsConstructorForExpTypeAndQuantifier):
     def __init__(self,
-                 common_arguments: arguments_construction.CommonArgumentsConstructor,
+                 common_arguments: arguments_building.CommonArgumentsConstructor,
                  line_matcher: str):
         self.common_arguments = common_arguments
         self.line_matcher = line_matcher
@@ -64,9 +64,9 @@ class InstructionArgumentsConstructorForValidSyntax(InstructionArgumentsConstruc
                   expectation_type: ExpectationType,
                   quantifier: Quantifier,
                   ) -> str:
-        arguments_constructor = arguments_construction.ImplicitActualFileArgumentsConstructor(
+        arguments_constructor = arguments_building.ImplicitActualFileArgumentsConstructor(
             self._common_arguments,
-            arguments_construction.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
+            arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier, self.line_matcher),
         )
         etc = ExpectationTypeConfig(expectation_type)
         return arguments_constructor.apply(etc)
@@ -75,7 +75,7 @@ class InstructionArgumentsConstructorForValidSyntax(InstructionArgumentsConstruc
 def args_constructor_for(line_matcher: str,
                          transformer: str = '') -> InstructionArgumentsConstructorForExpTypeAndQuantifier:
     return InstructionArgumentsConstructorForValidSyntax(
-        arguments_construction.CommonArgumentsConstructor(transformer),
+        arguments_building.CommonArgumentsConstructor(transformer),
         line_matcher)
 
 

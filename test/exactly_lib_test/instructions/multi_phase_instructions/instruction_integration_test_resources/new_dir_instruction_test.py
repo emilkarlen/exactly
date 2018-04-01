@@ -47,10 +47,10 @@ class TestCaseBase(unittest.TestCase):
         self.conf = conf
 
     def _source(self, argument_template: str) -> ParseSource:
-        return source4(argument_template.format(relativity_option=self.relativity_option.option_string))
+        return source4(argument_template.format(relativity_option=self.relativity_option.option_argument))
 
     def _instruction_argument(self, argument_template: str) -> str:
-        return argument_template.format(relativity_option=self.relativity_option.option_string)
+        return argument_template.format(relativity_option=self.relativity_option.option_argument)
 
     def _arrangement_with_cwd_as_non_of_the_relativity_root_dirs(
             self,

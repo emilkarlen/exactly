@@ -9,7 +9,7 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -50,7 +50,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {equals} '
                  '{file_option} {rel_home_case_option} expected.txt',
-                 relativity_option=self.rel_opt.option_string,
+                 relativity_option=self.rel_opt.option_argument,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
@@ -67,7 +67,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
         self._check_single_instruction_line_with_source_variants(
             args(
                 '{relativity_option} actual-dir {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
-                relativity_option=self.rel_opt.option_string,
+                relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
@@ -86,7 +86,7 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check_single_instruction_line_with_source_variants(
             args(
                 '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
-                relativity_option=self.rel_opt.option_string,
+                relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
@@ -108,7 +108,7 @@ class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
         self._check_single_instruction_line_with_source_variants(
             args(
                 '{relativity_option} actual.txt {maybe_not} {equals} {file_option} {rel_home_case_option} expected.txt',
-                relativity_option=self.rel_opt.option_string,
+                relativity_option=self.rel_opt.option_argument,
                 maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative),
             ArrangementPostAct(
                 hds_contents=case_home_dir_contents(
@@ -165,7 +165,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         self._check_single_instruction_line_with_source_variants(
             args('{relativity_option} actual.txt {maybe_not} {equals} '
                  '{file_option} {rel_symbol_option} {rel_symbol_name} expected.txt',
-                 relativity_option=self.rel_opt.option_string,
+                 relativity_option=self.rel_opt.option_argument,
                  maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                  file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
                  rel_symbol_name=expected_file_relativity_symbol),

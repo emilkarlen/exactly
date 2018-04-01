@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_construction import args
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument, InstructionTestConfiguration

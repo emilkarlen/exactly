@@ -185,7 +185,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
         expected_non_home_contents = dst_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([expected_file]))
 
         instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(
-            rel_opt=dst_rel_opt_conf.option_string,
+            rel_opt=dst_rel_opt_conf.option_argument,
             file_name=expected_file.file_name,
             contents_arguments=file_contents_arg.first_line
         )
@@ -232,7 +232,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
         ).with_transformation(to_upper_transformer.name)
 
         instruction_arguments = '{rel_opt} {file_name} {shell_contents_arguments}'.format(
-            rel_opt=rel_opt_conf.option_string,
+            rel_opt=rel_opt_conf.option_argument,
             file_name=expected_file.file_name,
             shell_contents_arguments=shell_contents_arguments.first_line,
         )
@@ -291,7 +291,7 @@ class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseBase):
         ).without_transformation()
 
         instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(
-            rel_opt=dst_file.relativity.option_string,
+            rel_opt=dst_file.relativity.option_argument,
             file_name=dst_file.file_name,
             contents_arguments=contents_argument.first_line,
         )

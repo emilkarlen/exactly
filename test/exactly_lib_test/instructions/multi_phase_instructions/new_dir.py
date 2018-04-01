@@ -125,7 +125,7 @@ class TestWithRelativityOptionBase(TestCaseForCheckOfArgumentBase):
                                                arguments: str,
                                                arrangement: Arrangement,
                                                expectation: Expectation):
-        argument_with_rel_option_replaced = arguments.format(relativity_option=self.relativity_option.option_string)
+        argument_with_rel_option_replaced = arguments.format(relativity_option=self.relativity_option.option_argument)
         action = ParseAndMkDirAction(argument_with_rel_option_replaced)
         self._check(action,
                     arrangement,
