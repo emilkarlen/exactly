@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
@@ -34,7 +35,7 @@ class FileRefCheckValidator(FileRefValidatorBase):
         super().__init__(file_ref_check.file_ref_resolver)
         self.file_ref_check = file_ref_check
 
-    def _validate_path(self, file_path: pathlib.Path) -> str:
+    def _validate_path(self, file_path: pathlib.Path) -> Optional[str]:
         result = self.file_ref_check.file_properties.apply(file_path)
         if not result.is_success:
             return render_failure(result.cause,
@@ -43,7 +44,7 @@ class FileRefCheckValidator(FileRefValidatorBase):
 
 
 def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
-                                    environment: PathResolvingEnvironmentPreSds) -> str:
+                                    environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
     validation_result = file_ref_check.pre_sds_condition_result(environment)
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
@@ -54,7 +55,7 @@ def pre_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 
 def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
-                                     environment: PathResolvingEnvironmentPostSds) -> str:
+                                     environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
     validation_result = file_ref_check.post_sds_condition_result(environment)
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
@@ -65,7 +66,7 @@ def post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
 
 
 def pre_or_post_sds_failure_message_or_none(file_ref_check: FileRefCheck,
-                                            environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+                                            environment: PathResolvingEnvironmentPreOrPostSds) -> Optional[str]:
     validation_result = file_ref_check.pre_or_post_sds_condition_result(environment)
     if not validation_result.is_success:
         fr = file_ref_check.file_ref_resolver.resolve(environment.symbols)
