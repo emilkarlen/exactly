@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
+    equivalent_source_variants__with_source_check__multi_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -66,9 +66,9 @@ class TestCaseBase(unittest.TestCase):
             expectation: Expectation):
 
         args_variant = args_variant_constructor.construct(expectation_type)
-        complete_instruction_arguments = self.configuration.first_line_argument(args_variant)
+        complete_instruction_arguments = self.configuration.arguments_for(args_variant)
 
-        for source in equivalent_source_variants__with_source_check(self, complete_instruction_arguments):
+        for source in equivalent_source_variants__with_source_check__multi_line(self, complete_instruction_arguments):
             instruction_check.check(
                 self,
                 self.configuration.new_parser(),
@@ -89,9 +89,10 @@ class TestCaseBase(unittest.TestCase):
             with self.subTest(expectation_type=expectation_type):
 
                 args_variant = args_variant_constructor.construct(expectation_type)
-                complete_instruction_arguments = self.configuration.first_line_argument(args_variant)
+                complete_instruction_arguments = self.configuration.arguments_for(args_variant)
 
-                for source in equivalent_source_variants__with_source_check(self, complete_instruction_arguments):
+                for source in equivalent_source_variants__with_source_check__multi_line(self,
+                                                                                        complete_instruction_arguments):
                     instruction_check.check(
                         self,
                         self.configuration.new_parser(),

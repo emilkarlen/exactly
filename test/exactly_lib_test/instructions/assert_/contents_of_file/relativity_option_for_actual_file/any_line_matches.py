@@ -5,13 +5,14 @@ from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_fo
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import \
     LineMatchesAssertionArgumentsConstructor
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
-    expectation_that_file_for_expected_contents_is_invalid
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.test_base_classes import \
+    TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    suite_for__conf__rel_opts__negations, TestWithConfigurationAndRelativityOptionAndNegationBase, \
-    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+    suite_for__conf__rel_opts__negations, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
+    expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
@@ -30,7 +31,7 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
                                                 )
 
 
-class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual.txt {maybe_not} {regex_line_matcher}'.format(
@@ -46,7 +47,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
         )
 
 
-class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual-dir {maybe_not} {regex_line_matcher}'.format(
@@ -64,7 +65,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
         )
 
 
-class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual.txt {maybe_not} {regex_line_matcher}'.format(
@@ -85,7 +86,7 @@ class _ContentsDoesNotContainALineThatMatches(TestWithConfigurationAndRelativity
         )
 
 
-class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ContentsContainsALineThatMatches(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         self._check_single_instruction_line_with_source_variants(
             '{relativity_option} actual.txt {maybe_not} {regex_line_matcher}'.format(

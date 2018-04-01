@@ -44,7 +44,7 @@ class Arguments:
     def followed_by_lines(self,
                           following_lines: List[str]):
         return Arguments(self.first_line,
-                         self.following_lines + following_lines)
+                         tuple(self.following_lines) + tuple(following_lines))
 
     @property
     def num_lines(self) -> int:

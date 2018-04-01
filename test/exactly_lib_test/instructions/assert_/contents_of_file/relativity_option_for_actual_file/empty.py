@@ -3,13 +3,14 @@ import unittest
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
-    expectation_that_file_for_expected_contents_is_invalid
+from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.test_base_classes import \
+    TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
-    suite_for__conf__rel_opts__negations, TestWithConfigurationAndRelativityOptionAndNegationBase, \
-    MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+    suite_for__conf__rel_opts__negations, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
+    expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -29,7 +30,7 @@ def suite_for(instruction_configuration: InstructionTestConfiguration) -> unitte
                                                 test_cases)
 
 
-class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
@@ -46,7 +47,7 @@ class _ErrorWhenActualFileDoesNotExist(TestWithConfigurationAndRelativityOptionA
                 )
 
 
-class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
@@ -65,7 +66,7 @@ class _ErrorWhenActualFileIsADirectory(TestWithConfigurationAndRelativityOptionA
                 )
 
 
-class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
@@ -87,7 +88,7 @@ class _ContentsIsNotEmpty(TestWithConfigurationAndRelativityOptionAndNegationBas
                 )
 
 
-class _ContentsIsEmpty(TestWithConfigurationAndRelativityOptionAndNegationBase):
+class _ContentsIsEmpty(TestWithConfigurationAndRelativityOptionAndNegationForConstArgsBase):
     def runTest(self):
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):

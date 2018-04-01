@@ -11,17 +11,17 @@ from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util import contents_transformation
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.arrangement_utils import \
-    populator_for_relativity_option_root_for_contents_from_fun
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
-    expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     suite_for__conf__rel_opts__negations, RelativityOptionConfigurationForRelCwdForTestCwdDir, \
     TestWithConfigurationAndRelativityOptionAndNegationBase, MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util import contents_transformation
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.arrangement_utils import \
+    populator_for_relativity_option_root_for_contents_from_fun
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
+    expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -98,8 +98,8 @@ _TRANSFORMER_SYMBOL_NAME = 'the_transformer'
 
 class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
+        self._check_with_source_variants(
+            self.configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} non-existing-file.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
@@ -113,8 +113,8 @@ class _ErrorWhenExpectedFileDoesNotExist(TestWithConfigurationAndRelativityOptio
 
 class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
+        self._check_with_source_variants(
+            self.configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} dir',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
@@ -130,8 +130,8 @@ class _ErrorWhenExpectedFileIsADirectory(TestWithConfigurationAndRelativityOptio
 
 class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
+        self._check_with_source_variants(
+            self.configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
@@ -151,8 +151,8 @@ class _ContentsDiffer(TestWithConfigurationAndRelativityOptionAndNegationBase):
 
 class _ContentsEquals(TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
+        self._check_with_source_variants(
+            self.configuration.arguments_for(
                 args('{maybe_not} {equals} {file_option} {relativity_option} expected.txt',
                      maybe_not=self.not_opt.nothing__if_positive__not_option__if_negative,
                      relativity_option=self.rel_opt.option_argument)),
@@ -290,8 +290,8 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
             [expected_symbol_reference_to_transformer] +
             self.rel_opt.symbols.usage_expectation_assertions()
         )
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
+        self._check_with_source_variants(
+            self.configuration.arguments_for(
                 args(
                     '{transform_option} {transformer} {maybe_not} {equals} '
                     '{file_option} {relativity_option} expected.txt',

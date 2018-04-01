@@ -11,6 +11,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -24,8 +25,8 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     def new_parser(self) -> InstructionParser:
         return sut.parser()
 
-    def first_line_argument(self, argument_tail: str) -> str:
-        return self.FILE_NAME_REL_CWD + ' ' + argument_tail
+    def arguments_for(self, additional_arguments: str) -> Arguments:
+        return Arguments(self.FILE_NAME_REL_CWD + ' ' + additional_arguments)
 
     def arrangement_for_contents(self, actual_contents: str,
                                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),

@@ -67,8 +67,8 @@ class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                self._check_single_instruction_line_with_source_variants(
-                    self.configuration.first_line_argument(
+                self._check_with_source_variants(
+                    self.configuration.arguments_for(
                         args('{maybe_with_transformer_option} {maybe_not} {empty}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
@@ -83,8 +83,8 @@ class ActualFileIsNonEmpty(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         for maybe_with_transformer_option in TRANSFORMER_OPTION_ALTERNATIVES:
             with self.subTest(maybe_with_transformer_option=maybe_with_transformer_option):
-                self._check_single_instruction_line_with_source_variants(
-                    self.configuration.first_line_argument(
+                self._check_with_source_variants(
+                    self.configuration.arguments_for(
                         args('{maybe_with_transformer_option} {maybe_not} {empty}',
                              maybe_with_transformer_option=maybe_with_transformer_option,
                              maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),
@@ -112,8 +112,8 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
 
         expected_symbol_usages = asrt.matches_sequence([expected_symbol_reference_to_transformer])
 
-        self._check_single_instruction_line_with_source_variants(
-            self.configuration.first_line_argument(
+        self._check_with_source_variants(
+            self.configuration.arguments_for(
                 args('{transform_option} {the_transformer} {maybe_not} {empty}',
                      the_transformer=named_transformer.name,
                      maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative)),

@@ -4,13 +4,14 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals i
     InstructionTestConfigurationForEquals
 from exactly_lib_test.instructions.test_resources.arrangements import ActResultProducer, ActResultProducerFromActResult
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import HomeAndSdsAction
 
 
 class TestConfigurationForStdFile(InstructionTestConfigurationForEquals):
-    def first_line_argument(self, argument_tail: str) -> str:
-        return argument_tail
+    def arguments_for(self, additional_arguments: str) -> Arguments:
+        return Arguments(additional_arguments)
 
     def arrangement_for_contents(self,
                                  actual_contents: str,
