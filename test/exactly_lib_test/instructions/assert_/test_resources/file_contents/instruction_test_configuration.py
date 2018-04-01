@@ -11,10 +11,10 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
-    equivalent_source_variants__with_source_check
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+    equivalent_source_variants__with_source_check__multi_line
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -34,16 +34,14 @@ class InstructionTestConfiguration:
 
 
 class InstructionTestConfigurationForContentsOrEquals(InstructionTestConfiguration):
-    def first_line_argument(self, argument_tail: str) -> str:
+    def arguments_for(self, additional_arguments: str) -> Arguments:
         raise NotImplementedError()
 
     def source_for_lines(self, argument_lines: List[str]) -> ParseSource:
-        return remaining_source(self.first_line_argument(argument_lines[0]),
-                                argument_lines[1:])
+        return self.source_for(argument_lines[0], argument_lines[1:])
 
     def source_for(self, argument_tail: str, following_lines=()) -> ParseSource:
-        return remaining_source(self.first_line_argument(argument_tail),
-                                following_lines)
+        return self.arguments_for(argument_tail).followed_by_lines(following_lines).as_remaining_source
 
     def arrangement_for_contents_from_fun(self,
                                           home_and_sds_2_str,
@@ -65,11 +63,11 @@ class TestWithConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAn
                expectation: Expectation):
         instruction_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
 
-    def _check_single_instruction_line_with_source_variants(self,
-                                                            instruction_argument: str,
-                                                            arrangement: ArrangementPostAct,
-                                                            expectation: Expectation):
-        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+    def _check_with_source_variants(self,
+                                    instruction_argument: Arguments,
+                                    arrangement: ArrangementPostAct,
+                                    expectation: Expectation):
+        for source in equivalent_source_variants__with_source_check__multi_line(self, instruction_argument):
             instruction_check.check(self, self.configuration.new_parser(), source, arrangement, expectation)
 
 

@@ -96,8 +96,7 @@ class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
                                                                                     syntax_for_regex_matcher(
                                                                                             'regex'))
                     ).apply(etc)
-                    arguments = self.configuration.first_line_argument(arguments_for_implicit_file)
-                    source = remaining_source(arguments)
+                    source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     instruction = parser.parse(source)
                     assert isinstance(instruction, AssertPhaseInstruction)  # Sanity check
                     expected_symbol_usages.apply_without_message(self, instruction.symbol_usages())
@@ -127,8 +126,7 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
                         arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
                                                                                     line_matcher_name)
                     ).apply(etc)
-                    arguments = self.configuration.first_line_argument(arguments_for_implicit_file)
-                    source = remaining_source(arguments)
+                    source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     instruction = parser.parse(source)
                     assert isinstance(instruction, AssertPhaseInstruction)  # Sanity check
                     expected_symbol_usages.apply_without_message(self, instruction.symbol_usages())
