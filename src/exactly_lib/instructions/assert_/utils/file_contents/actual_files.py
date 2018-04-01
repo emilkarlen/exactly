@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -36,7 +36,7 @@ class ComparisonActualFile:
     def object_name(self) -> str:
         raise NotImplementedError('abstract method')
 
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
         """
         :return: None iff there is no failure.
         """
@@ -99,7 +99,7 @@ class ActComparisonActualFileForFileRef(ComparisonActualFileConstantWithReferenc
     def file_ref_resolver(self) -> FileRefResolver:
         return self._file_ref_resolver
 
-    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> str:
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
         return pre_or_post_sds_failure_message_or_none(FileRefCheck(self._file_ref_resolver,
                                                                     must_exist_as(FileType.REGULAR)),
                                                        environment.path_resolving_environment_pre_or_post_sds)

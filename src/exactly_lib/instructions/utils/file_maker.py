@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.instructions.utils import file_creation
 from exactly_lib.instructions.utils.file_creation import create_file_from_transformation_of_existing_file
@@ -35,7 +35,7 @@ class FileMaker:
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              dst_file: pathlib.Path,
-             ) -> str:
+             ) -> Optional[str]:
         """
         :param dst_file: The path of a (probably!) non-existing file
         :return: Error message, in case of error, else None
@@ -50,7 +50,7 @@ class FileMakerForConstantContents(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              dst_path: pathlib.Path,
-             ) -> str:
+             ) -> Optional[str]:
         contents_str = self._contents.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
 
@@ -71,7 +71,7 @@ class FileMakerForContentsFromProgram(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              dst_path: pathlib.Path,
-             ) -> str:
+             ) -> Optional[str]:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         program = self._program \
@@ -125,7 +125,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
              dst_path: pathlib.Path,
-             ) -> str:
+             ) -> Optional[str]:
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         src_validation_res = self._src_file_validator.validate_post_sds_if_applicable(path_resolving_env)
         if src_validation_res:
