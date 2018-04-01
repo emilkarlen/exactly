@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.argum
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationAndNegationArgumentBase, \
     suite_for__conf__not_argument, InstructionTestConfiguration
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.transformations import \
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.section_document.element_parsers.test_resources.exception_assertions import \
     assert_is_single_instruction_invalid_argument_exception

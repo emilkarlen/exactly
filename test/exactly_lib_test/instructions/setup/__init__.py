@@ -2,12 +2,12 @@ import unittest
 
 from exactly_lib_test.instructions.setup import \
     change_dir, run, install, new_file, new_dir, shell, stdin, utils, env, define_symbol
-from exactly_lib_test.instructions.setup import test_resources
+from exactly_lib_test.instructions.setup import test_resources_test
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(test_resources.suite())
+    ret_val.addTest(test_resources_test.suite())
     ret_val.addTest(utils.suite())
     ret_val.addTest(install.suite())
     ret_val.addTest(shell.suite())

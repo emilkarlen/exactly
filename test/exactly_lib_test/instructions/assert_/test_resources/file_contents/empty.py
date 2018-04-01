@@ -3,7 +3,6 @@ from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -13,7 +12,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
     suite_for__conf__not_argument
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.transformations import \
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to

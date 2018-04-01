@@ -22,7 +22,7 @@ from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.argum
     EmptyAssertionArgumentsConstructor, NumLinesAssertionArgumentsConstructor, EqualsStringAssertionArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources import expression, instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.contents_transformation import \
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.contents_transformation import \
     ToUppercaseLinesTransformer
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker

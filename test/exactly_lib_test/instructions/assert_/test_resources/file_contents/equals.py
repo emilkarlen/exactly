@@ -11,10 +11,10 @@ from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import contents_transformation
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.arrangement_utils import \
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util import contents_transformation
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.arrangement_utils import \
     populator_for_relativity_option_root_for_contents_from_fun
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.expectation_utils import \
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.expectation_utils import \
     expectation_that_file_for_expected_contents_is_invalid
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals, TestWithConfigurationAndNegationArgumentBase, \

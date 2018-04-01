@@ -14,12 +14,12 @@ from exactly_lib_test.instructions.assert_ import \
     define_symbol, \
     utils
 from exactly_lib_test.instructions.assert_ import stdout, stderr
-from exactly_lib_test.instructions.assert_ import test_resources
+from exactly_lib_test.instructions.assert_ import test_resources_test
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        test_resources.suite(),
+        test_resources_test.suite(),
         utils.suite(),
         define_symbol.suite(),
         exitcode.suite(),
