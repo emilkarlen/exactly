@@ -1,14 +1,15 @@
 from typing import List
 
-from exactly_lib_test.instructions.assert_.test_resources.file_contents import matcher_arguments
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
+from exactly_lib_test.instructions.assert_.test_resources.file_contents import matcher_arguments
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import arguments_building as args
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -43,12 +44,13 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
             program: ArgumentElements,
             contents_matcher: List,
             expectation_without_main_result_assertion: Expectation,
-            arrangement: ArrangementPostAct = ArrangementPostAct()):
+            arrangement: ArrangementPostAct = ArrangementPostAct(),
+            transformation: Stringable = None):
         expectation = expectation_without_main_result_assertion
 
         for case in expectation_of_positive.cases():
             matcher_for_case = matcher_arguments.matcher_for_expectation_type(case.expectation_type, contents_matcher)
-            arguments = args.from_program(program, matcher_for_case)
+            arguments = args.from_program(program, matcher_for_case, transformation)
 
             expectation.main_result = case.main_result_assertion
 

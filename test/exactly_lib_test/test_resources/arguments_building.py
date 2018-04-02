@@ -2,6 +2,7 @@ from typing import Sequence, TypeVar
 
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
+from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 
 Stringable = TypeVar('Stringable')
 
@@ -74,6 +75,18 @@ class SequenceOfArgumentsSeparatedByArgument(SequenceOfArgumentsBase):
             ret_val += [self.separator, extra_arg]
 
         return ret_val
+
+
+class QuotedStringArgument(ArgumentElementRenderer):
+    def __init__(self,
+                 string_value: str,
+                 quote_type: QuoteType = QuoteType.HARD):
+        self.string_value = string_value
+        self.quote_type = quote_type
+
+    def __str__(self):
+        quote_char = QUOTE_CHAR_FOR_TYPE[self.quote_type]
+        return quote_char + self.string_value + quote_char
 
 
 class OptionArgument(ArgumentElementRenderer):
