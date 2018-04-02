@@ -107,6 +107,7 @@ class FileContentsAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               file_to_check: FileToCheck
               ) -> FileToCheck:
         raise NotImplementedError('abstract method')

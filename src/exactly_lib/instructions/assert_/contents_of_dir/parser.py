@@ -61,6 +61,7 @@ class _CheckInstructionParser:
             assertion_variant,
         ])
         return assertion_part.AssertionInstructionFromAssertionPart(assertions,
+                                                                    None,
                                                                     lambda x: self.settings)
 
     def parse_empty_check(self, parser: TokenParser) -> DirContentsAssertionPart:

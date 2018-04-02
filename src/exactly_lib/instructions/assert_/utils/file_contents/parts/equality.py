@@ -45,6 +45,7 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
     def check(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               file_to_check: FileToCheck) -> FileToCheck:
 
         self._do_post_setup_validation(environment)

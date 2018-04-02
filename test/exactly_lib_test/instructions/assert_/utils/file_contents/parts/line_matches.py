@@ -62,7 +62,7 @@ class TestCaseBase(unittest.TestCase):
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_resolver)
                             # ACT #
-                            actual = assertion_part.check_and_return_pfh(environment, os_services, ftc)
+                            actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
                             # ASSERT #
                             pfh_assertion = ExpectationTypeConfig(
                                 expectation_type).main_result(case.expected_result_for_positive_expectation)
@@ -97,7 +97,7 @@ class TestCaseBase(unittest.TestCase):
                             assertion_part = get_assertion_part_function(expectation_type,
                                                                          matcher_resolver)
                             # ACT #
-                            actual = assertion_part.check_and_return_pfh(environment, os_services, ftc)
+                            actual = assertion_part.check_and_return_pfh(environment, os_services, 'custom env', ftc)
                             # ASSERT #
                             pfh_assertion = ExpectationTypeConfig(
                                 expectation_type).main_result(expected_result_when_positive_expectation)

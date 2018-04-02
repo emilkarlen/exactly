@@ -14,7 +14,7 @@ from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransfo
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
@@ -61,6 +61,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
         with self.assertRaises(PfhHardErrorException):
             file_name = 'a file that does not exist'
             assertion_part.check(self.environment, self.the_os_services,
+                                 'custom environment',
                                  sut.ResolvedComparisonActualFile(
                                      pathlib.Path(file_name),
                                      file_refs.rel_cwd(PathPartAsFixedPath(file_name)),
@@ -75,6 +76,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
         with tmp_dir() as path_of_existing_directory:
             with self.assertRaises(PfhHardErrorException):
                 assertion_part.check(self.environment, self.the_os_services,
+                                     'custom environment',
                                      sut.ResolvedComparisonActualFile(
                                          path_of_existing_directory,
                                          file_refs.absolute_file_name(str(path_of_existing_directory)),

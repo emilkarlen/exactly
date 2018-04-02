@@ -36,6 +36,7 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               value_to_check
               ):
         """
@@ -52,11 +53,13 @@ class AssertionPart(ObjectWithSymbolReferencesAndValidation):
     def check_and_return_pfh(self,
                              environment: InstructionEnvironmentForPostSdsStep,
                              os_services: OsServices,
+                             custom_environment,
                              value_to_check
                              ) -> pfh.PassOrFailOrHardError:
         return translate_pfh_exception_to_pfh(self.check,
                                               environment,
                                               os_services,
+                                              custom_environment,
                                               value_to_check)
 
 
@@ -74,6 +77,7 @@ class IdentityAssertionPartWithValidationAndReferences(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               value_to_check
               ):
         return value_to_check
@@ -88,7 +92,7 @@ class SequenceOfCooperativeAssertionParts(AssertionPart):
     to the constructor of the next :class:`AssertionPart`.
     """
 
-    def __init__(self, assertion_parts: list):
+    def __init__(self, assertion_parts: Sequence[AssertionPart]):
         super().__init__(pre_or_post_validation.AndValidator([c.validator for c in assertion_parts]))
         self._assertion_parts = tuple(assertion_parts)
         self._references = references_from_objects_with_symbol_references(assertion_parts)
@@ -96,9 +100,10 @@ class SequenceOfCooperativeAssertionParts(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               value_to_check):
         for assertion_part in self._assertion_parts:
-            value_to_check = assertion_part.check(environment, os_services, value_to_check)
+            value_to_check = assertion_part.check(environment, os_services, custom_environment, value_to_check)
         return value_to_check
 
     @property
@@ -112,14 +117,16 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
 
     def __init__(self,
                  assertion_part: AssertionPart,
-                 get_argument_to_checker: Callable[[InstructionEnvironmentForPostSdsStep], Any],
+                 custom_environment,
+                 get_argument_to_part: Callable[[InstructionEnvironmentForPostSdsStep], Any],
                  ):
         """
-        :param get_argument_to_checker: Returns the argument to give to
+        :param get_argument_to_part: Returns the argument to give to
         the assertion part, given a :class:`InstructionEnvironmentForPostSdsStep`
         """
+        self._custom_environment = custom_environment
         self._assertion_part = assertion_part
-        self._get_argument_to_assertion_part = get_argument_to_checker
+        self._get_argument_to_assertion_part = get_argument_to_part
         self._validator = PreOrPostSdsSvhValidationErrorValidator(assertion_part.validator)
 
     def symbol_usages(self) -> Sequence[SymbolUsage]:
@@ -139,5 +146,7 @@ class AssertionInstructionFromAssertionPart(AssertPhaseInstruction):
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices) -> pfh.PassOrFailOrHardError:
         argument_to_checker = self._get_argument_to_assertion_part(environment)
-        return self._assertion_part.check_and_return_pfh(environment, os_services,
+        return self._assertion_part.check_and_return_pfh(environment,
+                                                         os_services,
+                                                         self._custom_environment,
                                                          argument_to_checker)

@@ -56,6 +56,7 @@ class NumFilesAssertion(DirContentsAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               settings: common.Settings) -> common.Settings:
         self._comparison_handler.execute(environment)
         return self._settings
