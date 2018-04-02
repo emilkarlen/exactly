@@ -8,28 +8,9 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_utils import file_services
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
+from exactly_lib.util.process_execution import process_output_files
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, Command
-
-EXIT_CODE_FILE_NAME = 'exitcode'
-STDOUT_FILE_NAME = 'stdout'
-STDERR_FILE_NAME = 'stderr'
-
-
-class FileNames:
-    @property
-    def exit_code(self) -> str:
-        return EXIT_CODE_FILE_NAME
-
-    @property
-    def stdout(self) -> str:
-        return STDOUT_FILE_NAME
-
-    @property
-    def stderr(self) -> str:
-        return STDERR_FILE_NAME
-
-
-FILE_NAMES = FileNames()
+from exactly_lib.util.process_execution.process_output_files import FileNames
 
 
 class Result(tuple):
@@ -59,7 +40,7 @@ class Result(tuple):
 
     @property
     def file_names(self) -> FileNames:
-        return FILE_NAMES
+        return process_output_files.FILE_NAMES
 
     @property
     def path_of_stdout(self) -> pathlib.Path:
@@ -86,8 +67,8 @@ class ExecutorThatStoresResultInFilesInDir:
             return 'Error executing process:\n' + str(exception)
 
         file_services.ensure_directory_exists_as_a_directory(storage_dir)
-        with open(str(storage_dir / STDOUT_FILE_NAME), 'w') as f_stdout:
-            with open(str(storage_dir / STDERR_FILE_NAME), 'w') as f_stderr:
+        with open(str(storage_dir / process_output_files.STDOUT_FILE_NAME), 'w') as f_stdout:
+            with open(str(storage_dir / process_output_files.STDERR_FILE_NAME), 'w') as f_stderr:
                 try:
                     exit_code = subprocess.call(command.args,
                                                 stdin=subprocess.DEVNULL,
@@ -96,7 +77,7 @@ class ExecutorThatStoresResultInFilesInDir:
                                                 env=self.process_execution_settings.environ,
                                                 timeout=self.process_execution_settings.timeout_in_seconds,
                                                 shell=command.shell)
-                    write_new_text_file(storage_dir / EXIT_CODE_FILE_NAME,
+                    write_new_text_file(storage_dir / process_output_files.EXIT_CODE_FILE_NAME,
                                         str(exit_code))
                     return Result(None,
                                   exit_code,

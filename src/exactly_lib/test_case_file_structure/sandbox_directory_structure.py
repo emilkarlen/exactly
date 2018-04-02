@@ -3,6 +3,7 @@ import tempfile
 from pathlib import Path
 
 from exactly_lib import program_info
+from exactly_lib.util.process_execution import process_output_files
 
 TMP_INTERNAL__STDIN_CONTENTS = 'stdin.txt'
 
@@ -24,9 +25,9 @@ PATH__TMP_USER = SUB_DIRECTORY__TMP + '/' + SUB_DIRECTORY__TMP_USER
 
 SUB_DIRECTORY__RESULT = 'result'
 
-RESULT_FILE__STDERR = 'stderr'
-RESULT_FILE__STDOUT = 'stdout'
-RESULT_FILE__EXITCODE = 'exitcode'
+RESULT_FILE__STDERR = process_output_files.STDERR_FILE_NAME
+RESULT_FILE__STDOUT = process_output_files.STDOUT_FILE_NAME
+RESULT_FILE__EXITCODE = process_output_files.EXIT_CODE_FILE_NAME
 
 RESULT_FILE_ALL = (
     RESULT_FILE__STDERR,
