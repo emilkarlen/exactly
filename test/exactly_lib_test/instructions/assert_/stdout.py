@@ -7,7 +7,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources import stdout_stderr
-from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr import ChannelConfiguration
+from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr import ProgramOutputInstructionConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configuration_for_contents_of_act_result import \
     TestConfigurationForStdFile
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
@@ -24,7 +24,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         stdout_stderr.suite_for(TestConfigurationForStdout(),
-                                ChannelConfigurationForStdout()),
+                                ProgramOutputInstructionConfigurationForStdout()),
         suite_for_instruction_documentation(sut.setup_for_stdout('instruction name').documentation),
     ])
 
@@ -54,7 +54,7 @@ class TestConfigurationForStdout(TestConfigurationForStdFile):
         return ProcessResult(stdout_contents=contents_of_tested_file)
 
 
-class ChannelConfigurationForStdout(ChannelConfiguration):
+class ProgramOutputInstructionConfigurationForStdout(ProgramOutputInstructionConfiguration):
 
     def parser(self) -> AssertPhaseInstructionParser:
         return sut.parser()

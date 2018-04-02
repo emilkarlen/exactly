@@ -1,7 +1,9 @@
-from typing import Sequence
+from typing import Sequence, TypeVar
 
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
+
+Stringable = TypeVar('Stringable')
 
 
 class ArgumentElementRenderer:
@@ -33,7 +35,7 @@ class SequenceOfArgumentsBase(ArgumentElementRenderer):
     """
 
     @property
-    def arguments(self) -> Sequence:
+    def arguments(self) -> Sequence[Stringable]:
         raise NotImplementedError('abstract method')
 
     def __str__(self) -> str:
@@ -45,7 +47,7 @@ class SequenceOfArguments(SequenceOfArgumentsBase):
     A sequence of arguments separated by space.
     """
 
-    def __init__(self, arguments: Sequence):
+    def __init__(self, arguments: Sequence[Stringable]):
         self._arguments = arguments
 
     @property
@@ -58,7 +60,7 @@ class SequenceOfArgumentsSeparatedByArgument(SequenceOfArgumentsBase):
     A sequence of arguments separated by space.
     """
 
-    def __init__(self, separator, arguments: Sequence):
+    def __init__(self, separator: Stringable, arguments: Sequence[Stringable]):
         self.separator = separator
         self._arguments = arguments
 
@@ -91,7 +93,7 @@ class OptionWithArgument(SequenceOfArgumentsBase):
     Renders an option with mandatory argument
     """
 
-    def __init__(self, option_name: OptionName, option_argument):
+    def __init__(self, option_name: OptionName, option_argument: Sequence[Stringable]):
         self.option_name = option_name
         self.option_argument = option_argument
 

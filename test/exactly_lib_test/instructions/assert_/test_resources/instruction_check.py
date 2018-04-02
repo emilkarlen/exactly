@@ -22,15 +22,20 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class Expectation:
-    def __init__(self,
-                 validation_post_sds: asrt.ValueAssertion = svh_assertions.is_success(),
-                 validation_pre_sds: asrt.ValueAssertion = svh_assertions.is_success(),
-                 main_result: asrt.ValueAssertion[pfh.PassOrFailOrHardError] = pfh_check.is_pass(),
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
-                 main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 source: asrt.ValueAssertion = asrt.anything_goes(),
-                 ):
+    def __init__(
+            self,
+            validation_post_sds: asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            svh_assertions.is_success(),
+
+            validation_pre_sds: asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
+            svh_assertions.is_success(),
+
+            main_result: asrt.ValueAssertion[pfh.PassOrFailOrHardError] = pfh_check.is_pass(),
+            symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
+            main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
+            main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
+            source: asrt.ValueAssertion = asrt.anything_goes(),
+    ):
         self.validation_post_sds = validation_post_sds
         self.validation_pre_sds = validation_pre_sds
         self.main_result = main_result

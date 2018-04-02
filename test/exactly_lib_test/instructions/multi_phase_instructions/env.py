@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
-    equals_data_type_reference_restrictions
+    equals_data_type_reference_restrictions, is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
@@ -144,10 +144,10 @@ class TestSetWithSymbolReferences(unittest.TestCase):
             symbol_usages=asrt.matches_sequence([
                 matches_reference_2(
                     my_symbol.name,
-                    equals_data_type_reference_restrictions(is_any_data_type())),
+                    is_any_data_type_reference_restrictions()),
                 matches_reference_2(
                     your_symbol.name,
-                    equals_data_type_reference_restrictions(is_any_data_type())),
+                    is_any_data_type_reference_restrictions()),
             ]),
             source=assert_source(current_line_number=asrt.equals(2),
                                  column_index=asrt.equals(0)),
