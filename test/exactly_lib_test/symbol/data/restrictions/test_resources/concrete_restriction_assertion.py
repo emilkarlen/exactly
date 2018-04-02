@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib.symbol.data.restrictions.reference_restrictions import DataTypeReferenceRestrictionsVisitor, \
     OrReferenceRestrictions, ReferenceRestrictionsOnDirectAndIndirect, FailureOfDirectReference, \
-    FailureOfIndirectReference, OrRestrictionPart
+    FailureOfIndirectReference, OrRestrictionPart, is_any_data_type
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, \
     StringRestriction, \
     FileRefRelativityRestriction, ValueRestrictionVisitor
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer
-from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions
+from exactly_lib.symbol.restriction import DataTypeReferenceRestrictions, ReferenceRestrictions
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.test_resources.path_relativity import equals_path_relativity_variants
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -111,7 +111,7 @@ def matches_restrictions_on_direct_and_indirect(
         assertion_on_direct: asrt.ValueAssertion = asrt.anything_goes(),
         assertion_on_every: asrt.ValueAssertion = asrt.anything_goes(),
         meaning_of_failure_of_indirect_reference: asrt.ValueAssertion = asrt.is_instance(str),
-) -> asrt.ValueAssertion:
+) -> asrt.ValueAssertion[ReferenceRestrictions]:
     return asrt.is_instance_with(
         ReferenceRestrictionsOnDirectAndIndirect,
         asrt.and_([
@@ -128,8 +128,13 @@ def matches_restrictions_on_direct_and_indirect(
     )
 
 
-def equals_data_type_reference_restrictions(expected: DataTypeReferenceRestrictions) -> asrt.ValueAssertion:
+def equals_data_type_reference_restrictions(expected: DataTypeReferenceRestrictions
+                                            ) -> asrt.ValueAssertion[ReferenceRestrictions]:
     return _EQUALS_REFERENCE_RESTRICTIONS_VISITOR.visit(expected)
+
+
+def is_any_data_type_reference_restrictions() -> asrt.ValueAssertion[ReferenceRestrictions]:
+    return equals_data_type_reference_restrictions(is_any_data_type())
 
 
 REFERENCES_ARE_UNRESTRICTED = matches_restrictions_on_direct_and_indirect(
@@ -158,7 +163,7 @@ def equals_or_reference_restrictions(expected: OrReferenceRestrictions) -> asrt.
 
 
 def _equals_reference_restriction_on_direct_and_indirect(expected: ReferenceRestrictionsOnDirectAndIndirect
-                                                         ) -> asrt.ValueAssertion:
+                                                         ) -> asrt.ValueAssertion[ReferenceRestrictions]:
     return matches_restrictions_on_direct_and_indirect(
         assertion_on_direct=equals_value_restriction(expected.direct),
         assertion_on_every=asrt.is_none if expected.indirect is None else equals_value_restriction(expected.indirect)

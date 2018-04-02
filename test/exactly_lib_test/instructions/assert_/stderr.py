@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.assert_.test_resources import stdout_stderr
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configuration_for_contents_of_act_result import \
     TestConfigurationForStdFile
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
-    ChannelConfiguration
+    ProgramOutputInstructionConfiguration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
     ActResultProducerFromHomeAndSds2Str
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
@@ -25,7 +25,7 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         stdout_stderr.suite_for(TestConfigurationForStderr(),
-                                ChannelConfigurationForStderr()),
+                                ProgramOutputInstructionConfigurationForStderr()),
         suite_for_instruction_documentation(sut.setup_for_stderr('instruction name').documentation),
     ])
 
@@ -56,7 +56,7 @@ class TestConfigurationForStderr(TestConfigurationForStdFile):
         return ProcessResult(stderr_contents=contents_of_tested_file)
 
 
-class ChannelConfigurationForStderr(ChannelConfiguration):
+class ProgramOutputInstructionConfigurationForStderr(ProgramOutputInstructionConfiguration):
 
     def parser(self) -> AssertPhaseInstructionParser:
         return sut.parser()
