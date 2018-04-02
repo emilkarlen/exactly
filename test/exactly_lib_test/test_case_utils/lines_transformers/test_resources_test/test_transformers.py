@@ -6,9 +6,47 @@ from exactly_lib_test.test_case_utils.lines_transformers.test_resources import t
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestDeleteEverythingTransformer),
         unittest.makeSuite(TestDuplicateWordsTransformer),
         unittest.makeSuite(TestDeleteInitialWordTransformer),
     ])
+
+
+class TestDeleteEverythingTransformer(unittest.TestCase):
+    def test_SHOULD_not_be_identity_transformer(self):
+        transformer = sut.DeleteEverythingTransformer()
+        self.assertFalse(transformer.is_identity_transformer)
+
+    def test_no_lines(self):
+        # ARRANGE #
+
+        transformer = sut.DeleteEverythingTransformer()
+
+        # ACT #
+
+        actual = transformer.transform([])
+
+        # ASSERT #
+
+        actual_as_list = list(actual)
+        self.assertEqual([], actual_as_list)
+
+    def test_lines_SHOULD_be_removed(self):
+        # ARRANGE #
+
+        transformer = sut.DeleteEverythingTransformer()
+        input_lines = [
+            'something\n',
+            ''
+        ]
+        # ACT #
+
+        actual = transformer.transform(input_lines)
+
+        # ASSERT #
+
+        actual_as_list = list(actual)
+        self.assertEqual([], actual_as_list)
 
 
 class TestDuplicateWordsTransformer(unittest.TestCase):
