@@ -70,7 +70,7 @@ class Parser(ComparisonActualFileParser):
     def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
         def parse_program(_parser: TokenParser) -> ComparisonActualFileConstructor:
             program = parse.parse_program(_parser)
-            return _ComparisonActualFileConstructorForProgram(program)
+            return _ComparisonActualFileConstructorForProgram(self._checked_file, program)
 
         return parser.consume_and_handle_optional_option(self._default,
                                                          parse_program,
@@ -95,7 +95,10 @@ class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileConstan
 
 
 class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor):
-    def __init__(self, program: ProgramResolver):
+    def __init__(self,
+                 checked_output: process_output_files.ProcOutputFile,
+                 program: ProgramResolver):
+        self._checked_output = checked_output
         self._program = program
 
     def construct(self,
@@ -104,6 +107,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
         program = self._program.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         result_file_path = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
                                                                                     source_info,
+                                                                                    self._checked_output,
                                                                                     program)
         return actual_files.ComparisonActualFileForProgramOutput(result_file_path)
 
