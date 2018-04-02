@@ -30,5 +30,9 @@ class FileNames:
     def stderr(self) -> str:
         return STDERR_FILE_NAME
 
+    @staticmethod
+    def name_of(output_file: ProcOutputFile) -> str:
+        return PROC_OUTPUT_FILE_NAMES[output_file]
+
 
 FILE_NAMES = FileNames()

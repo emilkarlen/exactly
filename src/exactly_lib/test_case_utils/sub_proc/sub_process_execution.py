@@ -42,9 +42,8 @@ class Result(tuple):
     def file_names(self) -> FileNames:
         return process_output_files.FILE_NAMES
 
-    @property
-    def path_of_stdout(self) -> pathlib.Path:
-        return self.output_dir_path / self.file_names.stdout
+    def path_of(self, output_file: process_output_files.ProcOutputFile) -> pathlib.Path:
+        return self.output_dir_path / self.file_names.name_of(output_file)
 
 
 class ResultAndStderr:

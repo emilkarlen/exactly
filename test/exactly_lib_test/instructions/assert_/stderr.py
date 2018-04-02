@@ -24,8 +24,8 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        stdout_stderr.suite_without_program_output_DURING_DEVELOPMENT(TestConfigurationForStderr(),
-                                                                      ProgramOutputInstructionConfigurationForStderr()),
+        stdout_stderr.suite_for(TestConfigurationForStderr(),
+                                ProgramOutputInstructionConfigurationForStderr()),
         suite_for_instruction_documentation(sut.setup_for_stderr('instruction name').documentation),
     ])
 
