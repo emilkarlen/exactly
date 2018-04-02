@@ -14,7 +14,7 @@ class MyNonIdentityTransformer(LinesTransformer):
         return map(lambda s: 'not identity', lines)
 
 
-class MyToUppercaseTransformer(LinesTransformer):
+class MyToUppercaseTransformer(CustomLinesTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 

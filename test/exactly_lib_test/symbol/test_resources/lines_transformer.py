@@ -12,7 +12,8 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class LinesTransformerResolverConstantTestImpl(LinesTransformerResolver):
-    def __init__(self, resolved_value: LinesTransformer,
+    def __init__(self,
+                 resolved_value: LinesTransformer,
                  references: Sequence[SymbolReference] = ()):
         self._resolved_value = resolved_value
         self._references = list(references)
