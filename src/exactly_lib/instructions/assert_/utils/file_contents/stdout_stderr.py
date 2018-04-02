@@ -24,6 +24,7 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.process_execution import process_output_files
 
 OUTPUT_FROM_PROGRAM_OPTION_NAME = a.OptionName('from')
 
@@ -61,10 +62,10 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
 
 class Parser(ComparisonActualFileParser):
-    def __init__(self,
-                 actual_value_if_not_output_from_program:
-                 actual_files.ComparisonActualFileConstantWithReferences):
-        self._default = actual_files.ComparisonActualFileConstructorForConstant(actual_value_if_not_output_from_program)
+    def __init__(self, checked_file: process_output_files.ProcOutputFile):
+        self._checked_file = checked_file
+        self._default = actual_files.ComparisonActualFileConstructorForConstant(
+            ActComparisonActualFileForStdFile(checked_file))
 
     def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
         def parse_program(_parser: TokenParser) -> ComparisonActualFileConstructor:
@@ -76,13 +77,14 @@ class Parser(ComparisonActualFileParser):
                                                          OUTPUT_FROM_PROGRAM_OPTION_NAME)
 
 
-class ActComparisonActualFileForStdFileBase(actual_files.ComparisonActualFileConstantWithReferences):
-    def __init__(self, checked_file_name: str):
+class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileConstantWithReferences):
+    def __init__(self, checked_file: process_output_files.ProcOutputFile):
         super().__init__(())
-        self.checked_file_name = checked_file_name
+        self.checked_file = checked_file
+        self.checked_file_name = process_output_files.PROC_OUTPUT_FILE_NAMES[self.checked_file]
 
     def object_name(self) -> str:
-        return self.checked_file_name
+        return process_output_files.PROC_OUTPUT_FILE_NAMES[self.checked_file]
 
     def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
         return None
