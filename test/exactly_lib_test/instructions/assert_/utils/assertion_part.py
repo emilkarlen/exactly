@@ -34,7 +34,7 @@ class TestAssertionPart(unittest.TestCase):
 
     def test_return_pfh_pass_WHEN_no_exception_is_raised(self):
         # ARRANGE #
-        assertion_part_that_not_raises = SuccessfulCheckerThatReturnsConstructorArgPlusOne()
+        assertion_part_that_not_raises = SuccessfulPartThatReturnsConstructorArgPlusOne()
         # ACT #
         actual = assertion_part_that_not_raises.check_and_return_pfh(self.environment,
                                                                      self.the_os_services,
@@ -46,7 +46,7 @@ class TestAssertionPart(unittest.TestCase):
 
     def test_return_pfh_fail_WHEN_PfhFailException_is_raised(self):
         # ARRANGE #
-        assertion_part_that_raises = CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne()
+        assertion_part_that_raises = PartThatRaisesFailureExceptionIfArgumentIsEqualToOne()
         # ACT #
         actual = assertion_part_that_raises.check_and_return_pfh(self.environment,
                                                                  self.the_os_services,
@@ -54,7 +54,7 @@ class TestAssertionPart(unittest.TestCase):
                                                                  1)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
-            asrt.equals(CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+            asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
         assertion.apply_without_message(self, actual)
 
 
@@ -82,7 +82,7 @@ class TestSequence(unittest.TestCase):
 
     def test_WHEN_single_successful_assertion_part_THEN_that_assertion_part_should_have_been_executed(self):
         # ARRANGE #
-        assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulCheckerThatReturnsConstructorArgPlusOne()])
+        assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulPartThatReturnsConstructorArgPlusOne()])
         # ACT #
         actual = assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
         # ASSERT #
@@ -92,8 +92,8 @@ class TestSequence(unittest.TestCase):
 
     def test_WHEN_multiple_successful_assertion_parts_THEN_that_all_assertion_parts_should_have_been_executed(self):
         # ARRANGE #
-        assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulCheckerThatReturnsConstructorArgPlusOne(),
-                                                                  SuccessfulCheckerThatReturnsConstructorArgPlusOne()])
+        assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulPartThatReturnsConstructorArgPlusOne(),
+                                                                  SuccessfulPartThatReturnsConstructorArgPlusOne()])
         # ACT #
         actual = assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
         # ASSERT #
@@ -103,13 +103,13 @@ class TestSequence(unittest.TestCase):
 
     def test_WHEN_a_failing_assertion_part_SHOULD_stop_execution_and_report_the_failure(self):
         # ARRANGE #
-        assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulCheckerThatReturnsConstructorArgPlusOne(),
-                                                                  CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne(),
-                                                                  SuccessfulCheckerThatReturnsConstructorArgPlusOne()])
+        assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulPartThatReturnsConstructorArgPlusOne(),
+                                                                  PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(),
+                                                                  SuccessfulPartThatReturnsConstructorArgPlusOne()])
         # ACT & ASSERT #
         with self.assertRaises(PfhFailException) as cm:
             assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
-        self.assertEqual(CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE,
+        self.assertEqual(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE,
                          cm.exception.err_msg,
                          'error message from failing assertion_part should appear in PFH exception')
 
@@ -125,7 +125,7 @@ class TestSequence(unittest.TestCase):
                                       is_value_type_restriction(ref_1_info.value)),
         ])
 
-        assertion_part_with_references = CheckerWithReference([ref_1])
+        assertion_part_with_references = PartWithReference([ref_1])
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_with_references,
                                                                 'custom environment',
                                                                 lambda env: 'not used in this test')
@@ -144,31 +144,31 @@ class TestSequence(unittest.TestCase):
             ),
             NameAndValue(
                 'validation of every assertion_part is successful',
-                sut.SequenceOfCooperativeAssertionParts([CheckerForValidation(ValidatorThat()),
-                                                         CheckerForValidation(ValidatorThat())])
+                sut.SequenceOfCooperativeAssertionParts([PartForValidation(ValidatorThat()),
+                                                         PartForValidation(ValidatorThat())])
             ),
         ]
         validation_environment = self.environment.path_resolving_environment_pre_or_post_sds
         for case in cases:
             with self.subTest(case=case.name):
-                sequence_checker = case.value
+                sequence_part = case.value
                 with self.subTest(name='pre sds validation'):
                     # ACT #
-                    actual = sequence_checker.validator.validate_pre_sds_if_applicable(validation_environment)
+                    actual = sequence_part.validator.validate_pre_sds_if_applicable(validation_environment)
                     # ASSERT #
                     self.assertIsNone(actual)
 
                 with self.subTest(name='post setup validation'):
                     # ACT #
-                    actual = sequence_checker.validator.validate_post_sds_if_applicable(validation_environment)
+                    actual = sequence_part.validator.validate_post_sds_if_applicable(validation_environment)
                     # ASSERT #
                     self.assertIsNone(actual)
 
     def test_WHEN_a_validator_fails_pre_sds_THEN_validation_SHOULD_fail_pre_sds(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part_with_successful_validation = CheckerForValidation(ValidatorThat())
-        assertion_part_with_unsuccessful_validation = CheckerForValidation(ValidatorThat(
+        assertion_part_with_successful_validation = PartForValidation(ValidatorThat())
+        assertion_part_with_unsuccessful_validation = PartForValidation(ValidatorThat(
             pre_sds_return_value=the_error_message))
         sequence_checker = sut.SequenceOfCooperativeAssertionParts([assertion_part_with_successful_validation,
                                                                     assertion_part_with_unsuccessful_validation])
@@ -182,8 +182,8 @@ class TestSequence(unittest.TestCase):
     def test_WHEN_a_validator_fails_post_setup_THEN_validation_SHOULD_fail_post_setup(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part_with_successful_validation = CheckerForValidation(ValidatorThat())
-        assertion_part_with_unsuccessful_validation = CheckerForValidation(ValidatorThat(
+        assertion_part_with_successful_validation = PartForValidation(ValidatorThat())
+        assertion_part_with_unsuccessful_validation = PartForValidation(ValidatorThat(
             post_setup_return_value=the_error_message))
         sequence_checker = sut.SequenceOfCooperativeAssertionParts([assertion_part_with_successful_validation,
                                                                     assertion_part_with_unsuccessful_validation])
@@ -218,7 +218,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
     def test_argument_getter_SHOULD_be_given_environment_as_argument(self):
         # ARRANGE #
-        assertion_part = CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne()
+        assertion_part = PartThatRaisesFailureExceptionIfArgumentIsEqualToOne()
 
         def argument_getter_that_depends_on_environment(env: InstructionEnvironmentForPostSdsStep) -> int:
             return 1 if env is self.environment else 0
@@ -229,12 +229,12 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
-        assertion = asrt_pfh.is_fail(asrt.equals(CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+        assertion = asrt_pfh.is_fail(asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
         assertion.apply_without_message(self, actual)
 
     def test_return_pfh_pass_WHEN_no_exception_is_raised(self):
         # ARRANGE #
-        assertion_part_that_not_raises = SuccessfulCheckerThatReturnsConstructorArgPlusOne()
+        assertion_part_that_not_raises = SuccessfulPartThatReturnsConstructorArgPlusOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_not_raises,
                                                                 'custom environment',
                                                                 lambda env: 0)
@@ -246,7 +246,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
     def test_return_pfh_fail_WHEN_PfhFailException_is_raised(self):
         # ARRANGE #
-        assertion_part_that_raises = CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne()
+        assertion_part_that_raises = PartThatRaisesFailureExceptionIfArgumentIsEqualToOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_raises,
                                                                 'custom environment',
                                                                 lambda env: 1)
@@ -254,12 +254,12 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         actual = instruction.main(self.environment, self.the_os_services)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
-            asrt.equals(CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
+            asrt.equals(PartThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE))
         assertion.apply_without_message(self, actual)
 
     def test_WHEN_no_validator_is_given_THEN_validation_SHOULD_succeed(self):
         # ARRANGE #
-        assertion_part_without_validation = CheckerForValidation()
+        assertion_part_without_validation = PartForValidation()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
@@ -277,7 +277,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
 
     def test_WHEN_a_successful_validator_is_given_THEN_validation_SHOULD_succeed(self):
         # ARRANGE #
-        assertion_part_without_validation = CheckerForValidation(ConstantSuccessValidator())
+        assertion_part_without_validation = PartForValidation(ConstantSuccessValidator())
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
                                                                 'custom environment',
                                                                 lambda env: 'argument to assertion_part')
@@ -296,7 +296,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_WHEN_given_validator_fails_pre_sds_THEN_validation_SHOULD_fail_pre_sds(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part = CheckerForValidation(ValidatorThat(
+        assertion_part = PartForValidation(ValidatorThat(
             pre_sds_return_value=the_error_message))
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
                                                                 'custom environment',
@@ -310,7 +310,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     def test_WHEN_given_validator_fails_post_setup_THEN_validation_SHOULD_fail_post_setup(self):
         # ARRANGE #
         the_error_message = 'the error message'
-        assertion_part = CheckerForValidation(ValidatorThat(
+        assertion_part = PartForValidation(ValidatorThat(
             post_setup_return_value=the_error_message))
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
                                                                 'custom environment',
@@ -327,7 +327,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
                                      'post setup validation should fail')
 
 
-class CheckerForValidation(sut.AssertionPart):
+class PartForValidation(sut.AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -336,7 +336,7 @@ class CheckerForValidation(sut.AssertionPart):
         raise NotImplementedError('this method should not be used')
 
 
-class SuccessfulCheckerThatReturnsConstructorArgPlusOne(sut.AssertionPart):
+class SuccessfulPartThatReturnsConstructorArgPlusOne(sut.AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
@@ -345,7 +345,7 @@ class SuccessfulCheckerThatReturnsConstructorArgPlusOne(sut.AssertionPart):
         return arg + 1
 
 
-class CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart):
+class PartThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart):
     ERROR_MESSAGE = 'error message of FAILING assertion_part'
 
     def check(self,
@@ -359,7 +359,7 @@ class CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart)
             return arg + 1
 
 
-class CheckerWithReference(sut.AssertionPart):
+class PartWithReference(sut.AssertionPart):
     def __init__(self, references: Sequence[SymbolReference]):
         super().__init__()
         self._references = references
