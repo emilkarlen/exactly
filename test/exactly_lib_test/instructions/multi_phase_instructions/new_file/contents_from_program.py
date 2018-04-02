@@ -328,14 +328,14 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
         program_cases = [
             NameAndValue(
                 'executable file',
-                pgm_args.program(pgm_args.interpret_py_source_arg(
+                pgm_args.program(pgm_args.interpret_py_source_line(
                     py_programs.single_line_pgm_that_prints_to_stdout_with_new_line(text_printed_by_program)),
                     transformation=to_upper_transformer.name
                 )
             ),
             NameAndValue(
                 'shell command line',
-                pgm_args.program(pgm_args.shell_command_arg(
+                pgm_args.program(pgm_args.shell_command_line(
                     command_that_prints_line_to_stdout(text_printed_by_program)),
                     transformation=to_upper_transformer.name
                 )

@@ -1,25 +1,30 @@
 import unittest
 
 from exactly_lib.instructions.assert_ import stdout as sut
+from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources import stdout_stderr
-from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configuration import TestConfigurationForStdFile
+from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr import ChannelConfiguration
+from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.configuration_for_contents_of_act_result import \
+    TestConfigurationForStdFile
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.utils import \
     ActResultProducerFromHomeAndSds2Str
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_resources.execution.utils import ProcessResult
+from exactly_lib_test.test_resources.programs.py_programs import single_line_pgm_that_prints_to_no_new_line
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        stdout_stderr.suite_for(TestConfigurationForStdout()),
+        stdout_stderr.suite_for(TestConfigurationForStdout(),
+                                ChannelConfigurationForStdout()),
         suite_for_instruction_documentation(sut.setup_for_stdout('instruction name').documentation),
     ])
 
@@ -47,6 +52,15 @@ class TestConfigurationForStdout(TestConfigurationForStdFile):
 
     def act_result(self, contents_of_tested_file: str) -> ProcessResult:
         return ProcessResult(stdout_contents=contents_of_tested_file)
+
+
+class ChannelConfigurationForStdout(ChannelConfiguration):
+
+    def parser(self) -> AssertPhaseInstructionParser:
+        return sut.parser()
+
+    def py_source_for_print(self, output: str) -> str:
+        return single_line_pgm_that_prints_to_no_new_line('stdout', output)
 
 
 if __name__ == '__main__':
