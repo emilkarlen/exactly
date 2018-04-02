@@ -114,9 +114,12 @@ class TokenStream:
                 return ret_val
             else:
                 ret_val = self._source[self._start_pos:new_line_pos]
-                self._source_io.seek(new_line_pos + 1)
-                self._head_syntax_error_description = None
-                self.consume()
+                if ret_val and not ret_val.isspace():
+                    self._source_io.seek(new_line_pos + 1)
+                    self._head_syntax_error_description = None
+                    self.consume()
+                else:
+                    self._start_pos = new_line_pos + 1
                 return ret_val
 
     @property
