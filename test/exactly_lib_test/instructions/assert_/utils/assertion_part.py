@@ -38,6 +38,7 @@ class TestAssertionPart(unittest.TestCase):
         # ACT #
         actual = assertion_part_that_not_raises.check_and_return_pfh(self.environment,
                                                                      self.the_os_services,
+                                                                     'custom environment',
                                                                      1)
         # ASSERT #
         assertion = asrt_pfh.is_pass()
@@ -49,6 +50,7 @@ class TestAssertionPart(unittest.TestCase):
         # ACT #
         actual = assertion_part_that_raises.check_and_return_pfh(self.environment,
                                                                  self.the_os_services,
+                                                                 'custom environment',
                                                                  1)
         # ASSERT #
         assertion = asrt_pfh.is_fail(
@@ -60,17 +62,29 @@ class TestSequence(unittest.TestCase):
     the_os_services = oss.new_default()
     environment = fake_post_sds_environment()
 
+    def test_WHEN_custom_env_is_forwarded_to_every_part(self):
+        # ARRANGE #
+        output = []
+        assertion_part = sut.SequenceOfCooperativeAssertionParts([PartThatRegistersCustomEnvironment(output),
+                                                                  PartThatRegistersCustomEnvironment(output)])
+        custom_env = 'the custom environment'
+        # ACT #
+        assertion_part.check(self.environment, self.the_os_services, custom_env, 'arg that is not used')
+        # ASSERT #
+        expected = [custom_env, custom_env]
+        self.assertEqual(expected, output)
+
     def test_WHEN_list_of_assertion_parts_is_empty_THEN_no_exception_SHOULD_be_raised(self):
         # ARRANGE #
         assertion_part = sut.SequenceOfCooperativeAssertionParts([])
         # ACT & ASSERT #
-        assertion_part.check(self.environment, self.the_os_services, 'arg that is not used')
+        assertion_part.check(self.environment, self.the_os_services, 'custom env', 'arg that is not used')
 
     def test_WHEN_single_successful_assertion_part_THEN_that_assertion_part_should_have_been_executed(self):
         # ARRANGE #
         assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulCheckerThatReturnsConstructorArgPlusOne()])
         # ACT #
-        actual = assertion_part.check(self.environment, self.the_os_services, 0)
+        actual = assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
         # ASSERT #
         self.assertEqual(1,
                          actual,
@@ -81,7 +95,7 @@ class TestSequence(unittest.TestCase):
         assertion_part = sut.SequenceOfCooperativeAssertionParts([SuccessfulCheckerThatReturnsConstructorArgPlusOne(),
                                                                   SuccessfulCheckerThatReturnsConstructorArgPlusOne()])
         # ACT #
-        actual = assertion_part.check(self.environment, self.the_os_services, 0)
+        actual = assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
         # ASSERT #
         self.assertEqual(2,
                          actual,
@@ -94,7 +108,7 @@ class TestSequence(unittest.TestCase):
                                                                   SuccessfulCheckerThatReturnsConstructorArgPlusOne()])
         # ACT & ASSERT #
         with self.assertRaises(PfhFailException) as cm:
-            assertion_part.check(self.environment, self.the_os_services, 0)
+            assertion_part.check(self.environment, self.the_os_services, 'custom env', 0)
         self.assertEqual(CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne.ERROR_MESSAGE,
                          cm.exception.err_msg,
                          'error message from failing assertion_part should appear in PFH exception')
@@ -113,6 +127,7 @@ class TestSequence(unittest.TestCase):
 
         assertion_part_with_references = CheckerWithReference([ref_1])
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_with_references,
+                                                                'custom environment',
                                                                 lambda env: 'not used in this test')
 
         # ACT #
@@ -188,6 +203,19 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
     the_os_services = oss.new_default()
     environment = fake_post_sds_environment()
 
+    def test_WHEN_custom_env_is_forwarded_to_the_part(self):
+        # ARRANGE #
+        output = []
+        custom_env = 'the custom environment'
+        instruction = sut.AssertionInstructionFromAssertionPart(PartThatRegistersCustomEnvironment(output),
+                                                                custom_env,
+                                                                lambda x: x)
+        # ACT #
+        instruction.main(self.environment, self.the_os_services)
+        # ASSERT #
+        expected = [custom_env]
+        self.assertEqual(expected, output)
+
     def test_argument_getter_SHOULD_be_given_environment_as_argument(self):
         # ARRANGE #
         assertion_part = CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne()
@@ -196,6 +224,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
             return 1 if env is self.environment else 0
 
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
+                                                                'custom environment',
                                                                 argument_getter_that_depends_on_environment)
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
@@ -207,6 +236,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ARRANGE #
         assertion_part_that_not_raises = SuccessfulCheckerThatReturnsConstructorArgPlusOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_not_raises,
+                                                                'custom environment',
                                                                 lambda env: 0)
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
@@ -218,6 +248,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ARRANGE #
         assertion_part_that_raises = CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_that_raises,
+                                                                'custom environment',
                                                                 lambda env: 1)
         # ACT #
         actual = instruction.main(self.environment, self.the_os_services)
@@ -230,6 +261,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ARRANGE #
         assertion_part_without_validation = CheckerForValidation()
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
+                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
@@ -247,6 +279,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         # ARRANGE #
         assertion_part_without_validation = CheckerForValidation(ConstantSuccessValidator())
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part_without_validation,
+                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         with self.subTest(name='pre sds validation'):
             # ACT #
@@ -266,6 +299,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         assertion_part = CheckerForValidation(ValidatorThat(
             pre_sds_return_value=the_error_message))
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
+                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         # ACT #
         actual = instruction.validate_pre_sds(self.environment)
@@ -279,6 +313,7 @@ class TestAssertionInstructionFromAssertionPart(unittest.TestCase):
         assertion_part = CheckerForValidation(ValidatorThat(
             post_setup_return_value=the_error_message))
         instruction = sut.AssertionInstructionFromAssertionPart(assertion_part,
+                                                                'custom environment',
                                                                 lambda env: 'argument to assertion_part')
         # ACT #
         pre_sds_result = instruction.validate_pre_sds(self.environment)
@@ -296,6 +331,7 @@ class CheckerForValidation(sut.AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               arg: int):
         raise NotImplementedError('this method should not be used')
 
@@ -304,6 +340,7 @@ class SuccessfulCheckerThatReturnsConstructorArgPlusOne(sut.AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               arg: int):
         return arg + 1
 
@@ -314,6 +351,7 @@ class CheckerThatRaisesFailureExceptionIfArgumentIsEqualToOne(sut.AssertionPart)
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               arg: int):
         if arg == 1:
             raise PfhFailException(self.ERROR_MESSAGE)
@@ -333,5 +371,19 @@ class CheckerWithReference(sut.AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               arg: int):
         pass
+
+
+class PartThatRegistersCustomEnvironment(sut.AssertionPart):
+    def __init__(self, output: list):
+        super().__init__()
+        self._output = output
+
+    def check(self,
+              environment: InstructionEnvironmentForPostSdsStep,
+              os_services: OsServices,
+              custom_environment,
+              arg):
+        self._output.append(custom_environment)

@@ -120,6 +120,7 @@ class EmptinessAssertion(DirContentsAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               settings: Settings) -> Settings:
         checker = _EmptinessChecker(self._settings.property_descriptor(config.EMPTINESS_PROPERTY_NAME),
                                     environment,

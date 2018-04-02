@@ -38,5 +38,6 @@ class Parser(AssertPhaseInstructionTokenParser):
                 FileExistenceAssertionPart(),
                 actual_file_assertion_part,
             ]),
+            'custom environment',
             lambda env: actual_file_constructor
         )

@@ -31,6 +31,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               file_to_check: FileToCheck) -> FileToCheck:
         comparison_handler = comparison_structures.ComparisonHandler(
             file_to_check.describer.construct_for_contents_attribute(

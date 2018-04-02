@@ -45,6 +45,7 @@ class FileConstructorAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFile:
         return value_to_check.construct(environment)
 
@@ -61,6 +62,7 @@ class FileExistenceAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               actual_file: ComparisonActualFile,
               ) -> ResolvedComparisonActualFile:
         """
@@ -100,6 +102,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               file_to_transform: ResolvedComparisonActualFile,
               ) -> FileToCheck:
         """

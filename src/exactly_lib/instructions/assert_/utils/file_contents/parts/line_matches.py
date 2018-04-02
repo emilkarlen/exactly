@@ -61,6 +61,7 @@ class FileContentsAssertionPart(FileContentsAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               file_to_check: FileToCheck) -> FileToCheck:
         line_matcher = self._line_matcher_resolver.resolve(environment.symbols)
         self._check(environment, line_matcher, file_to_check)

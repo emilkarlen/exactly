@@ -45,6 +45,7 @@ class DirContentsAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               settings: Settings) -> Settings:
         raise NotImplementedError('abstract method')
 
@@ -57,6 +58,7 @@ class AssertPathIsExistingDirectory(DirContentsAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               settings: Settings) -> Settings:
         expect_existing_dir = file_properties.must_exist_as(file_properties.FileType.DIRECTORY,
                                                             True)

@@ -39,6 +39,7 @@ class QuantifiedAssertion(DirContentsAssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
+              custom_environment,
               settings: common.Settings) -> common.Settings:
         checker = _Checker(self._settings,
                            self._quantifier,
@@ -128,6 +129,7 @@ class _Checker:
     def check_file(self, actual_file: ResolvedComparisonActualFile):
         self._assertion_on_file_to_check.check(self.environment,
                                                self.os_services,
+                                               None,
                                                actual_file)
 
     def new_resolved_actual_file(self, path: pathlib.Path) -> ResolvedComparisonActualFile:
