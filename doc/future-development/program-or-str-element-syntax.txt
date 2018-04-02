@@ -23,46 +23,6 @@ it might be easiest to allow multiple definitions of stdin,
 and that the final stdin would then be the concatenation of
 all these defined stdin:s.
 
-* Usages
-** File creation
-
-file PATH = STRING-PRODUCER
-
-** EXPECTED in File contents comparison
-
-contents FILE [TRANSFORMATION] COMPARISON
-
-COMPARISON        ::= EQUALS-COMPARISON|...
-EQUALS-COMPARISON ::= equals STRING-PRODUCER
-
-** Actual in program result assertions (exitcode, stdout, stderr)
-
-stdout   [--from PROGRAM-VALUE] [TRANSFORMATION] FILE-CONTENTS-MATCHER
-
-stderr   [--from PROGRAM-VALUE] [TRANSFORMATION] FILE-CONTENTS-MATCHER
-
-exitcode [--from PROGRAM-VALUE] [!] INTEGER-COMPARISON
-
-** run
-
-run NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS
-*** Notes
-If argument is an PROGRAM-SYM-REF then a transformation
-may be included in the definition.
-But for "run", this transformation is irrelevant(?).
-So it would be good (perhaps for performance) to be able
-to ignore the transformation.  On the other hand, such a
-transformation will do no harm since in this context it is
-only the exit code, and sideeffects that are relevant
-(stdout and stderr are ignored).
-** $
-
-$ SHELL-COMMAND-LINE
-
-** def
-
-def program SYMBOL-NAME ::= PROGRAM-VALUE
-
 * Examples
 ** dbupgrade
 ----------------------------------------
@@ -97,50 +57,122 @@ stdout --from @[GET_FIRST_LOG_MESSAGE]@
 Expected log message
 eof
 ----------------------------------------
+* Usages
+** File creation (StringProducer)
+
+file PATH = STRING-PRODUCER
+
+** EXPECTED in File contents comparison (StringProducer)
+
+contents FILE [TRANSFORMATION] COMPARISON
+
+COMPARISON        ::= EQUALS-COMPARISON|...
+EQUALS-COMPARISON ::= equals STRING-PRODUCER
+
+** Actual in program result assertions (exitcode, stdout, stderr) (Program)
+
+stdout   [--from PROGRAM] [TRANSFORMATION] FILE-CONTENTS-MATCHER
+
+stderr   [--from PROGRAM] [TRANSFORMATION] FILE-CONTENTS-MATCHER
+
+exitcode [--from PROGRAM] [!] INTEGER-COMPARISON
+
+** run (Program)
+
+run PROGRAM-AND-ARGS-LINE [STDIN]
+
+*** Notes
+If argument is an PROGRAM-SYM-REF then a transformation
+may be included in the definition.
+But for "run", this transformation is irrelevant(?).
+So it would be good (perhaps for performance) to be able
+to ignore the transformation.  On the other hand, such a
+transformation will do no harm since in this context it is
+only the exit code, and sideeffects that are relevant
+(stdout and stderr are ignored).
+** $ (CommandAndStdin)
+
+$ SHELL-CMD-LINE [STDIN]
+
+** system (CommandAndStdin)
+
+> SYSTEM-CMD-LINE [STDIN]
+
+** def (Program)
+
+def program SYMBOL-NAME ::= PROGRAM
+
 * Syntax elements
 
+STRING-PRODUCER <=> StringProducer
 STRING-PRODUCER ::= STRING
                 ::| HERE-DOCUMENT
-                ::| --file              FILE [TRANSFORMATION]
-                ::| (--stdout|--stderr) PROGRAM-VALUE        (do not need TRANS, since part of PROGRAM-VALUE)
+                ::| --file              FILE    [TRANSFORMATION]
+                ::| (--stdout|--stderr) PROGRAM (do not need TRANS, since part of PROGRAM)
 
-PROGRAM-VALUE ::= ($ SHELL-COMMAND-LINE|NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS)
-                  [TRANSFORMATION]
+PROGRAM               <=> Program
+PROGRAM               ::= PROGRAM-AND-ARGS-LINE [STDIN] [TRANSFORMATION]
 
-SHELL-COMMAND-LINE ::= <everything until end of line>
-                       [STDIN]
+PROGRAM-AND-ARGS-LINE <=> Program
+PROGRAM-AND-ARGS-LINE ::= $        SHELL-CMD-LINE
+                      ::| %        SYSTEM-CMD-LINE
+                      ::| --system SYSTEM-CMD-LINE
+                      ::|          PROGRAM-REF-OR-EXECUTABLE-FILE-LINE
 
-NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS ::= PROGRAM [ARGUMENT...] [STDIN]
-
-PROGRAM ::= EXECUTABLE [--]
-        ::| EXECUTABLE --source SOURCE  (syntax for rest of line is single arg)
-        ::| EXECUTABLE --interpret PATH
-        ::| --shell                PATH (a variant of --interpret where the interpreter is the system shell)
-        ::| SYM-REF/program             (the program to execute)
-        ::| SYM-REF/file                (the executable file to execute    - CommandDriverForExecutableFile)
-        ::| SYM-REF/string              (the "--system" command to execute - CommandDriverForSystemExecutable)
+PROGRAM-REF-OR-EXECUTABLE-FILE-LINE <=> Program
+PROGRAM-REF-OR-EXECUTABLE-FILE-LINE ::= PROGRAM-REF-OR-EXECUTABLE-FILE [ARGUMENT...] <until end of line>
 
 
-EXECUTABLE ::= EXECUTABLE'
-           ::| ( EXECUTABLE' [ARGUMENT...] )
+SYSTEM-CMD-LINE       <=> Command
+SYSTEM-CMD-LINE       ::= STRING [ARGUMENT]... <until end of line>
 
-EXECUTABLE' ::= PATH
-            ::| --python
-            ::| --system STRING
 
-PROGRAM-INVOKATION
-may need to use end-of-line as end-token for [ARGUMENT...]
+SHELL-CMD-LINE        <=> Command
+SHELL-CMD-LINE        ::= <everything until end of line>
+
+
+PROGRAM-REF-OR-EXECUTABLE-FILE <=> Program
+PROGRAM-REF-OR-EXECUTABLE-FILE
+                      ::= CMD-FOR-EXECUTABLE [--]
+                      ::| CMD-FOR-EXECUTABLE --source    SOURCE  (syntax for rest of line is single arg  that becomes single arg)
+                      ::| CMD-FOR-EXECUTABLE --interpret PATH    (syntax for rest of line is single file that becomes single arg)
+(later)               ::| SYM-REF/program                        (the program to execute)
+
+
+CMD-FOR-EXECUTABLE     <=> Program
+CMD-FOR-EXECUTABLE     ::= CMD-FOR-EXECUTABLE
+
+
+CMD-FOR-EXECUTABLE'    <=> Command
+CMD-FOR-EXECUTABLE'    ::= CMD-DRV-FOR-EXECUTABLE
+                       ::| ( CMD-DRV-FOR-EXECUTABLE [ARGUMENT...] )
+
+
+CMD-DRV-FOR-EXECUTABLE <=> CommandDriver
+CMD-DRV-FOR-EXECUTABLE ::= PATH                 (CommandDriverForExeFile)
+                       ::| --python             (CommandDriverForExeFile)
+                       ::| --system SRING       (CommandDriverForSystemExecutable)
+                       ::| --shell  PATH        (CommandDriverForShellSourceFile)
 
 * Implementation
 
-EXECUTABLE'     <=> CommandDriverForNonShellSdv        + Validator = CommandDriver
-EXECUTABLE      <=> CommandDriverForNonShellSdv + Args + Validator = CommandResolver
-PROGRAM         <=> CommandDriverSdv            + Args + Validator = CommandResolver
+COMMAND-DRIVER  <=> CommandDriverForNonShellSdv        + Validator = CommandDriver
+EXECUTABLE      <=> CommandDriverForNonShellSdv + Args + Validator = Command
+COMMAND         <=> CommandDriverSdv            + Args + Validator = Command
 
-SHELL-COMMAND-LINE                    <=> CommandResolverAndStdin (with args, so higher elems may accumulate args)
+SHELL-COMMAND-LINE                    <=> CommandAndStdin (with args, so higher elems may accumulate args)
 
-NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS <=> CommandResolverAndStdin
+NON-EXPLICIT-SHELL-CMD-LINE-WITH-ARGS <=> CommandAndStdin
 
-PROGRAM-VALUE   <=> ProgramSdv (CommandResolver + StdinSetup + transformer)
+PROGRAMg-VALUE   <=> ProgramSdv (Command + StdinSetup + transformer)
 
 STRING-PRODUCER <=> StringProducer
+
+
+* Execution via python
+
+** --shell PATH
+
+*** Windows: aka --shell BAT-FILE
+
+subprocess.call(['C:\\Users\\emilk\\pgm\\lng\\py\\testing\\script.bat', 'hoho hi'])
