@@ -30,12 +30,14 @@ class TokenParser:
 
     def __init__(self,
                  token_stream: TokenStream,
-                 error_message_format_map: dict = None):
+                 error_message_format_map: dict = None,
+                 first_line_number: int = 0):
         """
 
         :param token_stream: Token stream to read tokens from.
         :param error_message_format_map: Map to pass to string.format_map as the map argument.
         """
+        self._first_line_number = first_line_number
         self._token_stream = token_stream
         self.error_message_format_map = {} if error_message_format_map is None else error_message_format_map
 
@@ -47,6 +49,10 @@ class TokenParser:
         if self._token_stream.is_null:
             self.error('Missing ' + syntax_element_name)
         self.require_head_token_has_valid_syntax(syntax_element_name)
+
+    @property
+    def first_line_number(self) -> int:
+        return self._first_line_number
 
     @property
     def is_at_eol(self) -> bool:
@@ -424,7 +430,8 @@ class TokenParser:
 
 
 def new_token_parser(source: str,
-                     error_message_format_map: dict = None) -> TokenParser:
+                     error_message_format_map: dict = None,
+                     first_line_number: int = 0) -> TokenParser:
     """
     Constructs a :class:`TokenParser`
     :argument error_message_format_map: strings that are replaced in error messages
@@ -434,7 +441,8 @@ def new_token_parser(source: str,
     :raises :class:`SingleInstructionInvalidArgumentException` Source has invalid syntax
     """
     return TokenParser(new_token_stream(source),
-                       error_message_format_map)
+                       error_message_format_map,
+                       first_line_number)
 
 
 def token_parser_with_additional_error_message_format_map(parser: TokenParser,
@@ -444,7 +452,8 @@ def token_parser_with_additional_error_message_format_map(parser: TokenParser,
                                              list(additional_error_message_format_map.items()))
 
     return TokenParser(parser.token_stream,
-                       combined_error_message_format_map)
+                       combined_error_message_format_map,
+                       first_line_number=parser.first_line_number)
 
 
 @contextmanager
@@ -456,7 +465,8 @@ def from_parse_source(source: ParseSource,
 
     The source of the :class:`TokenParserPrime` is the remaining sources of the :class:`ParseSource`
     """
-    tp = new_token_parser(source.remaining_source)
+    tp = new_token_parser(source.remaining_source,
+                          first_line_number=source.current_line_number)
     yield tp
     source.consume(tp.token_stream.position)
     if consume_last_line_if_is_at_eol_after_parse and source.is_at_eol:
@@ -472,6 +482,7 @@ def from_remaining_part_of_current_line_of_parse_source(parse_source: ParseSourc
 
     The source of the :class:`TokenParserPrime` is the remaining part of the current line of the :class:`ParseSource`
     """
-    tp = new_token_parser(parse_source.remaining_part_of_current_line)
+    tp = new_token_parser(parse_source.remaining_part_of_current_line,
+                          first_line_number=parse_source.current_line_number)
     yield tp
     parse_source.consume(tp.token_stream.position)
