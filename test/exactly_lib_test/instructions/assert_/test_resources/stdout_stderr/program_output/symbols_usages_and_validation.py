@@ -1,24 +1,22 @@
 import unittest
 
-from exactly_lib.symbol.restriction import ReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
-from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system.value_type import TypeCategory, ValueType
+from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import matcher_arguments
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import \
     arguments_building as po_ab
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import \
     configuration
-from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import TestCaseBase
+from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import \
+    TestCaseBase
+from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.utils import matches_reference
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
-from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_type_category_restriction, \
-    is_value_type_restriction
+from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case_utils.external_program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
@@ -113,9 +111,3 @@ class TestFailingValidationPostSds(TestCaseBase):
         self._check(arguments,
                     ArrangementPostAct(),
                     Expectation(validation_post_sds=asrt_svh.is_validation_error(asrt.anything_goes())))
-
-
-def matches_reference(expected: NameAndValue[asrt.ValueAssertion[ReferenceRestrictions]]
-                      ) -> asrt.ValueAssertion[SymbolUsage]:
-    return matches_reference_2(expected.name,
-                               expected.value)

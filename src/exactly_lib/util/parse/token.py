@@ -23,6 +23,11 @@ HARD_QUOTE_NAME = name_with_plural_s('hard quote')
 QUOTE_CHARS = frozenset([SOFT_QUOTE_CHAR,
                          HARD_QUOTE_CHAR])
 
+QUOTE_CHAR_FOR_TYPE = {
+    QuoteType.SOFT: SOFT_QUOTE_CHAR,
+    QuoteType.HARD: HARD_QUOTE_CHAR,
+}
+
 
 class Token(tuple):
     def __new__(cls,

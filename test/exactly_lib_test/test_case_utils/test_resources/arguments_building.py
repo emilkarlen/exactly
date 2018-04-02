@@ -2,12 +2,13 @@ from typing import Sequence
 
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.util.cli_syntax.elements.argument import OptionName
+from exactly_lib.util.parse.token import QuoteType
 from exactly_lib_test.symbol.test_resources import arguments_building as sym_ab
 from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as fr_ab
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptFileRefArgument, \
     FileRefArgument
 from exactly_lib_test.test_resources import arguments_building as ab
-from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer, QuotedStringArgument
 from exactly_lib_test.test_resources.arguments_building import Stringable
 
 
@@ -21,6 +22,11 @@ def sequence(arguments: Sequence[Stringable],
         return ab.SequenceOfArgumentsSeparatedByArgument(separator, arguments)
     else:
         return ab.SequenceOfArguments(arguments)
+
+
+def quoted_string(string_value: str,
+                  quote_type: QuoteType = QuoteType.HARD) -> QuotedStringArgument:
+    return QuotedStringArgument(string_value, quote_type)
 
 
 def option(option_name: OptionName,
