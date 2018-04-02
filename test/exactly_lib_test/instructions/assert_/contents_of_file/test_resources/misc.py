@@ -23,7 +23,7 @@ class TestConfigurationForFile(InstructionTestConfigurationForEquals):
     FILE_NAME_REL_CWD = '../actual.txt'
 
     def new_parser(self) -> InstructionParser:
-        return sut.parser()
+        return sut.parser('the-instruction-name')
 
     def arguments_for(self, additional_arguments: str) -> Arguments:
         return Arguments(self.FILE_NAME_REL_CWD + ' ' + additional_arguments)

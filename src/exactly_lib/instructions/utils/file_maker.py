@@ -1,16 +1,15 @@
 import pathlib
 from typing import Sequence, Optional
 
-from exactly_lib.instructions.utils import file_creation
-from exactly_lib.instructions.utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
-from exactly_lib.test_case_utils import file_ref_check, file_properties
+from exactly_lib.test_case_utils import file_ref_check, file_properties, file_creation
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
+from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
     SingleStepValidator, ValidationStep
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \

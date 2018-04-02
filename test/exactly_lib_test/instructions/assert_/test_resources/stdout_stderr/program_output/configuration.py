@@ -42,7 +42,7 @@ class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
             self,
             expectation_of_positive: ExpectationTypeConfig,
             program: ArgumentElements,
-            contents_matcher: List,
+            contents_matcher: List[Stringable],
             expectation_without_main_result_assertion: Expectation,
             arrangement: ArrangementPostAct = ArrangementPostAct(),
             transformation: Stringable = None):

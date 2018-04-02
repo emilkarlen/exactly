@@ -9,7 +9,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
@@ -45,9 +45,9 @@ class FileConstructorAssertionPart(AssertionPart):
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
               os_services: OsServices,
-              custom_environment,
+              custom_environment: InstructionSourceInfo,
               value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFile:
-        return value_to_check.construct(environment)
+        return value_to_check.construct(custom_environment, environment)
 
 
 class FileExistenceAssertionPart(AssertionPart):

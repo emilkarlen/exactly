@@ -21,7 +21,7 @@ ACTUAL_PATH_ARGUMENT = a.Named('ACTUAL-PATH')
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:
-    return SingleInstructionSetup(parser(),
+    return SingleInstructionSetup(parser(instruction_name),
                                   TheInstructionDocumentation(instruction_name))
 
 
@@ -65,8 +65,8 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._help_parts.see_also_targets()
 
 
-def parser() -> AssertPhaseInstructionParser:
-    return parse_instruction.Parser(_ActualFileParser())
+def parser(instruction_name: str) -> AssertPhaseInstructionParser:
+    return parse_instruction.Parser(instruction_name, _ActualFileParser())
 
 
 class _ActualFileParser(ComparisonActualFileParser):

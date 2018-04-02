@@ -7,13 +7,14 @@ from exactly_lib.test_case_file_structure import sandbox_directory_structure
 
 def setup_for_stderr(instruction_name: str) -> SingleInstructionSetup:
     return SingleInstructionSetup(
-        parser(),
+        parser(instruction_name),
         utils.TheInstructionDocumentation(instruction_name,
                                           sandbox_directory_structure.RESULT_FILE__STDERR))
 
 
-def parser() -> AssertPhaseInstructionParser:
+def parser(instruction_name: str) -> AssertPhaseInstructionParser:
     return parse_instruction.Parser(
+        instruction_name,
         utils.Parser(
             stdout_stderr.ActComparisonActualFileForStdFileBase(
                 sandbox_directory_structure.RESULT_FILE__STDERR)))

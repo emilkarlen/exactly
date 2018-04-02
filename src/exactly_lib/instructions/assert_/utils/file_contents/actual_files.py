@@ -1,8 +1,11 @@
+import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
@@ -10,12 +13,15 @@ from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.type_system.data import file_refs
 
 CONTENTS_ATTRIBUTE = 'contents'
 
 PLAIN_FILE_OBJECT_NAME = 'file'
 
 PLAIN_DIR_OBJECT_NAME = 'directory'
+
+OUTPUT_FROM_PROGRAM_OBJECT_NAME = 'output from program'
 
 
 class FilePropertyDescriptorConstructor:
@@ -47,7 +53,9 @@ class ComparisonActualFile:
 
 
 class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation):
-    def construct(self, environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+    def construct(self,
+                  source_info: InstructionSourceInfo,
+                  environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
         raise NotImplementedError('abstract method')
 
 
@@ -64,7 +72,9 @@ class ComparisonActualFileConstructorForConstant(ComparisonActualFileConstructor
     def __init__(self, constructed_value: ComparisonActualFileConstantWithReferences):
         self._constructed_value = constructed_value
 
-    def construct(self, environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+    def construct(self,
+                  source_info: InstructionSourceInfo,
+                  environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
         return self._constructed_value
 
     @property
@@ -103,3 +113,24 @@ class ActComparisonActualFileForFileRef(ComparisonActualFileConstantWithReferenc
         return pre_or_post_sds_failure_message_or_none(FileRefCheck(self._file_ref_resolver,
                                                                     must_exist_as(FileType.REGULAR)),
                                                        environment.path_resolving_environment_pre_or_post_sds)
+
+
+class ComparisonActualFileForProgramOutput(ComparisonActualFile):
+    def __init__(self, file_with_program_output: pathlib.Path):
+        self._file_with_program_output = file_with_program_output
+        if not file_with_program_output.is_absolute():
+            raise ValueError('Path must be absolute: ' + str(file_with_program_output))
+
+    @property
+    def property_descriptor_constructor(self) -> FilePropertyDescriptorConstructor:
+        return _ActualFilePropertyDescriptorConstructorForComparisonFile(self.file_ref_resolver(),
+                                                                         self.object_name())
+
+    def object_name(self) -> str:
+        return OUTPUT_FROM_PROGRAM_OBJECT_NAME
+
+    def file_check_failure(self, environment: i.InstructionEnvironmentForPostSdsStep) -> Optional[str]:
+        return None
+
+    def file_ref_resolver(self) -> FileRefResolver:
+        return file_ref_resolvers2.constant(file_refs.absolute_path(self._file_with_program_output))

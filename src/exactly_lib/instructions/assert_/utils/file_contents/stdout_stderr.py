@@ -14,8 +14,11 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
+from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.external_program import parse
+from exactly_lib.test_case_utils.external_program.execution.store_result_in_instruction_tmp_dir import \
+    make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
@@ -93,8 +96,14 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
     def __init__(self, program: ProgramResolver):
         self._program = program
 
-    def construct(self, environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
-        raise NotImplementedError('todo')
+    def construct(self,
+                  source_info: InstructionSourceInfo,
+                  environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+        program = self._program.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        result_file_path = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
+                                                                                    source_info,
+                                                                                    program)
+        return actual_files.ComparisonActualFileForProgramOutput(result_file_path)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:

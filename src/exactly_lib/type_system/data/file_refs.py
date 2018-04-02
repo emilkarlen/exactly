@@ -61,6 +61,10 @@ def absolute_file_name(file_name: str) -> FileRef:
     return _FileRefAbsolute(PathPartAsFixedPath(file_name))
 
 
+def absolute_path(abs_path: pathlib.Path) -> FileRef:
+    return absolute_file_name(str(abs_path))
+
+
 def rel_home(rel_option: relativity_root.RelHomeOptionType,
              path_suffix: PathPart) -> FileRef:
     return _FileRefRelHome(rel_option, path_suffix)

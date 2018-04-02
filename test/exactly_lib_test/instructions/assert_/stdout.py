@@ -36,7 +36,7 @@ class ActResultProducerForStdout(ActResultProducerFromHomeAndSds2Str):
 
 class TestConfigurationForStdout(TestConfigurationForStdFile):
     def new_parser(self) -> InstructionParser:
-        return sut.parser()
+        return sut.parser('the-instruction-name')
 
     def arrangement_for_contents_from_fun(self, home_and_sds_2_str,
                                           home_or_sds_contents: home_or_sds.HomeOrSdsPopulator = home_or_sds.empty(),
@@ -57,7 +57,7 @@ class TestConfigurationForStdout(TestConfigurationForStdFile):
 class ProgramOutputInstructionConfigurationForStdout(ProgramOutputInstructionConfiguration):
 
     def parser(self) -> AssertPhaseInstructionParser:
-        return sut.parser()
+        return sut.parser('the-instruction-name')
 
     def py_source_for_print(self, output: str) -> str:
         return single_line_pgm_that_prints_to_no_new_line('stdout', output)
