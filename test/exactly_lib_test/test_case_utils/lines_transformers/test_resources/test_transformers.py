@@ -54,6 +54,11 @@ class DeleteInitialWordTransformer(CustomLinesTransformer):
         return ' '.join(words)
 
 
+class DeleteEverythingTransformer(CustomLinesTransformer):
+    def transform(self, lines: Iterable[str]) -> Iterable[str]:
+        return []
+
+
 def _with_preserved_new_line_ending(new_line_agnostic_modifier: Callable[[str], str]) -> Callable[[str], str]:
     def ret_val(x: str) -> str:
         has_new_line = len(x) > 0 and x[-1] == '\n'

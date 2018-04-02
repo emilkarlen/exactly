@@ -4,6 +4,10 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import test_transformers
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
+DELETE_EVERYTHING_TRANSFORMER = NameAndValue('DELETE_EVERYTHING_TRANSFORMER',
+                                             test_transformers.DeleteEverythingTransformer()
+                                             )
+
 DUPLICATE_WORDS_TRANSFORMER = NameAndValue('DUPLICATE_WORDS_TRANSFORMER',
                                            test_transformers.DuplicateWordsTransformer()
                                            )
@@ -17,6 +21,11 @@ TO_UPPER_CASE_TRANSFORMER = NameAndValue('TO_UPPER_CASE_TRANSFORMER',
                                          )
 
 SYMBOL_TABLE = SymbolTable({
+
+    DELETE_EVERYTHING_TRANSFORMER.name:
+        symbol_utils.container(lines_transformer.LinesTransformerResolverConstantTestImpl(
+            DELETE_EVERYTHING_TRANSFORMER.value)),
+
     DUPLICATE_WORDS_TRANSFORMER.name:
         symbol_utils.container(lines_transformer.LinesTransformerResolverConstantTestImpl(
             DUPLICATE_WORDS_TRANSFORMER.value)),
