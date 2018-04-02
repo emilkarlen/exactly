@@ -8,6 +8,7 @@ from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhas
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
+from exactly_lib.test_case.phases.common import InstructionSourceInfo
 
 
 class ComparisonActualFileParser(Parser[ComparisonActualFileConstructor]):
@@ -23,10 +24,14 @@ class Parser(AssertPhaseInstructionTokenParser):
      - performs a last custom check on the transformed file
     """
 
-    def __init__(self, actual_file_parser: ComparisonActualFileParser):
+    def __init__(self,
+                 instruction_name: str,
+                 actual_file_parser: ComparisonActualFileParser):
+        self._instruction_name = instruction_name
         self._actual_file_parser = actual_file_parser
 
     def parse_from_token_parser(self, parser: TokenParser) -> AssertPhaseInstruction:
+        source_info = InstructionSourceInfo(parser.first_line_number, self._instruction_name)
         actual_file_constructor = self._actual_file_parser.parse_from_token_parser(parser)
         actual_file_assertion_part = parse_file_contents_assertion_part.parse(parser)
 
@@ -38,6 +43,6 @@ class Parser(AssertPhaseInstructionTokenParser):
                 FileExistenceAssertionPart(),
                 actual_file_assertion_part,
             ]),
-            'custom environment',
+            source_info,
             lambda env: actual_file_constructor
         )

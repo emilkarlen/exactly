@@ -53,7 +53,7 @@ class TestWithTransformationFromProgram(TestCaseBase):
         self._check_positive_and_negated(
             result_when_positive,
             program_that_outputs_something,
-            matcher_arguments.equals_matcher(ab.quoted_string('first')),
+            matcher_arguments.equals_matcher(ab.quoted_string('second')),
             Expectation(
                 symbol_usages=asrt.matches_sequence([
                     is_lines_transformer_reference_to(transformers_setup.DELETE_INITIAL_WORD_TRANSFORMER.name),
@@ -79,7 +79,7 @@ class TestWithTransformationFromProgramAndInstruction(TestCaseBase):
         self._check_positive_and_negated(
             result_when_positive,
             program_that_outputs_something,
-            matcher_arguments.equals_matcher(ab.quoted_string('first first')),
+            matcher_arguments.equals_matcher(ab.quoted_string('second second')),
             Expectation(
                 symbol_usages=asrt.matches_sequence([
                     is_lines_transformer_reference_to(transformer_of_program.name),

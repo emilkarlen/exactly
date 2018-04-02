@@ -18,7 +18,7 @@ class TestParse(unittest.TestCase):
             args('actual {equals} expected unexpected-extra'),
             args('actual {equals} {not} expected'),
         ]
-        parser = sut.parser()
+        parser = sut.parser('the-instruction-name')
         for instruction_argument in test_cases:
             with self.subTest(msg=instruction_argument):
                 for source in equivalent_source_variants(self, instruction_argument):

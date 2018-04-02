@@ -14,3 +14,10 @@ def suite_for(configuration: TestConfigurationForStdFile,
         common_tests.suite_for(configuration),
         program_output.suite_for(channel_configuration),
     ])
+
+
+def suite_without_program_output_DURING_DEVELOPMENT(configuration: TestConfigurationForStdFile,
+                                                    channel_configuration: ProgramOutputInstructionConfiguration) -> unittest.TestSuite:
+    return unittest.TestSuite([
+        common_tests.suite_for(configuration),
+    ])

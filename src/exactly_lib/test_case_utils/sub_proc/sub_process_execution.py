@@ -61,6 +61,10 @@ class Result(tuple):
     def file_names(self) -> FileNames:
         return FILE_NAMES
 
+    @property
+    def path_of_stdout(self) -> pathlib.Path:
+        return self.output_dir_path / self.file_names.stdout
+
 
 class ResultAndStderr:
     def __init__(self,
