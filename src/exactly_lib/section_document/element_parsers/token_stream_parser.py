@@ -351,7 +351,7 @@ class TokenParser:
         self.require_existing_valid_head_token(syntax_element_name)
         command_name = self.consume_mandatory_unquoted_string(syntax_element_name, False)
         if command_name not in command_name_2_parser:
-            return self.error('Invalid ' + syntax_element_name)
+            return self.error('Invalid ' + syntax_element_name + ': ' + command_name)
         return command_name_2_parser[command_name](self)
 
     def parse_mandatory_option(self, option_name_2_parser: dict):
