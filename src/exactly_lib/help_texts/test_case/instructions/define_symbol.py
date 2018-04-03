@@ -2,8 +2,8 @@ from exactly_lib.help_texts import type_system, instruction_arguments
 from exactly_lib.help_texts.argument_rendering import cl_syntax, path_syntax
 from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO, PATH_TYPE_INFO, LIST_TYPE_INFO, \
-    LINE_MATCHER_TYPE_INFO, FILE_MATCHER_TYPE_INFO, LINES_TRANSFORMER_TYPE_INFO, TypeNameAndCrossReferenceId
+from exactly_lib.help_texts.entity import types
+from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
 from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
 from exactly_lib.help_texts.test_case.phase_names_plain import SETUP_PHASE_NAME
@@ -83,18 +83,18 @@ _EQUALS = a.Single(a.Multiplicity.MANDATORY,
 
 DATA_TYPE_INFO_DICT = {
     DataValueType.STRING:
-        TypeInfo(STRING_TYPE_INFO,
-                 _standard_type_value_args(STRING_TYPE_INFO,
+        TypeInfo(types.STRING_TYPE_INFO,
+                 _standard_type_value_args(types.STRING_TYPE_INFO,
                                            a.Multiplicity.MANDATORY)),
 
     DataValueType.PATH:
-        TypeInfo(PATH_TYPE_INFO,
+        TypeInfo(types.PATH_TYPE_INFO,
                  path_syntax.mandatory_path_with_optional_relativity(
-                     a.Named(PATH_TYPE_INFO.syntax_element_name),
+                     a.Named(types.PATH_TYPE_INFO.syntax_element_name),
                      PATH_SUFFIX_IS_REQUIRED)),
 
     DataValueType.LIST:
-        TypeInfo(LIST_TYPE_INFO,
+        TypeInfo(types.LIST_TYPE_INFO,
                  [a.Single(a.Multiplicity.ZERO_OR_MORE,
                            a.Named(type_system.LIST_ELEMENT))]),
 }
@@ -108,16 +108,20 @@ ANY_TYPE_INFO_DICT = {
         DATA_TYPE_INFO_DICT[DataValueType.LIST],
 
     ValueType.LINE_MATCHER:
-        TypeInfo(LINE_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(LINE_MATCHER_TYPE_INFO)),
+        TypeInfo(types.LINE_MATCHER_TYPE_INFO,
+                 _standard_type_value_args(types.LINE_MATCHER_TYPE_INFO)),
 
     ValueType.FILE_MATCHER:
-        TypeInfo(FILE_MATCHER_TYPE_INFO,
-                 _standard_type_value_args(FILE_MATCHER_TYPE_INFO)),
+        TypeInfo(types.FILE_MATCHER_TYPE_INFO,
+                 _standard_type_value_args(types.FILE_MATCHER_TYPE_INFO)),
 
     ValueType.LINES_TRANSFORMER:
-        TypeInfo(LINES_TRANSFORMER_TYPE_INFO,
-                 _standard_type_value_args(LINES_TRANSFORMER_TYPE_INFO)),
+        TypeInfo(types.LINES_TRANSFORMER_TYPE_INFO,
+                 _standard_type_value_args(types.LINES_TRANSFORMER_TYPE_INFO)),
+
+    ValueType.PROGRAM:
+        TypeInfo(types.LINES_TRANSFORMER_TYPE_INFO,
+                 _standard_type_value_args(types.LINES_TRANSFORMER_TYPE_INFO)),
 }
 
 

@@ -11,6 +11,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -23,6 +24,14 @@ class ProgramResolver(LogicValueResolver, DirDepValueResolverWithValidation[Prog
         self._stdin = stdin
         self._command = command
         self._transformations = transformations
+
+    @property
+    def logic_value_type(self) -> LogicValueType:
+        return LogicValueType.PROGRAM
+
+    @property
+    def value_type(self) -> ValueType:
+        return ValueType.PROGRAM
 
     def new_with_additional_arguments(self,
                                       additional_arguments: ListResolver,

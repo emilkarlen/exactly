@@ -94,6 +94,12 @@ LINES_TRANSFORMER_TYPE_INFO = name_and_ref_target(
     'Transforms a sequence of new-line separated text lines.',
 )
 
+PROGRAM_TYPE_INFO = name_and_ref_target(
+    ValueType.PROGRAM,
+    name_with_plural_s('external program'),
+    'An external program, with optional transformation of the output.',
+)
+
 ALL_TYPES_INFO_TUPLE = (
     STRING_TYPE_INFO,
     LIST_TYPE_INFO,
@@ -101,4 +107,5 @@ ALL_TYPES_INFO_TUPLE = (
     LINE_MATCHER_TYPE_INFO,
     FILE_MATCHER_TYPE_INFO,
     LINES_TRANSFORMER_TYPE_INFO,
+    PROGRAM_TYPE_INFO,
 )
