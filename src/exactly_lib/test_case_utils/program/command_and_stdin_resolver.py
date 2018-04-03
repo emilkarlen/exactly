@@ -7,7 +7,7 @@ from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithV
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.external_program.command_and_stdin_value import CommandAndStdinValue
+from exactly_lib.test_case_utils.program.command_and_stdin_value import CommandAndStdinValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 

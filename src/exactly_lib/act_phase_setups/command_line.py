@@ -21,10 +21,10 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     SymbolUser
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_parse_source
 from exactly_lib.test_case_utils.parse.parse_list import parse_list
+from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
 def act_phase_setup() -> ActPhaseSetup:

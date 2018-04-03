@@ -6,11 +6,11 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.test_case_utils.external_program import syntax_elements
-from exactly_lib.test_case_utils.external_program.executable_file import ExecutableFileWithArgsResolver
-from exactly_lib.test_case_utils.external_program.parse_impls import shell_program, \
-    executable_file, executable_file_executable
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
+from exactly_lib.test_case_utils.program import syntax_elements
+from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.parse_impls import shell_program, \
+    executable_file, executable_file_executable
 
 
 def parse_executable_file_with_args_from_parse_source(source: ParseSource) -> ExecutableFileWithArgsResolver:

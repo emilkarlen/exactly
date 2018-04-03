@@ -18,10 +18,10 @@ from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.external_program import parse
-from exactly_lib.test_case_utils.external_program.execution.store_result_in_instruction_tmp_dir import \
-    make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.program import parse
+from exactly_lib.test_case_utils.program.execution.store_result_in_instruction_tmp_dir import \
+    make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files

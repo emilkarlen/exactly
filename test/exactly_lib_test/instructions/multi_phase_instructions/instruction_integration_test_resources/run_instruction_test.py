@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
-from exactly_lib.test_case_utils.external_program import syntax_elements
+from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
