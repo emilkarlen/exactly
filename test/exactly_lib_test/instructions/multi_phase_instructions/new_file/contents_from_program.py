@@ -38,8 +38,6 @@ from exactly_lib_test.test_case_file_structure.test_resources.arguments_building
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case_utils.external_program.test_resources import arguments_building as pgm_args
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
-    MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
@@ -54,6 +52,8 @@ from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, file_assertions as f_asrt
+from exactly_lib_test.type_system.logic.test_resources.line_transformers import \
+    MyToUppercaseTransformer
 
 
 def suite() -> unittest.TestSuite:

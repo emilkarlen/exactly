@@ -1,10 +1,13 @@
 import unittest
 
-from exactly_lib_test.type_system.logic.lines_transformer import identity
+from exactly_lib_test.type_system.logic.lines_transformer import identity, sequence
 
 
 def suite() -> unittest.TestSuite:
-    return identity.suite()
+    return unittest.TestSuite([
+        identity.suite(),
+        sequence.suite(),
+    ])
 
 
 if __name__ == '__main__':

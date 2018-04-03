@@ -77,3 +77,12 @@ class SequenceLinesTransformer(LinesTransformer):
     def __str__(self):
         return '{}[{}]'.format(type(self).__name__,
                                ','.join(map(str, self._transformers)))
+
+
+class CustomLinesTransformer(LinesTransformer):
+    """
+    Base class for built in custom transformers.
+    """
+
+    def __str__(self):
+        return str(type(self))

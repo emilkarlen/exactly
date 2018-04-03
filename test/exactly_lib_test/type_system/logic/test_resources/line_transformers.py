@@ -1,7 +1,6 @@
 import itertools
 from typing import Iterable, Callable
 
-from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 
 
@@ -14,7 +13,7 @@ class MyNonIdentityTransformer(LinesTransformer):
         return map(lambda s: 'not identity', lines)
 
 
-class MyToUppercaseTransformer(CustomLinesTransformer):
+class MyToUppercaseTransformer(LinesTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 
@@ -32,7 +31,7 @@ def get_number_of_uppercase_characters(line: str) -> str:
     return str(ret_val)
 
 
-class DuplicateWordsTransformer(CustomLinesTransformer):
+class DuplicateWordsTransformer(LinesTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(_with_preserved_new_line_ending(self._do_it), lines)
 
@@ -42,7 +41,7 @@ class DuplicateWordsTransformer(CustomLinesTransformer):
         return ' '.join(itertools.chain.from_iterable(map(lambda x: [x, x], words)))
 
 
-class DeleteInitialWordTransformer(CustomLinesTransformer):
+class DeleteInitialWordTransformer(LinesTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(_with_preserved_new_line_ending(self._do_it), lines)
 
@@ -54,7 +53,7 @@ class DeleteInitialWordTransformer(CustomLinesTransformer):
         return ' '.join(words)
 
 
-class DeleteEverythingTransformer(CustomLinesTransformer):
+class DeleteEverythingTransformer(LinesTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return []
 

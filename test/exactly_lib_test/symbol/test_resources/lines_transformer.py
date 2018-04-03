@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.lines_transformer.values import LinesTransformerConstantValue
+from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerConstantValue
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable

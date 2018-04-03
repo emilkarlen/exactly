@@ -23,8 +23,6 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
 from exactly_lib_test.test_case_utils.external_program.test_resources import arguments_building as pgm_arguments
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
-    MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, conf_rel_home, \
@@ -37,6 +35,8 @@ from exactly_lib_test.test_resources.programs.shell_commands import command_that
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.test_resources.line_transformers import \
+    MyToUppercaseTransformer
 
 
 def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:

@@ -2,18 +2,18 @@ import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.test_case_utils.lines_transformer.values import LinesTransformerSequenceValue, \
-    DirDependentLinesTransformerValue
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
     SequenceLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerSequenceValue, \
+    DirDependentLinesTransformerValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     equals_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import \
     MultiDirDependentValueTestImpl
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
-    MyNonIdentityTransformer, MyToUppercaseTransformer, MyCountNumUppercaseCharactersTransformer
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.value_assertions import equals_lines_transformer
 from exactly_lib_test.test_resources.test_utils import NEA
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.type_system.logic.test_resources.line_transformers import \
+    MyNonIdentityTransformer, MyToUppercaseTransformer, MyCountNumUppercaseCharactersTransformer
 
 
 def suite() -> unittest.TestSuite:
@@ -21,6 +21,26 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestPrimitiveValue),
         unittest.makeSuite(TestValue),
     ])
+
+
+def equals_lines_transformer(expected: LinesTransformer) -> asrt.ValueAssertion[LinesTransformer]:
+    if isinstance(expected, IdentityLinesTransformer):
+        return asrt.is_instance(IdentityLinesTransformer)
+    if isinstance(expected, SequenceLinesTransformer):
+        return equals_sequence_transformer(expected)
+    raise TypeError('Unknown type of lines transformer: ' + str(expected))
+
+
+def equals_sequence_transformer(expected: SequenceLinesTransformer) -> asrt.ValueAssertion[LinesTransformer]:
+    return asrt.is_instance_with(
+        SequenceLinesTransformer,
+        asrt.sub_component('transformers',
+                           SequenceLinesTransformer.transformers.fget,
+                           asrt.matches_sequence([
+                               equals_lines_transformer(lt) for lt in expected.transformers
+                           ])
+                           )
+    )
 
 
 class TestValue(unittest.TestCase):

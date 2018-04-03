@@ -2,7 +2,6 @@ import pathlib
 import types
 from typing import Iterable
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.lines_transformer import transformers as sut
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine

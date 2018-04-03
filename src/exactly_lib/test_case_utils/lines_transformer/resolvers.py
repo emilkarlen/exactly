@@ -1,10 +1,10 @@
 from typing import Sequence
 
-from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver, LineMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.lines_transformer import transformers, values
+from exactly_lib.test_case_utils.lines_transformer import transformers
+from exactly_lib.type_system.logic import lines_transformer_values
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -16,7 +16,7 @@ class LinesTransformerConstant(LinesTransformerResolver):
     """
 
     def __init__(self, value: LinesTransformer):
-        self._value = values.LinesTransformerConstantValue(value)
+        self._value = lines_transformer_values.LinesTransformerConstantValue(value)
 
     def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
         return self._value
@@ -81,25 +81,9 @@ class LinesTransformerSelectResolver(LinesTransformerResolver):
         self.line_matcher_resolver = line_matcher_resolver
 
     def resolve(self, symbols: SymbolTable) -> LinesTransformer:
-        return values.LinesTransformerConstantValue(
+        return lines_transformer_values.LinesTransformerConstantValue(
             transformers.SelectLinesTransformer(self.line_matcher_resolver.resolve(symbols)))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
         return self.line_matcher_resolver.references
-
-
-class LinesTransformerSequenceResolver(LinesTransformerResolver):
-    def __init__(self, transformer_resolver_list: Sequence[LinesTransformerResolver]):
-        self.transformers = transformer_resolver_list
-        self._references = references_from_objects_with_symbol_references(transformer_resolver_list)
-
-    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
-        return values.LinesTransformerSequenceValue([
-            transformer.resolve(symbols)
-            for transformer in self.transformers
-        ])
-
-    @property
-    def references(self) -> Sequence[SymbolReference]:
-        return self._references

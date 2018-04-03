@@ -1,23 +1,23 @@
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import lines_transformer
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources import test_transformers
+from exactly_lib_test.type_system.logic.test_resources import line_transformers
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
 DELETE_EVERYTHING_TRANSFORMER = NameAndValue('DELETE_EVERYTHING_TRANSFORMER',
-                                             test_transformers.DeleteEverythingTransformer()
+                                             line_transformers.DeleteEverythingTransformer()
                                              )
 
 DUPLICATE_WORDS_TRANSFORMER = NameAndValue('DUPLICATE_WORDS_TRANSFORMER',
-                                           test_transformers.DuplicateWordsTransformer()
+                                           line_transformers.DuplicateWordsTransformer()
                                            )
 
 DELETE_INITIAL_WORD_TRANSFORMER = NameAndValue('DELETE_INITIAL_WORD_TRANSFORMER',
-                                               test_transformers.DeleteInitialWordTransformer()
+                                               line_transformers.DeleteInitialWordTransformer()
                                                )
 
 TO_UPPER_CASE_TRANSFORMER = NameAndValue('TO_UPPER_CASE_TRANSFORMER',
-                                         test_transformers.MyToUppercaseTransformer()
+                                         line_transformers.MyToUppercaseTransformer()
                                          )
 
 SYMBOL_TABLE = SymbolTable({
