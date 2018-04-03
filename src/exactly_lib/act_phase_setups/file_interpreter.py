@@ -34,7 +34,7 @@ from exactly_lib.test_case_utils.external_program.command import command_resolve
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.process_execution.os_process_execution import Command, ProgramAndArguments
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)

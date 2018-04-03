@@ -4,7 +4,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator
 
 
 class MainStepExecutorEmbryo:

@@ -10,7 +10,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.std import StdFiles
 

@@ -8,8 +8,8 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import pfh, svh
-from exactly_lib.test_case_utils import pre_or_post_validation
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator, \
+from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 

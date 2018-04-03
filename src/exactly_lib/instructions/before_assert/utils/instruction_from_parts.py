@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 
 
 class BeforeAssertPhaseInstructionFromParts(BeforeAssertPhaseInstruction):
