@@ -2,7 +2,7 @@ from typing import Sequence, Set, Callable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.test_case_utils.lines_transformer import transformers
+from exactly_lib.type_system.logic import lines_transformer
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, LinesTransformer
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 
@@ -30,13 +30,13 @@ class LinesTransformerSequenceValue(LinesTransformerValue):
         return resolving_dependencies_from_sequence(self._sequence)
 
     def value_when_no_dir_dependencies(self) -> LinesTransformer:
-        return transformers.SequenceLinesTransformer([
+        return lines_transformer.SequenceLinesTransformer([
             transformer.value_when_no_dir_dependencies()
             for transformer in self._sequence
         ])
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> transformers.SequenceLinesTransformer:
-        return transformers.SequenceLinesTransformer([
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> lines_transformer.SequenceLinesTransformer:
+        return lines_transformer.SequenceLinesTransformer([
             transformer.value_of_any_dependency(home_and_sds)
             for transformer in self._sequence
         ])

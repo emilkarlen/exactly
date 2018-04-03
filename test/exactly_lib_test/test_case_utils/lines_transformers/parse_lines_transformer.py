@@ -6,13 +6,13 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import LogicValueResolver
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer as sut
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLinesTransformer, \
-    CustomLinesTransformer, SequenceLinesTransformer, SelectLinesTransformer
+    CustomLinesTransformer, SelectLinesTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.lines_transformer import SequenceLinesTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream

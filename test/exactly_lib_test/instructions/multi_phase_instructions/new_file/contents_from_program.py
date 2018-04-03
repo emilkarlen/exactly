@@ -7,8 +7,8 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType
-from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
@@ -41,7 +41,7 @@ from exactly_lib_test.test_case_utils.external_program.test_resources import arg
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs

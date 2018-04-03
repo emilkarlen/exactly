@@ -2,11 +2,10 @@ import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
-    SequenceLinesTransformer
 from exactly_lib.test_case_utils.lines_transformer.values import LinesTransformerSequenceValue, \
     DirDependentLinesTransformerValue
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
+    SequenceLinesTransformer
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     equals_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import \

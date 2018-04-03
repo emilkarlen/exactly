@@ -4,8 +4,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts import line_matc
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
-from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
+from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail, ExpectationTypeConfig

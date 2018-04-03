@@ -11,10 +11,9 @@ from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor, \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
-from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, IdentityLinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
