@@ -1,47 +1,8 @@
-import functools
-from typing import Sequence, Iterable
+from typing import Iterable
 
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, original_and_model_iter_from_file_line_iter
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
-from exactly_lib.util.functional import compose_first_and_second
-
-
-class IdentityLinesTransformer(LinesTransformer):
-    @property
-    def is_identity_transformer(self) -> bool:
-        return True
-
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        return lines
-
-
-class SequenceLinesTransformer(LinesTransformer):
-    def __init__(self, transformers: Sequence[LinesTransformer]):
-        self._transformers = tuple(transformers)
-
-    @property
-    def is_identity_transformer(self) -> bool:
-        return all([t.is_identity_transformer for t in self._transformers])
-
-    @property
-    def transformers(self) -> Sequence[LinesTransformer]:
-        return self._transformers
-
-    def transform(self, lines: Iterable[str]) -> Iterable[str]:
-        if not self._transformers:
-            return lines
-        else:
-            return self._sequenced_transformers()(lines)
-
-    def _sequenced_transformers(self):
-        lines_to_lines_transformers = [t.transform
-                                       for t in self._transformers]
-
-        return functools.reduce(compose_first_and_second, lines_to_lines_transformers)
-
-    def __str__(self):
-        return '{}[{}]'.format(type(self).__name__,
-                               ','.join(map(str, self._transformers)))
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
+    SequenceLinesTransformer
 
 
 class ReplaceLinesTransformer(LinesTransformer):

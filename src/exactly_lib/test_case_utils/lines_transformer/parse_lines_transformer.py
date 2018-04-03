@@ -9,9 +9,9 @@ from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConst
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers
-from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer, \
-    ReplaceLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_reg_ex
+from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

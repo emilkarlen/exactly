@@ -1,7 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.lines_transformer import transformers as sut
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
+from exactly_lib.type_system.logic import lines_transformer as sut
 
 
 def suite() -> unittest.TestSuite:

@@ -3,8 +3,8 @@ import unittest
 from typing import Iterable
 
 import exactly_lib.test_case_utils.lines_transformer.transformers as sut
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
+from exactly_lib.type_system.logic import lines_transformer
 from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
 
 
@@ -17,23 +17,23 @@ def suite() -> unittest.TestSuite:
 class TestLinesTransformerStructureVisitor(unittest.TestCase):
     def test_visit_identity(self):
         # ARRANGE #
-        instance = sut.IdentityLinesTransformer()
+        instance = lines_transformer.IdentityLinesTransformer()
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.IdentityLinesTransformer],
+        self.assertEqual([lines_transformer.IdentityLinesTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
     def test_visit_sequence(self):
         # ARRANGE #
-        instance = sut.SequenceLinesTransformer([])
+        instance = lines_transformer.SequenceLinesTransformer([])
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.SequenceLinesTransformer],
+        self.assertEqual([lines_transformer.SequenceLinesTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
@@ -88,12 +88,12 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
     def __init__(self):
         self.visited_types = []
 
-    def visit_identity(self, transformer: sut.IdentityLinesTransformer):
-        self.visited_types.append(sut.IdentityLinesTransformer)
+    def visit_identity(self, transformer: lines_transformer.IdentityLinesTransformer):
+        self.visited_types.append(lines_transformer.IdentityLinesTransformer)
         return transformer
 
-    def visit_sequence(self, transformer: sut.SequenceLinesTransformer):
-        self.visited_types.append(sut.SequenceLinesTransformer)
+    def visit_sequence(self, transformer: lines_transformer.SequenceLinesTransformer):
+        self.visited_types.append(lines_transformer.SequenceLinesTransformer)
         return transformer
 
     def visit_replace(self, transformer: sut.ReplaceLinesTransformer):

@@ -9,8 +9,8 @@ from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType
-from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
     source_of, complete_argument_elements
