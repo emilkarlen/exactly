@@ -5,25 +5,25 @@ from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.command import driver_resolvers as drivers
-from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 from exactly_lib.util.process_execution.os_process_execution import ProgramAndArguments
 
 
-def for_shell() -> CommandResolver:
+def for_shell(arguments: ArgumentsResolver = arguments_resolver.no_arguments()) -> CommandResolver:
     return CommandResolver(drivers.CommandDriverResolverForShell(),
-                           ArgumentsResolver(list_resolvers.empty()))
+                           arguments)
 
 
-def for_executable_file(executable_file: FileRefResolver) -> CommandResolver:
+def for_executable_file(executable_file: FileRefResolver,
+                        arguments: ArgumentsResolver = arguments_resolver.no_arguments()) -> CommandResolver:
     return CommandResolver(
-        drivers.CommandDriverResolverForExecutableFile(executable_file,
-                                                       [ExistingExecutableFileValidator(executable_file)]),
-        ArgumentsResolver(list_resolvers.empty()))
+        drivers.CommandDriverResolverForExecutableFile(executable_file),
+        arguments)
 
 
-def for_system_program(program: StringResolver) -> CommandResolver:
+def for_system_program(program: StringResolver,
+                       arguments: ArgumentsResolver = arguments_resolver.no_arguments()) -> CommandResolver:
     return CommandResolver(drivers.CommandDriverResolverForSystemProgram(program),
-                           ArgumentsResolver(list_resolvers.empty()))
+                           arguments)
 
 
 def from_program_and_arguments(pgm_and_args: ProgramAndArguments) -> CommandResolver:

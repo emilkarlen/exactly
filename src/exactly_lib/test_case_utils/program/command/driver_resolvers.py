@@ -7,6 +7,7 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.command_resolver import CommandDriverResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.validators import ExistingExecutableFileValidator
 from exactly_lib.type_system.logic.program import command_values
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -14,9 +15,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class CommandDriverResolverForExecutableFile(CommandDriverResolver):
     def __init__(self,
-                 executable_file: FileRefResolver,
-                 validators: Sequence[PreOrPostSdsValidator] = ()):
-        super().__init__(validators)
+                 executable_file: FileRefResolver):
+        super().__init__([ExistingExecutableFileValidator(executable_file)])
         self._executable_file = executable_file
 
     @property
