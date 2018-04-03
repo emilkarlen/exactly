@@ -5,7 +5,7 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils.external_program.component_values import StdinDataValue
+from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.string_or_file import StringOrFileRefResolver
 from exactly_lib.util.symbol_table import SymbolTable
