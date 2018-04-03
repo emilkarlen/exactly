@@ -1,11 +1,10 @@
 import unittest
-from enum import Enum
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
-    PathRelativityVariants
+from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import IS_FAILURE
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -14,38 +13,12 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
-from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home, \
-    default_conf_rel_non_home
+from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-
-
-class Step(Enum):
-    VALIDATE_PRE_SDS = 1
-    MAIN = 2
-
-
-DISALLOWED_RELATIVITIES = [
-    RelOptionType.REL_RESULT,
-    RelOptionType.REL_HOME_CASE,
-    RelOptionType.REL_HOME_ACT,
-]
-
-ALLOWED_DST_FILE_RELATIVITIES = [
-    conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
-    conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
-    conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-    default_conf_rel_non_home(RelNonHomeOptionType.REL_CWD),
-
-]
-ACCEPTED_RELATIVITY_VARIANTS = PathRelativityVariants({RelOptionType.REL_ACT,
-                                                       RelOptionType.REL_TMP,
-                                                       RelOptionType.REL_CWD},
-                                                      absolute=False)
 
 
 class TestCaseBase(unittest.TestCase):
@@ -57,34 +30,6 @@ class TestCaseBase(unittest.TestCase):
                ):
         parser = sut.EmbryoParser('instruction-name', phase_is_after_act)
         embryo_check.check(self, parser, source, arrangement, expectation)
-
-
-def just_parse(source: ParseSource,
-               phase_is_after_act: bool = True):
-    sut.EmbryoParser('the-instruction-name', phase_is_after_act).parse(source)
-
-
-def complete_arguments(dst_file: PathArgumentWithRelativity,
-                       contents: Arguments) -> Arguments:
-    return Arguments(dst_file.argument_str).followed_by(contents)
-
-
-def source_of(arguments: Arguments) -> ParseSource:
-    return remaining_source(arguments.first_line,
-                            arguments.following_lines)
-
-
-IS_FAILURE_OF_VALIDATION = asrt.is_instance(str)
-IS_FAILURE = asrt.is_instance(str)
-IS_SUCCESS = asrt.is_none
-
-DST_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
-    {
-        RelOptionType.REL_CWD,
-        RelOptionType.REL_ACT,
-        RelOptionType.REL_TMP,
-    },
-    False)
 
 
 class InvalidDestinationFileTestCasesData:
