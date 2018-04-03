@@ -5,11 +5,11 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.program import component_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 
 
@@ -20,7 +20,7 @@ def program_parser() -> Parser[ProgramResolver]:
 def parse_as_program(parser: TokenParser) -> ProgramResolver:
     command_resolver = parse_as_command(parser)
     return ProgramResolverForCommand(command_resolver,
-                                     component_resolvers.no_stdin())
+                                     accumulator.empty())
 
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:
