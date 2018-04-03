@@ -13,13 +13,13 @@ from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, Fi
 from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.parse import executable_file_executable
+from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:
-    command_resolver = executable_file_executable.parse_as_command(parser)
+    command_resolver = parse_executable_file_executable.parse_from_token_parser(parser).as_command
     additional_arguments = _parse_additional_arguments(parser)
     return command_resolver.new_with_additional_arguments(additional_arguments)
 
