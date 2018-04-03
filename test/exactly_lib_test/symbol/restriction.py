@@ -5,8 +5,8 @@ from exactly_lib.symbol.data import string_resolvers, file_ref_resolvers2
 from exactly_lib.symbol.program import component_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.component_resolvers import ArgumentsResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
@@ -99,7 +99,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
 
         ValueType.PROGRAM:
-            ProgramResolver(
+            ProgramResolverForCommand(
                 CommandResolver(CommandDriverResolverForConstantTestImpl(
                     CommandValueForShell(string_value_of_single_string('the shell command line'))),
                     ArgumentsResolver(ListResolverTestImplForConstantListValue(ListValue([])))

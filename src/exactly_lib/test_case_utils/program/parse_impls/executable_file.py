@@ -17,6 +17,7 @@ from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse_impls import executable_file_executable
+from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:
@@ -28,7 +29,7 @@ def parse_as_command(parser: TokenParser) -> CommandResolver:
 
 def parse_as_program(parser: TokenParser) -> ProgramResolver:
     command_resolver = parse_as_command(parser)
-    return ProgramResolver(command_resolver, no_stdin())
+    return ProgramResolverForCommand(command_resolver, no_stdin())
 
 
 def program_parser() -> Parser[ProgramResolver]:

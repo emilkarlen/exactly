@@ -20,6 +20,7 @@ from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
@@ -278,7 +279,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
-        return ProgramResolver(
+        return ProgramResolverForCommand(
             command_resolver_for_source_on_command_line(instruction_argument
                                                         ).new_with_additional_arguments(list_resolvers.empty(),
                                                                                         [self.validator]),
@@ -292,7 +293,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(P
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
-        return ProgramResolver(
+        return ProgramResolverForCommand(
             command_resolvers.for_shell().new_with_additional_arguments(argument_resolver,
                                                                         [self.validator]),
             no_stdin())
