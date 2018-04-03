@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.test_case_utils import expression, condition
 from exactly_lib_test.test_case_utils import file_properties, sub_process_execution, parse
-from exactly_lib_test.test_case_utils import line_matcher, lines_transformers, file_matcher, external_program
+from exactly_lib_test.test_case_utils import line_matcher, lines_transformers, file_matcher, program
 
 
 def suite() -> unittest.TestSuite:
@@ -15,7 +15,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(file_matcher.suite())
     ret_val.addTest(lines_transformers.suite())
     ret_val.addTest(parse.suite())
-    ret_val.addTest(external_program.suite())
+    ret_val.addTest(program.suite())
     return ret_val
 
 

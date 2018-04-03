@@ -22,8 +22,8 @@ from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_tr
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
-from exactly_lib_test.test_case_utils.external_program.test_resources import arguments_building as pgm_arguments
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_arguments
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, conf_rel_home, \
     conf_rel_non_home

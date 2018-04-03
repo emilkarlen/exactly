@@ -11,9 +11,9 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
     TestCaseBase
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
-from exactly_lib_test.test_case_utils.external_program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import \
     test_transformers_setup as transformers_setup
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
