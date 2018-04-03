@@ -19,6 +19,10 @@ class Arguments:
         self.following_lines = list(map(str, following_lines))
 
     @property
+    def is_empty(self) -> bool:
+        return not self.first_line and not self.following_lines
+
+    @property
     def lines(self) -> List[str]:
         return [self.first_line] + self.following_lines
 
@@ -66,6 +70,12 @@ class ArgumentElements:
         self._first_line = first_line
         self._following_lines = list(following_lines)
 
+    @staticmethod
+    def new_with_following_lines_as_single_elements(first_line: List[Stringable],
+                                                    following_lines: List[Stringable]):
+        return ArgumentElements(first_line,
+                                [[line] for line in following_lines])
+
     @property
     def first_line(self) -> List[Stringable]:
         return self._first_line
@@ -111,6 +121,17 @@ class ArgumentElements:
         return ArgumentElements(self.first_line + argument_elements.first_line,
                                 self.following_lines + argument_elements.following_lines)
 
+    def followed_by(self,
+                    argument_elements,
+                    first_line_separator: Sequence = ()):
+        """
+        :type argument_elements: ArgumentElements
+        :param first_line_separator: String that separates the first line of the two arguments
+        :rtype: ArgumentElements
+        """
+        return ArgumentElements(self.first_line + list(first_line_separator) + argument_elements.first_line,
+                                self.following_lines + argument_elements.following_lines)
+
     @property
     def num_lines(self) -> int:
         return 1 + len(self.following_lines)
@@ -124,3 +145,9 @@ def here_document(lines: List[str],
                   marker: str = 'EOF') -> Arguments:
     return Arguments('<<' + marker,
                      lines + [marker])
+
+
+def here_document_arg_elements(lines: List[str],
+                               marker: str = 'EOF') -> ArgumentElements:
+    return ArgumentElements.new_with_following_lines_as_single_elements(['<<' + marker],
+                                                                        lines + [marker])

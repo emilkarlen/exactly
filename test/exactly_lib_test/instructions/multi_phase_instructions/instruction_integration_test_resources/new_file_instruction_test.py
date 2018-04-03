@@ -86,7 +86,7 @@ class TestSymbolUsages(TestCaseBase):
 
         file_contents_arg = arguments.TransformableContentsConstructor(
             arguments.file(symbol_reference_syntax_for_name(src_file_symbol.name))
-        ).with_transformation(to_upper_transformer.name)
+        ).with_transformation(to_upper_transformer.name).as_arguments
 
         source = remaining_source(
             '{file_name} {content_arguments}'.format(
@@ -153,7 +153,7 @@ def instruction_arguments_for_src_file_rel_result() -> str:
                                               conf_rel_any(RelOptionType.REL_ACT))
     contents_arg = arguments.TransformableContentsConstructor(
         arguments.file(src_file_arg.file_name, src_file_arg.relativity)
-    ).without_transformation()
+    ).without_transformation().as_arguments
 
     return '{dst_file_arg} {contents_arguments}'.format(
         dst_file_arg=dst_file_arg.argument_str,
@@ -180,7 +180,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
 
         file_contents_arg = arguments.TransformableContentsConstructor(
             arguments.file(src_file.name, src_rel_opt_conf)
-        ).with_transformation(to_upper_transformer.name)
+        ).with_transformation(to_upper_transformer.name).as_arguments
 
         expected_non_home_contents = dst_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([expected_file]))
 
@@ -229,7 +229,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
             arguments.stdout_from(
                 pgm_arguments.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
             )
-        ).with_transformation(to_upper_transformer.name)
+        ).with_transformation(to_upper_transformer.name).as_arguments
 
         instruction_arguments = '{rel_opt} {file_name} {shell_contents_arguments}'.format(
             rel_opt=rel_opt_conf.option_argument,
@@ -262,9 +262,10 @@ class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
             )
         )
 
+        shell_command_arguments = shell_contents_arguments.without_transformation().as_arguments
         instruction_arguments = '{file_name} {shell_command_with_non_zero_exit_code}'.format(
             file_name='dst-file-name.txt',
-            shell_command_with_non_zero_exit_code=shell_contents_arguments.without_transformation().first_line,
+            shell_command_with_non_zero_exit_code=shell_command_arguments.first_line,
         )
 
         for source in equivalent_source_variants__with_source_check(self, instruction_arguments):
@@ -288,7 +289,7 @@ class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseBase):
 
         contents_argument = arguments.TransformableContentsConstructor(
             arguments.file(src_file.file_name, src_file.relativity)
-        ).without_transformation()
+        ).without_transformation().as_arguments
 
         instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(
             rel_opt=dst_file.relativity.option_argument,

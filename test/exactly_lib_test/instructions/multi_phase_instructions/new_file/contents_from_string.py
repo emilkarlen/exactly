@@ -1,5 +1,5 @@
-import types
 import unittest
+from typing import Callable
 
 from exactly_lib.help_texts import file_ref as file_ref_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
@@ -13,14 +13,15 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
+    source_of, complete_argument_elements
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import TestCaseBase
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
+    TestCaseBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import \
     DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, just_parse
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
-    complete_arguments, source_of
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
@@ -33,7 +34,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any
 from exactly_lib_test.test_resources import file_structure as fs
@@ -60,12 +61,12 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             dst_file = PathArgumentWithRelativity(expected_file.file_name,
                                                   rel_opt_conf)
-            arguments = complete_arguments(dst_file,
-                                           string_contents_arguments(string_value))
+            arguments = complete_argument_elements(dst_file,
+                                                   string_contents_arguments(string_value))
             with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
                               first_line=arguments.first_line):
                 self._check(
-                    source_of(arguments),
+                    arguments.as_remaining_source,
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
@@ -84,12 +85,12 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
         for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
             dst_file = PathArgumentWithRelativity(expected_file.file_name,
                                                   rel_opt_conf)
-            arguments = complete_arguments(dst_file,
-                                           here_document_contents_arguments([here_doc_line]))
+            arguments = complete_argument_elements(dst_file,
+                                                   here_document_contents_arguments([here_doc_line]))
             with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
                               first_line=arguments.first_line):
                 self._check(
-                    source_of(arguments),
+                    arguments.as_remaining_source,
                     ArrangementWithSds(
                         pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                     ),
@@ -140,10 +141,11 @@ class TestSymbolReferences(TestCaseBase):
                         fs.Dir(sub_dir_name, [expected_file])])),
             ))
 
-    def _test_symbol_reference_in_dst_file_and_contents(self,
-                                                        symbol_ref_syntax_2_contents_arguments: types.FunctionType,
-                                                        symbol_value_2_expected_contents: types.FunctionType
-                                                        ):
+    def _test_symbol_reference_in_dst_file_and_contents(
+            self,
+            symbol_ref_syntax_2_contents_arguments: Callable[[str], ArgumentElements],
+            symbol_value_2_expected_contents: Callable[[str], str]
+    ):
         sub_dir_name = 'sub-dir'
         relativity = RelOptionType.REL_ACT
         file_symbol = NameAndValue('file_symbol_name',
@@ -173,7 +175,7 @@ class TestSymbolReferences(TestCaseBase):
         })
 
         contents_arguments = symbol_ref_syntax_2_contents_arguments(
-            symbol_reference_syntax_for_name(contents_symbol.name))
+            symbol_reference_syntax_for_name(contents_symbol.name)).as_arguments
 
         assert isinstance(contents_arguments, Arguments)
 
@@ -204,7 +206,7 @@ class TestSymbolReferences(TestCaseBase):
         def symbol_value_2_expected_contents(symbol_value: str) -> str:
             return string_value_template.format(symbol=symbol_value)
 
-        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> Arguments:
+        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> ArgumentElements:
             string_value = string_value_template.format(symbol=syntax)
             unquoted = string_contents_arguments(SOFT_QUOTE_CHAR + string_value + SOFT_QUOTE_CHAR)
             return unquoted
@@ -218,7 +220,7 @@ class TestSymbolReferences(TestCaseBase):
         def symbol_value_2_expected_contents(symbol_value: str) -> str:
             return here_doc_line_template.format(symbol=symbol_value) + '\n'
 
-        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> Arguments:
+        def symbol_ref_syntax_2_contents_arguments(syntax: str) -> ArgumentElements:
             return here_document_contents_arguments([
                 here_doc_line_template.format(symbol=syntax)
             ])
@@ -236,7 +238,8 @@ ARGUMENTS_CASES = [
 class TestFailingParse(unittest.TestCase):
 
     def test_path_is_mandatory__with_option(self):
-        for arguments in ARGUMENTS_CASES:
+        for argument_elements in ARGUMENTS_CASES:
+            arguments = argument_elements.as_arguments
             with self.subTest(arguments.first_line):
                 source = remaining_source('{rel_option} {contents}'.format(
                     rel_option=file_ref_texts.REL_ACT_OPTION,
@@ -248,7 +251,8 @@ class TestFailingParse(unittest.TestCase):
 
     def test_disallowed_relativities(self):
         for relativity in DISALLOWED_RELATIVITIES:
-            for arguments in ARGUMENTS_CASES:
+            for argument_elements in ARGUMENTS_CASES:
+                arguments = argument_elements.as_arguments
                 for following_lines in [[], ['following line']]:
                     with self.subTest(relativity=str(relativity),
                                       first_line=arguments.first_line,
@@ -268,7 +272,8 @@ class TestFailingParse(unittest.TestCase):
             just_parse(source)
 
     def test_fail_when_superfluous_arguments(self):
-        for arguments in ARGUMENTS_CASES:
+        for argument_elements in ARGUMENTS_CASES:
+            arguments = argument_elements.as_arguments
             with self.subTest(arguments.first_line):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     source = remaining_source('expected-argument = {contents} superfluous_argument'.format(
@@ -279,7 +284,8 @@ class TestFailingParse(unittest.TestCase):
 
 class TestParserConsumptionOfSource(TestCaseBase):
     def test_last_line__contents(self):
-        for arguments in ARGUMENTS_CASES:
+        for argument_elements in ARGUMENTS_CASES:
+            arguments = argument_elements.as_arguments
             with self.subTest(arguments.first_line):
                 self._check(
                     remaining_source(
@@ -298,7 +304,7 @@ class TestParserConsumptionOfSource(TestCaseBase):
                 )
 
     def test_not_last_line__contents(self):
-        hd_args = here_document_contents_arguments([])
+        hd_args = here_document_contents_arguments([]).as_arguments
         self._check(
             remaining_source(
                 '{file_name} {hd_args}'.format(

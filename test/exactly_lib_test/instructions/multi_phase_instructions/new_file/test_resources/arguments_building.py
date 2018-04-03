@@ -31,6 +31,11 @@ def complete_arguments(dst_file: PathArgumentWithRelativity,
     return Arguments(dst_file.argument_str).followed_by(contents)
 
 
+def complete_argument_elements(dst_file: PathArgumentWithRelativity,
+                               contents: ArgumentElements) -> ArgumentElements:
+    return ArgumentElements([dst_file.as_argument_element]).followed_by(contents)
+
+
 def source_of(arguments: Arguments) -> ParseSource:
     return remaining_source(arguments.first_line,
                             arguments.following_lines)

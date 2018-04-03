@@ -6,11 +6,7 @@ from exactly_lib_test.test_resources.arguments_building import ArgumentElementRe
 from exactly_lib_test.test_resources.programs import python_program_execution
 
 
-def shell_command(command_line: Stringable) -> Arguments:
-    return shell_command_elements(command_line).as_arguments
-
-
-def shell_command_elements(command_line: Stringable) -> ArgumentElements:
+def shell_command(command_line: Stringable) -> ArgumentElements:
     return ArgumentElements([shell_command_line(command_line)])
 
 
@@ -46,12 +42,7 @@ def interpret_py_source_file(py_file: Stringable) -> ArgumentElementRenderer:
 
 
 def program(program_arg: Stringable,
-            transformation=None) -> Arguments:
-    return program_elements(program_arg, transformation).as_arguments
-
-
-def program_elements(program_arg: Stringable,
-                     transformation=None) -> ArgumentElements:
+            transformation=None) -> ArgumentElements:
     extra = []
     if transformation:
         extra.append([ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME,

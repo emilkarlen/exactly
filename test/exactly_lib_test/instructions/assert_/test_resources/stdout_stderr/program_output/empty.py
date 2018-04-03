@@ -27,7 +27,7 @@ def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unit
 
 class TestOutputIsEmpty(TestCaseBase):
     def runTest(self):
-        program_that_outputs_nothing = pgm_args.program_elements(
+        program_that_outputs_nothing = pgm_args.program(
             pgm_args.interpret_py_source_line(self.configuration.py_source_for_print(''))
         )
         result_when_positive = ExpectationTypeConfig(ExpectationType.POSITIVE)
@@ -41,7 +41,7 @@ class TestOutputIsEmpty(TestCaseBase):
 
 class TestOutputIsEmptyAfterTransformation(TestCaseBase):
     def runTest(self):
-        program_that_outputs_something = pgm_args.program_elements(
+        program_that_outputs_something = pgm_args.program(
             pgm_args.interpret_py_source_line(
                 self.configuration.py_source_for_print('some output')),
             transformation=transformers_setup.DELETE_EVERYTHING_TRANSFORMER.name
@@ -63,7 +63,7 @@ class TestOutputIsEmptyAfterTransformation(TestCaseBase):
 
 class TestOutputIsNotEmpty(TestCaseBase):
     def runTest(self):
-        program_that_outputs_something = pgm_args.program_elements(
+        program_that_outputs_something = pgm_args.program(
             pgm_args.interpret_py_source_line(
                 self.configuration.py_source_for_print('some output'))
         )

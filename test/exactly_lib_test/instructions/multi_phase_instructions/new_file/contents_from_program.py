@@ -83,7 +83,7 @@ class TestSymbolUsages(TestCaseBase):
                         symbol_reference_syntax_for_name(text_printed_by_shell_command_symbol.name)
                     ))
             )
-        ).with_transformation(to_upper_transformer.name)
+        ).with_transformation(to_upper_transformer.name).as_arguments
 
         source = remaining_source(
             '{file_name} {content_arguments}'.format(
@@ -138,7 +138,7 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
 
         program_cases = [
             NameAndValue('executable file',
-                         pgm_args.interpret_py_source(
+                         pgm_args.interpret_py_source_elements(
                              py_programs.single_line_pgm_that_prints_to_stdout_with_new_line(text_printed_by_program))
                          ),
             NameAndValue('shell command line',
@@ -149,7 +149,7 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
             for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
                 program_contents_arguments = TransformableContentsConstructor(
                     stdout_from(program_case.value)
-                ).without_transformation()
+                ).without_transformation().as_arguments
 
                 source = remaining_source(
                     '{rel_opt} {file_name} {contents_arguments}'.format(rel_opt=rel_opt_conf.option_argument,
@@ -221,7 +221,7 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
             for program_case in program_cases:
                 program_contents_arguments = TransformableContentsConstructor(
                     stdout_from(program_case.value)
-                ).without_transformation()
+                ).without_transformation().as_arguments
 
                 source = remaining_source(
                     '{file_arg} {program_contents_arguments}'.format(
@@ -268,7 +268,7 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
 
         program_contents_arguments_constructor = TransformableContentsConstructor(
             stdout_from(
-                pgm_args.interpret_py_source(
+                pgm_args.interpret_py_source_elements(
                     py_programs.single_line_pgm_that_prints_to_stdout_no_new_line(text_to_print)),
                 with_new_line_after_output_option=True,
             ),
@@ -289,8 +289,9 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
         text_on_line_after_instruction = ' text on line after instruction'
 
         for file_contents_case in file_contents_cases:
-            optional_arguments = file_contents_case.value
-            assert isinstance(optional_arguments, Arguments)  # Type info for IDE
+            optional_arguments_elements = file_contents_case.value
+            assert isinstance(optional_arguments_elements, ArgumentElements)  # Type info for IDE
+            optional_arguments = optional_arguments_elements.as_arguments
 
             with self.subTest(file_contents_variant=file_contents_case.name,
                               first_line_argments=optional_arguments.first_line):
@@ -326,7 +327,7 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
 class TestFailingValidation(TestCaseBase):
     def test_validation_of_non_existing_file_pre_sds_fails(self):
         # ARRANGE #
-        program_with_ref_to_file_in_home_ds = pgm_args.program_elements(
+        program_with_ref_to_file_in_home_ds = pgm_args.program(
             pgm_args.interpret_py_source_file(ab.file_ref_rel_opt('non-existing-file',
                                                                   RelOptionType.REL_HOME_CASE))
         )
@@ -340,7 +341,7 @@ class TestFailingValidation(TestCaseBase):
 
     def test_validation_of_non_existing_file_post_sds_fails(self):
         # ARRANGE #
-        program_with_ref_to_file_in_home_ds = pgm_args.program_elements(
+        program_with_ref_to_file_in_home_ds = pgm_args.program(
             pgm_args.interpret_py_source_file(ab.file_ref_rel_opt('non-existing-file',
                                                                   RelOptionType.REL_ACT))
         )
