@@ -23,7 +23,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.test_case_utils.string_or_file import SourceType
+from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 

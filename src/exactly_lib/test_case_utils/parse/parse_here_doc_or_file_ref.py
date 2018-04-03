@@ -15,7 +15,7 @@ from exactly_lib.test_case_utils.err_msg.path_description import path_value_with
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.test_case_utils.string_or_file import SourceType, StringOrFileRefResolver
+from exactly_lib.symbol.program.string_or_file import SourceType, StringOrFileRefResolver
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
