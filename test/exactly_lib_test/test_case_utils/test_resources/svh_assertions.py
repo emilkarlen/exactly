@@ -13,7 +13,8 @@ def status_is(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum) -> a
 
 
 def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErrorEnum,
-                          assertion_on_error_message: asrt.ValueAssertion) -> asrt.ValueAssertion:
+                          assertion_on_error_message: asrt.ValueAssertion
+                          ) -> asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return asrt.And([
         status_is(expected_status),
         asrt.sub_component('error message',
@@ -22,7 +23,7 @@ def status_is_not_success(expected_status: svh.SuccessOrValidationErrorOrHardErr
     ])
 
 
-def is_success() -> asrt.ValueAssertion:
+def is_success() -> asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return _IsSuccess()
 
 
@@ -44,16 +45,27 @@ class _IsSuccess(asrt.ValueAssertion):
             ]))
 
 
-def is_hard_error(assertion_on_error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+def is_hard_error(assertion_on_error_message: asrt.ValueAssertion[str] = asrt.is_instance(str)
+                  ) -> asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.HARD_ERROR,
                                  assertion_on_error_message)
 
 
-def is_validation_error(assertion_on_error_message: asrt.ValueAssertion = asrt.is_instance(str)) -> asrt.ValueAssertion:
+def is_any_hard_error() -> asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    return is_hard_error(asrt.is_instance(str))
+
+
+def is_validation_error(assertion_on_error_message: asrt.ValueAssertion[str] = asrt.is_instance(str)
+                        ) -> asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return status_is_not_success(svh.SuccessOrValidationErrorOrHardErrorEnum.VALIDATION_ERROR,
                                  assertion_on_error_message)
 
 
-def is_svh_and(assertion: asrt.ValueAssertion) -> asrt.ValueAssertion:
+def is_any_validation_error() -> asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
+    return is_validation_error(asrt.is_instance(str))
+
+
+def is_svh_and(assertion: asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]
+               ) -> asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError]:
     return asrt.And([asrt.IsInstance(svh.SuccessOrValidationErrorOrHardError),
                      assertion])
