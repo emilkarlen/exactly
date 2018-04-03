@@ -10,6 +10,7 @@ def all_types() -> list:
         logic_types.LINE_MATCHER_DOCUMENTATION,
         logic_types.FILE_MATCHER_DOCUMENTATION,
         logic_types.LINES_TRANSFORMER_DOCUMENTATION,
+        logic_types.PROGRAM_DOCUMENTATION,
     ]
 
 
