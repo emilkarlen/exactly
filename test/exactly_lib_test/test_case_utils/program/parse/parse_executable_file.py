@@ -20,7 +20,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.parse import parse_executable_file as sut
+from exactly_lib.test_case_utils.program.parse import executable_file_executable as sut
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -347,25 +347,25 @@ class TestParseWithSymbols(unittest.TestCase):
 class TestParseInvalidSyntaxWithArguments(unittest.TestCase):
     def test_just_begin_delimiter(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_executable_file_with_args_from_parse_source(ParseSource('('))
+            sut.parse_from_parse_source(ParseSource('('))
 
     def test_empty_executable(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_executable_file_with_args_from_parse_source(ParseSource('( )'))
+            sut.parse_from_parse_source(ParseSource('( )'))
 
     def test_missing_end_delimiter(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_executable_file_with_args_from_parse_source(ParseSource('( FILE arg1 arg2'))
+            sut.parse_from_parse_source(ParseSource('( FILE arg1 arg2'))
 
 
 class TestParseInvalidSyntax(unittest.TestCase):
     def test_missing_file_argument(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_executable_file_with_args_from_parse_source(ParseSource(file_ref_texts.REL_HOME_CASE_OPTION))
+            sut.parse_from_parse_source(ParseSource(file_ref_texts.REL_HOME_CASE_OPTION))
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_executable_file_with_args_from_parse_source(ParseSource('--invalid-option FILE'))
+            sut.parse_from_parse_source(ParseSource('--invalid-option FILE'))
 
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(
@@ -546,7 +546,7 @@ class TestParseAbsolutePath(unittest.TestCase):
         # ARRANGE #
         source = ParseSource(arguments_str)
         # ACT #
-        exe_file = sut.parse_executable_file_with_args_from_parse_source(source)
+        exe_file = sut.parse_from_parse_source(source)
         # ASSERT #
         utils.check_exe_file(self, expectation_on_exe_file, exe_file)
         expected_source_after_parse.apply_with_message(self, source, 'parse source')
@@ -558,7 +558,7 @@ class TestParseAbsolutePath(unittest.TestCase):
 def _parse_and_check(put: unittest.TestCase,
                      case: Case):
     source = ParseSource(case.source)
-    ef = sut.parse_executable_file_with_args_from_parse_source(source)
+    ef = sut.parse_from_parse_source(source)
     utils.check_exe_file(put, case.expectation, ef)
     case.source_after_parse.apply_with_message(put, source,
                                                'parse source after parse')
