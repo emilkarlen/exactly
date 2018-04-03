@@ -28,7 +28,7 @@ def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unit
 class TestWithoutTransformation(TestCaseBase):
     def runTest(self):
         output = 'output from program'
-        program_that_outputs_nothing = pgm_args.program_elements(
+        program_that_outputs_nothing = pgm_args.program(
             pgm_args.interpret_py_source_line(self.configuration.py_source_for_print(output))
         )
         result_when_positive = ExpectationTypeConfig(ExpectationType.POSITIVE)
@@ -43,7 +43,7 @@ class TestWithoutTransformation(TestCaseBase):
 class TestWithTransformationFromProgram(TestCaseBase):
     def runTest(self):
         output_from_program = 'first second'
-        program_that_outputs_something = pgm_args.program_elements(
+        program_that_outputs_something = pgm_args.program(
             pgm_args.interpret_py_source_line(
                 self.configuration.py_source_for_print(output_from_program)),
             transformation=transformers_setup.DELETE_INITIAL_WORD_TRANSFORMER.name
@@ -69,7 +69,7 @@ class TestWithTransformationFromProgramAndInstruction(TestCaseBase):
         transformer_of_program = transformers_setup.DELETE_INITIAL_WORD_TRANSFORMER
         transformer_of_instruction = transformers_setup.DUPLICATE_WORDS_TRANSFORMER
 
-        program_that_outputs_something = pgm_args.program_elements(
+        program_that_outputs_something = pgm_args.program(
             pgm_args.interpret_py_source_line(
                 self.configuration.py_source_for_print(output_from_program)),
             transformation=transformer_of_program.name

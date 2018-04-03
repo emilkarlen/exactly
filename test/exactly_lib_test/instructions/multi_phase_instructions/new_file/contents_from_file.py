@@ -12,12 +12,13 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionTy
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import TestCaseBase, \
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
+    source_of, complete_argument_elements
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
+    TestCaseBase, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase, InvalidDestinationFileTestCasesData
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import Step, \
     ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS, just_parse
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
-    complete_arguments, source_of
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import file, \
@@ -31,7 +32,7 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_home, every_conf_rel_home, \
     conf_rel_non_home, conf_rel_any, RelativityOptionConfigurationForRelNonHome, RelativityOptionConfiguration
@@ -79,7 +80,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         file_contents_arg = TransformableContentsConstructor(
             file(symbol_reference_syntax_for_name(src_file_symbol.name))
-        ).with_transformation(to_upper_transformer.name)
+        ).with_transformation(to_upper_transformer.name).as_arguments
 
         symbols = SymbolTable({
             src_file_symbol.name:
@@ -161,8 +162,9 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         for phase_is_after_act in [False, True]:
             for file_contents_case in file_contents_cases:
-                optional_arguments = file_contents_case.value
-                assert isinstance(optional_arguments, Arguments)  # Type info for IDE
+                optional_argument_elements = file_contents_case.value
+                assert isinstance(optional_argument_elements, ArgumentElements)  # Type info for IDE
+                optional_arguments = optional_argument_elements.as_arguments
 
                 with self.subTest(phase_is_after_act=phase_is_after_act,
                                   file_contents_variant=file_contents_case.name,
@@ -202,7 +204,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             for src_rel_opt_conf in ALLOWED_SRC_FILE_RELATIVITIES:
                 file_contents_arg = TransformableContentsConstructor(
                     file(src_file.name, src_rel_opt_conf)
-                ).without_transformation()
+                ).without_transformation().as_arguments
 
                 expected_non_home_contents = self._expected_non_home_contents(
                     dst_rel_opt_conf,
@@ -250,8 +252,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             for src_rel_opt_conf in ALLOWED_SRC_FILE_RELATIVITIES:
                 file_contents_arg = TransformableContentsConstructor(
                     file(src_file.name, src_rel_opt_conf)
-                ).with_transformation(to_upper_transformer.name)
-
+                ).with_transformation(to_upper_transformer.name).as_arguments
                 expected_non_home_contents = self._expected_non_home_contents(
                     dst_rel_opt_conf,
                     expected_file,
@@ -321,8 +322,9 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         text_on_line_after_instruction = ' text on line after instruction'
 
         for file_contents_case in file_contents_cases:
-            optional_arguments = file_contents_case.value
-            assert isinstance(optional_arguments, Arguments)  # Type info for IDE
+            optional_arguments_elements = file_contents_case.value
+            assert isinstance(optional_arguments_elements, ArgumentElements)  # Type info for IDE
+            optional_arguments = optional_arguments_elements.as_arguments
 
             with self.subTest(file_contents_variant=file_contents_case.name,
                               first_line_argments=optional_arguments.first_line):
@@ -392,7 +394,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                 )
                 for src_file_variant in self.src_file_variants:
                     for contents_arguments in args_constructor.with_and_without_transformer_cases(transformer.name):
-                        arguments = complete_arguments(dst_file, contents_arguments)
+                        arguments = complete_argument_elements(dst_file, contents_arguments).as_arguments
                         source = source_of(arguments)
                         with self.subTest(phase_is_after_act=phase_is_after_act,
                                           relativity_of_src_path=src_file.relativity.option_argument,

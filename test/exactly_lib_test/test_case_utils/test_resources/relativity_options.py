@@ -18,9 +18,10 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
+from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as file_ref_args
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
-from exactly_lib_test.test_case_file_structure.test_resources import arguments_building as file_ref_args
+from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import FileRefArgument
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     HomeOrSdsPopulator, \
@@ -138,6 +139,9 @@ class RelativityOptionConfiguration:
     @property
     def option_argument(self) -> ArgumentElementRenderer:
         return self._cli_option.argument
+
+    def file_argument_with_option(self, file_name: str) -> FileRefArgument:
+        return FileRefArgument(file_name, self._cli_option.argument)
 
     @property
     def option_argument_str(self) -> str:

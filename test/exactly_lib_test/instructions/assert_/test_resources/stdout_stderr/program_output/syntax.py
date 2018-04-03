@@ -35,8 +35,8 @@ class TestFailingParseDueToMissingProgram(TestCaseBase):
 class TestFailingParseDueToMissingContentsMatcher(TestCaseBase):
     def runTest(self):
         # ARRANGE #
-        program = pgm_args.program_elements(
-            pgm_args.interpret_py_source('exit(0)')
+        program = pgm_args.program(
+            pgm_args.interpret_py_source_line('exit(0)')
         )
         no_matcher = []
         arguments = po_ab.from_program(program,

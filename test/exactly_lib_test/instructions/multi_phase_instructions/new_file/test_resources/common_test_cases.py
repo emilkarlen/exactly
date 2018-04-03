@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
@@ -12,10 +13,11 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -34,7 +36,7 @@ class TestCaseBase(unittest.TestCase):
 
 class InvalidDestinationFileTestCasesData:
     def __init__(self,
-                 file_contents_cases: list,
+                 file_contents_cases: Sequence[NameAndValue[Arguments]],
                  symbols: SymbolTable,
                  pre_existing_files: HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  ):
@@ -65,9 +67,13 @@ class TestCommonFailingScenariosDueToInvalidDestinationFileBase(TestCaseBase):
                 dst_root_contents_before_execution)
 
             for file_contents_case in cases_data.file_contents_cases:
-                optional_arguments = file_contents_case.value
-                assert isinstance(optional_arguments, Arguments)  # Type info for IDE
+                optional_arguments_elements = file_contents_case.value
+                assert isinstance(optional_arguments_elements, ArgumentElements)  # Type info for IDE
+                optional_arguments = optional_arguments_elements.as_arguments
 
+                for l in optional_arguments.lines:
+                    if l.find('exactly_lib_test') != -1:
+                        print(str(optional_arguments.lines))
                 with self.subTest(file_contents_variant=file_contents_case.name,
                                   first_line_argments=optional_arguments.first_line,
                                   dst_file_variant=rel_opt_conf.option_argument):

@@ -48,7 +48,7 @@ class TestSymbolReferences(TestCaseBase):
         symbol_in_transformer_of_instruction = NameAndValue('SYMBOL_IN_TRANSFORMER_OF_INSTRUCTION',
                                                             is_value_type_restriction(ValueType.LINES_TRANSFORMER))
 
-        program_with_ref_to_symbols = pgm_args.program_elements(
+        program_with_ref_to_symbols = pgm_args.program(
             pgm_args.interpret_py_source_line(
                 self.configuration.py_source_for_print(
                     symbol_reference_syntax_for_name(symbol_in_program_source.name))),
@@ -83,7 +83,7 @@ class TestFailingValidationPreSds(TestCaseBase):
     def runTest(self):
         # ARRANGE #
 
-        program_with_ref_to_file_in_home_ds = pgm_args.program_elements(
+        program_with_ref_to_file_in_home_ds = pgm_args.program(
             pgm_args.interpret_py_source_file(ab.file_ref_rel_opt('non-existing-file', RelOptionType.REL_HOME_CASE))
         )
         arguments = po_ab.from_program(program_with_ref_to_file_in_home_ds,
@@ -100,7 +100,7 @@ class TestFailingValidationPostSds(TestCaseBase):
     def runTest(self):
         # ARRANGE #
 
-        program_with_ref_to_file_in_home_ds = pgm_args.program_elements(
+        program_with_ref_to_file_in_home_ds = pgm_args.program(
             pgm_args.interpret_py_source_file(ab.file_ref_rel_opt('non-existing-file', RelOptionType.REL_ACT))
         )
         arguments = po_ab.from_program(program_with_ref_to_file_in_home_ds,
