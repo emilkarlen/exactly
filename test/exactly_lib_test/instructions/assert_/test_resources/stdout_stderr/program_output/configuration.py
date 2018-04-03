@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import matcher_arguments
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -10,6 +11,7 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_resources.arguments_building import Stringable
+from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 
@@ -18,8 +20,11 @@ class ProgramOutputInstructionConfiguration:
     def parser(self) -> AssertPhaseInstructionParser:
         raise NotImplementedError('abstract method')
 
-    def py_source_for_print(self, output: str) -> str:
+    def output_file(self) -> ProcOutputFile:
         raise NotImplementedError('abstract method')
+
+    def py_source_for_print(self, output: str) -> str:
+        return py_programs.single_line_pgm_that_prints_to_no_new_line(self.output_file(), output)
 
 
 class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
