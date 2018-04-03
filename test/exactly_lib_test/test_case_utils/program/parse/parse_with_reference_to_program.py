@@ -34,6 +34,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestSymbolReferences),
+        unittest.makeSuite(TestValidation),
     ])
 
 
