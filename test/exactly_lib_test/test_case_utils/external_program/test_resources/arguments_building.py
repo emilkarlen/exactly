@@ -1,5 +1,5 @@
 from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.test_case_utils.external_program import syntax_elements
+from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer, SequenceOfArguments, Stringable

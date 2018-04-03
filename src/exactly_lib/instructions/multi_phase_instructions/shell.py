@@ -10,7 +10,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.processing.exit_values import EXECUTION__HARD_ERROR
-from exactly_lib.test_case_utils.external_program import parse
+from exactly_lib.test_case_utils.program import parse
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
