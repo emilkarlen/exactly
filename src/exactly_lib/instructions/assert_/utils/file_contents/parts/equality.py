@@ -18,7 +18,7 @@ from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoRe
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
-from exactly_lib.test_case_utils.string_or_file import StringOrFileRefResolver
+from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator, \
     PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.util import file_utils

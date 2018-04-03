@@ -34,7 +34,7 @@ from exactly_lib.test_case_utils.lines_transformer import resolvers as line_tran
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
-from exactly_lib.test_case_utils.string_or_file import SourceType
+from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.type_system.value_type import ValueType
