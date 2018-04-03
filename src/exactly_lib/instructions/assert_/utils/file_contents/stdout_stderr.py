@@ -105,11 +105,11 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
         program = self._program.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
-        result_file_path = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
-                                                                                    source_info,
-                                                                                    self._checked_output,
-                                                                                    program)
-        return actual_files.ComparisonActualFileForProgramOutput(result_file_path)
+        result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
+                                                                          source_info,
+                                                                          self._checked_output,
+                                                                          program)
+        return actual_files.ComparisonActualFileForProgramOutput(result.path_of_file_with_transformed_contents)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
