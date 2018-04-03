@@ -163,13 +163,14 @@ class TokenParser:
                                           must_be_on_current_line: bool,
                                           ) -> str:
         """
-        Consumes the first token if it is an unquoted string.
+        Consumes the first token that must be an unquoted string.
 
         :type must_be_on_current_line: Tells if the string must be found on the current line.
         :return: The unquoted string
 
         :raises :class:`SingleInstructionInvalidArgumentException' The parser is at end of file,
-        or if the must_be_on_current_line is True but the current line is empty.
+        or if the must_be_on_current_line is True but the current line is empty,
+        or if the parsed token is not an unquoted string.
         """
 
         if self.token_stream.is_null:

@@ -80,3 +80,10 @@ def new_with_arguments_and_validators(arguments: ListResolver,
                                       arguments_resolver.new_without_validation(arguments),
                                       (),
                                       validators)
+
+
+def new_with_arguments(arguments: ArgumentsResolver) -> ProgramElementsAccumulator:
+    return ProgramElementsAccumulator(stdin_data_resolver.no_stdin(),
+                                      arguments,
+                                      (),
+                                      ())

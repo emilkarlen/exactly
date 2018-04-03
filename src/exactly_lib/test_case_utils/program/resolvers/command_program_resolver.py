@@ -9,6 +9,7 @@ from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.accumulator import ProgramElementsAccumulator
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -53,3 +54,8 @@ class ProgramResolverForCommand(ProgramResolver):
     @property
     def _validators(self) -> Sequence[PreOrPostSdsValidator]:
         return tuple(self._command.validators) + tuple(self._accumulated_elements.validators)
+
+
+def plain(command: CommandResolver) -> ProgramResolverForCommand:
+    return ProgramResolverForCommand(command,
+                                     accumulator.empty())

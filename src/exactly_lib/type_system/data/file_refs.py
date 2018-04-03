@@ -57,6 +57,11 @@ def of_rel_option(rel_option: relativity_root.RelOptionType,
                                        path_suffix)
 
 
+def simple_of_rel_option(rel_option: relativity_root.RelOptionType,
+                         file_name: str) -> FileRef:
+    return of_rel_option(rel_option, PathPartAsFixedPath(file_name))
+
+
 def absolute_file_name(file_name: str) -> FileRef:
     return _FileRefAbsolute(PathPartAsFixedPath(file_name))
 
