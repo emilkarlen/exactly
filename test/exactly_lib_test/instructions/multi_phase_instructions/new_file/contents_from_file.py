@@ -12,10 +12,12 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionTy
 from exactly_lib.test_case_utils.lines_transformer.transformers import IdentityLinesTransformer
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
-    IS_SUCCESS, just_parse, Step, \
-    ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, complete_arguments, source_of, \
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import TestCaseBase, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase, InvalidDestinationFileTestCasesData
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import Step, \
+    ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE_OF_VALIDATION, IS_FAILURE, IS_SUCCESS, just_parse
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
+    complete_arguments, source_of
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import file, \

@@ -3,14 +3,13 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
-    IS_SUCCESS, \
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     TestCaseBase
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import just_parse, \
-    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import \
+    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS, just_parse
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \

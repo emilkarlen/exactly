@@ -13,11 +13,13 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import TestCaseBase, \
-    ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS, ACCEPTED_RELATIVITY_VARIANTS, just_parse, DISALLOWED_RELATIVITIES, \
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import TestCaseBase
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import \
+    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, just_parse
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
     complete_arguments, source_of
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
