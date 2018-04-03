@@ -270,10 +270,11 @@ class TestExecution(unittest.TestCase):
                                 symbol_references=asrt.matches_sequence([
                                     asrt_pgm.is_program_reference_to(program_that_executes_py_source.name),
                                 ]),
-                                result=pgm_exe_check.assert_process_result(
+                                result=pgm_exe_check.assert_process_result_data(
                                     exitcode=asrt.equals(0),
                                     stdout_contents=asrt.equals(''),
                                     stderr_contents=asrt.equals(''),
+                                    contents_after_transformation=asrt.equals(''),
                                 )
                             ))
 

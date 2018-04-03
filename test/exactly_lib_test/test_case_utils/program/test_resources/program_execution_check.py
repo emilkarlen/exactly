@@ -9,8 +9,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case.os_services import OsServices, new_default
-from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir
+from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util import file_utils
 from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
@@ -28,43 +27,62 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
-def assert_process_result(exitcode: asrt.ValueAssertion[int] = asrt.anything_goes(),
-                          stdout_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                          stderr_contents: asrt.ValueAssertion[str] = asrt.anything_goes()
-                          ) -> asrt.ValueAssertion[ProcessResult]:
-    return ProcessResultAssertion(exitcode, stdout_contents, stderr_contents)
+class ResultWithTransformationData:
+    def __init__(self,
+                 process_result: ProcessResult,
+                 result_of_transformation: str):
+        self.process_result = process_result
+        self.result_of_transformation = result_of_transformation
 
 
-class ProcessResultAssertion(asrt.ValueAssertion[ProcessResult]):
+def assert_process_result_data(exitcode: asrt.ValueAssertion[int] = asrt.anything_goes(),
+                               stdout_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
+                               stderr_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
+                               contents_after_transformation: asrt.ValueAssertion[str] = asrt.anything_goes(),
+                               ) -> asrt.ValueAssertion[ResultWithTransformationData]:
+    return ResultWithTransformationDataAssertion(exitcode,
+                                                 stdout_contents,
+                                                 stderr_contents,
+                                                 contents_after_transformation)
+
+
+class ResultWithTransformationDataAssertion(asrt.ValueAssertion[ResultWithTransformationData]):
     def __init__(self,
                  exitcode: asrt.ValueAssertion[int] = asrt.anything_goes(),
                  stdout_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
-                 stderr_contents: asrt.ValueAssertion[str] = asrt.anything_goes()
+                 stderr_contents: asrt.ValueAssertion[str] = asrt.anything_goes(),
+                 contents_after_transformation: asrt.ValueAssertion[str] = asrt.anything_goes()
                  ):
         self.exitcode = exitcode
         self.stdout_contents = stdout_contents
         self.stderr_contents = stderr_contents
+        self.contents_after_transformation = contents_after_transformation
 
     def apply(self,
               put: unittest.TestCase,
               value,
               message_builder: MessageBuilder = MessageBuilder()):
-        put.assertIsInstance(value, ProcessResult,
+        put.assertIsInstance(value, ResultWithTransformationData,
                              message_builder.apply("result object class"))
-        assert isinstance(value, ProcessResult)  # Type info for IDE
+        assert isinstance(value, ResultWithTransformationData)  # Type info for IDE
+        pr = value.process_result
         self.exitcode.apply(put,
-                            value.exitcode,
+                            pr.exitcode,
                             message_builder.for_sub_component('exitcode'))
         self.stdout_contents.apply(put,
-                                   value.stdout_contents,
+                                   pr.stdout_contents,
                                    message_builder.for_sub_component('stdout'))
         self.stderr_contents.apply(put,
-                                   value.stderr_contents,
+                                   pr.stderr_contents,
                                    message_builder.for_sub_component('stderr'))
+        self.contents_after_transformation.apply(put,
+                                                 value.result_of_transformation,
+                                                 message_builder.for_sub_component('contents_after_transformation'))
 
 
 class Arrangement(ArrangementWithSds):
     def __init__(self,
+                 output_file_to_transform: ProcOutputFile = ProcOutputFile.STDOUT,
                  pre_contents_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  sds_contents_before_main: sds_populator.SdsPopulator = sds_populator.empty(),
@@ -72,7 +90,6 @@ class Arrangement(ArrangementWithSds):
                  home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
-                 previous_phase: PreviousPhase = PreviousPhase.ASSERT,
                  symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
@@ -83,12 +100,12 @@ class Arrangement(ArrangementWithSds):
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
                          symbols=symbols)
-        self.previous_phase = previous_phase
+        self.output_file_to_transform = output_file_to_transform
 
 
 class Expectation:
     def __init__(self,
-                 result: asrt.ValueAssertion[ProcessResult] = assert_process_result(),
+                 result: asrt.ValueAssertion[ResultWithTransformationData] = assert_process_result_data(),
                  validation_pre_sds: asrt.ValueAssertion[str] = asrt.is_none,
                  validation_post_sds: asrt.ValueAssertion[str] = asrt.is_none,
                  symbol_references: asrt.ValueAssertion = asrt.is_empty_sequence,
@@ -194,13 +211,19 @@ class Executor:
     def _execute(self,
                  pgm_output_dir: pathlib.Path,
                  environment: PathResolvingEnvironmentPreOrPostSds,
-                 program_resolver: ProgramResolver) -> ProcessResult:
+                 program_resolver: ProgramResolver) -> ResultWithTransformationData:
         program = program_resolver.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         assert isinstance(program, Program)
-        executor = ExecutorThatStoresResultInFilesInDir(self.arrangement.process_execution_settings)
-        execution_result = executor.apply(pgm_output_dir, program.command)
-        stderr_contents = file_utils.contents_of(execution_result.path_of(ProcOutputFile.STDERR))
-        stdout_contents = file_utils.contents_of(execution_result.path_of(ProcOutputFile.STDOUT))
-        return ProcessResult(execution_result.exit_code,
-                             stdout_contents,
-                             stderr_contents)
+        execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
+                                                                           self.arrangement.process_execution_settings,
+                                                                           self.arrangement.output_file_to_transform,
+                                                                           program)
+        proc_exe_result = execution_result.process_result
+        stderr_contents = file_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDERR))
+        stdout_contents = file_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDOUT))
+        result_of_transformation = file_utils.contents_of(execution_result.path_of_file_with_transformed_contents)
+        proc_result_data = ProcessResult(proc_exe_result.exit_code,
+                                         stdout_contents,
+                                         stderr_contents)
+        return ResultWithTransformationData(proc_result_data,
+                                            result_of_transformation)

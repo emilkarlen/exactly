@@ -12,15 +12,15 @@ from exactly_lib.util.process_execution.os_process_execution import ProcessExecu
 
 class ResultWithTransformation:
     def __init__(self,
-                 result: Result,
+                 process_result: Result,
                  file_with_transformed_contents: str
                  ):
-        self.result = result
+        self.process_result = process_result
         self.file_with_transformed_contents = file_with_transformed_contents
 
     @property
     def path_of_file_with_transformed_contents(self) -> pathlib.Path:
-        return self.result.output_dir_path / self.file_with_transformed_contents
+        return self.process_result.output_dir_path / self.file_with_transformed_contents
 
 
 def make_transformed_file_from_output_in_instruction_tmp_dir(environment: InstructionEnvironmentForPostSdsStep,
