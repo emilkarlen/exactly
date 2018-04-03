@@ -20,7 +20,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.parse import executable_file_executable as sut
+from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable as sut
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -30,8 +30,9 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_utils.test_resources import relativity_options, \
-    pre_or_post_sds_validator as validator_util, executable_file_test_utils as utils
-from exactly_lib_test.test_case_utils.test_resources.executable_file_test_utils import RelativityConfiguration, \
+    pre_or_post_sds_validator as validator_util, parse_executable_file_executable_cases as utils
+from exactly_lib_test.test_case_utils.test_resources.parse_executable_file_executable_cases import \
+    RelativityConfiguration, \
     suite_for, \
     ExpectationOnExeFile
 from exactly_lib_test.test_resources import string_formatting

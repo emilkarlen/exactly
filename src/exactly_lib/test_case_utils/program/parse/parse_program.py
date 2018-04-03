@@ -7,15 +7,15 @@ from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.parse import executable_file, parse_shell_command
+from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_shell_command
 
 
 def parse_executable_file_as_program(parser: TokenParser) -> ProgramResolver:
-    return executable_file.parse_as_program(parser)
+    return parse_executable_file.parse_as_program(parser)
 
 
 def executable_file_program_parser() -> Parser[ProgramResolver]:
-    return executable_file.program_parser()
+    return parse_executable_file.program_parser()
 
 
 def parse_shell_command_line_as_program(parser: TokenParser) -> ProgramResolver:
