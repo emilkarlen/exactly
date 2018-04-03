@@ -137,6 +137,10 @@ class ArgumentElements:
         return 1 + len(self.following_lines)
 
 
+def empty() -> ArgumentElements:
+    return ArgumentElements([])
+
+
 def render_elements_line(line_elements: List) -> str:
     return ' '.join(map(str, line_elements))
 
