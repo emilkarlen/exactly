@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 
 
 class FileRefValidatorBase(PreOrPostSdsValidator):

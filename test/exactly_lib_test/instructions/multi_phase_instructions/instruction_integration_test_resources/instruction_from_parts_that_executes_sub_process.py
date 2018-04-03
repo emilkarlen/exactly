@@ -16,7 +16,7 @@ from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.test_case_utils import pre_or_post_validation
+from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
 from exactly_lib.test_case_utils.external_program.component_resolvers import no_stdin
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver

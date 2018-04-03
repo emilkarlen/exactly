@@ -2,11 +2,11 @@ from typing import Sequence
 
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_utils import pre_or_post_validation
+from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.command_and_stdin_value import CommandAndStdinValue
 from exactly_lib.test_case_utils.external_program.component_resolvers import StdinDataResolver
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.util.symbol_table import SymbolTable
 

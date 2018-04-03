@@ -16,7 +16,7 @@ from exactly_lib.test_case_utils.external_program.program_resolver import Progra
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
-from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:
