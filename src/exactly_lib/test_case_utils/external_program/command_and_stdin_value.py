@@ -1,5 +1,5 @@
 from exactly_lib.type_system.logic.program.command_value import CommandValue
-from exactly_lib.test_case_utils.external_program.component_values import StdinDataValue
+from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
 
 
 class CommandAndStdinValue:

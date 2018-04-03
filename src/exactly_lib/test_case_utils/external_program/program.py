@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
 from exactly_lib.type_system.logic.program.command_value import CommandValue
-from exactly_lib.test_case_utils.external_program.component_values import StdinDataValue, StdinData
+from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue, StdinData
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 from exactly_lib.util.process_execution.os_process_execution import Command
