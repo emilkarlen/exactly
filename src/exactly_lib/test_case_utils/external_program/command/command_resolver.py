@@ -9,7 +9,7 @@ from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.test_case_utils.external_program.component_resolvers import ArgumentsResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.resolver_with_validation import DirDepValueResolverWithValidation
+from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.symbol_table import SymbolTable
 

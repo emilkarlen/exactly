@@ -10,7 +10,7 @@ from exactly_lib.test_case_utils.external_program.component_resolvers import Std
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerSequenceResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.resolver_with_validation import DirDepValueResolverWithValidation
+from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.util.symbol_table import SymbolTable
 
 

@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.result import pfh, svh
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.test_case_utils.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 
 
 class AssertionPart(ObjectWithSymbolReferencesAndValidation):

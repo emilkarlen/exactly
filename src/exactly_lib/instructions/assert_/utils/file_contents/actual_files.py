@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.err_msg.property_description import PropertyDes
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_utils.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.type_system.data import file_refs
 
 CONTENTS_ATTRIBUTE = 'contents'
