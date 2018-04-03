@@ -16,9 +16,9 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts i
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM
 from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.external_program import parse
 from exactly_lib.test_case_utils.external_program import syntax_elements as pgm_syntax_elements
-from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
