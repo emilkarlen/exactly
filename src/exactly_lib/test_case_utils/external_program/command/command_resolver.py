@@ -6,7 +6,7 @@ from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTyp
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import pre_or_post_validation
-from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
+from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.test_case_utils.external_program.component_resolvers import ArgumentsResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.resolver_with_validation import DirDepValueResolverWithValidation

@@ -3,7 +3,7 @@ from typing import Set
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
+from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.test_case_utils.external_program.component_values import StdinDataValue, StdinData
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
