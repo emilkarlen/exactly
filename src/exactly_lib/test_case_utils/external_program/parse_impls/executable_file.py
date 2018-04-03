@@ -9,11 +9,11 @@ from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.component_resolvers import no_stdin
+from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.external_program import syntax_elements
 from exactly_lib.test_case_utils.external_program.parse_impls import executable_file_executable
-from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
