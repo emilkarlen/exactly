@@ -7,7 +7,7 @@ from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.external_program.command import command_values
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandDriverResolver
-from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
+from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.symbol_table import SymbolTable
 

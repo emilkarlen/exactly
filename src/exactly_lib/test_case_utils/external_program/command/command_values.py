@@ -2,7 +2,7 @@ from typing import Set
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
+from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue

@@ -1,4 +1,4 @@
-from exactly_lib.test_case_utils.external_program.command.command_value import CommandValue
+from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.test_case_utils.external_program.component_values import StdinDataValue
 
 
