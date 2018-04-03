@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart, \
     FileToCheck
@@ -7,10 +9,10 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
     PathResolvingEnvironmentPreSds
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.condition import comparison_structures
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import \
     IntegerComparisonOperatorAndRightOperand
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.util.logic_types import ExpectationType
 
 
@@ -71,11 +73,11 @@ class _PreOrPostSdsValidator(PreOrPostSdsValidator):
     def __init__(self, adapted: SvhPreSdsValidatorViaExceptions):
         self._adapted = adapted
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         try:
             self._adapted.validate_pre_sds(environment)
         except return_svh_via_exceptions.SvhException as ex:
             return ex.err_msg
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         return None

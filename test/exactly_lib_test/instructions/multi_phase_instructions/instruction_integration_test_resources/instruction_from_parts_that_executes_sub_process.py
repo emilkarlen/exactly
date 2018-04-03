@@ -1,5 +1,6 @@
 import random
 import unittest
+from typing import Optional
 
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_program as spe_parts
@@ -307,8 +308,8 @@ class ConstantResultValidator(pre_or_post_validation.PreOrPostSdsValidator):
         self.pre_sds = pre_sds
         self.post_setup = post_setup
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         return self.pre_sds
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         return self.post_setup

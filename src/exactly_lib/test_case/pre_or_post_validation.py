@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Iterable, Sequence
+from typing import Iterable, Sequence, Optional
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
@@ -20,21 +20,21 @@ class PreOrPostSdsValidator:
     object is outside or inside the SDS.
     """
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         """
         Validates the object if it is expected to exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         """
         Validates the object if it is expected to NOT exist pre-SDS.
         :return: Error message iff validation was applicable and validation failed.
         """
         raise NotImplementedError()
 
-    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> str:
+    def validate_pre_or_post_sds(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Optional[str]:
         """
         Validates the object using either pre- or post- SDS.
         :return: Error message iff validation failed.
@@ -55,10 +55,10 @@ def all_of(validators: Sequence[PreOrPostSdsValidator]) -> PreOrPostSdsValidator
 
 
 class ConstantSuccessValidator(PreOrPostSdsValidator):
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         return None
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         return None
 
 
@@ -74,12 +74,12 @@ class SingleStepValidator(PreOrPostSdsValidator):
         self.step_to_apply = step_to_apply
         self.validator = validator
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         if self.step_to_apply is ValidationStep.PRE_SDS:
             return self.validator.validate_pre_sds_if_applicable(environment)
         return None
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         if self.step_to_apply is ValidationStep.POST_SDS:
             return self.validator.validate_post_sds_if_applicable(environment)
         return None
@@ -90,14 +90,14 @@ class AndValidator(PreOrPostSdsValidator):
                  validators: Iterable[PreOrPostSdsValidator]):
         self.validators = validators
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         for validator in self.validators:
             result = validator.validate_pre_sds_if_applicable(environment)
             if result is not None:
                 return result
         return None
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         for validator in self.validators:
             result = validator.validate_post_sds_if_applicable(environment)
             if result is not None:
