@@ -21,3 +21,8 @@ def interpret_py_source_file_that_must_exist(py_source_file: FileRefResolver,
     return command_program_resolver.plain(
         test_command_resolvers.for_interpret_py_file_that_must_exist(py_source_file)
     ).new_with_additional_arguments(arguments)
+
+
+def for_py_source_on_command_line(python_source: str) -> ProgramResolverForCommand:
+    return command_program_resolver.plain(
+        test_command_resolvers.for_py_source_on_command_line(python_source))

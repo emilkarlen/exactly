@@ -19,6 +19,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.dir_populator impo
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.test_case_utils.program.test_resources import program_execution_check as pgm_exe_check
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
@@ -35,6 +36,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestSymbolReferences),
         unittest.makeSuite(TestValidation),
+        unittest.makeSuite(TestExecution),
     ])
 
 
@@ -235,6 +237,45 @@ class TestValidation(unittest.TestCase):
                     actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
                     # ASSERT #
                     self.assertIsNotNone(actual)
+
+
+class TestExecution(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+
+        parser = sut.program_parser()
+
+        resolver_of_referred_program = program_resolvers.for_py_source_on_command_line('exit(0)')
+
+        program_that_executes_py_source = NameAndValue(
+            'PROGRAM_THAT_EXECUTES_PY_SOURCE',
+            resolver_of_referred_program
+        )
+
+        source = parse_source_of(sym_ref_args.sym_ref_cmd_line(
+            program_that_executes_py_source.name))
+
+        symbols = SymbolTable({
+            program_that_executes_py_source.name:
+                symbol_utils.container(program_that_executes_py_source.value)
+        })
+
+        # ACT & ASSERT #
+        pgm_exe_check.check(self,
+                            parser,
+                            source,
+                            pgm_exe_check.Arrangement(
+                                symbols=symbols),
+                            pgm_exe_check.Expectation(
+                                symbol_references=asrt.matches_sequence([
+                                    asrt_pgm.is_program_reference_to(program_that_executes_py_source.name),
+                                ]),
+                                result=pgm_exe_check.assert_process_result(
+                                    exitcode=asrt.equals(0),
+                                    stdout_contents=asrt.equals(''),
+                                    stderr_contents=asrt.equals(''),
+                                )
+                            ))
 
 
 def is_reference_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion:

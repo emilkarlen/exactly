@@ -60,8 +60,12 @@ class ProgramResolverForSymbolReference(ProgramResolver):
                                                                 acc.arguments,
                                                                 acc.transformations,
                                                                 acc.validators)
-        program_value = accumulated_program.resolve(symbols)
+        assert isinstance(accumulated_program, ProgramResolver)  # Type info for IDE
+
+        program_value = accumulated_program.resolve_value(symbols)
+
         assert isinstance(program_value, ProgramValue)  # Type info for IDE
+
         return ProgramValue(program_value.command,
                             program_value.stdin,
                             program_value.transformation)
