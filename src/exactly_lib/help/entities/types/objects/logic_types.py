@@ -1,9 +1,12 @@
-from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation
+from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation, \
+    TypeDocumentation
 from exactly_lib.help_texts.entity import types, syntax_elements
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
+from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure.document import empty_section_contents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 LINE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.LINE_MATCHER_TYPE_INFO,
@@ -22,3 +25,15 @@ LINES_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
     parse_lines_transformer.GRAMMAR,
     empty_section_contents())
+
+_PROGRAM_MAIN_DESCRIPTION_REST = """
+An executable program TODO.
+"""
+
+_TEXT_PARSER = TextParser({
+})
+
+PROGRAM_DOCUMENTATION = TypeDocumentation(TypeCategory.LOGIC,
+                                          types.PROGRAM_TYPE_INFO,
+                                          syntax_elements.PROGRAM_SYNTAX_ELEMENT,
+                                          _TEXT_PARSER.section_contents(_PROGRAM_MAIN_DESCRIPTION_REST))

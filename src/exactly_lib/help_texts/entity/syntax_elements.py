@@ -57,6 +57,8 @@ LINE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINE_MATCHER_TY
 
 LINES_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINES_TRANSFORMER_TYPE_INFO)
 
+PROGRAM_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PROGRAM_TYPE_INFO)
+
 SYMBOL_NAME_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.SYMBOL_NAME_ARGUMENT.name,
     'The name of a symbol'
@@ -120,6 +122,7 @@ ALL_SYNTAX_ELEMENTS = (
     FILE_MATCHER_SYNTAX_ELEMENT,
     LINE_MATCHER_SYNTAX_ELEMENT,
     LINES_TRANSFORMER_SYNTAX_ELEMENT,
+    PROGRAM_SYNTAX_ELEMENT,
 )
 
 

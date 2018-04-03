@@ -1,7 +1,7 @@
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation, \
     syntax_element_documentation
 from exactly_lib.help.entities.syntax_elements.objects import here_document, regex, glob_pattern, \
-    type_string, type_list, type_path, symbol_name, symbol_reference, file_contents_matcher, \
+    type_string, type_list, type_path, type_program, symbol_name, symbol_reference, file_contents_matcher, \
     integer, integer_comparison
 from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.help_texts.entity import syntax_elements
@@ -48,6 +48,9 @@ ALL_SYNTAX_ELEMENT_DOCS = (
 
     _for_logic_type(syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
                     parse_line_matcher.GRAMMAR),
+
+    type_program.DOCUMENTATION,
+
 )
 
 NAME_2_SYNTAX_ELEMENT_DOC = dict(map(lambda x: (x.singular_name(), x), ALL_SYNTAX_ELEMENT_DOCS))
