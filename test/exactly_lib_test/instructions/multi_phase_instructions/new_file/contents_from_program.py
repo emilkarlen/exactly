@@ -41,10 +41,11 @@ from exactly_lib_test.test_case_utils.external_program.test_resources import arg
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.test_transformers import \
     MyToUppercaseTransformer
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.programs import shell_commands
@@ -353,7 +354,8 @@ class TestFailingValidation(TestCaseBase):
 
 
 class TestFailingScenarios(TestCaseBase):
-    def _expect_failure(self, contents_arguments_constructor: TransformableContentsConstructor):
+    def _expect_failure(self, failing_program_as_single_line: Stringable):
+        failing_program = ArgumentElements([failing_program_as_single_line])
         transformer = NameAndValue('TRANSFORMER',
                                    LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
@@ -362,19 +364,19 @@ class TestFailingScenarios(TestCaseBase):
 
         cases = [
             NameAndValue('without transformer',
-                         contents_arguments_constructor.without_transformation()),
+                         None),
             NameAndValue('with transformer',
-                         contents_arguments_constructor.with_transformation(transformer.name)),
+                         transformer.name),
         ]
         for case in cases:
+            source = instr_args.from_program('dst-file.txt',
+                                             ProcOutputFile.STDOUT,
+                                             failing_program,
+                                             transformation=case.value).as_remaining_source
+
             with self.subTest(case.name):
                 self._check(
-                    remaining_source(
-                        '{file_name} {shell_command_with_non_zero_exit_code}'.format(
-                            file_name='dst-file-name.txt',
-                            shell_command_with_non_zero_exit_code=case.value.first_line,
-                        ),
-                        case.value.following_lines),
+                    source,
                     ArrangementWithSds(
                         symbols=symbols,
                     ),
@@ -384,19 +386,15 @@ class TestFailingScenarios(TestCaseBase):
                     ))
 
     def test_WHEN_exitcode_from_shell_command_is_non_zero_THEN_result_SHOULD_be_error_message(self):
-        self._expect_failure(TransformableContentsConstructor(
-            stdout_from(
-                pgm_args.shell_command(shell_commands.command_that_exits_with_code(1))
-            )
-        ))
+        self._expect_failure(
+            pgm_args.shell_command_line(shell_commands.command_that_exits_with_code(1))
+        )
 
     def test_WHEN_shell_command_is_non_executable_THEN_result_SHOULD_be_error_message(self):
         non_executable_shell_command = '<'
-        self._expect_failure(TransformableContentsConstructor(
-            stdout_from(
-                pgm_args.shell_command(non_executable_shell_command)
-            )
-        ))
+        self._expect_failure(
+            pgm_args.shell_command_line(non_executable_shell_command)
+        )
 
 
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
