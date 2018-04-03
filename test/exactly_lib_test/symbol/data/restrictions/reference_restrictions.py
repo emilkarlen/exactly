@@ -642,7 +642,7 @@ def unconditional_dissatisfaction(result: str) -> types.FunctionType:
 def dissatisfaction_if_value_type_is(value_type: ValueType) -> types.FunctionType:
     def ret_val(container: sut.SymbolContainer) -> str:
         resolver = container.resolver
-        assert isinstance(resolver, SymbolValueResolver), 'Expects a NamedElementResolver'
+        assert isinstance(resolver, SymbolValueResolver), 'Expects a SymbolValueResolver'
         if resolver.value_type is value_type:
             return 'fail due to value type is ' + str(value_type)
         return None
