@@ -245,38 +245,48 @@ class TestExecution(unittest.TestCase):
 
         parser = sut.program_parser()
 
-        resolver_of_referred_program = program_resolvers.for_py_source_on_command_line('exit(0)')
+        cases = [
+            NameAndValue('0 exit code',
+                         0),
+            NameAndValue('72 exit code',
+                         72),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                python_source = 'exit({exit_code})'.format(exit_code=case.value)
 
-        program_that_executes_py_source = NameAndValue(
-            'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-            resolver_of_referred_program
-        )
+                resolver_of_referred_program = program_resolvers.for_py_source_on_command_line(python_source)
 
-        source = parse_source_of(sym_ref_args.sym_ref_cmd_line(
-            program_that_executes_py_source.name))
+                program_that_executes_py_source = NameAndValue(
+                    'PROGRAM_THAT_EXECUTES_PY_SOURCE',
+                    resolver_of_referred_program
+                )
 
-        symbols = SymbolTable({
-            program_that_executes_py_source.name:
-                symbol_utils.container(program_that_executes_py_source.value)
-        })
+                source = parse_source_of(sym_ref_args.sym_ref_cmd_line(
+                    program_that_executes_py_source.name))
 
-        # ACT & ASSERT #
-        pgm_exe_check.check(self,
-                            parser,
-                            source,
-                            pgm_exe_check.Arrangement(
-                                symbols=symbols),
-                            pgm_exe_check.Expectation(
-                                symbol_references=asrt.matches_sequence([
-                                    asrt_pgm.is_program_reference_to(program_that_executes_py_source.name),
-                                ]),
-                                result=pgm_exe_check.assert_process_result_data(
-                                    exitcode=asrt.equals(0),
-                                    stdout_contents=asrt.equals(''),
-                                    stderr_contents=asrt.equals(''),
-                                    contents_after_transformation=asrt.equals(''),
-                                )
-                            ))
+                symbols = SymbolTable({
+                    program_that_executes_py_source.name:
+                        symbol_utils.container(program_that_executes_py_source.value)
+                })
+
+                # ACT & ASSERT #
+                pgm_exe_check.check(self,
+                                    parser,
+                                    source,
+                                    pgm_exe_check.Arrangement(
+                                        symbols=symbols),
+                                    pgm_exe_check.Expectation(
+                                        symbol_references=asrt.matches_sequence([
+                                            asrt_pgm.is_program_reference_to(program_that_executes_py_source.name),
+                                        ]),
+                                        result=pgm_exe_check.assert_process_result_data(
+                                            exitcode=asrt.equals(case.value),
+                                            stdout_contents=asrt.equals(''),
+                                            stderr_contents=asrt.equals(''),
+                                            contents_after_transformation=asrt.equals(''),
+                                        )
+                                    ))
 
 
 def is_reference_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion:
