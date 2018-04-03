@@ -8,7 +8,6 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.symbol.program.component_resolvers import no_stdin
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils import file_properties
@@ -17,6 +16,7 @@ from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse_impls import executable_file_executable
+from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 
 
@@ -29,7 +29,7 @@ def parse_as_command(parser: TokenParser) -> CommandResolver:
 
 def parse_as_program(parser: TokenParser) -> ProgramResolver:
     command_resolver = parse_as_command(parser)
-    return ProgramResolverForCommand(command_resolver, no_stdin())
+    return ProgramResolverForCommand(command_resolver, accumulator.empty())
 
 
 def program_parser() -> Parser[ProgramResolver]:

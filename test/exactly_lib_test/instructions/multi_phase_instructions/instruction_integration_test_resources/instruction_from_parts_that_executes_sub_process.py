@@ -12,7 +12,6 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
-from exactly_lib.symbol.program.component_resolvers import no_stdin
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.phase_identifier import Phase
@@ -20,6 +19,7 @@ from exactly_lib.test_case.phases.common import PhaseLoggingPaths
 from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
@@ -280,10 +280,8 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
         return ProgramResolverForCommand(
-            command_resolver_for_source_on_command_line(instruction_argument
-                                                        ).new_with_additional_arguments(list_resolvers.empty(),
-                                                                                        [self.validator]),
-            no_stdin())
+            command_resolver_for_source_on_command_line(instruction_argument),
+            accumulator.new_with_validators([self.validator]))
 
 
 class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(Parser[ProgramResolver]):
@@ -294,9 +292,9 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(P
         instruction_argument = parser.consume_current_line_as_plain_string()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
         return ProgramResolverForCommand(
-            command_resolvers.for_shell().new_with_additional_arguments(argument_resolver,
-                                                                        [self.validator]),
-            no_stdin())
+            command_resolvers.for_shell(),
+            accumulator.new_with_arguments_and_validators(argument_resolver,
+                                                          [self.validator]))
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'

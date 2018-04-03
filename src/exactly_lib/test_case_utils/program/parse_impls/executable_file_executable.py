@@ -10,13 +10,13 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.program import component_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
+from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
@@ -34,7 +34,7 @@ def program_parser() -> Parser[ProgramResolver]:
 def parse_as_program(parser: TokenParser) -> ProgramResolver:
     command_resolver = parse_as_command(parser)
     return ProgramResolverForCommand(command_resolver,
-                                     component_resolvers.no_stdin())
+                                     accumulator.empty())
 
 
 def parse_as_command(token_parser: TokenParser) -> CommandResolver:

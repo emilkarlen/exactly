@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib.symbol import restriction as sut
 from exactly_lib.symbol.data import string_resolvers, file_ref_resolvers2
-from exactly_lib.symbol.program import component_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.component_resolvers import ArgumentsResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
+from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
@@ -78,13 +78,15 @@ class TestElementTypeRestriction(unittest.TestCase):
 
 
 class TestValueTypeRestriction(unittest.TestCase):
+    arbitrary_list_resolver = ListResolverTestImplForConstantListValue(ListValue([]))
+
     value_type_2_resolver_of_type = {
 
         ValueType.STRING:
             string_resolvers.str_constant('string value'),
 
         ValueType.LIST:
-            ListResolverTestImplForConstantListValue(ListValue([])),
+            arbitrary_list_resolver,
 
         ValueType.PATH:
             file_ref_resolvers2.constant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, PathPartAsNothing())),
@@ -102,9 +104,9 @@ class TestValueTypeRestriction(unittest.TestCase):
             ProgramResolverForCommand(
                 CommandResolver(CommandDriverResolverForConstantTestImpl(
                     CommandValueForShell(string_value_of_single_string('the shell command line'))),
-                    ArgumentsResolver(ListResolverTestImplForConstantListValue(ListValue([])))
+                    ArgumentsResolver(arbitrary_list_resolver),
                 ),
-                component_resolvers.no_stdin()
+                accumulator.empty()
             ),
     }
 
