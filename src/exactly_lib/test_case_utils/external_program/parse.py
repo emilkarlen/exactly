@@ -4,8 +4,8 @@ from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program import syntax_elements
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.external_program.parse_impls import shell_program, \
     executable_file, executable_file_executable

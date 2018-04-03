@@ -6,8 +6,8 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.program import component_resolvers
+from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 

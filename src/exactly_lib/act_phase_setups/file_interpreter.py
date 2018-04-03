@@ -23,18 +23,18 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsSvhValidationErrorValidator
 from exactly_lib.util.process_execution.os_process_execution import Command, ProgramAndArguments
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)

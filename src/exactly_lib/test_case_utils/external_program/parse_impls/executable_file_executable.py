@@ -11,8 +11,8 @@ from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.program import component_resolvers
+from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program import syntax_elements
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.executable_file import ExecutableFileWithArgsResolver
 from exactly_lib.test_case_utils.external_program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
