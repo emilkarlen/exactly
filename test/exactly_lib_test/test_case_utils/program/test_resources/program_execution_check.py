@@ -1,5 +1,4 @@
 import pathlib
-import pathlib
 import unittest
 from typing import Optional
 
@@ -12,14 +11,12 @@ from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir
+from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util import file_utils
-from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout, Command
+from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
-from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
-    InstructionExecutionBase
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
@@ -89,26 +86,23 @@ class Arrangement(ArrangementWithSds):
         self.previous_phase = previous_phase
 
 
-class Expectation(ExpectationBase):
+class Expectation:
     def __init__(self,
                  result: asrt.ValueAssertion[ProcessResult] = assert_process_result(),
-                 validate_pre_sds: asrt.ValueAssertion[str] = asrt.is_none,
-                 validate_post_sds: asrt.ValueAssertion[str] = asrt.is_none,
-                 symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
+                 validation_pre_sds: asrt.ValueAssertion[str] = asrt.is_none,
+                 validation_post_sds: asrt.ValueAssertion[str] = asrt.is_none,
+                 symbol_references: asrt.ValueAssertion = asrt.is_empty_sequence,
                  main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
                  source: asrt.ValueAssertion = asrt.anything_goes(),
                  ):
-        super().__init__(validate_pre_sds,
-                         main_side_effects_on_sds,
-                         main_side_effects_on_home_and_sds,
-                         symbol_usages)
-        self.validate_post_sds = validate_post_sds
-        self.result = result
         self.source = source
-
-
-is_success = Expectation
+        self.symbol_references = symbol_references
+        self.validation_pre_sds = validation_pre_sds
+        self.validation_post_sds = validation_post_sds
+        self.result = result
+        self.main_side_effects_on_home_and_sds = main_side_effects_on_home_and_sds
+        self.main_side_effects_on_sds = main_side_effects_on_sds
 
 
 def check(put: unittest.TestCase,
@@ -119,12 +113,12 @@ def check(put: unittest.TestCase,
     Executor(put, arrangement, expectation).execute(parser, source)
 
 
-class Executor(InstructionExecutionBase):
+class Executor:
     def __init__(self,
                  put: unittest.TestCase,
                  arrangement: Arrangement,
                  expectation: Expectation):
-        super().__init__(put, arrangement, expectation)
+        self.put = put
         self.arrangement = arrangement
         self.expectation = expectation
 
@@ -132,12 +126,11 @@ class Executor(InstructionExecutionBase):
                 parser: Parser[ProgramResolver],
                 source: ParseSource):
         program_resolver = parser.parse(source)
-        self._check_instruction(ProgramResolver, program_resolver)
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(program_resolver, ProgramResolver)
-        self.expectation.symbol_usages.apply_with_message(self.put,
-                                                          program_resolver.symbol_usages(),
-                                                          'symbol-usages after parse')
+        self.expectation.symbol_references.apply_with_message(self.put,
+                                                              program_resolver.references,
+                                                              'symbol-usages after parse')
         with home_and_sds_with_act_as_curr_dir(
                 pre_contents_population_action=self.arrangement.pre_contents_population_action,
                 hds_contents=self.arrangement.hds_contents,
@@ -157,20 +150,20 @@ class Executor(InstructionExecutionBase):
 
         result = self._execute_pre_validate(environment,
                                             program_resolver)
-        self.expectation.symbol_usages.apply_with_message(self.put,
-                                                          program_resolver.symbol_usages(),
-                                                          'symbol-usages after ' +
-                                                          phase_step.STEP__VALIDATE_PRE_SDS)
+        self.expectation.symbol_references.apply_with_message(self.put,
+                                                              program_resolver.references,
+                                                              'symbol-usages after ' +
+                                                              phase_step.STEP__VALIDATE_PRE_SDS)
         if result is not None:
             return
 
         result = self._execute_post_sds_validate(environment, program_resolver)
         if result is not None:
             return
-        self.expectation.symbol_usages.apply_with_message(self.put,
-                                                          program_resolver.symbol_usages(),
-                                                          'symbol-usages after' +
-                                                          phase_step.STEP__VALIDATE_POST_SETUP)
+        self.expectation.symbol_references.apply_with_message(self.put,
+                                                              program_resolver.references,
+                                                              'symbol-usages after' +
+                                                              phase_step.STEP__VALIDATE_POST_SETUP)
 
         self._execute_program(pgm_output_dir, environment, program_resolver)
 
@@ -185,7 +178,7 @@ class Executor(InstructionExecutionBase):
                                    environment: PathResolvingEnvironmentPostSds,
                                    program_resolver: ProgramResolver) -> Optional[str]:
         actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
-        self.expectation.validate_post_sds.apply_with_message(self.put, actual, 'validation-post-sds')
+        self.expectation.validation_post_sds.apply_with_message(self.put, actual, 'validation-post-sds')
         return actual
 
     def _execute_program(self,
@@ -202,10 +195,10 @@ class Executor(InstructionExecutionBase):
                  pgm_output_dir: pathlib.Path,
                  environment: PathResolvingEnvironmentPreOrPostSds,
                  program_resolver: ProgramResolver) -> ProcessResult:
-        command = program_resolver.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
-        assert isinstance(command, Command)
+        program = program_resolver.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        assert isinstance(program, Program)
         executor = ExecutorThatStoresResultInFilesInDir(self.arrangement.process_execution_settings)
-        execution_result = executor.apply(pgm_output_dir, command)
+        execution_result = executor.apply(pgm_output_dir, program.command)
         stderr_contents = file_utils.contents_of(execution_result.path_of(ProcOutputFile.STDERR))
         stdout_contents = file_utils.contents_of(execution_result.path_of(ProcOutputFile.STDOUT))
         return ProcessResult(execution_result.exit_code,
