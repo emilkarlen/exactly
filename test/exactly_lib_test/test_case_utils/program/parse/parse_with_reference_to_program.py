@@ -4,7 +4,6 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolvers2 import constant
-from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut
@@ -17,7 +16,6 @@ from exactly_lib_test.symbol.test_resources import resolver_structure_assertions
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
-from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
@@ -25,6 +23,8 @@ from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
+    home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.test_utils import NIE
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -157,12 +157,16 @@ class TestValidation(unittest.TestCase):
                 program_resolver = parser.parse(source)
                 # ASSERT #
                 self.assertIsInstance(program_resolver, ProgramResolver)
-                with home_directory_structure(case.home_contents) as hds:
-                    environment = PathResolvingEnvironmentPreSds(hds, symbols)
+                with home_and_sds_with_act_as_curr_dir(hds_contents=case.home_contents,
+                                                       symbols=symbols) as environment:
                     # ACT #
                     actual = program_resolver.validator.validate_pre_sds_if_applicable(environment)
                     # ASSERT #
                     self.assertIsNotNone(actual)
+                    # ACT #
+                    actual = program_resolver.validator.validate_post_sds_if_applicable(environment)
+                    # ASSERT #
+                    self.assertIsNone(actual)
 
 
 def is_reference_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion:
