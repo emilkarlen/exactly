@@ -7,9 +7,8 @@ from exactly_lib.help_texts.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
-from exactly_lib.test_case_utils.lines_transformer import values
-from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue
+from exactly_lib.type_system.logic import lines_transformer_values
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, CustomLinesTransformer
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -26,8 +25,8 @@ class EnvVarReplacementLinesTransformer(CustomLinesTransformer):
 
 
 def value() -> LinesTransformerValue:
-    return values.DirDependentLinesTransformerValue(ResolvingDependency,
-                                                    EnvVarReplacementLinesTransformer)
+    return lines_transformer_values.DirDependentLinesTransformerValue(ResolvingDependency,
+                                                                      EnvVarReplacementLinesTransformer)
 
 
 def replace(home_and_sds: HomeAndSds,

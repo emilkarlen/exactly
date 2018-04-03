@@ -2,7 +2,7 @@ from typing import Iterable
 
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, original_and_model_iter_from_file_line_iter
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
-    SequenceLinesTransformer
+    SequenceLinesTransformer, CustomLinesTransformer
 
 
 class ReplaceLinesTransformer(LinesTransformer):
@@ -52,15 +52,6 @@ class SelectLinesTransformer(LinesTransformer):
     def __str__(self):
         return '{}({})'.format(type(self).__name__,
                                str(self._line_matcher))
-
-
-class CustomLinesTransformer(LinesTransformer):
-    """
-    Base class for built in custom transformers.
-    """
-
-    def __str__(self):
-        return str(type(self))
 
 
 class LinesTransformerStructureVisitor:

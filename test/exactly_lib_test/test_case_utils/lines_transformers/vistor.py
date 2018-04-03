@@ -66,7 +66,7 @@ class TestLinesTransformerStructureVisitor(unittest.TestCase):
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([sut.CustomLinesTransformer],
+        self.assertEqual([lines_transformer.CustomLinesTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
@@ -104,12 +104,12 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
         self.visited_types.append(sut.SelectLinesTransformer)
         return transformer
 
-    def visit_custom(self, transformer: sut.CustomLinesTransformer):
-        self.visited_types.append(sut.CustomLinesTransformer)
+    def visit_custom(self, transformer: lines_transformer.CustomLinesTransformer):
+        self.visited_types.append(lines_transformer.CustomLinesTransformer)
         return transformer
 
 
-class MyCustomTransformer(sut.CustomLinesTransformer):
+class MyCustomTransformer(lines_transformer.CustomLinesTransformer):
     def __init__(self):
         super().__init__()
 

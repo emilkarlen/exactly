@@ -1,6 +1,6 @@
 from typing import Iterable
 
-from exactly_lib.test_case_utils.lines_transformer.transformers import CustomLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import CustomLinesTransformer
 
 
 class ToUpperCaseLinesTransformer(CustomLinesTransformer):
