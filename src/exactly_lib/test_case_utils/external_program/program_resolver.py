@@ -7,7 +7,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils import pre_or_post_validation
 from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.component_resolvers import StdinDataResolver
-from exactly_lib.test_case_utils.external_program.program import ProgramValue
+from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerSequenceResolver
 from exactly_lib.test_case_utils.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.resolver_with_validation import DirDepValueResolverWithValidation
