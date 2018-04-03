@@ -14,6 +14,6 @@ EXECUTABLE_FILE_FOR_PY_SRC_AS_ONE_AND_ONLY_ARG = command_resolvers.for_executabl
 )
 
 
-def command_resolver_for_source_on_command_line(python_source: str) -> CommandResolver:
+def for_py_source_on_command_line(python_source: str) -> CommandResolver:
     return EXECUTABLE_FILE_FOR_PY_SRC_AS_ONE_AND_ONLY_ARG.new_with_additional_argument_list(
         list_resolvers.from_str_constant(python_source))
