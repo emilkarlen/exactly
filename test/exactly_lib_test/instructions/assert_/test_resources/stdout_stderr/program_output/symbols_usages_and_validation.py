@@ -93,7 +93,7 @@ class TestFailingValidationPreSds(TestCaseBase):
 
         self._check(arguments,
                     ArrangementPostAct(),
-                    Expectation(validation_pre_sds=asrt_svh.is_validation_error(asrt.anything_goes())))
+                    Expectation(validation_pre_sds=asrt_svh.is_any_validation_error()))
 
 
 class TestFailingValidationPostSds(TestCaseBase):
@@ -110,4 +110,4 @@ class TestFailingValidationPostSds(TestCaseBase):
 
         self._check(arguments,
                     ArrangementPostAct(),
-                    Expectation(validation_post_sds=asrt_svh.is_validation_error(asrt.anything_goes())))
+                    Expectation(validation_post_sds=asrt_svh.is_any_validation_error()))
