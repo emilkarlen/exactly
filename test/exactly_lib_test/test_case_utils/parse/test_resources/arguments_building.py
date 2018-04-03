@@ -2,6 +2,7 @@ from typing import Sequence, List
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
+from exactly_lib_test.test_resources.arguments_building import Stringable
 
 
 class Arguments:
@@ -62,8 +63,16 @@ class ArgumentElements:
         :param first_line: Elements of the first (mandatory line
         :param following_lines: Following lines (each a sequence of elements)
         """
-        self.first_line = first_line
-        self.following_lines = list(following_lines)
+        self._first_line = first_line
+        self._following_lines = list(following_lines)
+
+    @property
+    def first_line(self) -> List[Stringable]:
+        return self._first_line
+
+    @property
+    def following_lines(self) -> List[List[Stringable]]:
+        return self._following_lines
 
     @property
     def as_arguments(self) -> Arguments:
@@ -72,6 +81,10 @@ class ArgumentElements:
 
     @property
     def lines(self) -> List[List]:
+        return [self.first_line] + self.following_lines
+
+    @property
+    def all_lines(self) -> List[Stringable]:
         return [self.first_line] + self.following_lines
 
     @property
@@ -92,6 +105,11 @@ class ArgumentElements:
                           following_lines: List[List]):
         return ArgumentElements(self.first_line,
                                 self.following_lines + following_lines)
+
+    def append_to_first_and_following_lines(self, argument_elements):
+        assert isinstance(argument_elements, ArgumentElements)
+        return ArgumentElements(self.first_line + argument_elements.first_line,
+                                self.following_lines + argument_elements.following_lines)
 
     @property
     def num_lines(self) -> int:
