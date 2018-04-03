@@ -1,23 +1,18 @@
 import sys
 
-from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.token_parser_extra import from_parse_source
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.executable_file import ExecutableFileWithArgsResolver
-from exactly_lib.test_case_utils.program.resolvers import accumulator
-from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax import option_parsing
 
@@ -25,16 +20,6 @@ from exactly_lib.util.cli_syntax import option_parsing
 def parse_from_parse_source(source: ParseSource) -> ExecutableFileWithArgsResolver:
     with from_parse_source(source) as token_parser:
         return parse_from_token_parser(token_parser)
-
-
-def program_parser() -> Parser[ProgramResolver]:
-    return parser_classes.ParserFromTokenParserFunction(parse_as_program)
-
-
-def parse_as_program(parser: TokenParser) -> ProgramResolver:
-    command_resolver = parse_as_command(parser)
-    return ProgramResolverForCommand(command_resolver,
-                                     accumulator.empty())
 
 
 def parse_as_command(token_parser: TokenParser) -> CommandResolver:
