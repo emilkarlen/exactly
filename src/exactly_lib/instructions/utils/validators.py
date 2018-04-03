@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.instructions.utils import return_svh_via_exceptions
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPostSds, \
     PathResolvingEnvironmentPreSds
@@ -67,13 +69,13 @@ class PreOrPostSdsValidatorFromValidatorViaExceptions(PreOrPostSdsValidator):
     def __init__(self, adapted: SvhValidatorViaExceptions):
         self._adapted = adapted
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         try:
             self._adapted.validate_pre_sds(environment)
         except return_svh_via_exceptions.SvhException as ex:
             return ex.err_msg
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         try:
             self._adapted.validate_post_setup(environment)
         except return_svh_via_exceptions.SvhException as ex:

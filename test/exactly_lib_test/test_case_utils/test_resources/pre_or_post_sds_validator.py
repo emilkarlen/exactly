@@ -1,5 +1,5 @@
 import unittest
-from typing import Callable
+from typing import Callable, Optional
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds, \
     PathResolvingEnvironmentPreSds, PathResolvingEnvironmentPostSds, PathResolvingEnvironment
@@ -64,10 +64,10 @@ class ValidatorThat(PreOrPostSdsValidator):
         self.post_setup_action = post_setup_action
         self.pre_sds_action = pre_sds_action
 
-    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> str:
+    def validate_pre_sds_if_applicable(self, environment: PathResolvingEnvironmentPreSds) -> Optional[str]:
         self.pre_sds_action(environment)
         return self.pre_sds_return_value
 
-    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> str:
+    def validate_post_sds_if_applicable(self, environment: PathResolvingEnvironmentPostSds) -> Optional[str]:
         self.post_setup_action(environment)
         return self.post_setup_return_value
