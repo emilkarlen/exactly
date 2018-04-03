@@ -5,7 +5,7 @@ from exactly_lib.symbol.lines_transformer import LinesTransformerSequenceResolve
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.component_resolvers import StdinDataResolver
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import LinesTransformerResolver, LogicValueResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
@@ -14,7 +14,7 @@ from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class ProgramResolver(DirDepValueResolverWithValidation[ProgramValue]):
+class ProgramResolver(LogicValueResolver, DirDepValueResolverWithValidation[ProgramValue]):
     def __init__(self,
                  command: CommandResolver,
                  stdin: StdinDataResolver,
