@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.instructions.assert_ import stderr as sut
 from exactly_lib.instructions.assert_.utils.instruction_parser import AssertPhaseInstructionParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check
@@ -17,7 +18,6 @@ from exactly_lib_test.instructions.test_resources.arrangements import ActEnviron
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
     home_and_sds_populators as home_or_sds
 from exactly_lib_test.test_resources.execution.utils import ProcessResult
-from exactly_lib_test.test_resources.programs.py_programs import single_line_pgm_that_prints_to_no_new_line
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 
@@ -57,12 +57,11 @@ class TestConfigurationForStderr(TestConfigurationForStdFile):
 
 
 class ProgramOutputInstructionConfigurationForStderr(ProgramOutputInstructionConfiguration):
+    def output_file(self) -> ProcOutputFile:
+        return ProcOutputFile.STDERR
 
     def parser(self) -> AssertPhaseInstructionParser:
         return sut.parser('the-instruction-name')
-
-    def py_source_for_print(self, output: str) -> str:
-        return single_line_pgm_that_prints_to_no_new_line('stderr', output)
 
 
 if __name__ == '__main__':
