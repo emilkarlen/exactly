@@ -19,8 +19,8 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     path_relativity_restriction
-from exactly_lib.test_case_utils.program import parse as sut
 from exactly_lib.test_case_utils.program import syntax_elements
+from exactly_lib.test_case_utils.program.parse import parse_executable_file as sut
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
