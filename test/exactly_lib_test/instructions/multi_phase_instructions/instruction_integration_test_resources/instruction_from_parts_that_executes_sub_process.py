@@ -29,9 +29,8 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.parse_source import source4
 from exactly_lib_test.test_case_utils.sub_process_execution import assert_dir_contains_at_least_result_files
+from exactly_lib_test.test_case_utils.test_resources import command_resolvers as test_command_resolvers
 from exactly_lib_test.test_case_utils.test_resources import py_program as py
-from exactly_lib_test.test_case_utils.test_resources.executable_files import \
-    command_resolver_for_source_on_command_line
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
@@ -281,7 +280,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         instruction_argument = parser.consume_current_line_as_plain_string()
         return ProgramResolverForCommand(
-            command_resolver_for_source_on_command_line(instruction_argument),
+            test_command_resolvers.for_py_source_on_command_line(instruction_argument),
             accumulator.new_with_validators([self.validator]))
 
 
