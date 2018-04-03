@@ -10,6 +10,7 @@ from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.parse.parse_string import string_resolver_from_string
 from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 
 
 def program_parser() -> Parser[ProgramResolver]:
@@ -18,8 +19,8 @@ def program_parser() -> Parser[ProgramResolver]:
 
 def parse_as_program(parser: TokenParser) -> ProgramResolver:
     command_resolver = parse_as_command(parser)
-    return ProgramResolver(command_resolver,
-                           component_resolvers.no_stdin())
+    return ProgramResolverForCommand(command_resolver,
+                                     component_resolvers.no_stdin())
 
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:
