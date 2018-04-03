@@ -1,9 +1,10 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
+from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
+from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
@@ -21,13 +22,15 @@ class ProgramResolverForCommand(ProgramResolver):
         self._accumulated_elements = accumulated_elements
 
     def new_accumulated(self,
-                        additional_arguments: ListResolver,
+                        additional_stdin: StdinDataResolver,
+                        additional_arguments: ArgumentsResolver,
                         additional_transformations: Sequence[LinesTransformerResolver],
                         additional_validation: Sequence[PreOrPostSdsValidator],
                         ):
         return ProgramResolverForCommand(
             self._command,
-            self._accumulated_elements.new_accumulated(additional_arguments,
+            self._accumulated_elements.new_accumulated(additional_stdin,
+                                                       additional_arguments,
                                                        additional_transformations,
                                                        additional_validation))
 
@@ -41,10 +44,11 @@ class ProgramResolverForCommand(ProgramResolver):
         return pre_or_post_validation.all_of(self._validators)
 
     def resolve_value(self, symbols: SymbolTable) -> ProgramValue:
-        accumulated_command = self._command.new_with_additional_arguments(self._accumulated_elements.arguments)
+        acc = self._accumulated_elements
+        accumulated_command = self._command.new_with_additional_arguments(acc.arguments)
         return ProgramValue(accumulated_command.resolve_value(symbols),
-                            self._accumulated_elements.resolve_stdin_data(symbols),
-                            self._accumulated_elements.resolve_transformations(symbols))
+                            acc.resolve_stdin_data(symbols),
+                            acc.resolve_transformations(symbols))
 
     @property
     def _validators(self) -> Sequence[PreOrPostSdsValidator]:

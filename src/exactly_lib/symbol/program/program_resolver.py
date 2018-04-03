@@ -1,7 +1,9 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.program import arguments_resolver
+from exactly_lib.symbol.program import stdin_data_resolver
+from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
+from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver, LogicValueResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -32,37 +34,29 @@ class ProgramResolver(LogicValueResolver, DirDepValueResolverWithValidation[Prog
         raise NotImplementedError('abstract method')
 
     def new_accumulated(self,
-                        additional_arguments: ListResolver,
+                        additional_stdin: StdinDataResolver,
+                        additional_arguments: ArgumentsResolver,
                         additional_transformations: Sequence[LinesTransformerResolver],
                         additional_validation: Sequence[PreOrPostSdsValidator],
                         ):
         raise NotImplementedError('abstract method')
 
-    def new_with_additional_arguments(self,
-                                      additional_arguments: ListResolver,
-                                      additional_validation: Sequence[PreOrPostSdsValidator] = ()):
+    def new_with_additional_arguments(self, additional_arguments: ArgumentsResolver):
         """
         Creates a new resolver with additional arguments appended at the end of
         current argument list.
         """
-        return self.new_accumulated(additional_arguments,
+        return self.new_accumulated(stdin_data_resolver.no_stdin(),
+                                    additional_arguments,
                                     (),
-                                    additional_validation)
+                                    ())
 
     def new_with_appended_transformations(self, transformations: Sequence[LinesTransformerResolver]):
         """
         Creates a new resolver with additional transformation appended at the end of
         current transformations.
         """
-        return self.new_accumulated(list_resolvers.empty(),
-                                    transformations,
-                                    ())
-
-    def new_with_prepended_transformations(self, transformations: Sequence[LinesTransformerResolver]):
-        """
-        Creates a new resolver with additional transformation before
-        current transformations.
-        """
-        return self.new_accumulated(list_resolvers.empty(),
+        return self.new_accumulated(stdin_data_resolver.no_stdin(),
+                                    arguments_resolver.no_arguments(),
                                     transformations,
                                     ())

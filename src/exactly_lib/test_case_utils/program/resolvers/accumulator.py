@@ -1,11 +1,12 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.lines_transformer import LinesTransformerSequenceResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.program import component_resolvers
-from exactly_lib.symbol.program.component_resolvers import StdinDataResolver
+from exactly_lib.symbol.program import arguments_resolver
+from exactly_lib.symbol.program import stdin_data_resolver
+from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
+from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -23,7 +24,7 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
 
     def __init__(self,
                  stdin: StdinDataResolver,
-                 arguments: ListResolver,
+                 arguments: ArgumentsResolver,
                  transformations: Sequence[LinesTransformerResolver],
                  validators: Sequence[PreOrPostSdsValidator]):
         self.stdin = stdin
@@ -32,13 +33,14 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
         self.validators = validators
 
     def new_accumulated(self,
-                        additional_arguments: ListResolver,
+                        additional_stdin: StdinDataResolver,
+                        additional_arguments: ArgumentsResolver,
                         additional_transformations: Sequence[LinesTransformerResolver],
                         additional_validation: Sequence[PreOrPostSdsValidator],
                         ):
         """Creates a new accumulated instance."""
-        return ProgramElementsAccumulator(self.stdin,
-                                          list_resolvers.concat([self.arguments, additional_arguments]),
+        return ProgramElementsAccumulator(self.stdin.new_accumulated(additional_stdin),
+                                          self.arguments.new_accumulated(additional_arguments),
                                           tuple(self.transformations) + tuple(additional_transformations),
                                           tuple(self.validators) + tuple(additional_validation))
 
@@ -59,22 +61,22 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
 
 
 def empty() -> ProgramElementsAccumulator:
-    return ProgramElementsAccumulator(component_resolvers.no_stdin(),
-                                      list_resolvers.empty(),
+    return ProgramElementsAccumulator(stdin_data_resolver.no_stdin(),
+                                      arguments_resolver.no_arguments(),
                                       (),
                                       ())
 
 
 def new_with_validators(validators: Sequence[PreOrPostSdsValidator]) -> ProgramElementsAccumulator:
-    return ProgramElementsAccumulator(component_resolvers.no_stdin(),
-                                      list_resolvers.empty(),
+    return ProgramElementsAccumulator(stdin_data_resolver.no_stdin(),
+                                      arguments_resolver.no_arguments(),
                                       (),
                                       validators)
 
 
 def new_with_arguments_and_validators(arguments: ListResolver,
                                       validators: Sequence[PreOrPostSdsValidator]) -> ProgramElementsAccumulator:
-    return ProgramElementsAccumulator(component_resolvers.no_stdin(),
-                                      arguments,
+    return ProgramElementsAccumulator(stdin_data_resolver.no_stdin(),
+                                      arguments_resolver.new_without_validation(arguments),
                                       (),
                                       validators)

@@ -33,8 +33,7 @@ def parse_as_command(parser: TokenParser) -> CommandResolver:
         msg = instruction_arguments.COMMAND_ARGUMENT.name + ' must be given as argument'
         raise SingleInstructionInvalidArgumentException(msg)
 
-    return command_resolvers.for_shell() \
-        .new_with_additional_arguments(list_resolvers.from_string(argument))
+    return command_resolvers.for_shell().new_with_additional_argument_list(list_resolvers.from_string(argument))
 
 
 _PARSE_FORMAT_MAP = {

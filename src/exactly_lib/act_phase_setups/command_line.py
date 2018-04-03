@@ -81,7 +81,7 @@ class _Parser(Parser):
             raise ParseException(svh.new_svh_validation_error(msg))
         arg_resolver = parse_string.string_resolver_from_string(striped_argument)
         args_as_list = list_resolvers.from_string(arg_resolver)
-        command_resolver = command_resolvers.for_shell().new_with_additional_arguments(args_as_list)
+        command_resolver = command_resolvers.for_shell().new_with_additional_argument_list(args_as_list)
         return CommandConfiguration(command_resolver)
 
     @staticmethod
@@ -91,7 +91,8 @@ class _Parser(Parser):
             executable = parse_file_ref_from_parse_source(source,
                                                           RELATIVITY_CONFIGURATION)
             arguments = parse_list(source)
-            executable_file = command_resolvers.for_executable_file(executable).new_with_additional_arguments(arguments)
+            command_resolver = command_resolvers.for_executable_file(executable)
+            executable_file = command_resolver.new_with_additional_argument_list(arguments)
             return CommandConfiguration(executable_file)
         except SingleInstructionInvalidArgumentException as ex:
             raise ParseException(svh.new_svh_validation_error(ex.error_message))

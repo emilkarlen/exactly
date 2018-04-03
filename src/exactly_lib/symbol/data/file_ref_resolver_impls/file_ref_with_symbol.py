@@ -1,6 +1,7 @@
 import pathlib
 from typing import Sequence
 
+from exactly_lib.symbol import lookups
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -21,7 +22,7 @@ class FileRefResolverRelSymbol(FileRefResolver):
         self.symbol_reference_of_path = symbol_reference_of_path
 
     def resolve(self, symbols: SymbolTable) -> FileRef:
-        base_file_ref = lookup_file_ref_from_symbol_table(symbols, self.symbol_reference_of_path.name)
+        base_file_ref = lookups.lookup_and_resolve_file_ref(symbols, self.symbol_reference_of_path.name)
         return StackedFileRef(base_file_ref, self.path_suffix.resolve(symbols))
 
     @property
