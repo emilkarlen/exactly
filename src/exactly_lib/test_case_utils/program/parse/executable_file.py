@@ -13,7 +13,7 @@ from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, Fi
 from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.parse_impls import executable_file_executable
+from exactly_lib.test_case_utils.program.parse import executable_file_executable
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 

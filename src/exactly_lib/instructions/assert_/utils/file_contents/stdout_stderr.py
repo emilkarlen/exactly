@@ -19,9 +19,9 @@ from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.test_case_utils.program import parse
 from exactly_lib.test_case_utils.program.execution.store_result_in_instruction_tmp_dir import \
     make_transformed_file_from_output_in_instruction_tmp_dir
+from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
@@ -68,12 +68,12 @@ class Parser(ComparisonActualFileParser):
             ActComparisonActualFileForStdFile(checked_file))
 
     def parse_from_token_parser(self, parser: TokenParser) -> ComparisonActualFileConstructor:
-        def parse_program(_parser: TokenParser) -> ComparisonActualFileConstructor:
-            program = parse.parse_program(_parser)
+        def _parse_program(_parser: TokenParser) -> ComparisonActualFileConstructor:
+            program = parse_program.parse_program(_parser)
             return _ComparisonActualFileConstructorForProgram(self._checked_file, program)
 
         return parser.consume_and_handle_optional_option(self._default,
-                                                         parse_program,
+                                                         _parse_program,
                                                          OUTPUT_FROM_PROGRAM_OPTION_NAME)
 
 
