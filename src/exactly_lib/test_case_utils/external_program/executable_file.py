@@ -1,7 +1,7 @@
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
+from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 
 
 class ExecutableFileWithArgsResolver:

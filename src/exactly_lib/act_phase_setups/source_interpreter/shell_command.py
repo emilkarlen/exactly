@@ -5,9 +5,9 @@ from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case_utils.external_program.command import command_resolvers
-from exactly_lib.test_case_utils.external_program.command.command_resolver import CommandResolver
 
 ACT_PHASE_SOURCE_FILE_BASE_NAME = 'act-phase.src'
 
