@@ -42,4 +42,4 @@ class Executor(pa.ExecutorBase):
             string_resolvers.str_constant(script_file_argument),
         ])
 
-        return command_resolvers.for_shell().new_with_additional_arguments(command_line_elements)
+        return command_resolvers.for_shell().new_with_additional_argument_list(command_line_elements)

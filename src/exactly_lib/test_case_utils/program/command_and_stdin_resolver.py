@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.symbol.program.component_resolvers import StdinDataResolver
+from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation

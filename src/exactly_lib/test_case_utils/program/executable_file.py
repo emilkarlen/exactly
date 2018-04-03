@@ -22,4 +22,4 @@ class ExecutableFileWithArgsResolver:
     @property
     def as_command(self) -> CommandResolver:
         return command_resolvers.for_executable_file(self.executable_file) \
-            .new_with_additional_arguments(self._arguments)
+            .new_with_additional_argument_list(self._arguments)

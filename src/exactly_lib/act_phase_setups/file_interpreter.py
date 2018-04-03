@@ -174,8 +174,9 @@ class _ProgramExecutor(SubProcessExecutor):
             self.source.arguments,
         ])
 
-        return command_resolvers.from_program_and_arguments(self.interpreter).new_with_additional_arguments(
-            arguments)
+        return command_resolvers \
+            .from_program_and_arguments(self.interpreter) \
+            .new_with_additional_argument_list(arguments)
 
 
 class _ShellSubProcessExecutor(SubProcessExecutor):
@@ -200,4 +201,4 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
 
             self.source.arguments,
         ])
-        return command_resolvers.for_shell().new_with_additional_arguments(command_line_elements)
+        return command_resolvers.for_shell().new_with_additional_argument_list(command_line_elements)

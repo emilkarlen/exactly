@@ -4,7 +4,8 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.program.component_resolvers import ArgumentsResolver
+from exactly_lib.symbol.program import arguments_resolver
+from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
@@ -54,12 +55,15 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
     def __init__(self,
                  command_driver: CommandDriverResolver,
                  arguments: ArgumentsResolver):
+        # DEBUG
+        if not isinstance(command_driver, CommandDriverResolver):
+            raise ValueError('Not a CommandDriverResolver')
+        if not isinstance(arguments, ArgumentsResolver):
+            raise ValueError('Not a ArgumentsResolver')
         self._driver = command_driver
         self._arguments = arguments
 
-    def new_with_additional_arguments(self,
-                                      additional_arguments: ListResolver,
-                                      additional_validation: Sequence[PreOrPostSdsValidator] = ()):
+    def new_with_additional_arguments(self, additional_arguments: ArgumentsResolver):
         """
         Creates a new resolver with additional arguments appended at the end of
         current argument list.
@@ -67,8 +71,10 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
         :returns CommandResolver
         """
         return CommandResolver(self._driver,
-                               self._arguments.new_with_appended(additional_arguments,
-                                                                 additional_validation))
+                               self._arguments.new_accumulated(additional_arguments))
+
+    def new_with_additional_argument_list(self, additional_arguments: ListResolver):
+        return self.new_with_additional_arguments(arguments_resolver.new_without_validation(additional_arguments))
 
     def resolve_value(self, symbols: SymbolTable) -> CommandValue:
         return self.driver.make(symbols, self._arguments.arguments_list)

@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.symbol import restriction as sut
 from exactly_lib.symbol.data import string_resolvers, file_ref_resolvers2
+from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
-from exactly_lib.symbol.program.component_resolvers import ArgumentsResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
