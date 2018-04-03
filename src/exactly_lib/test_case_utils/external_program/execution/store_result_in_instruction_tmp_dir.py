@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
-from exactly_lib.test_case_utils.external_program.program import Program
+from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir
 from exactly_lib.util.process_execution import process_output_files
