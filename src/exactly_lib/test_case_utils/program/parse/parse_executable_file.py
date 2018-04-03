@@ -3,16 +3,15 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data import list_resolvers, string_resolvers
+from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.test_case_utils import file_properties
-from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_list
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref
 from exactly_lib.test_case_utils.program import syntax_elements
+from exactly_lib.test_case_utils.program.command import argument_resolvers
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
@@ -58,16 +57,10 @@ def _execute(token_parser: TokenParser) -> ArgumentsResolver:
 def _interpret(token_parser: TokenParser) -> ArgumentsResolver:
     file_to_interpret = parse_file_ref.parse_file_ref_from_token_parser(parse_file_ref.ALL_REL_OPTIONS_CONFIG,
                                                                         token_parser)
-    file_to_interpret_check = FileRefCheck(file_to_interpret,
-                                           file_properties.must_exist_as(file_properties.FileType.REGULAR))
-    file_to_interpret_validator = FileRefCheckValidator(file_to_interpret_check)
+    file_to_interpret_arguments = argument_resolvers.ref_to_file_that_must_exist(file_to_interpret)
+
     remaining_arguments = parse_list.parse_list_from_token_parser(token_parser)
-    all_additional_arguments = list_resolvers.concat([
-        list_resolvers.from_string(string_resolvers.from_file_ref_resolver(file_to_interpret)),
-        remaining_arguments,
-    ])
-    return ArgumentsResolver(all_additional_arguments,
-                             [file_to_interpret_validator])
+    return file_to_interpret_arguments.new_accumulated(arguments_resolver.new_without_validation(remaining_arguments))
 
 
 def _source(token_parser: TokenParser) -> ArgumentsResolver:
