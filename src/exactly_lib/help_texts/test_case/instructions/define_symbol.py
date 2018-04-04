@@ -120,8 +120,9 @@ ANY_TYPE_INFO_DICT = {
                  _standard_type_value_args(types.LINES_TRANSFORMER_TYPE_INFO)),
 
     ValueType.PROGRAM:
-        TypeInfo(types.LINES_TRANSFORMER_TYPE_INFO,
-                 _standard_type_value_args(types.LINES_TRANSFORMER_TYPE_INFO)),
+        TypeInfo(types.PROGRAM_TYPE_INFO,
+                 _standard_type_value_args(types.PROGRAM_TYPE_INFO,
+                                           a.Multiplicity.MANDATORY)),
 }
 
 
