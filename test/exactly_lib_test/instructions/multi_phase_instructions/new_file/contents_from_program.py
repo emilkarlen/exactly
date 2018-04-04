@@ -1,10 +1,11 @@
 import unittest
-from typing import Sequence
+from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
+from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType
@@ -20,7 +21,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resour
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     TestCaseBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import \
-    ALLOWED_DST_FILE_RELATIVITIES, IS_FAILURE, IS_SUCCESS
+    IS_FAILURE, IS_SUCCESS, AN_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
@@ -41,6 +42,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.arguments_building
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
+from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
@@ -63,7 +65,7 @@ from exactly_lib_test.type_system.logic.test_resources.line_transformers import 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestSuccessfulScenariosWithProgram),
+        unittest.makeSuite(TestSuccessfulScenariosWithDifferentSourceVariants),
         unittest.makeSuite(TestSuccessfulScenariosWithProgramFromDifferentChannels),
         unittest.makeSuite(TestFailingScenarios),
         unittest.makeSuite(TestSymbolUsages),
@@ -140,143 +142,107 @@ class ProgramCase:
     def __init__(self,
                  name: str,
                  source: ArgumentElements,
-                 expected_reference: asrt.ValueAssertion[Sequence[SymbolReference]]):
+                 expected_reference: List[asrt.ValueAssertion[SymbolReference]]):
         self.name = name
         self.source = source
-        self.expected_reference = expected_reference
+        self.expected_references = expected_reference
 
 
 class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
-    def test_contents_from_stdout__without_transformer(self):
-        text_printed_by_program = 'text printed by program'
-        expected_file_contents = text_printed_by_program + '\n'
+    def test_with_transformation(self):
+        text_printed_by_program = 'the text printed by the program'
+        transformer = NameAndValue('TO_UPPER_CASE',
+                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+        self._test(
+            text_printed_by_program=text_printed_by_program,
+            expected_file_contents=text_printed_by_program.upper(),
+            make_arguments=lambda tcc: tcc.with_transformation(transformer.name),
+            additional_symbols={transformer.name: symbol_utils.container(transformer.value)},
+            additional_symbol_references=[is_lines_transformer_reference_to(transformer.name)]
+        )
+
+    def test_without_transformation(self):
+        text_printed_by_program = 'the text printed by the program'
+        self._test(
+            text_printed_by_program=text_printed_by_program,
+            expected_file_contents=text_printed_by_program,
+            make_arguments=lambda tcc: tcc.without_transformation(),
+            additional_symbols={},
+            additional_symbol_references=[]
+        )
+
+    def _test(self,
+              text_printed_by_program: str,
+              expected_file_contents: str,
+              make_arguments: Callable[[TransformableContentsConstructor], ArgumentElements],
+              additional_symbols: Dict[str, SymbolContainer],
+              additional_symbol_references: List[asrt.ValueAssertion[SymbolReference]],
+              ):
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
 
         for proc_output_file in [ProcOutputFile.STDOUT]:
-            python_source = py_programs.single_line_pgm_that_prints_to_with_new_line(proc_output_file,
-                                                                                     text_printed_by_program)
+            python_source = py_programs.single_line_pgm_that_prints_to(proc_output_file,
+                                                                       text_printed_by_program)
 
             program_that_executes_py_source_symbol = NameAndValue(
                 'PROGRAM_THAT_EXECUTES_PY_SOURCE',
                 program_resolvers.for_py_source_on_command_line(python_source)
             )
 
-            symbols = SymbolTable({
+            symbols_dict = {
                 program_that_executes_py_source_symbol.name:
-                    symbol_utils.container(program_that_executes_py_source_symbol.value)
-            })
+                    symbol_utils.container(program_that_executes_py_source_symbol.value),
+            }
+            symbols_dict.update(additional_symbols)
+            symbols = SymbolTable(symbols_dict)
 
             program_cases = [
                 ProgramCase('executable file',
                             pgm_args.interpret_py_source_elements(python_source),
-                            asrt.is_empty_sequence
+                            []
                             ),
                 ProgramCase('symbol reference program',
-                            ArgumentElements([pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
-                                program_that_executes_py_source_symbol.name))]),
-                            asrt.matches_sequence([
-                                asrt_pgm.is_program_reference_to(program_that_executes_py_source_symbol.name),
-                            ])
+                            arg.elements([
+                                pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
+                                    program_that_executes_py_source_symbol.name))
+                            ]),
+                            [asrt_pgm.is_program_reference_to(program_that_executes_py_source_symbol.name)]
                             ),
             ]
 
             for program_case in program_cases:
-                for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-                    program_contents_arguments = TransformableContentsConstructor(
-                        output_from_program(ProcOutputFile.STDOUT, program_case.source)
-                    ).without_transformation().as_arguments
-
-                    source = remaining_source(
-                        '{rel_opt} {file_name} {contents_arguments}'.format(rel_opt=rel_opt_conf.option_argument,
-                                                                            file_name=expected_file.file_name,
-                                                                            contents_arguments=program_contents_arguments.first_line),
-                        program_contents_arguments.following_lines)
-                    with self.subTest(relativity_option_string=str(rel_opt_conf.option_argument),
-                                      program=program_case.name,
-                                      remaining_source=source.remaining_source):
-                        self._check(
-                            source,
-                            ArrangementWithSds(
-                                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                                symbols=symbols,
-                            ),
-                            Expectation(
-                                main_result=IS_SUCCESS,
-                                side_effects_on_home=f_asrt.dir_is_empty(),
-                                symbol_usages=program_case.expected_reference,
-                                main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
-                                                                                       fs.DirContents([expected_file])),
-                            ))
-
-
-class TestSuccessfulScenariosWithProgram(TestCaseBase):
-    def test_contents_from_stdout__without_transformer(self):
-        text_printed_by_program = 'text printed by program'
-        expected_file_contents = text_printed_by_program + '\n'
-        expected_file = fs.File('a-file-name.txt', expected_file_contents)
-
-        python_source = py_programs.single_line_pgm_that_prints_to_with_new_line(ProcOutputFile.STDOUT,
-                                                                                 text_printed_by_program)
-
-        program_that_executes_py_source_symbol = NameAndValue(
-            'PROGRAM_THAT_EXECUTES_PY_SOURCE',
-            program_resolvers.for_py_source_on_command_line(python_source)
-        )
-
-        symbols = SymbolTable({
-            program_that_executes_py_source_symbol.name:
-                symbol_utils.container(program_that_executes_py_source_symbol.value)
-        })
-
-        program_cases = [
-            ProgramCase('executable file',
-                        pgm_args.interpret_py_source_elements(
-                            py_programs.single_line_pgm_that_prints_to_with_new_line(ProcOutputFile.STDOUT,
-                                                                                     text_printed_by_program)),
-                        asrt.is_empty_sequence
-                        ),
-            ProgramCase('shell command line',
-                        pgm_args.shell_command(command_that_prints_line_to_stdout(text_printed_by_program)),
-                        asrt.is_empty_sequence
-                        ),
-            ProgramCase('symbol reference program',
-                        ArgumentElements([pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
-                            program_that_executes_py_source_symbol.name))]),
-                        asrt.matches_sequence([
-                            asrt_pgm.is_program_reference_to(program_that_executes_py_source_symbol.name),
-                        ])
-                        ),
-        ]
-
-        for program_case in program_cases:
-            for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
-                program_contents_arguments = TransformableContentsConstructor(
+                program_contents_constructor = TransformableContentsConstructor(
                     output_from_program(ProcOutputFile.STDOUT, program_case.source)
-                ).without_transformation().as_arguments
+                )
+                program_contents_arguments = make_arguments(program_contents_constructor)
 
-                source = remaining_source(
-                    '{rel_opt} {file_name} {contents_arguments}'.format(rel_opt=rel_opt_conf.option_argument,
-                                                                        file_name=expected_file.file_name,
-                                                                        contents_arguments=program_contents_arguments.first_line),
-                    program_contents_arguments.following_lines)
+                rel_opt_conf = AN_ALLOWED_DST_FILE_RELATIVITY
+
+                source = arg.elements([rel_opt_conf.file_argument_with_option(expected_file.name)]) \
+                    .followed_by(program_contents_arguments) \
+                    .as_remaining_source
+
+                expected_symbol_references = program_case.expected_references + additional_symbol_references
+
                 with self.subTest(relativity_option_string=str(rel_opt_conf.option_argument),
                                   program=program_case.name,
                                   remaining_source=source.remaining_source):
                     self._check(
                         source,
                         ArrangementWithSds(
-                            pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
                             symbols=symbols,
                         ),
                         Expectation(
                             main_result=IS_SUCCESS,
                             side_effects_on_home=f_asrt.dir_is_empty(),
-                            symbol_usages=program_case.expected_reference,
+                            symbol_usages=asrt.matches_sequence(expected_symbol_references),
                             main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                                    fs.DirContents([expected_file])),
                         ))
 
-    def test_contents_from_stdout__with_transformer(self):
+
+class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
+    def test_contents_from_stdout_with_transformer(self):
         text_printed_by_program = 'single line of output'
         expected_file_contents = text_printed_by_program.upper() + '\n'
         file_arg = RelOptFileRefArgument('a-file-name.txt', RelOptionType.REL_TMP)

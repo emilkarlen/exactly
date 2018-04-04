@@ -2,7 +2,6 @@ from enum import Enum
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
-
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
     PathRelativityVariants
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home, \
@@ -20,6 +19,9 @@ DISALLOWED_RELATIVITIES = [
     RelOptionType.REL_HOME_CASE,
     RelOptionType.REL_HOME_ACT,
 ]
+
+AN_ALLOWED_DST_FILE_RELATIVITY = conf_rel_non_home(RelNonHomeOptionType.REL_TMP)
+
 ALLOWED_DST_FILE_RELATIVITIES = [
     conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
     conf_rel_non_home(RelNonHomeOptionType.REL_TMP),
