@@ -40,7 +40,7 @@ class _Documentation(SyntaxElementDocumentation):
                      a.Constant(instruction_names.SYMBOL_REF_PROGRAM_INSTRUCTION_NAME)
                      ),
             a.Single(a.Multiplicity.MANDATORY,
-                     instruction_arguments.SYMBOL_NAME_ARGUMENT
+                     PROGRAM_SYMBOL_NAME_ARG
                      ),
             a.Single(a.Multiplicity.ZERO_OR_MORE,
                      GENERIC_ARG
@@ -277,7 +277,7 @@ Arguments continue until end of line, and are appended to any existing arguments
 
 
 If given, {TRANSFORMATION} must appear on a separate line.
-It is appended to any existing transformations defined for {PROGRAM_SYMBOL_NAME}.
+It is appended to any existing transformations of {PROGRAM_SYMBOL_NAME}.
 
 """
 

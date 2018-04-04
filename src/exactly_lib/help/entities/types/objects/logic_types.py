@@ -27,7 +27,8 @@ LINES_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     empty_section_contents())
 
 _PROGRAM_MAIN_DESCRIPTION_REST = """
-An executable program TODO.
+An external executable program
+with optional arguments and output transformation.
 """
 
 _TEXT_PARSER = TextParser({
