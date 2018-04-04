@@ -21,6 +21,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import symbol_syntax
+from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
     FileMatcherResolver, LineMatcherResolver, SymbolValueResolver
@@ -36,6 +37,7 @@ from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
+from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -267,6 +269,11 @@ def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_reso
     return parse_lines_transformer.parse_lines_transformer_from_token_parser(token_parser)
 
 
+def _parse_program(token_parser: TokenParser) -> Tuple[bool, ProgramResolver]:
+    ret_val = parse_program.parse_program(token_parser)
+    return True, ret_val
+
+
 _TYPE_SETUPS = {
     types.PATH_TYPE_INFO.identifier: _parse_not_whole_line(_parse_path),
     types.STRING_TYPE_INFO.identifier: _parse_string,
@@ -274,6 +281,7 @@ _TYPE_SETUPS = {
     types.LINE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_line_matcher),
     types.FILE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_file_matcher),
     types.LINES_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_lines_transformer),
+    types.PROGRAM_TYPE_INFO.identifier: _parse_program,
 }
 
 _TYPES_LIST_IN_ERR_MSG = '|'.join(sorted(_TYPE_SETUPS.keys()))

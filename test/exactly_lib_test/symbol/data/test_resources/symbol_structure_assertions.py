@@ -15,7 +15,7 @@ def equals_container(expected: rs.SymbolContainer,
                                                        rs.SymbolContainer.definition_source.fget,
                                                        equals_line_sequence(expected.definition_source)))
     expected_resolver = expected.resolver
-    assert isinstance(expected_resolver, DataValueResolver), 'All actual values must be SymbolValueResolver'
+    assert isinstance(expected_resolver, DataValueResolver), 'All actual values must be DataValueResolver'
     component_assertions.append(asrt.sub_component('resolver',
                                                    rs.SymbolContainer.resolver.fget,
                                                    equals_resolver(expected_resolver)))
@@ -24,7 +24,7 @@ def equals_container(expected: rs.SymbolContainer,
 
 
 def equals_symbol(expected: su.SymbolDefinition,
-                  ignore_source_line: bool = True) -> asrt.ValueAssertion:
+                  ignore_source_line: bool = True) -> asrt.ValueAssertion[su.SymbolDefinition]:
     return asrt.is_instance_with(su.SymbolDefinition,
                                  asrt.And([
                                      asrt.sub_component('name',
