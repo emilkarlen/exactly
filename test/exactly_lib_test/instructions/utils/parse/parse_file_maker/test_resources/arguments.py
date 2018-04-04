@@ -4,7 +4,6 @@ from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     RelNonHomeOptionType, RelHomeOptionType, RelSdsOptionType
-from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, \
     here_document_arg_elements
@@ -75,33 +74,26 @@ def file(file_name: str,
 
 class TransformableContentsConstructor:
     def __init__(self,
-                 after_transformer: ArgumentElements,
-                 with_new_line_after_transformer: bool = False):
-        self._with_new_line_after_transformer = with_new_line_after_transformer
-        self._after_transformer = after_transformer
-        self._after_transformer_arguments = after_transformer.as_arguments
+                 non_transformer_arguments: ArgumentElements,
+                 with_new_line_before_transformer: bool = True):
+        self._with_new_line_before_transformer = with_new_line_before_transformer
+        self._non_transformer_arguments = non_transformer_arguments
 
     def without_transformation(self) -> ArgumentElements:
-        return explicit_contents_of(self._after_transformer)
+        return explicit_contents_of(self._non_transformer_arguments)
 
     def with_transformation(self, transformer: str) -> ArgumentElements:
-        def args() -> ArgumentElements:
-            if self._with_new_line_after_transformer:
-                first_line = [
-                    option_syntax(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-                    transformer,
-                ]
-                return ArgumentElements(first_line,
-                                        self._after_transformer.all_lines)
-            else:
-                first_line = [
-                                 ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-                                 transformer
-                             ] + self._after_transformer.first_line
-                return ArgumentElements(first_line,
-                                        self._after_transformer.following_lines)
+        transformer_elements = [
+            ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+            transformer,
+        ]
 
-        return explicit_contents_of(args())
+        if self._with_new_line_before_transformer:
+            transformer_arguments = ArgumentElements([], [transformer_elements])
+        else:
+            transformer_arguments = ArgumentElements(transformer_elements)
+        args = self._non_transformer_arguments.last_line_followed_by(transformer_arguments)
+        return explicit_contents_of(args)
 
     def with_and_without_transformer_cases(self, transformer_expr: str) -> Sequence[ArgumentElements]:
         return [

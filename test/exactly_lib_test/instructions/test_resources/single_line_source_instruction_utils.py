@@ -18,7 +18,8 @@ def equivalent_source_variants__with_source_check(put: unittest.TestCase,
 
     Assumes that the body of the loop parses using the given source.
     """
-    for following_lines, source_assertion in _SOURCE_VARIANT_TEST_CASES:
+    num_source_lines = len(instruction_argument.split('\n'))
+    for following_lines, source_assertion in _source_variant_test_cases__multi_line(num_source_lines):
         with put.subTest(following_lines=repr(following_lines)):
             source = remaining_source(instruction_argument, following_lines)
             yield source
