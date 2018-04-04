@@ -137,6 +137,10 @@ class ArgumentElements:
         return 1 + len(self.following_lines)
 
 
+def elements(elems: List[Stringable]) -> ArgumentElements:
+    return ArgumentElements(elems)
+
+
 def empty() -> ArgumentElements:
     return ArgumentElements([])
 
