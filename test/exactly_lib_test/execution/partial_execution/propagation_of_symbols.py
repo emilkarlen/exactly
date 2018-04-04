@@ -73,10 +73,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
-        # DEBUG
-        steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_AFTER_PARSE, all_defined_symbols)
-        steps_for_act[step.ACT__PARSE.step] = set()
-
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
                 step.SETUP__VALIDATE_PRE_SDS.step: all_defined_symbols,
@@ -140,11 +136,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         all_defined_symbols = {symbol.name}
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
-
-        # DEBUG
-        steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_WITH_ENV_ARG, set())
-        steps_for_act[step.ACT__VALIDATE_PRE_SDS.step] = all_defined_symbols
-        steps_for_act[step.ACT__VALIDATE_POST_SETUP.step] = all_defined_symbols
 
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
@@ -217,11 +208,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
-        # DEBUG
-        steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_WITH_ENV_ARG, set())
-        steps_for_act[step.ACT__VALIDATE_PRE_SDS.step] = all_defined_symbols
-        steps_for_act[step.ACT__VALIDATE_POST_SETUP.step] = all_defined_symbols
-
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
                 step.SETUP__VALIDATE_PRE_SDS.step: all_defined_symbols,
@@ -292,11 +278,6 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         all_defined_symbols = {symbol.name}
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
-
-        # DEBUG
-        steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_WITH_ENV_ARG, set())
-        steps_for_act[step.ACT__VALIDATE_PRE_SDS.step] = all_defined_symbols
-        steps_for_act[step.ACT__VALIDATE_POST_SETUP.step] = all_defined_symbols
 
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
