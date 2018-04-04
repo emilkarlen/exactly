@@ -21,5 +21,5 @@ class DirDepValueResolverWithValidation(Generic[DIR_DEP_TYPE], DirDepValueResolv
     def validator(self) -> PreOrPostSdsValidator:
         raise NotImplementedError('abstract method')
 
-    def resolve_value(self, symbols: SymbolTable) -> DIR_DEP_TYPE:
+    def resolve(self, symbols: SymbolTable) -> DIR_DEP_TYPE:
         raise NotImplementedError('abstract method')

@@ -212,7 +212,7 @@ class Executor:
                  pgm_output_dir: pathlib.Path,
                  environment: PathResolvingEnvironmentPreOrPostSds,
                  program_resolver: ProgramResolver) -> ResultWithTransformationData:
-        program = program_resolver.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        program = program_resolver.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,

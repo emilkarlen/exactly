@@ -76,7 +76,7 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
     def new_with_additional_argument_list(self, additional_arguments: ListResolver):
         return self.new_with_additional_arguments(arguments_resolver.new_without_validation(additional_arguments))
 
-    def resolve_value(self, symbols: SymbolTable) -> CommandValue:
+    def resolve(self, symbols: SymbolTable) -> CommandValue:
         return self.driver.make(symbols, self._arguments.arguments_list)
 
     @property
@@ -94,7 +94,7 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
             self._arguments])
 
     def resolve_of_any_dep(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return self.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
 
     @property
     def driver(self) -> CommandDriverResolver:

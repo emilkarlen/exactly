@@ -44,10 +44,10 @@ class ProgramResolverForCommand(ProgramResolver):
     def validator(self) -> PreOrPostSdsValidator:
         return pre_or_post_validation.all_of(self._validators)
 
-    def resolve_value(self, symbols: SymbolTable) -> ProgramValue:
+    def resolve(self, symbols: SymbolTable) -> ProgramValue:
         acc = self._accumulated_elements
         accumulated_command = self._command.new_with_additional_arguments(acc.arguments)
-        return ProgramValue(accumulated_command.resolve_value(symbols),
+        return ProgramValue(accumulated_command.resolve(symbols),
                             acc.resolve_stdin_data(symbols),
                             acc.resolve_transformations(symbols))
 

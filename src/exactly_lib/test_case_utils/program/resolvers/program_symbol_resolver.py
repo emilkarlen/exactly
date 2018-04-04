@@ -53,7 +53,7 @@ class ProgramResolverForSymbolReference(ProgramResolver):
             self._accumulated_elements.validator,
         ])
 
-    def resolve_value(self, symbols: SymbolTable) -> ProgramValue:
+    def resolve(self, symbols: SymbolTable) -> ProgramValue:
         program_of_symbol = lookups.lookup_program(symbols, self._symbol_name)
         acc = self._accumulated_elements
         accumulated_program = program_of_symbol.new_accumulated(acc.stdin,
@@ -62,7 +62,7 @@ class ProgramResolverForSymbolReference(ProgramResolver):
                                                                 acc.validators)
         assert isinstance(accumulated_program, ProgramResolver)  # Type info for IDE
 
-        program_value = accumulated_program.resolve_value(symbols)
+        program_value = accumulated_program.resolve(symbols)
 
         assert isinstance(program_value, ProgramValue)  # Type info for IDE
 
