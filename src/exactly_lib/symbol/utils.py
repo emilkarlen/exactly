@@ -10,10 +10,10 @@ DIR_DEP_TYPE = TypeVar('DIR_DEP_TYPE', SingleDirDependentValue, MultiDirDependen
 
 
 class ValueResolver(Generic[RESOLVED_TYPE], ObjectWithTypedSymbolReferences):
-    def resolve_value(self, symbols: SymbolTable) -> RESOLVED_TYPE:
+    def resolve(self, symbols: SymbolTable) -> RESOLVED_TYPE:
         raise NotImplementedError('abstract method')
 
 
 class DirDepValueResolver(Generic[DIR_DEP_TYPE], ValueResolver[DIR_DEP_TYPE]):
-    def resolve_value(self, symbols: SymbolTable) -> DIR_DEP_TYPE:
+    def resolve(self, symbols: SymbolTable) -> DIR_DEP_TYPE:
         raise NotImplementedError('abstract method')

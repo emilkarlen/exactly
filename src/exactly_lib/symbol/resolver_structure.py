@@ -29,6 +29,9 @@ class SymbolValueResolver(ObjectWithSymbolReferences):
         """
         raise NotImplementedError('abstract method')
 
+    def resolve(self, symbols: SymbolTable):
+        raise NotImplementedError('abstract method')
+
 
 def get_references(resolver: SymbolValueResolver) -> list:
     return resolver.references

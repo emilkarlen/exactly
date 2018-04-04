@@ -39,7 +39,7 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
              os_services: OsServices) -> ResultAndStderr:
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         command = self._program \
-            .resolve_value(path_resolving_env.symbols) \
+            .resolve(path_resolving_env.symbols) \
             .command \
             .value_of_any_dependency(path_resolving_env.home_and_sds)
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)

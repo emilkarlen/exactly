@@ -46,6 +46,6 @@ class CommandAndStdinResolver(DirDepValueResolverWithValidation[CommandAndStdinV
     def validators(self) -> Sequence[PreOrPostSdsValidator]:
         return tuple(self._command.validators) + tuple(self._stdin.validators)
 
-    def resolve_value(self, symbols: SymbolTable) -> CommandAndStdinValue:
+    def resolve(self, symbols: SymbolTable) -> CommandAndStdinValue:
         return CommandAndStdinValue(self._command.resolve_value(symbols),
                                     self._stdin.resolve_value(symbols))

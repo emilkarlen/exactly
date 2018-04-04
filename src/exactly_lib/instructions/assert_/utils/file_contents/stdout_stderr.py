@@ -104,7 +104,7 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
     def construct(self,
                   source_info: InstructionSourceInfo,
                   environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
-        program = self._program.resolve_value(environment.symbols).value_of_any_dependency(environment.home_and_sds)
+        program = self._program.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
                                                                           source_info,
                                                                           self._checked_output,

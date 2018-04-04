@@ -30,7 +30,7 @@ class ProgramResolver(LogicValueResolver, DirDepValueResolverWithValidation[Prog
     def validator(self) -> PreOrPostSdsValidator:
         raise NotImplementedError('abstract method')
 
-    def resolve_value(self, symbols: SymbolTable) -> ProgramValue:
+    def resolve(self, symbols: SymbolTable) -> ProgramValue:
         raise NotImplementedError('abstract method')
 
     def new_accumulated(self,

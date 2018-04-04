@@ -74,7 +74,7 @@ class FileMakerForContentsFromProgram(FileMaker):
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
         program = self._program \
-            .resolve_value(path_resolving_env.symbols) \
+            .resolve(path_resolving_env.symbols) \
             .value_of_any_dependency(path_resolving_env.home_and_sds)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
