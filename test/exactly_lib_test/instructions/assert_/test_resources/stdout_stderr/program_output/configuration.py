@@ -24,7 +24,7 @@ class ProgramOutputInstructionConfiguration:
         raise NotImplementedError('abstract method')
 
     def py_source_for_print(self, output: str) -> str:
-        return py_programs.single_line_pgm_that_prints_to_no_new_line(self.output_file(), output)
+        return py_programs.single_line_pgm_that_prints_to(self.output_file(), output)
 
 
 class TestCaseBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
