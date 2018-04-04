@@ -26,7 +26,7 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
 
-OUTPUT_FROM_PROGRAM_OPTION_NAME = a.OptionName('from')
+OUTPUT_FROM_PROGRAM_OPTION_NAME = a.OptionName(long_name='from')
 
 
 class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderingBase,
