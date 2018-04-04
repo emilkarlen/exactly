@@ -10,20 +10,8 @@ from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_shell_command
 
 
-def parse_executable_file_as_program(parser: TokenParser) -> ProgramResolver:
-    return parse_executable_file.parse_as_program(parser)
-
-
-def executable_file_program_parser() -> Parser[ProgramResolver]:
-    return parse_executable_file.program_parser()
-
-
-def parse_shell_command_line_as_program(parser: TokenParser) -> ProgramResolver:
-    return parse_shell_command.parse_as_program(parser)
-
-
-def shell_command_line_program_parser() -> Parser[ProgramResolver]:
-    return parse_shell_command.program_parser()
+def program_parser() -> Parser[ProgramResolver]:
+    return parser_classes.ParserFromTokenParserFunction(parse_program)
 
 
 def parse_program(parser: TokenParser,
@@ -48,10 +36,6 @@ def parse_program(parser: TokenParser,
 
 def _parse_simple_program(parser: TokenParser) -> ProgramResolver:
     if parser.consume_and_return_true_if_first_argument_is_unquoted_and_equals(syntax_elements.SHELL_COMMAND_TOKEN):
-        return parse_shell_command_line_as_program(parser)
+        return parse_shell_command.parse_as_program(parser)
     else:
-        return parse_executable_file_as_program(parser)
-
-
-def program_parser() -> Parser[ProgramResolver]:
-    return parser_classes.ParserFromTokenParserFunction(parse_program)
+        return parse_executable_file.parse_as_program(parser)
