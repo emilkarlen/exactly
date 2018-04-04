@@ -14,7 +14,9 @@ def from_program(file: Stringable,
                  output_variant: ProcOutputFile,
                  program: ArgumentElements,
                  transformation: Stringable = None) -> ArgumentElements:
-    program_with_pgm_option = program.prepend_to_first_line([ab.option(parse_file_maker.STDOUT_OPTION)])
+    program_with_pgm_option = program.prepend_to_first_line([
+        ab.option(parse_file_maker.PROGRAM_OUTPUT_OPTIONS[output_variant])
+    ])
 
     ret_val = ArgumentElements([file, instruction_arguments.ASSIGNMENT_OPERATOR])
     if transformation is not None:
