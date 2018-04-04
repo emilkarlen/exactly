@@ -210,13 +210,16 @@ class TokenParser:
                 actual_string))
 
     def consume_optional_constant_string_that_must_be_unquoted_and_equal(self,
-                                                                         expected_constants: Sequence[str]) -> str:
+                                                                         expected_constants: Sequence[str],
+                                                                         must_be_on_current_line: bool = True) -> str:
         """
         Consumes the first token if it is an unquoted string that is equal to one of the expected string constants.
         :param expected_constants: collection of names=strings. Must support the Python 'in' operator
         :return: None iff no match, else the constant that matched
         """
-        if self.token_stream.is_null or self.is_at_eol:
+        if self.token_stream.is_null:
+            return None
+        if must_be_on_current_line and self.is_at_eol:
             return None
         head = self.token_stream.head
         if head.is_quoted:
@@ -349,7 +352,9 @@ class TokenParser:
 
     def parse_default_or_optional_command(self,
                                           parser_of_default: Callable[[TokenParserType], T],
-                                          command_name_2_parser: Dict[str, Callable[[TokenParserType], T]]) -> T:
+                                          command_name_2_parser: Dict[str, Callable[[TokenParserType], T]],
+                                          must_be_on_current_line: bool = True
+                                          ) -> T:
         """
         Checks if the first token is one of a given set of commands.  If the token
         matches a command, then invokes the parser that belongs to the command.
@@ -366,7 +371,8 @@ class TokenParser:
         result from the parser for the command (which must not be None).
         """
 
-        command = self.consume_optional_constant_string_that_must_be_unquoted_and_equal(command_name_2_parser)
+        command = self.consume_optional_constant_string_that_must_be_unquoted_and_equal(command_name_2_parser,
+                                                                                        must_be_on_current_line)
 
         parser_to_use = parser_of_default
         if command is not None:
