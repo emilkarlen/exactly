@@ -37,7 +37,8 @@ def parse_program(parser: TokenParser,
 
 def _parse_simple_program(parser: TokenParser) -> ProgramResolver:
     return parser.parse_default_or_optional_command(parse_executable_file.parse_as_program,
-                                                    _PROGRAM_VARIANT_SETUPS)
+                                                    _PROGRAM_VARIANT_SETUPS,
+                                                    False)
 
 
 _PROGRAM_VARIANT_SETUPS = {
