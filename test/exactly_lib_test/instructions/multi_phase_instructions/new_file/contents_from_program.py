@@ -373,7 +373,7 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
         program_contents_arguments_constructor = TransformableContentsConstructor(
             output_from_program(ProcOutputFile.STDOUT,
                                 pgm_args.interpret_py_source_elements(
-                    py_programs.single_line_pgm_that_prints_to_stdout_no_new_line(text_to_print)),
+                                    py_programs.single_line_pgm_that_prints_to_stdout(text_to_print)),
                                 with_new_line_after_output_option=True,
                                 ),
             with_new_line_after_transformer=True,
