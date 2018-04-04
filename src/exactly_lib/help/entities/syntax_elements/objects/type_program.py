@@ -29,36 +29,53 @@ class _Documentation(SyntaxElementDocumentation):
 
     def invokation_variants(self) -> List[InvokationVariant]:
         return [
-            self._with_optional_transformation([
-                a.Single(a.Multiplicity.MANDATORY,
-                         EXECUTABLE_FILE_PROGRAM_ARG
-                         )]
-            ),
-            self._with_optional_transformation([
-                a.Single(a.Multiplicity.MANDATORY,
-                         a.Constant(instruction_names.SHELL_INSTRUCTION_NAME)
-                         ),
-                a.Single(a.Multiplicity.MANDATORY,
-                         instruction_arguments.COMMAND_ARGUMENT),
-            ]),
-            self._with_optional_transformation([
-                a.Single(a.Multiplicity.MANDATORY,
-                         a.Constant(instruction_names.SYMBOL_REF_PROGRAM_INSTRUCTION_NAME)
-                         ),
-                a.Single(a.Multiplicity.MANDATORY,
-                         instruction_arguments.SYMBOL_NAME_ARGUMENT
-                         ),
-                a.Single(a.Multiplicity.ZERO_OR_MORE,
-                         GENERIC_ARG
-                         ),
-            ]),
+            self._executable_file_variant(),
+            self._shell_command_variant(),
+            self._program_symbol_reference_variant(),
         ]
 
-    def _with_optional_transformation(self, before_trans: list) -> InvokationVariant:
-        return invokation_variant_from_args(before_trans + [
-            a.Single(a.Multiplicity.OPTIONAL,
-                     instruction_arguments.LINES_TRANSFORMATION_ARGUMENT)
-        ])
+    def _program_symbol_reference_variant(self):
+        return self._with_optional_transformation([
+            a.Single(a.Multiplicity.MANDATORY,
+                     a.Constant(instruction_names.SYMBOL_REF_PROGRAM_INSTRUCTION_NAME)
+                     ),
+            a.Single(a.Multiplicity.MANDATORY,
+                     instruction_arguments.SYMBOL_NAME_ARGUMENT
+                     ),
+            a.Single(a.Multiplicity.ZERO_OR_MORE,
+                     GENERIC_ARG
+                     ),
+        ], _SYMBOL_REFERENCE_TO_PROGRAM_DESCRIPTION)
+
+    def _shell_command_variant(self):
+        return self._with_optional_transformation([
+            a.Single(a.Multiplicity.MANDATORY,
+                     a.Constant(instruction_names.SHELL_INSTRUCTION_NAME)
+                     ),
+            a.Single(a.Multiplicity.MANDATORY,
+                     instruction_arguments.COMMAND_ARGUMENT)
+        ],
+            _SHELL_COMMAND_VARIANT_DESCRIPTION)
+
+    def _executable_file_variant(self):
+        return self._with_optional_transformation([
+            a.Single(a.Multiplicity.MANDATORY,
+                     EXECUTABLE_FILE_PROGRAM_ARG
+                     )],
+            _EXECUTABLE_FILE_PROGRAM_VARIANT_DESCRIPTION
+        )
+
+    def _with_optional_transformation(self,
+                                      before_trans: List[a.ArgumentUsage],
+                                      description_rest: str) -> InvokationVariant:
+        return invokation_variant_from_args(
+            before_trans +
+            [
+                a.Single(a.Multiplicity.OPTIONAL,
+                         instruction_arguments.LINES_TRANSFORMATION_ARGUMENT)],
+            _TEXT_PARSER.fnap(description_rest)
+
+        )
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         exe_file_doc = _ExecutableFileDoc()
@@ -97,16 +114,6 @@ class _Documentation(SyntaxElementDocumentation):
     def _symbol_reference_sed(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument.name,
                                         _TEXT_PARSER.fnap(_SYMBOL_REFERENCE_DESCRIPTION))
-
-    @staticmethod
-    def _cl_arguments() -> list:
-        return [
-            a.Choice(a.Multiplicity.ZERO_OR_MORE,
-                     [
-                         syntax_elements.STRING_SYNTAX_ELEMENT.argument,
-                         syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.argument,
-                     ]),
-        ]
 
 
 class _ProgramFromExecutableFileDoc:
@@ -181,9 +188,9 @@ class _ExecutableFileDoc:
             _TEXT_PARSER.fnap(_EXECUTABLE_DESCRIPTION),
             [
                 invokation_variant_from_args(executable_path_arguments,
-                                             _TEXT_PARSER.fnap('An executable program.')),
+                                             _TEXT_PARSER.fnap('An executable file.')),
                 invokation_variant_from_args(executable_in_parenthesis_arguments,
-                                             _TEXT_PARSER.fnap('An executable program with arguments. '
+                                             _TEXT_PARSER.fnap('An executable file with arguments. '
                                                                '(Must be inside parentheses.)')),
                 invokation_variant_from_args(python_interpreter_arguments,
                                              _TEXT_PARSER.fnap(PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM)),
@@ -223,6 +230,8 @@ EXECUTABLE_ARG = a.Named('EXECUTABLE')
 
 GENERIC_ARG = a.Named('ARGUMENT')
 
+PROGRAM_SYMBOL_NAME_ARG = a.Named('PROGRAM-SYMBOL-NAME')
+
 _TEXT_PARSER = TextParser({
     'EXECUTABLE': EXECUTABLE_ARG.name,
     'EXECUTABLE_FILE': EXECUTABLE_FILE_PROGRAM_ARG.name,
@@ -231,7 +240,10 @@ _TEXT_PARSER = TextParser({
     'list_type': formatting.keyword(types.LIST_TYPE_INFO.name.singular),
     'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
     'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
-    'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name
+    'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
+    'TRANSFORMATION': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
+    'PROGRAM_SYMBOL_NAME': PROGRAM_SYMBOL_NAME_ARG.name,
+    'define_symbol': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
 
 })
 
@@ -239,11 +251,41 @@ DOCUMENTATION = _Documentation()
 
 _PROGRAM_FROM_EXECUTABLE_FILE_SINGLE_LINE_DESCRIPTION = 'A program with an {EXECUTABLE_FILE}'
 
+_EXECUTABLE_FILE_PROGRAM_VARIANT_DESCRIPTION = """\
+An executable file with arguments.
+
+
+All elements on the current line are considered arguments.
+
+
+If given, {TRANSFORMATION} must appear on a separate line.
+"""
+
+_SHELL_COMMAND_VARIANT_DESCRIPTION = """\
+A single line that is passed as a single string to the operating system's shell.
+
+
+If given, {TRANSFORMATION} must appear on a separate line.
+"""
+
+_SYMBOL_REFERENCE_TO_PROGRAM_DESCRIPTION = """\
+Reference to a program that has been defined using the {define_symbol} instruction.
+
+
+Arguments continue until end of line, and are appended to any existing arguments of
+{PROGRAM_SYMBOL_NAME}.
+
+
+If given, {TRANSFORMATION} must appear on a separate line.
+It is appended to any existing transformations defined for {PROGRAM_SYMBOL_NAME}.
+
+"""
+
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the output from the program.
 
 
-Depending on the context, either stdin or stderr is transformed.
+Depending on the context, either stdout or stderr is transformed.
 """
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
@@ -255,7 +297,7 @@ A line with a program and arguments, except for transformation.
 """
 
 _EXECUTABLE_FILE_PROGRAM_DESCRIPTION = """\
-Specifies a program by giving an {EXECUTABLE} and arguments.
+Specifies a program that is an existing executable file, and arguments.
 """
 
 _EXECUTABLE_DESCRIPTION = """\
