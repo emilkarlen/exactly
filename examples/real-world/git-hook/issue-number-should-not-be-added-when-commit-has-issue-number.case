@@ -1,6 +1,9 @@
 [setup]
 
 
+including get-git-log-msg-program.def
+
+
 including repo-in-cwd-with-installed-commit-hook.setup
 
 
@@ -17,17 +20,12 @@ $ git add file-to-add
 $ git commit -m "AB-123: commit message with issue number"
 
 
-[before-assert]
-
-
-including extract-commit-msg-to-file--actual-txt.before-assert
-
-
 [assert]
 
 
 exitcode == 0
 
-contents actual.txt equals <<EOF
+stdout --from @ GET_LOG_MESSAGE_OF_LAST_COMMIT
+       equals  <<eof
 AB-123: commit message with issue number
-EOF
+eof

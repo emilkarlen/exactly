@@ -1,5 +1,0 @@
-def lines-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num == 5 | replace '^\s*' ''
-
-file actual.txt = --stdout
-                  $ git log
-                  --transformed-by EXTRACT_FIRST_LOG_MESSAGE
