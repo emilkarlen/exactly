@@ -19,7 +19,6 @@ from exactly_lib.test_case_utils.parse.parse_string import parse_string_from_tok
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.test_case_utils.program.syntax_elements import SHELL_COMMAND_TOKEN
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import is_option_string
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
@@ -45,8 +44,9 @@ class FileContentsDocumentation:
         self._contents_argument_sed = contents_argument_sed
         self._src_rel_opt_arg_conf = _src_rel_opt_arg_conf_for_phase(phase_is_after_act)
         self._tp = TextParser({
-            'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.argument.name,
-            'SHELL_COMMAND_LINE': instruction_arguments.COMMAND_ARGUMENT.name,
+            'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
+            'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
+            'TRANSFORMATION': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
         })
 
@@ -62,7 +62,9 @@ class FileContentsDocumentation:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT,
                                syntax_elements.STRING_SYNTAX_ELEMENT,
                                syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
-                               syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT]
+                               syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
+                               syntax_elements.PROGRAM_SYNTAX_ELEMENT,
+                               ]
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
     def _file_contents_sed(self) -> SyntaxElementDescription:
@@ -75,14 +77,11 @@ class FileContentsDocumentation:
         string_arg = a.Single(a.Multiplicity.MANDATORY,
                               instruction_arguments.STRING)
 
-        shell_command_token = a.Single(a.Multiplicity.MANDATORY,
-                                       a.Named(SHELL_COMMAND_TOKEN))
+        program_token = a.Single(a.Multiplicity.MANDATORY,
+                                 syntax_elements.PROGRAM_SYNTAX_ELEMENT.argument)
 
-        command_arg = a.Single(a.Multiplicity.MANDATORY,
-                               instruction_arguments.COMMAND_ARGUMENT)
-
-        stdout_option = a.Choice(a.Multiplicity.MANDATORY,
-                                 [a.Option(option_name) for option_name in PROGRAM_OUTPUT_OPTIONS.values()])
+        output_channel_token = a.Choice(a.Multiplicity.MANDATORY,
+                                        [a.Option(option_name) for option_name in PROGRAM_OUTPUT_OPTIONS.values()])
 
         file_option = a.Single(a.Multiplicity.MANDATORY,
                                a.Option(FILE_OPTION))
@@ -98,10 +97,9 @@ class FileContentsDocumentation:
                                           src_file_arg],
                                          self._tp.fnap(_FILE_DESCRIPTION)),
             invokation_variant_from_args([optional_transformation_option,
-                                          stdout_option,
-                                          shell_command_token,
-                                          command_arg],
-                                         self._tp.fnap(_SHELL_COMMAND_DESCRIPTION)),
+                                          output_channel_token,
+                                          program_token],
+                                         self._tp.fnap(_PROGRAM_DESCRIPTION)),
         ]
         return SyntaxElementDescription(self._contents_argument_sed,
                                         [],
@@ -211,15 +209,19 @@ def _src_rel_opt_arg_conf(rel_option_types: set) -> RelOptionArgumentConfigurati
 
 _SRC_REL_OPTIONS__BEFORE_ACT = set(RelOptionType).difference({RelOptionType.REL_RESULT})
 _SRC_REL_OPTIONS__AFTER_ACT = set(RelOptionType)
+
 _TRANSFORMATION_DESCRIPTION = """\
 Transforms the original contents.
 """
-_SHELL_COMMAND_DESCRIPTION = """\
-The output from a shell command.
+
+_PROGRAM_DESCRIPTION = """\
+The output from a {PROGRAM}.
 
 
-{SHELL_COMMAND_LINE} is the literal text until end of line.
+{PROGRAM} includes arguments until end of line,
+and an optional {TRANSFORMATION} on a following line.
 """
+
 _FILE_DESCRIPTION = """\
 The contents of an existing file.
 """
