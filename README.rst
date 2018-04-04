@@ -403,9 +403,9 @@ it just displays some of Exactly's features.)
 
     file output-from-git.txt = --stdout $ git status
 
-    file git-branch-info.txt = --transformed-by select line-num == 1
-                               --stdout
+    file git-branch-info.txt = --stdout
                                $ git status
+                               --transformed-by select line-num == 1
 
     dir root-dir-for-act-phase
 
@@ -480,8 +480,8 @@ it just displays some of Exactly's features.)
     run --python --interpret custom-assertion.py
 
 
-    file --rel-tmp modified-stdout.txt = --transformed-by select line-num >= 10
-                                         --file --rel-result stdout
+    file --rel-tmp modified-stdout.txt = --file --rel-result stdout
+                                         --transformed-by select line-num >= 10
 
     contents --rel-tmp modified-stdout.txt
              equals <<EOF
@@ -490,7 +490,8 @@ it just displays some of Exactly's features.)
     EOF
 
 
-    stdout  --transformed-by ( select line-num >= 10 )  equals <<EOF
+    stdout  --transformed-by ( select line-num >= 10 )
+            equals <<EOF
     this should be line 10 of original stdout.txt
     this should be line 11 of original stdout.txt
     EOF
