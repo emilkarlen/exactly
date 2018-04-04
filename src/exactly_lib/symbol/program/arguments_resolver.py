@@ -13,19 +13,8 @@ class ArgumentsResolver(ObjectWithTypedSymbolReferences):
                  validators: Sequence[PreOrPostSdsValidator] = ()):
         self._arguments = arguments
         self._validators = validators
-        # DEBUG
-        if not isinstance(arguments, ListResolver):
-            raise ValueError('Not a ListResolver')
-        if not isinstance(validators, list) and not isinstance(validators, tuple):
-            raise ValueError('Not a sequence of PreOrPostSdsValidator:s')
-        for validator in validators:
-            if not isinstance(validator, PreOrPostSdsValidator):
-                raise ValueError('Not a PreOrPostSdsValidator')
 
     def new_accumulated(self, arguments_resolver):
-        if not isinstance(arguments_resolver, ArgumentsResolver):
-            raise ValueError('Not a ArgumentsResolver')
-
         args = list_resolvers.concat([self._arguments, arguments_resolver.arguments_list])
         validators = tuple(self._validators) + tuple(arguments_resolver.validators)
 

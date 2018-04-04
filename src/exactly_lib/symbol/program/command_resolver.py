@@ -55,11 +55,6 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
     def __init__(self,
                  command_driver: CommandDriverResolver,
                  arguments: ArgumentsResolver):
-        # DEBUG
-        if not isinstance(command_driver, CommandDriverResolver):
-            raise ValueError('Not a CommandDriverResolver')
-        if not isinstance(arguments, ArgumentsResolver):
-            raise ValueError('Not a ArgumentsResolver')
         self._driver = command_driver
         self._arguments = arguments
 
