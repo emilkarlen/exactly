@@ -4,7 +4,6 @@ from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_shell_command, \
@@ -15,14 +14,11 @@ def program_parser() -> Parser[ProgramResolver]:
     return parser_classes.ParserFromTokenParserFunction(parse_program)
 
 
-def parse_program(parser: TokenParser,
-                  initial_transformation: LinesTransformerResolver = None) -> ProgramResolver:
+def parse_program(parser: TokenParser) -> ProgramResolver:
     """
     Consumes whole lines, so that the parser will be at the start of the following line, after the parse.
     """
     program = _parse_simple_program(parser)
-    if initial_transformation:
-        program = program.new_with_appended_transformations([initial_transformation])
 
     def parse_transformer(_parser: TokenParser) -> ProgramResolver:
         transformer = parse_lines_transformer.parse_lines_transformer_from_token_parser(_parser)
