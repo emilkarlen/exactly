@@ -347,6 +347,33 @@ class TokenParser:
             return None
         return command_name_2_parser[command](self)
 
+    def parse_default_or_optional_command(self,
+                                          parser_of_default: Callable[[TokenParserType], T],
+                                          command_name_2_parser: Dict[str, Callable[[TokenParserType], T]]) -> T:
+        """
+        Checks if the first token is one of a given set of commands.  If the token
+        matches a command, then invokes the parser that belongs to the command.
+        Otherwise, a default parser is invoked.
+
+        Each command is a plain string.
+
+        If the token is quoted, then it does not match any command, even if the
+        string inside the quotes is equal to one of the commands.
+
+        :param command_name_2_parser: string -> method that takes this parse as argument. Must not return None
+
+        :return: None if (parser is at end of line, or no choice matches). Else
+        result from the parser for the command (which must not be None).
+        """
+
+        command = self.consume_optional_constant_string_that_must_be_unquoted_and_equal(command_name_2_parser)
+
+        parser_to_use = parser_of_default
+        if command is not None:
+            parser_to_use = command_name_2_parser[command]
+
+        return parser_to_use(self)
+
     def parse_mandatory_command(self,
                                 command_name_2_parser: Dict[str, Callable[[TokenParserType], T]],
                                 syntax_element_name: str) -> T:
