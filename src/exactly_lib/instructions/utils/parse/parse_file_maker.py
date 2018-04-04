@@ -9,7 +9,6 @@ from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForCon
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.data import string_resolvers
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import parse_optional_transformer_resolver
@@ -92,12 +91,12 @@ class FileContentsDocumentation:
         invokation_variants = [
             invokation_variant_from_args([string_arg]),
             invokation_variant_from_args([here_doc_arg]),
-            invokation_variant_from_args([optional_transformation_option,
-                                          file_option,
-                                          src_file_arg],
+            invokation_variant_from_args([file_option,
+                                          src_file_arg,
+                                          optional_transformation_option,
+                                          ],
                                          self._tp.fnap(_FILE_DESCRIPTION)),
-            invokation_variant_from_args([optional_transformation_option,
-                                          output_channel_token,
+            invokation_variant_from_args([output_channel_token,
                                           program_token],
                                          self._tp.fnap(_PROGRAM_DESCRIPTION)),
         ]
@@ -146,10 +145,8 @@ def parse_file_maker(instruction_config: InstructionConfig,
 
     head_source_string = parser.token_stream.head.source_string
     if is_option_string(head_source_string):
-        contents_transformer = parse_optional_transformer_resolver(parser)
         return _parse_file_maker_with_transformation(instruction_config,
-                                                     parser,
-                                                     contents_transformer)
+                                                     parser)
     else:
         if head_source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
             contents = parse_here_document.parse_as_last_argument_from_token_parser(True, parser)
@@ -161,18 +158,15 @@ def parse_file_maker(instruction_config: InstructionConfig,
 
 
 def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
-                                          parser: TokenParser,
-                                          contents_transformer: LinesTransformerResolver) -> FileMaker:
+                                          parser: TokenParser) -> FileMaker:
     def _parse_program_from_stdout(my_parser: TokenParser) -> FileMaker:
-        program = parse_program.parse_program(my_parser,
-                                              initial_transformation=contents_transformer)
+        program = parse_program.parse_program(my_parser)
         return FileMakerForContentsFromProgram(instruction_config.source_info,
                                                ProcOutputFile.STDOUT,
                                                program)
 
     def _parse_program_from_stderr(my_parser: TokenParser) -> FileMaker:
-        program = parse_program.parse_program(my_parser,
-                                              initial_transformation=contents_transformer)
+        program = parse_program.parse_program(my_parser)
         return FileMakerForContentsFromProgram(instruction_config.source_info,
                                                ProcOutputFile.STDERR,
                                                program)
@@ -180,6 +174,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
     def _parse_file(my_parser: TokenParser) -> FileMaker:
         src_file = parse_file_ref_from_token_parser(instruction_config.src_rel_opt_arg_conf,
                                                     my_parser)
+        contents_transformer = parse_optional_transformer_resolver(parser)
         my_parser.report_superfluous_arguments_if_not_at_eol()
         return FileMakerForContentsFromExistingFile(instruction_config.source_info,
                                                     contents_transformer,

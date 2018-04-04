@@ -285,7 +285,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             ])
                         ))
 
-    def test_new_line_before_mandatory_arguments_SHOULD_be_accepted(self):
+    def test_no_new_line_after_mandatory_arguments_SHOULD_be_accepted(self):
         # ARRANGE #
 
         identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
@@ -306,7 +306,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                  src_file_rel_opt_conf,
                  with_new_line_after_output_option=True,
                  ),
-            with_new_line_after_transformer=True,
+            with_new_line_before_transformer=False,
         )
 
         file_contents_cases = [

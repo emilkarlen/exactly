@@ -132,6 +132,22 @@ class ArgumentElements:
         return ArgumentElements(self.first_line + list(first_line_separator) + argument_elements.first_line,
                                 self.following_lines + argument_elements.following_lines)
 
+    def last_line_followed_by(self,
+                              argument_elements,
+                              first_line_separator: Sequence = ()):
+        """
+        :type argument_elements: ArgumentElements
+        :param first_line_separator: String that separates the first line of the two arguments
+        :rtype: ArgumentElements
+        """
+        if not self.following_lines:
+            return self.followed_by(argument_elements, first_line_separator)
+        else:
+            return ArgumentElements(self.first_line,
+                                    self.following_lines[:-1] +
+                                    [self.following_lines[-1] + argument_elements.first_line] +
+                                    argument_elements.following_lines)
+
     @property
     def num_lines(self) -> int:
         return 1 + len(self.following_lines)

@@ -188,7 +188,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
         instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(
             rel_opt=dst_rel_opt_conf.option_argument,
             file_name=expected_file.file_name,
-            contents_arguments=file_contents_arg.first_line
+            contents_arguments=file_contents_arg.as_single_string
         )
 
         # ACT & ASSERT #
@@ -236,7 +236,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
         instruction_arguments = '{rel_opt} {file_name} {shell_contents_arguments}'.format(
             rel_opt=rel_opt_conf.option_argument,
             file_name=expected_file.file_name,
-            shell_contents_arguments=shell_contents_arguments.first_line,
+            shell_contents_arguments=shell_contents_arguments.as_single_string,
         )
 
         for source in equivalent_source_variants__with_source_check(self, instruction_arguments):

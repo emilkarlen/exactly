@@ -3,7 +3,7 @@ from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, elements
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
@@ -18,14 +18,14 @@ def from_program(file: Stringable,
         ab.option(parse_file_maker.PROGRAM_OUTPUT_OPTIONS[output_variant])
     ])
 
-    ret_val = ArgumentElements([file, instruction_arguments.ASSIGNMENT_OPERATOR])
-    if transformation is not None:
-        ret_val = ret_val.append_to_first_line([ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
-                                                transformation
-                                                ])
-        return ret_val.followed_by_lines(program_with_pgm_option.all_lines)
+    ret_val = ArgumentElements([file, instruction_arguments.ASSIGNMENT_OPERATOR]) \
+        .followed_by(program_with_pgm_option)
+    if transformation is None:
+        return ret_val
     else:
-        return ret_val.append_to_first_and_following_lines(program_with_pgm_option)
+        return ret_val.followed_by(elements([ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
+                                             transformation
+                                             ]))
 
 
 def complete_arguments(dst_file: PathArgumentWithRelativity,

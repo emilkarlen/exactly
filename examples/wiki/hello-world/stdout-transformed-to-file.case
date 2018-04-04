@@ -4,9 +4,10 @@ hello-world
 
 [before-assert]
 
-file transformed-output.txt = --transformed-by TO_UPPER_CASE | replace '^HELLO, ' ''
-                              --file
+file transformed-output.txt = --file
                               --rel-result stdout
+                              --transformed-by TO_UPPER_CASE | replace '^HELLO, ' ''
+
 
 [assert]
 

@@ -8,9 +8,8 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
@@ -28,7 +27,6 @@ from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.a
     TransformableContentsConstructor, output_from_program
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
@@ -48,7 +46,6 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
-from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.arguments_building import Stringable
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -319,80 +316,6 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
                                                                           fs.DirContents([expected_file])),
                             source=source_case.expected_value
                         ))
-
-    def test_new_line_before_mandatory_arguments_SHOULD_be_accepted(self):
-        # ARRANGE #
-
-        identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            LinesTransformerResolverConstantTestImpl(IdentityLinesTransformer()))
-
-        symbols = SymbolTable({
-            identity_transformer.name: container(identity_transformer.value),
-        })
-
-        text_to_print = 'text to print'
-        expected_dst_file = fs.File('dst-file.txt', text_to_print)
-
-        dst_file_rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_ACT)
-        assertion_on_non_home_contents = dst_file_rel_opt_conf.assert_root_dir_contains_exactly(
-            fs.DirContents([expected_dst_file]))
-
-        program_contents_arguments_constructor = TransformableContentsConstructor(
-            output_from_program(ProcOutputFile.STDOUT,
-                                pgm_args.interpret_py_source_elements(
-                                    py_programs.single_line_pgm_that_prints_to_stdout(text_to_print)),
-                                with_new_line_after_output_option=True,
-                                ),
-            with_new_line_after_transformer=True,
-        )
-
-        file_contents_cases = [
-            NameAndValue(
-                'without transformation',
-                program_contents_arguments_constructor.without_transformation()
-            ),
-            NameAndValue(
-                'with transformation',
-                program_contents_arguments_constructor.with_transformation(identity_transformer.name)
-            ),
-        ]
-
-        text_on_line_after_instruction = ' text on line after instruction'
-
-        for file_contents_case in file_contents_cases:
-            optional_arguments_elements = file_contents_case.value
-            assert isinstance(optional_arguments_elements, ArgumentElements)  # Type info for IDE
-            optional_arguments = optional_arguments_elements.as_arguments
-
-            with self.subTest(file_contents_variant=file_contents_case.name,
-                              first_line_argments=optional_arguments.first_line):
-                source = remaining_source(
-                    '{rel_opt} {dst_file_name} {optional_arguments}'.format(
-                        rel_opt=dst_file_rel_opt_conf.option_argument,
-                        dst_file_name=expected_dst_file.name,
-                        optional_arguments=optional_arguments.first_line,
-                    ),
-                    optional_arguments.following_lines +
-                    [text_on_line_after_instruction]
-                )
-
-                # ACT & ASSERT #
-
-                self._check(source,
-                            ArrangementWithSds(
-                                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
-                                symbols=symbols,
-                            ),
-                            Expectation(
-                                main_result=IS_SUCCESS,
-                                symbol_usages=asrt.anything_goes(),
-                                main_side_effects_on_sds=assertion_on_non_home_contents,
-                                source=source_is_not_at_end(
-                                    remaining_part_of_current_line=asrt.equals(text_on_line_after_instruction)
-                                )
-
-                            )
-                            )
 
 
 class TestFailingValidation(TestCaseBase):
