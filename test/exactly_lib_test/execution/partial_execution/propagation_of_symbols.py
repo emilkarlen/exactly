@@ -73,6 +73,7 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
+        # DEBUG
         steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_AFTER_PARSE, all_defined_symbols)
         steps_for_act[step.ACT__PARSE.step] = set()
 
@@ -82,7 +83,13 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
                 step.SETUP__MAIN.step: set(),
                 step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
-            PhaseEnum.ACT: steps_for_act,
+            PhaseEnum.ACT: {
+                step.ACT__PARSE.step: set(),
+                step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
+                step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
+                step.ACT__EXECUTE.step: all_defined_symbols,
+                step.ACT__PREPARE.step: all_defined_symbols,
+            },
             PhaseEnum.BEFORE_ASSERT: psr.same_value_for_all_steps(step.ALL_BEFORE_ASSERT_WITH_ENV_ARG,
                                                                   all_defined_symbols),
             PhaseEnum.ASSERT: psr.same_value_for_all_steps(step.ALL_ASSERT_WITH_ENV_ARG, all_defined_symbols),
@@ -134,25 +141,33 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
+        # DEBUG
         steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_WITH_ENV_ARG, set())
         steps_for_act[step.ACT__VALIDATE_PRE_SDS.step] = all_defined_symbols
+        steps_for_act[step.ACT__VALIDATE_POST_SETUP.step] = all_defined_symbols
 
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
                 step.SETUP__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.SETUP__MAIN.step: set(),
-                step.SETUP__VALIDATE_POST_SETUP.step: set(),
+                step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
-            PhaseEnum.ACT: steps_for_act,
+            PhaseEnum.ACT: {
+                step.ACT__PARSE.step: set(),
+                step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
+                step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
+                step.ACT__EXECUTE.step: set(),
+                step.ACT__PREPARE.step: set(),
+            },
             PhaseEnum.BEFORE_ASSERT: {
                 step.BEFORE_ASSERT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.BEFORE_ASSERT__MAIN.step: set(),
-                step.BEFORE_ASSERT__VALIDATE_POST_SETUP.step: set(),
+                step.BEFORE_ASSERT__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.ASSERT: {
                 step.ASSERT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.ASSERT__MAIN.step: all_defined_symbols,
-                step.ASSERT__VALIDATE_POST_SETUP.step: set(),
+                step.ASSERT__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.CLEANUP: psr.same_value_for_all_steps(step.ALL_CLEANUP_WITH_ENV_ARG, all_defined_symbols),
         }
@@ -202,25 +217,33 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
+        # DEBUG
         steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_WITH_ENV_ARG, set())
         steps_for_act[step.ACT__VALIDATE_PRE_SDS.step] = all_defined_symbols
+        steps_for_act[step.ACT__VALIDATE_POST_SETUP.step] = all_defined_symbols
 
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
                 step.SETUP__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.SETUP__MAIN.step: set(),
-                step.SETUP__VALIDATE_POST_SETUP.step: set(),
+                step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
-            PhaseEnum.ACT: steps_for_act,
+            PhaseEnum.ACT: {
+                step.ACT__PARSE.step: set(),
+                step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
+                step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
+                step.ACT__EXECUTE.step: set(),
+                step.ACT__PREPARE.step: set(),
+            },
             PhaseEnum.BEFORE_ASSERT: {
                 step.BEFORE_ASSERT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.BEFORE_ASSERT__MAIN.step: set(),
-                step.BEFORE_ASSERT__VALIDATE_POST_SETUP.step: set(),
+                step.BEFORE_ASSERT__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.ASSERT: {
                 step.ASSERT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.ASSERT__MAIN.step: set(),
-                step.ASSERT__VALIDATE_POST_SETUP.step: set(),
+                step.ASSERT__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.CLEANUP: psr.same_value_for_all_steps(step.ALL_CLEANUP_WITH_ENV_ARG, all_defined_symbols),
         }
@@ -270,25 +293,33 @@ class TestPropagationOfSymbolBetweenPhases(unittest.TestCase):
         symbol_definition = data_symbol_utils.string_symbol_definition(symbol.name, symbol.value)
         symbol_usages_of_instruction_that_defines_symbol = [symbol_definition]
 
+        # DEBUG
         steps_for_act = psr.same_value_for_all_steps(step.ALL_ACT_WITH_ENV_ARG, set())
         steps_for_act[step.ACT__VALIDATE_PRE_SDS.step] = all_defined_symbols
+        steps_for_act[step.ACT__VALIDATE_POST_SETUP.step] = all_defined_symbols
 
         expected_phase_2_step_2_names_set = {
             PhaseEnum.SETUP: {
                 step.SETUP__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.SETUP__MAIN.step: set(),
-                step.SETUP__VALIDATE_POST_SETUP.step: set(),
+                step.SETUP__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
-            PhaseEnum.ACT: steps_for_act,
+            PhaseEnum.ACT: {
+                step.ACT__PARSE.step: set(),
+                step.ACT__VALIDATE_PRE_SDS.step: all_defined_symbols,
+                step.ACT__VALIDATE_POST_SETUP.step: all_defined_symbols,
+                step.ACT__EXECUTE.step: set(),
+                step.ACT__PREPARE.step: set(),
+            },
             PhaseEnum.BEFORE_ASSERT: {
                 step.BEFORE_ASSERT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.BEFORE_ASSERT__MAIN.step: set(),
-                step.BEFORE_ASSERT__VALIDATE_POST_SETUP.step: set(),
+                step.BEFORE_ASSERT__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.ASSERT: {
                 step.ASSERT__VALIDATE_PRE_SDS.step: all_defined_symbols,
                 step.ASSERT__MAIN.step: set(),
-                step.ASSERT__VALIDATE_POST_SETUP.step: set(),
+                step.ASSERT__VALIDATE_POST_SETUP.step: all_defined_symbols,
             },
             PhaseEnum.CLEANUP: {
                 step.CLEANUP__VALIDATE_PRE_SDS.step: all_defined_symbols,

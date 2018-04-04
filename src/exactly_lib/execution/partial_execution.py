@@ -393,11 +393,12 @@ class _PartialExecutor:
     def __setup__validate_post_setup(self) -> PartialResult:
         return self.__run_instructions_phase_step(phase_step.SETUP__VALIDATE_POST_SETUP,
                                                   phase_step_executors.SetupValidatePostSetupExecutor(
-                                                      self.__post_sds_environment(phase_identifier.SETUP)),
+                                                      self.__post_setup_validation_environment(phase_identifier.SETUP)),
                                                   self.__test_case.setup_phase)
 
     def __act_program_executor(self):
         return _ActProgramExecution(self.__act_source_and_executor,
+                                    self.__post_setup_validation_environment(phase_identifier.ACT),
                                     self.__post_sds_environment(phase_identifier.ACT),
                                     self.___step_execution_result)
 
@@ -405,14 +406,14 @@ class _PartialExecutor:
         return self.__run_instructions_phase_step(
             phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.BeforeAssertValidatePostSetupExecutor(
-                self.__post_sds_environment(phase_identifier.BEFORE_ASSERT)),
+                self.__post_setup_validation_environment(phase_identifier.BEFORE_ASSERT)),
             self.__test_case.before_assert_phase)
 
     def __assert__validate_post_setup(self) -> PartialResult:
         return self.__run_instructions_phase_step(
             phase_step.ASSERT__VALIDATE_POST_SETUP,
             phase_step_executors.AssertValidatePostSetupExecutor(
-                self.__post_sds_environment(phase_identifier.ASSERT)),
+                self.__post_setup_validation_environment(phase_identifier.ASSERT)),
             self.__test_case.assert_phase)
 
     def __assert__main(self) -> PartialResult:
@@ -458,6 +459,15 @@ class _PartialExecutor:
     def __construct_and_set_sds(self):
         sds_root_dir_name = tempfile.mkdtemp(prefix=self.__exe_configuration.sandbox_directory_root_name_prefix)
         self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
+
+    def __post_setup_validation_environment(self, phase: phase_identifier.Phase
+                                            ) -> common.InstructionEnvironmentForPostSdsStep:
+        return common.InstructionEnvironmentForPostSdsStep(self.__configuration.hds,
+                                                           self.__configuration.environ,
+                                                           self.__sandbox_directory_structure,
+                                                           phase.identifier,
+                                                           timeout_in_seconds=self.__configuration.timeout_in_seconds,
+                                                           symbols=self.__instruction_environment_pre_sds.symbols)
 
     def __post_sds_environment(self,
                                phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
@@ -544,19 +554,21 @@ class _PhaseFailureResultConstructor:
 class _ActProgramExecution:
     def __init__(self,
                  act_source_and_executor: ActSourceAndExecutor,
-                 environment: InstructionEnvironmentForPostSdsStep,
+                 environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
+                 environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
                  step_execution_result: _StepExecutionResult()):
         self.act_source_and_executor = act_source_and_executor
-        self.environment = environment
-        self.home_and_sds = environment.home_and_sds
+        self.environment_for_validate_post_setup = environment_for_validate_post_setup
+        self.environment_for_other_steps = environment_for_other_steps
+        self.home_and_sds = environment_for_other_steps.home_and_sds
         self.step_execution_result = step_execution_result
-        self.script_output_dir_path = environment.home_and_sds.sds.test_case_dir
+        self.script_output_dir_path = environment_for_other_steps.home_and_sds.sds.test_case_dir
 
     def validate_post_setup(self) -> PartialResult:
         step = phase_step.ACT__VALIDATE_POST_SETUP
 
         def action():
-            res = self.act_source_and_executor.validate_post_setup(self.environment)
+            res = self.act_source_and_executor.validate_post_setup(self.environment_for_validate_post_setup)
             if res.is_success:
                 return self._pass()
             else:
@@ -570,7 +582,7 @@ class _ActProgramExecution:
         step = phase_step.ACT__PREPARE
 
         def action():
-            res = self.act_source_and_executor.prepare(self.environment,
+            res = self.act_source_and_executor.prepare(self.environment_for_other_steps,
                                                        self.script_output_dir_path)
             if res.is_success:
                 return self._pass()
@@ -619,7 +631,7 @@ class _ActProgramExecution:
         with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
             with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
                 exit_code_or_hard_error = self.act_source_and_executor.execute(
-                    self.environment,
+                    self.environment_for_other_steps,
                     self.script_output_dir_path,
                     StdFiles(f_stdin,
                              StdOutputFiles(f_stdout,
