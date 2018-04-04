@@ -412,14 +412,14 @@ it just displays some of Exactly's features.)
     cd root-dir-for-act-phase
     # This will be current directory for the "act" phase.
 
-    stdin <<EOF
+    stdin = <<EOF
     this will be stdin for the program in the "act" phase
     EOF
     # (It is also possible to have stdin redirected to an existing file.)
 
     env MY_VAR = 'value of my environment variable'
 
-    env PATH = '${PATH}:/my-dir'
+    env PATH   = '${PATH}:/my-dir'
 
     env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
 
