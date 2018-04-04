@@ -5,8 +5,8 @@ STEP__VALIDATE_PRE_SDS = '2:validate-pre-sds'
 STEP__VALIDATE_POST_SETUP = '3:validate-post-setup'
 STEP__MAIN = '9:main'
 STEP__ACT__PARSE = '0:act-parse'
-STEP__ACT__EXECUTE = '4:act-execute'
-STEP__ACT__PREPARE = '5:act-prepare'
+STEP__ACT__PREPARE = '4:act-prepare'
+STEP__ACT__EXECUTE = '5:act-execute'
 
 
 class SimplePhaseStep(tuple):
