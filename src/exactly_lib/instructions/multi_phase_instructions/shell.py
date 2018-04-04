@@ -10,7 +10,7 @@ from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_ut
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.processing.exit_values import EXECUTION__HARD_ERROR
-from exactly_lib.test_case_utils.program.parse import parse_program
+from exactly_lib.test_case_utils.program.parse import parse_shell_command
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -21,7 +21,7 @@ def parts_parser(instruction_name: str) -> InstructionPartsParser:
 
 def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
     return spe_parts.InstructionEmbryoParser(instruction_name,
-                                             parse_program.shell_command_line_program_parser())
+                                             parse_shell_command.program_parser())
 
 
 _SINGLE_LINE_DESCRIPTION_FOR_NON_ASSERT_PHASE_INSTRUCTIONS = \
