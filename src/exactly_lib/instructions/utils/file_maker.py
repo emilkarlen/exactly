@@ -14,6 +14,7 @@ from exactly_lib.test_case_utils import file_ref_check, file_properties, file_cr
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.test_case_utils.sub_proc.sub_process_execution import ExecutorThatStoresResultInFilesInDir, \
     execute_and_read_stderr_if_non_zero_exitcode, result_for_non_success_or_non_zero_exit_code
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 
 
 class FileMaker:
@@ -63,7 +64,9 @@ class FileMakerForConstantContents(FileMaker):
 class FileMakerForContentsFromProgram(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
+                 output_channel: ProcOutputFile,
                  program: ProgramResolver):
+        self._output_channel = output_channel
         self._source_info = source_info
         self._program = program
 
@@ -73,9 +76,11 @@ class FileMakerForContentsFromProgram(FileMaker):
              ) -> Optional[str]:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds
+
         program = self._program \
             .resolve(path_resolving_env.symbols) \
             .value_of_any_dependency(path_resolving_env.home_and_sds)
+
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
         result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(program.command, executor, storage_dir)
@@ -84,7 +89,7 @@ class FileMakerForContentsFromProgram(FileMaker):
         if err_msg:
             return err_msg
 
-        path_of_output = storage_dir / result_and_std_err.result.file_names.stdout
+        path_of_output = storage_dir / result_and_std_err.result.file_names.name_of(self._output_channel)
         return create_file_from_transformation_of_existing_file(path_of_output,
                                                                 dst_path,
                                                                 program.transformation)
