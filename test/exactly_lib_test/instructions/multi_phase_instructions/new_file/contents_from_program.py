@@ -1,4 +1,5 @@
 import unittest
+from typing import Sequence
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.symbol.data import file_ref_resolvers2
@@ -30,6 +31,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
+from exactly_lib_test.symbol.test_resources import program as asrt_pgm
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
@@ -40,6 +43,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
+from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
 from exactly_lib_test.test_resources import file_structure as fs
@@ -130,25 +135,58 @@ class TestSymbolUsages(TestCaseBase):
                     )
 
 
+class ProgramCase:
+    def __init__(self,
+                 name: str,
+                 source: ArgumentElements,
+                 expected_reference: asrt.ValueAssertion[Sequence[SymbolReference]]):
+        self.name = name
+        self.source = source
+        self.expected_reference = expected_reference
+
+
 class TestSuccessfulScenariosWithProgram(TestCaseBase):
     def test_contents_from_stdout__without_transformer(self):
         text_printed_by_program = 'text printed by program'
         expected_file_contents = text_printed_by_program + '\n'
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
 
+        python_source = py_programs.single_line_pgm_that_prints_to_with_new_line(ProcOutputFile.STDOUT,
+                                                                                 text_printed_by_program)
+
+        program_that_executes_py_source_symbol = NameAndValue(
+            'PROGRAM_THAT_EXECUTES_PY_SOURCE',
+            program_resolvers.for_py_source_on_command_line(python_source)
+        )
+
+        symbols = SymbolTable({
+            program_that_executes_py_source_symbol.name:
+                symbol_utils.container(program_that_executes_py_source_symbol.value)
+        })
+
         program_cases = [
-            NameAndValue('executable file',
-                         pgm_args.interpret_py_source_elements(
-                             py_programs.single_line_pgm_that_prints_to_stdout_with_new_line(text_printed_by_program))
-                         ),
-            NameAndValue('shell command line',
-                         pgm_args.shell_command(command_that_prints_line_to_stdout(text_printed_by_program)))
+            ProgramCase('executable file',
+                        pgm_args.interpret_py_source_elements(
+                            py_programs.single_line_pgm_that_prints_to_stdout_with_new_line(text_printed_by_program)),
+                        asrt.is_empty_sequence
+                        ),
+            ProgramCase('shell command line',
+                        pgm_args.shell_command(command_that_prints_line_to_stdout(text_printed_by_program)),
+                        asrt.is_empty_sequence
+                        ),
+            ProgramCase('symbol reference program',
+                        ArgumentElements([pgm_args.symbol_ref_command_line(sym_ref_args.sym_ref_cmd_line(
+                            program_that_executes_py_source_symbol.name))]),
+                        asrt.matches_sequence([
+                            asrt_pgm.is_program_reference_to(program_that_executes_py_source_symbol.name),
+                        ])
+                        ),
         ]
 
         for program_case in program_cases:
             for rel_opt_conf in ALLOWED_DST_FILE_RELATIVITIES:
                 program_contents_arguments = TransformableContentsConstructor(
-                    stdout_from(program_case.value)
+                    stdout_from(program_case.source)
                 ).without_transformation().as_arguments
 
                 source = remaining_source(
@@ -156,18 +194,19 @@ class TestSuccessfulScenariosWithProgram(TestCaseBase):
                                                                         file_name=expected_file.file_name,
                                                                         contents_arguments=program_contents_arguments.first_line),
                     program_contents_arguments.following_lines)
-                with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
+                with self.subTest(relativity_option_string=str(rel_opt_conf.option_argument),
                                   program=program_case.name,
                                   remaining_source=source.remaining_source):
                     self._check(
                         source,
                         ArrangementWithSds(
                             pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+                            symbols=symbols,
                         ),
                         Expectation(
                             main_result=IS_SUCCESS,
                             side_effects_on_home=f_asrt.dir_is_empty(),
-                            symbol_usages=asrt.is_empty_sequence,
+                            symbol_usages=program_case.expected_reference,
                             main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                                    fs.DirContents([expected_file])),
                         ))
