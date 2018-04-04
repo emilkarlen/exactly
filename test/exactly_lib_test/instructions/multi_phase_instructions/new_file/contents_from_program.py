@@ -180,7 +180,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
               ):
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
 
-        for proc_output_file in [ProcOutputFile.STDOUT]:
+        for proc_output_file in [ProcOutputFile.STDERR]:
             python_source = py_programs.single_line_pgm_that_prints_to(proc_output_file,
                                                                        text_printed_by_program)
 
@@ -212,7 +212,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
 
             for program_case in program_cases:
                 program_contents_constructor = TransformableContentsConstructor(
-                    output_from_program(ProcOutputFile.STDOUT, program_case.source)
+                    output_from_program(proc_output_file, program_case.source)
                 )
                 program_contents_arguments = make_arguments(program_contents_constructor)
 
@@ -226,7 +226,8 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
 
                 with self.subTest(relativity_option_string=str(rel_opt_conf.option_argument),
                                   program=program_case.name,
-                                  remaining_source=source.remaining_source):
+                                  remaining_source=source.remaining_source,
+                                  output_channel=proc_output_file):
                     self._check(
                         source,
                         ArrangementWithSds(

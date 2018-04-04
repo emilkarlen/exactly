@@ -30,7 +30,7 @@ CONTENTS_ASSIGNMENT_TOKEN = instruction_arguments.ASSIGNMENT_OPERATOR
 
 PROGRAM_OUTPUT_OPTIONS = {
     ProcOutputFile.STDOUT: a.OptionName(long_name='stdout'),
-    ProcOutputFile.STDERR: a.OptionName(long_name='stdout'),
+    ProcOutputFile.STDERR: a.OptionName(long_name='stderr'),
 }
 
 FILE_OPTION = a.OptionName(long_name='file')
@@ -165,10 +165,18 @@ def parse_file_maker(instruction_config: InstructionConfig,
 def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                           parser: TokenParser,
                                           contents_transformer: LinesTransformerResolver) -> FileMaker:
-    def _parse_program(my_parser: TokenParser) -> FileMaker:
+    def _parse_program_from_stdout(my_parser: TokenParser) -> FileMaker:
         program = parse_program.parse_program(my_parser,
                                               initial_transformation=contents_transformer)
         return FileMakerForContentsFromProgram(instruction_config.source_info,
+                                               ProcOutputFile.STDOUT,
+                                               program)
+
+    def _parse_program_from_stderr(my_parser: TokenParser) -> FileMaker:
+        program = parse_program.parse_program(my_parser,
+                                              initial_transformation=contents_transformer)
+        return FileMakerForContentsFromProgram(instruction_config.source_info,
+                                               ProcOutputFile.STDERR,
                                                program)
 
     def _parse_file(my_parser: TokenParser) -> FileMaker:
@@ -180,7 +188,8 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                                     src_file)
 
     return parser.parse_mandatory_option({
-        PROGRAM_OUTPUT_OPTIONS[ProcOutputFile.STDOUT]: _parse_program,
+        PROGRAM_OUTPUT_OPTIONS[ProcOutputFile.STDOUT]: _parse_program_from_stdout,
+        PROGRAM_OUTPUT_OPTIONS[ProcOutputFile.STDERR]: _parse_program_from_stderr,
         FILE_OPTION: _parse_file,
     })
 
