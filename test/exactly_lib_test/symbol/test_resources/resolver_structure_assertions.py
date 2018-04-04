@@ -20,8 +20,8 @@ def matches_container(assertion_on_resolver: asrt.ValueAssertion[rs.SymbolValueR
         ]))
 
 
-def matches_definition(assertion_on_name: asrt.ValueAssertion[str],
-                       assertion_on_container: asrt.ValueAssertion[rs.SymbolContainer],
+def matches_definition(name: asrt.ValueAssertion[str],
+                       container: asrt.ValueAssertion[rs.SymbolContainer],
                        ) -> asrt.ValueAssertion[su.SymbolDefinition]:
     return asrt.is_instance_with(
         su.SymbolDefinition,
@@ -29,11 +29,11 @@ def matches_definition(assertion_on_name: asrt.ValueAssertion[str],
             asrt.sub_component('name',
                                su.SymbolDefinition.name.fget,
                                asrt.is_instance_with(str,
-                                                     assertion_on_name)),
+                                                     name)),
             asrt.sub_component('resolver_container',
                                su.SymbolDefinition.resolver_container.fget,
                                asrt.is_instance_with(rs.SymbolContainer,
-                                                     assertion_on_container)),
+                                                     container)),
 
         ])
     )

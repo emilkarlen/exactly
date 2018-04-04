@@ -67,8 +67,8 @@ class TestMatchesDefinition(unittest.TestCase):
         assertion_that_is_expected_to_succeed = asrt.is_(actual_name)
 
         assertion_to_check = sut.matches_definition(
-            assertion_on_name=assertion_that_is_expected_to_succeed,
-            assertion_on_container=asrt.anything_goes())
+            name=assertion_that_is_expected_to_succeed,
+            container=asrt.anything_goes())
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_definition)
 
@@ -81,8 +81,8 @@ class TestMatchesDefinition(unittest.TestCase):
         assertion_that_is_expected_to_succeed = asrt.is_(actual_container)
 
         assertion_to_check = sut.matches_definition(
-            assertion_on_name=asrt.anything_goes(),
-            assertion_on_container=assertion_that_is_expected_to_succeed)
+            name=asrt.anything_goes(),
+            container=assertion_that_is_expected_to_succeed)
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_definition)
 
@@ -95,8 +95,8 @@ class TestMatchesDefinition(unittest.TestCase):
         assertion_that_is_expected_to_succeed = asrt.not_(asrt.is_(actual_container))
 
         assertion_to_check = sut.matches_definition(
-            assertion_on_name=asrt.anything_goes(),
-            assertion_on_container=assertion_that_is_expected_to_succeed)
+            name=asrt.anything_goes(),
+            container=assertion_that_is_expected_to_succeed)
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion_to_check, actual_definition)
 

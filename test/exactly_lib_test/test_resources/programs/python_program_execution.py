@@ -2,12 +2,19 @@ import os
 import pathlib
 import sys
 import unittest
+from typing import List
 
 from exactly_lib.util.process_execution.os_process_execution import ProgramAndArguments
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.executable_files import make_executable_by_os
 
 PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE = '-c'
+
+
+def args_for_executing_source_on_command_line(source_str: str) -> List[str]:
+    return [sys.executable,
+            PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE,
+            source_str]
 
 
 def interpreter_that_executes_argument() -> str:
