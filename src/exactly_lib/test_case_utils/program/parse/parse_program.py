@@ -7,7 +7,8 @@ from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_shell_command
+from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_shell_command, \
+    parse_with_reference_to_program
 
 
 def program_parser() -> Parser[ProgramResolver]:
@@ -41,4 +42,5 @@ def _parse_simple_program(parser: TokenParser) -> ProgramResolver:
 
 _PROGRAM_VARIANT_SETUPS = {
     syntax_elements.SHELL_COMMAND_TOKEN: parse_shell_command.parse_as_program,
+    syntax_elements.SYMBOL_REF_PROGRAM_TOKEN: parse_with_reference_to_program.parse_from_token_parser,
 }

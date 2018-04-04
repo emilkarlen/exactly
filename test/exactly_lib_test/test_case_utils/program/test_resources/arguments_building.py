@@ -14,6 +14,10 @@ def shell_command_line(command_line: Stringable) -> ArgumentElementRenderer:
     return ab.sequence([syntax_elements.SHELL_COMMAND_TOKEN, command_line])
 
 
+def symbol_ref_command_line(command_line: Stringable) -> ArgumentElementRenderer:
+    return ab.sequence([syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, command_line])
+
+
 def interpret_py_source(python_source: Stringable) -> Arguments:
     return interpret_py_source_elements(python_source).as_arguments
 
