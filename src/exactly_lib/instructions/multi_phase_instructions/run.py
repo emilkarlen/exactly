@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
@@ -77,7 +79,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             return self._paragraphs(self.description_rest_text)
         return []
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
             invokation_variant_from_args([
                 self.mandatory_executable,
@@ -99,7 +101,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 self._paragraphs(_SOURCE_STRING)),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         executable_path_arguments = [self.mandatory_path]
         left_parenthesis = a.Single(a.Multiplicity.MANDATORY, a.Constant('('))
         right_parenthesis = a.Single(a.Multiplicity.MANDATORY, a.Constant(')'))
