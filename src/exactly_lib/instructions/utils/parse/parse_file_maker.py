@@ -22,11 +22,17 @@ from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.program.syntax_elements import SHELL_COMMAND_TOKEN
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import is_option_string
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 CONTENTS_ASSIGNMENT_TOKEN = instruction_arguments.ASSIGNMENT_OPERATOR
-STDOUT_OPTION = a.OptionName(long_name='stdout')
+
+PROGRAM_OUTPUT_OPTIONS = {
+    ProcOutputFile.STDOUT: a.OptionName(long_name='stdout'),
+    ProcOutputFile.STDERR: a.OptionName(long_name='stdout'),
+}
+
 FILE_OPTION = a.OptionName(long_name='file')
 CONTENTS_ARGUMENT = 'CONTENTS'
 _SRC_PATH_ARGUMENT = a.Named('SOURCE-FILE-PATH')
@@ -75,8 +81,8 @@ class FileContentsDocumentation:
         command_arg = a.Single(a.Multiplicity.MANDATORY,
                                instruction_arguments.COMMAND_ARGUMENT)
 
-        stdout_option = a.Single(a.Multiplicity.MANDATORY,
-                                 a.Option(STDOUT_OPTION))
+        stdout_option = a.Choice(a.Multiplicity.MANDATORY,
+                                 [a.Option(option_name) for option_name in PROGRAM_OUTPUT_OPTIONS.values()])
 
         file_option = a.Single(a.Multiplicity.MANDATORY,
                                a.Option(FILE_OPTION))
@@ -174,7 +180,7 @@ def _parse_file_maker_with_transformation(instruction_config: InstructionConfig,
                                                     src_file)
 
     return parser.parse_mandatory_option({
-        STDOUT_OPTION: _parse_program,
+        PROGRAM_OUTPUT_OPTIONS[ProcOutputFile.STDOUT]: _parse_program,
         FILE_OPTION: _parse_file,
     })
 

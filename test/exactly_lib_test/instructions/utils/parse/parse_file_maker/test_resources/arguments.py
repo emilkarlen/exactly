@@ -5,8 +5,9 @@ from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     RelNonHomeOptionType, RelHomeOptionType, RelSdsOptionType
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, \
-    here_document_arg_elements, Arguments
+    here_document_arg_elements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     conf_rel_home, conf_rel_sds, conf_rel_non_home, default_conf_rel_non_home
@@ -37,9 +38,11 @@ def string_contents_arguments(string: str) -> ArgumentElements:
     return explicit_contents_of(ArgumentElements([string]))
 
 
-def stdout_from(program: ArgumentElements,
-                with_new_line_after_output_option: bool = False) -> ArgumentElements:
-    program_output_option = [ab.option(parse_file_maker.STDOUT_OPTION)]
+def output_from_program(program_output_channel: ProcOutputFile,
+                        program: ArgumentElements,
+                        with_new_line_after_output_option: bool = False) -> ArgumentElements:
+    program_output_option = [ab.option(parse_file_maker.PROGRAM_OUTPUT_OPTIONS[program_output_channel])]
+
     if with_new_line_after_output_option:
         return ArgumentElements(program_output_option,
                                 program.all_lines)

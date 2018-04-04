@@ -8,6 +8,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelHomeOptionType, RelNonHomeOptionType
+from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
@@ -226,7 +227,8 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
         rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_TMP)
 
         shell_contents_arguments = arguments.TransformableContentsConstructor(
-            arguments.stdout_from(
+            arguments.output_from_program(
+                ProcOutputFile.STDOUT,
                 pgm_arguments.shell_command(command_that_prints_line_to_stdout(text_printed_by_shell_command))
             )
         ).with_transformation(to_upper_transformer.name).as_arguments
@@ -257,7 +259,8 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
 class TestHardError_DueTo_NonZeroExitCodeFromShellCommand(TestCaseBase):
     def runTest(self):
         shell_contents_arguments = arguments.TransformableContentsConstructor(
-            arguments.stdout_from(
+            arguments.output_from_program(
+                ProcOutputFile.STDOUT,
                 pgm_arguments.shell_command(command_that_exits_with_code(1))
             )
         )
