@@ -97,7 +97,7 @@ LINES_TRANSFORMER_TYPE_INFO = name_and_ref_target(
 PROGRAM_TYPE_INFO = name_and_ref_target(
     ValueType.PROGRAM,
     name_with_plural_s('program'),
-    'An external program, with optional transformation of the output. TODO',
+    'An external program, with optional transformation of the output.',
 )
 
 ALL_TYPES_INFO_TUPLE = (
