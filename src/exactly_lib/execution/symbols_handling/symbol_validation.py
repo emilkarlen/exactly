@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.execution.instruction_execution.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.symbol import symbol_usage as su
@@ -7,7 +9,7 @@ from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-def validate_symbol_usages(symbol_usages: list,
+def validate_symbol_usages(symbol_usages: Sequence[su.SymbolUsage],
                            symbols: SymbolTable) -> PartialInstructionControlledFailureInfo:
     for symbol_usage in symbol_usages:
         result = validate_symbol_usage(symbol_usage, symbols)
