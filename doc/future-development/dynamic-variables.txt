@@ -1,0 +1,62 @@
+-*- org -*-
+
+<2018-04-05 tor>
+
+Exactly really lacks dynamic values - random numbers, todays date,
+contents of a directory etc.
+
+The challenge is how to combine todays pure/static values and dynamic
+variables.
+
+They would probably reside in the same name space - and existence of referenced
+names should probably be checked statically.  And in one respect types are
+static in that variables are data values that can be transformed to a string,
+much like variables shell style languages.  But probably some typings for
+string and list, e.g., would be usefull.  The question is wether the typing
+should be static or dynamic.
+
+Anyway.  The feeling for the moment is that it would be best to let static and
+dynamic values have clearly separated semantics:
+
+Todays symbols are pure values - the value is constant - they can be
+evaluated any number of times and will always yield the same result.
+
+Symbols: evaluated during symbol- pre-sds- and post-sds-validation
+ (without the risk of gettig different values
+
+"variables":
+evaluated in "main" and must only be evaluated once
+ (for each assignment (it might be usefull to let them be
+mutable - or "reassignable".)
+
+ Wether to use static or dynamic typing is a
+difficult question though.
+
+Todys "symbols" are evaluated in the "pure" environment of
+ - other symbols
+ - test case directory structure
+
+"Variables" would be evaluated in a more nomal environment:
+ - current directory
+ - environment variables
+ - current date and time
+ - other variables
+ - defined symbols
+
+Todays "symbols" may only refer to other symbols but not variables.
+Thus a symbol definition may only refer to symbols.
+This would be illegal:
+
+----------------------------------------
+var x = $( my-prog )
+
+def program PGM = --python @[x]@
+----------------------------------------
+
+But "concrete" usages of them may refer to both kinds:
+
+----------------------------------------
+var x = $( my-prog )
+
+@ PROGRAM-SYMBOL @[x]@
+----------------------------------------
