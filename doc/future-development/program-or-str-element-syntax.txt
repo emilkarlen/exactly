@@ -117,7 +117,7 @@ PROGRAM-AND-ARGS-LINE <=> Program
 PROGRAM-AND-ARGS-LINE ::= $        SHELL-CMD-LINE
                       ::| %        SYSTEM-CMD-LINE
                       ::| --system SYSTEM-CMD-LINE
-                      ::|          PROGRAM-REF-OR-EXECUTABLE-FILE-LINE
+                      ::| @        PROGRAM-REF
 
 PROGRAM-REF-OR-EXECUTABLE-FILE-LINE <=> Program
 PROGRAM-REF-OR-EXECUTABLE-FILE-LINE ::= PROGRAM-REF-OR-EXECUTABLE-FILE [ARGUMENT...] <until end of line>
@@ -176,3 +176,26 @@ STRING-PRODUCER <=> StringProducer
 *** Windows: aka --shell BAT-FILE
 
 subprocess.call(['C:\\Users\\emilk\\pgm\\lng\\py\\testing\\script.bat', 'hoho hi'])
+
+* Documentation
+** Properties
+*** can be accumulated (via symbol references)
+*** arguments handling
+*** shell
+**** single string passed to shell
+**** list of arguments are separated by space, not quoted
+*** executable fil
+**** sequence of args passed as separate elements to the program
+**** must exist as an exe file
+**** variants for 
+*** symbol name
+**** must be program symbol
+**** arguments are appended
+**** transformation is appended
+*** transformation
+**** applied to either stdout or stderr, depending on the invokation context
+**** must appear on separate line
+** Contents structure
+*** perhaps good to have explanation after forms, but before "where"
+this could mention common properties of all variants
+*** Maybe introduce an "Examples" section
