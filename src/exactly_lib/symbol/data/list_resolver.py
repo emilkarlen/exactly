@@ -1,4 +1,4 @@
-from typing import Sequence, Iterable
+from typing import Sequence, Iterable, List
 
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.resolver_structure import DataValueResolver
@@ -25,15 +25,13 @@ class Element:
         raise NotImplementedError()
 
     @property
-    def references(self) -> tuple:
+    def references(self) -> Sequence[SymbolReference]:
         """
         Values in the symbol table used by this object.
-
-        :type: (SymbolReference)
         """
         raise NotImplementedError()
 
-    def resolve(self, symbols: SymbolTable) -> list:
+    def resolve(self, symbols: SymbolTable) -> List[str]:
         """Gives the list of string values that this element represents"""
         raise NotImplementedError()
 
@@ -53,10 +51,10 @@ class StringResolverElement(Element):
         return None
 
     @property
-    def references(self) -> tuple:
+    def references(self) -> Sequence[SymbolReference]:
         return tuple(self._string_resolver.references)
 
-    def resolve(self, symbols: SymbolTable) -> list:
+    def resolve(self, symbols: SymbolTable) -> List[str]:
         return [self._string_resolver.resolve(symbols)]
 
 
@@ -71,7 +69,7 @@ class SymbolReferenceElement(Element):
         return self._symbol_reference
 
     @property
-    def references(self) -> tuple:
+    def references(self) -> Sequence[SymbolReference]:
         return self._symbol_reference,
 
     def resolve(self, symbols: SymbolTable) -> list:
