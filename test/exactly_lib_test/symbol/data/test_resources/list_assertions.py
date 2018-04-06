@@ -1,4 +1,5 @@
 import unittest
+from typing import Iterable, List
 
 from exactly_lib.symbol.data import list_resolver
 from exactly_lib.symbol.data import list_resolvers
@@ -46,7 +47,7 @@ def equals_list_resolver_element(expected: list_resolver.Element,
         asrt.and_(component_assertions))
 
 
-def equals_list_resolver_elements(elements: list,
+def equals_list_resolver_elements(elements: List[list_resolver.Element],
                                   symbols: SymbolTable = None) -> asrt.ValueAssertion:
     element_assertions = [equals_list_resolver_element(element, symbols)
                           for element in elements]
@@ -75,7 +76,7 @@ def matches_list_resolver(expected_resolved_value: ListValue,
                                               symbols)
 
 
-def equals_constant_list(expected_str_list: list) -> asrt.ValueAssertion:
+def equals_constant_list(expected_str_list: Iterable[str]) -> asrt.ValueAssertion:
     return equals_list_resolver(list_resolvers.from_str_constants(expected_str_list))
 
 

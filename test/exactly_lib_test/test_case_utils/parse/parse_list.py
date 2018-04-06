@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -6,6 +7,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import list_resolver as lr
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers
+from exactly_lib.symbol.data.list_resolver import Element
 from exactly_lib.symbol.data.restrictions import reference_restrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -268,8 +270,8 @@ class TestMultipleElementList(unittest.TestCase):
 
 class Expectation:
     def __init__(self,
-                 elements: list,
-                 source: asrt.ValueAssertion):
+                 elements: List[Element],
+                 source: asrt.ValueAssertion[ParseSource]):
         self.elements = elements
         self.source = source
 
