@@ -1,7 +1,6 @@
 import unittest
 from typing import List, Sequence
 
-import exactly_lib.test_case_utils.program.syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
@@ -15,6 +14,7 @@ from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType
 from exactly_lib.test_case_utils.parse.parse_relativity import reference_restrictions_for_path_symbol
+from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_arguments as sut
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -59,7 +59,7 @@ class Expectation:
 class Case:
     def __init__(self,
                  name: str,
-                 source: ParseSource,
+                 source: str,
                  expectation: Expectation):
         self.name = name
         self.source = source
@@ -107,7 +107,7 @@ class TestNoElements(unittest.TestCase):
         ]
         cases = [
             Case(ne.name,
-                 remaining_source(ne.value),
+                 ne.value,
                  Expectation(
                      elements=[],
                      validators=asrt.is_empty_sequence,
@@ -128,7 +128,7 @@ class TestSingleElement(unittest.TestCase):
 
         cases = [
             Case('plain string',
-                 remaining_source(plain_string),
+                 plain_string,
                  Expectation(
                      elements=[list_resolvers.str_element(plain_string)],
                      validators=asrt.is_empty_sequence,
@@ -136,7 +136,7 @@ class TestSingleElement(unittest.TestCase):
                      source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('symbol reference',
-                 remaining_source(symbol_reference_syntax_for_name(symbol_name)),
+                 symbol_reference_syntax_for_name(symbol_name),
                  Expectation(
                      elements=[list_resolvers.symbol_element(symbol_reference(symbol_name))],
                      validators=asrt.is_empty_sequence,
@@ -157,9 +157,9 @@ class TestSingleElement(unittest.TestCase):
 
         cases = [
             Case('string with one space after marker, and no space at EOL',
-                 remaining_source(' '.join([
-                     exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                     str_with_space_and_invalid_token_syntax])),
+                 ' '.join([
+                     syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                     str_with_space_and_invalid_token_syntax]),
                  Expectation(
                      elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
@@ -167,9 +167,9 @@ class TestSingleElement(unittest.TestCase):
                      source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('with surrounding space',
-                 remaining_source(' '.join([
-                     exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                                            '   ' + str_with_space_and_invalid_token_syntax + '  \t '])),
+                 ' '.join([
+                     syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                     '   ' + str_with_space_and_invalid_token_syntax + '  \t ']),
                  Expectation(
                      elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
@@ -177,11 +177,11 @@ class TestSingleElement(unittest.TestCase):
                      source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('with symbol reference',
-                 remaining_source(' '.join([
-                     exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                                            ''.join(['before',
-                                                     symbol_reference_syntax_for_name(symbol_name),
-                                                     'after'])])),
+                 ' '.join([
+                     syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                     ''.join(['before',
+                              symbol_reference_syntax_for_name(symbol_name),
+                              'after'])]),
                  Expectation(
                      elements=[list_resolvers.string_element(string_resolvers.from_fragments([
                          string_resolvers.str_fragment('before'),
@@ -235,11 +235,11 @@ class TestSingleElement(unittest.TestCase):
 
                 _case = Case(
                     'default relativity SHOULD be CASE_HOME',
-                    remaining_source(ab.sequence([ab.option(
-                        exactly_lib.test_case_utils.program.syntax_elements.EXISTING_FILE_OPTION_NAME),
-                                                  rel_opt_conf.file_argument_with_option(
-                                                      plain_file_name)]
-                                                 ).as_str),
+                    ab.sequence([ab.option(
+                        syntax_elements.EXISTING_FILE_OPTION_NAME),
+                        rel_opt_conf.file_argument_with_option(
+                            plain_file_name)]
+                    ).as_str,
                     Expectation(
                         elements=[case.expected_list_element],
                         references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
@@ -304,8 +304,8 @@ class TestMultipleElements(unittest.TestCase):
 
         cases = [
             Case('plain strings',
-                 remaining_source(ab.sequence([plain_string1,
-                                               plain_string2]).as_str),
+                 ab.sequence([plain_string1,
+                              plain_string2]).as_str,
                  Expectation(
                      elements=[list_resolvers.str_element(plain_string1),
                                list_resolvers.str_element(plain_string2)],
@@ -314,11 +314,11 @@ class TestMultipleElements(unittest.TestCase):
                      source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('symbol reference + plain string + until-end-of-line',
-                 remaining_source(ab.sequence([ab.symbol_reference(symbol_name_1),
-                                               plain_string1,
-                                               exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                                               remaining_part_of_current_line_with_sym_ref,
-                                               ]).as_str),
+                 ab.sequence([ab.symbol_reference(symbol_name_1),
+                              plain_string1,
+                              syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                              remaining_part_of_current_line_with_sym_ref,
+                              ]).as_str,
                  Expectation(
                      elements=[list_resolvers.symbol_element(symbol_reference(symbol_name_1)),
                                list_resolvers.str_element(plain_string1),
@@ -350,7 +350,9 @@ def _test_cases(put: unittest.TestCase, cases: Sequence[Case]):
 
 def _test_case(put: unittest.TestCase, case: Case) -> ArgumentsResolver:
     # ACT #
-    actual = sut.parser(consume_last_line_if_is_at_eol_after_parse=False).parse(case.source)
+    source = remaining_source(case.source)
+
+    actual = sut.parser(consume_last_line_if_is_at_eol_after_parse=False).parse(source)
 
     # ASSERT #
     expectation = case.expectation
@@ -364,7 +366,7 @@ def _test_case(put: unittest.TestCase, case: Case) -> ArgumentsResolver:
     expectation.validators.apply_with_message(put, actual.validators,
                                               'validators')
 
-    expectation.source.apply_with_message(put, case.source,
+    expectation.source.apply_with_message(put, source,
                                           'source')
 
     return actual
