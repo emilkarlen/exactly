@@ -7,6 +7,11 @@ from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 
 
+def empty() -> ArgumentsResolver:
+    return ArgumentsResolver(list_resolvers.empty(),
+                             ())
+
+
 def ref_to_file_that_must_exist(file_that_must_exist: FileRefResolver,
                                 file_type: FileType = FileType.REGULAR) -> ArgumentsResolver:
     file_validator = FileRefCheckValidator(FileRefCheck(file_that_must_exist,

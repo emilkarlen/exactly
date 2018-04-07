@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.util.cli_syntax.elements import argument as a
 
@@ -6,9 +8,6 @@ class RelOptionsConfiguration(tuple):
     def __new__(cls,
                 accepted_relativity_variants: PathRelativityVariants,
                 default_option: RelOptionType):
-        """
-        :type accepted_options: Iterable of `RelOptionType`
-        """
         return tuple.__new__(cls, (accepted_relativity_variants,
                                    default_option))
 
@@ -17,10 +16,7 @@ class RelOptionsConfiguration(tuple):
         return self[0]
 
     @property
-    def accepted_options(self) -> iter:
-        """
-        :rtype: Iterable of `RelOptionType`
-        """
+    def accepted_options(self) -> Iterable[RelOptionType]:
         return self.accepted_relativity_variants.rel_option_types
 
     @property
@@ -75,6 +71,13 @@ RELATIVITY_VARIANTS_FOR_SOURCE_FILES__PRE_ACT = PathRelativityVariants({RelOptio
                                                                         RelOptionType.REL_TMP,
                                                                         RelOptionType.REL_CWD},
                                                                        True)
+
+RELATIVITY_VARIANTS_FOR_ALL_EXCEPT_RESULT = PathRelativityVariants({RelOptionType.REL_HOME_CASE,
+                                                                    RelOptionType.REL_HOME_ACT,
+                                                                    RelOptionType.REL_ACT,
+                                                                    RelOptionType.REL_TMP,
+                                                                    RelOptionType.REL_CWD},
+                                                                   True)
 
 REL_OPTIONS_FOR_SOURCE_FILES__PRE_ACT = RelOptionsConfiguration(RELATIVITY_VARIANTS_FOR_SOURCE_FILES__PRE_ACT,
                                                                 RelOptionType.REL_CWD)

@@ -20,6 +20,11 @@ class ArgumentElementRenderer:
     def __str__(self) -> str:
         raise NotImplementedError('must be implemented by sub classes')
 
+    @property
+    def as_str(self) -> str:
+        """Alternative way to render as string."""
+        return str(self)
+
 
 class EmptyArgument(ArgumentElementRenderer):
     """

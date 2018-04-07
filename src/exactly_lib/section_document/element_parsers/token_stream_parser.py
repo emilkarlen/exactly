@@ -51,6 +51,10 @@ class TokenParser:
         self.require_head_token_has_valid_syntax(syntax_element_name)
 
     @property
+    def head(self) -> Token:
+        return self.token_stream.head
+
+    @property
     def first_line_number(self) -> int:
         return self._first_line_number
 
@@ -88,6 +92,9 @@ class TokenParser:
     @property
     def remaining_part_of_current_line(self) -> str:
         return self.token_stream.remaining_part_of_current_line
+
+    def consume_head(self) -> Token:
+        return self.token_stream.consume()
 
     def consume_current_line_as_plain_string(self) -> str:
         return self.token_stream.consume_remaining_part_of_current_line_as_plain_string()
@@ -461,6 +468,9 @@ class TokenParser:
 
     def _lookahead_token_has_invalid_syntax(self) -> bool:
         return self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR
+
+
+ParserFromTokenParser = Callable[[TokenParser], T]
 
 
 def new_token_parser(source: str,
