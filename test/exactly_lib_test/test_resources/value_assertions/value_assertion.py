@@ -2,6 +2,8 @@ import os
 import unittest
 from typing import TypeVar, Sequence, Callable, Any, Generic, Type, Sized, List, Dict
 
+from exactly_lib_test.test_resources.name_and_value import NameAndValue
+
 COMPONENT_SEPARATOR = '/'
 
 T = TypeVar('T')
@@ -164,6 +166,20 @@ class And(ValueAssertion[T]):
         for assertion in self.assertions:
             assert isinstance(assertion, ValueAssertion)
             assertion.apply(put, value, message_builder)
+
+
+class AllNamed(ValueAssertion[T]):
+    def __init__(self, assertions: Sequence[NameAndValue[ValueAssertion[T]]]):
+        self.assertions = assertions
+
+    def apply(self,
+              put: unittest.TestCase,
+              value: T,
+              message_builder: MessageBuilder = MessageBuilder()):
+        for name_and_assertion in self.assertions:
+            name_and_assertion.value.apply(put,
+                                           value,
+                                           message_builder.for_sub_component(name_and_assertion.name))
 
 
 class Or(ValueAssertion[T]):
@@ -667,3 +683,7 @@ def or_(assertions: Sequence[ValueAssertion[T]]) -> ValueAssertion[T]:
     if len(assertions) == 1:
         return assertions[0]
     return Or(assertions)
+
+
+def all_named(assertions: Sequence[NameAndValue[ValueAssertion[T]]]) -> ValueAssertion[T]:
+    return AllNamed(assertions)

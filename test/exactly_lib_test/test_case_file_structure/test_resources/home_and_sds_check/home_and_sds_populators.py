@@ -17,6 +17,11 @@ class HomeOrSdsPopulatorForRelOptionType(HomeOrSdsPopulator):
         self.dir_contents.write_to(root_path)
 
 
+def in_tc_dir(relativity: RelOptionType,
+              dir_contents: file_structure.DirContents) -> HomeOrSdsPopulator:
+    return HomeOrSdsPopulatorForRelOptionType(relativity, dir_contents)
+
+
 def empty() -> HomeOrSdsPopulator:
     return multiple([])
 

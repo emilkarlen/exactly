@@ -76,3 +76,8 @@ class Token(tuple):
     @property
     def source_string(self) -> str:
         return self[2]
+
+
+class TokenMatcher:
+    def matches(self, token: Token) -> bool:
+        raise NotImplementedError('abstract method')

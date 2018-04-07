@@ -1,4 +1,5 @@
 import enum
+from typing import Set
 
 
 class RelOptionType(enum.Enum):
@@ -145,19 +146,15 @@ class PathRelativityVariants(tuple):
     """
 
     def __new__(cls,
-                rel_option_types: set,
+                rel_option_types: Set[RelOptionType],
                 absolute: bool):
         """
-        :param rel_option_types: Set of `RelOptionType`
         :param absolute: absolute paths are included in the set of variants
         """
         return tuple.__new__(cls, (rel_option_types, absolute))
 
     @property
-    def rel_option_types(self) -> set:
-        """
-        :return: Set of `RelOptionType`
-        """
+    def rel_option_types(self) -> Set[RelOptionType]:
         return self[0]
 
     @property

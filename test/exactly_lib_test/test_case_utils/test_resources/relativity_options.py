@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
-    RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType
+    RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, ResolvingDependency
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HOME_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import file_refs
@@ -129,6 +129,10 @@ class RelativityOptionConfiguration:
             raise ValueError('Not a {}: {}'.format(SymbolsConfiguration, symbols_configuration))
 
     @property
+    def directory_structure_part(self) -> ResolvingDependency:
+        raise NotImplementedError('abstract method')
+
+    @property
     def is_rel_cwd(self) -> bool:
         raise NotImplementedError('abstract method')
 
@@ -172,10 +176,14 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
                  cli_option: OptionStringConfiguration,
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
         super().__init__(cli_option, symbols_configuration)
-        self.relativity = relativity
+        self._relativity = relativity
         self.resolver = relative_path_options.REL_OPTIONS_MAP[self.relativity].root_resolver
         if not isinstance(relativity, RelOptionType):
             raise ValueError('Not a RelOptionType: {}'.format(relativity))
+
+    @property
+    def relativity(self) -> RelOptionType:
+        return self._relativity
 
     @property
     def relativity_option(self) -> RelOptionType:
@@ -208,6 +216,10 @@ class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOp
         self._resolver_hds = relative_path_options.REL_HOME_OPTIONS_MAP[relativity].root_resolver
 
     @property
+    def directory_structure_part(self) -> ResolvingDependency:
+        return ResolvingDependency.HOME
+
+    @property
     def relativity_option_rel_home(self) -> RelHomeOptionType:
         return self._relativity_hds
 
@@ -228,6 +240,10 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
                  symbols_configuration: SymbolsConfiguration = SymbolsConfiguration()):
         super().__init__(cli_option,
                          symbols_configuration)
+
+    @property
+    def directory_structure_part(self) -> ResolvingDependency:
+        return ResolvingDependency.NON_HOME
 
     def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()
