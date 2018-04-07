@@ -5,7 +5,7 @@ from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.test_case_utils.parse.parse_string import parse_rest_of_line_as_single_string
+from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.program.command import command_resolvers
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
@@ -23,7 +23,7 @@ def parse_as_program(parser: TokenParser) -> ProgramResolver:
 
 def parse_as_command(parser: TokenParser) -> CommandResolver:
     parser.require_is_not_at_eol('Missing {COMMAND}', _PARSE_FORMAT_MAP)
-    argument = parse_rest_of_line_as_single_string(parser)
+    argument = parse_string.parse_rest_of_line_as_single_string_and_consume_line(parser)
 
     return command_resolvers.for_shell().new_with_additional_argument_list(list_resolvers.from_string(argument))
 
