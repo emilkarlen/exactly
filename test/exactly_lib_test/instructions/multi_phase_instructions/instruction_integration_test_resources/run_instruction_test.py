@@ -1,14 +1,15 @@
 import unittest
 
-from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase, \
     suite_for_cases
-from exactly_lib_test.instructions.test_resources.run_instruction_utils import source_for_interpreting
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, python_executable_file
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -77,7 +78,7 @@ class TestFailingValidationOfRelHomePath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(file_ref_texts.REL_HOME_CASE_OPTION, 'non-existing-file.py'),
+            source_for_interpreting(RelOptionType.REL_HOME_CASE, 'non-existing-file.py'),
             self.conf.arrangement(),
             self.conf.expect_failing_validation_pre_sds(),
         )
@@ -87,7 +88,7 @@ class TestFailingValidationOfRelTmpPath(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(file_ref_texts.REL_TMP_OPTION, 'non-existing-file.py'),
+            source_for_interpreting(RelOptionType.REL_TMP, 'non-existing-file.py'),
             self.conf.arrangement(),
             self.conf.expect_failure_because_specified_file_under_sds_is_missing(),
         )
@@ -140,9 +141,16 @@ class TestSuccessfulValidation(TestCaseBase):
     def runTest(self):
         self.conf.run_test(
             self,
-            source_for_interpreting(file_ref_texts.REL_TMP_OPTION, 'existing-file.py'),
+            source_for_interpreting(RelOptionType.REL_TMP, 'existing-file.py'),
             self.conf.arrangement(sds_contents_before_main=contents_in(
                 RelSdsOptionType.REL_TMP,
                 DirContents([empty_file('existing-file.py')]))),
             self.conf.expect_success(),
         )
+
+
+def source_for_interpreting(relativity: RelOptionType,
+                            file_name: str) -> ParseSource:
+    return pgm_args.program(pgm_args.interpret_py_source_file(
+        args.file_ref_rel_opt(file_name,
+                              relativity))).as_remaining_source

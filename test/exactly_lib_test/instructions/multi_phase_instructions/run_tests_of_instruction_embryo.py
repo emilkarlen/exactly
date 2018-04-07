@@ -27,11 +27,12 @@ from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
+from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt, \
     relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -106,7 +107,7 @@ class TestValidationAndSymbolUsagesOfExecute(TestCaseBase):
         execute_program_option_symbol = NameAndValue('execute_program_option', '-c')
         exit_code_symbol = NameAndValue('exit_code_symbol', 5)
 
-        argument = ' ( {python_interpreter} {execute_program_option} ) "exit({exit_code})"'.format(
+        argument = ' {python_interpreter} {execute_program_option} "exit({exit_code})"'.format(
             python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
             execute_program_option=symbol_reference_syntax_for_name(execute_program_option_symbol.name),
             exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
@@ -163,7 +164,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
                     relativity_option_executable=roc_executable_file.option_argument,
                     relativity_option_source_file=roc_source_file.option_argument,
                     executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
-                    interpret_option=syntax_elements.INTERPRET_OPTION,
+                    interpret_option=args.option(syntax_elements.EXISTING_FILE_OPTION_NAME).as_str,
                     source_file=source_file.file_name,
                 )
 
@@ -200,7 +201,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
             argument = '{relativity_option} non-existing-file {interpret_option}' \
                        ' {rel_home_case_option} {existing_file}'.format(
                 relativity_option=relativity_option_conf.option_argument,
-                interpret_option=syntax_elements.INTERPRET_OPTION,
+                interpret_option=syntax_elements.EXISTING_FILE_OPTION_NAME,
                 rel_home_case_option=REL_HOME_CASE_OPTION,
                 existing_file=existing_file_to_interpret,
             )
@@ -220,7 +221,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '"{python_interpreter}" {interpret_option} {relativity_option} non-existing-file.py'.format(
                 python_interpreter=sys.executable,
-                interpret_option=syntax_elements.INTERPRET_OPTION,
+                interpret_option=args.option(syntax_elements.EXISTING_FILE_OPTION_NAME).as_str,
                 relativity_option=relativity_option_conf.option_argument,
             )
 
@@ -244,7 +245,7 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
         argument = ' {python_interpreter} {interpret_option} {file_to_interpret}  "{exit_code}"'.format(
             python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
-            interpret_option=syntax_elements.INTERPRET_OPTION,
+            interpret_option=args.option(syntax_elements.EXISTING_FILE_OPTION_NAME).as_str,
             file_to_interpret=symbol_reference_syntax_for_name(file_to_interpret_symbol.name),
             exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
         )
@@ -297,7 +298,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
             argument = '{relativity_option} {executable_file} {source_option} irrelevant-source'.format(
                 relativity_option=relativity_option_conf.option_argument,
                 executable_file=EXECUTABLE_FILE_THAT_EXITS_WITH_CODE_0.file_name,
-                source_option=syntax_elements.SOURCE_OPTION,
+                source_option=syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
             )
 
             expectation = embryo_check.Expectation(
@@ -318,7 +319,7 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
         for relativity_option_conf in RELATIVITY_OPTIONS:
             argument = '{relativity_option} non-existing-file {source_option} irrelevant-source'.format(
                 relativity_option=relativity_option_conf.option_argument,
-                source_option=syntax_elements.SOURCE_OPTION,
+                source_option=syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
             )
 
             expectation = _expect_validation_error_and_symbol_usages_of(relativity_option_conf)
@@ -336,10 +337,10 @@ class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
         execute_program_option_symbol = NameAndValue('execute_program_option', '-c')
         exit_code_symbol = NameAndValue('exit_code_symbol', 87)
 
-        argument = ' ( {python_interpreter} {execute_program_option} ) {source_option}   exit({exit_code})  '.format(
+        argument = ' {python_interpreter} {execute_program_option} {source_option}   exit({exit_code})  '.format(
             python_interpreter=symbol_reference_syntax_for_name(python_interpreter_symbol.name),
             execute_program_option=symbol_reference_syntax_for_name(execute_program_option_symbol.name),
-            source_option=syntax_elements.SOURCE_OPTION,
+            source_option=syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
             exit_code=symbol_reference_syntax_for_name(str(exit_code_symbol.name)),
         )
 
@@ -407,29 +408,20 @@ def _expect_validation_error_and_symbol_usages(relativity_option_conf: rel_opt_c
 class TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine(TestCaseBase):
     def test_check_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
-            py_exe.command_line_for_executing_program_via_command_line('exit(0)'),
-            ArrangementWithSds(),
-            Expectation(main_result=spr_check.is_success_result(0, None)))
-
-    def test_double_dash_should_invoke_execute(self):
-        argument = py_exe.command_line_for_executing_program_via_command_line(
-            'exit(0)',
-            args_directly_after_interpreter='--')
-        self._check_single_line_arguments_with_source_variants(
-            argument,
+            pgm_args.interpret_py_source_line('exit(0)').as_str,
             ArrangementWithSds(),
             Expectation(main_result=spr_check.is_success_result(0, None)))
 
     def test_check_non_zero_exit_code(self):
         self._check_single_line_arguments_with_source_variants(
-            py_exe.command_line_for_executing_program_via_command_line('exit(1)'),
+            pgm_args.interpret_py_source_line('exit(1)').as_str,
             ArrangementWithSds(),
             Expectation(main_result=spr_check.is_success_result(1, '')))
 
     def test_check_non_zero_exit_code_with_output_to_stderr(self):
-        python_program = 'import sys; sys.stderr.write(\\"on stderr\\"); exit(2)'
+        python_program = 'import sys; sys.stderr.write("on stderr"); exit(2)'
         self._check_single_line_arguments_with_source_variants(
-            py_exe.command_line_for_executing_program_via_command_line(python_program),
+            pgm_args.interpret_py_source_line(python_program).as_str,
             ArrangementWithSds(),
             Expectation(main_result=spr_check.is_success_result(2, 'on stderr')))
 

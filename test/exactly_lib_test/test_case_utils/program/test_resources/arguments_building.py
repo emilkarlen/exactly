@@ -28,11 +28,9 @@ def interpret_py_source_elements(python_source: Stringable) -> ArgumentElements:
 
 def interpret_py_source_line(python_source: Stringable) -> ArgumentElementRenderer:
     return ab.sequence([
-        syntax_elements.LIST_DELIMITER_START,
         ab.option(syntax_elements.PYTHON_EXECUTABLE_OPTION_NAME),
         python_program_execution.PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE,
-        syntax_elements.LIST_DELIMITER_END,
-        ab.option(syntax_elements.SOURCE_OPTION_NAME),
+        syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
         python_source
     ])
 
@@ -40,7 +38,7 @@ def interpret_py_source_line(python_source: Stringable) -> ArgumentElementRender
 def interpret_py_source_file(py_file: Stringable) -> ArgumentElementRenderer:
     return ab.sequence([
         ab.option(syntax_elements.PYTHON_EXECUTABLE_OPTION_NAME),
-        ab.option(syntax_elements.INTERPRET_OPTION_NAME),
+        ab.option(syntax_elements.EXISTING_FILE_OPTION_NAME),
         py_file
     ])
 

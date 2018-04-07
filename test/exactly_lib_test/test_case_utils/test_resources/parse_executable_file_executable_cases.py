@@ -24,7 +24,6 @@ from exactly_lib_test.test_resources.file_structure import File, executable_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.data.test_resources.list_values import list_value_of_string_constants
 
 
 class RelativityConfiguration:
@@ -49,7 +48,6 @@ class RelativityConfiguration:
 def suite_for(configuration: RelativityConfiguration) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTests([CheckExistingFile(configuration),
-                      CheckExistingFileWithArguments(configuration),
                       CheckExistingButNonExecutableFile(configuration),
                       CheckNonExistingFile(configuration)])
     return ret_val
@@ -201,29 +199,6 @@ class CheckExistingFile(CheckBase):
         source = ParseSource(arguments_str)
         exe_file = parse_executable_file_executable.parse_from_parse_source(
             source)
-        source_assertion = has_remaining_part_of_first_line('remaining args')
-        source_assertion.apply_with_message(self, source, 'source after parse')
-        self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())
-        with self._home_and_sds_and_test_as_curr_dir(executable_file('file.exe')) as environment:
-            self._check_file_path('file.exe', exe_file, environment)
-            self._assert_passes_validation(exe_file, environment)
-
-
-class CheckExistingFileWithArguments(CheckBase):
-    def __init__(self, configuration: RelativityConfiguration):
-        super().__init__(configuration)
-
-    def runTest(self):
-        conf = self.configuration
-        arguments_str = '( {} file.exe arg1 -arg2 ) remaining args'.format(conf.option)
-        source = ParseSource(arguments_str)
-        exe_file = parse_executable_file_executable.parse_from_parse_source(
-            source)
-        expected_arguments = list_value_of_string_constants(['arg1', '-arg2'])
-        arguments_assertion = matches_list_resolver(expected_arguments,
-                                                    expected_symbol_references=asrt.is_empty_sequence)
-        arguments_assertion.apply_with_message(self, exe_file.arguments,
-                                               'arguments')
         source_assertion = has_remaining_part_of_first_line('remaining args')
         source_assertion.apply_with_message(self, source, 'source after parse')
         self._check_expectance_to_exist_pre_sds(exe_file, empty_symbol_table())

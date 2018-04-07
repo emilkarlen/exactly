@@ -1,5 +1,6 @@
-from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers import token_stream_parsing as parsing
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+    SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
@@ -23,7 +24,7 @@ REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(REL_OPTIONS_CONF,
                                                   True)
 
 
-def parser(consume_last_line_if_is_at_eol_after_parse: bool = True) -> Parser[ArgumentsResolver]:
+def parser(consume_last_line_if_is_at_eol_after_parse: bool = False) -> Parser[ArgumentsResolver]:
     return _Parser(consume_last_line_if_is_at_eol_after_parse)
 
 
@@ -49,12 +50,6 @@ class _Parser(Parser[ArgumentsResolver]):
             ),
         ]
 
-    def parse(self, source: ParseSource) -> ArgumentsResolver:
-        with token_stream_parser.from_parse_source(
-                source,
-                consume_last_line_if_is_at_eol_after_parse=self._consume_last_line_if_is_at_eol_after_parse) as parser:
-            return self.parse_from_token_parser(parser)
-
     def parse_from_token_parser(self, token_parser: TokenParser) -> ArgumentsResolver:
         arguments = argument_resolvers.empty()
 
@@ -75,6 +70,9 @@ class _Parser(Parser[ArgumentsResolver]):
 
 def _parse_rest_of_line_as_single_element(token_parser: TokenParser) -> ArgumentsResolver:
     string = parse_string.parse_rest_of_line_as_single_string(token_parser, strip_space=True)
+    if not string.has_fragments:
+        raise SingleInstructionInvalidArgumentException('Empty contents after ' +
+                                                        syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)
     return arguments_resolver.new_without_validation(list_resolvers.from_string(string))
 
 
