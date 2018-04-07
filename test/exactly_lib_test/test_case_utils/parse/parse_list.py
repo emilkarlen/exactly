@@ -1,5 +1,5 @@
 import unittest
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -80,9 +80,8 @@ class TestEmptyList(unittest.TestCase):
                              )
                  ),
         ]
-        for case in cases:
-            with self.subTest(name=case.name):
-                _test_case(self, case)
+        # ACT & ASSERT #
+        _test_cases(self, cases)
 
 
 class TestSingleElementList(unittest.TestCase):
@@ -187,9 +186,8 @@ class TestSingleElementList(unittest.TestCase):
                              asrt_source.is_at_end_of_line(1)),
                  ),
         ]
-        for case in cases:
-            with self.subTest(name=case.name):
-                _test_case(self, case)
+        # ACT & ASSERT #
+        _test_cases(self, cases)
 
 
 class TestMultipleElementList(unittest.TestCase):
@@ -269,9 +267,8 @@ class TestMultipleElementList(unittest.TestCase):
                      asrt_source.is_at_end_of_line(1)),
                  ),
         ]
-        for case in cases:
-            with self.subTest(name=case.name):
-                _test_case(self, case)
+        # ACT & ASSERT #
+        _test_cases(self, cases)
 
 
 class Expectation:
@@ -290,6 +287,12 @@ class Case:
         self.name = name
         self.source = source
         self.expectation = expectation
+
+
+def _test_cases(put: unittest.TestCase, cases: Sequence[Case]):
+    for case in cases:
+        with put.subTest(case.name):
+            _test_case(put, case)
 
 
 def _test_case(put: unittest.TestCase, case: Case):
