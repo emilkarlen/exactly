@@ -3,11 +3,9 @@ from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import Element
-from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
@@ -17,7 +15,8 @@ from exactly_lib.test_case_utils.parse.parse_relativity import reference_restric
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_arguments as sut
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
-from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
+    equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
@@ -48,12 +47,10 @@ class Expectation:
     def __init__(self,
                  elements: List[Element],
                  validators: asrt.ValueAssertion[Sequence[PreOrPostSdsValidator]],
-                 references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                 source: asrt.ValueAssertion[ParseSource]):
+                 references: asrt.ValueAssertion[Sequence[SymbolReference]]):
         self.elements = elements
         self.validators = validators
         self.references = references
-        self.source = source
 
 
 class Case:
@@ -112,7 +109,6 @@ class TestNoElements(unittest.TestCase):
                      elements=[],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
-                     source=asrt_source.is_at_end_of_line(1)
                  ))
             for ne in source_cases
         ]
@@ -133,7 +129,6 @@ class TestSingleElement(unittest.TestCase):
                      elements=[list_resolvers.str_element(plain_string)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
-                     source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('symbol reference',
                  symbol_reference_syntax_for_name(symbol_name),
@@ -144,7 +139,6 @@ class TestSingleElement(unittest.TestCase):
                          symbol_name,
                          is_any_data_type_reference_restrictions())
                      ]),
-                     source=asrt_source.is_at_end_of_line(1)
                  )),
         ]
         # ACT & ASSERT #
@@ -164,7 +158,6 @@ class TestSingleElement(unittest.TestCase):
                      elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
-                     source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('with surrounding space',
                  ' '.join([
@@ -174,7 +167,6 @@ class TestSingleElement(unittest.TestCase):
                      elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
-                     source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('with symbol reference',
                  ' '.join([
@@ -194,7 +186,6 @@ class TestSingleElement(unittest.TestCase):
                          symbol_name,
                          is_any_data_type_reference_restrictions())
                      ]),
-                     source=asrt_source.is_at_end_of_line(1)
                  )),
         ]
         # ACT & ASSERT #
@@ -243,7 +234,6 @@ class TestSingleElement(unittest.TestCase):
                     Expectation(
                         elements=[case.expected_list_element],
                         references=asrt.matches_sequence(rel_opt_conf.symbols.usage_expectation_assertions()),
-                        source=asrt_source.is_at_end_of_line(1),
                         validators=is_single_validator_with([
                             NameAndValue('fail when file is missing',
                                          validation_check.assert_with_files(
@@ -311,7 +301,6 @@ class TestMultipleElements(unittest.TestCase):
                                list_resolvers.str_element(plain_string2)],
                      validators=asrt.is_empty_sequence,
                      references=asrt.is_empty_sequence,
-                     source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('symbol reference + plain string + until-end-of-line',
                  ab.sequence([ab.symbol_reference(symbol_name_1),
@@ -335,7 +324,6 @@ class TestMultipleElements(unittest.TestCase):
                          asrt_sym_ref.matches_reference_2(symbol_name_2,
                                                           is_any_data_type_reference_restrictions()),
                      ]),
-                     source=asrt_source.is_at_end_of_line(1)
                  )),
         ]
         # ACT & ASSERT #
@@ -348,25 +336,19 @@ def _test_cases(put: unittest.TestCase, cases: Sequence[Case]):
             _test_case(put, case)
 
 
-def _test_case(put: unittest.TestCase, case: Case) -> ArgumentsResolver:
+def _test_case(put: unittest.TestCase, case: Case):
     # ACT #
-    source = remaining_source(case.source)
+    for source in equivalent_source_variants__with_source_check(put, case.source):
+        actual = sut.parser().parse(source)
 
-    actual = sut.parser(consume_last_line_if_is_at_eol_after_parse=False).parse(source)
+        # ASSERT #
+        expectation = case.expectation
+        test_of_list.check_elements(put,
+                                    expectation.elements,
+                                    actual.arguments_list)
 
-    # ASSERT #
-    expectation = case.expectation
-    test_of_list.check_elements(put,
-                                expectation.elements,
-                                actual.arguments_list)
+        expectation.references.apply_with_message(put, actual.references,
+                                                  'symbol references')
 
-    expectation.references.apply_with_message(put, actual.references,
-                                              'symbol references')
-
-    expectation.validators.apply_with_message(put, actual.validators,
-                                              'validators')
-
-    expectation.source.apply_with_message(put, source,
-                                          'source')
-
-    return actual
+        expectation.validators.apply_with_message(put, actual.validators,
+                                                  'validators')

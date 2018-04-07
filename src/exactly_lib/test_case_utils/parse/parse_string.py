@@ -47,6 +47,14 @@ def parse_string_from_token_parser(token_parser: TokenParser,
 
 def parse_rest_of_line_as_single_string(token_parser: TokenParser,
                                         strip_space: bool = False) -> StringResolver:
+    argument_string = token_parser.consume_remaining_part_of_current_line_as_string()
+    if strip_space:
+        argument_string = argument_string.strip()
+    return string_resolver_from_string(argument_string)
+
+
+def parse_rest_of_line_as_single_string_and_consume_line(token_parser: TokenParser,
+                                                         strip_space: bool = False) -> StringResolver:
     argument_string = token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     if strip_space:
         argument_string = argument_string.strip()
