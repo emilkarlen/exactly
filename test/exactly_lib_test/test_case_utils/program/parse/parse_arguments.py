@@ -1,6 +1,7 @@
 import unittest
 from typing import List, Sequence
 
+import exactly_lib.test_case_utils.program.syntax_elements
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
@@ -156,8 +157,9 @@ class TestSingleElement(unittest.TestCase):
 
         cases = [
             Case('string with one space after marker, and no space at EOL',
-                 remaining_source(' '.join([sut.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
-                                            str_with_space_and_invalid_token_syntax])),
+                 remaining_source(' '.join([
+                     exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                     str_with_space_and_invalid_token_syntax])),
                  Expectation(
                      elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
                      validators=asrt.is_empty_sequence,
@@ -165,7 +167,8 @@ class TestSingleElement(unittest.TestCase):
                      source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('with surrounding space',
-                 remaining_source(' '.join([sut.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                 remaining_source(' '.join([
+                     exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                                             '   ' + str_with_space_and_invalid_token_syntax + '  \t '])),
                  Expectation(
                      elements=[list_resolvers.str_element(str_with_space_and_invalid_token_syntax)],
@@ -174,7 +177,8 @@ class TestSingleElement(unittest.TestCase):
                      source=asrt_source.is_at_end_of_line(1)
                  )),
             Case('with symbol reference',
-                 remaining_source(' '.join([sut.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                 remaining_source(' '.join([
+                     exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                                             ''.join(['before',
                                                      symbol_reference_syntax_for_name(symbol_name),
                                                      'after'])])),
@@ -231,7 +235,8 @@ class TestSingleElement(unittest.TestCase):
 
                 _case = Case(
                     'default relativity SHOULD be CASE_HOME',
-                    remaining_source(ab.sequence([ab.option(sut.EXISTING_FILE_OPTION_NAME),
+                    remaining_source(ab.sequence([ab.option(
+                        exactly_lib.test_case_utils.program.syntax_elements.EXISTING_FILE_OPTION_NAME),
                                                   rel_opt_conf.file_argument_with_option(
                                                       plain_file_name)]
                                                  ).as_str),
@@ -311,7 +316,7 @@ class TestMultipleElements(unittest.TestCase):
             Case('symbol reference + plain string + until-end-of-line',
                  remaining_source(ab.sequence([ab.symbol_reference(symbol_name_1),
                                                plain_string1,
-                                               sut.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
+                                               exactly_lib.test_case_utils.program.syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER,
                                                remaining_part_of_current_line_with_sym_ref,
                                                ]).as_str),
                  Expectation(
