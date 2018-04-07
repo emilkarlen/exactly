@@ -278,7 +278,7 @@ class _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(P
         self.validator = validator
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
-        instruction_argument = parser.consume_current_line_as_plain_string()
+        instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return ProgramResolverForCommand(
             test_command_resolvers.for_py_source_on_command_line(instruction_argument),
             accumulator.new_with_validators([self.validator]))
@@ -289,7 +289,7 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(P
         self.validator = validator
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
-        instruction_argument = parser.consume_current_line_as_plain_string()
+        instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         argument_resolver = list_resolvers.from_str_constant(instruction_argument)
         return ProgramResolverForCommand(
             command_resolvers.for_shell(),

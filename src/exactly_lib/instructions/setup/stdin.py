@@ -14,6 +14,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import fro
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
+from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -23,7 +24,6 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_properties import FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -81,7 +81,7 @@ class Parser(InstructionParser):
                                                                                     RELATIVITY_OPTIONS_CONFIGURATION)
             if string_or_file_ref.source_type is not SourceType.HERE_DOC:
                 token_parser.report_superfluous_arguments_if_not_at_eol()
-                token_parser.consume_current_line_as_plain_string()
+                token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
             if string_or_file_ref.is_file_ref:
                 return _InstructionForFileRef(string_or_file_ref.file_reference_resolver)

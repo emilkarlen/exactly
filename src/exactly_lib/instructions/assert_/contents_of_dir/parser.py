@@ -98,4 +98,4 @@ class _CheckInstructionParser:
     @staticmethod
     def _expect_no_more_args_and_consume_current_line(parser: TokenParser):
         parser.report_superfluous_arguments_if_not_at_eol()
-        parser.consume_current_line_as_plain_string()
+        parser.consume_current_line_as_string_of_remaining_part_of_current_line()

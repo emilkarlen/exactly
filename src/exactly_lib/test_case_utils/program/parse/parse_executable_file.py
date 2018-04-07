@@ -68,6 +68,6 @@ def _source(token_parser: TokenParser) -> ArgumentsResolver:
         msg = 'Missing {SOURCE} argument for option {option}'.format(SOURCE=syntax_elements.SOURCE_SYNTAX_ELEMENT_NAME,
                                                                      option=syntax_elements.SOURCE_OPTION)
         raise SingleInstructionInvalidArgumentException(msg)
-    remaining_arguments_str = token_parser.consume_current_line_as_plain_string()
+    remaining_arguments_str = token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     source_resolver = parse_string.string_resolver_from_string(remaining_arguments_str.strip())
     return arguments_resolver.new_without_validation(list_resolvers.from_string(source_resolver))
