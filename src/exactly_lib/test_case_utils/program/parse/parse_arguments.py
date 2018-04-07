@@ -20,7 +20,7 @@ REL_OPTIONS_CONF = rel_opts_configuration.RelOptionsConfiguration(
     RelOptionType.REL_HOME_CASE)
 
 REL_OPT_ARG_CONF = RelOptionArgumentConfiguration(REL_OPTIONS_CONF,
-                                                  syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME,
+                                                  syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name,
                                                   True)
 
 
@@ -63,7 +63,7 @@ class _Parser(Parser[ArgumentsResolver]):
 
     def _parse_element(self, token_parser: TokenParser) -> ArgumentsResolver:
         return parsing.parse_mandatory_choice_with_default(token_parser,
-                                                           syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME,
+                                                           syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name,
                                                            self._element_choices,
                                                            _parse_plain_list_element)
 

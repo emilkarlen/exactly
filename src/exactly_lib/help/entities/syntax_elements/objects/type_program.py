@@ -80,6 +80,7 @@ class _Documentation(SyntaxElementDocumentation):
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         exe_file_doc = _ExecutableFileDoc()
         exe_file_pgm_doc = _ProgramFromExecutableFileDoc()
+        arg_doc = _ArgumentDoc()
         return [
             exe_file_pgm_doc.sed(),
             exe_file_doc.sed(),
@@ -87,6 +88,7 @@ class _Documentation(SyntaxElementDocumentation):
                                         _TEXT_PARSER.paras(the_path_of('an existing file.'))),
             self._transformation_sed(),
             self._symbol_reference_sed(),
+            arg_doc.sed(),
 
         ]
 
@@ -224,6 +226,39 @@ class _ExecutableFileDoc:
         ]
 
 
+class _ArgumentDoc:
+    def sed(self) -> SyntaxElementDescription:
+        return SyntaxElementDescription(
+            pgm_syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name,
+            _TEXT_PARSER.fnap(_ARGUMENT_DESCRIPTION),
+            self.invokation_variants())
+
+    def invokation_variants(self) -> List[InvokationVariant]:
+        return [
+            invokation_variant_from_args([
+                a.Single(a.Multiplicity.MANDATORY, syntax_elements.STRING_SYNTAX_ELEMENT.argument),
+            ]),
+
+            invokation_variant_from_args([
+                a.Single(a.Multiplicity.MANDATORY, syntax_elements.LIST_SYNTAX_ELEMENT.argument),
+            ]),
+
+            invokation_variant_from_args([
+                a.Single(a.Multiplicity.MANDATORY,
+                         a.Constant(pgm_syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)),
+                a.Single(a.Multiplicity.MANDATORY,
+                         instruction_arguments.LITERAL_TEXT_UNTIL_END_OF_LINE_ARGUMENT)
+            ]),
+
+            invokation_variant_from_args([
+                a.Single(a.Multiplicity.MANDATORY,
+                         a.Option(pgm_syntax_elements.EXISTING_FILE_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY,
+                         syntax_elements.PATH_SYNTAX_ELEMENT.argument)
+            ]),
+        ]
+
+
 PROGRAM_AND_ARGS_LINE_ARG = a.Named('PROGRAM-AND-ARGUMENTS-LINE')
 
 EXECUTABLE_FILE_PROGRAM_ARG = a.Named('EXECUTABLE-FILE-PROGRAM')
@@ -308,6 +343,10 @@ and optionally also arguments to the executable.
 
 
 Elements uses {shell_syntax_concept}.
+"""
+
+_ARGUMENT_DESCRIPTION = """\
+TODO
 """
 
 _EXECUTABLE_FILE = """\
