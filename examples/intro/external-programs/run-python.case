@@ -7,9 +7,9 @@
 [setup]
 
 
-run --python --interpret my-py-setup-helper.py 'with argument'
+run --python --existing-file my-py-setup-helper.py 'with argument'
 
-run ( --python -c ) --source print('This does some setup!')
+run --python -c :> print('This does some setup!')
 
 
 [act]
@@ -25,4 +25,4 @@ system-under-test
 # Assertion passes if exit code from the program is 0.
 #
 
-run ( --python -c ) --source print('Unconditionally success!'); exit(0)
+run --python -c :> print('Unconditionally success!'); exit(0)
