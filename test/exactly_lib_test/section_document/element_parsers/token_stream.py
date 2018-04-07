@@ -12,7 +12,8 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestParseTokenOnCurrentLine),
         unittest.makeSuite(TestConstruction),
         unittest.makeSuite(TestConsume),
-        unittest.makeSuite(TestConsumeRemainingPartOfCurrentLineAsPlainString),
+        unittest.makeSuite(TestConsumeCurrentLineAsStringOfRemainingPartOfCurrentLine),
+        unittest.makeSuite(TestConsumeUntilEndOfLineAsPlainString),
         unittest.makeSuite(TestMisc),
     ])
 
@@ -215,7 +216,7 @@ class TestConsume(unittest.TestCase):
             ts.consume()
 
 
-class TestConsumeRemainingPartOfCurrentLineAsPlainString(unittest.TestCase):
+class TestConsumeCurrentLineAsStringOfRemainingPartOfCurrentLine(unittest.TestCase):
     def test(self):
         test_cases = [
             # Single token
@@ -302,7 +303,102 @@ class TestConsumeRemainingPartOfCurrentLineAsPlainString(unittest.TestCase):
             with self.subTest(msg=repr(source)):
                 ts = sut.TokenStream(source)
                 # ACT #
-                actual_consumed_string = ts.consume_remaining_part_of_current_line_as_plain_string()
+                actual_consumed_string = ts.consume_current_line_as_string_of_remaining_part_of_current_line()
+                # ASSERT #
+                self.assertEqual(expected_consumed_string,
+                                 actual_consumed_string,
+                                 'consumed string')
+                token_stream_assertion.apply_with_message(self, ts, 'token stream after parse')
+
+
+class TestConsumeUntilEndOfLineAsPlainString(unittest.TestCase):
+    def test(self):
+        test_cases = [
+            # Single token
+            ('a', 'a',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals(''))),
+            ('b ', 'b ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals(''))),
+            ('x \n', 'x ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(2),
+                                 remaining_source=asrt.equals('\n'))
+             ),
+            ('x\ny', 'x',
+             assert_token_stream(head_token=assert_plain('y'),
+                                 look_ahead_state=asrt.is_not(LookAheadState.NULL),
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals('\ny'))
+             ),
+            ('x\n y', 'x',
+             assert_token_stream(head_token=assert_plain('y'),
+                                 look_ahead_state=asrt.is_not(LookAheadState.NULL),
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals('\n y'))
+             ),
+            # Multiple tokens
+            ('a A', 'a A',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(3),
+                                 remaining_source=asrt.equals(''))
+             ),
+            ('a A\nb B', 'a A',
+             assert_token_stream(head_token=assert_plain('b'),
+                                 look_ahead_state=asrt.is_not(LookAheadState.NULL),
+                                 position=asrt.equals(3),
+                                 remaining_source=asrt.equals('\nb B'))
+             ),
+            ('a A\ninvalid_token"', 'a A',
+             assert_token_stream(look_ahead_state=asrt.is_(LookAheadState.SYNTAX_ERROR),
+                                 is_null=asrt.is_true,
+                                 position=asrt.equals(3),
+                                 remaining_source=asrt.equals('\ninvalid_token"'))
+             ),
+            # No tokens
+            ('', '',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(0),
+                                 remaining_source=asrt.equals(''))
+             ),
+            (' ', ' ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals(''))
+             ),
+            (' \n', ' ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals('\n'))
+             ),
+            (' \n ', ' ',
+             assert_token_stream(is_null=asrt.is_true,
+                                 look_ahead_state=asrt.is_(LookAheadState.NULL),
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals('\n '))
+             ),
+            (' \n"invalid quoting', ' ',
+             assert_token_stream(look_ahead_state=asrt.is_(LookAheadState.SYNTAX_ERROR),
+                                 position=asrt.equals(1),
+                                 remaining_source=asrt.equals('\n"invalid quoting'))
+             ),
+
+        ]
+        for source, expected_consumed_string, token_stream_assertion in test_cases:
+            with self.subTest(msg=repr(source)):
+                ts = sut.TokenStream(source)
+                # ACT #
+                actual_consumed_string = ts.consume_remaining_part_of_current_line_as_string()
                 # ASSERT #
                 self.assertEqual(expected_consumed_string,
                                  actual_consumed_string,

@@ -62,7 +62,7 @@ class _Parser(Parser[ArgumentsResolver]):
             following_arguments = self._parse_element(token_parser)
             arguments = arguments.new_accumulated(following_arguments)
 
-        token_parser.consume_current_line_as_plain_string()
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
         return arguments
 

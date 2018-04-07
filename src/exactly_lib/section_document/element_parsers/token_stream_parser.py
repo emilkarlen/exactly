@@ -96,8 +96,11 @@ class TokenParser:
     def consume_head(self) -> Token:
         return self.token_stream.consume()
 
-    def consume_current_line_as_plain_string(self) -> str:
-        return self.token_stream.consume_remaining_part_of_current_line_as_plain_string()
+    def consume_remaining_part_of_current_line_as_string(self) -> str:
+        return self.token_stream.consume_remaining_part_of_current_line_as_string()
+
+    def consume_current_line_as_string_of_remaining_part_of_current_line(self) -> str:
+        return self.token_stream.consume_current_line_as_string_of_remaining_part_of_current_line()
 
     def consume_mandatory_token(self, error_message_format_string: str) -> Token:
         if self._token_stream.is_null:

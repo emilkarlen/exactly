@@ -6,13 +6,13 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileContentsAssertionPart
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     token_parser_with_additional_error_message_format_map
+from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
-from exactly_lib.symbol.program.string_or_file import SourceType
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax
 
@@ -63,7 +63,7 @@ class ParseFileContentsAssertionPart:
 
     def _parse_emptiness_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
         token_parser.report_superfluous_arguments_if_not_at_eol()
-        token_parser.consume_current_line_as_plain_string()
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.parts import emptieness
         return emptieness.EmptinessContentsAssertionPart(self.expectation_type)
 
@@ -74,7 +74,7 @@ class ParseFileContentsAssertionPart:
             EXPECTED_FILE_REL_OPT_ARG_CONFIG)
         if expected_contents.source_type is not SourceType.HERE_DOC:
             token_parser.report_superfluous_arguments_if_not_at_eol()
-            token_parser.consume_current_line_as_plain_string()
+            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
         from exactly_lib.instructions.assert_.utils.file_contents.parts import equality
         return equality.EqualityContentsAssertionPart(
@@ -100,7 +100,7 @@ class ParseFileContentsAssertionPart:
         cmp_op_and_rhs = parse_cmp_op.parse_integer_comparison_operator_and_rhs(token_parser,
                                                                                 validator_for_non_negative)
         token_parser.report_superfluous_arguments_if_not_at_eol()
-        token_parser.consume_current_line_as_plain_string()
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         from exactly_lib.instructions.assert_.utils.file_contents.parts.num_lines import \
             assertion_part_for_num_lines
         return assertion_part_for_num_lines(self.expectation_type,
@@ -117,6 +117,6 @@ class ParseFileContentsAssertionPart:
         token_parser.require_is_not_at_eol('Missing {_MATCHER_}')
         line_matcher_resolver = parse_line_matcher_from_token_parser(token_parser)
         token_parser.report_superfluous_arguments_if_not_at_eol()
-        token_parser.consume_current_line_as_plain_string()
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
         return line_matcher_resolver

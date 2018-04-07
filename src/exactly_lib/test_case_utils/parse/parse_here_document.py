@@ -54,7 +54,7 @@ def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
         if here_document_is_mandatory:
             raise SingleInstructionInvalidArgumentException(instruction_arguments.HERE_DOCUMENT.name)
         else:
-            token_parser.consume_current_line_as_plain_string()
+            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
             return None
 
     first_token = token_parser.token_stream.head
@@ -68,7 +68,7 @@ def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
 
     marker = marker_match.group(2)
 
-    token_parser.consume_current_line_as_plain_string()
+    token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
     return _parse_document_lines_from_token_parser(marker, token_parser)
 
 
@@ -87,7 +87,7 @@ def _parse_document_lines(marker: str, source: ParseSource) -> StringResolver:
 def _parse_document_lines_from_token_parser(marker: str, token_parser: TokenParser) -> StringResolver:
     here_doc = []
     while token_parser.has_current_line:
-        line = token_parser.consume_current_line_as_plain_string()
+        line = token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         if line == marker:
             return _resolver_from_lines(here_doc)
         here_doc.append(line)
