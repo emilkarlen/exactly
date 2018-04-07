@@ -16,8 +16,11 @@ from exactly_lib.util.parse import token as token_syntax
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
+    is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -105,7 +108,12 @@ class TestSingleElementList(unittest.TestCase):
                  Expectation(elements=
                              [list_resolvers.symbol_element(symbol_reference(string_symbol.name))],
                              source=
-                             assert_source(is_at_eof=asrt.is_true)),
+                             assert_source(is_at_eof=asrt.is_true),
+                             references=
+                             asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
+                                 string_symbol.name,
+                                 is_any_data_type_reference_restrictions())
+                             ])),
                  ),
             Case('complex element (str const and sym-refs), at end of line, on the last line',
                  source=
@@ -122,6 +130,11 @@ class TestSingleElementList(unittest.TestCase):
                                                  reference_restrictions.is_any_data_type())
                              ),
                          ]))],
+                     references=
+                     asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
+                         string_symbol.name,
+                         is_any_data_type_reference_restrictions())
+                     ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),
                  ),
@@ -241,6 +254,11 @@ class TestMultipleElementList(unittest.TestCase):
                              [list_resolvers.symbol_element(symbol_reference(symbol_name)),
                               list_resolvers.str_element(single_token_value)
                               ],
+                             references=
+                             asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
+                                 symbol_name,
+                                 is_any_data_type_reference_restrictions())
+                             ]),
                              source=
                              asrt_source.is_at_end_of_line(1)),
                  ),
@@ -254,15 +272,21 @@ class TestMultipleElementList(unittest.TestCase):
                                   single_token_value_1,
                                   ['   ']),
                  expectation=
-                 Expectation(elements=
-                 [
-                     list_resolvers.string_element(string_resolvers.from_fragments([
-                         string_resolvers.symbol_fragment(SymbolReference(symbol_name,
-                                                                          reference_restrictions.is_any_data_type())),
-                         string_resolvers.str_fragment(single_token_value),
-                     ])),
-                     list_resolvers.str_element(single_token_value_1),
-                 ],
+                 Expectation(
+                     elements=
+                     [
+                         list_resolvers.string_element(string_resolvers.from_fragments([
+                             string_resolvers.symbol_fragment(SymbolReference(symbol_name,
+                                                                              reference_restrictions.is_any_data_type())),
+                             string_resolvers.str_fragment(single_token_value),
+                         ])),
+                         list_resolvers.str_element(single_token_value_1),
+                     ],
+                     references=
+                     asrt.matches_sequence([asrt_sym_ref.matches_reference_2(
+                         symbol_name,
+                         is_any_data_type_reference_restrictions())
+                     ]),
                      source=
                      asrt_source.is_at_end_of_line(1)),
                  ),
@@ -274,9 +298,11 @@ class TestMultipleElementList(unittest.TestCase):
 class Expectation:
     def __init__(self,
                  elements: List[Element],
-                 source: asrt.ValueAssertion[ParseSource]):
+                 source: asrt.ValueAssertion[ParseSource],
+                 references: asrt.ValueAssertion[Sequence[SymbolReference]] = asrt.is_empty_sequence):
         self.elements = elements
         self.source = source
+        self.references = references
 
 
 class Case:
@@ -302,6 +328,9 @@ def _test_case(put: unittest.TestCase, case: Case):
     # ASSERT #
     check_elements(put, case.expectation.elements,
                    actual)
+    case.expectation.references.apply_with_message(put,
+                                                   actual.references,
+                                                   'symbol references')
     case.expectation.source.apply_with_message(put, case.source, 'source')
 
 

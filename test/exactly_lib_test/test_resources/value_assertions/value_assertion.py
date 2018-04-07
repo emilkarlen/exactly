@@ -619,6 +619,11 @@ def matches_sequence(element_assertions: Sequence[ValueAssertion[T]]) -> ValueAs
     return _MatchesSequence(element_assertions)
 
 
+def is_sub_class_with(expected_class: Type[T],
+                      on_sub_class=ValueAssertion[U]) -> ValueAssertion[T]:
+    return is_instance_with(expected_class, on_sub_class)
+
+
 class _MatchesDict(ValueAssertion[Dict[TYPE_WITH_EQUALS, T]]):
     def __init__(self, expected: Dict[TYPE_WITH_EQUALS, ValueAssertion[T]]):
         self.expected = expected
