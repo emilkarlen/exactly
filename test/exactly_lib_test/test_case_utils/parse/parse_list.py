@@ -18,6 +18,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.data.test_resources.list_assertions import equals_list_resolver
+from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -34,14 +35,19 @@ def suite() -> unittest.TestSuite:
 
 
 class TestInvalidSyntax(unittest.TestCase):
-    def test_raise_exception_WHEN_quoting_is_invalid(self):
-        cases = [
-            remaining_source('"unmatchedDoubleQuote'),
-            remaining_source('valid_token \'unmatchedSingleQuote'),
-            remaining_source('valid_token \''),
-        ]
-        for source in cases:
-            with self.subTest(source=repr(source.source_string)):
+    def test_raise_exception_WHEN_quoting_of_first_token_is_invalid(self):
+        for case in TOKENS_WITH_INVALID_SYNTAX:
+            with self.subTest(name=case.name,
+                              source=case.value):
+                source = remaining_source(case.value)
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_list(source)
+
+    def test_raise_exception_WHEN_quoting_of_second_token_is_invalid(self):
+        for case in TOKENS_WITH_INVALID_SYNTAX:
+            source = remaining_source('valid' + ' ' + case.value)
+            with self.subTest(name=case.name,
+                              source=case.value):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     sut.parse_list(source)
 
@@ -76,7 +82,7 @@ class TestEmptyList(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(name=case.name):
-                _check(self, case)
+                _test_case(self, case)
 
 
 class TestSingleElementList(unittest.TestCase):
@@ -183,7 +189,7 @@ class TestSingleElementList(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(name=case.name):
-                _check(self, case)
+                _test_case(self, case)
 
 
 class TestMultipleElementList(unittest.TestCase):
@@ -265,7 +271,7 @@ class TestMultipleElementList(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(name=case.name):
-                _check(self, case)
+                _test_case(self, case)
 
 
 class Expectation:
@@ -286,14 +292,22 @@ class Case:
         self.expectation = expectation
 
 
-def _check(put: unittest.TestCase, case: Case):
-    expected = lr.ListResolver(case.expectation.elements)
+def _test_case(put: unittest.TestCase, case: Case):
+    # ACT #
     actual = sut.parse_list(case.source)
 
+    # ASSERT #
+    check_elements(put, case.expectation.elements,
+                   actual)
+    case.expectation.source.apply_with_message(put, case.source, 'source')
+
+
+def check_elements(put: unittest.TestCase,
+                   expected_elements: List[Element],
+                   actual: lr.ListResolver):
+    expected = lr.ListResolver(expected_elements)
     assertion = equals_list_resolver(expected)
     assertion.apply_with_message(put, actual, 'list resolver')
-
-    case.expectation.source.apply_with_message(put, case.source, 'source')
 
 
 def _src(s: str,

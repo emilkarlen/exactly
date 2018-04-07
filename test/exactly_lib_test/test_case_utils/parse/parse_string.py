@@ -23,6 +23,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_string_resolver
+from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -211,9 +212,12 @@ class TestParseStringResolver(unittest.TestCase):
 
 class TestParseFromParseSource(unittest.TestCase):
     def test_raise_exception_for_invalid_argument_syntax_when_invalid_quoting_of_first_token(self):
-        parse_source = remaining_source('  " missing closing double quote')
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_string_resolver_from_parse_source(parse_source, CONFIGURATION)
+        for case in TOKENS_WITH_INVALID_SYNTAX:
+            with self.subTest(name=case.name,
+                              source=case.value):
+                source = remaining_source(case.value)
+                with self.assertRaises(SingleInstructionInvalidArgumentException):
+                    sut.parse_string_resolver_from_parse_source(source, CONFIGURATION)
 
     def test_missing_argument(self):
         parse_source = remaining_source('')

@@ -28,6 +28,11 @@ QUOTE_CHAR_FOR_TYPE = {
     QuoteType.HARD: HARD_QUOTE_CHAR,
 }
 
+QUOTE_NAME_FOR_TYPE = {
+    QuoteType.SOFT: SOFT_QUOTE_NAME,
+    QuoteType.HARD: HARD_QUOTE_NAME,
+}
+
 
 class Token(tuple):
     def __new__(cls,
