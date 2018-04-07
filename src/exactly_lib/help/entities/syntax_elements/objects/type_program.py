@@ -143,14 +143,15 @@ class _ProgramFromExecutableFileDoc:
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(pgm_syntax_elements.INTERPRET_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, a.Option(pgm_syntax_elements.EXISTING_FILE_OPTION_NAME)),
                 self.mandatory_path,
                 self.zero_or_more_generic_args],
                 _TEXT_PARSER.fnap(_SOURCE_FILE)),
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(pgm_syntax_elements.SOURCE_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY,
+                         a.Constant(pgm_syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)),
                 a.Single(a.Multiplicity.MANDATORY, a.Named(pgm_syntax_elements.SOURCE_SYNTAX_ELEMENT_NAME))],
                 _TEXT_PARSER.fnap(_SOURCE_STRING)),
         ]
@@ -209,14 +210,15 @@ class _ExecutableFileDoc:
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(pgm_syntax_elements.INTERPRET_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, a.Constant(pgm_syntax_elements.EXISTING_FILE_OPTION_NAME)),
                 self.mandatory_path,
                 self.zero_or_more_generic_args],
                 _TEXT_PARSER.fnap(_SOURCE_FILE)),
 
             invokation_variant_from_args([
                 self.mandatory_executable,
-                a.Single(a.Multiplicity.MANDATORY, a.Option(pgm_syntax_elements.SOURCE_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY,
+                         a.Constant(pgm_syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)),
                 a.Single(a.Multiplicity.MANDATORY, a.Named(pgm_syntax_elements.SOURCE_SYNTAX_ELEMENT_NAME))],
                 _TEXT_PARSER.fnap(_SOURCE_STRING)),
         ]

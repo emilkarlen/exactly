@@ -63,6 +63,14 @@ class StringResolver(DataValueResolver):
         return references_from_objects_with_symbol_references(self._fragment_resolvers)
 
     @property
+    def has_fragments(self) -> bool:
+        """
+        Whether there are any fragments or not.
+        :return:
+        """
+        return len(self._fragment_resolvers) != 0
+
+    @property
     def fragments(self) -> Sequence[StringFragmentResolver]:
         """
         The sequence of fragments that makes up the value.

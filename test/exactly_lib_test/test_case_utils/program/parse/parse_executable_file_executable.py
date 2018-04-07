@@ -11,14 +11,12 @@ from exactly_lib.symbol.data import file_ref_resolvers2
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
-    ReferenceRestrictionsOnDirectAndIndirect, \
-    is_any_data_type
+    ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
-    path_relativity_restriction
+from exactly_lib.test_case_utils.parse.parse_file_ref import path_relativity_restriction
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable as sut
 from exactly_lib.type_system.data import file_refs
@@ -44,8 +42,7 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.data.test_resources.list_values import list_value_of_string_constants, \
-    empty_list_value
+from exactly_lib_test.type_system.data.test_resources.list_values import empty_list_value
 
 
 def suite() -> unittest.TestSuite:
@@ -56,8 +53,6 @@ def suite() -> unittest.TestSuite:
     ]
     ret_val = unittest.TestSuite()
     ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithoutArguments))
-    ret_val.addTest(unittest.makeSuite(TestParseValidSyntaxWithArguments))
-    ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntaxWithArguments))
     ret_val.addTest(unittest.makeSuite(TestParseWithSymbols))
     ret_val.addTest(unittest.makeSuite(TestParseInvalidSyntax))
     ret_val.addTest(unittest.makeSuite(TestParseAbsolutePath))
@@ -87,10 +82,6 @@ def suite_for_test_case_configuration(configuration: TestCaseConfiguration) -> u
     cases = [
         NoParenthesesAndNoFollowingArguments,
         NoParenthesesAndFollowingArguments,
-        ParenthesesWithNoArgumentsInsideAndNoFollowingArguments,
-        ParenthesesWithNoArgumentsInsideAndFollowingArguments,
-        ParenthesesWithArgumentsInsideAndNoFollowingArguments,
-        ParenthesesWithArgumentsInsideAndWithFollowingArguments,
     ]
     return unittest.TestSuite([
         tc(configuration)
@@ -185,92 +176,6 @@ class TestParseValidSyntaxWithoutArguments(unittest.TestCase):
                 _parse_and_check(self, case)
 
 
-class TestParseValidSyntaxWithArguments(unittest.TestCase):
-    def test(self):
-        cases = [
-            Case('test_plain_path_without_tail',
-                 source='( FILE )',
-                 expectation=
-                 ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_value(),
-                     file_resolver_value=file_ref_of_default_relativity('FILE'),
-                     expected_symbol_references_of_file=[],
-                     expected_symbol_references_of_argument=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('test_plain_path_with_space',
-                 source='( "A FILE" )',
-                 expectation=
-                 ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_value(),
-                     file_resolver_value=file_ref_of_default_relativity('A FILE'),
-                     expected_symbol_references_of_file=[],
-                     expected_symbol_references_of_argument=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('test_plain_path_with_tail',
-                 source='( FILE ) tail arguments',
-                 expectation=
-                 ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_value(),
-                     file_resolver_value=file_ref_of_default_relativity('FILE'),
-                     expected_symbol_references_of_file=[],
-                     expected_symbol_references_of_argument=[],
-                 ),
-                 source_after_parse=has_remaining_part_of_first_line('tail arguments'),
-                 ),
-            Case('test_path_with_option',
-                 source='( %s FILE )' % file_ref_texts.REL_HOME_CASE_OPTION,
-                 expectation=
-                 ExpectationOnExeFile(
-                     argument_resolver_value=empty_list_value(),
-                     file_resolver_value=file_ref_of_default_relativity('FILE'),
-                     expected_symbol_references_of_file=[],
-                     expected_symbol_references_of_argument=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('test_path_with_option_and_arguments',
-                 source='( %s FILE arg1 arg2 )' % file_ref_texts.REL_HOME_CASE_OPTION,
-                 expectation=
-                 ExpectationOnExeFile(
-                     argument_resolver_value=list_value_of_string_constants(['arg1', 'arg2']),
-                     file_resolver_value=file_ref_of_default_relativity('FILE'),
-                     expected_symbol_references_of_file=[],
-                     expected_symbol_references_of_argument=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('test_path_without_option_with_arguments',
-                 source='( FILE arg1 arg2 )',
-                 expectation=
-                 ExpectationOnExeFile(
-                     argument_resolver_value=list_value_of_string_constants(['arg1', 'arg2']),
-                     file_resolver_value=file_ref_of_default_relativity('FILE'),
-                     expected_symbol_references_of_file=[],
-                     expected_symbol_references_of_argument=[],
-                 ),
-                 source_after_parse=asrt_source.is_at_end_of_line(1),
-                 ),
-            Case('test_path_without_option_with_arguments_with_tail',
-                 source='( FILE arg1 arg2 arg3 ) tail1 tail2',
-                 expectation=
-                 ExpectationOnExeFile(
-                     argument_resolver_value=list_value_of_string_constants(['arg1', 'arg2', 'arg3']),
-                     file_resolver_value=file_ref_of_default_relativity('FILE'),
-                     expected_symbol_references_of_file=[],
-                     expected_symbol_references_of_argument=[],
-                 ),
-                 source_after_parse=has_remaining_part_of_first_line('tail1 tail2'),
-                 ),
-        ]
-        for case in cases:
-            with self.subTest(name=case.name):
-                _parse_and_check(self, case)
-
-
 class TestParseWithSymbols(unittest.TestCase):
     def test(self):
         path_suffix_of_symbol = 'first_path_component'
@@ -278,15 +183,9 @@ class TestParseWithSymbols(unittest.TestCase):
                                    file_ref_of(RelOptionType.REL_TMP, path_suffix_of_symbol))
         string_symbol = NameAndValue('string_symbol',
                                      'string symbol value')
-        a_string_constant = 'a_string_constant'
         reference_of_relativity_symbol = SymbolReference(
             file_symbol.name,
             path_relativity_restriction(
-                syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
-            ))
-        reference_of_path_symbol = SymbolReference(
-            file_symbol.name,
-            path_or_string_reference_restrictions(
                 syntax_elements.REL_OPTION_ARG_CONF.options.accepted_relativity_variants
             ))
         reference_of_path_string_symbol_as_path_component = SymbolReference(string_symbol.name,
@@ -294,9 +193,6 @@ class TestParseWithSymbols(unittest.TestCase):
                                                                                 direct=StringRestriction(),
                                                                                 indirect=StringRestriction()),
                                                                             )
-        reference_of_string_symbol_as_argument = SymbolReference(string_symbol.name,
-                                                                 is_any_data_type(),
-                                                                 )
         symbols = SymbolTable({
             file_symbol.name: su.container(file_ref_resolvers2.constant(file_symbol.value)),
             string_symbol.name: su.container(string_resolvers.str_constant(string_symbol.value)),
@@ -320,43 +216,10 @@ class TestParseWithSymbols(unittest.TestCase):
                  ),
                  source_after_parse=asrt_source.is_at_end_of_line(1),
                  ),
-            Case('symbol references in file  and argument',
-                 source=' ( {file_symbol} {a_string_constant} {string_symbol} ) following arg'.format(
-                     file_symbol=symbol_reference_syntax_for_name(file_symbol.name),
-                     string_symbol=symbol_reference_syntax_for_name(string_symbol.name),
-                     a_string_constant=a_string_constant,
-                 ),
-                 expectation=
-                 ExpectationOnExeFile(
-                     file_resolver_value=file_symbol.value,
-                     expected_symbol_references_of_file=[reference_of_path_symbol],
-                     argument_resolver_value=list_value_of_string_constants([
-                         a_string_constant,
-                         string_symbol.value
-                     ]),
-                     expected_symbol_references_of_argument=[reference_of_string_symbol_as_argument],
-                     symbol_for_value_checks=symbols,
-                 ),
-                 source_after_parse=has_remaining_part_of_first_line('following arg'),
-                 ),
         ]
         for case in cases:
             with self.subTest(name=case.name):
                 _parse_and_check(self, case)
-
-
-class TestParseInvalidSyntaxWithArguments(unittest.TestCase):
-    def test_just_begin_delimiter(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('('))
-
-    def test_empty_executable(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('( )'))
-
-    def test_missing_end_delimiter(self):
-        with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('( FILE arg1 arg2'))
 
 
 class TestParseInvalidSyntax(unittest.TestCase):
@@ -431,63 +294,6 @@ class NoParenthesesAndFollowingArguments(ExecutableTestBase):
                                       source=has_remaining_part_of_first_line('arg1 -arg2'),
                                       validation_result=self.configuration.validation_result,
                                       argument_resolver_value=empty_list_value()))
-
-
-class ParenthesesWithNoArgumentsInsideAndNoFollowingArguments(ExecutableTestBase):
-    def runTest(self):
-        instruction_argument = self._arg('( {executable} )')
-        utils.check(self,
-                    instruction_argument,
-                    utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
-                                      expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
-                                      expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      source=asrt_source.is_at_end_of_line(1),
-                                      validation_result=self.configuration.validation_result,
-                                      argument_resolver_value=empty_list_value(),
-                                      ))
-
-
-class ParenthesesWithNoArgumentsInsideAndFollowingArguments(ExecutableTestBase):
-    def runTest(self):
-        instruction_argument = self._arg('( {executable} ) arg1 -arg2')
-        utils.check(self,
-                    instruction_argument,
-                    utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
-                                      expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
-                                      expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      source=has_remaining_part_of_first_line('arg1 -arg2'),
-                                      validation_result=self.configuration.validation_result,
-                                      argument_resolver_value=empty_list_value()))
-
-
-class ParenthesesWithArgumentsInsideAndNoFollowingArguments(ExecutableTestBase):
-    def runTest(self):
-        instruction_argument = self._arg('( {executable} inside1 --inside2 )')
-        utils.check(self,
-                    instruction_argument,
-                    utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
-                                      expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
-                                      expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      source=asrt_source.is_at_end_of_line(1),
-                                      validation_result=self.configuration.validation_result,
-                                      argument_resolver_value=list_value_of_string_constants(['inside1', '--inside2'])))
-
-
-class ParenthesesWithArgumentsInsideAndWithFollowingArguments(ExecutableTestBase):
-    def runTest(self):
-        instruction_argument = self._arg('( {executable} inside ) --outside1 outside2')
-        utils.check(self,
-                    instruction_argument,
-                    utils.Arrangement(home_or_sds_pop.empty()),
-                    utils.Expectation(file_resolver_value=self.configuration.file_resolver_value,
-                                      expected_symbol_references_of_file=self.configuration.expected_symbol_references_of_file,
-                                      expected_symbol_references_of_argument=self.configuration.expected_symbol_references_of_argument,
-                                      source=has_remaining_part_of_first_line('--outside1 outside2'),
-                                      validation_result=self.configuration.validation_result,
-                                      argument_resolver_value=list_value_of_string_constants(['inside'])))
 
 
 def configurations() -> Sequence[RelativityConfiguration]:
