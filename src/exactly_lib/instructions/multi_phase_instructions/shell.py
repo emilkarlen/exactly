@@ -1,7 +1,12 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingAndSplittedPartsForRestDocBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help_texts.instruction_arguments import COMMAND_ARGUMENT
+from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_program as spe_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import \
@@ -38,17 +43,17 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
                  name: str,
                  single_line_description: str):
         super().__init__(name, {
-            'COMMAND': COMMAND_ARGUMENT.name,
+            'COMMAND': instruction_arguments.COMMAND_ARGUMENT.name,
             'HARD_ERROR': EXECUTION__HARD_ERROR.exit_identifier,
         })
         self.__single_line_description = single_line_description
-        self.command_arg = COMMAND_ARGUMENT
+        self.command_arg = instruction_arguments.COMMAND_ARGUMENT
 
     def single_line_description(self) -> str:
         return self.__single_line_description
 
     def _main_description_rest_body(self) -> list:
-        return self._paragraphs(_MAIN_DESCRIPTION_REST_BODY)
+        return []
 
     def invokation_variants(self) -> list:
         return [
@@ -64,6 +69,11 @@ class TheInstructionDocumentationBase(InstructionDocumentationWithCommandLineRen
                                      self._paragraphs(_COMMAND_SYNTAX_ELEMENT_DESCRIPTION))
         ]
 
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        return cross_reference_id_list([
+            syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT,
+        ])
+
 
 class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
     def __init__(self, name: str):
@@ -73,24 +83,6 @@ class DescriptionForNonAssertPhaseInstruction(TheInstructionDocumentationBase):
     def _main_description_rest_prelude(self) -> list:
         return self._paragraphs(_NON_ASSERT_PHASE_REST_PRELUDE)
 
-
-_MAIN_DESCRIPTION_REST_BODY = """\
-Which commands are available and the syntax of them depends
-on the current operating system's shell and environment.
-
-
-The shell takes care of interpreting {COMMAND}, so all features of the
-shell can be used.
-
-
-Use of the {instruction_name} instruction is not portable since it
-uses the current operating system environment's shell.
-
-
-On POSIX, the shell defaults to /bin/sh.
-
-On Windows, the COMSPEC environment variable specifies the default shell.
-"""
 
 _NON_ASSERT_PHASE_REST_PRELUDE = """\
 The result is {HARD_ERROR} if {COMMAND} exits with a non-zero exit code.

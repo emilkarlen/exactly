@@ -59,6 +59,11 @@ LINES_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINES_TRAN
 
 PROGRAM_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PROGRAM_TYPE_INFO)
 
+SHELL_COMMAND_LINE_SYNTAX_ELEMENT = name_and_ref_target(
+    instruction_arguments.COMMAND_ARGUMENT.name,
+    'A shell command line, as the remaining part of the current line.'
+)
+
 SYMBOL_NAME_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.SYMBOL_NAME_ARGUMENT.name,
     'The name of a symbol'

@@ -60,6 +60,7 @@ class _Documentation(SyntaxElementDocumentation):
             syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
             syntax_elements.STRING_SYNTAX_ELEMENT,
             syntax_elements.LIST_SYNTAX_ELEMENT,
+            syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT,
             concepts.SYMBOL_CONCEPT_INFO,
             types.PROGRAM_TYPE_INFO,
         ])
@@ -72,7 +73,7 @@ class _Documentation(SyntaxElementDocumentation):
 class _PgmAndArgs(SyntaxElementDescriptionTree):
     def __init__(self):
         self._pgm_for_arg_list = _ProgramWithArgumentList()
-        self._cmd_line = _ShellCommandLine()
+        self._shell_cmd_line = _ShellCommandLine()
         self._arg = _ArgumentDoc()
 
     @property
@@ -87,7 +88,7 @@ class _PgmAndArgs(SyntaxElementDescriptionTree):
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return [
             self._pgm_for_arg_list_variant(),
-            self._cmd_line.as_invokation_variant,
+            self._shell_cmd_line.as_invokation_variant,
         ]
 
     def _pgm_for_arg_list_variant(self) -> InvokationVariant:
@@ -113,7 +114,7 @@ class _ShellCommandLine(InvokationVariantHelper):
                      a.Constant(instruction_names.SHELL_INSTRUCTION_NAME)
                      ),
             a.Single(a.Multiplicity.MANDATORY,
-                     instruction_arguments.TEXT_UNTIL_END_OF_LINE_ARGUMENT)
+                     syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.argument)
         ]
 
     @property
@@ -260,6 +261,7 @@ _TEXT_PARSER = TextParser({
     'THE_PYTHON_INTERPRETER': program_info.PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGRAM,
     'PATH_OF_EXISTING_FILE': PATH_OF_EXISTING_FILE_OPT_CONFIG.argument_syntax_name,
     'ARGUMENT': formatting.syntax_element(pgm_syntax_elements.ARGUMENT_SYNTAX_ELEMENT_NAME.name),
+    'SHELL_COMMAND_LINE': formatting.syntax_element_(syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT),
 
 })
 
@@ -277,7 +279,9 @@ _SHELL_COMMAND_INVOKATION_VARIANT_DESCRIPTION = """\
 A shell command.
 
 
-{TEXT_UNTIL_END_OF_LINE} is passed as a single string to the operating system's shell.
+{SHELL_COMMAND_LINE} is the remaining part of the current line.
+
+It is passed as a single string to the operating system's shell.
 """
 
 PGM_WITH_ARG_LIST_DESCRIPTION = """\
