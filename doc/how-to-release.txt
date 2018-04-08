@@ -8,6 +8,8 @@ https://packaging.python.org/
 
 * Set version number in src/exactly_lib/program_info.py
 
+* Make sure release year is included in COPYRIGHT
+
 * 0. Remove existing distributables
 
 > rm -rf dist
