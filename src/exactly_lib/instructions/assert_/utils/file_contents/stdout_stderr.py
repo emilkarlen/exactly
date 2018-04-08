@@ -1,7 +1,10 @@
-from typing import Sequence, Optional
+from typing import Sequence, Optional, List
 
+from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
+from exactly_lib.help_texts import formatting
+from exactly_lib.help_texts.entity import concepts, syntax_elements, types
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ComparisonActualFile
@@ -40,25 +43,35 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         super().__init__(name, {
             'checked_file': name_of_checked_file,
+            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
+            'program_type': formatting.entity_(types.PROGRAM_TYPE_INFO),
             'FILE_ARG': self.file_arg.name,
         })
         self.checked_file = name_of_checked_file
 
     def single_line_description(self) -> str:
-        return self._format('Tests the contents of {checked_file}')
+        return self._format('Tests the contents of {checked_file} from the {action_to_check}, or from a {program_type}')
 
     def main_description_rest(self) -> list:
         return []
 
     def invokation_variants(self) -> list:
-        return self._help_parts.invokation_variants()
+        return self._help_parts.invokation_variants__stdout_err(OUTPUT_FROM_PROGRAM_OPTION_NAME)
 
     def syntax_element_descriptions(self) -> list:
         return (self._help_parts.syntax_element_descriptions_at_top() +
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
     def see_also_targets(self) -> list:
-        return self._help_parts.see_also_targets()
+        return self._help_parts.see_also_targets__stdout_err()
+
+    def _specific_invocation_invokation_variants(self) -> List[syntax_contents_structure.InvokationVariant]:
+        return [
+            syntax_contents_structure.invokation_variant_from_args([
+                a.Single(a.Multiplicity.MANDATORY, a.Option(OUTPUT_FROM_PROGRAM_OPTION_NAME)),
+                a.Single(a.Multiplicity.MANDATORY, syntax_elements.PROGRAM_SYNTAX_ELEMENT.argument),
+            ]),
+        ]
 
 
 class Parser(ComparisonActualFileParser):

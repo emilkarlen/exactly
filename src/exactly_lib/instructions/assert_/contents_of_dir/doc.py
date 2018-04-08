@@ -114,7 +114,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
 
         file_contents_args = ([quantifier_arg,
                                file_arg,
-                               separator_arg] + file_contents_checker.file_contents_checker_arguments()
+                               separator_arg] + file_contents_checker.file_contents_checker_arguments__non_program()
                               )
 
         invokation_variants = [

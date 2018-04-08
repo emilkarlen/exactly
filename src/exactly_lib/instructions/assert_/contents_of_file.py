@@ -45,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
-        return self._help_parts.invokation_variants()
+        return self._help_parts.invokation_variants__file()
 
     def _cls(self, additional_argument_usages: list) -> str:
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
@@ -62,7 +62,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
                 self._help_parts.syntax_element_descriptions_at_bottom())
 
     def see_also_targets(self) -> list:
-        return self._help_parts.see_also_targets()
+        return self._help_parts.see_also_targets__file()
 
 
 def parser(instruction_name: str) -> AssertPhaseInstructionParser:

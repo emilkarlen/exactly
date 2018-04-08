@@ -60,7 +60,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY, syntax_elements.PROGRAM_SYNTAX_ELEMENT.argument),
             ]),
-
         ]
 
     def see_also_targets(self) -> list:
