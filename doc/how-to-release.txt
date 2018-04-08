@@ -29,6 +29,8 @@ Distribute source and wheel
 
 * Tag repo with version
 
+> git tag vVERSION
+
 * Make release on github
 
 * http://peterdowns.com/posts/first-time-with-pypi.html
