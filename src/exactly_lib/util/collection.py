@@ -1,10 +1,12 @@
+from typing import Sequence
+
+
 class FrozenSetBasedOnEquality(tuple):
-    def __new__(cls,
-                elements: list):
+    def __new__(cls, elements: Sequence):
         return tuple.__new__(cls, (tuple(_unique(elements)),))
 
     @property
-    def elements(self) -> tuple:
+    def elements(self) -> Sequence:
         return self[0]
 
     def union(self, other_set_based_on_equality):
@@ -15,7 +17,7 @@ class FrozenSetBasedOnEquality(tuple):
         return FrozenSetBasedOnEquality(ret_val)
 
 
-def _unique(elements: list) -> list:
+def _unique(elements: Sequence) -> list:
     ret_val = []
     for x in elements:
         if x not in ret_val:
