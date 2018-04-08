@@ -1,4 +1,5 @@
 from exactly_lib.util.textformat import parse
+from exactly_lib.util.textformat.structure import document
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import table
 from exactly_lib.util.textformat.structure.core import ParagraphItem, ConcreteText, StringText, CrossReferenceTarget, \
@@ -21,10 +22,18 @@ def section(header_str_or_text,
                                    _empty_list_if_none(sub_sections)))
 
 
+def empty_section() -> Section:
+    return document.empty_section()
+
+
 def section_contents(initial_paragraphs: list,
                      sub_sections: list = None) -> SectionContents:
     return SectionContents(initial_paragraphs,
                            _empty_list_if_none(sub_sections))
+
+
+def empty_section_contents() -> SectionContents:
+    return document.empty_section_contents()
 
 
 def simple_header_only_list(str_or_text_headers: iter,

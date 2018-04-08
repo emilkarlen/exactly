@@ -50,6 +50,13 @@ class RelOptionArgumentConfiguration(tuple):
         return a.Named(self.argument_syntax_name)
 
 
+def arg_config_with_name(new_syntax_element_name: str,
+                         existing: RelOptionArgumentConfiguration) -> RelOptionArgumentConfiguration:
+    return RelOptionArgumentConfiguration(existing.options,
+                                          new_syntax_element_name,
+                                          existing.path_suffix_is_required)
+
+
 RELATIVITY_VARIANTS_FOR_FILE_CREATION = PathRelativityVariants({RelOptionType.REL_ACT,
                                                                 RelOptionType.REL_TMP,
                                                                 RelOptionType.REL_CWD},
