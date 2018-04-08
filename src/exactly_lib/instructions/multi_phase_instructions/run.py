@@ -20,7 +20,7 @@ from exactly_lib.program_info import PYTHON_INTERPRETER_WHICH_CAN_RUN_THIS_PROGR
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements
-from exactly_lib.test_case_utils.program.parse import parse_executable_file
+from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -36,7 +36,7 @@ def embryo_parser(instruction_name: str) -> spe_parts.InstructionEmbryoParser:
 
 
 def program_parser() -> Parser[ProgramResolver]:
-    return parse_executable_file.program_parser()
+    return parse_program.program_parser()
 
 
 NON_ASSERT_PHASE_DESCRIPTION_REST = """\
