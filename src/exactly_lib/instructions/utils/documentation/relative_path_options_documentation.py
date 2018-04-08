@@ -1,4 +1,7 @@
+from typing import Sequence, List
+
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
+from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, SyntaxElementDescriptionTreeFromSed
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts import test_case_file_structure as tc_fs
 from exactly_lib.help_texts.doc_format import syntax_text
@@ -28,7 +31,7 @@ class PathElementDoc:
 
 def path_element(path_arg_name: str,
                  rel_options_conf: RelOptionsConfiguration,
-                 custom_paragraphs: list = ()) -> SyntaxElementDescription:
+                 custom_paragraphs: Sequence[ParagraphItem] = ()) -> SyntaxElementDescription:
     description_rest = []
     description_rest += custom_paragraphs
     description_rest += [
@@ -43,15 +46,21 @@ def path_element(path_arg_name: str,
 
 
 def path_element_2(rel_options_conf: RelOptionArgumentConfiguration,
-                   custom_paragraphs: list = ()) -> SyntaxElementDescription:
+                   custom_paragraphs: Sequence[ParagraphItem] = ()) -> SyntaxElementDescription:
     return path_element(rel_options_conf.argument_syntax_name,
                         rel_options_conf.options,
                         custom_paragraphs)
 
 
+def path_element_3(rel_options_conf: RelOptionArgumentConfiguration,
+                   custom_paragraphs: Sequence[ParagraphItem] = ()) -> SyntaxElementDescriptionTree:
+    return SyntaxElementDescriptionTreeFromSed(a.Named(rel_options_conf.argument_syntax_name),
+                                               path_element_2(rel_options_conf, custom_paragraphs))
+
+
 def path_elements(path_arg_name: str,
                   rel_options_conf: RelOptionsConfiguration,
-                  custom_paragraphs: list = ()) -> list:
+                  custom_paragraphs: Sequence[ParagraphItem] = ()) -> List[SyntaxElementDescription]:
     return [
         path_element(path_arg_name, rel_options_conf, custom_paragraphs)
     ]
