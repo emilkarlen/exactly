@@ -177,7 +177,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
               ):
         expected_file = fs.File('a-file-name.txt', expected_file_contents)
 
-        for proc_output_file in [ProcOutputFile.STDERR]:
+        for proc_output_file in ProcOutputFile:
             python_source = py_programs.single_line_pgm_that_prints_to(proc_output_file,
                                                                        text_printed_by_program)
 
