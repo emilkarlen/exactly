@@ -26,6 +26,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         super().__init__(name)
         self._tp = TextParser({
             'phase': PHASE_NAME_DICTIONARY,
+            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_dir': tc_fs.SDS_RESULT_INFO.identifier,
@@ -76,7 +77,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
 
 ONE_LINE_DESCRIPTION = """\
-The action to check/system under test (SUT).
+The {action_to_check}/system under test (SUT).
 """
 
 REST_OF_DESCRIPTION = """\

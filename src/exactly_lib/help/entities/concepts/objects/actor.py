@@ -3,7 +3,7 @@ from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumen
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.help_texts.entity import actors
+from exactly_lib.help_texts.entity import actors, concepts
 from exactly_lib.help_texts.entity import conf_params
 from exactly_lib.help_texts.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
@@ -21,6 +21,7 @@ class _ActorConcept(ConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         parse = TextParser({
+            'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'actor_concept': formatting.concept(self.singular_name()),
             'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
@@ -32,15 +33,15 @@ class _ActorConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> list:
         return (
-            [
-                conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
-                TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
-                                                       ACTOR_INSTRUCTION_NAME),
-                TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,
-                                                          ACTOR_INSTRUCTION_NAME),
-            ]
-            +
-            actors.all_actor_cross_refs()
+                [
+                    conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
+                    TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+                                                           ACTOR_INSTRUCTION_NAME),
+                    TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,
+                                                              ACTOR_INSTRUCTION_NAME),
+                ]
+                +
+                actors.all_actor_cross_refs()
         )
 
 
@@ -48,7 +49,7 @@ ACTOR_CONCEPT = _ActorConcept()
 
 _AFTER_SINGLE_LINE_DESCRIPTION = """\
 The {actor_concept} handles {phase[act]} phase - interprets the contents in the test case file,
-and executes it.
+and executes it as the {action_to_check}.
 """
 
 HOW_TO_SPECIFY_ACTOR = """\
