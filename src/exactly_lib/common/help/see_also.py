@@ -1,3 +1,5 @@
+from typing import List, Sequence
+
 from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
 from exactly_lib.util.collection import FrozenSetBasedOnEquality
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget, StringText
@@ -27,7 +29,8 @@ class TextSeeAlsoItem(SeeAlsoItem):
 
 class SeeAlsoUrlInfo(tuple, SeeAlsoTarget):
     def __new__(cls,
-                title: str, url: str):
+                title: str,
+                url: str):
         return tuple.__new__(cls, (title, url))
 
     @property
@@ -76,17 +79,14 @@ class SeeAlsoSet(tuple):
     """
 
     def __new__(cls,
-                cross_reference_or_see_also_url_info_list: list):
+                cross_reference_or_see_also_url_info_list: Sequence[SeeAlsoTarget]):
         return tuple.__new__(cls, (FrozenSetBasedOnEquality(cross_reference_or_see_also_url_info_list),))
 
     def union(self, see_also_set):
         return SeeAlsoSet(list(self[0].union(see_also_set[0]).elements))
 
     @property
-    def see_also_items(self) -> list:
-        """
-        :rtype: list of :class:`SeeAlsoItem`
-        """
+    def see_also_items(self) -> List[SeeAlsoItem]:
         return [self._see_also_item(x)
                 for x in self[0].elements
                 ]
