@@ -1,6 +1,8 @@
 import pathlib
+from typing import List
 
 from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure import relative_path_options
@@ -10,9 +12,9 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
     RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, ResolvingDependency
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HOME_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
-from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_file_ref_relativity_restriction
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -54,6 +56,29 @@ class SymbolsConfiguration:
         return symbol_tables.symbol_table_from_entries(self.entries_for_arrangement())
 
 
+class NamedFileConf:
+    def __init__(self,
+                 name: str,
+                 resolver: FileRefResolver,
+                 cl_argument: FileRefArgument,
+                 ):
+        self._name = name
+        self._resolver = resolver
+        self._cl_argument = cl_argument
+
+    @property
+    def name(self) -> str:
+        return self._name
+
+    @property
+    def file_ref_resolver(self) -> FileRefResolver:
+        return self._resolver
+
+    @property
+    def cl_argument(self) -> FileRefArgument:
+        return self._cl_argument
+
+
 class OptionStringConfiguration:
     """
     Configuration for the relativity option (for a path cli argument).
@@ -69,6 +94,9 @@ class OptionStringConfiguration:
     @property
     def option_string(self) -> str:
         return str(self.argument)
+
+    def file_argument(self, file_name: str) -> FileRefArgument:
+        return FileRefArgument(file_name, self.argument)
 
     def __str__(self):
         return '{}(option_string={})'.format(type(self),
@@ -136,9 +164,21 @@ class RelativityOptionConfiguration:
     def is_rel_cwd(self) -> bool:
         raise NotImplementedError('abstract method')
 
+    def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
+        raise NotImplementedError('abstract method')
+
+    @property
+    def cli_option_conf(self) -> OptionStringConfiguration:
+        return self._cli_option
+
     @property
     def option_string(self) -> str:
         return self._cli_option.option_string
+
+    def named_file_conf(self, file_name: str) -> NamedFileConf:
+        return NamedFileConf(file_name,
+                             self.file_ref_resolver_for(file_name),
+                             self._cli_option.file_argument(file_name))
 
     @property
     def option_argument(self) -> ArgumentElementRenderer:
@@ -188,6 +228,12 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     @property
     def relativity_option(self) -> RelOptionType:
         return self.relativity
+
+    def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
+        return file_ref_resolvers2.constant(
+            file_refs.of_rel_option(self.relativity_option,
+                                    concrete_path_parts.PathPartAsFixedPath(file_name))
+        )
 
     @property
     def is_rel_cwd(self) -> bool:
@@ -346,11 +392,13 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
 
         ]
 
-    def entries_for_arrangement(self) -> list:
+    def entries_for_arrangement(self) -> List[Entry]:
         return [
-            data_symbol_utils.entry(self.symbol_name,
-                                    file_ref_resolvers2.constant(file_refs.of_rel_option(self.relativity,
-                                                                                         PathPartAsNothing())))
+            data_symbol_utils.entry(
+                self.symbol_name,
+                file_ref_resolvers2.constant(
+                    file_refs.of_rel_option(self.relativity,
+                                            concrete_path_parts.PathPartAsNothing())))
         ]
 
 

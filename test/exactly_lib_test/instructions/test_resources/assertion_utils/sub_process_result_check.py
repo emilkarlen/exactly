@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-class IsSuccess(asrt.ValueAssertion):
+class IsSuccess(asrt.ValueAssertion[spe.ResultAndStderr]):
     def apply(self,
               put: unittest.TestCase,
               value: spe.ResultAndStderr,
@@ -14,7 +14,7 @@ class IsSuccess(asrt.ValueAssertion):
                        message_builder.apply('Result is expected to indicate success'))
 
 
-class IsFailure(asrt.ValueAssertion):
+class IsFailure(asrt.ValueAssertion[spe.ResultAndStderr]):
     def apply(self,
               put: unittest.TestCase,
               value,
@@ -24,7 +24,7 @@ class IsFailure(asrt.ValueAssertion):
                         message_builder.apply('Result is expected to indicate failure'))
 
 
-class ExitCodeIs(asrt.ValueAssertion):
+class ExitCodeIs(asrt.ValueAssertion[spe.ResultAndStderr]):
     def __init__(self,
                  exit_code: int):
         self.exit_code = exit_code
@@ -39,7 +39,7 @@ class ExitCodeIs(asrt.ValueAssertion):
                         message_builder.apply('Exit code'))
 
 
-class StderrContentsIs(asrt.ValueAssertion):
+class StderrContentsIs(asrt.ValueAssertion[spe.ResultAndStderr]):
     def __init__(self,
                  stderr_contents: str):
         self.stderr_contents = stderr_contents
@@ -55,7 +55,8 @@ class StderrContentsIs(asrt.ValueAssertion):
 
 
 def is_success_result(exitcode: int,
-                      stderr_contents: str) -> asrt.ValueAssertion:
-    return asrt.And([IsSuccess(),
-                     ExitCodeIs(exitcode),
-                     StderrContentsIs(stderr_contents)])
+                      stderr_contents: str) -> asrt.ValueAssertion[spe.ResultAndStderr]:
+    return asrt.and_([IsSuccess(),
+                      ExitCodeIs(exitcode),
+                      StderrContentsIs(stderr_contents)
+                      ])

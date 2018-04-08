@@ -14,6 +14,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.sub_proc import sub_process_execution as spe
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources import instruction_embryo_check
+from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
@@ -50,6 +52,24 @@ class ExecuteAction(HomeAndSdsAction):
                                                                                  'the-phase'),
                                             PhaseLoggingPaths(environment.sds.log_dir, 'the-phase'),
                                             os_services.new_default())
+
+
+class EmbryoTestCaseBase(unittest.TestCase):
+    def _check_single_line_arguments_with_source_variants(self,
+                                                          instruction_argument: str,
+                                                          arrangement: ArrangementWithSds,
+                                                          expectation: instruction_embryo_check.Expectation,
+                                                          ):
+        for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+            self._check(source, arrangement, expectation)
+
+    def _check(self,
+               source: ParseSource,
+               arrangement: ArrangementWithSds,
+               expectation: instruction_embryo_check.Expectation,
+               ):
+        parser = sut.embryo_parser('instruction-name')
+        instruction_embryo_check.check(self, parser, source, arrangement, expectation)
 
 
 class TestCaseBase(home_and_sds_test.TestCaseBase):

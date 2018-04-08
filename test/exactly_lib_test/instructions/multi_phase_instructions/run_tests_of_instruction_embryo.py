@@ -10,7 +10,9 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.util.symbol_table import symbol_table_with_entries, SymbolTable
+from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib.util.symbol_table import symbol_table_with_entries
+from exactly_lib_test.instructions.multi_phase_instructions.test_resources import instruction_embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -23,16 +25,22 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
+from exactly_lib_test.symbol.test_resources import program as asrt_pgm
+from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
     multiple, HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
+from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt, \
     relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -42,6 +50,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestInvalidSyntax),
         unittest.makeSuite(TestValidationAndSymbolUsagesOfExecute),
         unittest.makeSuite(TestValidationAndSymbolUsagesOfInterpret),
+        unittest.makeSuite(TestProgramViaSymbolReference),
         unittest.makeSuite(TestValidationAndSymbolUsagesOfSource),
         unittest.makeSuite(TestExecuteProgramWithPythonExecutorWithSourceOnCommandLine),
     ])
@@ -290,6 +299,68 @@ class TestValidationAndSymbolUsagesOfInterpret(TestCaseBase):
 
         parser = sut.embryo_parser('instruction-name')
         embryo_check.check(self, parser, source, arrangement, expectation)
+
+
+class TestProgramViaSymbolReference(TestCaseBase):
+    output_to_stderr = 'on stderr'
+    py_file = File('exit-with-value-on-command-line.py',
+                   py_pgm_that_exits_with_value_on_command_line(output_to_stderr))
+
+    py_file_rel_opt_conf = relativity_options.conf_rel_any(RelOptionType.REL_TMP)
+    py_file_conf = py_file_rel_opt_conf.named_file_conf(py_file.name)
+
+    program_that_executes_py_pgm_symbol = NameAndValue(
+        'PROGRAM_THAT_EXECUTES_PY_FILE',
+        program_resolvers.interpret_py_source_file_that_must_exist(py_file_conf.file_ref_resolver)
+    )
+
+    symbols_dict = SymbolTable({
+        program_that_executes_py_pgm_symbol.name:
+            symbol_utils.container(program_that_executes_py_pgm_symbol.value),
+    })
+
+    def test_check_zero_exit_code(self):
+        self._check_single_line_arguments_with_source_variants(
+            args.sequence([pgm_args.symbol_ref_command_line(self.program_that_executes_py_pgm_symbol.name),
+                           0]).as_str,
+            ArrangementWithSds(
+                home_or_sds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
+                    DirContents([self.py_file])
+                ),
+                symbols=self.symbols_dict
+            ),
+            instruction_embryo_check.Expectation(
+                main_result=spr_check.is_success_result(0,
+                                                        None),
+                symbol_usages=asrt.matches_sequence([
+                    asrt_pgm.is_program_reference_to(self.program_that_executes_py_pgm_symbol.name)
+                ])
+
+            )
+        )
+
+    def test_check_non_zero_exit_code(self):
+        exit_code = 87
+        self._check_single_line_arguments_with_source_variants(
+            args.sequence([
+                pgm_args.symbol_ref_command_line(self.program_that_executes_py_pgm_symbol.name),
+                exit_code
+            ]).as_str,
+            ArrangementWithSds(
+                home_or_sds_contents=self.py_file_rel_opt_conf.populator_for_relativity_option_root(
+                    DirContents([self.py_file])
+                ),
+                symbols=self.symbols_dict
+            ),
+            instruction_embryo_check.Expectation(
+                main_result=spr_check.is_success_result(exit_code,
+                                                        self.output_to_stderr),
+                symbol_usages=asrt.matches_sequence([
+                    asrt_pgm.is_program_reference_to(self.program_that_executes_py_pgm_symbol.name)
+                ])
+
+            )
+        )
 
 
 class TestValidationAndSymbolUsagesOfSource(TestCaseBase):
