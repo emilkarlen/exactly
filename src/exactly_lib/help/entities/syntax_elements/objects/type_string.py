@@ -1,5 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
+from exactly_lib.help_texts import file_ref
 from exactly_lib.help_texts import formatting
 from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.help_texts.entity import syntax_elements, types, concepts
@@ -26,7 +27,9 @@ class _Documentation(SyntaxElementDocumentation):
 
             'soft_quotes': formatting.concept(token.SOFT_QUOTE_NAME.plural),
             'hard_quotes': formatting.concept(token.HARD_QUOTE_NAME.plural),
-            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name
+            'SYMBOL_REFERENCE_SYNTAX_ELEMENT': syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.singular_name,
+
+            'REL_CD_OPTION': file_ref.REL_CWD_OPTION,
         })
 
     def invokation_variants(self) -> list:
@@ -103,4 +106,13 @@ Any {SYMBOL_REFERENCE_SYNTAX_ELEMENT} appearing in the string is NOT substituted
 
 _SYMBOL_REFERENCE_DESCRIPTION = """\
 A reference to a {symbol} defined as either {string_type}, {list_type} or {path_type}.
+
+
+An empty {list_type} value is rendered as an empty string.
+
+
+A non-empty {list_type} value is rendered by separating the elements with a single space.
+
+
+A {path_type} value is rendered as absolute paths (even when relativity is {REL_CD_OPTION}).
 """
