@@ -1,0 +1,38 @@
+[setup]
+
+
+def program ARGUMENT_PRINTER = --python --existing-file print-arguments.py
+
+
+[assert]
+
+
+stdout --from --python --existing-file print-arguments.py :> Hello, Python World!
+       equals <<eof
+Hello, Python World!
+eof
+
+
+stdout --from @ ARGUMENT_PRINTER Hello, Python World!
+       equals <<eof
+Hello,
+Python
+World!
+eof
+
+stdout --from @ ARGUMENT_PRINTER "Hello, Python World!"
+       equals <<eof
+Hello, Python World!
+eof
+
+stdout --from @ ARGUMENT_PRINTER :> Hello, Python World!
+       equals <<eof
+Hello, Python World!
+eof
+
+stdout --from
+       @ ARGUMENT_PRINTER :> Hello, Python World!
+       --transformed-by TO_UPPER_CASE
+       equals <<eof
+HELLO, PYTHON WORLD!
+eof
