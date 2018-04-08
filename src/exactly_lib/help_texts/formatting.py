@@ -155,3 +155,7 @@ def syntax_element(human_readable_name: str) -> str:
     to a string suitable as syntax element
     """
     return human_readable_name.upper().replace(' ', '-')
+
+
+def syntax_element_(name: SingularNameAndCrossReferenceId) -> str:
+    return syntax_element(name.singular_name)
