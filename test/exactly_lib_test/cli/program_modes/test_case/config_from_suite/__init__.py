@@ -2,8 +2,9 @@ import unittest
 
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite import config_reading, \
     fail_due_to_invalid_command_line_options, propagation_of_case_instructions
-from exactly_lib_test.cli.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_resources.main_program.main_program_runner_via_same_process import \
+    RunViaMainProgramInternally
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:

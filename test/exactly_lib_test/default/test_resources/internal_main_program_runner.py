@@ -3,7 +3,8 @@ from exactly_lib.default.instruction_name_and_argument_splitter import \
 from exactly_lib.default.program_modes.test_case import builtin_symbols, test_case_handling_setup
 from exactly_lib.default.program_modes.test_case.default_instructions_setup import INSTRUCTIONS_SETUP
 from exactly_lib.default.program_modes.test_suite import test_suite_definition
-from exactly_lib_test.cli.test_resources.internal_main_program_runner import RunViaMainProgramInternally
+from exactly_lib_test.test_resources.main_program.main_program_runner_via_same_process import \
+    RunViaMainProgramInternally
 
 
 def main_program_runner_with_default_setup__in_same_process() -> RunViaMainProgramInternally:

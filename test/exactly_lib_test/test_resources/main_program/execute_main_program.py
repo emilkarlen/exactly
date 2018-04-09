@@ -12,7 +12,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
-from exactly_lib_test.cli.test_resources.main_program_runner_utils import \
+from exactly_lib_test.test_resources.main_program.main_program_runner_utils import \
     first_char_is_name_and_rest_is_argument__splitter, EMPTY_INSTRUCTIONS_SETUP
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
