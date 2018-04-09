@@ -27,9 +27,9 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     InstructionSourceInfo
-from exactly_lib.test_case_utils.parse.parse_file_ref import parse_file_ref_from_token_parser
-from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.parse import parse_file_ref
+from exactly_lib.test_case_utils.parse.rel_opts_configuration import argument_configuration_for_file_creation
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -125,11 +125,12 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:
             assert isinstance(parser, TokenParser)  # Type info for IDE
 
-            path_to_create = parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
+            path_to_create = parse_file_ref.parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, parser)
             instruction_config = InstructionConfig(
                 InstructionSourceInfo(first_line_number,
                                       self._instruction_name),
-                _src_rel_opt_arg_conf_for_phase(self._phase_is_after_act)
+                _src_rel_opt_arg_conf_for_phase(self._phase_is_after_act),
+                CONTENTS_ARGUMENT
             )
 
             file_maker = parse_file_contents(instruction_config, parser)

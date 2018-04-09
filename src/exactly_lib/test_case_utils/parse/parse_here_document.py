@@ -1,4 +1,5 @@
 import re
+from typing import Optional
 
 from exactly_lib.help_texts import instruction_arguments
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
@@ -36,7 +37,7 @@ def parse_as_last_argument(here_document_is_mandatory: bool,
 
 
 def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
-                                             token_parser: TokenParser) -> StringResolver:
+                                             token_parser: TokenParser) -> Optional[StringResolver]:
     """
     Expects the here-document marker to be the ane and only token remaining on the current line.
     Consumes current line and all lines included in the here-document.
@@ -50,12 +51,14 @@ def parse_as_last_argument_from_token_parser(here_document_is_mandatory: bool,
             instruction_arguments.HERE_DOCUMENT.name,
             token_parser.remaining_part_of_current_line))
 
-    if token_parser.is_at_eol:
-        if here_document_is_mandatory:
-            raise SingleInstructionInvalidArgumentException(instruction_arguments.HERE_DOCUMENT.name)
-        else:
-            token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-            return None
+    if not here_document_is_mandatory and token_parser.is_at_eol:
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
+        return None
+
+    token_parser.require_has_valid_head_token(instruction_arguments.HERE_DOCUMENT.name)
+
+    while token_parser.is_at_eol:
+        token_parser.consume_current_line_as_string_of_remaining_part_of_current_line()
 
     first_token = token_parser.token_stream.head
     if first_token.is_quoted:

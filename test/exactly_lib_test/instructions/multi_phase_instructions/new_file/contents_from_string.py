@@ -14,16 +14,18 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
-    source_of, complete_argument_elements
+    complete_argument_elements, complete_arguments_with_explicit_contents
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     TestCaseBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import \
-    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, just_parse
+    DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, ACCEPTED_RELATIVITY_VARIANTS, IS_SUCCESS, just_parse, \
+    AN_ALLOWED_DST_FILE_RELATIVITY
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources import arguments as file_maker_args
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.arguments import \
     here_document_contents_arguments, \
     string_contents_arguments
@@ -34,6 +36,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly, dir_contains_exactly
+from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any
@@ -62,7 +65,7 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
             dst_file = PathArgumentWithRelativity(expected_file.file_name,
                                                   rel_opt_conf)
             arguments = complete_argument_elements(dst_file,
-                                                   string_contents_arguments(string_value))
+                                                   file_maker_args.string_contents_arguments(string_value))
             with self.subTest(relativity_option_string=rel_opt_conf.option_argument,
                               first_line=arguments.first_line):
                 self._check(
@@ -77,6 +80,30 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                                fs.DirContents([expected_file])),
                     ))
+
+    def test_string_on_separate_line(self):
+        # ARRANGE #
+        string_value = 'the_string_value'
+        expected_file = fs.File('a-file-name.txt', string_value)
+        rel_opt_conf = AN_ALLOWED_DST_FILE_RELATIVITY
+        dst_file = PathArgumentWithRelativity(expected_file.file_name,
+                                              rel_opt_conf)
+        arguments = complete_arguments_with_explicit_contents(dst_file,
+                                                              parse_args.string_as_elements(string_value),
+                                                              with_file_maker_on_separate_line=True)
+        # ACT & ASSERT #
+        self._check(
+            arguments.as_remaining_source,
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+            ),
+            Expectation(
+                main_result=IS_SUCCESS,
+                side_effects_on_home=f_asrt.dir_is_empty(),
+                symbol_usages=asrt.is_empty_sequence,
+                main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
+                                                                       fs.DirContents([expected_file])),
+            ))
 
     def test_contents_from_here_doc(self):
         here_doc_line = 'single line in here doc'
@@ -101,6 +128,29 @@ class TestSuccessfulScenariosWithConstantContents(TestCaseBase):
                         main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                                fs.DirContents([expected_file])),
                     ))
+
+    def test_contents_from_here_doc_on_separate_line(self):
+        here_doc_line = 'single line in here doc'
+        expected_file_contents = here_doc_line + '\n'
+        expected_file = fs.File('a-file-name.txt', expected_file_contents)
+        rel_opt_conf = AN_ALLOWED_DST_FILE_RELATIVITY
+        dst_file = PathArgumentWithRelativity(expected_file.file_name,
+                                              rel_opt_conf)
+        arguments = complete_arguments_with_explicit_contents(dst_file,
+                                                              parse_args.here_document_as_elements([here_doc_line]),
+                                                              with_file_maker_on_separate_line=True)
+        self._check(
+            arguments.as_remaining_source,
+            ArrangementWithSds(
+                pre_contents_population_action=SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR,
+            ),
+            Expectation(
+                main_result=IS_SUCCESS,
+                side_effects_on_home=f_asrt.dir_is_empty(),
+                symbol_usages=asrt.is_empty_sequence,
+                main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
+                                                                       fs.DirContents([expected_file])),
+            ))
 
 
 class TestSymbolReferences(TestCaseBase):
