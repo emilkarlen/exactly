@@ -28,20 +28,11 @@ run create-invocation_registry-table
 
 install @[SCRIPTS_ROOT_SETUP_DIR]@ @[SCRIPTS_ROOT]@
 
-file @[SCRIPTS_DIR]@/@[DDL_SCRIPT_FILE]@ =
-<<-
-INSERT INTO invocation_registry(step, name) VALUES (null, '@[DDL_SCRIPT_FILE]@');
--
+file @[SCRIPTS_DIR]@/@[DDL_SCRIPT_FILE]@ = "INSERT INTO invocation_registry(step, name) VALUES (null, '@[DDL_SCRIPT_FILE]@');"
 
-file @[SCRIPTS_DIR]@/@[DML_SCRIPT_FILE]@ =
-<<-
-INSERT INTO invocation_registry(step, name) VALUES (null, '@[DML_SCRIPT_FILE]@');
--
+file @[SCRIPTS_DIR]@/@[DML_SCRIPT_FILE]@ = "INSERT INTO invocation_registry(step, name) VALUES (null, '@[DML_SCRIPT_FILE]@');"
 
-file @[SCRIPTS_DIR]@/@[ALW_SCRIPT_FILE]@ =
-<<-
-INSERT INTO invocation_registry(step, name) VALUES (null, '@[ALW_SCRIPT_FILE]@');
--
+file @[SCRIPTS_DIR]@/@[ALW_SCRIPT_FILE]@ = "INSERT INTO invocation_registry(step, name) VALUES (null, '@[ALW_SCRIPT_FILE]@');"
 
 
 [act]
