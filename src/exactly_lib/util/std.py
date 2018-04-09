@@ -49,8 +49,10 @@ class FilePrinter:
     def __init__(self, file):
         self.file = file
 
-    def write(self, s: str):
+    def write(self, s: str, flush: bool = False):
         self.file.write(s)
+        if flush:
+            self.file.flush()
 
     def write_line(self, line: str):
         self.file.write(line)
