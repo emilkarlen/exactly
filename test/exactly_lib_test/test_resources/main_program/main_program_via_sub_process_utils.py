@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib_test.test_resources.process import run_subprocess, SubProcessResult
+from exactly_lib_test.test_resources.process import SubProcessResult, run_subprocess
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
 SRC_DIR_NAME = 'src'

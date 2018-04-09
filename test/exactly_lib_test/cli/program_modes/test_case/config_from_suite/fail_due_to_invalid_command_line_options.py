@@ -4,12 +4,13 @@ import unittest
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.exit_codes import EXIT_INVALID_USAGE
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for
-from exactly_lib_test.cli.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.main_program import main_program_check_base as mpr_check
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndTestActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_resources.main_program.main_program_runner_via_same_process import \
+    RunViaMainProgramInternally
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_process_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
