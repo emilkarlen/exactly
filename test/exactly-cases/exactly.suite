@@ -1,3 +1,5 @@
 [suites]
 
 file/exactly.suite
+
+file-contents/exactly.suite

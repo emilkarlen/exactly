@@ -1,0 +1,20 @@
+[setup]
+
+
+file string.txt = "actual contents"
+
+file single-line.txt = <<-
+actual contents line
+-
+
+
+[assert]
+
+
+contents string.txt equals "actual contents"
+
+contents single-line.txt equals <<-
+actual contents line
+-
+
+contents single-line.txt equals --file --rel-cd single-line.txt
