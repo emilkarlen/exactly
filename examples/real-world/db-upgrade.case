@@ -7,9 +7,12 @@ including conf.xly
 [setup]
 
 
-def program RUN_MYSQL       = $ mysql -user -password db
+def list    DB_ARGS         = -user -password db
+
+def program RUN_MYSQL       = $ mysql @[DB_ARGS]@
 
 def program EXECUTE_SQL     = @ RUN_MYSQL --skip-column-names --batch --execute
+
 
 def string  RELEASE         = release-identifier
 
