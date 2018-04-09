@@ -1,0 +1,12 @@
+[setup]
+
+file f.txt =
+<<eof
+contents
+eof
+
+[assert]
+
+contents f.txt equals <<eof
+contents
+eof
