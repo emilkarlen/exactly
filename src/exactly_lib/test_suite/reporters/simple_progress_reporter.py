@@ -32,7 +32,8 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
         self.output_file.write_line('suite ' + self._file_path_pres(self.suite.source_file) + ': end')
 
     def case_begin(self, case: test_case_processing.TestCaseSetup):
-        self.output_file.write('case  ' + self._file_path_pres(case.file_path) + ': ')
+        self.output_file.write('case  ' + self._file_path_pres(case.file_path) + ': ',
+                               flush=True)
 
     def case_end(self,
                  case: test_case_processing.TestCaseSetup,
