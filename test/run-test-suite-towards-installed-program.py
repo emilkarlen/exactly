@@ -8,7 +8,6 @@ from exactly_lib import program_info
 from exactly_lib_test.default.test_resources.installed_program_main_program_runner import \
     RunInstalledProgramViaOsInSubProcess
 
-# This value is from setup.py
 EXECUTABLE_NAME = program_info.PROGRAM_NAME
 
 mpr = RunInstalledProgramViaOsInSubProcess(EXECUTABLE_NAME)
