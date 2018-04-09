@@ -52,33 +52,28 @@ class FileContentsCheckerHelp:
         ]
 
     def syntax_element_descriptions_at_top(self) -> list:
-        return [self.contents_matcher_help.syntax_element_description()]
+        return []
 
     def syntax_element_descriptions_at_bottom(self) -> list:
         transformation = transformation_syntax_element_description(self._checked_file)
 
         return ([transformation,
-                 negation_of_predicate.syntax_element_description()] +
-                self.contents_matcher_help.referenced_syntax_element_descriptions()
-                )
+                 negation_of_predicate.syntax_element_description()]
+        )
 
     def see_also_targets__file(self) -> list:
-        return (
-                [types.LINES_TRANSFORMER_TYPE_INFO.cross_reference_target]
-                +
-                self.contents_matcher_help.see_also_targets()
-        )
+        return [
+            syntax_elements.FILE_CONTENTS_MATCHER.cross_reference_target,
+            syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
+        ]
 
     def see_also_targets__stdout_err(self) -> list:
-        return (
-                [
-                    concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
-                    types.PROGRAM_TYPE_INFO.cross_reference_target,
-                    types.LINES_TRANSFORMER_TYPE_INFO.cross_reference_target,
-                ]
-                +
-                self.contents_matcher_help.see_also_targets()
-        )
+        return [
+            syntax_elements.FILE_CONTENTS_MATCHER.cross_reference_target,
+            syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
+            concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
+        ]
 
 
 def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
