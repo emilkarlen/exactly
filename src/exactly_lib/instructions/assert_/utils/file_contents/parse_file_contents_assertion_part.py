@@ -17,6 +17,7 @@ from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax
 
 
+
 def parse(token_parser: TokenParser) -> AssertionPart:
     """
     :return: A :class:`AssertionPart` that takes an ResolvedComparisonActualFile as (last) argument.
@@ -27,11 +28,12 @@ def parse(token_parser: TokenParser) -> AssertionPart:
         COMPARISON_OPERATOR,
     )
     expectation_type = token_parser.consume_optional_negation_operator()
-    parser_of_contents_assertion_part = ParseFileContentsAssertionPart(expectation_type)
-    file_contents_assertion_part = parser_of_contents_assertion_part.parse(token_parser)
+    file_contents_assertion_part = ParseFileContentsAssertionPart(expectation_type).parse(token_parser)
     return SequenceOfCooperativeAssertionParts([FileTransformerAsAssertionPart(actual_lines_transformer),
                                                 file_contents_assertion_part])
 
+
+_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS = 'EXPECTED'
 
 _OPERATION = 'OPERATION'
 
@@ -68,7 +70,7 @@ class ParseFileContentsAssertionPart:
         return emptieness.EmptinessContentsAssertionPart(self.expectation_type)
 
     def _parse_equals_checker(self, token_parser: TokenParser) -> FileContentsAssertionPart:
-        token_parser.require_is_not_at_eol(parse_here_doc_or_file_ref.MISSING_SOURCE)
+        token_parser.require_has_valid_head_token(_EXPECTED_SYNTAX_ELEMENT_FOR_EQUALS)
         expected_contents = parse_here_doc_or_file_ref.parse_from_token_parser(
             token_parser,
             EXPECTED_FILE_REL_OPT_ARG_CONFIG)

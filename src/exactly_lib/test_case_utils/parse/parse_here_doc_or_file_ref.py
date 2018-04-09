@@ -9,13 +9,13 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.program.string_or_file import SourceType, StringOrFileRefResolver
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_with_relativity_name_prefix
 from exactly_lib.test_case_utils.parse import parse_here_document, parse_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
-from exactly_lib.symbol.program.string_or_file import SourceType, StringOrFileRefResolver
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 
@@ -42,7 +42,6 @@ def parse_from_parse_source(source: ParseSource,
 
 def parse_from_token_parser(token_parser: TokenParser,
                             conf: RelOptionArgumentConfiguration = CONFIGURATION) -> StringOrFileRefResolver:
-    token_parser.require_is_not_at_eol(MISSING_SOURCE)
     token_parser.require_head_token_has_valid_syntax()
     file_ref = token_parser.consume_and_handle_optional_option(
         None,
@@ -56,10 +55,9 @@ def parse_from_token_parser(token_parser: TokenParser,
 
 
 def parse_string_or_here_doc_from_token_parser(token_parser: TokenParser) -> Tuple[SourceType, StringResolver]:
-    token_parser.require_is_not_at_eol(MISSING_SOURCE)
     token_parser.require_head_token_has_valid_syntax()
     if token_parser.token_stream.head.source_string.startswith(parse_here_document.DOCUMENT_MARKER_PREFIX):
-        here_doc = parse_here_document.parse_as_last_argument_from_token_parser(False, token_parser)
+        here_doc = parse_here_document.parse_as_last_argument_from_token_parser(True, token_parser)
         return SourceType.HERE_DOC, here_doc
     else:
         string_resolver = parse_string.parse_string_from_token_parser(token_parser)

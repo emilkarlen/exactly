@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.symbol.program import string_or_file
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.symbol.program import string_or_file
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
@@ -73,6 +73,18 @@ class TestString(unittest.TestCase):
                                             CommonExpectation(
                                                 symbol_references=[],
                                                 source=asrt_source.is_at_end_of_line(1)))
+                         )
+                         ),
+            NameAndValue('non-quoted string-token on following line',
+                         (
+                             [
+                                 '',
+                                 single_string_token_value,
+                             ],
+                             ExpectedString(single_string_token_value,
+                                            CommonExpectation(
+                                                symbol_references=[],
+                                                source=asrt_source.is_at_end_of_line(2)))
                          )
                          ),
             NameAndValue('non-quoted string-token on single line, followed by arguments on same line',
@@ -214,6 +226,23 @@ class TestHereDoc(unittest.TestCase):
         )
         _expect_here_doc(self, source, expectation)
 
+    def test_without_symbol_references__on_following_line(self):
+        expected_contents_line = 'contents'
+        source = remaining_source_lines(['',
+                                         '<<MARKER',
+                                         expected_contents_line,
+                                         'MARKER',
+                                         'Line 5',
+                                         ])
+        expectation = ExpectedHereDoc(
+            resolved_here_doc_lines=[expected_contents_line],
+            common=CommonExpectation(
+                symbol_references=[],
+                source=asrt_source.is_at_beginning_of_line(5))
+
+        )
+        _expect_here_doc(self, source, expectation)
+
     def test_without_symbol_references__without_following_line(self):
         expected_contents_line = 'contents'
         source = remaining_source_lines(['<<MARKER',
@@ -281,6 +310,29 @@ class TestFileRef(unittest.TestCase):
 
         _expect_file_ref(self, source, expectation)
 
+    def test_without_symbol_references__on_following_line(self):
+        file_name = 'file'
+        source = remaining_source_lines(
+            ['  ',
+             '{file_option} {file_name} following args'.format(
+                 file_option=option_syntax(sut.FILE_ARGUMENT_OPTION),
+                 file_name=file_name,
+             ),
+             'following line',
+             ])
+        expectation = ExpectedFileRef(
+            file_ref_value=file_refs.of_rel_option(sut.CONFIGURATION.options.default_option,
+                                                   concrete_path_parts.fixed_path_parts(file_name)),
+            common=CommonExpectation(
+                symbol_references=[],
+
+                source=asrt_source.assert_source(current_line_number=asrt.equals(2),
+                                                 remaining_part_of_current_line=asrt.equals(
+                                                     'following args')))
+        )
+
+        _expect_file_ref(self, source, expectation)
+
     def test_parse_SHOULD_fail_WHEN_relativity_is_not_accepted(self):
         accepted_option_type = RelOptionType.REL_TMP
         unaccepted_option_type_string_conf = OptionStringConfigurationForRelativityOption(RelOptionType.REL_RESULT)
@@ -339,7 +391,7 @@ class TestFileRef(unittest.TestCase):
             common=CommonExpectation(
                 symbol_references=[SymbolReference(symbol.name,
                                                    file_ref_reference_restrictions(
-                                                             accepted_path_relativity_variants))],
+                                                       accepted_path_relativity_variants))],
 
                 source=asrt_source.assert_source(current_line_number=asrt.equals(1),
                                                  remaining_part_of_current_line=asrt.equals(
