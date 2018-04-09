@@ -1,0 +1,98 @@
+[conf]
+
+
+including conf.xly
+
+
+[setup]
+
+
+def program RUN_MYSQL       = $ mysql -user -password db
+
+def program EXECUTE_SQL     = @ RUN_MYSQL --skip-column-names --batch --execute
+
+def string  RELEASE         = release-identifier
+
+def string  SCRIPTS_ROOT    = root
+def string  SCRIPTS_DIR     = @[SCRIPTS_ROOT]@/sub/scripts-dir
+
+def string  DDL_SCRIPT_FILE = 100-NR-123-something-DDL-001.sql
+def string  DML_SCRIPT_FILE = 200-NR-123-something-DML-001.sql
+def string  ALW_SCRIPT_FILE = 300-NR-123-something-ALWAYS-001.sql
+
+
+run create-invocation_registry-table
+
+install @[SCRIPTS_ROOT_SETUP_DIR]@ @[SCRIPTS_ROOT]@
+
+file @[SCRIPTS_DIR]@/@[DDL_SCRIPT_FILE]@ =
+<<-
+INSERT INTO invocation_registry(step, name) VALUES (null, '@[DDL_SCRIPT_FILE]@');
+-
+
+file @[SCRIPTS_DIR]@/@[DML_SCRIPT_FILE]@ =
+<<-
+INSERT INTO invocation_registry(step, name) VALUES (null, '@[DML_SCRIPT_FILE]@');
+-
+
+file @[SCRIPTS_DIR]@/@[ALW_SCRIPT_FILE]@ =
+<<-
+INSERT INTO invocation_registry(step, name) VALUES (null, '@[ALW_SCRIPT_FILE]@');
+-
+
+
+[act]
+
+
+dbupgrade @[DB_ARGS]@ -f -s @[SCRIPTS_DIR]@ -r @[RELEASE]@
+
+
+[assert]
+
+
+exitcode == 0
+
+
+'A single release should have been registered'
+
+stdout --from
+       @ EXECUTE_SQL '"SELECT version
+                       FROM   db_upgrade_log"'
+       equals
+<<-
+@[RELEASE]@
+-
+
+
+'DDL and DML files should have been registered as executed'
+
+stdout --from
+       @ EXECUTE_SQL '"SELECT   file_name
+                       FROM     db_upgrade_executed_files f
+                                JOIN db_upgrade_log l ON (f.upgrade_id = l.id)
+                       ORDER BY file_name"'
+       equals
+<<-
+@[RELEASE]@/@[DDL_SCRIPT_FILE]@
+@[RELEASE]@/@[DML_SCRIPT_FILE]@
+-
+
+
+'The SQL scripts should have been invoked (in correct order)'
+
+stdout --from
+       @ EXECUTE_SQL '"SELECT   name
+                       FROM     invocation_registry
+                       ORDER BY step"'
+       equals
+<<-
+@[DDL_SCRIPT_FILE]@
+@[ALW_SCRIPT_FILE]@
+@[DML_SCRIPT_FILE]@
+-
+
+
+[cleanup]
+
+
+run cleanup-db
