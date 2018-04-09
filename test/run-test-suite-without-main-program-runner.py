@@ -1,17 +1,10 @@
 """
 Runs all tests that does not require a MainProgramRunner - i.e. skips many of the slow tests.
 """
-import os
-import sys
 
-SRC_DIR_NAME = 'src'
+import path_and_cwd_setup
 
-this_dir = sys.path[0]
-prj_root_dir = os.path.dirname(this_dir)
-src_dir = os.path.join(prj_root_dir, SRC_DIR_NAME)
-sys.path.insert(0, src_dir)
-
-os.chdir(this_dir)
+path_and_cwd_setup.initialize()
 
 import unittest
 import complete_test_suite

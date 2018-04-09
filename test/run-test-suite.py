@@ -1,18 +1,11 @@
 """
 A python 3 program that runs the test suite towards the source file structure.
 """
-import os
-import pathlib
-import sys
 import unittest
 
-SRC_DIR_NAME = 'src'
+import path_and_cwd_setup
 
-this_dir = pathlib.Path(sys.path[0])
-src_dir = this_dir.parent / SRC_DIR_NAME
-sys.path.insert(0, str(src_dir))
-
-os.chdir(str(this_dir))
+path_and_cwd_setup.initialize()
 
 from exactly_lib_test.test_resources.main_program.main_program_runners import RunDefaultMainProgramViaOsInSubProcess
 import complete_test_suite
