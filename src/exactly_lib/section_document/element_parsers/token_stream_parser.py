@@ -84,6 +84,15 @@ class TokenParser:
                 'Invalid syntax: ' +
                 self.token_stream.head_syntax_error_description)
 
+    def require_has_valid_head_token(self, syntax_element: str):
+        if self.token_stream.look_ahead_state is LookAheadState.SYNTAX_ERROR:
+            self.error('Invalid syntax of {}: {}'.format(
+                syntax_element,
+                self.token_stream.head_syntax_error_description)
+            )
+        if self.token_stream.look_ahead_state is LookAheadState.NULL:
+            self.error('Missing ' + syntax_element)
+
     def report_superfluous_arguments_if_not_at_eol(self):
         remaining = self.token_stream.remaining_part_of_current_line.strip()
         if len(remaining) != 0:

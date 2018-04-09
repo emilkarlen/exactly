@@ -86,7 +86,7 @@ class TestSymbolUsages(TestCaseBase):
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', expected_dst_file.name)
 
         file_contents_arg = arguments.TransformableContentsConstructor(
-            arguments.file(symbol_reference_syntax_for_name(src_file_symbol.name))
+            arguments.file_with_rel_opt_conf(symbol_reference_syntax_for_name(src_file_symbol.name))
         ).with_transformation(to_upper_transformer.name).as_arguments
 
         source = remaining_source(
@@ -153,7 +153,7 @@ def instruction_arguments_for_src_file_rel_result() -> str:
     dst_file_arg = PathArgumentWithRelativity('dst-file.txt',
                                               conf_rel_any(RelOptionType.REL_ACT))
     contents_arg = arguments.TransformableContentsConstructor(
-        arguments.file(src_file_arg.file_name, src_file_arg.relativity)
+        arguments.file_with_rel_opt_conf(src_file_arg.file_name, src_file_arg.relativity)
     ).without_transformation().as_arguments
 
     return '{dst_file_arg} {contents_arguments}'.format(
@@ -180,7 +180,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
         })
 
         file_contents_arg = arguments.TransformableContentsConstructor(
-            arguments.file(src_file.name, src_rel_opt_conf)
+            arguments.file_with_rel_opt_conf(src_file.name, src_rel_opt_conf)
         ).with_transformation(to_upper_transformer.name).as_arguments
 
         expected_non_home_contents = dst_rel_opt_conf.assert_root_dir_contains_exactly(fs.DirContents([expected_file]))
@@ -291,7 +291,7 @@ class TestValidationErrorPreSds_DueTo_NonExistingSourceFile(TestCaseBase):
                                               src_file_rel_conf)
 
         contents_argument = arguments.TransformableContentsConstructor(
-            arguments.file(src_file.file_name, src_file.relativity)
+            arguments.file_with_rel_opt_conf(src_file.file_name, src_file.relativity)
         ).without_transformation().as_arguments
 
         instruction_arguments = '{rel_opt} {file_name} {contents_arguments}'.format(

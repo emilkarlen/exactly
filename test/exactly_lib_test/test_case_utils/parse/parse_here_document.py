@@ -102,7 +102,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 expected_document_contents=
                 hd.matches_resolved_value([]),
                 source_after_parse=
-                source_is_at_end),
+                source_is_at_end)
+            ,
             SuccessfulCase(
                 source_lines=[
                     '<<eof',
@@ -110,6 +111,16 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 ],
                 expected_document_contents=
                 hd.matches_resolved_value([]),
+                source_after_parse=
+                source_is_at_end),
+            SuccessfulCase(
+                source_lines=[
+                    '<<-',
+                    '-',
+                ],
+                expected_document_contents=
+                hd.matches_resolved_value([])
+                ,
                 source_after_parse=
                 source_is_at_end),
             SuccessfulCase(
@@ -119,10 +130,12 @@ class TestSuccessfulScenarios(unittest.TestCase):
                     ' after',
                 ],
                 expected_document_contents=
-                hd.matches_resolved_value([]),
+                hd.matches_resolved_value([])
+                ,
                 source_after_parse=
                 source_is_not_at_end(current_line_number=asrt.equals(3),
-                                     remaining_part_of_current_line=asrt.equals(' after'))),
+                                     remaining_part_of_current_line=asrt.equals(' after')))
+            ,
             SuccessfulCase(
                 source_lines=[
                     '<<eof',
@@ -132,7 +145,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                 expected_document_contents=
                 hd.matches_resolved_value(['single line contents']),
                 source_after_parse=
-                source_is_at_end),
+                source_is_at_end)
+            ,
             SuccessfulCase(
                 source_lines=[
                     '<<EOF',
@@ -147,7 +161,8 @@ class TestSuccessfulScenarios(unittest.TestCase):
                                            ]),
                 source_after_parse=
                 source_is_not_at_end(current_line_number=asrt.equals(5),
-                                     remaining_part_of_current_line=asrt.equals('line after'))),
+                                     remaining_part_of_current_line=asrt.equals('line after')))
+            ,
         ]
         for case in cases:
             self._check_case(case)

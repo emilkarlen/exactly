@@ -118,9 +118,11 @@ class FileContentsDocumentation:
 class InstructionConfig:
     def __init__(self,
                  source_info: InstructionSourceInfo,
-                 src_rel_opt_arg_conf: RelOptionArgumentConfiguration):
+                 src_rel_opt_arg_conf: RelOptionArgumentConfiguration,
+                 syntax_element: str):
         self.source_info = source_info
         self.src_rel_opt_arg_conf = src_rel_opt_arg_conf
+        self.syntax_element = syntax_element
 
 
 def parse_file_contents(instruction_config: InstructionConfig,
@@ -134,14 +136,12 @@ def parse_file_contents(instruction_config: InstructionConfig,
         return FileMakerForConstantContents(string_resolvers.str_constant(''))
     else:
         parser.consume_mandatory_constant_unquoted_string(CONTENTS_ASSIGNMENT_TOKEN, True)
-        parser.require_is_not_at_eol('Missing ' + CONTENTS_ARGUMENT)
-
         return parse_file_maker(instruction_config, parser)
 
 
 def parse_file_maker(instruction_config: InstructionConfig,
                      parser: TokenParser) -> FileMaker:
-    parser.require_head_token_has_valid_syntax()
+    parser.require_has_valid_head_token(instruction_config.syntax_element)
 
     head_source_string = parser.token_stream.head.source_string
     if is_option_string(head_source_string):

@@ -1,12 +1,35 @@
 [setup]
 
-file f.txt =
+file string.txt =
+"string constant"
+
+file here-doc.txt =
 <<eof
-contents
+here document
 eof
+
+file here-doc-alt-marker.txt =
+<<-
+here document
+-
+
+file program-output.txt =
+--stdout --python -c :> print('output from program')
+
 
 [assert]
 
-contents f.txt equals <<eof
-contents
+
+contents string.txt equals "string constant"
+
+contents here-doc.txt equals <<eof
+here document
+eof
+
+contents here-doc-alt-marker.txt equals <<eof
+here document
+eof
+
+contents program-output.txt equals <<eof
+output from program
 eof

@@ -5,8 +5,9 @@ from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     RelNonHomeOptionType, RelHomeOptionType, RelSdsOptionType
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
-from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements, \
-    here_document_arg_elements
+from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg_lines
+from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
+from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     conf_rel_home, conf_rel_sds, conf_rel_non_home, default_conf_rel_non_home
@@ -25,38 +26,47 @@ def empty_file_contents_arguments() -> ArgumentElements:
     return ArgumentElements([])
 
 
-def explicit_contents_of(contents_arguments: ArgumentElements) -> ArgumentElements:
-    return contents_arguments.prepend_to_first_line([instruction_arguments.ASSIGNMENT_OPERATOR])
+def explicit_contents_of(file_maker: ArgumentElements,
+                         with_file_maker_on_separate_line: bool = False) -> ArgumentElements:
+    assignment_operator = [instruction_arguments.ASSIGNMENT_OPERATOR]
+    if with_file_maker_on_separate_line:
+        return arg_lines.elements(assignment_operator).followed_by_lines(file_maker.lines)
+    else:
+        return file_maker.prepend_to_first_line(assignment_operator)
 
 
 def here_document_contents_arguments(lines: List[str]) -> ArgumentElements:
-    return explicit_contents_of(here_document_arg_elements(lines))
+    return explicit_contents_of(parse_args.here_document_as_elements(lines))
 
 
 def string_contents_arguments(string: str) -> ArgumentElements:
-    return explicit_contents_of(ArgumentElements([string]))
+    return explicit_contents_of(parse_args.string_as_elements(string))
+
+
+def string_contents(string: str) -> ArgumentElements:
+    return parse_args.string_as_elements(string)
 
 
 def output_from_program(program_output_channel: ProcOutputFile,
                         program: ArgumentElements,
-                        with_new_line_after_output_option: bool = False) -> ArgumentElements:
+                        with_new_line_after_source_type_option: bool = False) -> ArgumentElements:
     program_output_option = [ab.option(parse_file_maker.PROGRAM_OUTPUT_OPTIONS[program_output_channel])]
 
-    if with_new_line_after_output_option:
+    if with_new_line_after_source_type_option:
         return ArgumentElements(program_output_option,
                                 program.all_lines)
     else:
         return program.prepend_to_first_line(program_output_option)
 
 
-def file(file_name: str,
-         rel_option: RelativityOptionConfiguration = None,
-         with_new_line_after_output_option: bool = False) -> ArgumentElements:
+def file_with_rel_opt_conf(file_name: str,
+                           rel_option: RelativityOptionConfiguration = None,
+                           with_new_line_after_source_type_option: bool = False) -> ArgumentElements:
     first_line = [ab.option(parse_file_maker.FILE_OPTION)]
     following_line_args = []
 
     file_args = first_line
-    if with_new_line_after_output_option:
+    if with_new_line_after_source_type_option:
         file_args = following_line_args
 
     if rel_option is not None:
@@ -65,7 +75,7 @@ def file(file_name: str,
         file_args.append(file_name)
 
     following_lines = [] \
-        if not with_new_line_after_output_option \
+        if not with_new_line_after_source_type_option \
         else [following_line_args]
 
     return ArgumentElements(first_line,
@@ -74,26 +84,30 @@ def file(file_name: str,
 
 class TransformableContentsConstructor:
     def __init__(self,
-                 non_transformer_arguments: ArgumentElements,
-                 with_new_line_before_transformer: bool = True):
-        self._with_new_line_before_transformer = with_new_line_before_transformer
+                 non_transformer_arguments: ArgumentElements):
         self._non_transformer_arguments = non_transformer_arguments
 
-    def without_transformation(self) -> ArgumentElements:
-        return explicit_contents_of(self._non_transformer_arguments)
+    def without_transformation(self, with_file_maker_on_separate_line: bool = False) -> ArgumentElements:
+        return explicit_contents_of(self._non_transformer_arguments,
+                                    with_file_maker_on_separate_line=with_file_maker_on_separate_line)
 
-    def with_transformation(self, transformer: str) -> ArgumentElements:
+    def with_transformation(self,
+                            transformer: str,
+                            with_file_maker_on_separate_line: bool = False,
+                            with_transformer_on_separate_line: bool = True
+                            ) -> ArgumentElements:
         transformer_elements = [
             ab.option(instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME),
             transformer,
         ]
 
-        if self._with_new_line_before_transformer:
+        if with_transformer_on_separate_line:
             transformer_arguments = ArgumentElements([], [transformer_elements])
         else:
             transformer_arguments = ArgumentElements(transformer_elements)
         args = self._non_transformer_arguments.last_line_followed_by(transformer_arguments)
-        return explicit_contents_of(args)
+        return explicit_contents_of(args,
+                                    with_file_maker_on_separate_line=with_file_maker_on_separate_line)
 
     def with_and_without_transformer_cases(self, transformer_expr: str) -> Sequence[ArgumentElements]:
         return [

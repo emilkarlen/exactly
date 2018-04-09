@@ -94,20 +94,22 @@ class ArgumentElements:
         return [self.first_line] + self.following_lines
 
     @property
-    def all_lines(self) -> List[Stringable]:
+    def all_lines(self) -> List[List[Stringable]]:
         return [self.first_line] + self.following_lines
 
     @property
     def as_remaining_source(self) -> ParseSource:
         return self.as_arguments.as_remaining_source
 
-    def append_to_first_line(self,
-                             elements: List):
+    def append_to_first_line(self, elements: List):
         return ArgumentElements(self.first_line + elements,
                                 self.following_lines)
 
-    def prepend_to_first_line(self,
-                              elements: List):
+    def with_first_line_preceded_by(self, elements: List):
+        return ArgumentElements(elements + self.first_line,
+                                self.following_lines)
+
+    def prepend_to_first_line(self, elements: List):
         return ArgumentElements(elements + self.first_line,
                                 self.following_lines)
 
@@ -165,13 +167,17 @@ def render_elements_line(line_elements: List) -> str:
     return ' '.join(map(str, line_elements))
 
 
+def string_as_elements(string: str) -> ArgumentElements:
+    return ArgumentElements([string])
+
+
 def here_document(lines: List[str],
                   marker: str = 'EOF') -> Arguments:
     return Arguments('<<' + marker,
                      lines + [marker])
 
 
-def here_document_arg_elements(lines: List[str],
-                               marker: str = 'EOF') -> ArgumentElements:
+def here_document_as_elements(lines: List[str],
+                              marker: str = 'EOF') -> ArgumentElements:
     return ArgumentElements.new_with_following_lines_as_single_elements(['<<' + marker],
                                                                         lines + [marker])
