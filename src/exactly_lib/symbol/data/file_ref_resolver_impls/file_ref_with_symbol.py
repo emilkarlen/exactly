@@ -3,7 +3,6 @@ from typing import Sequence
 
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
-from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity
@@ -71,11 +70,3 @@ def _combine(first: PathPart, second: PathPart) -> PathPart:
         return first
     p = pathlib.Path(first.value()) / pathlib.Path(second.value())
     return PathPartAsFixedPath(str(p))
-
-
-def lookup_file_ref_from_symbol_table(symbols: SymbolTable, name: str) -> FileRef:
-    container = symbols.lookup(name)
-    assert isinstance(container, SymbolContainer), 'Value in SymTbl must be SymbolContainer'
-    resolver = container.resolver
-    assert isinstance(resolver, FileRefResolver), 'Referenced symbol must be FileRefResolver'
-    return resolver.resolve(symbols)
