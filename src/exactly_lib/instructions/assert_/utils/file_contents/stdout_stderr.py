@@ -12,7 +12,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.parse_instruction impo
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_checker import \
     FileContentsCheckerHelp
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -103,8 +103,8 @@ class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileConstan
         return None
 
     def file_ref_resolver(self) -> FileRefResolver:
-        return file_ref_resolvers2.of_rel_option(RelOptionType.REL_RESULT,
-                                                 PathPartAsFixedPath(self.checked_file_name))
+        return file_ref_resolvers.of_rel_option(RelOptionType.REL_RESULT,
+                                                PathPartAsFixedPath(self.checked_file_name))
 
 
 class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor):

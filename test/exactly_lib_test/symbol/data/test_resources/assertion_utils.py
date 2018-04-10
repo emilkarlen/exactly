@@ -1,7 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -35,7 +35,7 @@ def symbol_table_with_values_matching_references(references: Sequence[SymbolRefe
 def file_ref_resolver_test_impl(valid_relativities: PathRelativityVariants) -> FileRefResolver:
     relativity = list(valid_relativities.rel_option_types)[0]
     assert isinstance(relativity, RelOptionType)
-    return file_ref_resolvers2.constant(file_ref_test_impl('file_ref_test_impl', relativity))
+    return file_ref_resolvers.constant(file_ref_test_impl('file_ref_test_impl', relativity))
 
 
 class _ValueCorrespondingToValueRestriction(vr.ValueRestrictionVisitor):

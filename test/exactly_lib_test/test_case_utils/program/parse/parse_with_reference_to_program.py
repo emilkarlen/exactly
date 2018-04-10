@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data.file_ref_resolvers2 import constant
+from exactly_lib.symbol.data.file_ref_resolvers import constant
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.program.parse import parse_with_reference_to_program as sut

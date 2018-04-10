@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase_instructions import new_file as sut
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType
@@ -84,12 +84,12 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 
         symbols = SymbolTable({
             src_file_symbol.name:
-                container(file_ref_resolvers2.of_rel_option(src_file_rel_conf.relativity_option,
-                                                            PathPartAsFixedPath(src_file_symbol.value))),
+                container(file_ref_resolvers.of_rel_option(src_file_rel_conf.relativity_option,
+                                                           PathPartAsFixedPath(src_file_symbol.value))),
 
             dst_file_symbol.name:
-                container(file_ref_resolvers2.of_rel_option(dst_file_rel_option,
-                                                            PathPartAsFixedPath(dst_file_symbol.value))),
+                container(file_ref_resolvers.of_rel_option(dst_file_rel_option,
+                                                           PathPartAsFixedPath(dst_file_symbol.value))),
 
             to_upper_transformer.name:
                 container(to_upper_transformer.value),

@@ -1,7 +1,7 @@
 import pathlib
 from typing import List
 
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure import path_relativity
@@ -230,7 +230,7 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
         return self.relativity
 
     def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
-        return file_ref_resolvers2.constant(
+        return file_ref_resolvers.constant(
             file_refs.of_rel_option(self.relativity_option,
                                     concrete_path_parts.PathPartAsFixedPath(file_name))
         )
@@ -396,7 +396,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
         return [
             data_symbol_utils.entry(
                 self.symbol_name,
-                file_ref_resolvers2.constant(
+                file_ref_resolvers.constant(
                     file_refs.of_rel_option(self.relativity,
                                             concrete_path_parts.PathPartAsNothing())))
         ]

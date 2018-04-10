@@ -1,18 +1,18 @@
 import pathlib
 from typing import Sequence, Optional
 
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
-from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.err_msg.path_description import path_value_description
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import pre_or_post_sds_failure_message_or_none, FileRefCheck
-from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.type_system.data import file_refs
 
 CONTENTS_ATTRIBUTE = 'contents'
@@ -133,4 +133,4 @@ class ComparisonActualFileForProgramOutput(ComparisonActualFile):
         return None
 
     def file_ref_resolver(self) -> FileRefResolver:
-        return file_ref_resolvers2.constant(file_refs.absolute_path(self._file_with_program_output))
+        return file_ref_resolvers.constant(file_refs.absolute_path(self._file_with_program_output))

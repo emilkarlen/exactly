@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr
@@ -101,8 +101,8 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
     def test_pass(self):
         # ARRANGE #
         test_cases = [
-            file_ref_resolvers2.constant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            file_ref_resolvers2.constant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
+            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
+            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
         ]
         restriction = vr.FileRefRelativityRestriction(
             PathRelativityVariants(
@@ -120,8 +120,8 @@ class TestFileRefRelativityRestriction(unittest.TestCase):
     def test_fail__relative_paths(self):
         # ARRANGE #
         test_cases = [
-            file_ref_resolvers2.constant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
-            file_ref_resolvers2.constant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
+            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_ACT)),
+            file_ref_resolvers.constant(file_ref_test_impl(relativity=RelOptionType.REL_HOME_CASE)),
         ]
         restriction = vr.FileRefRelativityRestriction(
             PathRelativityVariants(
@@ -211,8 +211,8 @@ class _VisitorThatRegisterClassOfVisitMethod(vr.ValueRestrictionVisitor):
 
 
 def file_ref_constant_resolver() -> FileRefResolver:
-    return file_ref_resolvers2.constant(file_ref_test_impl('file-name-rel-home',
-                                                           relativity=RelOptionType.REL_HOME_CASE))
+    return file_ref_resolvers.constant(file_ref_test_impl('file-name-rel-home',
+                                                          relativity=RelOptionType.REL_HOME_CASE))
 
 
 class UnknownValueRestriction(ValueRestriction):

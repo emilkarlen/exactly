@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.execution.symbols_handling import symbol_validation as sut
 from exactly_lib.symbol import resolver_structure as vs, symbol_usage as su
-from exactly_lib.symbol.data import file_ref_resolvers2, path_part_resolvers
+from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -89,10 +89,10 @@ class TestSymbolDefinition(unittest.TestCase):
         symbol_usage = su.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
-                file_ref_resolvers2.rel_symbol(su.SymbolReference('REFERENCED',
-                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                file_ref_resolvers.rel_symbol(su.SymbolReference('REFERENCED',
+                                                                 ReferenceRestrictionsOnDirectAndIndirect(
                                                                       RestrictionThatIsAlwaysSatisfied())),
-                                               path_part_resolvers.from_constant_str('file-name'))))
+                                              path_part_resolvers.from_constant_str('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'return value for indicating error')
@@ -105,9 +105,9 @@ class TestSymbolDefinition(unittest.TestCase):
         symbol_usage_to_check = su.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
-                file_ref_resolvers2.rel_symbol(su.SymbolReference('REFERENCED',
-                                                                  unconditionally_unsatisfied_reference_restrictions()),
-                                               path_part_resolvers.from_constant_str('file-name'))))
+                file_ref_resolvers.rel_symbol(su.SymbolReference('REFERENCED',
+                                                                 unconditionally_unsatisfied_reference_restrictions()),
+                                              path_part_resolvers.from_constant_str('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
         # ASSERT #
@@ -121,10 +121,10 @@ class TestSymbolDefinition(unittest.TestCase):
         symbol_usage_to_check = su.SymbolDefinition(
             'UNDEFINED',
             file_ref_resolver_container(
-                file_ref_resolvers2.rel_symbol(su.SymbolReference('REFERENCED',
-                                                                  ReferenceRestrictionsOnDirectAndIndirect(
+                file_ref_resolvers.rel_symbol(su.SymbolReference('REFERENCED',
+                                                                 ReferenceRestrictionsOnDirectAndIndirect(
                                                                       RestrictionThatIsAlwaysSatisfied())),
-                                               path_part_resolvers.from_constant_str('file-name'))))
+                                              path_part_resolvers.from_constant_str('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
         # ASSERT #

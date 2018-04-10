@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
@@ -98,7 +98,7 @@ def _env_from(sds: SandboxDirectoryStructure,
 
 
 def _resolver_of(file_ref: file_refs.FileRef) -> FileRefResolver:
-    return file_ref_resolvers2.constant(file_ref)
+    return file_ref_resolvers.constant(file_ref)
 
 
 if __name__ == '__main__':

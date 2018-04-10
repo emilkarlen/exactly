@@ -6,7 +6,7 @@ from exactly_lib.help_texts.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTI
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
-from exactly_lib.symbol.data import file_ref_resolvers2, path_part_resolvers
+from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -242,7 +242,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         ]
         for default_option, accepted_options in default_and_accepted_options_variants:
             expected_file_ref = file_refs.of_rel_option(default_option, PathPartAsFixedPath(file_name_argument))
-            expected_file_ref_value = file_ref_resolvers2.constant(expected_file_ref)
+            expected_file_ref_value = file_ref_resolvers.constant(expected_file_ref)
             arg_config = RelOptionArgumentConfigurationWoSuffixRequirement(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -285,7 +285,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         file_name_argument = 'file-name'
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_file_ref = file_refs.of_rel_option(rel_option_type, PathPartAsFixedPath(file_name_argument))
-            expected_file_ref_resolver = file_ref_resolvers2.constant(expected_file_ref)
+            expected_file_ref_resolver = file_ref_resolvers.constant(expected_file_ref)
             option_str = _option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
@@ -324,7 +324,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
         file_name_argument = '/an/absolute/path'
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
             expected_file_ref = file_refs.absolute_file_name(file_name_argument)
-            expected_file_ref_resolver = file_ref_resolvers2.constant(expected_file_ref)
+            expected_file_ref_resolver = file_ref_resolvers.constant(expected_file_ref)
             option_str = _option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
                 (
@@ -362,7 +362,7 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_parse_with_only_absolute_path_suffix(self):
         file_name_argument = '/an/absolute/path'
         expected_file_ref = file_refs.absolute_file_name(file_name_argument)
-        expected_file_ref_resolver = file_ref_resolvers2.constant(expected_file_ref)
+        expected_file_ref_resolver = file_ref_resolvers.constant(expected_file_ref)
         source_and_token_stream_assertion_variants = [
             (
                 '{file_name_argument} arg3 arg4',
@@ -464,7 +464,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
         expected_file_ref = file_refs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
                                                     PathPartAsFixedPath('{rel_symbol_option}'.format(
                                                         rel_symbol_option=rel_symbol_option)))
-        expected_file_ref_value = file_ref_resolvers2.constant(expected_file_ref)
+        expected_file_ref_value = file_ref_resolvers.constant(expected_file_ref)
         for path_suffix_is_required in [False, True]:
             with self.subTest(msg='path_suffix_is_required=' + str(path_suffix_is_required)):
                 self._check(
@@ -529,7 +529,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
-                     entry(defined_path_symbol.name, file_ref_resolvers2.constant(relativity_file_ref)),
+                     entry(defined_path_symbol.name, file_ref_resolvers.constant(relativity_file_ref)),
                      entry(suffix_symbol.name, string_resolvers.str_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
@@ -567,7 +567,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
-                     entry(defined_path_symbol.name, file_ref_resolvers2.constant(relativity_file_ref)),
+                     entry(defined_path_symbol.name, file_ref_resolvers.constant(relativity_file_ref)),
                      entry(suffix_symbol.name, string_resolvers.str_constant(suffix_symbol.value)),
                  ]),
                  token_stream=
@@ -618,8 +618,8 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                                                             ReferenceRestrictionsOnDirectAndIndirect(
                                                                 FileRefRelativityRestriction(
                                                                     accepted_relativities)))
-                expected_file_ref_resolver = file_ref_resolvers2.rel_symbol(expected_symbol_reference,
-                                                                            path_part_resolvers.from_constant_str(
+                expected_file_ref_resolver = file_ref_resolvers.rel_symbol(expected_symbol_reference,
+                                                                           path_part_resolvers.from_constant_str(
                                                                                 file_name_argument))
                 for path_suffix_is_required in [False, True]:
                     arg_config = _arg_config_for_rel_symbol_config(accepted_relativities)
@@ -982,8 +982,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  symbol_table=
                  symbol_table_from_entries([
                      entry(symbol_1.name,
-                           file_ref_resolvers2.constant(file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
-                                                                                PathPartAsFixedPath(
+                           file_ref_resolvers.constant(file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
+                                                                               PathPartAsFixedPath(
                                                                                     'suffix-from-path-symbol')))),
                      entry(symbol_2.name, string_resolvers.str_constant('string-symbol-value')),
                  ]),
@@ -1094,7 +1094,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
         ]
         for default_option, accepted_options in default_and_accepted_options_variants:
             expected_file_ref = file_refs.of_rel_option(default_option, PathPartAsNothing())
-            expected_file_ref_value = file_ref_resolvers2.constant(expected_file_ref)
+            expected_file_ref_value = file_ref_resolvers.constant(expected_file_ref)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
                     PathRelativityVariants(accepted_options, True),
@@ -1290,7 +1290,7 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                 actual_resolver = sut.parse_file_ref_from_parse_source(
                     remaining_source('file.txt'),
                     custom_configuration.config_for(path_suffix_is_required))
-                expected_resolver = file_ref_resolvers2.constant(file_refs.rel_act(PathPartAsFixedPath('file.txt')))
+                expected_resolver = file_ref_resolvers.constant(file_refs.rel_act(PathPartAsFixedPath('file.txt')))
                 assertion = equals_file_ref_resolver(expected_resolver)
                 assertion.apply_with_message(self, actual_resolver, 'file-ref-resolver')
 
