@@ -439,6 +439,14 @@ def is_instance_with(expected_type: Type[T],
     return _IsInstanceWith(expected_type, value_assertion, description)
 
 
+def is_instance_with_many(expected_type: Type[T],
+                          value_assertions: List[ValueAssertion[T]],
+                          description: str = '') -> ValueAssertion[Any]:
+    return _IsInstanceWith(expected_type,
+                           and_(value_assertions),
+                           description)
+
+
 def is_not_none_and_instance_with(expected_type: Type[T],
                                   value_assertion: ValueAssertion[T]) -> ValueAssertion[Any]:
     return _IsNotNoneAndInstanceWith(expected_type, value_assertion)
