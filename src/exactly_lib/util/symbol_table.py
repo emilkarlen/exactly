@@ -1,4 +1,5 @@
 import copy
+from typing import Optional
 
 
 class SymbolTableValue:
@@ -86,5 +87,5 @@ def singleton_symbol_table_2(name: str, value: SymbolTableValue) -> SymbolTable:
     return SymbolTable({name: value})
 
 
-def symbol_table_from_none_or_value(symbol_table_or_none: SymbolTable) -> SymbolTable:
+def symbol_table_from_none_or_value(symbol_table_or_none: Optional[SymbolTable]) -> SymbolTable:
     return SymbolTable() if symbol_table_or_none is None else symbol_table_or_none

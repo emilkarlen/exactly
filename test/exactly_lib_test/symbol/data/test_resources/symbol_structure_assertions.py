@@ -8,7 +8,7 @@ from exactly_lib_test.util.test_resources.line_source_assertions import equals_l
 
 
 def equals_container(expected: rs.SymbolContainer,
-                     ignore_source_line: bool = True) -> asrt.ValueAssertion:
+                     ignore_source_line: bool = True) -> asrt.ValueAssertion[rs.SymbolContainer]:
     component_assertions = []
     if not ignore_source_line:
         component_assertions.append(asrt.sub_component('source',
@@ -40,7 +40,7 @@ def equals_symbol(expected: su.SymbolDefinition,
 
 
 def equals_symbol_table(expected: rs.SymbolTable,
-                        ignore_source_line: bool = True) -> asrt.ValueAssertion:
+                        ignore_source_line: bool = True) -> asrt.ValueAssertion[rs.SymbolTable]:
     return _EqualsSymbolTable(expected, ignore_source_line)
 
 
@@ -63,6 +63,17 @@ class _EqualsSymbolTable(asrt.ValueAssertion):
                         message_builder.apply('names in symbol table'))
         for name in self.expected.names_set:
             actual_value = value.lookup(name)
+
+            put.assertIsInstance(actual_value, rs.SymbolContainer,
+                                 message_builder.apply('actual container for ' + name))
+            assert isinstance(actual_value, rs.SymbolContainer)
+
             expected_container = self.expected.lookup(name)
-            equals_container(expected_container).apply_with_message(put, actual_value,
-                                                                    message_builder.apply('Value of symbol ' + name))
+
+            put.assertIsInstance(expected_container, rs.SymbolContainer,
+                                 message_builder.apply('expected container for ' + name))
+            assert isinstance(expected_container, rs.SymbolContainer)
+
+            equals_container(expected_container).apply(put,
+                                                       actual_value,
+                                                       message_builder.for_sub_component('Value of symbol ' + name))
