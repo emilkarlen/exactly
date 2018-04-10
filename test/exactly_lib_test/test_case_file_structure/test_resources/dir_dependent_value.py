@@ -10,17 +10,19 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 T = TypeVar('T')
 
 
-def equals_single_dir_dependent_value(expected: SingleDirDependentValue,
-                                      value_assertion_from_expected: Callable[[T], asrt.ValueAssertion[T]] = asrt.equals
-                                      ) -> asrt.ValueAssertion[DirDependentValue[T]]:
+def matches_single_dir_dependent_value(expected: SingleDirDependentValue,
+                                       value_assertion_from_expected:
+                                       Callable[[T], asrt.ValueAssertion[T]] = asrt.equals
+                                       ) -> asrt.ValueAssertion[DirDependentValue[T]]:
     return SingleDirDependentValueAssertion(SingleDirDependentValue,
                                             expected,
                                             value_assertion_from_expected)
 
 
-def equals_multi_dir_dependent_value(expected: MultiDirDependentValue,
-                                     value_assertion_from_expected: Callable[[T], asrt.ValueAssertion[T]] = asrt.equals
-                                     ) -> asrt.ValueAssertion[DirDependentValue[T]]:
+def matches_multi_dir_dependent_value(expected: MultiDirDependentValue,
+                                      value_assertion_from_expected:
+                                      Callable[[T], asrt.ValueAssertion[T]] = asrt.equals
+                                      ) -> asrt.ValueAssertion[DirDependentValue[T]]:
     return MultiDirDependentValueAssertion(MultiDirDependentValue,
                                            expected,
                                            value_assertion_from_expected)

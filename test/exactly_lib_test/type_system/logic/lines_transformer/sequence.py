@@ -7,7 +7,7 @@ from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, Id
 from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerSequenceValue, \
     DirDependentLinesTransformerValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
-    equals_multi_dir_dependent_value
+    matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import \
     MultiDirDependentValueTestImpl
 from exactly_lib_test.test_resources.test_utils import NEA
@@ -72,7 +72,7 @@ class TestValue(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case.name):
-                assertion = equals_multi_dir_dependent_value(case.expected, equals_lines_transformer)
+                assertion = matches_multi_dir_dependent_value(case.expected, equals_lines_transformer)
 
                 assertion.apply_without_message(self, case.actual)
 

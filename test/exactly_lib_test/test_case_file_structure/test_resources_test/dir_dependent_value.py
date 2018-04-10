@@ -33,7 +33,7 @@ class TestEqualsSingleDirDependentValue(unittest.TestCase):
         ]
         for value in cases:
             with self.subTest(value=str(value)):
-                assertion = sut.equals_single_dir_dependent_value(value)
+                assertion = sut.matches_single_dir_dependent_value(value)
                 assertion.apply_without_message(self, value)
 
     def test_fail__has_dir_dependency(self):
@@ -75,7 +75,7 @@ class TestEqualsSingleDirDependentValue(unittest.TestCase):
     @staticmethod
     def _assert_not_equal(expected: sut.SingleDirDependentValue,
                           actual: sut.SingleDirDependentValue):
-        assertion = sut.equals_single_dir_dependent_value(expected)
+        assertion = sut.matches_single_dir_dependent_value(expected)
         assert_that_assertion_fails(assertion, actual)
 
 
@@ -92,7 +92,7 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
         ]
         for value in cases:
             with self.subTest(value=str(value)):
-                assertion = sut.equals_multi_dir_dependent_value(value)
+                assertion = sut.matches_multi_dir_dependent_value(value)
                 assertion.apply_without_message(self, value)
 
     def test_fail__has_dir_dependency(self):
@@ -140,7 +140,7 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
     @staticmethod
     def _assert_not_equal(expected: sut.MultiDirDependentValue,
                           actual: sut.MultiDirDependentValue):
-        assertion = sut.equals_multi_dir_dependent_value(expected)
+        assertion = sut.matches_multi_dir_dependent_value(expected)
         assert_that_assertion_fails(assertion, actual)
 
 
