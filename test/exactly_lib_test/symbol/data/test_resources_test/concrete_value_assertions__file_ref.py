@@ -1,7 +1,7 @@
 import unittest
 from typing import Sequence
 
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -77,7 +77,7 @@ class TestNotEqualsWithoutSymbolReferencesCommonToBothAssertionMethods(unittest.
             for path_suffix in _PATH_SUFFIX_VARIANTS:
                 test_case_descr = 'relativity:{}, path-suffix: {}'.format(relativity, type(path_suffix))
                 file_ref = FileRefTestImpl(relativity, path_suffix)
-                file_ref_resolver = file_ref_resolvers2.constant(file_ref)
+                file_ref_resolver = file_ref_resolvers.constant(file_ref)
                 with self.subTest(msg=sut.equals_file_ref_resolver.__name__ + ' :: ' + test_case_descr):
                     assertion = sut.equals_file_ref_resolver(file_ref_resolver)
                     assertion.apply_without_message(self, file_ref_resolver)
@@ -185,7 +185,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
         assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, file_ref_resolvers2.constant(actual))
+        assert_that_assertion_fails(assertion, file_ref_resolvers.constant(actual))
 
     def test_differs__exists_pre_sds(self):
         # ARRANGE #
@@ -193,7 +193,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
         assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, file_ref_resolvers2.constant(actual))
+        assert_that_assertion_fails(assertion, file_ref_resolvers.constant(actual))
 
     def test_differs__relativity(self):
         # ARRANGE #
@@ -201,7 +201,7 @@ class Test2NotEquals(unittest.TestCase):
         actual = FileRefTestImpl(RelOptionType.REL_HOME_CASE, PathPartAsFixedPath('file-name'))
         assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
-        assert_that_assertion_fails(assertion, file_ref_resolvers2.constant(actual))
+        assert_that_assertion_fails(assertion, file_ref_resolvers.constant(actual))
 
     def test_differs__symbol_references(self):
         # ARRANGE #

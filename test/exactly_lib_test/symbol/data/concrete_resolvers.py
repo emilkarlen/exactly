@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
+from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers
 from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as pr, list_resolver as lr, \
     visitor as sut
 from exactly_lib.symbol.data.string_resolvers import str_constant
@@ -40,7 +40,7 @@ class TestValueVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('ret-val')
         # ACT #
-        ret_val = visitor.visit(file_ref_resolvers2.constant(file_ref_test_impl()))
+        ret_val = visitor.visit(file_ref_resolvers.constant(file_ref_test_impl()))
         # ASSERT #
         self.assertEqual('ret-val', ret_val,
                          'Visitor is expected to return value from visit-method')

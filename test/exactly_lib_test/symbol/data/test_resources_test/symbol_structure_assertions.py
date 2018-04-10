@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
@@ -21,7 +21,7 @@ class TestEqualsValueContainer(unittest.TestCase):
     def test_pass(self):
         value_cases = [
             string_resolvers.str_constant('s'),
-            file_ref_resolvers2.constant(file_ref_test_impl('file-name')),
+            file_ref_resolvers.constant(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
             for ignore_source_line in [False, True]:
@@ -42,7 +42,7 @@ class TestEqualsValueContainer(unittest.TestCase):
 
     def test_fail__different_source_line_and_source_line_check_is_not_ignored(self):
         # ARRANGE #
-        common_value = file_ref_resolvers2.constant(file_ref_test_impl('common file-name'))
+        common_value = file_ref_resolvers.constant(file_ref_test_impl('common file-name'))
         expected = SymbolContainer(common_value, single_line_sequence(1, 'source code 1'))
         actual = SymbolContainer(common_value, single_line_sequence(2, 'source code 2'))
         assertion = sut.equals_container(expected, ignore_source_line=False)
@@ -53,7 +53,7 @@ class TestEqualsValueDefinition(unittest.TestCase):
     def test_pass(self):
         value_cases = [
             string_resolvers.str_constant('s'),
-            file_ref_resolvers2.constant(file_ref_test_impl('file-name')),
+            file_ref_resolvers.constant(file_ref_test_impl('file-name')),
         ]
         for value in value_cases:
             for ignore_source_line in [False, True]:

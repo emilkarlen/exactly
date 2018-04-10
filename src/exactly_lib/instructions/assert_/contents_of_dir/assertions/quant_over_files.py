@@ -10,7 +10,7 @@ from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.parts import file_assertion_part
 from exactly_lib.instructions.assert_.utils.file_contents.parts.contents_checkers import ResolvedComparisonActualFile
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
@@ -195,7 +195,7 @@ class _FilePropertyDescriptorConstructorForFileInDir(actual_files.FilePropertyDe
         self._path = file_in_dir
 
     def construct_for_contents_attribute(self, contents_attribute: str) -> actual_files.PropertyDescriptor:
-        path_resolver = file_ref_resolvers2.constant(
+        path_resolver = file_ref_resolvers.constant(
             _path_value_for_file_in_checked_dir(self._dir_to_check, self._path)
         )
         return path_description.path_value_description(

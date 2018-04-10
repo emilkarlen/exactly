@@ -2,7 +2,7 @@ import unittest
 from typing import List, Callable, Dict
 
 from exactly_lib.instructions.multi_phase_instructions import new_file as sut
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.resolver_structure import SymbolContainer
@@ -99,8 +99,8 @@ class TestSymbolUsages(TestCaseBase):
 
         symbols = SymbolTable({
             dst_file_symbol.name:
-                container(file_ref_resolvers2.of_rel_option(RelOptionType.REL_ACT,
-                                                            PathPartAsFixedPath(dst_file_symbol.value))),
+                container(file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT,
+                                                           PathPartAsFixedPath(dst_file_symbol.value))),
 
             text_printed_by_shell_command_symbol.name:
                 container(string_resolvers.str_constant(text_printed_by_shell_command_symbol.value)),

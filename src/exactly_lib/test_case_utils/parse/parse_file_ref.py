@@ -15,7 +15,7 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
     LookAheadState
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import file_ref_resolvers2, path_part_resolvers
+from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver, PathPartResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
@@ -189,7 +189,7 @@ def _with_explicit_relativity(path_argument: Token,
         path_argument_str = string_resolver.string_constant
         path_argument_path = pathlib.PurePath(path_argument_str)
         if path_argument_path.is_absolute():
-            return file_ref_resolvers2.constant(file_refs.absolute_file_name(path_argument_str))
+            return file_ref_resolvers.constant(file_refs.absolute_file_name(path_argument_str))
         path_suffix = path_part_resolvers.from_constant_str(path_argument_str)
         return path_part_2_file_ref_resolver(path_suffix)
     else:
@@ -202,10 +202,10 @@ def _just_string_argument(argument: str,
     argument_path = pathlib.PurePath(argument)
     if argument_path.is_absolute():
         #  TODO Should we check if absolute paths are allowed according to RelOptionArgumentConfiguration??
-        return file_ref_resolvers2.constant(file_refs.absolute_file_name(argument))
+        return file_ref_resolvers.constant(file_refs.absolute_file_name(argument))
     path_suffix = PathPartAsFixedPath(argument)
-    return file_ref_resolvers2.constant(file_refs.of_rel_option(conf.options.default_option,
-                                                                path_suffix))
+    return file_ref_resolvers.constant(file_refs.of_rel_option(conf.options.default_option,
+                                                               path_suffix))
 
 
 def _just_argument_with_symbol_references(string_fragments: list,
@@ -225,8 +225,8 @@ def _just_argument_with_symbol_references(string_fragments: list,
 
 
 def _result_from_no_arguments(conf: RelOptionArgumentConfiguration) -> FileRefResolver:
-    return file_ref_resolvers2.constant(file_refs.of_rel_option(conf.options.default_option,
-                                                                PathPartAsNothing()))
+    return file_ref_resolvers.constant(file_refs.of_rel_option(conf.options.default_option,
+                                                               PathPartAsNothing()))
 
 
 def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):
@@ -242,7 +242,7 @@ def _file_ref_constructor(relativity_info) -> types.FunctionType:
         return lambda path_suffix_resolver: _FileRefResolverOfRelativityOptionAndSuffixResolver(relativity_info,
                                                                                                 path_suffix_resolver)
     elif isinstance(relativity_info, SymbolReference):
-        return functools.partial(file_ref_resolvers2.rel_symbol, relativity_info)
+        return functools.partial(file_ref_resolvers.rel_symbol, relativity_info)
     else:
         raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))
 

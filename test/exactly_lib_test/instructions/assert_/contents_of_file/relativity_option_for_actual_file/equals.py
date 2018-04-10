@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
@@ -137,8 +137,8 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         expected_file_relativity_symbol = 'EXPECTED_RELATIVITY_SYMBOL_NAME'
         file_ref_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
             expected_file_relativity_symbol,
-            file_ref_resolvers2.constant(file_refs.of_rel_option(self.relativity_of_expected_file(),
-                                                                 PathPartAsNothing())))
+            file_ref_resolvers.constant(file_refs.of_rel_option(self.relativity_of_expected_file(),
+                                                                PathPartAsNothing())))
 
         symbols_in_arrangement = symbol_tables.symbol_table_from_entries(
             [file_ref_sym_tbl_entry_for_expected_file] +

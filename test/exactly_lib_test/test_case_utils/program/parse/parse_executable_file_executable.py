@@ -7,7 +7,7 @@ from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver_impls.file_ref_with_symbol import StackedFileRef
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -194,7 +194,7 @@ class TestParseWithSymbols(unittest.TestCase):
                                                                                 indirect=StringRestriction()),
                                                                             )
         symbols = SymbolTable({
-            file_symbol.name: su.container(file_ref_resolvers2.constant(file_symbol.value)),
+            file_symbol.name: su.container(file_ref_resolvers.constant(file_symbol.value)),
             string_symbol.name: su.container(string_resolvers.str_constant(string_symbol.value)),
         })
         cases = [

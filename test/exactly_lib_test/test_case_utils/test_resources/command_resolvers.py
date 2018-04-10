@@ -1,6 +1,6 @@
 import sys
 
-from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers2
+from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.programs.python_program_execution import \
     PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE
 
 PYTHON_EXECUTABLE_DRIVER = drivers.CommandDriverResolverForExecutableFile(
-    file_ref_resolvers2.constant(file_refs.absolute_file_name(sys.executable)))
+    file_ref_resolvers.constant(file_refs.absolute_file_name(sys.executable)))
 
 PYTHON_EXECUTABLE_COMMAND = CommandResolver(PYTHON_EXECUTABLE_DRIVER,
                                             arguments_resolver.no_arguments())

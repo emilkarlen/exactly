@@ -3,7 +3,7 @@ from typing import List, Sequence
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.symbol.data import file_ref_resolvers2
+from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.list_resolver import Element
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -211,7 +211,7 @@ class TestSingleElement(unittest.TestCase):
                                                       sut.REL_OPTIONS_CONF.accepted_relativity_variants),
                         list_resolvers.string_element(
                             string_resolvers.from_file_ref_resolver(
-                                file_ref_resolvers2.rel_symbol_with_const_file_name(
+                                file_ref_resolvers.rel_symbol_with_const_file_name(
                                     SymbolReference(symbol_name,
                                                     reference_restrictions_for_path_symbol(
                                                         sut.REL_OPTIONS_CONF.accepted_relativity_variants
@@ -278,7 +278,7 @@ def list_element_for_file_ref(relativity: RelOptionType,
                               name: str) -> Element:
     return list_resolvers.string_element(
         string_resolvers.from_file_ref_resolver(
-            file_ref_resolvers2.of_rel_option_with_const_file_name(relativity, name)))
+            file_ref_resolvers.of_rel_option_with_const_file_name(relativity, name)))
 
 
 class TestMultipleElements(unittest.TestCase):
