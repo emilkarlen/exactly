@@ -1,7 +1,10 @@
-[setup]
+[conf]
 
 
 including get-git-log-msg-program.def
+
+
+[setup]
 
 
 including repo-in-cwd-with-installed-commit-hook.setup
@@ -24,6 +27,7 @@ $ git commit -m "commit message without issue number"
 
 
 stdout --from @ GET_LOG_MESSAGE_OF_LAST_COMMIT
-       equals  <<eof
+       equals
+<<-
 AB-123 : commit message without issue number
-eof
+-
