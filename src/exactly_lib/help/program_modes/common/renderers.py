@@ -1,4 +1,5 @@
 import types
+from typing import Sequence
 
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet, \
     InstructionGroup
@@ -68,13 +69,9 @@ class SectionInstructionSetConstructor(SectionContentsConstructorFromParagraphIt
                                                            instruction_group_by)])
 
 
-def sections_short_list(sections: list,
+def sections_short_list(sections: Sequence[SectionDocumentation],
                         default_section_name: str = '',
                         section_concept_name: str = 'section') -> ParagraphItem:
-    """
-    :param sections: List[`SectionDocumentation`]
-    """
-
     def add_default_info(doc: SectionDocumentation, output: list):
         if doc.name.plain == default_section_name:
             output.append(default_section_para(section_concept_name))
