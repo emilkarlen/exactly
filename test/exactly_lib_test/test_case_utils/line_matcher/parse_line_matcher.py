@@ -18,10 +18,11 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
+from exactly_lib_test.symbol.test_resources import resolver_assertions
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.resolver_assertions import \
-    resolved_value_equals_line_matcher, resolved_value_matches_line_matcher
+    resolved_value_equals_line_matcher
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_case_utils.test_resources import matcher_parse_check
 from exactly_lib_test.test_case_utils.test_resources.matcher_parse_check import Expectation
@@ -336,8 +337,8 @@ def resolved_value_is_line_number_matcher(integer_matcher: IntegerMatcher,
                                           references: asrt.ValueAssertion = asrt.is_empty_sequence) -> asrt.ValueAssertion:
     expected_matcher = is_equivalent_to(LineMatcherLineNumber(integer_matcher),
                                         model_infos)
-    return resolved_value_matches_line_matcher(expected_matcher,
-                                               references=references)
+    return resolver_assertions.matches_resolver_of_line_matcher(references,
+                                                                expected_matcher)
 
 
 def regex_matcher(regex_str: str) -> LineMatcherRegex:

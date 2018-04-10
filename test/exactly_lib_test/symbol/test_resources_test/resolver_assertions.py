@@ -110,13 +110,24 @@ class TestMatchesResolver(unittest.TestCase):
         # ACT & ASSERT #
         test_of_test_resources_util.assert_that_assertion_fails(assertion, string_resolver)
 
+    def test_fail_due_to_failing_custom_assertion(self):
+        # ARRANGE #
+        string_resolver = _StringResolverTestImpl(resolve_constant(STRING_VALUE))
+        assertion = sut.matches_resolver(asrt.anything_goes(),
+                                         asrt.anything_goes(),
+                                         asrt.anything_goes(),
+                                         asrt.not_(asrt.is_(string_resolver)))
+        # ACT & ASSERT #
+        test_of_test_resources_util.assert_that_assertion_fails(assertion, string_resolver)
+
     def test_success(self):
         # ARRANGE #
         reference = data_symbol_utils.symbol_reference('symbol_name')
         string_resolver = _StringResolverTestImpl(resolve_constant(STRING_VALUE), [reference])
-        assertion = sut.matches_resolver(sut.is_resolver_of_string(),
+        assertion = sut.matches_resolver(sut.is_resolver_of_string_type(),
                                          asrt.len_equals(1),
-                                         asrt.is_(STRING_VALUE))
+                                         asrt.is_(STRING_VALUE),
+                                         asrt.is_(string_resolver))
         # ACT & ASSERT #
         assertion.apply_without_message(self, string_resolver)
 
