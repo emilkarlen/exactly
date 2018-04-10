@@ -7,12 +7,12 @@ from exactly_lib.act_phase_setups import source_interpreter as source_interprete
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.definitions import formatting, instruction_arguments
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.definitions.entity import concepts, actors
+from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
+from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.help.entities.actors.objects import command_line as command_line_actor_help
-from exactly_lib.help_texts import formatting, instruction_arguments
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help_texts.entity import concepts, actors
-from exactly_lib.help_texts.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -54,7 +54,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
         return self._format(self.single_line_description_un_formatted)
 
     def invokation_variants(self) -> list:
-        from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
+        from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
         source_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(SOURCE_INTERPRETER_OPTION_NAME))
         file_interpreter_arg = a.Single(a.Multiplicity.MANDATORY, a.Option(FILE_INTERPRETER_OPTION_NAME))
         return (self._command_line_invokation_variants() +
@@ -73,7 +73,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
             return []
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help_texts.entity.actors import all_actor_cross_refs
+        from exactly_lib.definitions.entity.actors import all_actor_cross_refs
         return ([concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
                  concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target]
                 +

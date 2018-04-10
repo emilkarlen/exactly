@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.help.entities.actors import render as sut
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl

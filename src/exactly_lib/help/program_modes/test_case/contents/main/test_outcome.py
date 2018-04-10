@@ -1,17 +1,17 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions.doc_format import exit_value_text
+from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.execution.result import PartialResultStatus, FullResultStatus
 from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts import misc_texts
-from exactly_lib.help_texts.doc_format import exit_value_text
-from exactly_lib.help_texts.entity import conf_params
-from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor

@@ -1,6 +1,6 @@
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure.document import SectionContents
 

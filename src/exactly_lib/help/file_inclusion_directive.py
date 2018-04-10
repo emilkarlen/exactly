@@ -4,7 +4,7 @@ from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem

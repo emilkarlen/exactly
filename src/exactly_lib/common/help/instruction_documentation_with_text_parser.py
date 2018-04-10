@@ -1,7 +1,7 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.formatting import InstructionName
-from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME
+from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.formatting import InstructionName
+from exactly_lib.definitions.test_case.phase_names import ASSERT_PHASE_NAME
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure.core import Text

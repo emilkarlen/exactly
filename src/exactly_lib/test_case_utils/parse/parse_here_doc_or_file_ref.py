@@ -3,7 +3,7 @@ import pathlib
 import shlex
 from typing import Tuple
 
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \
     from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource

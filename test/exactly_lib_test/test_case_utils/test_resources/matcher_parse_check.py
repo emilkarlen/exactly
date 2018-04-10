@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help_texts import expression
+from exactly_lib.definitions import expression
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help_texts.instruction_arguments import ASSIGNMENT_OPERATOR
+from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
 from exactly_lib.instructions.configuration import test_case_status as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

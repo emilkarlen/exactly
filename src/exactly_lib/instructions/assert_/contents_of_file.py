@@ -1,7 +1,7 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents import parse_instruction
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ActComparisonActualFileForFileRef, \

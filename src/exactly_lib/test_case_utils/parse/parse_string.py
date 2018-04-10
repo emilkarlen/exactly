@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.help_texts.entity.types import STRING_TYPE_INFO
+from exactly_lib.definitions.entity.types import STRING_TYPE_INFO
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream

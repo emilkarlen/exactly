@@ -1,8 +1,8 @@
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity import conf_params
-from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 

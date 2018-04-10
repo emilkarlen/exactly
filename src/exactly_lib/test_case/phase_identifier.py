@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exactly_lib.help_texts.test_case import phase_names_plain as names
+from exactly_lib.definitions.test_case import phase_names_plain as names
 
 
 class PhaseEnum(Enum):

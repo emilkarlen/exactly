@@ -1,10 +1,10 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionContentsConstructorForConstantContents
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \

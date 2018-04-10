@@ -2,10 +2,10 @@ import io
 import pathlib
 from typing import Sequence
 
+from exactly_lib.definitions import misc_texts
+from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FailureInfoVisitor, PhaseFailureInfo, InstructionFailureInfo
-from exactly_lib.help_texts import misc_texts
-from exactly_lib.help_texts.formatting import SectionName
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
 from exactly_lib.util.error_message_format import source_line_sequence

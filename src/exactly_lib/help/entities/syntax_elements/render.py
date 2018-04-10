@@ -1,5 +1,6 @@
 import functools
 
+from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.entity import CliListConstructorGetter, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.types.render import LOGIC_TYPES_HEADER, DATA_TYPES_HEADER
@@ -8,7 +9,6 @@ from exactly_lib.help.render import parttioned_entity_set as pes
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.render.see_also_section import see_also_sections
-from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     ArticleContentsConstructor

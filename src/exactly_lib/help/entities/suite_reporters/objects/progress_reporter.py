@@ -1,8 +1,8 @@
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.definitions.doc_format import exit_value_text
+from exactly_lib.definitions.entity.suite_reporters import PROGRESS_REPORTER
 from exactly_lib.help import texts
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help_texts.doc_format import exit_value_text
-from exactly_lib.help_texts.entity.suite_reporters import PROGRESS_REPORTER
 from exactly_lib.processing import exit_values as case_exit_values
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite.reporters import simple_progress_reporter as reporter

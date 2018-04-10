@@ -1,5 +1,5 @@
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity import types, syntax_elements
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource

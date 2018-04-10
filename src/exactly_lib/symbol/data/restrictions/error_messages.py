@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import message_rendering
+from exactly_lib.definitions import message_rendering
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, SpecificPathRelativity, \
     RelOptionType
@@ -10,8 +10,8 @@ def unsatisfied_path_relativity(symbol_name: str,
                                 container: SymbolContainer,
                                 accepted: PathRelativityVariants,
                                 actual_relativity: SpecificPathRelativity) -> str:
-    from exactly_lib.help_texts import file_ref
-    from exactly_lib.help_texts.test_case.instructions import define_symbol
+    from exactly_lib.definitions import file_ref
+    from exactly_lib.definitions.test_case.instructions import define_symbol
     from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
     from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 

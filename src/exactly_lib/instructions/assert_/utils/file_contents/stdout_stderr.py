@@ -3,8 +3,8 @@ from typing import Sequence, Optional, List
 from exactly_lib.common.help import syntax_contents_structure
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import concepts, syntax_elements, types
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.instructions.assert_.utils.file_contents import actual_files
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import ComparisonActualFileConstructor, \
     ComparisonActualFile

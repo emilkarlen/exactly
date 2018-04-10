@@ -1,11 +1,11 @@
-from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.entity import conf_params
-from exactly_lib.help_texts.file_ref import REL_HOME_ACT_OPTION
-from exactly_lib.help_texts.test_case.instructions.instruction_names import HOME_ACT_DIRECTORY_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
+from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.file_ref import REL_HOME_ACT_OPTION
+from exactly_lib.definitions.test_case.instructions.instruction_names import HOME_ACT_DIRECTORY_INSTRUCTION_NAME
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
     PHASE_NAME_DICTIONARY
+from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HOME_ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser

@@ -4,9 +4,9 @@ from typing import Sequence
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.help_texts.entity.syntax_elements import SYMBOL_REFERENCE_SYNTAX_ELEMENT
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.definitions.entity.syntax_elements import SYMBOL_REFERENCE_SYNTAX_ELEMENT
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \

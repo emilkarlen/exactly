@@ -1,8 +1,8 @@
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.render.see_also_section import see_also_sections
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
@@ -37,7 +37,7 @@ class IndividualActorConstructor(ArticleContentsConstructor):
                                                        sub_sections))
 
     def _default_reporter_info(self) -> list:
-        from exactly_lib.help_texts.entity.actors import DEFAULT_ACTOR
+        from exactly_lib.definitions.entity.actors import DEFAULT_ACTOR
         if self.actor.singular_name() == DEFAULT_ACTOR.singular_name:
             return self._parser.fnap('This is the default {actor_concept}.')
         else:

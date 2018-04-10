@@ -1,7 +1,7 @@
+from exactly_lib.definitions import syntax_descriptions
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
-from exactly_lib.help_texts import syntax_descriptions
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.util.textformat.parse import normalize_and_parse
 
 _MAIN_DESCRIPTION_REST = syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION

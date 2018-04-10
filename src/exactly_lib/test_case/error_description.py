@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import misc_texts
+from exactly_lib.definitions import misc_texts
 
 
 class ErrorDescription:

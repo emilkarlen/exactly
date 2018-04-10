@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_setup import instruction_set_from_name_and_setup_constructor_list
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.before_assert import define_symbol, change_dir, env, run, shell, new_file, new_dir
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(

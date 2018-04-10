@@ -1,11 +1,11 @@
 import unittest
 
+from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.help.entities.configuration_parameters import all_configuration_parameters
 from exactly_lib.help.entities.configuration_parameters import render as sut
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.help.entities.configuration_parameters.entity_configuration import CONF_PARAM_ENTITY_CONFIGURATION
-from exactly_lib.help_texts.entity import conf_params
-from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure.structures import text, para

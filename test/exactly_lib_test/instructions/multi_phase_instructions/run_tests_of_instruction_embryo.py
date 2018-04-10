@@ -1,7 +1,7 @@
 import sys
 import unittest
 
-from exactly_lib.help_texts.file_ref import REL_HOME_CASE_OPTION
+from exactly_lib.definitions.file_ref import REL_HOME_CASE_OPTION
 from exactly_lib.instructions.multi_phase_instructions import run as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

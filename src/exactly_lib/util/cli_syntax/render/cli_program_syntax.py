@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import doc_format
+from exactly_lib.definitions import doc_format
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import short_option_syntax

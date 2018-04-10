@@ -4,10 +4,10 @@ from exactly_lib.common.help.abs_or_rel_path import abs_or_rel_path_of_existing
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithTextParserBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
-from exactly_lib.help_texts import formatting, instruction_arguments
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
+from exactly_lib.definitions import formatting, instruction_arguments
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.result import sh

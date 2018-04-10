@@ -4,14 +4,14 @@ from exactly_lib import program_info
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription, \
     invokation_variant_from_args, cli_argument_syntax_element_description
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, InvokationVariantHelper
+from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.definitions.entity import concepts, syntax_elements
+from exactly_lib.definitions.entity import types
+from exactly_lib.definitions.test_case.instructions import define_symbol
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.help_texts import instruction_arguments, formatting
-from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.help_texts.entity import concepts, syntax_elements
-from exactly_lib.help_texts.entity import types
-from exactly_lib.help_texts.test_case.instructions import define_symbol
-from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import arg_config_with_name
 from exactly_lib.test_case_utils.program import syntax_elements as pgm_syntax_elements

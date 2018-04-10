@@ -1,6 +1,6 @@
+from exactly_lib.definitions.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.entity.builtins import name_and_ref_target
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.help_texts.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.builtins import name_and_ref_target
 from exactly_lib.type_system.value_type import ValueType, TypeCategory, VALUE_TYPE_2_TYPE_CATEGORY
 from exactly_lib.util.textformat.structure.document import SectionContents
 

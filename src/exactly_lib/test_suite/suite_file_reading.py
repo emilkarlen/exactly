@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, \
+from exactly_lib.definitions.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, \
     SECTION_NAME__CASES, \
     DEFAULT_SECTION_NAME, SECTION_NAME__CASE_SETUP
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup

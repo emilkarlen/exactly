@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_setup import instruction_set_from_name_and_setup_constructor_list
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.configuration import act_home, home, test_case_status, actor, timeout
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(

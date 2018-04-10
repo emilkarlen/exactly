@@ -1,4 +1,8 @@
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.definitions.cross_ref import concrete_cross_refs as cross_ref
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
+from exactly_lib.definitions.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.test_suite.section_names import SECTION_CONCEPT_NAME
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
@@ -6,10 +10,6 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationHierarchyGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
-from exactly_lib.help_texts.cross_ref import concrete_cross_refs as cross_ref
-from exactly_lib.help_texts.cross_ref.app_cross_ref import CrossReferenceId
-from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.test_suite.section_names import SECTION_CONCEPT_NAME
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 
 

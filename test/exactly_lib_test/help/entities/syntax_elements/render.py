@@ -1,11 +1,11 @@
 import unittest
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
+from exactly_lib.definitions.entity.syntax_elements import name_and_ref_target
 from exactly_lib.help.entities.syntax_elements import render as sut
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
 from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import CustomCrossReferenceId
-from exactly_lib.help_texts.entity.syntax_elements import name_and_ref_target
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.common.test_resources import syntax_parts

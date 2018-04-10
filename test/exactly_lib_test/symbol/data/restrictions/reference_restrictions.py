@@ -3,8 +3,8 @@ import unittest
 from collections import Counter
 from typing import Sequence
 
-from exactly_lib.help_texts import type_system
-from exactly_lib.help_texts.type_system import DATA_TYPE_2_VALUE_TYPE
+from exactly_lib.definitions import type_system
+from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol.data.restrictions import value_restrictions as vr, reference_restrictions as sut
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.resolver_structure import DataValueResolver, SymbolContainer, LogicValueResolver, \

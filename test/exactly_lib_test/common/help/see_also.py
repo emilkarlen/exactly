@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.common.help import see_also as sut
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import CustomCrossReferenceId, \
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId, \
     TestCasePhaseInstructionCrossReference
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.common.help.test_resources.see_also_assertions import is_see_also_item

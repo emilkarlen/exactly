@@ -1,10 +1,10 @@
 import unittest
 
+from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.name import Name
-from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as xref_va
+from exactly_lib_test.definitions.test_resources import cross_reference_id_va as xref_va
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

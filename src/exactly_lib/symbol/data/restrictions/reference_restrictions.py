@@ -187,7 +187,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
                                symbol_name: str,
                                container: SymbolContainer,
                                resolver: SymbolValueResolver) -> str:
-        from exactly_lib.help_texts.test_case.instructions import define_symbol
+        from exactly_lib.definitions.test_case.instructions import define_symbol
         accepted_value_types = ', '.join([define_symbol.DATA_TYPE_INFO_DICT[part.selector].identifier
                                           for part in self._parts])
         lines = ([

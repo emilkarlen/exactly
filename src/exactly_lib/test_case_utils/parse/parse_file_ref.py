@@ -3,8 +3,8 @@ import pathlib
 import types
 from typing import Sequence
 
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import ensure_is_not_option_argument, \

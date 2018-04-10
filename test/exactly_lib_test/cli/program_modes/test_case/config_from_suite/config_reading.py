@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.help_texts.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
-from exactly_lib.help_texts.test_suite.section_names_with_syntax import SECTION_NAME__CONF
+from exactly_lib.definitions.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
+from exactly_lib.definitions.test_suite.section_names_with_syntax import SECTION_NAME__CONF
 from exactly_lib.processing import exit_values
 from exactly_lib.processing import instruction_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup

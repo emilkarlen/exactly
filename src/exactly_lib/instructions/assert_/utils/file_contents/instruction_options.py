@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR, EXISTS_QUANTIFIER_ARGUMENT, \
+from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR, EXISTS_QUANTIFIER_ARGUMENT, \
     ALL_QUANTIFIER_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 

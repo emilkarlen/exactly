@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import CustomCrossReferenceId
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.test_case_utils.expression import grammar
 from exactly_lib.util.cli_syntax.elements import argument as a

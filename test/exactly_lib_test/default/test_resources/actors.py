@@ -1,6 +1,6 @@
 import sys
 
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.configuration.utils import actor_utils
 
 SET_ACTOR_TO__FILE_INTERPRETER__WITH_PYTHON_INTERPRETER = (

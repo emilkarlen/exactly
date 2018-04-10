@@ -2,8 +2,8 @@ import pathlib
 import unittest
 
 from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, lines_transformers
-from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.entity.types import PATH_TYPE_INFO
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.processing import exit_values
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name

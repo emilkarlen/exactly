@@ -2,10 +2,10 @@ import itertools
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
     cli_argument_syntax_element_description
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.help_texts.entity.syntax_elements import SYMBOL_NAME_SYNTAX_ELEMENT
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.definitions.entity.syntax_elements import SYMBOL_NAME_SYNTAX_ELEMENT
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription

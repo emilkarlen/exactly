@@ -1,12 +1,12 @@
-from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.help_texts.entity import actors
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity.conf_params import ACTOR_CONF_PARAM_INFO
-from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME
-from exactly_lib.help_texts.test_suite import formatted_section_names
+from exactly_lib.definitions.entity import actors
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity.conf_params import ACTOR_CONF_PARAM_INFO
+from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME
+from exactly_lib.definitions.test_suite import formatted_section_names
+from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 

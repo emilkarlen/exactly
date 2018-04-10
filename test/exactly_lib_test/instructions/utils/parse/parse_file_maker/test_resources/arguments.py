@@ -1,6 +1,6 @@
 from typing import Set, List, Sequence
 
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType, \
     RelNonHomeOptionType, RelHomeOptionType, RelSdsOptionType

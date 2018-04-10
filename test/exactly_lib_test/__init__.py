@@ -3,9 +3,9 @@ import unittest
 from exactly_lib_test import act_phase_setups
 from exactly_lib_test import common
 from exactly_lib_test import default
+from exactly_lib_test import definitions
 from exactly_lib_test import execution
 from exactly_lib_test import help
-from exactly_lib_test import help_texts
 from exactly_lib_test import instructions
 from exactly_lib_test import processing
 from exactly_lib_test import section_document
@@ -38,7 +38,7 @@ def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val.addTest(test_case_utils.suite())
     ret_val.addTest(instructions.suite())
     ret_val.addTest(act_phase_setups.suite())
-    ret_val.addTest(help_texts.suite())
+    ret_val.addTest(definitions.suite())
     ret_val.addTest(help.suite())
     ret_val.addTest(default.suite_that_does_not_require_main_program_runner())
     ret_val.addTest(cli.suite_that_does_not_require_main_program_runner())

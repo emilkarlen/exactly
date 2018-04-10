@@ -2,8 +2,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import concepts
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG, \
     extract_mandatory_arguments_after_eq
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram

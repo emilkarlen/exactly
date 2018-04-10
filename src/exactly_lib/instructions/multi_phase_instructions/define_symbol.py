@@ -3,14 +3,14 @@ from typing import Tuple, Callable, List, Sequence
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help_texts import instruction_arguments, formatting
-from exactly_lib.help_texts import syntax_descriptions
-from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.cross_ref import name_and_cross_ref
-from exactly_lib.help_texts.doc_format import syntax_text
-from exactly_lib.help_texts.entity import types, syntax_elements, concepts
-from exactly_lib.help_texts.entity.types import TypeNameAndCrossReferenceId
-from exactly_lib.help_texts.test_case.instructions import define_symbol as syntax
+from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import syntax_descriptions
+from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.cross_ref import name_and_cross_ref
+from exactly_lib.definitions.doc_format import syntax_text
+from exactly_lib.definitions.entity import types, syntax_elements, concepts
+from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
+from exactly_lib.definitions.test_case.instructions import define_symbol as syntax
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \

@@ -4,10 +4,10 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.doc_format import syntax_text
-from exactly_lib.help_texts.entity import syntax_elements
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.argument_rendering import path_syntax
+from exactly_lib.definitions.doc_format import syntax_text
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine

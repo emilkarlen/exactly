@@ -1,11 +1,11 @@
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
 from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax, \
     file_contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
@@ -133,7 +133,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         )
 
     def see_also_targets(self) -> list:
-        from exactly_lib.help_texts.entity import types
+        from exactly_lib.definitions.entity import types
         name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
                                types.LINES_TRANSFORMER_TYPE_INFO,
                                syntax_elements.FILE_CONTENTS_MATCHER,

@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.help_texts import expression
+from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils import file_properties
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 

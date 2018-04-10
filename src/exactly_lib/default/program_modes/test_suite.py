@@ -4,7 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.help_texts.test_suite import instruction_names
+from exactly_lib.definitions.test_suite import instruction_names
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.element_parsers import section_element_parsers
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \

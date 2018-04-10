@@ -2,8 +2,8 @@ import pathlib
 from typing import Iterable
 
 from exactly_lib import program_info
-from exactly_lib.help_texts.doc_format import directory_variable_name_text
-from exactly_lib.help_texts.formatting import program_name
+from exactly_lib.definitions.doc_format import directory_variable_name_text
+from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency

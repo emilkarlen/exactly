@@ -3,8 +3,8 @@ from typing import List
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.help_texts.entity import syntax_elements, types
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.definitions.entity import syntax_elements, types
 from exactly_lib.instructions.multi_phase_instructions.utils import \
     instruction_from_parts_for_executing_program as spe_parts
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import \

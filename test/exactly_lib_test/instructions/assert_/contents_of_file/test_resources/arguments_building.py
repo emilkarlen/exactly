@@ -1,5 +1,5 @@
-from exactly_lib.help_texts import instruction_arguments, file_ref as file_ref_texts
-from exactly_lib.help_texts.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
+from exactly_lib.definitions import instruction_arguments, file_ref as file_ref_texts
+from exactly_lib.definitions.instruction_arguments import WITH_TRANSFORMED_CONTENTS_OPTION_NAME
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax

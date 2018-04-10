@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import type_system
+from exactly_lib.definitions import type_system
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions import error_messages
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction

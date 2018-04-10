@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.entity import types
+from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.util.line_source import single_line_sequence

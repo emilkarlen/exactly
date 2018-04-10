@@ -1,7 +1,7 @@
 import unittest
 from typing import Callable
 
-from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.definitions import file_ref as file_ref_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type

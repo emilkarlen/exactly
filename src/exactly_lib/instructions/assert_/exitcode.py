@@ -2,7 +2,7 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts.entity import syntax_elements
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions
 from exactly_lib.processing import exit_values
 from exactly_lib.section_document.element_parsers.instruction_parsers import \

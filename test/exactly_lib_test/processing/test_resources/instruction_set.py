@@ -1,5 +1,5 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document.model import Instruction
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup

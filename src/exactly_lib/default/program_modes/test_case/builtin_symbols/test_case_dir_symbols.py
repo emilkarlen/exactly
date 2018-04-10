@@ -1,5 +1,5 @@
 from exactly_lib.cli.main_program import BuiltinSymbol
-from exactly_lib.help_texts.environment_variables import ENVIRONMENT_VARIABLE_DESCRIPTION
+from exactly_lib.definitions.environment_variables import ENVIRONMENT_VARIABLE_DESCRIPTION
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.test_case_file_structure import environment_variables
