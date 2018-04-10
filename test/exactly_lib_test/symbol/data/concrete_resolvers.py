@@ -6,7 +6,7 @@ from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as 
 from exactly_lib.symbol.data.string_resolvers import str_constant
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
-    equals_multi_dir_dependent_value
+    matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
@@ -32,7 +32,7 @@ class TestConstants(unittest.TestCase):
         expected_value = AMultiDirDependentValue(resolving_dependencies=set(),
                                                  get_value_when_no_dir_dependencies=do_return(constant),
                                                  get_value_of_any_dependency=do_return(constant))
-        equals_multi_dir_dependent_value(expected_value).apply_with_message(self, actual_value, 'resolve value')
+        matches_multi_dir_dependent_value(expected_value).apply_with_message(self, actual_value, 'resolve value')
 
 
 class TestValueVisitor(unittest.TestCase):

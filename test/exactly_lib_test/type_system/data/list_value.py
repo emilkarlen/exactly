@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure.path_relativity import ResolvingDepend
 from exactly_lib.type_system.data import concrete_string_values as sv, file_refs, list_value as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
-    equals_multi_dir_dependent_value
+    matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 from exactly_lib_test.test_resources.actions import do_return
 
@@ -79,6 +79,6 @@ class TestListValue(unittest.TestCase):
             ),
         ]
         for test_case_name, expected, actual in cases:
-            assertion = equals_multi_dir_dependent_value(expected)
+            assertion = matches_multi_dir_dependent_value(expected)
             with self.subTest(name=test_case_name):
                 assertion.apply_without_message(self, actual)
