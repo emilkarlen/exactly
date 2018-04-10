@@ -1,7 +1,7 @@
 from typing import Sequence
 
-from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.argument_rendering.cl_syntax import arg_syntax
+from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.argument_rendering.cl_syntax import arg_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 

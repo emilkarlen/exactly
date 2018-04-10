@@ -1,8 +1,8 @@
 import types
 
-from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.instruction_arguments import INTEGER_ARGUMENT
-from exactly_lib.help_texts.test_case.instructions import define_symbol as help_texts
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
+from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, \

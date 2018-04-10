@@ -1,13 +1,13 @@
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME, \
+    CONFIGURATION_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_first_phase_executed_in_the_sandbox, sequence_info__succeeding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.test_case.phase_names import ACT_PHASE_NAME, \
-    CONFIGURATION_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_SETUP_MAIN
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.textformat_parser import TextParser

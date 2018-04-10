@@ -1,15 +1,15 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
-from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.help_texts.entity import actors, concepts
-from exactly_lib.help_texts.entity import conf_params
-from exactly_lib.help_texts.entity.concepts import ACTOR_CONCEPT_INFO
-from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+from exactly_lib.definitions.entity import actors, concepts
+from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
+from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
     PHASE_NAME_DICTIONARY
-from exactly_lib.help_texts.test_suite import formatted_section_names
+from exactly_lib.definitions.test_suite import formatted_section_names
+from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser

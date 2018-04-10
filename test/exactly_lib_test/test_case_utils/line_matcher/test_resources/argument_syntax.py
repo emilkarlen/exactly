@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import expression
+from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 

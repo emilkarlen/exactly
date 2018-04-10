@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case_utils.file_properties import FileType

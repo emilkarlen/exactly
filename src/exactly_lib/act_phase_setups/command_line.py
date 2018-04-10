@@ -8,7 +8,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parse
     PartsValidatorFromPreOrPostSdsValidator
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
     CommandResolverExecutor
-from exactly_lib.help_texts.test_case.actors import command_line as texts
+from exactly_lib.definitions.test_case.actors import command_line as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

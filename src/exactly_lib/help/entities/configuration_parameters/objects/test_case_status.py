@@ -1,8 +1,8 @@
+from exactly_lib.definitions import doc_format
+from exactly_lib.definitions.entity.conf_params import TEST_CASE_STATUS_CONF_PARAM_INFO
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
-from exactly_lib.help_texts import doc_format
-from exactly_lib.help_texts.entity.conf_params import TEST_CASE_STATUS_CONF_PARAM_INFO
-from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description

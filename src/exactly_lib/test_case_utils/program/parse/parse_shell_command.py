@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser

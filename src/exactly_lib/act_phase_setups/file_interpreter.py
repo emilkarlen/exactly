@@ -10,7 +10,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parser_for_single_
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parser
 from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_executor import \
     SubProcessExecutor
-from exactly_lib.help_texts.test_case.actors import file_interpreter as texts
+from exactly_lib.definitions.test_case.actors import file_interpreter as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException

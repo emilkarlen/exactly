@@ -1,6 +1,6 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import cl_syntax
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import split_arguments_list_string

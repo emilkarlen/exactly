@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
+from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorInfo
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescription
 from exactly_lib.util.logic_types import ExpectationType

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help_texts.file_ref import REL_ACT_OPTION
+from exactly_lib.definitions.file_ref import REL_ACT_OPTION
 from exactly_lib.instructions.multi_phase_instructions import define_symbol as sut
 from exactly_lib.instructions.multi_phase_instructions.define_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \

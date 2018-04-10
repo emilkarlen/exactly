@@ -9,6 +9,8 @@ from exactly_lib.cli.program_modes.help.program_modes.main_program.help_request 
 from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request import *
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import *
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityTypeConfiguration
 from exactly_lib.help.entities.actors.render import IndividualActorConstructor
@@ -19,8 +21,6 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.render.entities_list_renderer import FlatEntityListHierarchyGeneratorGetter
 from exactly_lib.help.render.entity_docs import \
     FlatListConstructorWithSingleLineDescriptionGetter
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
 from exactly_lib_test.cli.program_modes.help.test_resources import entity_lookup_test_cases
 from exactly_lib_test.cli.program_modes.help.test_resources import request_assertions as asrt_request
 from exactly_lib_test.help.entities.actors.test_resources import documentation as actor_doc

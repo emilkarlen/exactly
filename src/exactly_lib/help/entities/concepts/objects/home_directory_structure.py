@@ -1,12 +1,12 @@
 from exactly_lib import program_info
+from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
+from exactly_lib.definitions.doc_format import instruction_name_text
+from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements
+from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
+from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import test_case_file_structure as tc_fs, formatting
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
-from exactly_lib.help_texts.doc_format import instruction_name_text
-from exactly_lib.help_texts.entity import concepts, conf_params, syntax_elements
-from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
-from exactly_lib.help_texts.test_case import phase_names
-from exactly_lib.help_texts.test_case.instructions import instruction_names
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.util.description import DescriptionWithSubSections

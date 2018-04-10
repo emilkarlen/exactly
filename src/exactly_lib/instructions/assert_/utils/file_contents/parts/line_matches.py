@@ -1,5 +1,5 @@
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.instruction_arguments import LINE_MATCHER
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.instruction_arguments import LINE_MATCHER
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import CONTENTS_ATTRIBUTE, \
     FilePropertyDescriptorConstructor

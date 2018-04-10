@@ -1,4 +1,11 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
+from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
+from exactly_lib.definitions.entity import concepts, conf_params, actors
+from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
+from exactly_lib.definitions.test_case.phase_names import SETUP_PHASE_NAME, \
+    BEFORE_ASSERT_PHASE_NAME, \
+    ASSERT_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.concepts.objects.actor import HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
@@ -7,13 +14,6 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
-from exactly_lib.help_texts import test_case_file_structure as tc_fs, formatting
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
-from exactly_lib.help_texts.entity import concepts, conf_params, actors
-from exactly_lib.help_texts.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME, \
-    BEFORE_ASSERT_PHASE_NAME, \
-    ASSERT_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs

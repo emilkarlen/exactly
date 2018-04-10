@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import type_system
+from exactly_lib.definitions import type_system
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
 from exactly_lib.type_system.value_type import ValueType
@@ -47,10 +47,10 @@ def invalid_type_header_lines(expected: list,
 
 
 def invalid_type_how_to_fix_lines(expected_value_types: list) -> list:
-    from exactly_lib.help_texts.test_case.instructions import define_symbol
-    from exactly_lib.help_texts.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-    from exactly_lib.help_texts.formatting import InstructionName
-    from exactly_lib.help_texts.message_rendering import render_paragraph_item
+    from exactly_lib.definitions.test_case.instructions import define_symbol
+    from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
+    from exactly_lib.definitions.formatting import InstructionName
+    from exactly_lib.definitions.message_rendering import render_paragraph_item
 
     def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
 

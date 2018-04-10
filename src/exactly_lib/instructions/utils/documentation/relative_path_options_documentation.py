@@ -2,12 +2,12 @@ from typing import Sequence, List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, SyntaxElementDescriptionTreeFromSed
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts import test_case_file_structure as tc_fs
-from exactly_lib.help_texts.doc_format import syntax_text
-from exactly_lib.help_texts.entity import concepts as ci, syntax_elements
-from exactly_lib.help_texts.entity import conf_params
-from exactly_lib.help_texts.entity.types import PATH_TYPE_INFO
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions import test_case_file_structure as tc_fs
+from exactly_lib.definitions.doc_format import syntax_text
+from exactly_lib.definitions.entity import concepts as ci, syntax_elements
+from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.entity.types import PATH_TYPE_INFO
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelHomeOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HOME_OPTIONS_MAP, \

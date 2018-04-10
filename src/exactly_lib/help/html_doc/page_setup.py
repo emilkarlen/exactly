@@ -1,9 +1,9 @@
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib import program_info
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.help import std_tags
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import all_entity_types
 from exactly_lib.util.textformat.rendering.html.utils import ElementPopulator, ComplexElementPopulator
 
 PAGE_TITLE = 'Reference Manual for %s' % formatting.program_name(program_info.PROGRAM_NAME)

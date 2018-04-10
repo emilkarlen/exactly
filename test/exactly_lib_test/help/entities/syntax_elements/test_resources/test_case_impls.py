@@ -1,10 +1,10 @@
 import unittest
 
+from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
-from exactly_lib.help_texts.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib_test.common.help.test_resources import see_also_assertions as asrt_see_also
 from exactly_lib_test.common.help.test_resources.syntax_contents_structure_assertions import is_invokation_variant
-from exactly_lib_test.help_texts.test_resources import cross_reference_id_va as xref_va
+from exactly_lib_test.definitions.test_resources import cross_reference_id_va as xref_va
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

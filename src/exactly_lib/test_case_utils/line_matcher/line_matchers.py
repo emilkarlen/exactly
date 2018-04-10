@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.help_texts import expression
+from exactly_lib.definitions import expression
 from exactly_lib.test_case_utils.condition.integer.integer_matcher import IntegerMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 

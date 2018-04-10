@@ -1,6 +1,11 @@
 from typing import Sequence, Dict
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
+    CONF_PARAM_ENTITY_TYPE_NAMES, SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, \
+    TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, \
+    SECTION_NAME__CASES
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
@@ -22,10 +27,6 @@ from exactly_lib.help.program_modes.test_suite.contents_structure import TestSui
 from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
-from exactly_lib.help_texts.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
-    CONF_PARAM_ENTITY_TYPE_NAMES, SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, \
-    TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, SECTION_NAME__CASES
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
 

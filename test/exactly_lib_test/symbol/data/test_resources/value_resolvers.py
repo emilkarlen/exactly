@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.help_texts.type_system import DATA_TYPE_2_VALUE_TYPE
+from exactly_lib.definitions.type_system import DATA_TYPE_2_VALUE_TYPE
 from exactly_lib.symbol import symbol_usage
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type

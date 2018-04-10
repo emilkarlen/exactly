@@ -2,9 +2,9 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.definitions.entity import conf_params
+from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.configuration_parameters.objects.timeout import WHAT_THE_TIMEOUT_APPLIES_TO
-from exactly_lib.help_texts.entity import conf_params
-from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
     extract_single_eq_argument_string
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \

@@ -1,6 +1,6 @@
+from exactly_lib.definitions.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.help_texts.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 
 
 class SuiteReporterDocumentation(EntityDocumentation):

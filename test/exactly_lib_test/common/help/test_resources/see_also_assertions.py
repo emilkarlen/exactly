@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.common.help import see_also as struct
 from exactly_lib.common.help.see_also import SeeAlsoSet
-from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
-from exactly_lib_test.help_texts.test_resources import cross_reference_id_va
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
+from exactly_lib_test.definitions.test_resources import cross_reference_id_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 

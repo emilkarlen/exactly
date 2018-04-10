@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile

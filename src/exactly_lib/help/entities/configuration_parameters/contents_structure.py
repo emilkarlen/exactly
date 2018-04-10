@@ -1,7 +1,7 @@
+from exactly_lib.definitions.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
     EntityDocumentation
-from exactly_lib.help_texts.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure.core import ParagraphItem, StringText, Text
 from exactly_lib.util.textformat.structure.structures import para

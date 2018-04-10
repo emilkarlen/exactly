@@ -1,8 +1,8 @@
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.help_texts.test_case import phase_names
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 

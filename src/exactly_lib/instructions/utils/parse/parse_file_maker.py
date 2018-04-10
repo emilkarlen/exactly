@@ -1,9 +1,9 @@
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, invokation_variant_from_args, \
     cli_argument_syntax_element_description
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
-from exactly_lib.help_texts.cross_ref import name_and_cross_ref
-from exactly_lib.help_texts.entity import syntax_elements
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref import name_and_cross_ref
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.file_maker import FileMaker, FileMakerForConstantContents, \
     FileMakerForContentsFromProgram, FileMakerForContentsFromExistingFile

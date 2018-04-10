@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import file_ref as file_ref_texts
+from exactly_lib.definitions import file_ref as file_ref_texts
 
 
 def args_with_rel_ops(arg_str: str, **kwargs) -> str:

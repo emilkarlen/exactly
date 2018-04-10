@@ -1,16 +1,16 @@
 import types
 
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.test_case.phase_names import BEFORE_ASSERT_PHASE_NAME, \
+    CLEANUP_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, InstructionGroup
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.test_case.phase_names import BEFORE_ASSERT_PHASE_NAME, \
-    CLEANUP_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case.phases.assert_ import AssertPhasePurpose, WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds

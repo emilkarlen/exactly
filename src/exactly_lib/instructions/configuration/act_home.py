@@ -1,7 +1,7 @@
 import pathlib
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts.entity import conf_params
+from exactly_lib.definitions.entity import conf_params
 from exactly_lib.instructions.configuration.utils.hds_dir import DirConfParamInstructionDocumentationBase, \
     InstructionBase
 from exactly_lib.instructions.configuration.utils.single_arg_utils import extract_single_eq_argument_string

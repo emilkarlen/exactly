@@ -1,6 +1,6 @@
+from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpressionGrammarDocumentation, \
     TypeDocumentation
-from exactly_lib.help_texts.entity import types, syntax_elements
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer

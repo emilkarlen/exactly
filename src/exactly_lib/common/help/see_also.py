@@ -1,6 +1,6 @@
 from typing import List, Sequence
 
-from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget, CrossReferenceId
 from exactly_lib.util.collection import FrozenSetBasedOnEquality
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget, StringText
 

@@ -1,14 +1,14 @@
 from exactly_lib import program_info
+from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions import syntax_descriptions
+from exactly_lib.definitions import type_system
+from exactly_lib.definitions.doc_format import syntax_text
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
+from exactly_lib.definitions.test_case.instructions import define_symbol
+from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.definitions.type_system import TYPE_INFO_DICT
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import instruction_arguments, formatting
-from exactly_lib.help_texts import syntax_descriptions
-from exactly_lib.help_texts import type_system
-from exactly_lib.help_texts.doc_format import syntax_text
-from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
-from exactly_lib.help_texts.test_case.instructions import define_symbol
-from exactly_lib.help_texts.test_case.instructions import instruction_names
-from exactly_lib.help_texts.type_system import TYPE_INFO_DICT
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax import option_syntax
@@ -82,7 +82,7 @@ class _SymbolConcept(ConceptDocumentation):
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
 
         from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
-        from exactly_lib.help_texts.file_ref import REL_symbol_OPTION
+        from exactly_lib.definitions.file_ref import REL_symbol_OPTION
         part_2_parser = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': formatting.concept_(SYMBOL_CONCEPT_INFO),

@@ -3,11 +3,11 @@ from typing import Sequence
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering import path_syntax
-from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
-from exactly_lib.help_texts.cross_ref import name_and_cross_ref
-from exactly_lib.help_texts.entity import syntax_elements
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.argument_rendering import path_syntax
+from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref import name_and_cross_ref
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.multi_phase_instructions.utils import instruction_embryo as embryo
 from exactly_lib.instructions.multi_phase_instructions.utils.assert_phase_info import IsAHelperIfInAssertPhase
 from exactly_lib.instructions.multi_phase_instructions.utils.instruction_part_utils import PartsParserFromEmbryoParser, \

@@ -1,9 +1,9 @@
 from typing import Sequence, Dict, Callable, List, Iterable
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.help_texts import doc_format
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions import doc_format
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.paragraph import Paragraph

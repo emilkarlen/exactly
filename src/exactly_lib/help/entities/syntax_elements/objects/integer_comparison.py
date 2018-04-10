@@ -1,7 +1,7 @@
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
-from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.condition.syntax import OPERATOR_ARGUMENT
 from exactly_lib.util.cli_syntax.elements import argument as a

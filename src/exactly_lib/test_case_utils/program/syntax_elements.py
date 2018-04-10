@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.test_case_utils.parse import parse_file_ref
 from exactly_lib.util.cli_syntax.elements import argument
 from exactly_lib.util.cli_syntax.elements import argument as a

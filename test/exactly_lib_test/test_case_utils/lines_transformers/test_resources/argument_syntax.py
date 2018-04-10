@@ -1,4 +1,4 @@
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import \

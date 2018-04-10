@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_.utils.file_contents.stdout_stderr import OUTPUT_FROM_PROGRAM_OPTION_NAME
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab

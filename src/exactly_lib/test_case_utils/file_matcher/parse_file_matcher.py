@@ -1,13 +1,13 @@
 """Functionality for accessing a subset of the files in a directory."""
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
     cli_argument_syntax_element_description
-from exactly_lib.help_texts import doc_format
-from exactly_lib.help_texts import expression, instruction_arguments
-from exactly_lib.help_texts.argument_rendering import cl_syntax
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.entity.types import FILE_MATCHER_TYPE_INFO
-from exactly_lib.help_texts.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
+from exactly_lib.definitions import doc_format
+from exactly_lib.definitions import expression, instruction_arguments
+from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
+from exactly_lib.definitions.instruction_arguments import MATCHER_ARGUMENT, SELECTION_OPTION, SELECTION
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource

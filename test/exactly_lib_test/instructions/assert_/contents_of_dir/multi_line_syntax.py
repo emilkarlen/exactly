@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help_texts import instruction_arguments
+from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.contents_of_dir.config import EMPTINESS_CHECK_ARGUMENT
 from exactly_lib.test_case.phases.result.pfh import PassOrFailOrHardErrorEnum

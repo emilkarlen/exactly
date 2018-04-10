@@ -1,11 +1,11 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
+from exactly_lib.definitions.formatting import cli_option, program_name
+from exactly_lib.definitions.misc_texts import SYNTAX_ERROR_NAME
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
     step_with_single_exit_value
 from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsConstructorWithSetup
-from exactly_lib.help_texts.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.help_texts.formatting import cli_option, program_name
-from exactly_lib.help_texts.misc_texts import SYNTAX_ERROR_NAME
 from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import lists

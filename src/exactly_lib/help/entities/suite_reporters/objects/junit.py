@@ -1,6 +1,6 @@
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
+from exactly_lib.definitions.entity.suite_reporters import JUNIT_REPORTER
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
-from exactly_lib.help_texts.entity.suite_reporters import JUNIT_REPORTER
 from exactly_lib.test_suite.reporters import junit
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

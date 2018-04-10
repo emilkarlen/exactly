@@ -3,17 +3,17 @@ from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import suite_reporters as reporters
+from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
+from exactly_lib.definitions.test_suite import section_names
+from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
-from exactly_lib.help_texts.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.entity import suite_reporters as reporters
-from exactly_lib.help_texts.entity.actors import SOURCE_INTERPRETER_ACTOR
-from exactly_lib.help_texts.test_suite import section_names
-from exactly_lib.help_texts.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections

@@ -2,10 +2,10 @@ import types
 from typing import Sequence
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.help import std_tags
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsConstructor
-from exactly_lib.help_texts.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionItemGeneratorNode, \

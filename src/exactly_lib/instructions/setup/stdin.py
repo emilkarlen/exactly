@@ -4,8 +4,8 @@ from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import invokation_variant_from_args
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.help_texts import instruction_arguments
-from exactly_lib.help_texts.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions import instruction_arguments
+from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser

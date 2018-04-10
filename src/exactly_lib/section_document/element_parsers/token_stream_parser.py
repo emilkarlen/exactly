@@ -2,7 +2,7 @@ import types
 from contextlib import contextmanager
 from typing import Callable, TypeVar, Iterable, Sequence, Tuple, Dict
 
-from exactly_lib.help_texts.instruction_arguments import NEGATION_ARGUMENT_STR
+from exactly_lib.definitions.instruction_arguments import NEGATION_ARGUMENT_STR
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream

@@ -1,11 +1,11 @@
 import unittest
 
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.definitions.entity import types
 from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types import render as sut
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
-from exactly_lib.help_texts.entity import syntax_elements
-from exactly_lib.help_texts.entity import types
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.name import name_with_plural_s
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment

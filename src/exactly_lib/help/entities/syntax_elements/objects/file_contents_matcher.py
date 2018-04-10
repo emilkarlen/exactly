@@ -1,5 +1,5 @@
+from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.help.entities.syntax_elements.contents_structure import syntax_element_documentation
-from exactly_lib.help_texts.entity import syntax_elements
 from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_matcher import \
     FileContentsMatcherHelp
 

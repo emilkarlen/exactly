@@ -1,4 +1,4 @@
-from exactly_lib.help_texts.test_case import phase_names_plain
+from exactly_lib.definitions.test_case import phase_names_plain
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.instruction_section_element_parser import section_element_parser
 from exactly_lib.processing.test_case_processing import TestCaseSetup

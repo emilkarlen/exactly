@@ -1,6 +1,6 @@
 from typing import Dict
 
-from exactly_lib.help_texts.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.processing.parse.file_inclusion_directive_parser import FileInclusionDirectiveParser
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \

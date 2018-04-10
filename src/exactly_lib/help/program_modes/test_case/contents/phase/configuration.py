@@ -1,15 +1,15 @@
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
+    TestCasePhaseCrossReference
+from exactly_lib.definitions.entity import concepts, conf_params
+from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
+from exactly_lib.definitions.test_case.phase_names import SETUP_PHASE_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_configuration_phase, \
     env_vars_for_configuration_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
-    TestCasePhaseCrossReference
-from exactly_lib.help_texts.entity import concepts, conf_params
-from exactly_lib.help_texts.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import SETUP_PHASE_NAME
 from exactly_lib.test_case.test_case_status import NAME_SKIP
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.textformat_parser import TextParser

@@ -1,6 +1,6 @@
+from exactly_lib.definitions.test_case import phase_names_plain
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
-from exactly_lib.help_texts.test_case import phase_names_plain
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment

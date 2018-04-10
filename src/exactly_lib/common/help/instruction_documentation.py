@@ -1,8 +1,8 @@
 from typing import List, Sequence
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.help_texts.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.help_texts.doc_format import syntax_text
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
 

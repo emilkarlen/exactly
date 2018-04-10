@@ -1,11 +1,11 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.formatting import InstructionName
+from exactly_lib.definitions.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
+from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.help_texts import formatting
-from exactly_lib.help_texts.entity import concepts
-from exactly_lib.help_texts.formatting import InstructionName
-from exactly_lib.help_texts.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.help_texts.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.textformat_parser import TextParser
