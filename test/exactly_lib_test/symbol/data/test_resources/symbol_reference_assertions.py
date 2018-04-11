@@ -6,8 +6,8 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     matches_restrictions_on_direct_and_indirect, equals_data_type_reference_restrictions
-from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_type_category_restriction
+from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

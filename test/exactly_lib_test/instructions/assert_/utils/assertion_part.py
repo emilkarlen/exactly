@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
-from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
@@ -121,8 +121,8 @@ class TestSequence(unittest.TestCase):
                                 ValueTypeRestriction(ref_1_info.value))
 
         expected_references = asrt.matches_sequence([
-            asrt_rs.matches_reference(asrt.equals(ref_1_info.name),
-                                      is_value_type_restriction(ref_1_info.value)),
+            asrt_sym_usage.matches_reference(asrt.equals(ref_1_info.name),
+                                             is_value_type_restriction(ref_1_info.value)),
         ])
 
         assertion_part_with_references = PartWithReference([ref_1])

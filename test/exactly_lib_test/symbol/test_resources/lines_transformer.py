@@ -2,11 +2,11 @@ from typing import Sequence
 
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerConstantValue
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
+from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerConstantValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_ne
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -34,5 +34,5 @@ IS_LINES_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType
 
 
 def is_lines_transformer_reference_to(name_of_transformer: str) -> asrt.ValueAssertion:
-    return asrt_ne.matches_reference(asrt.equals(name_of_transformer),
-                                     IS_LINES_TRANSFORMER_REFERENCE_RESTRICTION)
+    return asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
+                                            IS_LINES_TRANSFORMER_REFERENCE_RESTRICTION)

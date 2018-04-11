@@ -16,7 +16,7 @@ from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, IdentityLinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
@@ -40,8 +40,8 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
                                 ValueTypeRestriction(ref_1_info.value))
 
         expected_references = asrt.matches_sequence([
-            asrt_rs.matches_reference(asrt.equals(ref_1_info.name),
-                                      is_value_type_restriction(ref_1_info.value)),
+            asrt_sym_usage.matches_reference(asrt.equals(ref_1_info.name),
+                                             is_value_type_restriction(ref_1_info.value)),
         ])
 
         lt_with_references = LinesTransformerResolverWithReferences([ref_1])
