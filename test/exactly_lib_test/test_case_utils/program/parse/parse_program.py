@@ -5,7 +5,7 @@ from exactly_lib.test_case_utils.program.parse import parse_program as sut
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as asrt_rr
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_sym
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -73,8 +73,8 @@ class TestParseSymbolReferenceProgram(unittest.TestCase):
 
 
 def is_reference_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion:
-    return asrt_sym.matches_reference(asrt.equals(symbol_name),
-                                      asrt_rr.is_any_data_type_reference_restrictions())
+    return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
+                                            asrt_rr.is_any_data_type_reference_restrictions())
 
 
 def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:

@@ -12,7 +12,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources impor
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
-from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_ne
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case_utils.file_matcher.test_resources.resolver_assertions import \
@@ -70,8 +70,8 @@ class TestSuccessfulScenarios(TestCaseBase):
 
                 expectation = Expectation(
                     symbol_usages=asrt.matches_sequence([
-                        asrt_ne.matches_definition(asrt.equals(defined_name),
-                                                   expected_container)
+                        asrt_sym_usage.matches_definition(asrt.equals(defined_name),
+                                                          expected_container)
                     ]),
                     symbols_after_main=assert_symbol_table_is_singleton(
                         defined_name,

@@ -10,6 +10,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instr
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
+from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.program import matches_program_resolver, is_program_reference_to
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
@@ -64,7 +65,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
         expectation = Expectation(
             source=asrt_source.is_at_beginning_of_line(2),
             symbol_usages=asrt.matches_sequence([
-                asrt_rs.matches_definition(
+                asrt_sym_usage.matches_definition(
                     name=asrt.equals(name_of_defined_symbol),
                     container=expected_symbol_container)
             ]),
