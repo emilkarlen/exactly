@@ -16,7 +16,7 @@ class DirDependencies(Enum):
     HOME_AND_SDS = 3
 
 
-def dir_dependency_of_resolving_dependencies(resolving_dependencies: set) -> DirDependencies:
+def dir_dependency_of_resolving_dependencies(resolving_dependencies: Set[ResolvingDependency]) -> DirDependencies:
     if ResolvingDependency.HOME in resolving_dependencies:
         if ResolvingDependency.NON_HOME in resolving_dependencies:
             return DirDependencies.HOME_AND_SDS
@@ -26,6 +26,20 @@ def dir_dependency_of_resolving_dependencies(resolving_dependencies: set) -> Dir
         return DirDependencies.SDS
     else:
         return DirDependencies.NONE
+
+
+def resolving_dependencies_from_dir_dependencies(dir_dependencies: DirDependencies) -> Set[ResolvingDependency]:
+    if dir_dependencies == DirDependencies.NONE:
+        return set()
+    elif dir_dependencies == DirDependencies.HOME:
+        return {ResolvingDependency.HOME}
+    elif dir_dependencies == DirDependencies.SDS:
+        return {ResolvingDependency.NON_HOME}
+    elif dir_dependencies == DirDependencies.HOME_AND_SDS:
+        return {ResolvingDependency.HOME, ResolvingDependency.NON_HOME}
+    else:
+        raise ValueError('Unknown {}: {}'.format(DirDependencies,
+                                                 dir_dependencies))
 
 
 class DirDependencyError(ValueError):
@@ -74,6 +88,13 @@ class DirDependentValue(Generic[RESOLVED_TYPE], WithDirDependencies):
 class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
     """A :class:`DirDependentValue` that depends at most on a single :class:`ResolvingDependency`."""
 
+    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+        resolving_dep = self.resolving_dependency()
+        if resolving_dep is None:
+            return set()
+        else:
+            return {resolving_dep}
+
     def resolving_dependency(self) -> Optional[ResolvingDependency]:
         """
         :rtype: None iff the value has no dependency
@@ -106,4 +127,4 @@ class MultiDirDependentValue(Generic[RESOLVED_TYPE], DirDependentValue[RESOLVED_
         return dir_dependency_of_resolving_dependencies(self.resolving_dependencies())
 
     def has_dir_dependency(self) -> bool:
-        return self.dir_dependency() is not DirDependencies.NONE
+        return bool(self.resolving_dependencies())
