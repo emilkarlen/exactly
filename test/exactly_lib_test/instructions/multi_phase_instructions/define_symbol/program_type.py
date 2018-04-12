@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.process_execution.os_process_execution import Command
@@ -9,10 +10,12 @@ from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_r
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.symbol.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.symbol.test_resources import resolver_structure_assertions as asrt_rs
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.program import matches_program_resolver, is_program_reference_to
+from exactly_lib_test.symbol.test_resources.program import is_program_reference_to
+from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
@@ -55,11 +58,13 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                                    defined_symbol=name_of_defined_symbol,
                                    program=program)
         expected_symbol_container = asrt_rs.matches_container(
-            assertion_on_resolver=matches_program_resolver(
+            assertion_on_resolver=asrt_resolver.matches_resolver_of_program(
                 references=asrt.matches_sequence([
                     is_program_reference_to(referred_symbol.name)
                 ]),
-                resolved_value=matches_program(python_source),
+                resolved_value=asrt_dir_dep_val.matches_multi_dir_dependent_value(
+                    DirDependencies.NONE,
+                    lambda tcds: matches_program(python_source)),
                 symbols=symbols
             ))
         expectation = Expectation(
@@ -77,7 +82,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
         self._check(source, ArrangementWithSds(), expectation)
 
 
-def matches_program(py_source_to_interpret: str) -> asrt.ValueAssertion:
+def matches_program(py_source_to_interpret: str) -> asrt.ValueAssertion[Program]:
     return asrt.is_instance_with(
         Program,
         asrt.and_([

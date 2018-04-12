@@ -9,6 +9,7 @@ from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.resolver_structure import LogicValueResolver, DataValueResolver, LinesTransformerResolver, \
     LineMatcherResolver, FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
@@ -164,7 +165,7 @@ def matches_resolver_of_lines_transformer(references: asrt.ValueAssertion[Sequen
 
 
 def matches_resolver_of_program(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                resolved_value: asrt.ValueAssertion[ProgramValue],
+                                resolved_value: asrt.ValueAssertion[DirDependentValue],
                                 custom: asrt.ValueAssertion[ProgramResolver] = asrt.anything_goes(),
                                 symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_program_type(),
