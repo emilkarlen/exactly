@@ -205,7 +205,7 @@ class MultiDirDependentValueTestImpl(Generic[RESOLVED_TYPE], sut.MultiDirDepende
     def resolving_dependencies(self) -> Set[ResolvingDependency]:
         return self._resolving_dependencies
 
-    def dir_dependency(self) -> DirDependencies:
+    def dir_dependencies(self) -> DirDependencies:
         return dir_dependency_of_resolving_dependencies(self._resolving_dependencies)
 
     def has_dir_dependency(self) -> bool:

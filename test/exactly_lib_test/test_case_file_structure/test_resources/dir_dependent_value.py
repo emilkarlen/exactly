@@ -166,8 +166,8 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase):
                                    actual: MultiDirDependentValue,
                                    home_and_sds: HomeAndSds,
                                    message_builder: asrt.MessageBuilder):
-        put.assertEqual(self._expected_multi_dep_value.dir_dependency(),
-                        actual.dir_dependency(),
+        put.assertEqual(self._expected_multi_dep_value.dir_dependencies(),
+                        actual.dir_dependencies(),
                         message_builder.apply('dir_dependency'))
 
     def _check_custom(self,
@@ -175,8 +175,8 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase):
                       actual: MultiDirDependentValue,
                       home_and_sds: HomeAndSds,
                       message_builder: asrt.MessageBuilder):
-        put.assertEqual(self._expected_multi_dep_value.dir_dependency(),
-                        actual.dir_dependency(),
+        put.assertEqual(self._expected_multi_dep_value.dir_dependencies(),
+                        actual.dir_dependencies(),
                         'dir_dependency')
 
         self._check_custom_multi(put, actual, home_and_sds, message_builder)

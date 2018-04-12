@@ -105,7 +105,7 @@ class TestMatchesMultiDirDependentValue(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case.name):
-                assertion = sut.matches_multi_dir_dependent_value(case.value.dir_dependency(),
+                assertion = sut.matches_multi_dir_dependent_value(case.value.dir_dependencies(),
                                                                   lambda tcds: asrt.equals(resolved_value))
                 assertion.apply_without_message(self, case.value)
 
