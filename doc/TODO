@@ -1,5 +1,24 @@
 -*- org -*-
 
+* Ref Man: Concept "symbol"
+Examples of symbol references may now use new lines in instr args
+to improve readability.
+* Ref Man FILE-CONTENTS-MATCHER / num-lines
+<2018-04-05 tor>
+Describe how lines are counted.
+Tell that a final new-line does not count as a line, i.e.
+both of these strings have 1 line:
+ "a"
+ "a\n"
+
+So each newling "belong" to the line consisting of the non-new-line characters
+preceding it.
+* Ref Man: GLOB-PATTERN: Describe actual syntax and semantics
+<2018-04-05 tor>
+Now it just mentions that it is a "shell glob pattern".
+It would be helpful to also see the syntax and what it does,
+since the user may not be familiar with glob pattnerns
+(even thoug that is quite unlikely).
 * Introduce Line/FileMatcherValue as DirDepVal
 <2018-04-05 tor>
 All other symbol types have three forms
@@ -14,7 +33,7 @@ Having the same structure for all types makes the structure simpler.
 It is confusing that an instruction can report VALIDATION_ERROR
 after the execution has started - i.e. after some "heavy" setup may have
 taken place (e.g. populating a db) that needs cleanup.
-* define assertion as exec of process (via run / shell instructions)
+* define file/line check as exec of process (via run / shell instructions)
 <2017-11-25 Sat>
 Exactly has limited functionality for assertions, and exec of external programs
 is a way to overcome this.
