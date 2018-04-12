@@ -131,14 +131,14 @@ class IsInstance(ValueAssertion[Any]):
     """
 
     def __init__(self,
-                 expected: type,
+                 expected: Type,
                  message: str = ''):
         self.expected = expected
         self.message = message
 
     def apply(self,
               put: unittest.TestCase,
-              value: Type,
+              value: Any,
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertIsInstance(value,
                              self.expected,
@@ -379,7 +379,7 @@ def is_sequence_of(element_assertion: ValueAssertion[T]) -> ValueAssertion[List[
 
 class _IsInstanceWith(ValueAssertion[Any]):
     def __init__(self,
-                 expected_type: Type[T],
+                 expected_type: Type,
                  value_assertion: ValueAssertion[T],
                  description: str):
         self.expected_type = expected_type
@@ -433,7 +433,7 @@ class _IsNoneOrInstanceWith(ValueAssertion[Any]):
         self.value_assertion.apply(put, value, message_builder)
 
 
-def is_instance_with(expected_type: Type[T],
+def is_instance_with(expected_type: Type,
                      value_assertion: ValueAssertion[T],
                      description: str = '') -> ValueAssertion[Any]:
     return _IsInstanceWith(expected_type, value_assertion, description)

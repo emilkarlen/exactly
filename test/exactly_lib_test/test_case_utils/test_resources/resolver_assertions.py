@@ -1,4 +1,4 @@
-from typing import Any, Sequence
+from typing import Any, Sequence, Type
 
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.resolver_structure import LogicValueResolver, SymbolValueResolver
@@ -35,7 +35,7 @@ def matches_resolver_of_logic_type(resolver_type: type,
                                  ]))
 
 
-def matches_resolver_of_logic_type2(resolver_type: type,
+def matches_resolver_of_logic_type2(resolver_type: Type,
                                     logic_value_type: LogicValueType,
                                     value_type: ValueType,
                                     resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
