@@ -85,6 +85,10 @@ class ProgramCommand(Command):
     def shell(self) -> bool:
         return False
 
+    @property
+    def arguments(self) -> List[str]:
+        raise NotImplementedError('abstract method')
+
 
 class ExecutableProgramCommand(ProgramCommand):
     def __init__(self,
@@ -94,6 +98,14 @@ class ExecutableProgramCommand(ProgramCommand):
     @property
     def args(self) -> List[str]:
         return [self._program_and_arguments.program] + self._program_and_arguments.arguments
+
+    @property
+    def arguments(self) -> List[str]:
+        return self._program_and_arguments.arguments
+
+    @property
+    def program(self) -> str:
+        return self._program_and_arguments.program
 
     @property
     def program_and_arguments(self) -> ProgramAndArguments:
@@ -115,6 +127,14 @@ class ExecutableFileCommand(ProgramCommand):
     def program_and_arguments(self) -> ProgramAndArguments:
         return ProgramAndArguments(str(self._executable_file),
                                    self._arguments)
+
+    @property
+    def executable_file(self) -> pathlib.Path:
+        return self._executable_file
+
+    @property
+    def arguments(self) -> List[str]:
+        return self._arguments
 
 
 def executable_program_command(program: str,
