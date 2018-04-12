@@ -2,7 +2,7 @@ from typing import List, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils
 from exactly_lib.type_system.data.string_value import StringValue
 
@@ -18,7 +18,7 @@ class ListValue(MultiDirDependentValue[List[str]]):
     def string_value_elements(self) -> tuple:
         return self._string_value_elements
 
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return utils.resolving_dependencies_from_sequence(self._string_value_elements)
 
     def value_when_no_dir_dependencies(self) -> List[str]:

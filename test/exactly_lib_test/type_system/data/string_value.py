@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data import concrete_string_values as csv, file_refs, string_value as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string, \
@@ -70,18 +70,18 @@ class TestFileRefFragment(unittest.TestCase):
         file_ref_abs = file_refs.absolute_file_name(str(pathlib.Path().resolve()))
         cases = [
             (
-                'dependency on ' + str(ResolvingDependency.HOME),
+                'dependency on ' + str(DirectoryStructurePartition.HOME),
                 csv.FileRefFragment(file_ref_rel_home),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HOME},
                     get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_home.value_pre_sds(h_s.hds))),
             ),
             (
-                'dependency on ' + str(ResolvingDependency.NON_HOME),
+                'dependency on ' + str(DirectoryStructurePartition.NON_HOME),
                 csv.FileRefFragment(file_ref_rel_sds),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.NON_HOME},
                     get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_sds.value_post_sds(h_s.sds))),
             ),
@@ -128,10 +128,10 @@ class TestListFragment(unittest.TestCase):
                     get_value_of_any_dependency=do_return(string_1 + ' ' + string_2)),
             ),
             (
-                'dependency on ' + str(ResolvingDependency.HOME),
+                'dependency on ' + str(DirectoryStructurePartition.HOME),
                 csv.ListValueFragment(csv.ListValue([string_of_file_ref_rel_home])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HOME},
                     get_value_of_any_dependency=lambda h_s: str(
                         string_of_file_ref_rel_home.value_of_any_dependency(h_s))),
             ),
@@ -180,7 +180,7 @@ class TestStringValue(unittest.TestCase):
                 'single dir dependent value/pre sds',
                 sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_home)])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HOME},
                     get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_home.value_pre_sds(h_s.hds))),
             ),
@@ -188,7 +188,7 @@ class TestStringValue(unittest.TestCase):
                 'single dir dependent value/post sds',
                 sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_sds)])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.NON_HOME},
                     get_value_of_any_dependency=lambda h_s: str(
                         file_ref_rel_sds.value_post_sds(h_s.sds))),
             ),
@@ -197,8 +197,8 @@ class TestStringValue(unittest.TestCase):
                 sut.StringValue(tuple([csv.FileRefFragment(file_ref_rel_home),
                                        csv.FileRefFragment(file_ref_rel_sds)])),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.HOME,
-                                            ResolvingDependency.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HOME,
+                                            DirectoryStructurePartition.NON_HOME},
                     get_value_of_any_dependency=lambda h_s: (
                             str(file_ref_rel_home.value_pre_sds(h_s.hds)) +
                             str(file_ref_rel_sds.value_post_sds(h_s.sds)))

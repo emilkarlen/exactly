@@ -4,7 +4,7 @@ from typing import Optional
 from exactly_lib.test_case_file_structure.dir_dependent_value import SingleDirDependentValue
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity, RESOLVING_DEPENDENCY_OF, \
-    ResolvingDependency
+    DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data.path_part import PathPart
 
@@ -25,9 +25,9 @@ class FileRef(SingleDirDependentValue):
         raise NotImplementedError()
 
     def exists_pre_sds(self) -> bool:
-        return self.resolving_dependency() is not ResolvingDependency.NON_HOME
+        return self.resolving_dependency() is not DirectoryStructurePartition.NON_HOME
 
-    def resolving_dependency(self) -> Optional[ResolvingDependency]:
+    def resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
         relativity = self.relativity()
         if relativity.is_absolute:
             return None

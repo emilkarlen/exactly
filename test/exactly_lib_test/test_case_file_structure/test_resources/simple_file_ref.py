@@ -2,7 +2,7 @@ import pathlib
 from typing import Optional
 
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, ResolvingDependency, \
+from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition, \
     RESOLVING_DEPENDENCY_OF
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
@@ -29,7 +29,7 @@ class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):
         self.__relativity = relativity
         self.__path_suffix = path_suffix
 
-    def resolving_dependency(self) -> Optional[ResolvingDependency]:
+    def resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
         return RESOLVING_DEPENDENCY_OF[self.__relativity]
 
     def has_dir_dependency(self) -> bool:

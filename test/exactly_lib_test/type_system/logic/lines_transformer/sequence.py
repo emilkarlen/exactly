@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
     SequenceLinesTransformer
 from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerSequenceValue, \
@@ -52,20 +52,20 @@ class TestValue(unittest.TestCase):
                 LinesTransformerSequenceValue([])
                 ),
             NEA('single component',
-                MultiDirDependentValueTestImpl({ResolvingDependency.HOME},
+                MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME},
                                                SequenceLinesTransformer([IdentityLinesTransformer()])),
-                LinesTransformerSequenceValue([DirDependentLinesTransformerValue({ResolvingDependency.HOME},
+                LinesTransformerSequenceValue([DirDependentLinesTransformerValue({DirectoryStructurePartition.HOME},
                                                                                  make_identity_transformer)])
                 ),
             NEA('multiple components',
-                MultiDirDependentValueTestImpl({ResolvingDependency.HOME,
-                                                ResolvingDependency.NON_HOME},
+                MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME,
+                                                DirectoryStructurePartition.NON_HOME},
                                                SequenceLinesTransformer([IdentityLinesTransformer(),
                                                                          IdentityLinesTransformer()])),
                 LinesTransformerSequenceValue([
-                    DirDependentLinesTransformerValue({ResolvingDependency.HOME},
+                    DirDependentLinesTransformerValue({DirectoryStructurePartition.HOME},
                                                       make_identity_transformer),
-                    DirDependentLinesTransformerValue({ResolvingDependency.NON_HOME},
+                    DirDependentLinesTransformerValue({DirectoryStructurePartition.NON_HOME},
                                                       make_identity_transformer),
                 ])
                 ),

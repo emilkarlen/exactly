@@ -3,7 +3,7 @@ from typing import Optional, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.value_type import DataValueType
@@ -92,7 +92,7 @@ class StringOrFileRefValue(MultiDirDependentValue[StringOrPath]):
         """
         return self._file_ref_value
 
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         if self.is_file_ref:
             return self.file_ref_value.resolving_dependencies()
         else:

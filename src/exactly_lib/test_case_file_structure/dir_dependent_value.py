@@ -4,7 +4,7 @@ from typing import TypeVar, Generic, Set, Optional
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
@@ -16,34 +16,35 @@ class DirDependencies(Enum):
     HOME_AND_SDS = 3
 
 
-def dir_dependency_of_resolving_dependencies(resolving_dependencies: Set[ResolvingDependency]) -> DirDependencies:
-    if ResolvingDependency.HOME in resolving_dependencies:
-        if ResolvingDependency.NON_HOME in resolving_dependencies:
+def dir_dependency_of_resolving_dependencies(
+        resolving_dependencies: Set[DirectoryStructurePartition]) -> DirDependencies:
+    if DirectoryStructurePartition.HOME in resolving_dependencies:
+        if DirectoryStructurePartition.NON_HOME in resolving_dependencies:
             return DirDependencies.HOME_AND_SDS
         else:
             return DirDependencies.HOME
-    if ResolvingDependency.NON_HOME in resolving_dependencies:
+    if DirectoryStructurePartition.NON_HOME in resolving_dependencies:
         return DirDependencies.SDS
     else:
         return DirDependencies.NONE
 
 
-def resolving_dependencies_from_dir_dependencies(dir_dependencies: DirDependencies) -> Set[ResolvingDependency]:
+def resolving_dependencies_from_dir_dependencies(dir_dependencies: DirDependencies) -> Set[DirectoryStructurePartition]:
     if dir_dependencies == DirDependencies.NONE:
         return set()
     elif dir_dependencies == DirDependencies.HOME:
-        return {ResolvingDependency.HOME}
+        return {DirectoryStructurePartition.HOME}
     elif dir_dependencies == DirDependencies.SDS:
-        return {ResolvingDependency.NON_HOME}
+        return {DirectoryStructurePartition.NON_HOME}
     elif dir_dependencies == DirDependencies.HOME_AND_SDS:
-        return {ResolvingDependency.HOME, ResolvingDependency.NON_HOME}
+        return {DirectoryStructurePartition.HOME, DirectoryStructurePartition.NON_HOME}
     else:
         raise ValueError('Unknown {}: {}'.format(DirDependencies,
                                                  dir_dependencies))
 
 
 class DirDependencyError(ValueError):
-    def __init__(self, unexpected_dependency: Set[ResolvingDependency],
+    def __init__(self, unexpected_dependency: Set[DirectoryStructurePartition],
                  msg: str = ''):
         super().__init__(msg)
         self.unexpected_dependency = unexpected_dependency
@@ -58,7 +59,7 @@ RESOLVED_TYPE = TypeVar('RESOLVED_TYPE')
 
 
 class WithDirDependencies:
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         raise NotImplementedError()
 
     def has_dir_dependency(self) -> bool:
@@ -68,7 +69,7 @@ class WithDirDependencies:
         return bool(self.resolving_dependencies())
 
     def exists_pre_sds(self) -> bool:
-        return ResolvingDependency.NON_HOME not in self.resolving_dependencies()
+        return DirectoryStructurePartition.NON_HOME not in self.resolving_dependencies()
 
 
 class DirDependentValue(Generic[RESOLVED_TYPE], WithDirDependencies):
@@ -88,14 +89,14 @@ class DirDependentValue(Generic[RESOLVED_TYPE], WithDirDependencies):
 class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
     """A :class:`DirDependentValue` that depends at most on a single :class:`ResolvingDependency`."""
 
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         resolving_dep = self.resolving_dependency()
         if resolving_dep is None:
             return set()
         else:
             return {resolving_dep}
 
-    def resolving_dependency(self) -> Optional[ResolvingDependency]:
+    def resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
         """
         :rtype: None iff the value has no dependency
         """

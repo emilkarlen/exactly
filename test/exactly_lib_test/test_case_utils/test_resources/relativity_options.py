@@ -9,7 +9,7 @@ from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
-    RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, ResolvingDependency
+    RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HOME_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import concrete_path_parts
@@ -157,7 +157,7 @@ class RelativityOptionConfiguration:
             raise ValueError('Not a {}: {}'.format(SymbolsConfiguration, symbols_configuration))
 
     @property
-    def directory_structure_part(self) -> ResolvingDependency:
+    def directory_structure_part(self) -> DirectoryStructurePartition:
         raise NotImplementedError('abstract method')
 
     @property
@@ -262,8 +262,8 @@ class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOp
         self._resolver_hds = relative_path_options.REL_HOME_OPTIONS_MAP[relativity].root_resolver
 
     @property
-    def directory_structure_part(self) -> ResolvingDependency:
-        return ResolvingDependency.HOME
+    def directory_structure_part(self) -> DirectoryStructurePartition:
+        return DirectoryStructurePartition.HOME
 
     @property
     def relativity_option_rel_home(self) -> RelHomeOptionType:
@@ -288,8 +288,8 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
                          symbols_configuration)
 
     @property
-    def directory_structure_part(self) -> ResolvingDependency:
-        return ResolvingDependency.NON_HOME
+    def directory_structure_part(self) -> DirectoryStructurePartition:
+        return DirectoryStructurePartition.NON_HOME
 
     def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
         raise NotImplementedError()

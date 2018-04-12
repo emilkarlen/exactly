@@ -4,7 +4,7 @@ from exactly_lib.test_case_file_structure import relativity_root, relative_path_
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencyError
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, SpecificPathRelativity, \
-    SPECIFIC_ABSOLUTE_RELATIVITY, ResolvingDependency, rel_any_from_rel_home
+    SPECIFIC_ABSOLUTE_RELATIVITY, DirectoryStructurePartition, rel_any_from_rel_home
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
@@ -136,7 +136,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         return True
 
     def value_when_no_dir_dependencies(self) -> pathlib.Path:
-        raise DirDependencyError({ResolvingDependency.HOME})
+        raise DirDependencyError({DirectoryStructurePartition.HOME})
 
     def value_pre_sds(self, hds: HomeDirectoryStructure) -> pathlib.Path:
         suffix = self.path_suffix_path()
@@ -144,7 +144,7 @@ class _FileRefRelHome(_FileRefWithConstantLocationBase):
         return root / suffix
 
     def value_post_sds(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
-        raise DirDependencyError({ResolvingDependency.HOME},
+        raise DirDependencyError({DirectoryStructurePartition.HOME},
                                  'This file exists pre-SDS')
 
     def _relativity(self) -> RelOptionType:

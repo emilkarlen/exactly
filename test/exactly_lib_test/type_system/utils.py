@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system import utils as sut
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import AMultiDirDependentValue
 
@@ -24,14 +24,14 @@ class TestResolvingDependenciesFromList(unittest.TestCase):
             ),
             (
                 'single value with single dependency',
-                [AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME})],
-                {ResolvingDependency.HOME},
+                [AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME})],
+                {DirectoryStructurePartition.HOME},
             ),
             (
                 'multiple values with same dependency',
-                [AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME}),
-                 AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME})],
-                {ResolvingDependency.NON_HOME},
+                [AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME}),
+                 AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME})],
+                {DirectoryStructurePartition.NON_HOME},
             ),
         ]
         for test_case_name, dir_dependent_values, expected_dependencies in cases:
