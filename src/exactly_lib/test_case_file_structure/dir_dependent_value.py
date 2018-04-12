@@ -123,7 +123,7 @@ class SingleDirDependentValue(DirDependentValue[pathlib.Path]):
 class MultiDirDependentValue(Generic[RESOLVED_TYPE], DirDependentValue[RESOLVED_TYPE]):
     """A :class:`DirDependentValue` that may depend on a multiple :class:`ResolvingDependency`."""
 
-    def dir_dependency(self) -> DirDependencies:
+    def dir_dependencies(self) -> DirDependencies:
         return dir_dependency_of_resolving_dependencies(self.resolving_dependencies())
 
     def has_dir_dependency(self) -> bool:

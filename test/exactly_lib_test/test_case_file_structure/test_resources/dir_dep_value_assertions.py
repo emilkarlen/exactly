@@ -174,7 +174,7 @@ class MultiDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
                              message_builder.apply('class'))
         assert isinstance(actual, MultiDirDependentValue)  # Type info for IDE
 
-        actual_dir_dependencies = actual.dir_dependency()
+        actual_dir_dependencies = actual.dir_dependencies()
         asrt.equals(self._dir_dependencies).apply(put,
                                                   actual_dir_dependencies,
                                                   message_builder.for_sub_component('dir_dependencies'))

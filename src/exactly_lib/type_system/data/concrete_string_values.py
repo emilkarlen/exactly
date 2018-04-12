@@ -100,8 +100,8 @@ class TransformedStringFragment(StringFragment):
         self._string_fragment = string_fragment
         self._transformer = transformer
 
-    def dir_dependency(self) -> DirDependencies:
-        return self._string_fragment.dir_dependency()
+    def dir_dependencies(self) -> DirDependencies:
+        return self._string_fragment.dir_dependencies()
 
     def has_dir_dependency(self) -> bool:
         return self._string_fragment.has_dir_dependency()
