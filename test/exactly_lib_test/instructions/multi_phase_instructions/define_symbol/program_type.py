@@ -2,8 +2,6 @@ import unittest
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
-from exactly_lib.type_system.logic.program.program_value import Program
-from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *
@@ -20,9 +18,10 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.programs.python_program_execution import args_for_executing_source_on_command_line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import T, MessageBuilder
+from exactly_lib_test.type_system.logic.test_resources.program_assertions import \
+    matches_py_source_on_cmd_line_program
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
 
@@ -64,7 +63,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
                 ]),
                 resolved_value=asrt_dir_dep_val.matches_multi_dir_dependent_value(
                     DirDependencies.NONE,
-                    lambda tcds: matches_program(python_source)),
+                    lambda tcds: matches_py_source_on_cmd_line_program(python_source)),
                 symbols=symbols
             ))
         expectation = Expectation(
@@ -82,57 +81,7 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
         self._check(source, ArrangementWithSds(), expectation)
 
 
-def matches_program(py_source_to_interpret: str) -> asrt.ValueAssertion[Program]:
-    return asrt.is_instance_with(
-        Program,
-        asrt.and_([
-            asrt.sub_component('transformation',
-                               Program.transformation.fget,
-                               is_identity_lines_transformer(),
-                               ),
-            asrt.sub_component('command',
-                               Program.command.fget,
-                               matches_command(py_source_to_interpret),
-                               ),
-        ]))
-
-
-def is_identity_lines_transformer() -> asrt.ValueAssertion[LinesTransformer]:
-    return asrt.sub_component('is_identity',
-                              get_is_identity_transformer,
-                              asrt.is_true)
-
-
 class MyAssertion(asrt.ValueAssertion):
     def apply(self, put: unittest.TestCase, value: T, message_builder: MessageBuilder = MessageBuilder()):
         assert isinstance(value, LinesTransformer)
         put.assertTrue(value.is_identity_transformer)
-
-
-def get_is_identity_transformer(x: LinesTransformer) -> bool:
-    return x.is_identity_transformer
-
-
-def matches_command(py_source_to_interpret: str) -> asrt.ValueAssertion[Command]:
-    return asrt.is_instance_with(
-        Command,
-        asrt.and_([
-            asrt.sub_component('args',
-                               get_args,
-                               asrt.equals(args_for_executing_source_on_command_line(py_source_to_interpret))
-                               ),
-            asrt.sub_component('is_shell',
-                               get_is_shell,
-                               asrt.is_false
-                               ),
-
-        ])
-    )
-
-
-def get_args(command: Command):
-    return command.args
-
-
-def get_is_shell(command: Command) -> bool:
-    return command.shell

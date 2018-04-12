@@ -94,12 +94,12 @@ class DirDependentValueAssertionBase(Generic[T], asrt.ValueAssertion[DirDependen
             actual_resolved_value = actual.value_when_no_dir_dependencies()
             assertion_on_resolved_value.apply(put,
                                               actual_resolved_value,
-                                              message_builder.for_sub_component('resolved value'))
+                                              message_builder.for_sub_component('resolved primitive value'))
 
         actual_resolved_value = actual.value_of_any_dependency(tcds)
         assertion_on_resolved_value.apply(put,
                                           actual_resolved_value,
-                                          message_builder.for_sub_component('resolved value'))
+                                          message_builder.for_sub_component('resolved primitive value'))
 
 
 class ArbitraryDirDependentValueAssertion(DirDependentValueAssertionBase[T]):

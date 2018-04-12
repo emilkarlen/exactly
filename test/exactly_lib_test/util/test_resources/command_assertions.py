@@ -1,5 +1,9 @@
+import pathlib
+import sys
+
 from exactly_lib.util.process_execution.os_process_execution import Command, ExecutableFileCommand, \
     ExecutableProgramCommand, ShellCommand
+from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -19,6 +23,14 @@ def equals_executable_file_command(expected: ExecutableFileCommand) -> asrt.Valu
                                                              asrt.equals(False)
                                                              ),
                                       ])
+
+
+def equals_execute_py_source_command(source: str) -> asrt.ValueAssertion[Command]:
+    return equals_executable_file_command(
+        ExecutableFileCommand(pathlib.Path(sys.executable),
+                              [python_program_execution.PY_ARG_FOR_EXECUTING_SOURCE_ON_COMMAND_LINE,
+                               source])
+    )
 
 
 def equals_executable_program_command(expected: ExecutableProgramCommand) -> asrt.ValueAssertion[Command]:
