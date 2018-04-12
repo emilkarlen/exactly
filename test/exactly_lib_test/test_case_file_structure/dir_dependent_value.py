@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_file_structure import dir_dependent_value as sut
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 
 
 def suite() -> unittest.TestSuite:
@@ -19,16 +19,16 @@ class TestDirDependencyOfResolvingDependencies(unittest.TestCase):
                 DirDependencies.NONE,
             ),
             (
-                {ResolvingDependency.HOME},
+                {DirectoryStructurePartition.HOME},
                 DirDependencies.HOME,
             ),
             (
-                {ResolvingDependency.NON_HOME},
+                {DirectoryStructurePartition.NON_HOME},
                 DirDependencies.SDS,
             ),
             (
-                {ResolvingDependency.HOME,
-                 ResolvingDependency.NON_HOME},
+                {DirectoryStructurePartition.HOME,
+                 DirectoryStructurePartition.NON_HOME},
                 DirDependencies.HOME_AND_SDS,
             ),
         ]

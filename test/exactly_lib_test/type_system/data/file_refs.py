@@ -3,7 +3,7 @@ import pathlib
 import types
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency, RelOptionType, \
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RESOLVING_DEPENDENCY_OF, RelHomeOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system.data import file_refs as sut
@@ -19,33 +19,33 @@ from exactly_lib_test.test_resources.test_case_base_with_short_description impor
 def suite() -> unittest.TestSuite:
     configs_for_constant_rel_option_type = [
         _RelativityConfig(sut.rel_home_case,
-                          ResolvingDependency.HOME,
+                          DirectoryStructurePartition.HOME,
                           lambda home_and_sds: home_and_sds.hds.case_dir),
         _RelativityConfig(sut.rel_home_act,
-                          ResolvingDependency.HOME,
+                          DirectoryStructurePartition.HOME,
                           lambda home_and_sds: home_and_sds.hds.act_dir),
         _RelativityConfig(functools.partial(sut.rel_home, RelHomeOptionType.REL_HOME_CASE),
-                          ResolvingDependency.HOME,
+                          DirectoryStructurePartition.HOME,
                           lambda home_and_sds: home_and_sds.hds.case_dir,
                           function_name='sut.rel_home(RelHomeOptionType.REL_HOME_CASE, PATH_SUFFIX)'),
         _RelativityConfig(functools.partial(sut.rel_home, RelHomeOptionType.REL_HOME_ACT),
-                          ResolvingDependency.HOME,
+                          DirectoryStructurePartition.HOME,
                           lambda home_and_sds: home_and_sds.hds.act_dir,
                           function_name='sut.rel_home(RelHomeOptionType.REL_HOME_ACT, PATH_SUFFIX)'),
         _RelativityConfig(sut.rel_home_act,
-                          ResolvingDependency.HOME,
+                          DirectoryStructurePartition.HOME,
                           lambda home_and_sds: home_and_sds.hds.act_dir),
         _RelativityConfig(sut.rel_tmp_user,
-                          ResolvingDependency.NON_HOME,
+                          DirectoryStructurePartition.NON_HOME,
                           lambda home_and_sds: home_and_sds.sds.tmp.user_dir),
         _RelativityConfig(sut.rel_act,
-                          ResolvingDependency.NON_HOME,
+                          DirectoryStructurePartition.NON_HOME,
                           lambda home_and_sds: home_and_sds.sds.act_dir),
         _RelativityConfig(sut.rel_result,
-                          ResolvingDependency.NON_HOME,
+                          DirectoryStructurePartition.NON_HOME,
                           lambda home_and_sds: home_and_sds.sds.result.root_dir),
         _RelativityConfig(sut.rel_cwd,
-                          ResolvingDependency.NON_HOME,
+                          DirectoryStructurePartition.NON_HOME,
                           lambda home_and_sds: pathlib.Path().resolve()),
     ]
     all_configs = configs_for_constant_rel_option_type + configs_for_rel_option_argument()
@@ -79,7 +79,7 @@ def _of_rel_option__path_suffix_2_file_ref(rel_option_type: RelOptionType) -> ty
 class _RelativityConfig:
     def __init__(self,
                  path_suffix_2_file_ref: types.FunctionType,
-                 resolving_dependency: ResolvingDependency,
+                 resolving_dependency: DirectoryStructurePartition,
                  home_and_sds_2_relativity_root: types.FunctionType,
                  function_name: str = '',
                  rel_option_type_for_doc: str = ''):
@@ -93,7 +93,7 @@ class _RelativityConfig:
 
     @property
     def exists_pre_sds(self) -> bool:
-        return self.resolving_dependency is not ResolvingDependency.NON_HOME
+        return self.resolving_dependency is not DirectoryStructurePartition.NON_HOME
 
     def __str__(self):
         return '_RelativityConfig(function_name={}, resolving_dependency={}, rel_option_type={})'.format(

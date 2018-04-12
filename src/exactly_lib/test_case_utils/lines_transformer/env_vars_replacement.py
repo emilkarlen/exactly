@@ -6,7 +6,7 @@ from exactly_lib.definitions.doc_format import directory_variable_name_text
 from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic import lines_transformer_values
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, CustomLinesTransformer
 from exactly_lib.util.textformat.structure import structures as docs
@@ -25,7 +25,7 @@ class EnvVarReplacementLinesTransformer(CustomLinesTransformer):
 
 
 def value() -> LinesTransformerValue:
-    return lines_transformer_values.DirDependentLinesTransformerValue(ResolvingDependency,
+    return lines_transformer_values.DirDependentLinesTransformerValue(DirectoryStructurePartition,
                                                                       EnvVarReplacementLinesTransformer)
 
 

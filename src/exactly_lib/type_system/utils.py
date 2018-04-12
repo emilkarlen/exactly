@@ -1,11 +1,11 @@
 from typing import Iterable, Set, TypeVar
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import WithDirDependencies
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 
 
 def resolving_dependencies_from_sequence(dir_dependent_values: Iterable[WithDirDependencies]) -> Set[
-    ResolvingDependency]:
+    DirectoryStructurePartition]:
     return unions(map(lambda value: value.resolving_dependencies(),
                       dir_dependent_values))
 

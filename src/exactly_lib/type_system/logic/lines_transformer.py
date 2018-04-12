@@ -3,7 +3,7 @@ from typing import Set, Iterable, Sequence
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.functional import compose_first_and_second
 
 
@@ -27,7 +27,7 @@ class LinesTransformer:
 
 
 class LinesTransformerValue(MultiDirDependentValue[LinesTransformer]):
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 
     def value_when_no_dir_dependencies(self) -> LinesTransformer:

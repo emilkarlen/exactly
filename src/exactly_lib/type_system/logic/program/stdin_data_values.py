@@ -2,7 +2,7 @@ from typing import Sequence, Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.program.string_or_file_ref_values import StringOrFileRefValue, StringOrPath
 from exactly_lib.type_system.utils import unions
 
@@ -35,7 +35,7 @@ class StdinDataValue(MultiDirDependentValue[StdinData]):
     def fragments(self) -> Sequence[StringOrFileRefValue]:
         return self._fragments
 
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return unions([f.resolving_dependencies() for f in self._fragments])
 
     def value_when_no_dir_dependencies(self) -> StdinData:

@@ -4,21 +4,21 @@ from typing import TypeVar, Callable, Set, Optional, Generic
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue, SingleDirDependentValue, \
     MultiDirDependentValue, DirDependencies, resolving_dependencies_from_dir_dependencies
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 T = TypeVar('T')
 
 
-def matches_dir_dependent_value(resolving_dependencies: asrt.ValueAssertion[Set[ResolvingDependency]],
+def matches_dir_dependent_value(resolving_dependencies: asrt.ValueAssertion[Set[DirectoryStructurePartition]],
                                 resolved_value: Callable[[HomeAndSds], asrt.ValueAssertion[T]]
                                 ) -> asrt.ValueAssertion[DirDependentValue[T]]:
     return ArbitraryDirDependentValueAssertion(resolving_dependencies,
                                                resolved_value)
 
 
-def matches_single_dir_dependent_value(resolving_dependency: Optional[ResolvingDependency],
+def matches_single_dir_dependent_value(resolving_dependency: Optional[DirectoryStructurePartition],
                                        resolved_value: Callable[[HomeAndSds], asrt.ValueAssertion[T]]
                                        ) -> asrt.ValueAssertion[DirDependentValue[T]]:
     return SingleDirDependentValueAssertion(resolving_dependency,
@@ -34,7 +34,7 @@ def matches_multi_dir_dependent_value(dir_dependencies: DirDependencies,
 
 class DirDependentValueAssertionBase(Generic[T], asrt.ValueAssertion[DirDependentValue[T]]):
     def __init__(self,
-                 resolving_dependencies: asrt.ValueAssertion[Set[ResolvingDependency]],
+                 resolving_dependencies: asrt.ValueAssertion[Set[DirectoryStructurePartition]],
                  resolved_value: Callable[[HomeAndSds], asrt.ValueAssertion[T]],
                  ):
         self.resolving_dependencies = resolving_dependencies
@@ -78,7 +78,7 @@ class DirDependentValueAssertionBase(Generic[T], asrt.ValueAssertion[DirDependen
 
         should_exist_pre_sds = (not actual_resolving_dependencies
                                 or
-                                actual_resolving_dependencies == {ResolvingDependency.HOME})
+                                actual_resolving_dependencies == {DirectoryStructurePartition.HOME})
         asrt.equals(should_exist_pre_sds).apply(put,
                                                 actual.exists_pre_sds(),
                                                 message_builder.for_sub_component('exists_pre_sds'))
@@ -104,7 +104,7 @@ class DirDependentValueAssertionBase(Generic[T], asrt.ValueAssertion[DirDependen
 
 class ArbitraryDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
     def __init__(self,
-                 resolving_dependencies: asrt.ValueAssertion[Set[ResolvingDependency]],
+                 resolving_dependencies: asrt.ValueAssertion[Set[DirectoryStructurePartition]],
                  resolved_value: Callable[[HomeAndSds], asrt.ValueAssertion[T]],
                  ):
         super().__init__(resolving_dependencies, resolved_value)
@@ -119,7 +119,7 @@ class ArbitraryDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
 
 class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
     def __init__(self,
-                 resolving_dependency: Optional[ResolvingDependency],
+                 resolving_dependency: Optional[DirectoryStructurePartition],
                  resolved_value: Callable[[HomeAndSds], asrt.ValueAssertion[T]],
                  ):
         resolving_dependencies = asrt.is_empty if resolving_dependency is None else asrt.equals({resolving_dependency})
@@ -142,13 +142,13 @@ class SingleDirDependentValueAssertion(DirDependentValueAssertionBase[T]):
 
         assertion_on_resolved_value = self.resolved_value(tcds)
 
-        if not self._resolving_dependency or self._resolving_dependency == ResolvingDependency.HOME:
+        if not self._resolving_dependency or self._resolving_dependency == DirectoryStructurePartition.HOME:
             resolved_value_post_sds = actual.value_pre_sds(tcds.hds)
             assertion_on_resolved_value.apply(put,
                                               resolved_value_post_sds,
                                               message_builder.for_sub_component('value_pre_sds'))
 
-        if not self._resolving_dependency or self._resolving_dependency == ResolvingDependency.NON_HOME:
+        if not self._resolving_dependency or self._resolving_dependency == DirectoryStructurePartition.NON_HOME:
             resolved_value_post_sds = actual.value_post_sds(tcds.sds)
             assertion_on_resolved_value.apply(put,
                                               resolved_value_post_sds,

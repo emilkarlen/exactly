@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.data import concrete_string_values as sv, file_refs, list_value as sut
 from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
@@ -53,7 +53,7 @@ class TestListValue(unittest.TestCase):
                 'single dir dependent value/pre sds',
                 sut.ListValue([single_element_with_dep_on_home]),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HOME},
                     get_value_of_any_dependency=lambda h_s:
                     [single_element_with_dep_on_home.value_of_any_dependency(h_s)]),
             ),
@@ -61,7 +61,7 @@ class TestListValue(unittest.TestCase):
                 'single dir dependent value/post sds',
                 sut.ListValue([single_element_with_dep_on_sds]),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.NON_HOME},
                     get_value_of_any_dependency=lambda h_s:
                     [single_element_with_dep_on_sds.value_of_any_dependency(h_s)]),
             ),
@@ -70,8 +70,8 @@ class TestListValue(unittest.TestCase):
                 sut.ListValue([single_element_with_dep_on_home,
                                single_element_with_dep_on_sds]),
                 AMultiDirDependentValue(
-                    resolving_dependencies={ResolvingDependency.HOME,
-                                            ResolvingDependency.NON_HOME},
+                    resolving_dependencies={DirectoryStructurePartition.HOME,
+                                            DirectoryStructurePartition.NON_HOME},
                     get_value_of_any_dependency=lambda h_s: [
                         single_element_with_dep_on_home.value_of_any_dependency(h_s),
                         single_element_with_dep_on_sds.value_of_any_dependency(h_s)]

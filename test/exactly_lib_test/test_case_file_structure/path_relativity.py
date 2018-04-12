@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_file_structure import path_relativity as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType, \
-    RelSdsOptionType, ResolvingDependency
+    RelSdsOptionType, DirectoryStructurePartition
 
 
 def suite() -> unittest.TestSuite:
@@ -115,7 +115,7 @@ class TestDependencyDict(unittest.TestCase):
     def test_dependency_of_home(self):
         expected = {RelOptionType.REL_HOME_CASE,
                     RelOptionType.REL_HOME_ACT}
-        actual = sut.DEPENDENCY_DICT[ResolvingDependency.HOME]
+        actual = sut.DEPENDENCY_DICT[DirectoryStructurePartition.HOME]
         self.assertEqual(expected,
                          actual)
 
@@ -124,7 +124,7 @@ class TestDependencyDict(unittest.TestCase):
                     RelOptionType.REL_TMP,
                     RelOptionType.REL_RESULT,
                     RelOptionType.REL_CWD}
-        actual = sut.DEPENDENCY_DICT[ResolvingDependency.NON_HOME]
+        actual = sut.DEPENDENCY_DICT[DirectoryStructurePartition.NON_HOME]
         self.assertEqual(expected,
                          actual)
 
@@ -132,13 +132,13 @@ class TestDependencyDict(unittest.TestCase):
 class TestResolvingDependencyOf(unittest.TestCase):
     def test(self):
         cases = [
-            (RelOptionType.REL_HOME_CASE, ResolvingDependency.HOME),
-            (RelOptionType.REL_HOME_ACT, ResolvingDependency.HOME),
+            (RelOptionType.REL_HOME_CASE, DirectoryStructurePartition.HOME),
+            (RelOptionType.REL_HOME_ACT, DirectoryStructurePartition.HOME),
 
-            (RelOptionType.REL_ACT, ResolvingDependency.NON_HOME),
-            (RelOptionType.REL_RESULT, ResolvingDependency.NON_HOME),
-            (RelOptionType.REL_TMP, ResolvingDependency.NON_HOME),
-            (RelOptionType.REL_CWD, ResolvingDependency.NON_HOME),
+            (RelOptionType.REL_ACT, DirectoryStructurePartition.NON_HOME),
+            (RelOptionType.REL_RESULT, DirectoryStructurePartition.NON_HOME),
+            (RelOptionType.REL_TMP, DirectoryStructurePartition.NON_HOME),
+            (RelOptionType.REL_CWD, DirectoryStructurePartition.NON_HOME),
         ]
         for rel_option, expected_resolving_dependency in cases:
             with self.subTest(rel_option=str(rel_option)):

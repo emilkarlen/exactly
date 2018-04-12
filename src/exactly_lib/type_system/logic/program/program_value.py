@@ -2,10 +2,10 @@ from typing import Set
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue, StdinData
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 from exactly_lib.util.process_execution.os_process_execution import Command
 
@@ -51,7 +51,7 @@ class ProgramValue(MultiDirDependentValue[Program]):
     def transformation(self) -> LinesTransformerValue:
         return self._transformation
 
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return resolving_dependencies_from_sequence([self.command,
                                                      self.stdin,
                                                      self.transformation])

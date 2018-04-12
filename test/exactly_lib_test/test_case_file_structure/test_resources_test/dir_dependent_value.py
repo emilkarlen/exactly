@@ -6,7 +6,7 @@ from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependen
     dir_dependency_of_resolving_dependencies, RESOLVED_TYPE
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dependent_value as sut
 from exactly_lib_test.test_resources.actions import do_raise, do_return
@@ -26,9 +26,9 @@ class TestEqualsSingleDirDependentValue(unittest.TestCase):
             ASingleDirDependentValue(resolving_dependency=None,
                                      value_when_no_dir_dependencies=do_return('value'),
                                      value_pre_sds=do_return('value')),
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.HOME,
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME,
                                      value_pre_sds=do_return('value pre sds')),
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.NON_HOME,
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME,
                                      value_post_sds=do_return('value post sds'))
         ]
         for value in cases:
@@ -38,14 +38,14 @@ class TestEqualsSingleDirDependentValue(unittest.TestCase):
 
     def test_fail__has_dir_dependency(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.HOME),
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME),
             ASingleDirDependentValue(resolving_dependency=None),
         )
 
     def test_fail__exists_pre_sds(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.NON_HOME),
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.HOME),
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME),
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME),
         )
 
     def test_fail__value_when_no_dir_dependencies(self):
@@ -58,17 +58,17 @@ class TestEqualsSingleDirDependentValue(unittest.TestCase):
 
     def test_fail__value_pre_sds(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.HOME,
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME,
                                      value_pre_sds=do_return('expected')),
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.HOME,
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.HOME,
                                      value_pre_sds=do_return('actual')),
         )
 
     def test_fail__value_post_sds(self):
         self._assert_not_equal(
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.NON_HOME,
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME,
                                      value_post_sds=do_return('expected')),
-            ASingleDirDependentValue(resolving_dependency=ResolvingDependency.NON_HOME,
+            ASingleDirDependentValue(resolving_dependency=DirectoryStructurePartition.NON_HOME,
                                      value_post_sds=do_return('actual')),
         )
 
@@ -85,9 +85,9 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
             AMultiDirDependentValue(resolving_dependencies=set(),
                                     get_value_when_no_dir_dependencies=do_return('value when no dep'),
                                     get_value_of_any_dependency=do_return('value')),
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME},
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME},
                                     get_value_of_any_dependency=do_return('value_of_any_dependency')),
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME},
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME},
                                     get_value_of_any_dependency=do_return('value_of_any_dependency'))
         ]
         for value in cases:
@@ -97,20 +97,20 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
 
     def test_fail__has_dir_dependency(self):
         self._assert_not_equal(
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME}),
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME}),
             AMultiDirDependentValue(resolving_dependencies=set()),
         )
 
     def test_fail__exists_pre_sds(self):
         self._assert_not_equal(
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME}),
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME}),
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME}),
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME}),
         )
 
     def test_fail__exists_post_sds(self):
         self._assert_not_equal(
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME}),
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME}),
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME}),
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME}),
         )
 
     def test_fail__value_when_no_dir_dependencies(self):
@@ -123,17 +123,17 @@ class TestEqualsMultiDirDependentValue(unittest.TestCase):
 
     def test_fail__value_pre_sds(self):
         self._assert_not_equal(
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME},
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME},
                                     get_value_of_any_dependency=do_return('expected')),
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.HOME},
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.HOME},
                                     get_value_of_any_dependency=do_return('actual')),
         )
 
     def test_fail__value_post_sds(self):
         self._assert_not_equal(
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME},
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME},
                                     get_value_of_any_dependency=do_return('expected')),
-            AMultiDirDependentValue(resolving_dependencies={ResolvingDependency.NON_HOME},
+            AMultiDirDependentValue(resolving_dependencies={DirectoryStructurePartition.NON_HOME},
                                     get_value_of_any_dependency=do_return('actual')),
         )
 
@@ -150,7 +150,7 @@ class _ShouldNotBeInvokedTestException(Exception):
 
 class ASingleDirDependentValue(sut.SingleDirDependentValue):
     def __init__(self,
-                 resolving_dependency: Optional[ResolvingDependency],
+                 resolving_dependency: Optional[DirectoryStructurePartition],
                  value_when_no_dir_dependencies=do_raise(_ShouldNotBeInvokedTestException()),
                  value_pre_sds=do_raise(_ShouldNotBeInvokedTestException()),
                  value_post_sds=do_raise(_ShouldNotBeInvokedTestException()),
@@ -160,10 +160,10 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
         self._value_pre_sds = value_pre_sds
         self._value_post_sds = value_post_sds
 
-    def resolving_dependency(self) -> Optional[ResolvingDependency]:
+    def resolving_dependency(self) -> Optional[DirectoryStructurePartition]:
         return self._resolving_dependency
 
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         if self._resolving_dependency is None:
             return set()
         else:
@@ -173,7 +173,7 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
         return self._resolving_dependency is not None
 
     def exists_pre_sds(self) -> bool:
-        return self._resolving_dependency is None or self._resolving_dependency == ResolvingDependency.HOME
+        return self._resolving_dependency is None or self._resolving_dependency == DirectoryStructurePartition.HOME
 
     def value_when_no_dir_dependencies(self):
         return self._value_when_no_dir_dependencies()
@@ -192,7 +192,7 @@ class ASingleDirDependentValue(sut.SingleDirDependentValue):
 
 class MultiDirDependentValueTestImpl(Generic[RESOLVED_TYPE], sut.MultiDirDependentValue[RESOLVED_TYPE]):
     def __init__(self,
-                 resolving_dependencies: Set[ResolvingDependency],
+                 resolving_dependencies: Set[DirectoryStructurePartition],
                  value_when_no_dir_dependencies: RESOLVED_TYPE,
                  get_value_when_no_dir_dependencies: Callable[[], RESOLVED_TYPE]=None,
                  get_value_of_any_dependency: Callable[[HomeAndSds], RESOLVED_TYPE] = None,
@@ -202,7 +202,7 @@ class MultiDirDependentValueTestImpl(Generic[RESOLVED_TYPE], sut.MultiDirDepende
         self._get_value_when_no_dir_dependencies = get_value_when_no_dir_dependencies
         self._get_value_of_any_dependency = get_value_of_any_dependency
 
-    def resolving_dependencies(self) -> Set[ResolvingDependency]:
+    def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return self._resolving_dependencies
 
     def dir_dependencies(self) -> DirDependencies:
@@ -212,7 +212,7 @@ class MultiDirDependentValueTestImpl(Generic[RESOLVED_TYPE], sut.MultiDirDepende
         return bool(self._resolving_dependencies)
 
     def exists_pre_sds(self) -> bool:
-        return ResolvingDependency.NON_HOME not in self._resolving_dependencies
+        return DirectoryStructurePartition.NON_HOME not in self._resolving_dependencies
 
     def value_when_no_dir_dependencies(self):
         if self._get_value_when_no_dir_dependencies is not None:
@@ -236,7 +236,7 @@ class MultiDirDependentValueTestImpl(Generic[RESOLVED_TYPE], sut.MultiDirDepende
 
 class AMultiDirDependentValue(MultiDirDependentValueTestImpl[None]):
     def __init__(self,
-                 resolving_dependencies: Set[ResolvingDependency],
+                 resolving_dependencies: Set[DirectoryStructurePartition],
                  get_value_when_no_dir_dependencies=do_raise(_ShouldNotBeInvokedTestException()),
                  get_value_of_any_dependency=do_raise(_ShouldNotBeInvokedTestException()),
                  ):

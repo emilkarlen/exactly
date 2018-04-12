@@ -41,17 +41,17 @@ class RelHomeOptionType(enum.Enum):
     REL_HOME_ACT = 2
 
 
-class ResolvingDependency(enum.Enum):
+class DirectoryStructurePartition(enum.Enum):
     HOME = 1
     NON_HOME = 2
 
 
 DEPENDENCY_DICT = {
-    ResolvingDependency.HOME:
+    DirectoryStructurePartition.HOME:
         frozenset((RelOptionType.REL_HOME_CASE,
                    RelOptionType.REL_HOME_ACT)),
 
-    ResolvingDependency.NON_HOME:
+    DirectoryStructurePartition.NON_HOME:
         frozenset((RelOptionType.REL_ACT,
                    RelOptionType.REL_RESULT,
                    RelOptionType.REL_TMP,
@@ -60,13 +60,13 @@ DEPENDENCY_DICT = {
 }
 
 RESOLVING_DEPENDENCY_OF = {
-    RelOptionType.REL_HOME_CASE: ResolvingDependency.HOME,
-    RelOptionType.REL_HOME_ACT: ResolvingDependency.HOME,
+    RelOptionType.REL_HOME_CASE: DirectoryStructurePartition.HOME,
+    RelOptionType.REL_HOME_ACT: DirectoryStructurePartition.HOME,
 
-    RelOptionType.REL_ACT: ResolvingDependency.NON_HOME,
-    RelOptionType.REL_RESULT: ResolvingDependency.NON_HOME,
-    RelOptionType.REL_TMP: ResolvingDependency.NON_HOME,
-    RelOptionType.REL_CWD: ResolvingDependency.NON_HOME,
+    RelOptionType.REL_ACT: DirectoryStructurePartition.NON_HOME,
+    RelOptionType.REL_RESULT: DirectoryStructurePartition.NON_HOME,
+    RelOptionType.REL_TMP: DirectoryStructurePartition.NON_HOME,
+    RelOptionType.REL_CWD: DirectoryStructurePartition.NON_HOME,
 }
 
 

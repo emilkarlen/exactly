@@ -2,7 +2,7 @@ import unittest
 from typing import Optional
 
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
-from exactly_lib.test_case_file_structure.path_relativity import ResolvingDependency
+from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
@@ -32,8 +32,8 @@ def is_success() -> Expectation:
                        asrt.is_none)
 
 
-def fails_on(step: ResolvingDependency) -> Expectation:
-    if step is ResolvingDependency.HOME:
+def fails_on(step: DirectoryStructurePartition) -> Expectation:
+    if step is DirectoryStructurePartition.HOME:
         return fails_pre_sds()
     else:
         return fails_post_sds()
