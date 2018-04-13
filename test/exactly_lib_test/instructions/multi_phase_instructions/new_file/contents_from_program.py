@@ -33,7 +33,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.arguments_building import RelOptFileRefArgument
@@ -129,7 +129,7 @@ class TestSymbolUsages(TestCaseBase):
                                 text_printed_by_shell_command_symbol.name,
                                 equals_data_type_reference_restrictions(is_any_data_type())),
 
-                            is_lines_transformer_reference_to(to_upper_transformer.name),
+                            is_reference_to_lines_transformer(to_upper_transformer.name),
                         ]),
                     )
                     )
@@ -155,7 +155,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
             expected_file_contents=text_printed_by_program.upper(),
             make_arguments=lambda tcc: tcc.with_transformation(transformer.name),
             additional_symbols={transformer.name: symbol_utils.container(transformer.value)},
-            additional_symbol_references=[is_lines_transformer_reference_to(transformer.name)]
+            additional_symbol_references=[is_reference_to_lines_transformer(transformer.name)]
         )
 
     def test_without_transformation(self):
@@ -310,7 +310,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
                             main_result=IS_SUCCESS,
                             side_effects_on_home=f_asrt.dir_is_empty(),
                             symbol_usages=asrt.matches_sequence([
-                                is_lines_transformer_reference_to(to_upper_transformer.name),
+                                is_reference_to_lines_transformer(to_upper_transformer.name),
                             ]),
                             main_side_effects_on_sds=dir_contains_exactly(file_arg.relativity_option,
                                                                           fs.DirContents([expected_file])),

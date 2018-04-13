@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -108,7 +108,7 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
             named_transformer.name: container(named_transformer.value)
         })
 
-        expected_symbol_reference_to_transformer = is_lines_transformer_reference_to(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_lines_transformer(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence([expected_symbol_reference_to_transformer])
 

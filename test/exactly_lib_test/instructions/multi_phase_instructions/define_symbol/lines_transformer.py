@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instr
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -133,7 +133,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
             resolved_value_equals_lines_transformer(
                 the_sequence_transformer,
                 references=asrt.matches_sequence([
-                    is_lines_transformer_reference_to(symbol.name),
+                    is_reference_to_lines_transformer(symbol.name),
                 ]),
                 symbols=SymbolTable({
                     symbol.name: container(LinesTransformerConstant(symbol.value)),
