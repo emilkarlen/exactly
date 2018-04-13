@@ -1,4 +1,5 @@
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
+from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.command import command_resolvers
@@ -12,6 +13,14 @@ def with_ref_to_exe_file(exe_file: FileRefResolver,
                          ) -> ProgramResolverForCommand:
     return command_program_resolver.plain(
         command_resolvers.for_executable_file(exe_file, arguments)
+    )
+
+
+def with_ref_to_program(program: StringResolver,
+                        arguments: ArgumentsResolver = arguments_resolvers.empty()
+                        ) -> ProgramResolverForCommand:
+    return command_program_resolver.plain(
+        command_resolvers.for_system_program(program, arguments)
     )
 
 

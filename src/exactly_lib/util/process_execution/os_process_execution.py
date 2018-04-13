@@ -138,17 +138,17 @@ class ExecutableFileCommand(ProgramCommand):
 
 
 def executable_program_command(program: str,
-                               arguments: List[str] = None) -> ProgramCommand:
+                               arguments: List[str] = None) -> ExecutableProgramCommand:
     return ExecutableProgramCommand(ProgramAndArguments(program,
                                                         [] if arguments is None else arguments))
 
 
-def executable_program_command2(program_and_args: ProgramAndArguments) -> ProgramCommand:
+def executable_program_command2(program_and_args: ProgramAndArguments) -> ExecutableProgramCommand:
     return ExecutableProgramCommand(program_and_args)
 
 
 def executable_file_command(program_file: pathlib.Path,
-                            arguments: List[str] = None) -> ProgramCommand:
+                            arguments: List[str] = None) -> ExecutableFileCommand:
     return ExecutableFileCommand(program_file, [] if arguments is None else arguments)
 
 
