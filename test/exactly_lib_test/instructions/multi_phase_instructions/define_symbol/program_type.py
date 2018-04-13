@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependencies
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *
@@ -19,7 +18,6 @@ from exactly_lib_test.test_case_utils.program.test_resources import program_reso
 from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_resources.value_assertions.value_assertion import T, MessageBuilder
 from exactly_lib_test.type_system.logic.test_resources.program_assertions import \
     matches_py_source_on_cmd_line_program
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
@@ -79,9 +77,3 @@ class TestSuccessfulDefinition(TestCaseBaseForParser):
             )
         )
         self._check(source, ArrangementWithSds(), expectation)
-
-
-class MyAssertion(asrt.ValueAssertion):
-    def apply(self, put: unittest.TestCase, value: T, message_builder: MessageBuilder = MessageBuilder()):
-        assert isinstance(value, LinesTransformer)
-        put.assertTrue(value.is_identity_transformer)
