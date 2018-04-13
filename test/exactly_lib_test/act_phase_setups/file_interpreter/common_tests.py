@@ -8,7 +8,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionTy
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
@@ -140,7 +139,7 @@ class TestMultipleSymbolReferencesInSourceFileRef(TestCaseBase):
     def runTest(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  file_refs.rel_home_act(PathPartAsFixedPath(sub_dir_of_home)))
+                                  file_refs.rel_home_act(file_refs.constant_path_part(sub_dir_of_home)))
 
         source_file_name_symbol = NameAndValue('source_file_name_symbol_name',
                                                'the-source-file.py')

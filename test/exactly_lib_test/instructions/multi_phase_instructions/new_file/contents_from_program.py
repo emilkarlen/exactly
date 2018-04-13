@@ -9,7 +9,7 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources import \
@@ -100,7 +100,7 @@ class TestSymbolUsages(TestCaseBase):
         symbols = SymbolTable({
             dst_file_symbol.name:
                 container(file_ref_resolvers.of_rel_option(RelOptionType.REL_ACT,
-                                                           PathPartAsFixedPath(dst_file_symbol.value))),
+                                                           file_refs.constant_path_part(dst_file_symbol.value))),
 
             text_printed_by_shell_command_symbol.name:
                 container(string_resolvers.str_constant(text_printed_by_shell_command_symbol.value)),

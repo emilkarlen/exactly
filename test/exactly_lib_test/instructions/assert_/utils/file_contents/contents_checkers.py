@@ -12,7 +12,6 @@ from exactly_lib.test_case_utils.err_msg.property_description import PropertyDes
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, IdentityLinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -63,7 +62,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
                                  'custom environment',
                                  sut.ResolvedComparisonActualFile(
                                      pathlib.Path(file_name),
-                                     file_refs.rel_cwd(PathPartAsFixedPath(file_name)),
+                                     file_refs.rel_cwd(file_refs.constant_path_part(file_name)),
                                      FilePropertyDescriptorConstructorTestImpl(),
                                  ))
 

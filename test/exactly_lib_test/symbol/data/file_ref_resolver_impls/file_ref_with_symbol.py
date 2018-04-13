@@ -14,7 +14,6 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.symbol_table import Entry, singleton_symbol_table_2
 from exactly_lib_test.symbol.data.restrictions.test_resources import \
@@ -94,7 +93,7 @@ class TestRelSymbol(unittest.TestCase):
         file_ref_symbol_name = 'SYMBOL_NAME'
         for rel_option_type_of_referenced_symbol, expected_exists_pre_sds in relativity_test_cases:
             referenced_file_ref = file_refs.of_rel_option(rel_option_type_of_referenced_symbol,
-                                                          PathPartAsFixedPath('referenced-file-name'))
+                                                          file_refs.constant_path_part('referenced-file-name'))
             for path_suffix, sym_tbl_entries in path_suffix_test_cases:
                 symbol_table = singleton_symbol_table_2(
                     file_ref_symbol_name,
@@ -135,7 +134,7 @@ class TestRelSymbol(unittest.TestCase):
             referenced_sym = NameAndValue('file_ref_symbol',
                                           sym_utils.file_ref_constant_container(
                                               file_refs.of_rel_option(rel_option,
-                                                                      PathPartAsFixedPath(
+                                                                      file_refs.constant_path_part(
                                                                           path_component_from_referenced_file_ref))
                                           ))
             for path_suffix, symbol_table_entries in path_suffix_test_cases:

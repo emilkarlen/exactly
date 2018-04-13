@@ -5,7 +5,6 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelat
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.relativity_option_for_actual_file.test_resources import \
     RELATIVITY_OPTION_CONFIGURATIONS_FOR_ACTUAL_FILE
@@ -138,7 +137,7 @@ class _ContentsEqualsWithExpectedRelSymbolBase(TestWithConfigurationAndRelativit
         file_ref_sym_tbl_entry_for_expected_file = data_symbol_utils.entry(
             expected_file_relativity_symbol,
             file_ref_resolvers.constant(file_refs.of_rel_option(self.relativity_of_expected_file(),
-                                                                PathPartAsNothing())))
+                                                                file_refs.empty_path_part())))
 
         symbols_in_arrangement = symbol_tables.symbol_table_from_entries(
             [file_ref_sym_tbl_entry_for_expected_file] +

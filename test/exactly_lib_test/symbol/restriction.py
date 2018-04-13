@@ -8,7 +8,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.logic.program.command_values import CommandValueForShell
@@ -89,7 +88,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             arbitrary_list_resolver,
 
         ValueType.PATH:
-            file_ref_resolvers.constant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, PathPartAsNothing())),
+            file_ref_resolvers.constant(file_refs.rel_sandbox(RelSdsOptionType.REL_ACT, file_refs.empty_path_part())),
 
         ValueType.LINE_MATCHER:
             LineMatcherResolverConstantTestImpl(LineMatcherNotImplementedTestImpl()),

@@ -25,7 +25,7 @@ from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.program.execution.store_result_in_instruction_tmp_dir import \
     make_transformed_file_from_output_in_instruction_tmp_dir
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.process_execution import process_output_files
 
@@ -104,7 +104,7 @@ class ActComparisonActualFileForStdFile(actual_files.ComparisonActualFileConstan
 
     def file_ref_resolver(self) -> FileRefResolver:
         return file_ref_resolvers.of_rel_option(RelOptionType.REL_RESULT,
-                                                PathPartAsFixedPath(self.checked_file_name))
+                                                file_refs.constant_path_part(self.checked_file_name))
 
 
 class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor):

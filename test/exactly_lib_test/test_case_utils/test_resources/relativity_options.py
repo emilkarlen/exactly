@@ -12,7 +12,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
     RelSdsOptionType, RelNonHomeOptionType, RelHomeOptionType, DirectoryStructurePartition
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP, REL_NON_HOME_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.data import concrete_path_parts
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
@@ -232,7 +231,7 @@ class RelativityOptionConfigurationForRelOptionType(RelativityOptionConfiguratio
     def file_ref_resolver_for(self, file_name: str) -> FileRefResolver:
         return file_ref_resolvers.constant(
             file_refs.of_rel_option(self.relativity_option,
-                                    concrete_path_parts.PathPartAsFixedPath(file_name))
+                                    file_refs.constant_path_part(file_name))
         )
 
     @property
@@ -398,7 +397,7 @@ class SymbolsConfigurationForSinglePathSymbol(SymbolsConfiguration):
                 self.symbol_name,
                 file_ref_resolvers.constant(
                     file_refs.of_rel_option(self.relativity,
-                                            concrete_path_parts.PathPartAsNothing())))
+                                            file_refs.empty_path_part())))
         ]
 
 

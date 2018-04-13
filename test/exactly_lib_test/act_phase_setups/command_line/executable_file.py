@@ -11,7 +11,6 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, 
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources import \
@@ -202,7 +201,7 @@ class TestSymbolUsages(unittest.TestCase):
         file_name_of_referenced_file = 'file-name.txt'
         symbol = NameAndValue('symbol_name',
                               file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                                      PathPartAsFixedPath(file_name_of_referenced_file)))
+                                                      file_refs.constant_path_part(file_name_of_referenced_file)))
 
         executable = 'the-executable'
 
@@ -321,7 +320,7 @@ class TestSymbolUsages(unittest.TestCase):
     def test_multiple_symbol_references_in_executable(self):
         sub_dir_of_home = 'sub-dir'
         dir_symbol = NameAndValue('dir_symbol_name',
-                                  file_refs.rel_home_act(PathPartAsFixedPath(sub_dir_of_home)))
+                                  file_refs.rel_home_act(file_refs.constant_path_part(sub_dir_of_home)))
 
         executable_file_name_symbol = NameAndValue('executable_file_name_symbol_name',
                                                    'the-executable-file')

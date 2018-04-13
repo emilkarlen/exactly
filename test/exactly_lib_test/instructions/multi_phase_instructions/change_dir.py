@@ -8,7 +8,6 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
@@ -59,7 +58,8 @@ class TestParseSet(unittest.TestCase):
                 # ACT #
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
-                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD, PathPartAsFixedPath(arguments))
+                expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
+                                                            file_refs.constant_path_part(arguments))
                 assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -93,7 +93,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
-                                                            PathPartAsFixedPath(arguments.strip()))
+                                                            file_refs.constant_path_part(arguments.strip()))
                 assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -106,7 +106,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
-                                                            PathPartAsFixedPath('expected argument'))
+                                                            file_refs.constant_path_part('expected argument'))
                 assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -131,7 +131,7 @@ class TestParseSet(unittest.TestCase):
                 actual = parser.parse(remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                                            PathPartAsFixedPath('subdir'))
+                                                            file_refs.constant_path_part('subdir'))
                 assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
                 assertion.apply_without_message(self, actual.destination)
 
@@ -345,7 +345,7 @@ class TestFailingScenarios(TestCaseBase):
 
 
 def _file_ref_of(relativity=RelOptionType.REL_ACT) -> FileRef:
-    return file_refs.of_rel_option(relativity, PathPartAsNothing())
+    return file_refs.of_rel_option(relativity, file_refs.empty_path_part())
 
 
 if __name__ == '__main__':

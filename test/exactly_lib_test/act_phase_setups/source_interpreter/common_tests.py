@@ -5,7 +5,6 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \
     check_execution
@@ -85,7 +84,7 @@ class TestThatSourceCanReferenceSymbolsThatAreResolvedPostSds(TestCaseBase):
     def runTest(self):
         path_suffix = 'the-path-suffix'
         symbol = NameAndValue('symbol_name',
-                              file_refs.rel_act(PathPartAsFixedPath(path_suffix)))
+                              file_refs.rel_act(file_refs.constant_path_part(path_suffix)))
 
         program_that_prints_value_of_symbol = 'print("{symbol}")'
 
