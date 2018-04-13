@@ -2,7 +2,6 @@ import itertools
 import unittest
 from typing import Iterable
 
-from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
@@ -14,7 +13,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_line
     InstructionArgumentsVariantConstructor, TestCaseBase
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -126,7 +125,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         })
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_lines_transformer_reference_to(named_transformer.name)
+            is_reference_to_lines_transformer(named_transformer.name)
         ])
 
         self._check_variants_with_expectation_type(

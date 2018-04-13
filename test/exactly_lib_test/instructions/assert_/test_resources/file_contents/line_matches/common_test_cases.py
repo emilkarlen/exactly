@@ -10,9 +10,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
-from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -79,7 +78,7 @@ class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
         lines_transformer_name = 'the_transformer'
 
         common_arguments = arguments_building.CommonArgumentsConstructor(lines_transformer_name)
-        expected_symbol_reference_to_transformer = is_lines_transformer_reference_to(lines_transformer_name)
+        expected_symbol_reference_to_transformer = is_reference_to_lines_transformer(lines_transformer_name)
 
         expected_symbol_usages = asrt.matches_sequence([
             expected_symbol_reference_to_transformer
@@ -94,7 +93,7 @@ class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
                         common_arguments,
                         arguments_building.LineMatchesAssertionArgumentsConstructor(quantifier,
                                                                                     syntax_for_regex_matcher(
-                                                                                            'regex'))
+                                                                                        'regex'))
                     ).apply(etc)
                     source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
                     instruction = parser.parse(source)

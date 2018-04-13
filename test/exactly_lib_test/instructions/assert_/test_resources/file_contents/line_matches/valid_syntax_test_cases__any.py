@@ -4,14 +4,14 @@ from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransfo
 from exactly_lib.util.logic_types import Quantifier
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.instructions.assert_.test_resources.file_contents.util import contents_transformation
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches.utils import \
     TestCaseBase, args_constructor_for
+from exactly_lib_test.instructions.assert_.test_resources.file_contents.util import contents_transformation
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_lines_transformer_reference_to
+from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -91,7 +91,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
             named_transformer.name: container(named_transformer.value)
         })
 
-        expected_symbol_reference_to_transformer = is_lines_transformer_reference_to(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_lines_transformer(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence([
             expected_symbol_reference_to_transformer

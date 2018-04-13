@@ -27,7 +27,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl, \
-    is_lines_transformer_reference_to
+    is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
@@ -124,7 +124,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                                                             sut.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
                                     ),
 
-                                    is_lines_transformer_reference_to(to_upper_transformer.name),
+                                    is_reference_to_lines_transformer(to_upper_transformer.name),
 
                                     equals_symbol_reference(
                                         SymbolReference(src_file_symbol.name,
@@ -281,7 +281,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
                             main_result=IS_SUCCESS,
                             main_side_effects_on_sds=expected_non_home_contents,
                             symbol_usages=asrt.matches_sequence([
-                                is_lines_transformer_reference_to(to_upper_transformer.name),
+                                is_reference_to_lines_transformer(to_upper_transformer.name),
                             ])
                         ))
 
