@@ -5,14 +5,13 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.data import list_resolvers
-from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import parse_list, parse_string, parse_file_ref
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.test_case_utils.program import syntax_elements
-from exactly_lib.test_case_utils.program.command import argument_resolvers
+from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.util.parse import token_matchers
 
 REL_OPTIONS_CONF = rel_opts_configuration.RelOptionsConfiguration(
@@ -51,7 +50,7 @@ class _Parser(Parser[ArgumentsResolver]):
         ]
 
     def parse_from_token_parser(self, token_parser: TokenParser) -> ArgumentsResolver:
-        arguments = argument_resolvers.empty()
+        arguments = arguments_resolvers.empty()
 
         while not token_parser.is_at_eol:
             following_arguments = self._parse_element(token_parser)
@@ -73,15 +72,15 @@ def _parse_rest_of_line_as_single_element(token_parser: TokenParser) -> Argument
     if not string.has_fragments:
         raise SingleInstructionInvalidArgumentException('Empty contents after ' +
                                                         syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)
-    return arguments_resolver.new_without_validation(list_resolvers.from_string(string))
+    return arguments_resolvers.new_without_validation(list_resolvers.from_string(string))
 
 
 def _parse_existing_file(token_parser: TokenParser) -> ArgumentsResolver:
     file_ref = parse_file_ref.parse_file_ref_from_token_parser(REL_OPT_ARG_CONF, token_parser)
-    return argument_resolvers.ref_to_file_that_must_exist(file_ref)
+    return arguments_resolvers.ref_to_file_that_must_exist(file_ref)
 
 
 def _parse_plain_list_element(parser: TokenParser) -> ArgumentsResolver:
     token = parser.consume_mandatory_token('Invalid list element')
     element = parse_list.element_of(token)
-    return arguments_resolver.new_without_validation(list_resolvers.from_elements([element]))
+    return arguments_resolvers.new_without_validation(list_resolvers.from_elements([element]))
