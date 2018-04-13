@@ -1,6 +1,5 @@
 from typing import Sequence
 
-from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program import stdin_data_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
@@ -8,6 +7,7 @@ from exactly_lib.symbol.resolver_structure import LinesTransformerResolver, Logi
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -57,6 +57,6 @@ class ProgramResolver(LogicValueResolver, DirDepValueResolverWithValidation[Prog
         current transformations.
         """
         return self.new_accumulated(stdin_data_resolver.no_stdin(),
-                                    arguments_resolver.no_arguments(),
+                                    arguments_resolvers.empty(),
                                     transformations,
                                     ())

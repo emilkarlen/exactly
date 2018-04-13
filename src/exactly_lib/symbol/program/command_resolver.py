@@ -4,12 +4,12 @@ from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.object_with_typed_symbol_references import ObjectWithTypedSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.util.process_execution.os_process_execution import Command
 from exactly_lib.util.symbol_table import SymbolTable
@@ -69,7 +69,7 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
                                self._arguments.new_accumulated(additional_arguments))
 
     def new_with_additional_argument_list(self, additional_arguments: ListResolver):
-        return self.new_with_additional_arguments(arguments_resolver.new_without_validation(additional_arguments))
+        return self.new_with_additional_arguments(arguments_resolvers.new_without_validation(additional_arguments))
 
     def resolve(self, symbols: SymbolTable) -> CommandValue:
         return self.driver.make(symbols, self._arguments.arguments_list)

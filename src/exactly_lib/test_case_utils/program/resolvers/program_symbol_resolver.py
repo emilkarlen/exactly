@@ -3,7 +3,6 @@ from typing import Sequence, Optional
 from exactly_lib.symbol import lookups
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironment
-from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
@@ -12,6 +11,7 @@ from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.accumulator import ProgramElementsAccumulator
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
@@ -72,7 +72,7 @@ class ProgramResolverForSymbolReference(ProgramResolver):
 
 
 def plain(symbol_name: str,
-          arguments: ArgumentsResolver = arguments_resolver.no_arguments()) -> ProgramResolverForSymbolReference:
+          arguments: ArgumentsResolver = arguments_resolvers.empty()) -> ProgramResolverForSymbolReference:
     return ProgramResolverForSymbolReference(symbol_name,
                                              accumulator.new_with_arguments(arguments))
 

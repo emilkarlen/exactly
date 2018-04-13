@@ -33,9 +33,5 @@ class ArgumentsResolver(ObjectWithTypedSymbolReferences):
         return self._arguments.references
 
 
-def no_arguments() -> ArgumentsResolver:
-    return ArgumentsResolver(list_resolvers.empty(), ())
-
-
 def new_without_validation(arguments: ListResolver) -> ArgumentsResolver:
     return ArgumentsResolver(arguments, ())

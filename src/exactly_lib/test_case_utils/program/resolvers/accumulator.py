@@ -3,7 +3,6 @@ from typing import Sequence
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.lines_transformer import LinesTransformerSequenceResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
-from exactly_lib.symbol.program import arguments_resolver
 from exactly_lib.symbol.program import stdin_data_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
@@ -12,6 +11,7 @@ from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferenc
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
 from exactly_lib.util.symbol_table import SymbolTable
@@ -62,14 +62,14 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
 
 def empty() -> ProgramElementsAccumulator:
     return ProgramElementsAccumulator(stdin_data_resolver.no_stdin(),
-                                      arguments_resolver.no_arguments(),
+                                      arguments_resolvers.empty(),
                                       (),
                                       ())
 
 
 def new_with_validators(validators: Sequence[PreOrPostSdsValidator]) -> ProgramElementsAccumulator:
     return ProgramElementsAccumulator(stdin_data_resolver.no_stdin(),
-                                      arguments_resolver.no_arguments(),
+                                      arguments_resolvers.empty(),
                                       (),
                                       validators)
 
@@ -77,7 +77,7 @@ def new_with_validators(validators: Sequence[PreOrPostSdsValidator]) -> ProgramE
 def new_with_arguments_and_validators(arguments: ListResolver,
                                       validators: Sequence[PreOrPostSdsValidator]) -> ProgramElementsAccumulator:
     return ProgramElementsAccumulator(stdin_data_resolver.no_stdin(),
-                                      arguments_resolver.new_without_validation(arguments),
+                                      arguments_resolvers.new_without_validation(arguments),
                                       (),
                                       validators)
 
