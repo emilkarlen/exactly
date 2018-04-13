@@ -10,8 +10,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeR
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, \
-    PathPartAsNothing
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import concrete_value_assertions as sut
@@ -33,8 +32,8 @@ _EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_HOME_CASE
 _NOT_EXISTS_PRE_SDS_RELATIVITY = RelOptionType.REL_ACT
 
 _PATH_SUFFIX_VARIANTS = [
-    PathPartAsFixedPath('file-name'),
-    PathPartAsNothing(),
+    file_refs.constant_path_part('file-name'),
+    file_refs.empty_path_part(),
 ]
 
 _RELATIVITY_VARIANTS = [
@@ -181,31 +180,31 @@ class Test1NotEquals(unittest.TestCase):
 class Test2NotEquals(unittest.TestCase):
     def test_differs__path_suffix(self):
         # ARRANGE #
-        expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
+        expected = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('file-name'))
+        actual = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('other-file-name'))
         assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, file_ref_resolvers.constant(actual))
 
     def test_differs__exists_pre_sds(self):
         # ARRANGE #
-        expected = FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
+        expected = FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY, file_refs.constant_path_part('file-name'))
+        actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, file_refs.constant_path_part('file-name'))
         assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, file_ref_resolvers.constant(actual))
 
     def test_differs__relativity(self):
         # ARRANGE #
-        expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_HOME_CASE, PathPartAsFixedPath('file-name'))
+        expected = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('file-name'))
+        actual = FileRefTestImpl(RelOptionType.REL_HOME_CASE, file_refs.constant_path_part('file-name'))
         assertion = sut.matches_file_ref_resolver(expected, asrt.ignore, empty_symbol_table())
         # ACT & ASSERT #
         assert_that_assertion_fails(assertion, file_ref_resolvers.constant(actual))
 
     def test_differs__symbol_references(self):
         # ARRANGE #
-        file_ref = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
+        file_ref = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('file-name'))
         actual = _FileRefResolverWithConstantFileRefAndSymbolReferences(
             file_ref,
             [SymbolReference('symbol_name',
@@ -218,11 +217,11 @@ class Test2NotEquals(unittest.TestCase):
 
 
 def arbitrary_file_ref() -> FileRef:
-    return FileRefTestImpl(RelOptionType.REL_TMP, PathPartAsFixedPath('path-suffix'))
+    return FileRefTestImpl(RelOptionType.REL_TMP, file_refs.constant_path_part('path-suffix'))
 
 
 def file_ref_with_fixed_suffix(suffix_name: str) -> FileRef:
-    return FileRefTestImpl(RelOptionType.REL_TMP, PathPartAsFixedPath(suffix_name))
+    return FileRefTestImpl(RelOptionType.REL_TMP, file_refs.constant_path_part(suffix_name))
 
 
 def _relativity_restriction(rel_option_types: set, absolute_is_valid: bool) -> FileRefRelativityRestriction:

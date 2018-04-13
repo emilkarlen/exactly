@@ -7,7 +7,8 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import SpecificPathRelativity
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
+from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.path_part import PathPart
 from exactly_lib.util.symbol_table import SymbolTable
@@ -69,4 +70,4 @@ def _combine(first: PathPart, second: PathPart) -> PathPart:
     if isinstance(second, PathPartAsNothing):
         return first
     p = pathlib.Path(first.value()) / pathlib.Path(second.value())
-    return PathPartAsFixedPath(str(p))
+    return file_refs.constant_path_part(str(p))

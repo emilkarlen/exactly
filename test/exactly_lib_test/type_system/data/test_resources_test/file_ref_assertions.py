@@ -2,8 +2,7 @@ import unittest
 
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, \
-    PathPartAsNothing
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import \
     FileRefTestImpl
@@ -25,11 +24,11 @@ class TestEquals(unittest.TestCase):
         test_cases = [
             ('Exists pre SDS/fixed path suffix',
              FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY,
-                             PathPartAsFixedPath('file-name')),
+                             file_refs.constant_path_part('file-name')),
              ),
             ('NOT Exists pre SDS/fixed path suffix',
              FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY,
-                             PathPartAsFixedPath('a-file-name')),
+                             file_refs.constant_path_part('a-file-name')),
              ),
         ]
         for test_case_name, value in test_cases:
@@ -43,8 +42,8 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
     def test_differs__file_name(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('other-file-name'))
+        expected = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('file-name'))
+        actual = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('other-file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
@@ -52,8 +51,8 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
     def test_differs__exists_pre_sds(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, PathPartAsFixedPath('file-name'))
+        expected = FileRefTestImpl(_EXISTS_PRE_SDS_RELATIVITY, file_refs.constant_path_part('file-name'))
+        actual = FileRefTestImpl(_NOT_EXISTS_PRE_SDS_RELATIVITY, file_refs.constant_path_part('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
@@ -61,8 +60,8 @@ class TestNotEquals_PathSuffixAsFixedPath(unittest.TestCase):
     def test_differs__relativity(self):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
-        expected = FileRefTestImpl(RelOptionType.REL_ACT, PathPartAsFixedPath('file-name'))
-        actual = FileRefTestImpl(RelOptionType.REL_HOME_CASE, PathPartAsFixedPath('file-name'))
+        expected = FileRefTestImpl(RelOptionType.REL_ACT, file_refs.constant_path_part('file-name'))
+        actual = FileRefTestImpl(RelOptionType.REL_HOME_CASE, file_refs.constant_path_part('file-name'))
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')
@@ -73,9 +72,9 @@ class TestNotEquals_DifferentTypeOfPathSuffix(unittest.TestCase):
         # ARRANGE #
         put = test_case_with_failure_exception_set_to_test_exception()
         expected = FileRefTestImpl(RelOptionType.REL_ACT,
-                                   PathPartAsFixedPath('name'))
+                                   file_refs.constant_path_part('name'))
         actual = FileRefTestImpl(RelOptionType.REL_ACT,
-                                 PathPartAsNothing())
+                                 file_refs.empty_path_part())
         # ACT & ASSERT #
         with put.assertRaises(TestException):
             sut.equals_file_ref(expected).apply_with_message(put, actual, 'NotEquals')

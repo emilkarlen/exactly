@@ -35,7 +35,6 @@ from exactly_lib.test_case_utils.parse.parse_string import parse_string_resolver
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsConfiguration, \
     RelOptionArgumentConfiguration
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.parse.token import TokenType, Token
@@ -203,7 +202,7 @@ def _just_string_argument(argument: str,
     if argument_path.is_absolute():
         #  TODO Should we check if absolute paths are allowed according to RelOptionArgumentConfiguration??
         return file_ref_resolvers.constant(file_refs.absolute_file_name(argument))
-    path_suffix = PathPartAsFixedPath(argument)
+    path_suffix = file_refs.constant_path_part(argument)
     return file_ref_resolvers.constant(file_refs.of_rel_option(conf.options.default_option,
                                                                path_suffix))
 
@@ -226,7 +225,7 @@ def _just_argument_with_symbol_references(string_fragments: list,
 
 def _result_from_no_arguments(conf: RelOptionArgumentConfiguration) -> FileRefResolver:
     return file_ref_resolvers.constant(file_refs.of_rel_option(conf.options.default_option,
-                                                               PathPartAsNothing()))
+                                                               file_refs.empty_path_part()))
 
 
 def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):

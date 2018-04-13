@@ -24,7 +24,6 @@ from exactly_lib.test_case_utils.parse import parse_file_ref as sut
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath, PathPartAsNothing
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.value_type import DataValueType
@@ -241,7 +240,8 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
              {RelOptionType.REL_RESULT, RelOptionType.REL_TMP}),
         ]
         for default_option, accepted_options in default_and_accepted_options_variants:
-            expected_file_ref = file_refs.of_rel_option(default_option, PathPartAsFixedPath(file_name_argument))
+            expected_file_ref = file_refs.of_rel_option(default_option,
+                                                        file_refs.constant_path_part(file_name_argument))
             expected_file_ref_value = file_ref_resolvers.constant(expected_file_ref)
             arg_config = RelOptionArgumentConfigurationWoSuffixRequirement(
                 RelOptionsConfiguration(
@@ -284,7 +284,8 @@ class TestParseWithoutRelSymbolRelativity(TestParsesBase):
     def test_parse_with_relativity_option_and_relative_path_suffix(self):
         file_name_argument = 'file-name'
         for rel_option_type, rel_option_info in REL_OPTIONS_MAP.items():
-            expected_file_ref = file_refs.of_rel_option(rel_option_type, PathPartAsFixedPath(file_name_argument))
+            expected_file_ref = file_refs.of_rel_option(rel_option_type,
+                                                        file_refs.constant_path_part(file_name_argument))
             expected_file_ref_resolver = file_ref_resolvers.constant(expected_file_ref)
             option_str = _option_string_for(rel_option_info.option_name)
             source_and_token_stream_assertion_variants = [
@@ -462,7 +463,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
         rel_symbol_option = _option_string_for(REL_SYMBOL_OPTION_NAME)
         source = '"{rel_symbol_option}" SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option)
         expected_file_ref = file_refs.of_rel_option(_ARG_CONFIG_FOR_ALL_RELATIVITIES.options.default_option,
-                                                    PathPartAsFixedPath('{rel_symbol_option}'.format(
+                                                    file_refs.constant_path_part('{rel_symbol_option}'.format(
                                                         rel_symbol_option=rel_symbol_option)))
         expected_file_ref_value = file_ref_resolvers.constant(expected_file_ref)
         for path_suffix_is_required in [False, True]:
@@ -497,7 +498,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
         relativity_of_defined_path_symbol = RelOptionType.REL_TMP
         defined_path_symbol = NameAndValue('DEFINED_PATH_SYMBOL', 'DEFINED_PATH_SYMBOL_VALUE')
         relativity_file_ref = file_refs.of_rel_option(relativity_of_defined_path_symbol,
-                                                      PathPartAsFixedPath(defined_path_symbol.value))
+                                                      file_refs.constant_path_part(defined_path_symbol.value))
 
         suffix_symbol = NameAndValue('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
         suffix_string_constant = ' string constant'
@@ -517,7 +518,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  resolved_file_ref=
                  file_refs.of_rel_option(
                      relativity_of_defined_path_symbol,
-                     PathPartAsFixedPath(str(Path(defined_path_symbol.value) / Path(suffix_symbol.value)))),
+                     file_refs.constant_path_part(str(Path(defined_path_symbol.value) / Path(suffix_symbol.value)))),
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
@@ -554,7 +555,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                  resolved_file_ref=
                  file_refs.of_rel_option(
                      relativity_of_defined_path_symbol,
-                     PathPartAsFixedPath(
+                     file_refs.constant_path_part(
                          str(Path(defined_path_symbol.value) / Path(suffix_symbol.value + suffix_string_constant)))),
                  expected_symbol_references=
                  asrt.matches_sequence([
@@ -620,7 +621,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                                                                     accepted_relativities)))
                 expected_file_ref_resolver = file_ref_resolvers.rel_symbol(expected_symbol_reference,
                                                                            path_part_resolvers.from_constant_str(
-                                                                                file_name_argument))
+                                                                               file_name_argument))
                 for path_suffix_is_required in [False, True]:
                     arg_config = _arg_config_for_rel_symbol_config(accepted_relativities)
                     test_descr = 'path_suffix_is_required={} / source={}'.format(path_suffix_is_required,
@@ -655,7 +656,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_file_ref=
                  file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
-                                         PathPartAsFixedPath(
+                                         file_refs.constant_path_part(
                                              symbol.value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
@@ -683,7 +684,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_file_ref=
                  file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                         PathPartAsFixedPath(
+                                         file_refs.constant_path_part(
                                              symbol_1.value + '/const' + symbol_2.value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
@@ -712,7 +713,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_file_ref=
                  file_refs.of_rel_option(RelOptionType.REL_TMP,
-                                         PathPartAsFixedPath(
+                                         file_refs.constant_path_part(
                                              symbol_1.value + '/ const ' + symbol_2.value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
@@ -740,7 +741,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  resolved_file_ref=
                  file_refs.of_rel_option(
                      RelOptionType.REL_HOME_CASE,
-                     PathPartAsFixedPath(symbol_reference_syntax_for_name(symbol.name))),
+                     file_refs.constant_path_part(symbol_reference_syntax_for_name(symbol.name))),
                  expected_symbol_references=
                  asrt.equals([]),
                  symbol_table=
@@ -764,7 +765,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                                                        True)
         _arg_config_for_rel_symbol_config(accepted_relativities)
         file_ref_rel_home = file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
-                                                    PathPartAsFixedPath('file-in-home-dir'))
+                                                    file_refs.constant_path_part('file-in-home-dir'))
         test_cases = [
             ('Symbol reference as only argument'
              ' SHOULD '
@@ -780,7 +781,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_file_ref=
                  file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                         PathPartAsFixedPath(symbol.value)),
+                                         file_refs.constant_path_part(symbol.value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
@@ -901,7 +902,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_file_ref=
                  file_refs.of_rel_option(RelOptionType.REL_ACT,
-                                         PathPartAsFixedPath('non-abs-str/non-abs-str1.non-abs-str2')),
+                                         file_refs.constant_path_part('non-abs-str/non-abs-str1.non-abs-str2')),
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
@@ -967,7 +968,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
              expect(
                  resolved_file_ref=
                  file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
-                                         PathPartAsFixedPath('suffix-from-path-symbol/string-symbol-value')),
+                                         file_refs.constant_path_part('suffix-from-path-symbol/string-symbol-value')),
                  expected_symbol_references=
                  asrt.matches_sequence([
                      equals_symbol_reference(
@@ -983,8 +984,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                  symbol_table_from_entries([
                      entry(symbol_1.name,
                            file_ref_resolvers.constant(file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
-                                                                               PathPartAsFixedPath(
-                                                                                    'suffix-from-path-symbol')))),
+                                                                               file_refs.constant_path_part(
+                                                                                   'suffix-from-path-symbol')))),
                      entry(symbol_2.name, string_resolvers.str_constant('string-symbol-value')),
                  ]),
                  token_stream=
@@ -1051,7 +1052,7 @@ class TestParseWithMandatoryPathSuffix(TestParsesBase):
                        source_assertion=assert_token_stream(is_null=asrt.is_true)),
         ]
         suffix = 'suffix'
-        expected_file_ref = file_refs.of_rel_option(default_relativity, PathPartAsFixedPath(suffix))
+        expected_file_ref = file_refs.of_rel_option(default_relativity, file_refs.constant_path_part(suffix))
         resolver_assertion = matches_file_ref_resolver(expected_file_ref,
                                                        asrt.matches_sequence([]),
                                                        empty_symbol_table())
@@ -1093,7 +1094,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
             ),
         ]
         for default_option, accepted_options in default_and_accepted_options_variants:
-            expected_file_ref = file_refs.of_rel_option(default_option, PathPartAsNothing())
+            expected_file_ref = file_refs.of_rel_option(default_option, file_refs.empty_path_part())
             expected_file_ref_value = file_ref_resolvers.constant(expected_file_ref)
             arg_config = RelOptionArgumentConfiguration(
                 RelOptionsConfiguration(
@@ -1146,7 +1147,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
                            source='{option_str}   \nfollowing',
                            source_assertion=assert_token_stream(remaining_source=asrt.equals('  \nfollowing'))),
             ]
-            expected_file_ref = file_refs.of_rel_option(used_option, PathPartAsNothing())
+            expected_file_ref = file_refs.of_rel_option(used_option, file_refs.empty_path_part())
             resolver_assertion = matches_file_ref_resolver(expected_file_ref,
                                                            asrt.matches_sequence([]),
                                                            empty_symbol_table())
@@ -1200,7 +1201,7 @@ class TestParseWithOptionalPathSuffix(TestParsesBase):
                            source_assertion=assert_token_stream(remaining_source=asrt.equals('\nfollowing'))),
             ]
             suffix = 'suffix'
-            expected_file_ref = file_refs.of_rel_option(used_option, PathPartAsFixedPath(suffix))
+            expected_file_ref = file_refs.of_rel_option(used_option, file_refs.constant_path_part(suffix))
             resolver_assertion = matches_file_ref_resolver(expected_file_ref,
                                                            asrt.matches_sequence([]),
                                                            empty_symbol_table())
@@ -1290,7 +1291,8 @@ class TestParsesCorrectValueFromParseSource(TestParsesBase):
                 actual_resolver = sut.parse_file_ref_from_parse_source(
                     remaining_source('file.txt'),
                     custom_configuration.config_for(path_suffix_is_required))
-                expected_resolver = file_ref_resolvers.constant(file_refs.rel_act(PathPartAsFixedPath('file.txt')))
+                expected_resolver = file_ref_resolvers.constant(
+                    file_refs.rel_act(file_refs.constant_path_part('file.txt')))
                 assertion = equals_file_ref_resolver(expected_resolver)
                 assertion.apply_with_message(self, actual_resolver, 'file-ref-resolver')
 

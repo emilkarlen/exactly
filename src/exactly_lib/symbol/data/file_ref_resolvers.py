@@ -10,7 +10,6 @@ from exactly_lib.symbol.data.file_ref_resolver_impls import file_ref_with_symbol
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure import relativity_root
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing, PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.path_part import PathPart
 
@@ -20,13 +19,13 @@ def constant(value: FileRef) -> FileRefResolver:
 
 
 def of_rel_option(rel_option: relativity_root.RelOptionType,
-                  path_suffix: PathPart = PathPartAsNothing()) -> FileRefResolver:
+                  path_suffix: PathPart = file_refs.empty_path_part()) -> FileRefResolver:
     return constant(file_refs.of_rel_option(rel_option, path_suffix))
 
 
 def of_rel_option_with_const_file_name(rel_option: relativity_root.RelOptionType,
                                        file_name: str) -> FileRefResolver:
-    return constant(file_refs.of_rel_option(rel_option, PathPartAsFixedPath(file_name)))
+    return constant(file_refs.of_rel_option(rel_option, file_refs.constant_path_part(file_name)))
 
 
 def rel_symbol(symbol_reference: SymbolReference, path_suffix: PathPartResolver) -> FileRefResolver:

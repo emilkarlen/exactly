@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, DirectoryStructurePartition, \
     RESOLVING_DEPENDENCY_OF
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.file_ref_base import FileRefWithPathSuffixAndIsNotAbsoluteBase
 from exactly_lib.type_system.data.path_part import PathPart
@@ -13,7 +13,7 @@ from exactly_lib.type_system.data.path_part import PathPart
 
 def file_ref_test_impl(file_name: str = 'file_ref_test_impl',
                        relativity: RelOptionType = RelOptionType.REL_RESULT) -> FileRef:
-    return FileRefTestImpl(relativity, PathPartAsFixedPath(file_name))
+    return FileRefTestImpl(relativity, file_refs.constant_path_part(file_name))
 
 
 class FileRefTestImpl(FileRefWithPathSuffixAndIsNotAbsoluteBase):

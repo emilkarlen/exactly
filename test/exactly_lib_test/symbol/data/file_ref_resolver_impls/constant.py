@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.symbol.data.file_ref_resolver_impls import constant as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsNothing
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.value_type import DataValueType, ValueType, TypeCategory
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import FileRefTestImpl
@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
 class TestFileRefConstant(unittest.TestCase):
     def test_value_type(self):
         # ARRANGE #
-        file_ref = FileRefTestImpl(RelOptionType.REL_TMP, PathPartAsNothing())
+        file_ref = FileRefTestImpl(RelOptionType.REL_TMP, file_refs.empty_path_part())
         resolver = sut.FileRefConstant(file_ref)
         # ACT #
         actual_element_type = resolver.type_category
@@ -32,7 +32,7 @@ class TestFileRefConstant(unittest.TestCase):
 
     def test_resolved_value(self):
         # ARRANGE #
-        file_ref = FileRefTestImpl(RelOptionType.REL_TMP, PathPartAsNothing())
+        file_ref = FileRefTestImpl(RelOptionType.REL_TMP, file_refs.empty_path_part())
         resolver = sut.FileRefConstant(file_ref)
         # ACT #
         actual = resolver.resolve(empty_symbol_table())

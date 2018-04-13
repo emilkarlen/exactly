@@ -17,8 +17,8 @@ from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse import parse_string
-from exactly_lib.type_system.data import file_ref, file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data import file_ref
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax, option_syntax
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -142,7 +142,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     Expectation(
                         settings_builder=AssertStdinFileIsSetToFile(
                             file_refs.of_rel_option(rel_opt.relativity,
-                                                    PathPartAsFixedPath('file.txt'))),
+                                                    file_refs.constant_path_part('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )
@@ -170,7 +170,7 @@ class TestSuccessfulScenariosWithSetStdinToFile(TestCaseBaseForParser):
                     Expectation(
                         settings_builder=AssertStdinFileIsSetToFile(
                             file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
-                                                    PathPartAsFixedPath('file.txt'))),
+                                                    file_refs.constant_path_part('file.txt'))),
                         symbol_usages=rel_opt.symbols.usages_expectation(),
                         source=is_at_beginning_of_line(2)),
                 )
@@ -204,7 +204,8 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
             ('string value container',
              data_symbol_utils.string_constant_container('string symbol value')),
             ('file ref value container',
-             data_symbol_utils.file_ref_constant_container(file_refs.rel_act(PathPartAsFixedPath('file-name.txt')))),
+             data_symbol_utils.file_ref_constant_container(
+                 file_refs.rel_act(file_refs.constant_path_part('file-name.txt')))),
         ]
         for case in cases:
             with self.subTest(case[0]):

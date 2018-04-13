@@ -10,7 +10,6 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueReso
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -60,7 +59,7 @@ class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
         if not suffix_str:
             return file_ref
         suffix_str = suffix_str.lstrip('/')
-        return StackedFileRef(file_ref, PathPartAsFixedPath(suffix_str))
+        return StackedFileRef(file_ref, file_refs.constant_path_part(suffix_str))
 
     def _visit_string(self, value: StringResolver) -> FileRef:
         sv = value.resolve(self.symbols)
@@ -72,7 +71,7 @@ class _DataValueSymbol2FileRefResolverVisitor(DataValueResolverVisitor):
             return file_refs.absolute_file_name(path_str)
         else:
             return file_refs.of_rel_option(self.default_relativity,
-                                           PathPartAsFixedPath(path_str))
+                                           file_refs.constant_path_part(path_str))
 
     def _visit_list(self, value: ListResolver) -> FileRef:
         raise ValueError('Impossible to convert a list to a file ref')

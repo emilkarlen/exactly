@@ -11,7 +11,6 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -60,7 +59,7 @@ class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
         instruction_argument = src('{path_type} name = --rel-act component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = file_ref_resolvers.constant(
-                file_refs.rel_act(PathPartAsFixedPath('component')))
+                file_refs.rel_act(file_refs.constant_path_part('component')))
             expected_container = resolver_container(expected_file_ref_resolver)
             self._check(source,
                         ArrangementWithSds(),
@@ -81,7 +80,7 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = file_ref_resolvers.constant(
                 file_refs.of_rel_option(REL_OPTIONS_CONFIGURATION.default_option,
-                                        PathPartAsFixedPath('component')))
+                                        file_refs.constant_path_part('component')))
             expected_container = resolver_container(expected_file_ref_resolver)
             self._check(source,
                         ArrangementWithSds(),

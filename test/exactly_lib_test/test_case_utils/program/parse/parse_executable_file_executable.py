@@ -20,7 +20,6 @@ from exactly_lib.test_case_utils.parse.parse_file_ref import path_relativity_res
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file_executable as sut
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
@@ -207,7 +206,7 @@ class TestParseWithSymbols(unittest.TestCase):
                  expectation=
                  ExpectationOnExeFile(
                      file_resolver_value=StackedFileRef(file_symbol.value,
-                                                        PathPartAsFixedPath(string_symbol.value)),
+                                                        file_refs.constant_path_part(string_symbol.value)),
                      expected_symbol_references_of_file=[reference_of_relativity_symbol,
                                                          reference_of_path_string_symbol_as_path_component],
                      argument_resolver_value=empty_list_value(),
@@ -373,12 +372,12 @@ def _parse_and_check(put: unittest.TestCase,
 
 def file_ref_of(rel_option: RelOptionType,
                 path_suffix: str) -> FileRef:
-    return file_refs.of_rel_option(rel_option, PathPartAsFixedPath(path_suffix))
+    return file_refs.of_rel_option(rel_option, file_refs.constant_path_part(path_suffix))
 
 
 def file_ref_of_default_relativity(path_suffix: str) -> FileRef:
     return file_refs.of_rel_option(syntax_elements.REL_OPTION_ARG_CONF.options.default_option,
-                                   PathPartAsFixedPath(path_suffix))
+                                   file_refs.constant_path_part(path_suffix))
 
 
 def has_remaining_part_of_first_line(remaining_part: str) -> asrt.ValueAssertion[ParseSource]:

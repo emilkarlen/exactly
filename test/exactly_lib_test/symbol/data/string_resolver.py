@@ -4,8 +4,8 @@ from exactly_lib.symbol.data import string_resolver as sut
 from exactly_lib.symbol.data.impl import string_resolver_impls as impl
 from exactly_lib.symbol.data.restrictions.reference_restrictions import OrReferenceRestrictions
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.data import concrete_string_values as csv, file_refs
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data import concrete_string_values as csv
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory, ValueType
@@ -93,7 +93,7 @@ class TestSymbolStringFragmentResolver(unittest.TestCase):
     def test_resolve_of_path_symbol_SHOULD_give_string_constant(self):
         # ARRANGE #
         symbol = NameAndValue('the_symbol_name',
-                              file_refs.rel_act(PathPartAsFixedPath('file-name')))
+                              file_refs.rel_act(file_refs.constant_path_part('file-name')))
         symbol_reference = su.symbol_reference(symbol.name)
         fragment = impl.SymbolStringFragmentResolver(symbol_reference)
         symbol_table = su.symbol_table_with_single_file_ref_value(symbol.name, symbol.value)
@@ -143,7 +143,7 @@ class StringResolverTest(unittest.TestCase):
         string_constant_2 = 'string constant 2'
         string_symbol = NameAndValue('string_symbol_name', 'string symbol value')
         path_symbol = NameAndValue('path_symbol_name',
-                                   file_refs.rel_act(PathPartAsFixedPath('file-name')))
+                                   file_refs.rel_act(file_refs.constant_path_part('file-name')))
         list_element_1 = 'list element 1'
         list_element_2 = 'list element 2'
         list_symbol = NameAndValue('list_symbol_name',

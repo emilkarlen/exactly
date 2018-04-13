@@ -17,7 +17,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg import diff_msg_utils, diff_msg
 from exactly_lib.test_case_utils.err_msg import path_description
-from exactly_lib.type_system.data.concrete_path_parts import PathPartAsFixedPath
+from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.logic import file_matcher as file_matcher_type
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
@@ -205,4 +205,4 @@ class _FilePropertyDescriptorConstructorForFileInDir(actual_files.FilePropertyDe
 
 
 def _path_value_for_file_in_checked_dir(dir_to_check: FileRef, file_in_dir: pathlib.Path) -> FileRef:
-    return StackedFileRef(dir_to_check, PathPartAsFixedPath(file_in_dir.name))
+    return StackedFileRef(dir_to_check, file_refs.constant_path_part(file_in_dir.name))
