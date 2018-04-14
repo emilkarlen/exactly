@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
@@ -21,7 +23,7 @@ class SymbolValueResolver(ObjectWithSymbolReferences):
         raise NotImplementedError('abstract method')
 
     @property
-    def references(self) -> list:
+    def references(self) -> Sequence:
         """
         All :class:`SymbolReference` directly referenced by this object.
 
@@ -33,7 +35,7 @@ class SymbolValueResolver(ObjectWithSymbolReferences):
         raise NotImplementedError('abstract method')
 
 
-def get_references(resolver: SymbolValueResolver) -> list:
+def get_references(resolver: SymbolValueResolver) -> Sequence:
     return resolver.references
 
 
