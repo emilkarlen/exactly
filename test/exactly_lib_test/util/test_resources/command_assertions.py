@@ -2,7 +2,7 @@ import pathlib
 import sys
 
 from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.commands import ShellCommand, ExecutableProgramCommand, ExecutableFileCommand
+from exactly_lib.util.process_execution.commands import ShellCommand, SystemProgramCommand, ExecutableFileCommand
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -33,15 +33,15 @@ def equals_execute_py_source_command(source: str) -> asrt.ValueAssertion[Command
     )
 
 
-def equals_executable_program_command(expected: ExecutableProgramCommand) -> asrt.ValueAssertion[Command]:
-    return asrt.is_instance_with_many(ExecutableProgramCommand,
+def equals_executable_program_command(expected: SystemProgramCommand) -> asrt.ValueAssertion[Command]:
+    return asrt.is_instance_with_many(SystemProgramCommand,
                                       [
                                           asrt.sub_component('executable_file',
-                                                             ExecutableProgramCommand.program.fget,
+                                                             SystemProgramCommand.program.fget,
                                                              asrt.equals(expected.program)
                                                              ),
                                           asrt.sub_component('arguments',
-                                                             ExecutableProgramCommand.arguments.fget,
+                                                             SystemProgramCommand.arguments.fget,
                                                              asrt.equals(expected.arguments)
                                                              ),
                                           asrt.sub_component('shell',

@@ -31,7 +31,7 @@ class ProgramCommand(Command):
         raise NotImplementedError('abstract method')
 
 
-class ExecutableProgramCommand(ProgramCommand):
+class SystemProgramCommand(ProgramCommand):
     def __init__(self,
                  program_and_arguments: ProgramAndArguments):
         self._program_and_arguments = program_and_arguments
@@ -78,14 +78,14 @@ class ExecutableFileCommand(ProgramCommand):
         return self._arguments
 
 
-def executable_program_command(program: str,
-                               arguments: List[str] = None) -> ExecutableProgramCommand:
-    return ExecutableProgramCommand(ProgramAndArguments(program,
-                                                        [] if arguments is None else arguments))
+def system_program_command(program: str,
+                           arguments: List[str] = None) -> SystemProgramCommand:
+    return SystemProgramCommand(ProgramAndArguments(program,
+                                                    [] if arguments is None else arguments))
 
 
-def executable_program_command2(program_and_args: ProgramAndArguments) -> ExecutableProgramCommand:
-    return ExecutableProgramCommand(program_and_args)
+def executable_program_command2(program_and_args: ProgramAndArguments) -> SystemProgramCommand:
+    return SystemProgramCommand(program_and_args)
 
 
 def executable_file_command(program_file: pathlib.Path,
@@ -95,3 +95,30 @@ def executable_file_command(program_file: pathlib.Path,
 
 def shell_command(command: str) -> ShellCommand:
     return ShellCommand(command)
+
+
+class CommandVisitor:
+    """
+    Visitor of `Command`
+    """
+
+    def visit(self, value: Command):
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(value, ExecutableFileCommand):
+            return self._visit_executable_file(value)
+        if isinstance(value, SystemProgramCommand):
+            return self._visit_system_program(value)
+        if isinstance(value, ShellCommand):
+            return self._visit_shell(value)
+        raise TypeError('Unknown {}: {}'.format(Command, str(value)))
+
+    def _visit_shell(self, command: ShellCommand):
+        raise NotImplementedError()
+
+    def _visit_executable_file(self, command: ExecutableFileCommand):
+        raise NotImplementedError()
+
+    def _visit_system_program(self, command: SystemProgramCommand):
+        raise NotImplementedError()
