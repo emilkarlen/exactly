@@ -7,7 +7,7 @@ from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.util.process_execution.command import Command, ProgramAndArguments
-from exactly_lib.util.process_execution.commands import ShellCommand, ExecutableProgramCommand, ExecutableFileCommand
+from exactly_lib.util.process_execution.commands import ShellCommand, SystemProgramCommand, ExecutableFileCommand
 
 
 class CommandValueForShell(CommandValue):
@@ -63,4 +63,4 @@ class CommandValueForSystemProgram(CommandValue):
 
     @staticmethod
     def _of(pgm_and_args: ProgramAndArguments) -> Command:
-        return ExecutableProgramCommand(pgm_and_args)
+        return SystemProgramCommand(pgm_and_args)

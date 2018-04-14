@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinData
-from exactly_lib.util.process_execution.commands import executable_program_command
+from exactly_lib.util.process_execution.commands import system_program_command
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
 
 class Test(unittest.TestCase):
     def test_matches(self):
-        command = executable_program_command('program', [])
+        command = system_program_command('program', [])
         stdin_data = StdinData([])
         transformer = IdentityLinesTransformer()
         sut.matches_program(
@@ -26,7 +26,7 @@ class Test(unittest.TestCase):
         )
 
     def test_not_matches(self):
-        expected_command = executable_program_command('program', [])
+        expected_command = system_program_command('program', [])
         expected_stdin_data = StdinData([])
         expected_transformer = IdentityLinesTransformer()
 
@@ -36,7 +36,7 @@ class Test(unittest.TestCase):
             transformer=asrt.is_(expected_transformer),
         )
 
-        actual_command = executable_program_command('program', [])
+        actual_command = system_program_command('program', [])
         actual_stdin_data = StdinData([])
         actual_transformer = IdentityLinesTransformer()
 

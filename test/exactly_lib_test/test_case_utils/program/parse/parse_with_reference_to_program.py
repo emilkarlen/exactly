@@ -354,7 +354,7 @@ class TestResolving(unittest.TestCase):
         def assertion(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
                 command=asrt_command.equals_executable_program_command(
-                    commands.executable_program_command(
+                    commands.system_program_command(
                         program=the_executable_program,
                         arguments=expected_arguments)
                 ),
