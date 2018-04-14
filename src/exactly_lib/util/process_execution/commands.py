@@ -20,6 +20,10 @@ class ShellCommand(Command):
     def shell_command_line(self) -> str:
         return self._command_line
 
+    def __str__(self) -> str:
+        return '{}({})'.format(type(self),
+                               self._command_line)
+
 
 class ProgramCommand(Command):
     @property
@@ -52,6 +56,11 @@ class SystemProgramCommand(ProgramCommand):
     def program_and_arguments(self) -> ProgramAndArguments:
         return self._program_and_arguments
 
+    def __str__(self) -> str:
+        return '{}({}, {})'.format(type(self),
+                                   self.program,
+                                   self.arguments)
+
 
 class ExecutableFileCommand(ProgramCommand):
     def __init__(self,
@@ -76,6 +85,11 @@ class ExecutableFileCommand(ProgramCommand):
     @property
     def arguments(self) -> List[str]:
         return self._arguments
+
+    def __str__(self) -> str:
+        return '{}({}, {})'.format(type(self),
+                                   self.executable_file,
+                                   self.arguments)
 
 
 def system_program_command(program: str,
@@ -107,18 +121,18 @@ class CommandVisitor:
         :return: Return value from _visit... method
         """
         if isinstance(value, ExecutableFileCommand):
-            return self._visit_executable_file(value)
+            return self.visit_executable_file(value)
         if isinstance(value, SystemProgramCommand):
-            return self._visit_system_program(value)
+            return self.visit_system_program(value)
         if isinstance(value, ShellCommand):
-            return self._visit_shell(value)
+            return self.visit_shell(value)
         raise TypeError('Unknown {}: {}'.format(Command, str(value)))
 
-    def _visit_shell(self, command: ShellCommand):
+    def visit_shell(self, command: ShellCommand):
         raise NotImplementedError()
 
-    def _visit_executable_file(self, command: ExecutableFileCommand):
+    def visit_executable_file(self, command: ExecutableFileCommand):
         raise NotImplementedError()
 
-    def _visit_system_program(self, command: SystemProgramCommand):
+    def visit_system_program(self, command: SystemProgramCommand):
         raise NotImplementedError()

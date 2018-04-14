@@ -26,6 +26,7 @@ class Command:
         """
         :return: Either a string or an iterable of strings
         """
+        # Maybe remove (low priority for the moment)
         raise NotImplementedError('abstract method')
 
     @property
@@ -33,12 +34,5 @@ class Command:
         """
         Tells whether args should be executed as a shell command.
         """
+        # Maybe remove (low priority for the moment)
         raise NotImplementedError('abstract method')
-
-    @property
-    def shell_command_line(self) -> str:
-        raise ValueError('this object is not a shell command: ' + str(self.args))
-
-    @property
-    def program_and_arguments(self) -> ProgramAndArguments:
-        raise ValueError('this object is not a program with arguments: ' + str(self.args))

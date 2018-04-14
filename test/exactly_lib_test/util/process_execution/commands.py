@@ -59,15 +59,15 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.CommandVisitor):
         self.ret_val = ret_val
         self.visited_classes = []
 
-    def _visit_shell(self, command: sut.ShellCommand):
+    def visit_shell(self, command: sut.ShellCommand):
         self.visited_classes.append(sut.ShellCommand)
         return self.ret_val
 
-    def _visit_executable_file(self, command: sut.ExecutableFileCommand):
+    def visit_executable_file(self, command: sut.ExecutableFileCommand):
         self.visited_classes.append(sut.ExecutableFileCommand)
         return self.ret_val
 
-    def _visit_system_program(self, command: sut.SystemProgramCommand):
+    def visit_system_program(self, command: sut.SystemProgramCommand):
         self.visited_classes.append(sut.SystemProgramCommand)
         return self.ret_val
 

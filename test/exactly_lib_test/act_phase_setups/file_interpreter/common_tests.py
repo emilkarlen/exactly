@@ -46,9 +46,9 @@ class TestCaseBase(unittest.TestCase):
         self.command_that_runs_python_file = command_that_runs_python_file
 
     def shortDescription(self):
-        return '{}, is_shell={}'.format(
+        return '{}, command={}'.format(
             str(type(self)),
-            self.command_that_runs_python_file.shell,
+            self.command_that_runs_python_file,
         )
 
     def _check(self,
