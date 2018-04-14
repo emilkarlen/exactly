@@ -1,7 +1,46 @@
 import pathlib
 from typing import List
 
-from exactly_lib.util.process_execution.command import Command, ProgramAndArguments
+from exactly_lib.util.process_execution.command import Command, ProgramAndArguments, CommandDriver
+
+
+class ShellCommandDriver(CommandDriver):
+    def __init__(self, command_line: str):
+        self._command_line = command_line
+
+    @property
+    def shell_command_line(self) -> str:
+        return self._command_line
+
+    def __str__(self) -> str:
+        return '{}({})'.format(type(self),
+                               self._command_line)
+
+
+class SystemProgramCommandDriver(CommandDriver):
+    def __init__(self, program: str):
+        self._program = program
+
+    @property
+    def program(self) -> str:
+        return self._program
+
+    def __str__(self) -> str:
+        return '{}({})'.format(type(self),
+                               self._program)
+
+
+class ExecutableFileCommandDriver(CommandDriver):
+    def __init__(self, executable_file: pathlib.Path):
+        self._executable_file = executable_file
+
+    @property
+    def executable_file(self) -> pathlib.Path:
+        return self._executable_file
+
+    def __str__(self) -> str:
+        return '{}({})'.format(type(self),
+                               self._executable_file)
 
 
 class ShellCommand(Command):
@@ -135,4 +174,31 @@ class CommandVisitor:
         raise NotImplementedError()
 
     def visit_system_program(self, command: SystemProgramCommand):
+        raise NotImplementedError()
+
+
+class CommandDriverVisitor:
+    """
+    Visitor of :class:`CommandDriver`
+    """
+
+    def visit(self, value: CommandDriver):
+        """
+        :return: Return value from _visit... method
+        """
+        if isinstance(value, ExecutableFileCommandDriver):
+            return self.visit_executable_file(value)
+        if isinstance(value, SystemProgramCommandDriver):
+            return self.visit_system_program(value)
+        if isinstance(value, ShellCommandDriver):
+            return self.visit_shell(value)
+        raise TypeError('Unknown {}: {}'.format(Command, str(value)))
+
+    def visit_shell(self, command: ShellCommandDriver):
+        raise NotImplementedError()
+
+    def visit_executable_file(self, command: ExecutableFileCommandDriver):
+        raise NotImplementedError()
+
+    def visit_system_program(self, command: SystemProgramCommandDriver):
         raise NotImplementedError()

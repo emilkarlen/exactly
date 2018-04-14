@@ -14,6 +14,10 @@ class ProgramAndArguments:
         self.arguments = arguments
 
 
+class CommandDriver:
+    pass
+
+
 class Command:
     """
     Something that is executable in process.
