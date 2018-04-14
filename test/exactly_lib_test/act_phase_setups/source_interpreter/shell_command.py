@@ -9,8 +9,8 @@ from exactly_lib_test.act_phase_setups.source_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import \
     Configuration, suite_for_execution, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case_utils.test_resources import py_program
 from exactly_lib_test.test_resources.programs.python_program_execution import file_name_of_interpreter
+from exactly_lib_test.util.test_resources import py_program
 
 
 def suite() -> unittest.TestSuite:

@@ -41,9 +41,10 @@ class TheInstructionEmbryo(instruction_embryo.InstructionEmbryo):
             .resolve(path_resolving_env.symbols) \
             .command \
             .value_of_any_dependency(path_resolving_env.home_and_sds)
+        executable = command.as_executable_tmp_method
         executor = spe.ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
         storage_dir = instruction_log_dir(logging_paths, self.source_info)
-        return spe.execute_and_read_stderr_if_non_zero_exitcode(command, executor, storage_dir)
+        return spe.execute_and_read_stderr_if_non_zero_exitcode(executable, executor, storage_dir)
 
 
 class ResultAndStderrTranslator(MainStepResultTranslator):

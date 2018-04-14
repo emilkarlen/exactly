@@ -81,9 +81,10 @@ class FileMakerForContentsFromProgram(FileMaker):
             .resolve(path_resolving_env.symbols) \
             .value_of_any_dependency(path_resolving_env.home_and_sds)
 
+        executable = program.command.as_executable_tmp_method
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
-        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(program.command, executor, storage_dir)
+        result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(executable, executor, storage_dir)
 
         err_msg = result_for_non_success_or_non_zero_exit_code(result_and_std_err)
         if err_msg:

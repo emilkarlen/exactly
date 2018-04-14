@@ -25,9 +25,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
-from exactly_lib_test.test_case_utils.test_resources import py_program, svh_assertions
-from exactly_lib_test.test_case_utils.test_resources.py_program import \
-    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
+from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_utils import tmp_file_containing_lines
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -36,6 +34,9 @@ from exactly_lib_test.test_resources.value_assertions import process_result_asse
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as str_asrt
 from exactly_lib_test.type_system.data.test_resources import list_values as lv
+from exactly_lib_test.util.test_resources import py_program
+from exactly_lib_test.util.test_resources.py_program import \
+    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
 
 def suite() -> unittest.TestSuite:
