@@ -5,7 +5,7 @@ from exactly_lib.execution.instruction_execution import phase_step_executors, ph
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.test_case_status import ExecutionMode
@@ -30,6 +30,7 @@ class PredefinedProperties:
 def execute(test_case: test_case_doc.TestCase,
             predefined_properties: PredefinedProperties,
             configuration_builder: ConfigurationBuilder,
+            act_phase_sub_process_executor: ActPhaseOsProcessExecutor,
             sandbox_directory_root_name_prefix: str,
             is_keep_sandbox: bool) -> FullResult:
     """
@@ -44,7 +45,7 @@ def execute(test_case: test_case_doc.TestCase,
     environ = dict(os.environ)
     _prepare_environment_variables(environ)
     partial_execution_configuration = partial_execution.Configuration(
-        ACT_PHASE_OS_PROCESS_EXECUTOR,
+        act_phase_sub_process_executor,
         configuration_builder.hds,
         environ,
         configuration_builder.timeout_in_seconds,

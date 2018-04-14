@@ -12,7 +12,7 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_processing import TestCaseSetup, Status, Result, Processor, AccessErrorType
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.test_case import phase_identifier
+from exactly_lib.test_case import phase_identifier, os_services
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.phases.result import svh, pfh
 from exactly_lib.util.line_source import Line, source_location_path_of, SourceLocationPath, SourceLocation, \
@@ -324,6 +324,7 @@ def configuration_for_instruction_set(instruction_set: InstructionsSetup) -> sut
     return sut.Configuration(
         tc_definition,
         tc_handling_setup,
+        os_services.ACT_PHASE_OS_PROCESS_EXECUTOR,
         is_keep_sandbox=False,
     )
 
