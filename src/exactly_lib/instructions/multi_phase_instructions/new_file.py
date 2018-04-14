@@ -109,7 +109,7 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
              os_services: OsServices) -> str:
         path_to_create = self._path_to_create.resolve_value_of_any_dependency(
             environment.path_resolving_environment_pre_or_post_sds)
-        return self._file_maker.make(environment, path_to_create)
+        return self._file_maker.make(environment, os_services, path_to_create)
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):

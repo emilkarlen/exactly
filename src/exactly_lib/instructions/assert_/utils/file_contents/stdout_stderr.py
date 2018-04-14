@@ -16,6 +16,7 @@ from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
@@ -116,9 +117,11 @@ class _ComparisonActualFileConstructorForProgram(ComparisonActualFileConstructor
 
     def construct(self,
                   source_info: InstructionSourceInfo,
-                  environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+                  environment: i.InstructionEnvironmentForPostSdsStep,
+                  os_services: OsServices) -> ComparisonActualFile:
         program = self._program.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
         result = make_transformed_file_from_output_in_instruction_tmp_dir(environment,
+                                                                          os_services.executable_factory__detect_ex(),
                                                                           source_info,
                                                                           self._checked_output,
                                                                           program)

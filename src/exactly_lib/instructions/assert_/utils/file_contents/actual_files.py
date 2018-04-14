@@ -6,6 +6,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
@@ -55,7 +56,8 @@ class ComparisonActualFile:
 class ComparisonActualFileConstructor(ObjectWithSymbolReferencesAndValidation):
     def construct(self,
                   source_info: InstructionSourceInfo,
-                  environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+                  environment: i.InstructionEnvironmentForPostSdsStep,
+                  os_services: OsServices) -> ComparisonActualFile:
         raise NotImplementedError('abstract method')
 
 
@@ -74,7 +76,8 @@ class ComparisonActualFileConstructorForConstant(ComparisonActualFileConstructor
 
     def construct(self,
                   source_info: InstructionSourceInfo,
-                  environment: i.InstructionEnvironmentForPostSdsStep) -> ComparisonActualFile:
+                  environment: i.InstructionEnvironmentForPostSdsStep,
+                  os_services: OsServices) -> ComparisonActualFile:
         return self._constructed_value
 
     @property

@@ -6,8 +6,6 @@ Supports the different variants of executable things used by Exactly.
 import pathlib
 from typing import List
 
-from exactly_lib.util.process_execution.execution_elements import Executable
-
 
 class ProgramAndArguments:
     def __init__(self,
@@ -23,10 +21,6 @@ class Command:
 
     Is translated to an Executable, for execution.
     """
-
-    @property
-    def as_executable_tmp_method(self) -> Executable:
-        return Executable(self.shell, self.args)
 
     @property
     def args(self):

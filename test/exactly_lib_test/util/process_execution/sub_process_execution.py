@@ -1,7 +1,6 @@
 import unittest
 
 from exactly_lib.util.process_execution import process_output_files, sub_process_execution as sut
-from exactly_lib.util.process_execution.command import executable_program_command2, executable_file_command
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import FileNames
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
@@ -10,6 +9,7 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.process_execution.test_resources import executables
 from exactly_lib_test.util.test_resources.py_program import program_that_prints_and_exits_with_exit_code
 
 
@@ -31,9 +31,7 @@ sys.exit(%d)
         ])) as tmp_dir_path:
             executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.execute(tmp_dir_path,
-                                      executable_program_command2(
-                                          py_exe.args_for_interpreting2(tmp_dir_path / 'program.py')
-                                      ).as_executable_tmp_method)
+                                      py_exe.args_for_interpreting3(tmp_dir_path / 'program.py'))
             self.assertTrue(result.is_success,
                             'Result should indicate success')
             self.assertEqual(exit_code,
@@ -44,8 +42,8 @@ sys.exit(%d)
         with tmp_dir() as tmp_dir_path:
             executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.execute(tmp_dir_path,
-                                      executable_file_command(tmp_dir_path / 'non-existing-program'
-                                                              ).as_executable_tmp_method)
+                                      executables.for_executable_file(tmp_dir_path / 'non-existing-program')
+                                      )
             self.assertFalse(result.is_success,
                              'Result should indicate failure')
 
@@ -56,9 +54,8 @@ sys.exit(%d)
         ])) as tmp_dir_path:
             executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.execute(tmp_dir_path,
-                                      executable_program_command2(
-                                          py_exe.args_for_interpreting2(tmp_dir_path / 'program.py')
-                                      ).as_executable_tmp_method)
+                                      py_exe.args_for_interpreting3(tmp_dir_path / 'program.py')
+                                      )
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
                                                                             result)
@@ -70,9 +67,7 @@ sys.exit(%d)
         ])) as tmp_dir_path:
             executor = sut.ExecutorThatStoresResultInFilesInDir(with_no_timeout())
             result = executor.execute(tmp_dir_path / 'non-existing-path-component' / 'one-more-component',
-                                      executable_program_command2(
-                                          py_exe.args_for_interpreting2(tmp_dir_path / 'program.py')
-                                      ).as_executable_tmp_method)
+                                      py_exe.args_for_interpreting3(tmp_dir_path / 'program.py'))
             assert_is_success_and_output_dir_contains_at_least_result_files(self,
                                                                             PROCESS_OUTPUT_WITH_NON_ZERO_EXIT_STATUS,
                                                                             result)
@@ -97,7 +92,8 @@ def assert_is_success_and_output_dir_contains_at_least_result_files(put: unittes
 
 
 def assert_dir_contains_at_least_result_files(expected: SubProcessResult,
-                                              file_names: FileNames = process_output_files.FILE_NAMES) -> asrt.ValueAssertion:
+                                              file_names: FileNames = process_output_files.FILE_NAMES
+                                              ) -> asrt.ValueAssertion:
     return fa.dir_contains_at_least(DirContents([
         File(file_names.exit_code,
              str(expected.exitcode)),

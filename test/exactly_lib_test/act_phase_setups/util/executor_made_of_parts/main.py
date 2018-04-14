@@ -8,7 +8,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case import eh
 from exactly_lib.test_case.act_phase_handling import ParseException
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
 from exactly_lib.test_case.phases.result import sh
@@ -38,7 +38,7 @@ class TestConstructor(unittest.TestCase):
         environment = _environment()
         act_phase_instructions = []
         # ACT #
-        executor = constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
+        executor = constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, environment, act_phase_instructions)
         with self.assertRaises(ParseException) as ex:
             executor.parse(environment)
             # ASSERT #

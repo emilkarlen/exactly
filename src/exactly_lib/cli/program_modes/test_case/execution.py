@@ -7,6 +7,7 @@ from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles
 
@@ -14,7 +15,9 @@ from exactly_lib.util.std import StdOutputFiles
 def execute(std_output_files: StdOutputFiles,
             test_case_definition: TestCaseDefinition,
             configuration_section_parser: document_parser.SectionElementParser,
-            settings: TestCaseExecutionSettings) -> int:
+            settings: TestCaseExecutionSettings,
+            act_phase_os_process_executor: ActPhaseOsProcessExecutor,
+            ) -> int:
     result_reporter = _get_reporter(std_output_files,
                                     settings.reporting_option)
     is_keep_sandbox = result_reporter.depends_on_result_in_sandbox()
@@ -31,6 +34,7 @@ def execute(std_output_files: StdOutputFiles,
                       is_keep_sandbox,
                       test_case_definition,
                       handling_setup,
+                      act_phase_os_process_executor,
                       settings.sandbox_directory_root_name_prefix)
     return result_reporter.report(result)
 
@@ -39,10 +43,12 @@ def _process(test_case_file_path: pathlib.Path,
              is_keep_sds: bool,
              test_case_definition: TestCaseDefinition,
              handling_setup: TestCaseHandlingSetup,
+             act_phase_os_process_executor: ActPhaseOsProcessExecutor,
              sandbox_directory_root_name_prefix: str,
              ) -> test_case_processing.Result:
     configuration = processors.Configuration(test_case_definition,
                                              handling_setup,
+                                             act_phase_os_process_executor,
                                              is_keep_sds,
                                              sandbox_directory_root_name_prefix)
     processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)

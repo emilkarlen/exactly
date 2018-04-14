@@ -2,6 +2,7 @@ import os
 import pathlib
 import shutil
 import subprocess
+import sys
 import tempfile
 
 from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
@@ -524,7 +525,7 @@ class _PartialExecutor:
             return PartialResult(PartialResultStatus.IMPLEMENTATION_ERROR,
                                  None,
                                  PhaseFailureInfo(step,
-                                                  new_failure_details_from_exception(ex)))
+                                                  new_failure_details_from_exception(ex, str(sys.exc_info()))))
 
 
 class _PhaseFailureResultConstructor:

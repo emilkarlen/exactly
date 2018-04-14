@@ -9,7 +9,7 @@ from exactly_lib.execution import partial_execution
 from exactly_lib.execution.partial_execution import TestCase
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
@@ -38,7 +38,7 @@ class PartialExecutionTestCaseBase:
                 partial_result = partial_execution.execute(
                     self.__act_phase_handling,
                     self._test_case(),
-                    partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                    partial_execution.Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                     hds,
                                                     dict(os.environ)),
                     setup.default_settings(),

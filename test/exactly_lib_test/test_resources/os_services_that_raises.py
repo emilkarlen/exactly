@@ -1,6 +1,6 @@
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib.util.process_execution.command_to_executable import ExecutableFactory
+from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 
 
 class OsServicesThatRaises(OsServices):

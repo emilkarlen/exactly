@@ -47,7 +47,9 @@ class FileConstructorAssertionPart(AssertionPart):
               os_services: OsServices,
               custom_environment: InstructionSourceInfo,
               value_to_check: ComparisonActualFileConstructor) -> ComparisonActualFile:
-        return value_to_check.construct(custom_environment, environment)
+        return value_to_check.construct(custom_environment,
+                                        environment,
+                                        os_services)
 
 
 class FileExistenceAssertionPart(AssertionPart):

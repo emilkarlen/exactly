@@ -10,6 +10,7 @@ from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.test_case import os_services
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.execution import Executor
 from exactly_lib.test_suite.suite_hierarchy_reading import Reader, Environment
@@ -65,6 +66,7 @@ def check(setup: Setup,
 def _default_case_configuration(test_case_handling_setup: TestCaseHandlingSetup) -> case_processing.Configuration:
     return case_processing.Configuration(_DEFAULT_TEST_CASE_DEFINITION,
                                          test_case_handling_setup,
+                                         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                          False)
 
 

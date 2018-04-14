@@ -5,7 +5,7 @@ from contextlib import contextmanager
 
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.result import svh
@@ -118,7 +118,7 @@ class TestExecuteBase(unittest.TestCase):
 
         environment = InstructionEnvironmentForPreSdsStep(hds,
                                                           environ)
-        sut = self.source_and_executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR,
+        sut = self.source_and_executor_constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                          environment,
                                                          act_phase_instructions)
         sut.parse(environment)
@@ -225,7 +225,7 @@ class TestInitialCwdIsCurrentDirAndThatCwdIsRestoredAfterwards(TestBase):
             with self.test_setup.program_that_prints_cwd_without_new_line_to_stdout(hds) as source:
                 executor_constructor = self.test_setup.sut
                 environment = InstructionEnvironmentForPreSdsStep(hds, {})
-                sut = executor_constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
+                sut = executor_constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, environment, source)
                 sut.parse(environment)
                 step_result = sut.validate_pre_sds(environment)
                 self.assertEqual(svh.SuccessOrValidationErrorOrHardErrorEnum.SUCCESS,

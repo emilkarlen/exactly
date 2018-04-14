@@ -44,5 +44,5 @@ def test_case_definition_with_no_instructions_and_no_preprocessor() -> TestCaseD
 def configuration_with_no_instructions_and_no_preprocessor() -> Configuration:
     return Configuration(test_case_definition_with_no_instructions_and_no_preprocessor(),
                          test_case_handling_setup(),
-                         os_services.ACT_PHASE_OS_PROCESS_EXECUTOR,
+                         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                          is_keep_sandbox=False)

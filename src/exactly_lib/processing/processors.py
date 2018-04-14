@@ -38,11 +38,11 @@ class Configuration:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
                  default_handling_setup: TestCaseHandlingSetup,
-                 act_phase_sub_process_executor: ActPhaseOsProcessExecutor,
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  is_keep_sandbox: bool,
                  sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self.default_handling_setup = default_handling_setup
-        self.act_phase_sub_process_executor = act_phase_sub_process_executor
+        self.act_phase_os_process_executor = act_phase_os_process_executor
         self.test_case_definition = test_case_definition
         self.is_keep_sandbox = is_keep_sandbox
         self.sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
@@ -75,7 +75,7 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
     return _Executor(configuration.default_handling_setup.act_phase_setup,
-                     configuration.act_phase_sub_process_executor,
+                     configuration.act_phase_os_process_executor,
                      configuration.is_keep_sandbox,
                      configuration.test_case_definition.predefined_properties,
                      configuration.sandbox_directory_root_name_prefix)

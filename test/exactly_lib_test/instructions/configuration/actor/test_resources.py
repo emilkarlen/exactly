@@ -5,7 +5,7 @@ from exactly_lib.instructions.configuration import actor as sut
 from exactly_lib.instructions.configuration.actor import actor_utils
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
@@ -26,7 +26,7 @@ class Arrangement:
                  source: ParseSource,
                  act_phase_source_lines: list,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
-                 act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR
+                 act_phase_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
         self.hds_contents = hds_contents
         self.source = source

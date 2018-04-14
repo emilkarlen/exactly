@@ -17,7 +17,7 @@ class Arrangement:
                  configuration_builder: ConfigurationBuilder,
                  initial_settings_builder: SetupSettingsBuilder = None,
                  predefined_properties: PredefinedProperties = PredefinedProperties(),
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.ACT_PHASE_OS_PROCESS_EXECUTOR
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
         self.test_case = test_case
         self.predefined_properties = predefined_properties

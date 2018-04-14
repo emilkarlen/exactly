@@ -12,6 +12,8 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util import file_utils
+from exactly_lib.util.process_execution import executable_factories
+from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
@@ -90,6 +92,7 @@ class Arrangement(ArrangementWithSds):
                  home_or_sds_contents: home_and_sds_populators.HomeOrSdsPopulator = home_and_sds_populators.empty(),
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
+                 executable_factory: ExecutableFactory = executable_factories.get_factory_for_current_operating_system(),
                  symbols: SymbolTable = None,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
@@ -101,6 +104,7 @@ class Arrangement(ArrangementWithSds):
                          process_execution_settings=process_execution_settings,
                          symbols=symbols)
         self.output_file_to_transform = output_file_to_transform
+        self.executable_factory = executable_factory
 
 
 class Expectation:
@@ -216,6 +220,7 @@ class Executor:
         assert isinstance(program, Program)
         execution_result = pgm_execution.make_transformed_file_from_output(pgm_output_dir,
                                                                            self.arrangement.process_execution_settings,
+                                                                           self.arrangement.executable_factory,
                                                                            self.arrangement.output_file_to_transform,
                                                                            program)
         proc_exe_result = execution_result.process_result
