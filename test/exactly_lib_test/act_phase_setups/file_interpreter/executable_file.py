@@ -8,7 +8,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
-from exactly_lib.util.process_execution.command import executable_file_command
+from exactly_lib.util.process_execution.commands import executable_file_command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
