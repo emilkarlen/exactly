@@ -15,6 +15,8 @@ from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_no_instructions_and_no_preprocessor
+from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
+    ActPhaseOsProcessExecutorThatRecordsArguments
 
 
 def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSetup:
@@ -55,6 +57,7 @@ DUMMY_TEST_CASE_DEFINITION = test_case_definition_with_no_instructions_and_no_pr
 DUMMY_CASE_PROCESSING = case_processing.Configuration(
     DUMMY_TEST_CASE_DEFINITION,
     test_case_handling_setup_with_identity_preprocessor(),
+    ActPhaseOsProcessExecutorThatRecordsArguments(),
     False,
 )
 

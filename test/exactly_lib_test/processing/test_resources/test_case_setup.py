@@ -5,6 +5,7 @@ from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.processors import TestCaseDefinition, Configuration
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.test_case import os_services
 from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_does_nothing
 
 
@@ -43,4 +44,5 @@ def test_case_definition_with_no_instructions_and_no_preprocessor() -> TestCaseD
 def configuration_with_no_instructions_and_no_preprocessor() -> Configuration:
     return Configuration(test_case_definition_with_no_instructions_and_no_preprocessor(),
                          test_case_handling_setup(),
+                         os_services.ACT_PHASE_OS_PROCESS_EXECUTOR,
                          is_keep_sandbox=False)

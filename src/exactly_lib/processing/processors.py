@@ -15,7 +15,7 @@ from exactly_lib.section_document import exceptions
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.line_source import source_location_path_of_non_empty_location_path
 
@@ -38,9 +38,11 @@ class Configuration:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
                  default_handling_setup: TestCaseHandlingSetup,
+                 act_phase_sub_process_executor: ActPhaseOsProcessExecutor,
                  is_keep_sandbox: bool,
                  sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self.default_handling_setup = default_handling_setup
+        self.act_phase_sub_process_executor = act_phase_sub_process_executor
         self.test_case_definition = test_case_definition
         self.is_keep_sandbox = is_keep_sandbox
         self.sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
@@ -73,6 +75,7 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
     return _Executor(configuration.default_handling_setup.act_phase_setup,
+                     configuration.act_phase_sub_process_executor,
                      configuration.is_keep_sandbox,
                      configuration.test_case_definition.predefined_properties,
                      configuration.sandbox_directory_root_name_prefix)
@@ -120,11 +123,13 @@ def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:
 class _Executor(processing_utils.Executor):
     def __init__(self,
                  default_act_phase_setup: ActPhaseSetup,
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  is_keep_sandbox: bool,
                  predefined_properties: full_execution.PredefinedProperties,
                  sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-'):
         self.predefined_properties = predefined_properties
         self.default_act_phase_setup = default_act_phase_setup
+        self.act_phase_os_process_executor = act_phase_os_process_executor
         self._is_keep_sandbox = is_keep_sandbox
         self._sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
 
@@ -137,6 +142,7 @@ class _Executor(processing_utils.Executor):
                                       ConfigurationBuilder(dir_containing_test_case_file,
                                                            dir_containing_test_case_file,
                                                            act_phase_handling_for_setup(self.default_act_phase_setup)),
+                                      self.act_phase_os_process_executor,
                                       self._sandbox_directory_root_name_prefix,
                                       self._is_keep_sandbox,
                                       )

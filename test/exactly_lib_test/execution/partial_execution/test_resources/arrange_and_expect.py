@@ -4,8 +4,8 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case import os_services
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
@@ -17,10 +17,12 @@ class Arrangement:
     def __init__(self,
                  test_case: partial_execution.TestCase,
                  act_phase_handling: ActPhaseHandling,
-                 initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings()):
+                 initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.ACT_PHASE_OS_PROCESS_EXECUTOR):
         self.test_case = test_case
         self.act_phase_handling = act_phase_handling
         self.initial_setup_settings = initial_setup_settings
+        self.act_phase_os_process_executor = act_phase_os_process_executor
 
 
 class Expectation:
@@ -39,7 +41,7 @@ def execute_and_check(put: unittest.TestCase,
             partial_result = partial_execution.execute(
                 arrangement.act_phase_handling,
                 arrangement.test_case,
-                partial_execution.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                partial_execution.Configuration(arrangement.act_phase_os_process_executor,
                                                 hds,
                                                 dict(os.environ)),
                 arrangement.initial_setup_settings,

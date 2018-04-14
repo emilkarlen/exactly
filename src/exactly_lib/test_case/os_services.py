@@ -11,7 +11,8 @@ from exactly_lib.util import failure_details
 from exactly_lib.util.failure_details import new_failure_details_from_exception, FailureDetails
 from exactly_lib.util.process_execution import command_to_executable
 from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
+from exactly_lib.util.process_execution.command_to_executable import ExecutableFactory
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.std import StdFiles
 
 
@@ -51,7 +52,7 @@ class OsServices:
             self.copy_tree_preserve_as_much_as_possible__detect_ex,
             src, dst)
 
-    def make_executable__detect_ex(self, command: Command) -> Executable:
+    def executable_factory__detect_ex(self) -> ExecutableFactory:
         """
         :raises DetectedException
         """
@@ -98,24 +99,28 @@ class _Default(OsServices):
                 FailureDetails('Failed to copy tree {} -> {}:\n{}'.format(src, dst, str(ex)),
                                ex))
 
-    def make_executable__detect_ex(self, command: Command) -> Executable:
+    def executable_factory__detect_ex(self) -> ExecutableFactory:
         if self._platform_system_not_supported:
             raise exception_detection.DetectedException(
                 failure_details.new_failure_details_from_message(self._platform_system_not_supported)
             )
-        return self._executable_factory.make(command)
+        return self._executable_factory
 
 
 class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
+    def __init__(self, executable_factory: ExecutableFactory):
+        self._executable_factory = executable_factory
+
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
                 process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+        executable = self._executable_factory.make(command)
         try:
-            exit_code = subprocess.call(command.args,
+            exit_code = subprocess.call(executable.arg_list_or_str,
                                         timeout=process_execution_settings.timeout_in_seconds,
                                         env=process_execution_settings.environ,
-                                        shell=command.shell,
+                                        shell=executable.is_shell,
                                         stdin=std_files.stdin,
                                         stdout=std_files.output.out,
                                         stderr=std_files.output.err)
@@ -133,7 +138,23 @@ class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
         return new_eh_hard_error(new_failure_details_from_exception(ex, message=msg))
 
 
-ACT_PHASE_OS_PROCESS_EXECUTOR = ActPhaseSubProcessExecutor()
+class _ActPhaseSubProcessExecutorForUnsupportedSystem(ActPhaseOsProcessExecutor):
+    def execute(self,
+                command: Command,
+                std_files: StdFiles,
+                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+        raise ValueError('System not supported: ' + platform.system())
+
+
+def _act_phase_os_process_executor_for_current_system() -> ActPhaseOsProcessExecutor:
+    try:
+        executable_factory = command_to_executable.get_factory_for_platform_system(platform.system())
+        return ActPhaseSubProcessExecutor(executable_factory)
+    except KeyError:
+        return _ActPhaseSubProcessExecutorForUnsupportedSystem()
+
+
+ACT_PHASE_OS_PROCESS_EXECUTOR = _act_phase_os_process_executor_for_current_system()
 
 
 def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):
