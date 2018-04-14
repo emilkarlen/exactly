@@ -5,7 +5,7 @@ import subprocess
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
 from exactly_lib.util.process_execution import process_output_files
-from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, Command
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Command
 from exactly_lib.util.process_execution.process_output_files import FileNames
 
 

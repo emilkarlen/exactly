@@ -17,7 +17,7 @@ from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
-from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.test_case.test_resources import sh_assertions

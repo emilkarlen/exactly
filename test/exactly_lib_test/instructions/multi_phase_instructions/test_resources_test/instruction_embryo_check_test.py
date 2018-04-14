@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelSdsOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib.util.process_execution import os_process_execution
+from exactly_lib.util.process_execution import execution_elements
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     do_return
@@ -365,7 +365,7 @@ class TestMiscCases(TestCaseBase):
             ParserThatGives(instruction),
             single_line_source(),
             ArrangementWithSds(
-                process_execution_settings=os_process_execution.with_environ(environ_of_arrangement)),
+                process_execution_settings=execution_elements.with_environ(environ_of_arrangement)),
             sut.Expectation(
                 main_side_effect_on_environment_variables=
                 asrt.equals(expected_environment_variables)),

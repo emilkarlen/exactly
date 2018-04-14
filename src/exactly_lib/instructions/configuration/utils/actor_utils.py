@@ -21,7 +21,7 @@ from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.option_parsing import matches
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
-from exactly_lib.util.process_execution.os_process_execution import Command, shell_command, executable_file_command
+from exactly_lib.util.process_execution.execution_elements import Command, shell_command, executable_file_command
 
 COMMAND_LINE_ACTOR_OPTION_NAME = a.OptionName(long_name='command')
 COMMAND_LINE_ACTOR_OPTION = long_option_syntax(COMMAND_LINE_ACTOR_OPTION_NAME.long)

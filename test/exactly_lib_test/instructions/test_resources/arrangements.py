@@ -1,6 +1,6 @@
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, ProcessExecutionSettings
+from exactly_lib.util.process_execution.execution_elements import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators

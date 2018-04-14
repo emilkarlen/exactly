@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionTy
 from exactly_lib.test_case_utils.parse.parse_file_ref import path_or_string_reference_restrictions, \
     PATH_COMPONENT_STRING_REFERENCES_RESTRICTION
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.execution_elements import Command
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \

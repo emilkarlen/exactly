@@ -4,7 +4,7 @@ from exactly_lib.act_phase_setups.source_interpreter.source_file_management impo
     StandardSourceFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor
-from exactly_lib.util.process_execution.os_process_execution import Command
+from exactly_lib.util.process_execution.execution_elements import Command
 
 
 def act_phase_handling(command: Command) -> ActPhaseHandling:

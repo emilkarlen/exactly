@@ -12,7 +12,7 @@ from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_utils.program.execution import store_result_in_instruction_tmp_dir as pgm_execution
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util import file_utils
-from exactly_lib.util.process_execution.os_process_execution import ProcessExecutionSettings, with_no_timeout
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
