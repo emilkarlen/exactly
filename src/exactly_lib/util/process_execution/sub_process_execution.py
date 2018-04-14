@@ -5,7 +5,7 @@ import subprocess
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
 from exactly_lib.util.process_execution import process_output_files
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Command
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
 from exactly_lib.util.process_execution.process_output_files import FileNames
 
 
@@ -54,9 +54,9 @@ class ExecutorThatStoresResultInFilesInDir:
     def __init__(self, process_execution_settings: ProcessExecutionSettings):
         self.process_execution_settings = process_execution_settings
 
-    def apply(self,
-              storage_dir: pathlib.Path,
-              command: Command) -> Result:
+    def execute(self,
+                storage_dir: pathlib.Path,
+                executable: Executable) -> Result:
 
         def _err_msg(exception: Exception) -> str:
             return 'Error executing process:\n' + str(exception)
@@ -65,13 +65,13 @@ class ExecutorThatStoresResultInFilesInDir:
         with open(str(storage_dir / process_output_files.STDOUT_FILE_NAME), 'w') as f_stdout:
             with open(str(storage_dir / process_output_files.STDERR_FILE_NAME), 'w') as f_stderr:
                 try:
-                    exit_code = subprocess.call(command.args,
+                    exit_code = subprocess.call(executable.arg_list_or_str,
                                                 stdin=subprocess.DEVNULL,
                                                 stdout=f_stdout,
                                                 stderr=f_stderr,
                                                 env=self.process_execution_settings.environ,
                                                 timeout=self.process_execution_settings.timeout_in_seconds,
-                                                shell=command.shell)
+                                                shell=executable.is_shell)
                     write_new_text_file(storage_dir / process_output_files.EXIT_CODE_FILE_NAME,
                                         str(exit_code))
                     return Result(None,
@@ -116,8 +116,8 @@ def result_for_non_success_or_non_zero_exit_code(result_and_err: ResultAndStderr
         return failure_message_for_failure_to_failure_to_execute_process(result_and_err)
 
 
-def execute_and_read_stderr_if_non_zero_exitcode(command: Command,
+def execute_and_read_stderr_if_non_zero_exitcode(executable: Executable,
                                                  executor: ExecutorThatStoresResultInFilesInDir,
                                                  storage_dir: pathlib.Path) -> ResultAndStderr:
-    result = executor.apply(storage_dir, command)
+    result = executor.execute(storage_dir, executable)
     return read_stderr_if_non_zero_exitcode(result)

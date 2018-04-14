@@ -27,13 +27,13 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
-from exactly_lib_test.test_case_utils.test_resources.py_program import \
-    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as pr
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.py_program import \
+    PYTHON_PROGRAM_THAT_PRINTS_COMMAND_LINE_ARGUMENTS_ON_SEPARATE_LINES
 
 COMMAND_THAT_RUNS_PYTHON_PROGRAM_FILE = executable_file_command(sys.executable, [])
 

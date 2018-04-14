@@ -67,6 +67,10 @@ class Executable:
 
 class Command:
     @property
+    def as_executable_tmp_method(self) -> Executable:
+        return Executable(self.shell, self.args)
+
+    @property
     def args(self):
         """
         :return: Either a string or an iterable of strings

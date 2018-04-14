@@ -45,7 +45,7 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     """
     executor = ExecutorThatStoresResultInFilesInDir(process_execution_settings)
 
-    result = executor.apply(pgm_output_dir, program.command)
+    result = executor.execute(pgm_output_dir, program.command.as_executable_tmp_method)
     if program.transformation.is_identity_transformer:
         return ResultWithTransformation(result,
                                         result.file_names.name_of(transformed_output))

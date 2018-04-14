@@ -16,27 +16,26 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.test_case.phases.common import PhaseLoggingPaths
+from exactly_lib.test_case.phases.common import PhaseLoggingPaths, InstructionSourceInfo
 from exactly_lib.test_case.phases.common import instruction_log_dir
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_case_utils.program.command import command_resolvers
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
-from exactly_lib.util.process_execution import sub_process_execution as spe
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.parse_source import source4
-from exactly_lib_test.test_case_utils.sub_process_execution import assert_dir_contains_at_least_result_files
 from exactly_lib_test.test_case_utils.test_resources import command_resolvers as test_command_resolvers
-from exactly_lib_test.test_case_utils.test_resources import py_program as py
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import shell_commands
 from exactly_lib_test.test_resources.test_case_base_with_short_description import \
     TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion_str as va_str
+from exactly_lib_test.util.process_execution.sub_process_execution import assert_dir_contains_at_least_result_files
+from exactly_lib_test.util.test_resources import py_program as py
 
 
 class Configuration(ConfigurationBase):
@@ -198,8 +197,8 @@ class TestEnvironmentVariablesArePassedToSubProcess(TestCaseBase):
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
         instruction_name = 'name-of-the-instruction'
-        source_info = spe.InstructionSourceInfo(source.current_line_number,
-                                                instruction_name)
+        source_info = InstructionSourceInfo(source.current_line_number,
+                                            instruction_name)
         self.conf.run_sub_process_test(
             self,
             source,
@@ -222,8 +221,8 @@ class TestOutputIsStoredInFilesInInstructionLogDir(TestCaseBase):
         execution_setup_parser = _SetupParserForExecutingPythonSourceFromInstructionArgumentOnCommandLine(
             pre_or_post_validation.ConstantSuccessValidator())
         instruction_name = 'name-of-the-instruction'
-        source_info = spe.InstructionSourceInfo(source.current_line_number,
-                                                instruction_name)
+        source_info = InstructionSourceInfo(source.current_line_number,
+                                            instruction_name)
         self.conf.run_sub_process_test(
             self,
             source,
@@ -256,7 +255,7 @@ class TestWhenNonZeroExitCodeTheContentsOfStderrShouldBeIncludedInTheErrorMessag
 class _InstructionLogDirContainsOutFiles(asrt.ValueAssertion):
     def __init__(self,
                  phase: Phase,
-                 source_info: spe.InstructionSourceInfo,
+                 source_info: InstructionSourceInfo,
                  expected_files_contents: SubProcessResult):
         self.phase = phase
         self.source_info = source_info
