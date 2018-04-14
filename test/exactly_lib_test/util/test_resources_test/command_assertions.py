@@ -1,8 +1,8 @@
 import pathlib
 import unittest
 
-from exactly_lib.util.process_execution.execution_elements import ExecutableFileCommand, executable_program_command, \
-    shell_command, executable_file_command
+from exactly_lib.util.process_execution.command import ExecutableFileCommand, executable_program_command, \
+    executable_file_command, shell_command
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.test_resources import command_assertions as sut

@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinData
-from exactly_lib.util.process_execution.execution_elements import executable_program_command
+from exactly_lib.util.process_execution.command import executable_program_command
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

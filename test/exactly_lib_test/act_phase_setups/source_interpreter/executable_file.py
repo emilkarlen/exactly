@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.source_interpreter import executable_file as s
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceFileManager, \
     SourceInterpreterSetup
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.util.process_execution.execution_elements import ProgramAndArguments
+from exactly_lib.util.process_execution.command import ProgramAndArguments
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.source_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, Expectation, \

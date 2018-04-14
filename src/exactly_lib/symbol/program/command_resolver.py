@@ -11,7 +11,7 @@ from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.type_system.logic.program.command_value import CommandValue
-from exactly_lib.util.process_execution.execution_elements import Command
+from exactly_lib.util.process_execution.command import Command
 from exactly_lib.util.symbol_table import SymbolTable
 
 
