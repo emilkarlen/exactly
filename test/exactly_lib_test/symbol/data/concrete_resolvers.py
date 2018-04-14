@@ -4,7 +4,10 @@ from exactly_lib.symbol.data import list_resolvers, file_ref_resolvers
 from exactly_lib.symbol.data import string_resolver as sr, file_ref_resolver as pr, list_resolver as lr, \
     visitor as sut
 from exactly_lib.symbol.data.string_resolvers import str_constant
-from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib.symbol.resolver_structure import DataValueResolver
+from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
+from exactly_lib.type_system.value_type import ValueType, DataValueType
+from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
@@ -77,7 +80,7 @@ class TestValueVisitor(unittest.TestCase):
         visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
         with self.assertRaises(TypeError):
-            visitor.visit('a string is not a SymbolReference')
+            visitor.visit(_UnknownDataValueResolver())
 
 
 class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.DataValueResolverVisitor):
@@ -96,3 +99,20 @@ class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.DataValueResolverV
     def _visit_list(self, value: lr.ListResolver):
         self.visited_classes.append(lr.ListResolver)
         return self.ret_val
+
+
+class _UnknownDataValueResolver(DataValueResolver):
+    @property
+    def data_value_type(self) -> DataValueType:
+        raise NotImplementedError('not used')
+
+    @property
+    def value_type(self) -> ValueType:
+        raise NotImplementedError('not used')
+
+    @property
+    def references(self) -> list:
+        raise NotImplementedError('not used')
+
+    def resolve(self, symbols: SymbolTable) -> DirDependentValue:
+        raise NotImplementedError('not used')
