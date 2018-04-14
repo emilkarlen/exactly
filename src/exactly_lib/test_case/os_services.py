@@ -1,4 +1,5 @@
 import pathlib
+import platform
 import shutil
 import subprocess
 
@@ -6,9 +7,11 @@ from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code, new_eh_hard_error
 from exactly_lib.test_case.phases.result import sh
+from exactly_lib.util import failure_details
 from exactly_lib.util.failure_details import new_failure_details_from_exception, FailureDetails
+from exactly_lib.util.process_execution import command_to_executable
 from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
+from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, Executable
 from exactly_lib.util.std import StdFiles
 
 
@@ -48,6 +51,12 @@ class OsServices:
             self.copy_tree_preserve_as_much_as_possible__detect_ex,
             src, dst)
 
+    def make_executable__detect_ex(self, command: Command) -> Executable:
+        """
+        :raises DetectedException
+        """
+        raise NotImplementedError('abstract method')
+
 
 def new_default() -> OsServices:
     return _Default()
@@ -58,6 +67,13 @@ def new_with_environ() -> OsServices:
 
 
 class _Default(OsServices):
+    def __init__(self):
+        try:
+            self._executable_factory = command_to_executable.get_factory_for_platform_system(platform.system())
+            self._platform_system_not_supported = None
+        except KeyError:
+            self._platform_system_not_supported = 'System not supported: ' + platform.system()
+
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         try:
             path.mkdir(parents=True, exist_ok=True)
@@ -81,6 +97,13 @@ class _Default(OsServices):
             raise exception_detection.DetectedException(
                 FailureDetails('Failed to copy tree {} -> {}:\n{}'.format(src, dst, str(ex)),
                                ex))
+
+    def make_executable__detect_ex(self, command: Command) -> Executable:
+        if self._platform_system_not_supported:
+            raise exception_detection.DetectedException(
+                failure_details.new_failure_details_from_message(self._platform_system_not_supported)
+            )
+        return self._executable_factory.make(command)
 
 
 class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
