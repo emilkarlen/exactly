@@ -1,8 +1,8 @@
 import unittest
 
 from exactly_lib.util.process_execution import process_output_files, sub_process_execution as sut
-from exactly_lib.util.process_execution.execution_elements import with_no_timeout, executable_program_command2, \
-    executable_file_command
+from exactly_lib.util.process_execution.command import executable_program_command2, executable_file_command
+from exactly_lib.util.process_execution.execution_elements import with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import FileNames
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.file_structure import DirContents, File

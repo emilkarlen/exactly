@@ -1,8 +1,8 @@
 import pathlib
 import sys
 
-from exactly_lib.util.process_execution.execution_elements import Command, ExecutableFileCommand, \
-    ExecutableProgramCommand, ShellCommand
+from exactly_lib.util.process_execution.command import Command, ShellCommand, ExecutableProgramCommand, \
+    ExecutableFileCommand
 from exactly_lib_test.test_resources.programs import python_program_execution
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

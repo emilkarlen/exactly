@@ -7,7 +7,7 @@ from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, Li
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue, StdinData
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
-from exactly_lib.util.process_execution.execution_elements import Command
+from exactly_lib.util.process_execution.command import Command
 
 
 class Program(tuple):

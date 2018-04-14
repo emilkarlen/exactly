@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinData
-from exactly_lib.util.process_execution.execution_elements import Command
+from exactly_lib.util.process_execution.command import Command
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.type_system.logic.test_resources import line_transformer_assertions as asrt_line_trans

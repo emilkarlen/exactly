@@ -6,8 +6,8 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.logic.program.command_value import CommandValue
-from exactly_lib.util.process_execution.execution_elements import Command, ShellCommand, ExecutableFileCommand, \
-    ExecutableProgramCommand, ProgramAndArguments
+from exactly_lib.util.process_execution.command import Command, ShellCommand, ExecutableProgramCommand, \
+    ExecutableFileCommand, ProgramAndArguments
 
 
 class CommandValueForShell(CommandValue):
