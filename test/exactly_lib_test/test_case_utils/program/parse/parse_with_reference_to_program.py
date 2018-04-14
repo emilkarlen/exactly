@@ -16,7 +16,6 @@ from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_refs import simple_of_rel_option
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
-from exactly_lib.util.process_execution import commands
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as asrt_rr
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
@@ -327,9 +326,8 @@ class TestResolving(unittest.TestCase):
             def assertion(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
                 return asrt_pgm_val.matches_program(
                     command=asrt_command.equals_executable_file_command(
-                        commands.executable_file_command(
-                            program_file=exe_file_ref.value_of_any_dependency(tcds),
-                            arguments=expected_arguments)
+                        executable_file=exe_file_ref.value_of_any_dependency(tcds),
+                        arguments=expected_arguments
                     ),
                     stdin=asrt_pgm_val.no_stdin(),
                     transformer=asrt_line_transformer.is_identity_transformer()
@@ -347,16 +345,15 @@ class TestResolving(unittest.TestCase):
                 case(RelOptionType.REL_TMP)]
 
     @staticmethod
-    def _executable_program_case(expected_arguments: List[str]) -> Sequence[
-        ResolvingCase]:
+    def _executable_program_case(expected_arguments: List[str]
+                                 ) -> Sequence[ResolvingCase]:
         the_executable_program = 'the executable program'
 
         def assertion(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
             return asrt_pgm_val.matches_program(
-                command=asrt_command.equals_executable_program_command(
-                    commands.system_program_command(
-                        program=the_executable_program,
-                        arguments=expected_arguments)
+                command=asrt_command.equals_system_program_command(
+                    program=the_executable_program,
+                    arguments=expected_arguments
                 ),
                 stdin=asrt_pgm_val.no_stdin(),
                 transformer=asrt_line_transformer.is_identity_transformer()

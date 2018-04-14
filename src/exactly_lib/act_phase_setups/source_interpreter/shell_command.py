@@ -3,7 +3,6 @@ import shlex
 
 from exactly_lib.act_phase_setups.source_interpreter import parser_and_executor as pa
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
-from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
@@ -37,9 +36,10 @@ class Executor(pa.ExecutorBase):
         script_file_path = self._source_file_path(script_output_dir_path)
         script_file_argument = shlex.quote(str(script_file_path))
 
-        command_line_elements = list_resolvers.from_strings([
-            string_resolvers.str_constant(self.interpreter_shell_command),
-            string_resolvers.str_constant(script_file_argument),
+        command_line_elements = string_resolvers.from_fragments([
+            string_resolvers.str_fragment(self.interpreter_shell_command),
+            string_resolvers.str_fragment(' '),
+            string_resolvers.str_fragment(script_file_argument),
         ])
 
-        return command_resolvers.for_shell().new_with_additional_argument_list(command_line_elements)
+        return command_resolvers.for_shell(command_line_elements)

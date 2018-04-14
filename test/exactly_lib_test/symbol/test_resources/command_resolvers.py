@@ -1,10 +1,8 @@
 from typing import Sequence
 
-from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.program.command_resolver import CommandDriverResolver
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.type_system.logic.program.command_value import CommandValue
-from exactly_lib.util.symbol_table import SymbolTable
 
 
 class CommandDriverResolverForConstantTestImpl(CommandDriverResolver):
@@ -18,8 +16,3 @@ class CommandDriverResolverForConstantTestImpl(CommandDriverResolver):
     @property
     def validators(self) -> Sequence[PreOrPostSdsValidator]:
         return self._validators
-
-    def make(self,
-             symbols: SymbolTable,
-             arguments: ListResolver) -> CommandValue:
-        return self._constant_value

@@ -1,7 +1,7 @@
 import functools
 import pathlib
 import shlex
-from typing import Sequence
+from typing import Sequence, List
 
 from exactly_lib.act_phase_setups.common import relativity_configuration_of_action_to_check
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts
@@ -50,7 +50,7 @@ def act_phase_handling(interpreter: Command) -> ActPhaseHandling:
 
 
 def constructor(interpreter: Command) -> parts.Constructor:
-    return _CommandTranslator().visit(interpreter)
+    return _CommandTranslator(interpreter.arguments).visit(interpreter.driver)
 
 
 class ConstructorForInterpreterThatIsAnExecutableFile(parts.Constructor):
@@ -199,15 +199,18 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
 
             self.source.arguments,
         ])
-        return command_resolvers.for_shell().new_with_additional_argument_list(command_line_elements)
+        return command_resolvers.for_shell(string_resolvers.from_list_resolver(command_line_elements))
 
 
-class _CommandTranslator(commands.CommandVisitor):
-    def visit_shell(self, command: commands.ShellCommand) -> parts.Constructor:
-        return ConstructorForInterpreterThatIsAShellCommand(command.args)
+class _CommandTranslator(commands.CommandDriverVisitor):
+    def __init__(self, arguments: List[str]):
+        self.arguments = arguments
 
-    def visit_executable_file(self, command: commands.ExecutableFileCommand) -> parts.Constructor:
-        return ConstructorForInterpreterThatIsAnExecutableFile(command.program_and_arguments)
+    def visit_shell(self, driver: commands.CommandDriverForShell) -> parts.Constructor:
+        return ConstructorForInterpreterThatIsAShellCommand(driver.shell_command_line_with_args(self.arguments))
 
-    def visit_system_program(self, command: commands.SystemProgramCommand) -> parts.Constructor:
+    def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> parts.Constructor:
+        return ConstructorForInterpreterThatIsAnExecutableFile(driver.as_program_and_args(self.arguments))
+
+    def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> parts.Constructor:
         raise ValueError('Unsupported interpreter: System Program Command')

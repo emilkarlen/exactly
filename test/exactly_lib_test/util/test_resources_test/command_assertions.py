@@ -1,8 +1,9 @@
 import pathlib
 import unittest
 
-from exactly_lib.util.process_execution.commands import ExecutableFileCommand, system_program_command, \
-    executable_file_command, shell_command
+from exactly_lib.util.process_execution.command import Command
+from exactly_lib.util.process_execution.commands import CommandDriverForSystemProgram, CommandDriverForExecutableFile, \
+    CommandDriverForShell
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.util.test_resources import command_assertions as sut
@@ -10,35 +11,29 @@ from exactly_lib_test.util.test_resources import command_assertions as sut
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestExecutableFileDriver),
+        unittest.makeSuite(TestSystemProgramDriver),
+        unittest.makeSuite(TestShellDriver),
+        unittest.makeSuite(TestCommand),
         unittest.makeSuite(TestExecutableFile),
-        unittest.makeSuite(TestExecutableProgram),
+        unittest.makeSuite(TestSystemProgram),
         unittest.makeSuite(TestShell),
     ])
 
 
-class TestExecutableFile(unittest.TestCase):
+class TestExecutableFileDriver(unittest.TestCase):
     def test_equals(self):
         path = pathlib.Path('here')
         cases = [
             NEA('without arguments',
                 expected=
-                ExecutableFileCommand(path,
-                                      []),
+                CommandDriverForExecutableFile(path),
                 actual=
-                ExecutableFileCommand(path,
-                                      []),
-                ),
-            NEA('with arguments',
-                expected=
-                ExecutableFileCommand(path,
-                                      ['arg']),
-                actual=
-                ExecutableFileCommand(path,
-                                      ['arg']),
+                CommandDriverForExecutableFile(path),
                 ),
         ]
         for case in cases:
-            assertion = sut.equals_executable_file_command(case.expected)
+            assertion = sut.equals_executable_file_command_driver(case.expected)
             with self.subTest(case.name):
                 assertion.apply_without_message(self, case.actual)
 
@@ -47,57 +42,35 @@ class TestExecutableFile(unittest.TestCase):
         cases = [
             NEA('unexpected path',
                 expected=
-                ExecutableFileCommand(path,
-                                      []),
+                CommandDriverForExecutableFile(path),
                 actual=
-                ExecutableFileCommand(path / 'unexpected',
-                                      []),
-                ),
-            NEA('unexpected arguments',
-                expected=
-                ExecutableFileCommand(path,
-                                      ['expected']),
-                actual=
-                ExecutableFileCommand(path,
-                                      ['expected', 'unexpected']),
+                CommandDriverForExecutableFile(path / 'unexpected'),
                 ),
             NEA('unexpected command type',
                 expected=
-                ExecutableFileCommand(path,
-                                      ['expected']),
+                CommandDriverForExecutableFile(path),
                 actual=
-                system_program_command(path.name,
-                                       ['expected']),
+                CommandDriverForSystemProgram(path.name),
                 ),
         ]
         for case in cases:
-            assertion = sut.equals_executable_file_command(case.expected)
+            assertion = sut.equals_executable_file_command_driver(case.expected)
             with self.subTest(case.name):
                 assert_that_assertion_fails(assertion, case.actual)
 
 
-class TestExecutableProgram(unittest.TestCase):
+class TestSystemProgramDriver(unittest.TestCase):
     def test_equals(self):
         cases = [
             NEA('without arguments',
                 expected=
-                system_program_command('expected program',
-                                       []),
+                CommandDriverForSystemProgram('expected program'),
                 actual=
-                system_program_command('expected program',
-                                       []),
-                ),
-            NEA('without arguments',
-                expected=
-                system_program_command('expected program',
-                                       ['expected arg']),
-                actual=
-                system_program_command('expected program',
-                                       ['expected arg']),
+                CommandDriverForSystemProgram('expected program'),
                 ),
         ]
         for case in cases:
-            assertion = sut.equals_executable_program_command(case.expected)
+            assertion = sut.equals_system_program_command_driver(case.expected)
             with self.subTest(case.name):
                 assertion.apply_without_message(self, case.actual)
 
@@ -105,61 +78,35 @@ class TestExecutableProgram(unittest.TestCase):
         cases = [
             NEA('unexpected program',
                 expected=
-                system_program_command('expected program',
-                                       []),
+                CommandDriverForSystemProgram('expected program'),
                 actual=
-                system_program_command('actual program',
-                                       []),
-                ),
-            NEA('unexpected arguments',
-                expected=
-                system_program_command('expected program',
-                                       ['expected arg']),
-                actual=
-                system_program_command('expected program',
-                                       ['actual arg']),
-                ),
-            NEA('unexpected number of arguments',
-                expected=
-                system_program_command('expected program',
-                                       ['', '']),
-                actual=
-                system_program_command('expected program',
-                                       ['']),
+                CommandDriverForSystemProgram('actual program'),
                 ),
             NEA('unexpected command type',
                 expected=
-                system_program_command('expected',
-                                       []),
+                CommandDriverForSystemProgram('expected'),
                 actual=
-                executable_file_command(pathlib.Path('expected'),
-                                        []),
+                CommandDriverForExecutableFile(pathlib.Path('expected')),
                 ),
         ]
         for case in cases:
-            assertion = sut.equals_executable_program_command(case.expected)
+            assertion = sut.equals_system_program_command_driver(case.expected)
             with self.subTest(case.name):
                 assert_that_assertion_fails(assertion, case.actual)
 
 
-class TestShell(unittest.TestCase):
+class TestShellDriver(unittest.TestCase):
     def test_equals(self):
         cases = [
             NEA('single string',
                 expected=
-                shell_command('expected'),
+                CommandDriverForShell('expected'),
                 actual=
-                shell_command('expected'),
-                ),
-            NEA('multiple strings',
-                expected=
-                shell_command('expected arg'),
-                actual=
-                shell_command('expected arg'),
+                CommandDriverForShell('expected'),
                 ),
         ]
         for case in cases:
-            assertion = sut.equals_shell_command(case.expected)
+            assertion = sut.equals_shell_command_driver(case.expected)
             with self.subTest(case.name):
                 assertion.apply_without_message(self, case.actual)
 
@@ -167,18 +114,172 @@ class TestShell(unittest.TestCase):
         cases = [
             NEA('unexpected command string',
                 expected=
-                shell_command('expected'),
+                CommandDriverForShell('expected'),
                 actual=
-                shell_command('actual'),
+                CommandDriverForShell('actual'),
                 ),
             NEA('unexpected command type',
                 expected=
-                shell_command('expected'),
+                CommandDriverForShell('expected'),
                 actual=
-                system_program_command('expected', []),
+                CommandDriverForSystemProgram('expected'),
                 ),
         ]
         for case in cases:
-            assertion = sut.equals_shell_command(case.expected)
+            assertion = sut.equals_shell_command_driver(case.expected)
             with self.subTest(case.name):
                 assert_that_assertion_fails(assertion, case.actual)
+
+
+class TestCommand(unittest.TestCase):
+    def test_equals(self):
+        cases = [
+            NEA('shell',
+                expected=
+                sut.matches_command(sut.equals_shell_command_driver(CommandDriverForShell('command line')),
+                                    ['arg']),
+                actual=
+                Command(CommandDriverForShell('command line'), ['arg']),
+                ),
+            NEA('without arguments',
+                expected=
+                sut.matches_command(sut.equals_system_program_command_driver(CommandDriverForSystemProgram('program')),
+                                    []),
+                actual=
+                Command(CommandDriverForSystemProgram('program'),
+                        []),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_equals(self):
+        cases = [
+            NEA('unexpected driver type',
+                expected=
+                sut.matches_command(sut.equals_shell_command_driver(CommandDriverForShell('command')),
+                                    ['arg']),
+                actual=
+                Command(CommandDriverForSystemProgram('command'), ['arg']),
+                ),
+            NEA('unexpected driver data',
+                expected=
+                sut.matches_command(sut.equals_system_program_command_driver(CommandDriverForSystemProgram('expected')),
+                                    []),
+                actual=
+                Command(CommandDriverForSystemProgram('unexpected'), []),
+                ),
+            NEA('unexpected argument',
+                expected=
+                sut.matches_command(sut.equals_system_program_command_driver(CommandDriverForSystemProgram('command')),
+                                    ['expected']),
+                actual=
+                Command(CommandDriverForSystemProgram('command'), ['expected', 'unexpected']),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestExecutableFile(unittest.TestCase):
+    def test_equals(self):
+        cases = [
+            NEA('',
+                expected=
+                sut.equals_executable_file_command(pathlib.Path('expected'), ['arg']),
+                actual=
+                Command(CommandDriverForExecutableFile(pathlib.Path('expected')), ['arg']),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_equals(self):
+        cases = [
+            NEA('unexpected file',
+                expected=
+                sut.equals_executable_file_command(pathlib.Path('expected'), []),
+                actual=
+                Command(CommandDriverForExecutableFile(pathlib.Path('unExpected')), []),
+                ),
+            NEA('unexpected driver type',
+                expected=
+                sut.equals_executable_file_command(pathlib.Path('expected'), []),
+                actual=
+                Command(CommandDriverForSystemProgram('expected'), []),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestSystemProgram(unittest.TestCase):
+    def test_equals(self):
+        cases = [
+            NEA('',
+                expected=
+                sut.equals_system_program_command('expected', ['arg']),
+                actual=
+                Command(CommandDriverForSystemProgram('expected'), ['arg']),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_equals(self):
+        cases = [
+            NEA('unexpected programn',
+                expected=
+                sut.equals_system_program_command('expected', []),
+                actual=
+                Command(CommandDriverForSystemProgram('unExpected'), []),
+                ),
+            NEA('unexpected driver type',
+                expected=
+                sut.equals_system_program_command('expected', []),
+                actual=
+                Command(CommandDriverForExecutableFile(pathlib.Path('expected')), []),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)
+
+
+class TestShell(unittest.TestCase):
+    def test_equals(self):
+        cases = [
+            NEA('',
+                expected=
+                sut.equals_shell_command('expected', ['arg']),
+                actual=
+                Command(CommandDriverForShell('expected'), ['arg']),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                case.expected.apply_without_message(self, case.actual)
+
+    def test_not_equals(self):
+        cases = [
+            NEA('unexpected command line',
+                expected=
+                sut.equals_shell_command('expected', []),
+                actual=
+                Command(CommandDriverForShell('unExpected'), []),
+                ),
+            NEA('unexpected driver type',
+                expected=
+                sut.equals_shell_command('expected', []),
+                actual=
+                Command(CommandDriverForSystemProgram('expected'), []),
+                ),
+        ]
+        for case in cases:
+            with self.subTest(case.name):
+                assert_that_assertion_fails(case.expected, case.actual)

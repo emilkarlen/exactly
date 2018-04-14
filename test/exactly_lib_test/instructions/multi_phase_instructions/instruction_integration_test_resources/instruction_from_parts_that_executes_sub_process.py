@@ -10,7 +10,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
-from exactly_lib.symbol.data import list_resolvers
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
@@ -289,11 +289,11 @@ class _SetupParserForExecutingShellCommandFromInstructionArgumentOnCommandLine(P
 
     def parse_from_token_parser(self, parser: TokenParser) -> ProgramResolver:
         instruction_argument = parser.consume_current_line_as_string_of_remaining_part_of_current_line()
-        argument_resolver = list_resolvers.from_str_constant(instruction_argument)
+        argument_resolver = string_resolvers.str_constant(instruction_argument)
         return ProgramResolverForCommand(
-            command_resolvers.for_shell(),
-            accumulator.new_with_arguments_and_validators(argument_resolver,
-                                                          [self.validator]))
+            command_resolvers.for_shell(argument_resolver,
+                                        validators=[self.validator]),
+            accumulator.empty())
 
 
 SCRIPT_THAT_EXISTS_WITH_STATUS_0 = 'import sys; sys.exit(0)'

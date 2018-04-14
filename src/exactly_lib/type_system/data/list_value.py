@@ -38,3 +38,8 @@ class ListValue(MultiDirDependentValue[List[str]]):
     def __str__(self):
         return '{}([{}])'.format('ListValue',
                                  ','.join(map(str, self._string_value_elements)))
+
+
+def empty() -> ListValue:
+    return ListValue([]
+                     )
