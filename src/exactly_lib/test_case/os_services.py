@@ -1,5 +1,5 @@
+import os
 import pathlib
-import platform
 import shutil
 import subprocess
 
@@ -9,9 +9,9 @@ from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code, new_
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.util import failure_details
 from exactly_lib.util.failure_details import new_failure_details_from_exception, FailureDetails
-from exactly_lib.util.process_execution import command_to_executable
+from exactly_lib.util.process_execution import executable_factories
 from exactly_lib.util.process_execution.command import Command
-from exactly_lib.util.process_execution.command_to_executable import ExecutableFactory
+from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.std import StdFiles
 
@@ -70,10 +70,10 @@ def new_with_environ() -> OsServices:
 class _Default(OsServices):
     def __init__(self):
         try:
-            self._executable_factory = command_to_executable.get_factory_for_platform_system(platform.system())
+            self._executable_factory = executable_factories.get_factory_for_operating_system(os.name)
             self._platform_system_not_supported = None
         except KeyError:
-            self._platform_system_not_supported = 'System not supported: ' + platform.system()
+            self._platform_system_not_supported = 'System not supported: ' + os.name
 
     def make_dir_if_not_exists__detect_ex(self, path: pathlib.Path):
         try:
@@ -138,23 +138,23 @@ class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
         return new_eh_hard_error(new_failure_details_from_exception(ex, message=msg))
 
 
-class _ActPhaseSubProcessExecutorForUnsupportedSystem(ActPhaseOsProcessExecutor):
+class _ActPhaseSubProcessExecutorForUnsupportedOperatingSystem(ActPhaseOsProcessExecutor):
     def execute(self,
                 command: Command,
                 std_files: StdFiles,
                 process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
-        raise ValueError('System not supported: ' + platform.system())
+        raise ValueError('System not supported: ' + os.name)
 
 
 def _act_phase_os_process_executor_for_current_system() -> ActPhaseOsProcessExecutor:
     try:
-        executable_factory = command_to_executable.get_factory_for_platform_system(platform.system())
+        executable_factory = executable_factories.get_factory_for_operating_system(os.name)
         return ActPhaseSubProcessExecutor(executable_factory)
     except KeyError:
-        return _ActPhaseSubProcessExecutorForUnsupportedSystem()
+        return _ActPhaseSubProcessExecutorForUnsupportedOperatingSystem()
 
 
-ACT_PHASE_OS_PROCESS_EXECUTOR = _act_phase_os_process_executor_for_current_system()
+DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR = _act_phase_os_process_executor_for_current_system()
 
 
 def _raise_fail_to_make_dir_exception(path: pathlib.Path, ex: Exception):

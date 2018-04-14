@@ -7,7 +7,7 @@ from exactly_lib import program_info
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -124,7 +124,7 @@ def dummy_act_phase_handling() -> ActPhaseHandling:
 class Arrangement:
     def __init__(self,
                  act_phase_handling: ActPhaseHandling = dummy_act_phase_handling(),
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR,
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                  hds: HomeDirectoryStructure = HomeDirectoryStructure(pathlib.Path().resolve(),
                                                                       pathlib.Path().resolve()),
                  environ: dict = None,

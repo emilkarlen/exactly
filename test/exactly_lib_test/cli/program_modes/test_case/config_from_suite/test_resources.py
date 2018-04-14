@@ -10,6 +10,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
+from exactly_lib.test_case import os_services
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents
@@ -34,6 +35,7 @@ def run_test_case(command_line_arguments: list,
     main_pgm = main_program.MainProgram(
         std_output_files,
         default_test_case_handling_setup,
+        os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
         test_case_definition,
         test_suite_definition,
     )

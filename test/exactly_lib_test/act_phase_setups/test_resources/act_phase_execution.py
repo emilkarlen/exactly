@@ -7,7 +7,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, \
     ActSourceAndExecutor, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
@@ -39,7 +39,7 @@ class Arrangement:
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
-                 act_phase_process_executor: ActPhaseOsProcessExecutor = ACT_PHASE_OS_PROCESS_EXECUTOR,
+                 act_phase_process_executor: ActPhaseOsProcessExecutor = DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                  symbol_table: SymbolTable = None,
                  ):
         self.hds_contents = hds_contents

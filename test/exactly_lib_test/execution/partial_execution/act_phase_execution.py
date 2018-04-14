@@ -12,7 +12,7 @@ from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_exit_code
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
@@ -359,7 +359,7 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
             return sut.execute(
                 ActPhaseHandling(constructor),
                 test_case,
-                sut.Configuration(ACT_PHASE_OS_PROCESS_EXECUTOR,
+                sut.Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                   hds,
                                   dict(os.environ)),
                 setup_settings,

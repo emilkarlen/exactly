@@ -18,7 +18,7 @@ class Arrangement:
                  test_case: partial_execution.TestCase,
                  act_phase_handling: ActPhaseHandling,
                  initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.ACT_PHASE_OS_PROCESS_EXECUTOR):
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
         self.test_case = test_case
         self.act_phase_handling = act_phase_handling
         self.initial_setup_settings = initial_setup_settings

@@ -6,6 +6,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_utils.file_creation import create_file_from_transformation_of_existing_file
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.process_execution import process_output_files
+from exactly_lib.util.process_execution.executable_factory import ExecutableFactory
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings
 from exactly_lib.util.process_execution.sub_process_execution import ExecutorThatStoresResultInFilesInDir, Result
 
@@ -24,6 +25,7 @@ class ResultWithTransformation:
 
 
 def make_transformed_file_from_output_in_instruction_tmp_dir(environment: InstructionEnvironmentForPostSdsStep,
+                                                             executable_factory: ExecutableFactory,
                                                              source_info: InstructionSourceInfo,
                                                              checked_output: process_output_files.ProcOutputFile,
                                                              program: Program) -> ResultWithTransformation:
@@ -32,12 +34,14 @@ def make_transformed_file_from_output_in_instruction_tmp_dir(environment: Instru
     """
     return make_transformed_file_from_output(instruction_log_dir(environment.phase_logging, source_info),
                                              environment.process_execution_settings,
+                                             executable_factory,
                                              checked_output,
                                              program)
 
 
 def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
                                       process_execution_settings: ProcessExecutionSettings,
+                                      executable_factory: ExecutableFactory,
                                       transformed_output: process_output_files.ProcOutputFile,
                                       program: Program) -> ResultWithTransformation:
     """
@@ -45,7 +49,8 @@ def make_transformed_file_from_output(pgm_output_dir: pathlib.Path,
     """
     executor = ExecutorThatStoresResultInFilesInDir(process_execution_settings)
 
-    result = executor.execute(pgm_output_dir, program.command.as_executable_tmp_method)
+    executable = executable_factory.make(program.command)
+    result = executor.execute(pgm_output_dir, executable)
     if program.transformation.is_identity_transformer:
         return ResultWithTransformation(result,
                                         result.file_names.name_of(transformed_output))

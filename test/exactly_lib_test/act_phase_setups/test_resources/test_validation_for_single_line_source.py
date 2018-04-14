@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, ParseException
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
@@ -50,7 +50,8 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                 contents=contents_in(RelHomeOptionType.REL_HOME_ACT, home_act_dir_contents)) as hds:
             pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               {})
-            executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
+            executor = self.constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env,
+                                              act_phase_instructions)
             executor.parse(pre_sds_env)
 
     def _do_parse_and_validate_pre_sds(self,
@@ -61,7 +62,8 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                 contents=case_home_dir_contents(home_dir_contents)) as hds:
             pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               {})
-            executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
+            executor = self.constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env,
+                                              act_phase_instructions)
             executor.parse(pre_sds_env)
             return executor.validate_pre_sds(pre_sds_env)
 
@@ -73,7 +75,8 @@ class TestCaseForConfigurationForValidation(unittest.TestCase):
                 contents=case_home_dir_contents(home_dir_contents)) as hds:
             pre_sds_env = InstructionEnvironmentForPreSdsStep(hds,
                                                               {})
-            executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env, act_phase_instructions)
+            executor = self.constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, pre_sds_env,
+                                              act_phase_instructions)
             return executor.validate_pre_sds(pre_sds_env)
 
 

@@ -9,7 +9,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_d
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.act_phase_handling import ParseException
-from exactly_lib.test_case.os_services import ACT_PHASE_OS_PROCESS_EXECUTOR
+from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
@@ -74,11 +74,13 @@ class TestParsingAndValidation(unittest.TestCase):
                       'Validation result')
 
     def _do_parse(self, act_phase_instructions: list):
-        executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
+        executor = self.constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env,
+                                          act_phase_instructions)
         executor.parse(self.pre_sds_env)
 
     def _do_parse_and_validate(self, act_phase_instructions: list) -> svh.SuccessOrValidationErrorOrHardError:
-        executor = self.constructor.apply(ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env, act_phase_instructions)
+        executor = self.constructor.apply(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR, self.pre_sds_env,
+                                          act_phase_instructions)
         executor.parse(self.pre_sds_env)
         return executor.validate_pre_sds(self.pre_sds_env)
 

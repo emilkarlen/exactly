@@ -16,6 +16,7 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
@@ -100,6 +101,7 @@ class MainProgram:
     def __init__(self,
                  output: StdOutputFiles,
                  default_test_case_handling_setup: TestCaseHandlingSetup,
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
                  ):
@@ -113,6 +115,7 @@ class MainProgram:
             )
         )
         self._output = output
+        self._act_phase_os_process_executor = act_phase_os_process_executor
         self._default_test_case_handling_setup = default_test_case_handling_setup
         self._test_case_def_for_m_p = test_case_definition
 
@@ -132,7 +135,8 @@ class MainProgram:
         return test_case_execution.execute(self._std,
                                            self._test_case_definition,
                                            self._test_suite_definition.configuration_section_parser,
-                                           settings)
+                                           settings,
+                                           self._act_phase_os_process_executor)
 
     def execute_test_suite(self,
                            test_suite_execution_settings: TestSuiteExecutionSettings) -> int:
@@ -142,6 +146,7 @@ class MainProgram:
         from exactly_lib.test_suite import execution
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          test_suite_execution_settings.handling_setup,
+                                                         self._act_phase_os_process_executor,
                                                          False,
                                                          self._test_suite_definition.get_sds_root_name_prefix())
         executor = execution.Executor(default_configuration,

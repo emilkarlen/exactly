@@ -20,7 +20,7 @@ class FullExecutionTestCaseBase:
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
                  act_phase_handling: ActPhaseHandling = None,
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.ACT_PHASE_OS_PROCESS_EXECUTOR):
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None

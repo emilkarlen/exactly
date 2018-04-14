@@ -6,6 +6,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
     instruction_log_dir
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, ConstantSuccessValidator, \
@@ -34,6 +35,7 @@ class FileMaker:
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices,
              dst_file: pathlib.Path,
              ) -> Optional[str]:
         """
@@ -49,6 +51,7 @@ class FileMakerForConstantContents(FileMaker):
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices,
              dst_path: pathlib.Path,
              ) -> Optional[str]:
         contents_str = self._contents.resolve_value_of_any_dependency(
@@ -72,6 +75,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices,
              dst_path: pathlib.Path,
              ) -> Optional[str]:
         executor = ExecutorThatStoresResultInFilesInDir(environment.process_execution_settings)
@@ -81,7 +85,7 @@ class FileMakerForContentsFromProgram(FileMaker):
             .resolve(path_resolving_env.symbols) \
             .value_of_any_dependency(path_resolving_env.home_and_sds)
 
-        executable = program.command.as_executable_tmp_method
+        executable = os_services.executable_factory__detect_ex().make(program.command)
         storage_dir = instruction_log_dir(environment.phase_logging, self._source_info)
 
         result_and_std_err = execute_and_read_stderr_if_non_zero_exitcode(executable, executor, storage_dir)
@@ -129,6 +133,7 @@ class FileMakerForContentsFromExistingFile(FileMaker):
 
     def make(self,
              environment: InstructionEnvironmentForPostSdsStep,
+             os_services: OsServices,
              dst_path: pathlib.Path,
              ) -> Optional[str]:
         path_resolving_env = environment.path_resolving_environment_pre_or_post_sds

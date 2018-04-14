@@ -8,6 +8,7 @@ from exactly_lib.default.program_modes.test_case import builtin_symbols, default
     test_case_handling_setup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
+from exactly_lib.test_case import os_services
 from exactly_lib.util.std import StdOutputFiles
 
 
@@ -15,6 +16,7 @@ def default_main_program() -> main_program.MainProgram:
     return main_program.MainProgram(StdOutputFiles(sys.stdout,
                                                    sys.stderr),
                                     test_case_handling_setup.setup(),
+                                    os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                     TestCaseDefinitionForMainProgram(
                                         TestCaseParsingSetup(instruction_name_and_argument_splitter.splitter,
                                                              default_instructions_setup.INSTRUCTIONS_SETUP,
