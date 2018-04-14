@@ -17,15 +17,8 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 class CommandDriverResolver(DirDepValueResolver[CommandDriverValue]):
     """
-    Represents one variant of :class:`CommandDriver`,
-    and is thus responsible for construct a :class:`CommandDriver` given
-    the arguments to the program.
-
-    E.g., knows that for a shell command line, the arguments
-    should be concatenated, separated by space, to a single string.
-
-    There should probably exist one sub class per variant of
-    :class:`Command` (shell, executable file, OS command).
+    Resolves a :class:`CommandDriverValue`,
+    and supplies a validator of the ingredients involved.
     """
 
     def __init__(self, validators: Sequence[PreOrPostSdsValidator] = ()):
@@ -45,7 +38,7 @@ class CommandDriverResolver(DirDepValueResolver[CommandDriverValue]):
 
 class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
     """
-    Resolves a :class:`Command`,
+    Resolves a :class:`CommandValue`,
     and supplies a validator of the ingredients involved.
 
     This class works a bit like a immutable builder of Command - new arguments
@@ -74,8 +67,11 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
         return self.new_with_additional_arguments(arguments_resolvers.new_without_validation(additional_arguments))
 
     def resolve(self, symbols: SymbolTable) -> CommandValue:
-        return CommandValue(self.driver.resolve(symbols),
+        return CommandValue(self._driver.resolve(symbols),
                             self._arguments.arguments_list.resolve(symbols))
+
+    def resolve_of_any_dep(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
+        return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
 
     @property
     def validator(self) -> PreOrPostSdsValidator:
@@ -90,13 +86,6 @@ class CommandResolver(DirDepValueResolverWithValidation[CommandValue]):
         return references_from_objects_with_symbol_references([
             self._driver,
             self._arguments])
-
-    def resolve_of_any_dep(self, environment: PathResolvingEnvironmentPreOrPostSds) -> Command:
-        return self.resolve(environment.symbols).value_of_any_dependency(environment.home_and_sds)
-
-    @property
-    def driver(self) -> CommandDriverResolver:
-        return self._driver
 
     @property
     def arguments(self) -> ListResolver:
