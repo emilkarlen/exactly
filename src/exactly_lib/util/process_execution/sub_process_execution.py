@@ -2,7 +2,6 @@ import os
 import pathlib
 import subprocess
 
-from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case_utils import file_services
@@ -118,14 +117,6 @@ def result_for_non_success_or_non_zero_exit_code(result_and_err: ResultAndStderr
             return failure_message_for_nonzero_status(result_and_err)
     else:
         return failure_message_for_failure_to_failure_to_execute_process(result_and_err)
-
-
-class ExecuteInfo:
-    def __init__(self,
-                 instruction_source_info: InstructionSourceInfo,
-                 command):
-        self.instruction_source_info = instruction_source_info
-        self.command = command
 
 
 def execute_and_read_stderr_if_non_zero_exitcode(command: Command,
