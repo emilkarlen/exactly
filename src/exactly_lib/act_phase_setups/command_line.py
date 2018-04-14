@@ -13,7 +13,6 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol.data import list_resolvers
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling, ParseException
@@ -80,8 +79,7 @@ class _Parser(Parser):
                 COMMAND=texts.COMMAND)
             raise ParseException(svh.new_svh_validation_error(msg))
         arg_resolver = parse_string.string_resolver_from_string(striped_argument)
-        args_as_list = list_resolvers.from_string(arg_resolver)
-        command_resolver = command_resolvers.for_shell().new_with_additional_argument_list(args_as_list)
+        command_resolver = command_resolvers.for_shell(arg_resolver)
         return CommandConfiguration(command_resolver)
 
     @staticmethod

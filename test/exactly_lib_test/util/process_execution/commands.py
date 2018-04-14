@@ -2,87 +2,11 @@ import pathlib
 import unittest
 
 from exactly_lib.util.process_execution import commands as sut
-from exactly_lib.util.process_execution.command import Command, ProgramAndArguments, CommandDriver
+from exactly_lib.util.process_execution.command import CommandDriver
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestCommandVisitor),
-        unittest.makeSuite(TestCommandDriverVisitor),
-    ])
-
-
-class TestCommandVisitor(unittest.TestCase):
-    def test_visit_shell(self):
-        # ARRANGE #
-        visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('ret-val')
-        # ACT #
-        ret_val = visitor.visit(sut.ShellCommand('command line'))
-        # ASSERT #
-        self.assertEqual('ret-val', ret_val,
-                         'Visitor is expected to return value from visit-method')
-        self.assertListEqual(visitor.visited_classes,
-                             [sut.ShellCommand],
-                             'visited classes')
-
-    def test_visit_executable_file(self):
-        # ARRANGE #
-        visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
-        # ACT #
-        ret_val = visitor.visit(sut.ExecutableFileCommand(pathlib.Path.cwd(), []))
-        # ASSERT #
-        self.assertEqual('return value', ret_val,
-                         'Visitor is expected to return value from visit-method')
-        self.assertListEqual(visitor.visited_classes,
-                             [sut.ExecutableFileCommand],
-                             'visited classes')
-
-    def test_visit_system_program(self):
-        # ARRANGE #
-        visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
-        # ACT #
-        ret_val = visitor.visit(sut.SystemProgramCommand(ProgramAndArguments('pgm', [])))
-        # ASSERT #
-        self.assertEqual('return value', ret_val,
-                         'Visitor is expected to return value from visit-method')
-        self.assertListEqual(visitor.visited_classes,
-                             [sut.SystemProgramCommand],
-                             'visited classes')
-
-    def test_visit_non_sub_class_should_raise_exception(self):
-        # ARRANGE #
-        visitor = _ValueVisitorTestThatRegistersClassOfVisitedObjects('return value')
-        # ACT #
-        with self.assertRaises(TypeError):
-            visitor.visit(_UnknownCommand())
-
-
-class _ValueVisitorTestThatRegistersClassOfVisitedObjects(sut.CommandVisitor):
-    def __init__(self, ret_val):
-        self.ret_val = ret_val
-        self.visited_classes = []
-
-    def visit_shell(self, command: sut.ShellCommand):
-        self.visited_classes.append(sut.ShellCommand)
-        return self.ret_val
-
-    def visit_executable_file(self, command: sut.ExecutableFileCommand):
-        self.visited_classes.append(sut.ExecutableFileCommand)
-        return self.ret_val
-
-    def visit_system_program(self, command: sut.SystemProgramCommand):
-        self.visited_classes.append(sut.SystemProgramCommand)
-        return self.ret_val
-
-
-class _UnknownCommand(Command):
-    @property
-    def args(self):
-        raise NotImplementedError('not used')
-
-    @property
-    def shell(self) -> bool:
-        raise NotImplementedError('not used')
+    return unittest.makeSuite(TestCommandDriverVisitor)
 
 
 class TestCommandDriverVisitor(unittest.TestCase):
@@ -90,36 +14,36 @@ class TestCommandDriverVisitor(unittest.TestCase):
         # ARRANGE #
         visitor = _CommandDriverVisitorTestThatRegistersClassOfVisitedObjects('ret-val')
         # ACT #
-        ret_val = visitor.visit(sut.ShellCommandDriver('command line'))
+        ret_val = visitor.visit(sut.CommandDriverForShell('command line'))
         # ASSERT #
         self.assertEqual('ret-val', ret_val,
                          'Visitor is expected to return value from visit-method')
         self.assertListEqual(visitor.visited_classes,
-                             [sut.ShellCommandDriver],
+                             [sut.CommandDriverForShell],
                              'visited classes')
 
     def test_visit_executable_file(self):
         # ARRANGE #
         visitor = _CommandDriverVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
-        ret_val = visitor.visit(sut.ExecutableFileCommandDriver(pathlib.Path.cwd()))
+        ret_val = visitor.visit(sut.CommandDriverForExecutableFile(pathlib.Path.cwd()))
         # ASSERT #
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')
         self.assertListEqual(visitor.visited_classes,
-                             [sut.ExecutableFileCommandDriver],
+                             [sut.CommandDriverForExecutableFile],
                              'visited classes')
 
     def test_visit_system_program(self):
         # ARRANGE #
         visitor = _CommandDriverVisitorTestThatRegistersClassOfVisitedObjects('return value')
         # ACT #
-        ret_val = visitor.visit(sut.SystemProgramCommandDriver('pgm'))
+        ret_val = visitor.visit(sut.CommandDriverForSystemProgram('pgm'))
         # ASSERT #
         self.assertEqual('return value', ret_val,
                          'Visitor is expected to return value from visit-method')
         self.assertListEqual(visitor.visited_classes,
-                             [sut.SystemProgramCommandDriver],
+                             [sut.CommandDriverForSystemProgram],
                              'visited classes')
 
     def test_visit_non_sub_class_should_raise_exception(self):
@@ -135,16 +59,16 @@ class _CommandDriverVisitorTestThatRegistersClassOfVisitedObjects(sut.CommandDri
         self.ret_val = ret_val
         self.visited_classes = []
 
-    def visit_shell(self, command_driver: sut.ShellCommandDriver):
-        self.visited_classes.append(sut.ShellCommandDriver)
+    def visit_shell(self, command_driver: sut.CommandDriverForShell):
+        self.visited_classes.append(sut.CommandDriverForShell)
         return self.ret_val
 
-    def visit_executable_file(self, command_driver: sut.ExecutableFileCommandDriver):
-        self.visited_classes.append(sut.ExecutableFileCommandDriver)
+    def visit_executable_file(self, command_driver: sut.CommandDriverForExecutableFile):
+        self.visited_classes.append(sut.CommandDriverForExecutableFile)
         return self.ret_val
 
-    def visit_system_program(self, command_driver: sut.SystemProgramCommandDriver):
-        self.visited_classes.append(sut.SystemProgramCommandDriver)
+    def visit_system_program(self, command_driver: sut.CommandDriverForSystemProgram):
+        self.visited_classes.append(sut.CommandDriverForSystemProgram)
         return self.ret_val
 
 

@@ -1,15 +1,21 @@
+from typing import Sequence
+
 from exactly_lib.symbol.data import list_resolvers, string_resolvers
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
+from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.command import driver_resolvers as drivers
 from exactly_lib.util.process_execution.command import ProgramAndArguments
 
 
-def for_shell(arguments: ArgumentsResolver = arguments_resolvers.empty()) -> CommandResolver:
-    return CommandResolver(drivers.CommandDriverResolverForShell(),
+def for_shell(command_line: StringResolver,
+              arguments: ArgumentsResolver = arguments_resolvers.empty(),
+              validators: Sequence[PreOrPostSdsValidator] = ()) -> CommandResolver:
+    return CommandResolver(drivers.CommandDriverResolverForShell(command_line,
+                                                                 validators),
                            arguments)
 
 

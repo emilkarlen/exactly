@@ -4,177 +4,94 @@ from typing import List
 from exactly_lib.util.process_execution.command import Command, ProgramAndArguments, CommandDriver
 
 
-class ShellCommandDriver(CommandDriver):
+class CommandDriverForShell(CommandDriver):
     def __init__(self, command_line: str):
         self._command_line = command_line
 
     @property
+    def is_shell(self) -> bool:
+        return True
+
+    def arg_list_or_str_for(self, arguments: List[str]):
+        return self.shell_command_line_with_args(arguments)
+
+    @property
     def shell_command_line(self) -> str:
         return self._command_line
+
+    def shell_command_line_with_args(self, arguments: List[str]) -> str:
+        return ' '.join([self._command_line] + arguments)
 
     def __str__(self) -> str:
         return '{}({})'.format(type(self),
                                self._command_line)
 
 
-class SystemProgramCommandDriver(CommandDriver):
+class CommandDriverForSystemProgram(CommandDriver):
     def __init__(self, program: str):
         self._program = program
 
     @property
+    def is_shell(self) -> bool:
+        return False
+
+    def arg_list_or_str_for(self, arguments: List[str]):
+        return [self._program] + arguments
+
+    @property
     def program(self) -> str:
         return self._program
+
+    def as_program_and_args(self, arguments: List[str]) -> ProgramAndArguments:
+        return ProgramAndArguments(self._program, arguments)
 
     def __str__(self) -> str:
         return '{}({})'.format(type(self),
                                self._program)
 
 
-class ExecutableFileCommandDriver(CommandDriver):
+class CommandDriverForExecutableFile(CommandDriver):
     def __init__(self, executable_file: pathlib.Path):
         self._executable_file = executable_file
 
     @property
+    def is_shell(self) -> bool:
+        return False
+
+    def arg_list_or_str_for(self, arguments: List[str]):
+        return [str(self._executable_file)] + arguments
+
+    @property
     def executable_file(self) -> pathlib.Path:
         return self._executable_file
+
+    def as_program_and_args(self, arguments: List[str]) -> ProgramAndArguments:
+        return ProgramAndArguments(str(self._executable_file), arguments)
 
     def __str__(self) -> str:
         return '{}({})'.format(type(self),
                                self._executable_file)
 
 
-class ShellCommand(Command):
-    def __init__(self, command_line: str):
-        self._command_line = command_line
-
-    @property
-    def args(self) -> str:
-        return self._command_line
-
-    @property
-    def shell(self) -> bool:
-        return True
-
-    @property
-    def shell_command_line(self) -> str:
-        return self._command_line
-
-    def __str__(self) -> str:
-        return '{}({})'.format(type(self),
-                               self._command_line)
-
-
-class ProgramCommand(Command):
-    @property
-    def shell(self) -> bool:
-        return False
-
-    @property
-    def arguments(self) -> List[str]:
-        raise NotImplementedError('abstract method')
-
-
-class SystemProgramCommand(ProgramCommand):
-    def __init__(self,
-                 program_and_arguments: ProgramAndArguments):
-        self._program_and_arguments = program_and_arguments
-
-    @property
-    def args(self) -> List[str]:
-        return [self._program_and_arguments.program] + self._program_and_arguments.arguments
-
-    @property
-    def arguments(self) -> List[str]:
-        return self._program_and_arguments.arguments
-
-    @property
-    def program(self) -> str:
-        return self._program_and_arguments.program
-
-    @property
-    def program_and_arguments(self) -> ProgramAndArguments:
-        return self._program_and_arguments
-
-    def __str__(self) -> str:
-        return '{}({}, {})'.format(type(self),
-                                   self.program,
-                                   self.arguments)
-
-
-class ExecutableFileCommand(ProgramCommand):
-    def __init__(self,
-                 executable_file: pathlib.Path,
-                 arguments: List[str]):
-        self._executable_file = executable_file
-        self._arguments = arguments
-
-    @property
-    def args(self) -> List[str]:
-        return [str(self._executable_file)] + self._arguments
-
-    @property
-    def program_and_arguments(self) -> ProgramAndArguments:
-        return ProgramAndArguments(str(self._executable_file),
-                                   self._arguments)
-
-    @property
-    def executable_file(self) -> pathlib.Path:
-        return self._executable_file
-
-    @property
-    def arguments(self) -> List[str]:
-        return self._arguments
-
-    def __str__(self) -> str:
-        return '{}({}, {})'.format(type(self),
-                                   self.executable_file,
-                                   self.arguments)
-
-
 def system_program_command(program: str,
-                           arguments: List[str] = None) -> SystemProgramCommand:
-    return SystemProgramCommand(ProgramAndArguments(program,
-                                                    [] if arguments is None else arguments))
+                           arguments: List[str] = None) -> Command:
+    return Command(CommandDriverForSystemProgram(program),
+                   [] if arguments is None else arguments)
 
 
-def executable_program_command2(program_and_args: ProgramAndArguments) -> SystemProgramCommand:
-    return SystemProgramCommand(program_and_args)
+def executable_program_command2(program_and_args: ProgramAndArguments) -> Command:
+    return Command(CommandDriverForSystemProgram(program_and_args.program),
+                   program_and_args.arguments)
 
 
 def executable_file_command(program_file: pathlib.Path,
-                            arguments: List[str] = None) -> ExecutableFileCommand:
-    return ExecutableFileCommand(program_file, [] if arguments is None else arguments)
+                            arguments: List[str] = None) -> Command:
+    return Command(CommandDriverForExecutableFile(program_file),
+                   [] if arguments is None else arguments)
 
 
-def shell_command(command: str) -> ShellCommand:
-    return ShellCommand(command)
-
-
-class CommandVisitor:
-    """
-    Visitor of `Command`
-    """
-
-    def visit(self, value: Command):
-        """
-        :return: Return value from _visit... method
-        """
-        if isinstance(value, ExecutableFileCommand):
-            return self.visit_executable_file(value)
-        if isinstance(value, SystemProgramCommand):
-            return self.visit_system_program(value)
-        if isinstance(value, ShellCommand):
-            return self.visit_shell(value)
-        raise TypeError('Unknown {}: {}'.format(Command, str(value)))
-
-    def visit_shell(self, command: ShellCommand):
-        raise NotImplementedError()
-
-    def visit_executable_file(self, command: ExecutableFileCommand):
-        raise NotImplementedError()
-
-    def visit_system_program(self, command: SystemProgramCommand):
-        raise NotImplementedError()
+def shell_command(command: str) -> Command:
+    return Command(CommandDriverForShell(command), [])
 
 
 class CommandDriverVisitor:
@@ -186,19 +103,19 @@ class CommandDriverVisitor:
         """
         :return: Return value from _visit... method
         """
-        if isinstance(value, ExecutableFileCommandDriver):
+        if isinstance(value, CommandDriverForExecutableFile):
             return self.visit_executable_file(value)
-        if isinstance(value, SystemProgramCommandDriver):
+        if isinstance(value, CommandDriverForSystemProgram):
             return self.visit_system_program(value)
-        if isinstance(value, ShellCommandDriver):
+        if isinstance(value, CommandDriverForShell):
             return self.visit_shell(value)
         raise TypeError('Unknown {}: {}'.format(Command, str(value)))
 
-    def visit_shell(self, command: ShellCommandDriver):
+    def visit_shell(self, command: CommandDriverForShell):
         raise NotImplementedError()
 
-    def visit_executable_file(self, command: ExecutableFileCommandDriver):
+    def visit_executable_file(self, command: CommandDriverForExecutableFile):
         raise NotImplementedError()
 
-    def visit_system_program(self, command: SystemProgramCommandDriver):
+    def visit_system_program(self, command: CommandDriverForSystemProgram):
         raise NotImplementedError()

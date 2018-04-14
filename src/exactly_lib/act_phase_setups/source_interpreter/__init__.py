@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.act_phase_setups.source_interpreter import executable_file
 from exactly_lib.act_phase_setups.source_interpreter import shell_command as shell_cmd
 from exactly_lib.act_phase_setups.source_interpreter.source_file_management import SourceInterpreterSetup, \
@@ -17,18 +19,21 @@ def act_phase_setup(command: Command) -> ActPhaseSetup:
 
 
 def act_source_and_executor_constructor(command: Command) -> ActSourceAndExecutorConstructor:
-    return _CommandTranslator().visit(command)
+    return _CommandTranslator(command.arguments).visit(command.driver)
 
 
-class _CommandTranslator(commands.CommandVisitor):
-    def visit_shell(self, command: commands.ShellCommand) -> ActSourceAndExecutorConstructor:
-        return shell_cmd.Constructor(command.args)
+class _CommandTranslator(commands.CommandDriverVisitor):
+    def __init__(self, arguments: List[str]):
+        self.arguments = arguments
 
-    def visit_executable_file(self, command: commands.ExecutableFileCommand) -> ActSourceAndExecutorConstructor:
+    def visit_shell(self, driver: commands.CommandDriverForShell) -> ActSourceAndExecutorConstructor:
+        return shell_cmd.Constructor(driver.shell_command_line_with_args(self.arguments))
+
+    def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> ActSourceAndExecutorConstructor:
         return executable_file.Constructor(SourceInterpreterSetup(StandardSourceFileManager(
             'src',
-            str(command.executable_file),
-            command.arguments)))
+            str(driver.executable_file),
+            self.arguments)))
 
-    def visit_system_program(self, command: commands.SystemProgramCommand) -> ActSourceAndExecutorConstructor:
+    def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> ActSourceAndExecutorConstructor:
         raise ValueError('Unsupported source interpreter: System Program Command')

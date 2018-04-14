@@ -8,9 +8,11 @@ from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionTyp
 from exactly_lib.test_case_utils.program.resolvers import accumulator
 from exactly_lib.test_case_utils.program.resolvers.command_program_resolver import ProgramResolverForCommand
 from exactly_lib.type_system.data import file_refs
+from exactly_lib.type_system.data import list_value
 from exactly_lib.type_system.data.concrete_string_values import string_value_of_single_string
 from exactly_lib.type_system.data.list_value import ListValue
-from exactly_lib.type_system.logic.program.command_values import CommandValueForShell
+from exactly_lib.type_system.logic.program.command_value import CommandValue
+from exactly_lib.type_system.logic.program.command_values import CommandDriverValueForShell
 from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
@@ -101,8 +103,11 @@ class TestValueTypeRestriction(unittest.TestCase):
 
         ValueType.PROGRAM:
             ProgramResolverForCommand(
-                CommandResolver(CommandDriverResolverForConstantTestImpl(
-                    CommandValueForShell(string_value_of_single_string('the shell command line'))),
+                CommandResolver(
+                    CommandDriverResolverForConstantTestImpl(
+                        CommandValue(
+                            CommandDriverValueForShell(string_value_of_single_string('the shell command line')),
+                            list_value.empty())),
                     ArgumentsResolver(arbitrary_list_resolver),
                 ),
                 accumulator.empty()

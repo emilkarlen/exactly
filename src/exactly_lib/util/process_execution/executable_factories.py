@@ -4,6 +4,7 @@ Translation of a :class:`Command` to a class:`Executable`.
 The translation depends on the platform.
 """
 import os
+from typing import List
 
 from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command
@@ -23,11 +24,8 @@ def get_factory_for_current_operating_system() -> ExecutableFactory:
 
 
 class ExecutableFactoryBase(ExecutableFactory):
-    def __init__(self):
-        self._translator = _CommandTranslator()
-
     def make(self, command: Command) -> Executable:
-        return self._translator.visit(command)
+        return _CommandTranslator(command.arguments).visit(command.driver)
 
 
 class ExecutableFactoryForPosix(ExecutableFactoryBase):
@@ -50,18 +48,21 @@ class ExecutableFactoryForUnsupportedSystem(ExecutableFactory):
         raise NotImplementedError('Unsupported system: ' + os.name)
 
 
-class _CommandTranslator(commands.CommandVisitor):
-    def visit_shell(self, command: commands.ShellCommand) -> Executable:
+class _CommandTranslator(commands.CommandDriverVisitor):
+    def __init__(self, arguments: List[str]):
+        self.arguments = arguments
+
+    def visit_shell(self, driver: commands.CommandDriverForShell) -> Executable:
         return Executable(is_shell=True,
-                          arg_list_or_str=command.args)
+                          arg_list_or_str=driver.shell_command_line_with_args(self.arguments))
 
-    def visit_executable_file(self, command: commands.ExecutableFileCommand) -> Executable:
+    def visit_executable_file(self, driver: commands.CommandDriverForExecutableFile) -> Executable:
         return Executable(is_shell=False,
-                          arg_list_or_str=[str(command.executable_file)] + command.arguments)
+                          arg_list_or_str=[str(driver.executable_file)] + self.arguments)
 
-    def visit_system_program(self, command: commands.SystemProgramCommand) -> Executable:
+    def visit_system_program(self, driver: commands.CommandDriverForSystemProgram) -> Executable:
         return Executable(is_shell=False,
-                          arg_list_or_str=[command.program] + command.arguments)
+                          arg_list_or_str=[driver.program] + self.arguments)
 
 
 _FACTORY_FOR_OPERATING_SYSTEM_MODULE_NAME = {
