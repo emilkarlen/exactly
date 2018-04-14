@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.act_phase_setups import file_interpreter as sut
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
-from exactly_lib.util.process_execution.os_process_execution import shell_command
+from exactly_lib.util.process_execution.execution_elements import shell_command
 from exactly_lib_test.act_phase_setups.file_interpreter import common_tests
 from exactly_lib_test.act_phase_setups.file_interpreter.configuration import TheConfigurationBase
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution

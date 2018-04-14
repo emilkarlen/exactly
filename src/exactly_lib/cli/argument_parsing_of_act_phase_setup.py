@@ -3,7 +3,7 @@ import shlex
 
 from exactly_lib.act_phase_setups.source_interpreter import act_phase_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.util.process_execution.os_process_execution import executable_file_command
+from exactly_lib.util.process_execution.execution_elements import executable_file_command
 
 
 def resolve_act_phase_setup_from_argparse_argument(default_setup: ActPhaseSetup,

@@ -5,7 +5,7 @@ from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
 from exactly_lib.test_case_utils.program.command import driver_resolvers as drivers
-from exactly_lib.util.process_execution.os_process_execution import ProgramAndArguments
+from exactly_lib.util.process_execution.execution_elements import ProgramAndArguments
 
 
 def for_shell(arguments: ArgumentsResolver = arguments_resolvers.empty()) -> CommandResolver:

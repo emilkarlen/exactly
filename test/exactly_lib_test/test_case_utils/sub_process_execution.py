@@ -1,11 +1,11 @@
 import unittest
 
+from exactly_lib.test_case.phases.common import InstructionSourceInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.util.process_execution import process_output_files, sub_process_execution as sut
-from exactly_lib.util.process_execution.os_process_execution import with_no_timeout, executable_program_command2, \
+from exactly_lib.util.process_execution.execution_elements import with_no_timeout, executable_program_command2, \
     executable_file_command
 from exactly_lib.util.process_execution.process_output_files import FileNames
-from exactly_lib.util.process_execution.sub_process_execution import InstructionSourceInfo
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
 from exactly_lib_test.test_case_utils.test_resources.py_program import program_that_prints_and_exits_with_exit_code

@@ -35,7 +35,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
 from exactly_lib.test_case_utils.program.command import command_resolvers
-from exactly_lib.util.process_execution.os_process_execution import Command, ProgramAndArguments
+from exactly_lib.util.process_execution.execution_elements import Command, ProgramAndArguments
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
 
