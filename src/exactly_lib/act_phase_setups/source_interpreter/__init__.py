@@ -4,6 +4,7 @@ from exactly_lib.act_phase_setups.source_interpreter.source_file_management impo
     StandardSourceFileManager
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor
+from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command
 
 
@@ -16,11 +17,18 @@ def act_phase_setup(command: Command) -> ActPhaseSetup:
 
 
 def act_source_and_executor_constructor(command: Command) -> ActSourceAndExecutorConstructor:
-    if command.shell:
+    return _CommandTranslator().visit(command)
+
+
+class _CommandTranslator(commands.CommandVisitor):
+    def visit_shell(self, command: commands.ShellCommand) -> ActSourceAndExecutorConstructor:
         return shell_cmd.Constructor(command.args)
-    else:
-        return executable_file.Constructor(
-            SourceInterpreterSetup(StandardSourceFileManager(
-                'src',
-                command.args[0],
-                command.args[1:])))
+
+    def visit_executable_file(self, command: commands.ExecutableFileCommand) -> ActSourceAndExecutorConstructor:
+        return executable_file.Constructor(SourceInterpreterSetup(StandardSourceFileManager(
+            'src',
+            str(command.executable_file),
+            command.arguments)))
+
+    def visit_system_program(self, command: commands.SystemProgramCommand) -> ActSourceAndExecutorConstructor:
+        raise ValueError('Unsupported source interpreter: System Program Command')

@@ -35,6 +35,7 @@ from exactly_lib.test_case_utils import file_properties
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse import parse_string, parse_file_ref, parse_list
 from exactly_lib.test_case_utils.program.command import command_resolvers
+from exactly_lib.util.process_execution import commands
 from exactly_lib.util.process_execution.command import Command, ProgramAndArguments
 
 RELATIVITY_CONFIGURATION = relativity_configuration_of_action_to_check(texts.FILE)
@@ -49,10 +50,7 @@ def act_phase_handling(interpreter: Command) -> ActPhaseHandling:
 
 
 def constructor(interpreter: Command) -> parts.Constructor:
-    if interpreter.shell:
-        return ConstructorForInterpreterThatIsAShellCommand(interpreter.shell_command_line)
-    else:
-        return ConstructorForInterpreterThatIsAnExecutableFile(interpreter.program_and_arguments)
+    return _CommandTranslator().visit(interpreter)
 
 
 class ConstructorForInterpreterThatIsAnExecutableFile(parts.Constructor):
@@ -202,3 +200,14 @@ class _ShellSubProcessExecutor(SubProcessExecutor):
             self.source.arguments,
         ])
         return command_resolvers.for_shell().new_with_additional_argument_list(command_line_elements)
+
+
+class _CommandTranslator(commands.CommandVisitor):
+    def visit_shell(self, command: commands.ShellCommand) -> parts.Constructor:
+        return ConstructorForInterpreterThatIsAShellCommand(command.args)
+
+    def visit_executable_file(self, command: commands.ExecutableFileCommand) -> parts.Constructor:
+        return ConstructorForInterpreterThatIsAnExecutableFile(command.program_and_arguments)
+
+    def visit_system_program(self, command: commands.SystemProgramCommand) -> parts.Constructor:
+        raise ValueError('Unsupported interpreter: System Program Command')
