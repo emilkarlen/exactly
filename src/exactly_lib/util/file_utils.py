@@ -4,6 +4,8 @@ import tempfile
 from contextlib import contextmanager
 from stat import S_IREAD, S_IRGRP, S_IROTH
 
+from exactly_lib.util import exception
+
 
 @contextmanager
 def open_and_make_read_only_on_close(filename: str, mode: str):
@@ -93,3 +95,23 @@ def preserved_cwd():
         yield
     finally:
         os.chdir(cwd_to_preserve)
+
+
+def create_dir_that_is_expected_to_not_exist__impl_error(dir_path: pathlib.Path):
+    """
+    :raises exception.ImplementationError: In case of OS error.
+    """
+    try:
+        dir_path.mkdir(parents=True)
+    except OSError as ex:
+        msg = str(ex)
+        raise exception.ImplementationError(msg)
+
+
+def ensure_directory_exists_as_a_directory__impl_error(dir_path: pathlib.Path):
+    """
+    :raises exception.ImplementationError: If path cannot be ensured to exist as dir.
+    """
+    err_msg = ensure_directory_exists_as_a_directory(dir_path)
+    if err_msg:
+        raise exception.ImplementationError(err_msg)

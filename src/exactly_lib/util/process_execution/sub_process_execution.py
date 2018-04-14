@@ -2,9 +2,6 @@ import os
 import pathlib
 import subprocess
 
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case_utils import file_services
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import write_new_text_file
 from exactly_lib.util.process_execution import process_output_files
@@ -64,7 +61,7 @@ class ExecutorThatStoresResultInFilesInDir:
         def _err_msg(exception: Exception) -> str:
             return 'Error executing process:\n' + str(exception)
 
-        file_services.ensure_directory_exists_as_a_directory(storage_dir)
+        file_utils.ensure_directory_exists_as_a_directory__impl_error(storage_dir)
         with open(str(storage_dir / process_output_files.STDOUT_FILE_NAME), 'w') as f_stdout:
             with open(str(storage_dir / process_output_files.STDERR_FILE_NAME), 'w') as f_stderr:
                 try:
@@ -124,21 +121,3 @@ def execute_and_read_stderr_if_non_zero_exitcode(command: Command,
                                                  storage_dir: pathlib.Path) -> ResultAndStderr:
     result = executor.apply(storage_dir, command)
     return read_stderr_if_non_zero_exitcode(result)
-
-
-def result_to_sh(result_and_stderr: ResultAndStderr) -> sh.SuccessOrHardError:
-    result = result_and_stderr.result
-    if not result.is_success:
-        return sh.new_sh_hard_error(result.error_message)
-    if result.exit_code != 0:
-        return sh.new_sh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
-    return sh.new_sh_success()
-
-
-def result_to_pfh(result_and_stderr: ResultAndStderr) -> pfh.PassOrFailOrHardError:
-    result = result_and_stderr.result
-    if not result.is_success:
-        return pfh.new_pfh_hard_error(failure_message_for_nonzero_status(result_and_stderr))
-    if result.exit_code != 0:
-        return pfh.new_pfh_fail(failure_message_for_nonzero_status(result_and_stderr))
-    return pfh.new_pfh_pass()
