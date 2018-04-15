@@ -8,10 +8,10 @@ from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptio
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import cwd_contents
+from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import cwd_contents
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \

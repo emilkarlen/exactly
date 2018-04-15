@@ -10,9 +10,8 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
-from exactly_lib_test.test_case_file_structure.test_resources import home_populators
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import home_populators, home_and_sds_populators, \
+    sds_populator
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

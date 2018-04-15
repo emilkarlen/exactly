@@ -24,8 +24,7 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
-    home_and_sds_populators as home_or_sds_pop
+from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds_pop
 from exactly_lib_test.test_case_utils.test_resources import relativity_options, \
     pre_or_post_sds_validator as validator_util, parse_executable_file_executable_cases as utils
 from exactly_lib_test.test_case_utils.test_resources.parse_executable_file_executable_cases import \

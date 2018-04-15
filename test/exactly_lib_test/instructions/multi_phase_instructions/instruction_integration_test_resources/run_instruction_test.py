@@ -11,7 +11,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import contents_in
+from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args

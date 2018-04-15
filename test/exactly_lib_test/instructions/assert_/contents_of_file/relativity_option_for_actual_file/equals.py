@@ -24,7 +24,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
     equals_symbol_reference_with_restriction_on_direct_target
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
+from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

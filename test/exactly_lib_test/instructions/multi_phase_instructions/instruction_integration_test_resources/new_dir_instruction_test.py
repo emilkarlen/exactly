@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.multi_phase_instructions.instruction_integrat
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import source4
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \

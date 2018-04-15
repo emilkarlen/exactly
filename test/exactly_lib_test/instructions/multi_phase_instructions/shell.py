@@ -20,7 +20,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     equals_data_type_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils as su
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulatorForRelOptionType
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

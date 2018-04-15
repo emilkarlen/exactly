@@ -4,8 +4,8 @@ from typing import Optional
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -20,9 +20,8 @@ from exactly_lib_test.instructions.test_resources.expectations import Expectatio
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
 from exactly_lib_test.test_case.test_resources import sh_assertions
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
+    home_and_sds_populators, sds_populator
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \

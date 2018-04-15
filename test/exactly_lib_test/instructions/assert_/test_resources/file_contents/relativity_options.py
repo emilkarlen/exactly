@@ -10,11 +10,11 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import NonHomePopulator
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     sub_dir_of_sds_contains_exactly
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsPopulator, \
+from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsPopulator, \
     SdsPopulatorForSubDir, SdsSubDirResolverWithRelSdsRoot
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration, \
     RelativityOptionConfigurationForRelNonHome, \

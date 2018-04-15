@@ -16,7 +16,7 @@ from exactly_lib_test.section_document.test_resources import parse_source_assert
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.symbol.data.test_resources.list_assertions import matches_list_resolver
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import pre_or_post_sds_validator as validator_util
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration

@@ -18,9 +18,8 @@ from exactly_lib.util.process_execution.execution_elements import ProcessExecuti
 from exactly_lib.util.process_execution.process_output_files import ProcOutputFile
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
+    home_and_sds_populators, sds_populator
 from exactly_lib_test.test_resources.execution import tmp_dir
 from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \

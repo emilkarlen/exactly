@@ -20,10 +20,10 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
+from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
+    sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator, SdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as parse_args
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import program_execution_check as pgm_exe_check

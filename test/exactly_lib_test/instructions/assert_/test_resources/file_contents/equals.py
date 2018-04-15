@@ -31,7 +31,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File

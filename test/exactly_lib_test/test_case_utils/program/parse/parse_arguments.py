@@ -23,7 +23,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.test_case.test_resources import validation_check
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
+from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_utils.parse import parse_list as test_of_list
 from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens import TOKENS_WITH_INVALID_SYNTAX
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
