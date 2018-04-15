@@ -9,7 +9,7 @@ including conf.xly
 
 def list    DB_ARGS         = -user -password db
 
-def program RUN_MYSQL       = $ mysql @[DB_ARGS]@
+def program RUN_MYSQL       = % mysql @[DB_ARGS]@
 
 def program EXECUTE_SQL     = @ RUN_MYSQL --skip-column-names --batch --execute
 
@@ -49,9 +49,9 @@ exitcode == 0
 
 'A single release should have been registered'
 
-stdout --from
-       @ EXECUTE_SQL '"SELECT version
-                       FROM   db_upgrade_log"'
+stdout -from
+       @ EXECUTE_SQL 'SELECT version
+                      FROM   db_upgrade_log'
        equals
 <<-
 @[RELEASE]@
@@ -60,11 +60,11 @@ stdout --from
 
 'DDL and DML files should have been registered as executed'
 
-stdout --from
-       @ EXECUTE_SQL '"SELECT   file_name
-                       FROM     db_upgrade_executed_files f
-                                JOIN db_upgrade_log l ON (f.upgrade_id = l.id)
-                       ORDER BY file_name"'
+stdout -from
+       @ EXECUTE_SQL 'SELECT   file_name
+                      FROM     db_upgrade_executed_files f
+                               JOIN db_upgrade_log l ON (f.upgrade_id = l.id)
+                      ORDER BY file_name'
        equals
 <<-
 @[RELEASE]@/@[DDL_SCRIPT_FILE]@
@@ -74,10 +74,10 @@ stdout --from
 
 'The SQL scripts should have been invoked (in correct order)'
 
-stdout --from
-       @ EXECUTE_SQL '"SELECT   name
-                       FROM     invocation_registry
-                       ORDER BY step"'
+stdout -from
+       @ EXECUTE_SQL 'SELECT   name
+                      FROM     invocation_registry
+                      ORDER BY step'
        equals
 <<-
 @[DDL_SCRIPT_FILE]@
