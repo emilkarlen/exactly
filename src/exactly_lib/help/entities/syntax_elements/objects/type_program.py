@@ -135,6 +135,7 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
     def invokation_variants(self) -> Sequence[InvokationVariant]:
         return [
             self._exe_file(),
+            self._system_program(),
             self._sym_ref(),
             self._python(),
         ]
@@ -150,11 +151,25 @@ class _ProgramWithArgumentList(SyntaxElementDescriptionTree):
         )
 
     @staticmethod
+    def _system_program() -> InvokationVariant:
+        return invokation_variant_from_args(
+            [
+                a.Single(a.Multiplicity.MANDATORY,
+                         a.Constant(pgm_syntax_elements.SYSTEM_PROGRAM_TOKEN)
+                         ),
+                a.Single(a.Multiplicity.MANDATORY,
+                         syntax_elements.STRING_SYNTAX_ELEMENT.argument
+                         ),
+            ],
+            _TEXT_PARSER.fnap(_SYSTEM_PROGRAM_DESCRIPTION)
+        )
+
+    @staticmethod
     def _sym_ref() -> InvokationVariant:
         return invokation_variant_from_args(
             [
                 a.Single(a.Multiplicity.MANDATORY,
-                         a.Constant(instruction_names.SYMBOL_REF_PROGRAM_INSTRUCTION_NAME)
+                         a.Constant(pgm_syntax_elements.SYMBOL_REF_PROGRAM_TOKEN)
                          ),
                 a.Single(a.Multiplicity.MANDATORY,
                          syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument
@@ -290,6 +305,10 @@ An executable program.
 
 _EXE_FILE_DESCRIPTION = """\
 The path of an executable file.
+"""
+
+_SYSTEM_PROGRAM_DESCRIPTION = """\
+A program installed on the current system - a program in the OS PATH.
 """
 
 _SYM_REF_PROGRAM_DESCRIPTION = """\
