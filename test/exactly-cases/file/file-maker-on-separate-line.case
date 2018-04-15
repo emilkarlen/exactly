@@ -14,7 +14,7 @@ here document
 -
 
 file program-output.txt =
---stdout --python -c :> print('output from program')
+-stdout -python -c :> print('output from program')
 
 
 [assert]

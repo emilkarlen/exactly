@@ -8,19 +8,19 @@
 file f.txt = "some text"
 
 def program CAT_FILE = % cat
-                       --transformed-by TO_UPPER_CASE
+                       -transformed-by TO_UPPER_CASE
 
 
 [assert]
 
 
-stdout --from
+stdout -from
        @ CAT_FILE f.txt
        equals
        "SOME TEXT"
 
-stdout --from
+stdout -from
        % cat f.txt
-       --transformed-by TO_UPPER_CASE
+       -transformed-by TO_UPPER_CASE
        equals
        "SOME TEXT"
