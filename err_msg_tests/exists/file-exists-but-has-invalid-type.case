@@ -7,7 +7,7 @@ file existing-regular-file
 [assert]
 
 
-exists --dir existing-regular-file
+exists -dir existing-regular-file
 
 
 [act]

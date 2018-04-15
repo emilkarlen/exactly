@@ -6,7 +6,7 @@ act-home act-home-dir
 [setup]
 
 
-def path CHECKED_FILE = --rel-act-home empty-file.txt
+def path CHECKED_FILE = -rel-act-home empty-file.txt
 
 
 [assert]
