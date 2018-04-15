@@ -7,21 +7,26 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
-    RESOLVING_DEPENDENCY_OF
+    RESOLVING_DEPENDENCY_OF, RelNonHomeOptionType, RelHomeOptionType
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_system_program as sut
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import home_and_sds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
+from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
+from exactly_lib_test.test_resources.file_structure import FileSystemElement, empty_file, DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources import line_transformer_assertions as asrt_line_transformer
@@ -33,6 +38,7 @@ def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestFailingParse),
         unittest.makeSuite(TestSuccessfulParse),
+        unittest.makeSuite(TestValidationAfterSuccessfulParse),
     ])
 
 
@@ -201,6 +207,105 @@ class TestSuccessfulParse(unittest.TestCase):
             # ASSERT #
 
             expectation.apply_without_message(self, actual)
+
+
+class FileExistenceCase:
+    def __init__(self, name: str):
+        self.name = name
+
+    def expectation_for(self, step: DirectoryStructurePartition) -> validation_check.Expectation:
+        raise NotImplementedError('abstract method')
+
+    def files_for_name(self, file_name: str) -> List[FileSystemElement]:
+        raise NotImplementedError('abstract method')
+
+
+class FileDoExistCase(FileExistenceCase):
+    def __init__(self):
+        super().__init__('file do exist')
+
+    def expectation_for(self, step: DirectoryStructurePartition) -> validation_check.Expectation:
+        return validation_check.is_success()
+
+    def files_for_name(self, file_name: str) -> List[FileSystemElement]:
+        return [empty_file(file_name)]
+
+
+class FileDoNotExistCase(FileExistenceCase):
+    def __init__(self):
+        super().__init__('file do NOT exist')
+
+    def expectation_for(self, step: DirectoryStructurePartition) -> validation_check.Expectation:
+        return validation_check.fails_on(step)
+
+    def files_for_name(self, file_name: str) -> List[FileSystemElement]:
+        return []
+
+
+FILE_EXISTENCE_CASES = [
+    FileDoExistCase(),
+    FileDoNotExistCase(),
+]
+
+
+class TestValidationAfterSuccessfulParse(unittest.TestCase):
+    def test_with_reference_to_existing_file(self):
+        referenced_file = 'referenced-file.txt'
+
+        relativity_cases = [
+            relativity_options.conf_rel_home(RelHomeOptionType.REL_HOME_CASE),
+            relativity_options.conf_rel_non_home(RelNonHomeOptionType.REL_ACT),
+        ]
+        for file_existence_case in FILE_EXISTENCE_CASES:
+            for relativity_conf in relativity_cases:
+                arguments = ab.sequence(['program_name',
+                                         ab.option(syntax_elements.EXISTING_FILE_OPTION_NAME),
+                                         relativity_conf.option_argument,
+                                         referenced_file]).as_str
+
+                source = remaining_source(arguments)
+
+                arrangement = validation_check.Arrangement(
+                    dir_contents=relativity_conf.populator_for_relativity_option_root(
+                        DirContents(file_existence_case.files_for_name(referenced_file))
+                    ))
+                expectation = file_existence_case.expectation_for(relativity_conf.directory_structure_partition)
+
+                with self.subTest(relativity=relativity_conf.option_string,
+                                  file_do_existence_case=file_existence_case.name):
+                    program_resolver = sut.program_parser().parse(source)
+                    validation_check.check(
+                        self,
+                        program_resolver.validator,
+                        arrangement,
+                        expectation,
+                    )
+
+    def test_without_reference_to_existing_file(self):
+        # ARRANGE #
+        arguments = ab.sequence(['program_name',
+                                 'argument-that-is-not-a-file']).as_str
+
+        source = remaining_source(arguments)
+
+        arrangement = validation_check.Arrangement(
+            dir_contents=home_and_sds_populators.empty()
+        )
+
+        expectation = validation_check.is_success()
+
+        # ACT #
+
+        program_resolver = sut.program_parser().parse(source)
+
+        # ASSERT #
+
+        validation_check.check(
+            self,
+            program_resolver.validator,
+            arrangement,
+            expectation,
+        )
 
 
 def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:

@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, List
 
 import exactly_lib_test.test_resources.programs.python_program_execution
 from exactly_lib.util.string import lines_content
@@ -125,7 +125,7 @@ def sym_link(file_name: str,
 
 class DirContents:
     def __init__(self,
-                 file_system_element_contents: list):
+                 file_system_element_contents: List[FileSystemElement]):
         self._file_system_element_contents = file_system_element_contents
 
     def write_to(self,
@@ -135,7 +135,7 @@ class DirContents:
             file_element.write_to(dir_path)
 
     @property
-    def file_system_elements(self) -> list:
+    def file_system_elements(self) -> List[FileSystemElement]:
         return self._file_system_element_contents
 
 
