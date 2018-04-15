@@ -30,4 +30,4 @@ def option_syntax(option_name: OptionName) -> str:
     if option_name.long:
         return long_option_syntax(option_name.long)
     else:
-        return short_option_syntax(option_name.short)
+        raise ValueError('missing long option')
