@@ -12,6 +12,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
+from exactly_lib.test_case import os_services
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import \
     first_char_is_name_and_rest_is_argument__splitter, EMPTY_INSTRUCTIONS_SETUP
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -51,6 +52,7 @@ def execute_main_program(arguments: list,
     str_std_out_files = StringStdOutFiles()
     program = main_program.MainProgram(str_std_out_files.stdout_files,
                                        the_test_case_handling_setup,
+                                       os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                        TestCaseDefinitionForMainProgram(
                                            TestCaseParsingSetup(name_and_argument_splitter,
                                                                 instructions_setup,

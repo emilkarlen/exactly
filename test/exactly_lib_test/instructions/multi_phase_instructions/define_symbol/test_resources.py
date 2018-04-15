@@ -1,3 +1,4 @@
+from exactly_lib.definitions import file_ref
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
@@ -25,6 +26,13 @@ _STD_FORMAT_MAP = {
     'program_type': types.PROGRAM_TYPE_INFO.identifier,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,
+    'rel_tmp': file_ref.REL_TMP_OPTION,
+    'rel_act': file_ref.REL_ACT_OPTION,
+    'rel_result': file_ref.REL_RESULT_OPTION,
+    'rel_cd': file_ref.REL_CWD_OPTION,
+    'rel_home': file_ref.REL_HOME_CASE_OPTION,
+    'rel_act_home': file_ref.REL_HOME_ACT_OPTION,
+    'rel_symbol': file_ref.REL_symbol_OPTION,
 }
 
 

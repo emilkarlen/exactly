@@ -11,6 +11,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolReference
 from exactly_lib.type_system.data import file_refs
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -39,7 +40,8 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
     def runTest(self):
         test_cases = [
             ('Invalid file ref syntax',
-             src('{path_type} name = --invalid-option x')
+             src('{path_type} name = {invalid_option} x',
+                 invalid_option=option_syntax.long_option_syntax('invalid-option'))
              ),
             ('Superfluous arguments',
              src('{path_type} name = {rel_opt} x superfluous-arg',
@@ -56,7 +58,7 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
 
 class TestAssignmentRelativeSingleValidOption(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = src('{path_type} name = --rel-act component')
+        instruction_argument = src('{path_type} name = {rel_act} component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = file_ref_resolvers.constant(
                 file_refs.rel_act(file_refs.constant_path_part('component')))
@@ -96,7 +98,7 @@ class TestAssignmentRelativeSingleDefaultOption(TestCaseBaseForParser):
 
 class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
     def test(self):
-        instruction_argument = src('{path_type} ASSIGNED_NAME = --rel REFERENCED_SYMBOL component')
+        instruction_argument = src('{path_type} ASSIGNED_NAME = {rel_symbol} REFERENCED_SYMBOL component')
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             expected_file_ref_resolver = file_ref_resolvers.rel_symbol(
                 SymbolReference('REFERENCED_SYMBOL',

@@ -106,6 +106,18 @@ class OptionArgument(ArgumentElementRenderer):
         return option_syntax.option_syntax(self.option_name)
 
 
+class CustomOptionArgument(ArgumentElementRenderer):
+    """
+    Renders an option
+    """
+
+    def __init__(self, option_name: str):
+        self.option_name = option_name
+
+    def __str__(self) -> str:
+        return option_syntax.long_option_syntax(self.option_name)
+
+
 class OptionWithArgument(SequenceOfArgumentsBase):
     """
     Renders an option with mandatory argument

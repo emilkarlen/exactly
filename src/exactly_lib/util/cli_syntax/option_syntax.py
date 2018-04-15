@@ -10,7 +10,7 @@ def long_option_syntax(name: str) -> str:
     Syntax for a long option.
     :param name: The option name without any "option" syntax prefix ("--).
     """
-    return '--' + name
+    return '-' + name
 
 
 def option_syntax(option_name: OptionName) -> str:

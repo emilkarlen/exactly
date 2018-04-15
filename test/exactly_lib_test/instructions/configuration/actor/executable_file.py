@@ -87,8 +87,8 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForExec
 
     def test_command_with_arguments(self):
         self._check_both_single_and_multiple_line_source(
-            '=  {actor_option} executable arg1 --arg2',
-            ['executable', 'arg1', '--arg2'])
+            '=  {actor_option} executable arg1 -arg2',
+            ['executable', 'arg1', '-arg2'])
 
     def test_quoting(self):
         self._check_both_single_and_multiple_line_source(
@@ -123,12 +123,12 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForExecut
 
     def test_command_with_arguments(self):
         self._check_both_single_and_multiple_line_source(
-            ' = {actor_option}   interpreter   arg1     --arg2   ',
+            ' = {actor_option}   interpreter   arg1     -arg2   ',
             ['file.src'],
             is_interpreter_with_source_file_and_arguments('interpreter',
                                                           'file.src',
                                                           ['arg1',
-                                                           '--arg2']),
+                                                           '-arg2']),
             hds_contents=file_in_home_act_dir('file.src')
         )
 

@@ -1,6 +1,7 @@
 import unittest
 from typing import List
 
+from exactly_lib.definitions import file_ref as file_ref_syntax
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.file_ref import REL_HOME_CASE_OPTION_NAME
 from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
@@ -53,8 +54,9 @@ class TestParse(unittest.TestCase):
         test_cases = [
             source4(''),
             assignment_of('string superfluous-argument'),
-            assignment_of('{file_option} --rel-home file superfluous-argument'.format(
+            assignment_of('{file_option} {rel_home} file superfluous-argument'.format(
                 file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+                rel_home=file_ref_syntax.REL_HOME_CASE_OPTION,
             )),
             assignment_of('<<MARKER superfluous argument',
                           ['single line',
@@ -231,8 +233,9 @@ class TestSuccessfulScenariosWithSetStdinToHereDoc(TestCaseBaseForParser):
 
 class TestFailingInstructionExecution(TestCaseBaseForParser):
     def test_referenced_file_does_not_exist(self):
-        self._run(assignment_of('{file_option} --rel-home non-existing-file'.format(
+        self._run(assignment_of('{file_option} {rel_home} non-existing-file'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+            rel_home=file_ref_syntax.REL_HOME_CASE_OPTION,
         )),
             Arrangement(),
             Expectation(pre_validation_result=svh_assertions.is_validation_error(),
@@ -274,8 +277,9 @@ class TestFailingInstructionExecution(TestCaseBaseForParser):
         )
 
     def test_referenced_file_is_a_directory(self):
-        self._run(assignment_of('{file_option} --rel-home directory'.format(
+        self._run(assignment_of('{file_option} {rel_home} directory'.format(
             file_option=option_syntax(parse_here_doc_or_file_ref.FILE_ARGUMENT_OPTION),
+            rel_home=file_ref_syntax.REL_HOME_CASE_OPTION,
         )),
             Arrangement(
                 hds_contents=case_home_dir_contents(DirContents([empty_dir('directory')]))

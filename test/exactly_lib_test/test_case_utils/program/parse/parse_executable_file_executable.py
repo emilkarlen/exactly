@@ -32,6 +32,7 @@ from exactly_lib_test.test_case_utils.test_resources.parse_executable_file_execu
     suite_for, \
     ExpectationOnExeFile
 from exactly_lib_test.test_resources import string_formatting
+from exactly_lib_test.test_resources.arguments_building import CustomOptionArgument
 from exactly_lib_test.test_resources.files.paths import non_existing_absolute_path
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
@@ -227,7 +228,7 @@ class TestParseInvalidSyntax(unittest.TestCase):
 
     def test_invalid_option(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            sut.parse_from_parse_source(ParseSource('--invalid-option FILE'))
+            sut.parse_from_parse_source(ParseSource('{} FILE'.format(CustomOptionArgument('invalid-option'))))
 
 
 CONFIGURATION_FOR_PYTHON_EXECUTABLE = TestCaseConfiguration(

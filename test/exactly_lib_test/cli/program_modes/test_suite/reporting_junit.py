@@ -3,7 +3,7 @@ import unittest
 
 import exactly_lib.cli.cli_environment.common_cli_options as opt
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
@@ -25,7 +25,7 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
     def first_arguments(self, root_path: pathlib.Path) -> list:
         return [opt.SUITE_COMMAND,
-                long_option_syntax(command_line_options.OPTION_FOR_REPORTER__LONG),
+                short_and_long_option_syntax.long_syntax(command_line_options.OPTION_FOR_REPORTER__LONG),
                 command_line_options.REPORTER_OPTION__JUNIT]
 
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
