@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     with_negation_argument, PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_populator import SdsSubDirResolverFromSdsFun
+from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import SdsSubDirResolverFromSdsFun
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Link

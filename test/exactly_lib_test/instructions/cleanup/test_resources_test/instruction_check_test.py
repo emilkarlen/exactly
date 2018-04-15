@@ -18,8 +18,7 @@ from exactly_lib_test.instructions.test_resources.symbol_table_check_help import
     get_symbol_table_from_instruction_environment_that_is_first_arg
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
 from exactly_lib_test.test_case.test_resources import sh_assertions
-from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions

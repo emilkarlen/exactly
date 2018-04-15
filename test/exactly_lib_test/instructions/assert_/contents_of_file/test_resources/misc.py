@@ -6,11 +6,10 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.equals import \
     InstructionTestConfigurationForEquals
 from exactly_lib_test.instructions.test_resources.arrangements import ActEnvironment, ActResultProducer
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check import \
-    home_and_sds_populators as home_or_sds
-from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_check.home_and_sds_populators import \
+from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators as home_or_sds, \
+    sds_populator
+from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
-from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_populator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
 from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.file_structure import DirContents, File
