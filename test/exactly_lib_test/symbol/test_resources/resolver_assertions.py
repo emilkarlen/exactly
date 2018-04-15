@@ -165,12 +165,12 @@ def matches_resolver_of_lines_transformer(references: asrt.ValueAssertion[Sequen
 
 
 def matches_resolver_of_program(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                resolved_value: asrt.ValueAssertion[DirDependentValue],
+                                resolved_program_value: asrt.ValueAssertion[DirDependentValue],
                                 custom: asrt.ValueAssertion[ProgramResolver] = asrt.anything_goes(),
                                 symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_program_type(),
                             references,
-                            asrt.is_instance_with(ProgramValue, resolved_value),
+                            asrt.is_instance_with(ProgramValue, resolved_program_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from exactly_lib.definitions.entity.types import STRING_TYPE_INFO
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
@@ -17,11 +17,15 @@ from exactly_lib.util.parse.token import Token
 
 
 class Configuration:
-    def __init__(self, argument_name: str):
+    def __init__(self,
+                 argument_name: str,
+                 reference_restrictions: Optional[ReferenceRestrictions] = None):
         self.argument_name = argument_name
+        self.reference_restrictions = reference_restrictions
 
 
-DEFAULT_CONFIGURATION = Configuration(STRING_TYPE_INFO.identifier)
+DEFAULT_CONFIGURATION = Configuration(STRING_TYPE_INFO.identifier,
+                                      reference_restrictions=None)
 
 
 def parse_string_resolver_from_parse_source(source: ParseSource,
@@ -67,7 +71,7 @@ def parse_string_resolver(tokens: TokenStream,
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
     fragments = parse_fragments_from_tokens(tokens, conf)
-    return string_resolver_from_fragments(fragments)
+    return string_resolver_from_fragments(fragments, conf.reference_restrictions)
 
 
 def parse_string_resolver_from_token(token: Token,
@@ -81,7 +85,6 @@ def parse_fragments_from_tokens(tokens: TokenStream,
     """
     Consumes a single token.
     :raises SingleInstructionInvalidArgumentException: Missing argument
-    :rtype [Fragment]
     """
 
     if tokens.is_null:
@@ -91,18 +94,16 @@ def parse_fragments_from_tokens(tokens: TokenStream,
 
 
 def parse_fragments_from_token(token: Token) -> List[symbol_syntax.Fragment]:
-    """
-    :rtype [symbol_syntax.Fragment]
-    """
-
     if token.is_quoted and token.is_hard_quote_type:
         return [symbol_syntax.Fragment(token.string, is_symbol=False)]
     return symbol_syntax.split(token.string)
 
 
-def string_resolver_from_string(source: str) -> StringResolver:
+def string_resolver_from_string(source: str,
+                                reference_restrictions: ReferenceRestrictions = None
+                                ) -> StringResolver:
     fragments = symbol_syntax.split(source)
-    return string_resolver_from_fragments(fragments)
+    return string_resolver_from_fragments(fragments, reference_restrictions)
 
 
 def fragment_resolver_from_fragment(fragment: symbol_syntax.Fragment,
