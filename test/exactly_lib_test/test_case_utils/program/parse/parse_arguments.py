@@ -242,7 +242,7 @@ class TestSingleElement(unittest.TestCase):
                                                  dir_contents=home_and_sds_populators.empty(),
                                                  symbols=rel_opt_conf.symbols.in_arrangement()),
                                              expectation=
-                                             validation_check.fails_on(rel_opt_conf.directory_structure_part),
+                                             validation_check.fails_on(rel_opt_conf.directory_structure_partition),
 
                                          )),
                             NameAndValue('succeed when file exists',
