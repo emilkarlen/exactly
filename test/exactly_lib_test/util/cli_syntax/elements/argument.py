@@ -25,7 +25,6 @@ class TestThatToStringDoesNotRaiseException(unittest.TestCase):
             sut.OptionName('s'),
             sut.OptionName('long'),
             sut.OptionName(long_name='long'),
-            sut.OptionName('s', 'long'),
         ]
         for value in test_cases:
             with self.subTest():
@@ -34,6 +33,22 @@ class TestThatToStringDoesNotRaiseException(unittest.TestCase):
     def test_option(self):
         value = sut.Option(sut.OptionName('s'),
                            'argument')
+        str(value)
+
+    def test_short_and_long_option_name(self):
+        test_cases = [
+            sut.ShortAndLongOptionName('s'),
+            sut.ShortAndLongOptionName('long'),
+            sut.ShortAndLongOptionName(long_name='long'),
+            sut.ShortAndLongOptionName('s', 'long'),
+        ]
+        for value in test_cases:
+            with self.subTest():
+                str(value)
+
+    def test_short_and_long_option(self):
+        value = sut.ShortAndLongOption(sut.ShortAndLongOptionName('s'),
+                                       'argument')
         str(value)
 
     def test_single(self):

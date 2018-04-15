@@ -41,24 +41,19 @@ class Named(Argument):
 
 class OptionName(tuple):
     """
-    An option with either a short name, a long name, or both.
+    An option with a long name à la "find".
     """
 
     def __new__(cls,
-                short_name: str = '',
                 long_name: str = ''):
-        return tuple.__new__(cls, (short_name, long_name))
-
-    @property
-    def short(self) -> str:
-        return self[0]
+        return tuple.__new__(cls, ((long_name,)))
 
     @property
     def long(self) -> str:
-        return self[1]
+        return self[0]
 
     def __str__(self):
-        return '{}(short_name={}, long_name=)'.format(type(self), repr(self.short), repr(self.long))
+        return '{}(short_name={}, long_name=)'.format(type(self), repr(self.long))
 
 
 class Option(Argument):
@@ -75,10 +70,6 @@ class Option(Argument):
     @property
     def name(self) -> OptionName:
         return self._name
-
-    @property
-    def short_name(self) -> str:
-        return self._name.short
 
     @property
     def long_name(self) -> str:
@@ -151,11 +142,9 @@ class ShortAndLongOption(Argument):
         return '{}(name={}, argument={})'.format(type(self), repr(self._name), str(self._argument))
 
 
-def option(short_name: str = '',
-           long_name: str = '',
+def option(long_name: str = '',
            argument: str = '') -> Option:
-    return Option(OptionName(short_name=short_name,
-                             long_name=long_name),
+    return Option(OptionName(long_name),
                   argument=argument)
 
 

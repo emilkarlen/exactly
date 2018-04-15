@@ -110,21 +110,20 @@ class ArgumentUsageOnCommandLineRendererForOneOrMoreArgumentTest(unittest.TestCa
 
 
 class ArgumentOnCommandLineRendererTest(unittest.TestCase):
-    def test_option_with_both_long_and_short_name_SHOULD_produce_short_name(self):
+    def test_option(self):
         # ARRANGE #
         renderer = sut.ArgumentOnCommandLineRenderer()
-        argument_usage = arg.option(short_name='s',
-                                    long_name='long')
+        argument_usage = arg.option('long')
         # ACT #
         actual = renderer.visit(argument_usage)
         # ASSERT #
-        self.assertEqual('-s',
+        self.assertEqual('--long',
                          actual)
 
     def test_option_only_short_name_SHOULD_produce_short_name(self):
         # ARRANGE #
         renderer = sut.ArgumentOnCommandLineRenderer()
-        argument_usage = arg.option(short_name='s')
+        argument_usage = arg.short_long_option(short_name='s')
         # ACT #
         actual = renderer.visit(argument_usage)
         # ASSERT #
@@ -134,11 +133,22 @@ class ArgumentOnCommandLineRendererTest(unittest.TestCase):
     def test_option_only_long_name_SHOULD_produce_long_name(self):
         # ARRANGE #
         renderer = sut.ArgumentOnCommandLineRenderer()
-        argument_usage = arg.option(long_name='long')
+        argument_usage = arg.short_long_option(long_name='long')
         # ACT #
         actual = renderer.visit(argument_usage)
         # ASSERT #
         self.assertEqual('--long',
+                         actual)
+
+    def test_option_with_both_long_and_short_name_SHOULD_produce_short_name(self):
+        # ARRANGE #
+        renderer = sut.ArgumentOnCommandLineRenderer()
+        argument_usage = arg.short_long_option(short_name='s',
+                                               long_name='long')
+        # ACT #
+        actual = renderer.visit(argument_usage)
+        # ASSERT #
+        self.assertEqual('-s',
                          actual)
 
     def test_named_argument_SHOULD_produce_name(self):
