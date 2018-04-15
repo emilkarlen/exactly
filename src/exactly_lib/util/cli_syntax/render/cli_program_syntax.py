@@ -1,4 +1,5 @@
 from exactly_lib.definitions import doc_format
+from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
 from exactly_lib.util.cli_syntax.option_syntax import short_option_syntax
@@ -89,6 +90,16 @@ class ArgumentOnCommandLineRenderer(arg.ArgumentVisitor):
         else:
             return option_str
 
+    def visit_short_and_long_option(self, x: arg.ShortAndLongOption) -> str:
+        if x.short_name:
+            option_str = short_and_long_option_syntax.short_syntax(x.name.short)
+        else:
+            option_str = short_and_long_option_syntax.long_syntax(x.name.long)
+        if x.argument:
+            return option_str + ' ' + x.argument
+        else:
+            return option_str
+
 
 class ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
     def visit_constant(self, x: arg.Constant) -> str:
@@ -105,6 +116,19 @@ class ArgumentInArgumentDescriptionRenderer(arg.ArgumentVisitor):
             if ret_val:
                 ret_val.append(', ')
             ret_val.append(long_option_syntax(x.name.long))
+        if x.argument:
+            ret_val.append(' ')
+            ret_val.append(x.argument)
+        return ''.join(ret_val)
+
+    def visit_short_and_long_option(self, x: arg.ShortAndLongOption) -> str:
+        ret_val = []
+        if x.short_name:
+            ret_val.append(short_and_long_option_syntax.short_syntax(x.name.short))
+        if x.long_name:
+            if ret_val:
+                ret_val.append(', ')
+            ret_val.append(short_and_long_option_syntax.long_syntax(x.name.long))
         if x.argument:
             ret_val.append(' ')
             ret_val.append(x.argument)

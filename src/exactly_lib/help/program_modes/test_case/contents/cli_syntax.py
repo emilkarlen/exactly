@@ -134,16 +134,16 @@ Specifies an {interpreter_actor} {actor_concept}, by giving the executable progr
 Note: An {actor_concept} specified in the test case will have precedence over the {actor_concept} given here.
 """
 
-_ACTOR_OPTION = arg.option(long_name=opt.OPTION_FOR_ACTOR__LONG,
-                           argument=opt.ACTOR_OPTION_ARGUMENT)
+_ACTOR_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_ACTOR__LONG,
+                                      argument=opt.ACTOR_OPTION_ARGUMENT)
 
 _KEEPING_SANDBOX_OPTION_DESCRIPTION = """\
 Executes a test case as normal, but the {sandbox} is preserved,
 and it's root directory is the only output on stdout.
 """
 
-_KEEP_SANDBOX_OPTION = arg.option(long_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG,
-                                  short_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT)
+_KEEP_SANDBOX_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG,
+                                             short_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT)
 
 _EXECUTING_ACT_PHASE_OPTION_DESCRIPTION = """\
 Executes the test case as usual, but instead of "reporting" the result,
@@ -152,7 +152,7 @@ the outcome of {phase[act]:syntax} is emitted:
 output on stdout/stderr from {phase[act]:syntax} becomes the output on stdout/stderr;
 the exit code from {phase[act]:syntax} becomes the exit code from the program."""
 
-_EXECUTING_ACT_PHASE_OPTION = arg.option(long_name=opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG)
+_EXECUTING_ACT_PHASE_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG)
 
 _PREPROCESSOR_OPTION_DESCRIPTION = """\
 A program that transforms the test case file as the first step in the processing of it.
@@ -165,8 +165,8 @@ A program that transforms the test case file as the first step in the processing
 When executed, it is given a single (additional) argument: the name of the test case file to preprocess.
 """
 
-_PREPROCESSOR_OPTION = arg.option(long_name=opt.OPTION_FOR_PREPROCESSOR__LONG,
-                                  argument=opt.PREPROCESSOR_OPTION_ARGUMENT)
+_PREPROCESSOR_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_PREPROCESSOR__LONG,
+                                             argument=opt.PREPROCESSOR_OPTION_ARGUMENT)
 
 _SUITE_OPTION_DESCRIPTION = """\
 Reads configuration from the given suite.
@@ -174,5 +174,5 @@ Reads configuration from the given suite.
 The test case is executed as if it were part of the suite.
 """
 
-_SUITE_OPTION = arg.option(long_name=opt.OPTION_FOR_SUITE__LONG,
-                           argument=opt.SUITE_OPTION_METAVAR)
+_SUITE_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_SUITE__LONG,
+                                      argument=opt.SUITE_OPTION_METAVAR)
