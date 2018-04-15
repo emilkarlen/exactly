@@ -14,8 +14,8 @@ from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.program import is_program_reference_to
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
-from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.program_assertions import \

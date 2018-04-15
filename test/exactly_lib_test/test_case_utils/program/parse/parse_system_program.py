@@ -4,6 +4,8 @@ from typing import List, Set, Callable
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parser_classes import Parser
+from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
@@ -22,7 +24,7 @@ from exactly_lib_test.test_case.test_resources import validation_check
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val, \
     home_and_sds_populators
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
-from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
+from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as cmd_line_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
@@ -50,12 +52,12 @@ class TestFailingParse(unittest.TestCase):
                          ab.empty()
                          ),
             NameAndValue('invalid program name - broken syntax due to missing end quote',
-                         sym_ref_args.system_program_cmd_line(
+                         cmd_line_args.system_program_cmd_line(
                              QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'valid_program_name'),
                          ),
             NameAndValue('invalid argument - broken syntax due to missing end quote',
-                         sym_ref_args.system_program_cmd_line('valid_program_name',
-                                                              [QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument'])
+                         cmd_line_args.system_program_cmd_line('valid_program_name',
+                                                               [QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument'])
                          ),
         ]
         parser = sut.program_parser()
@@ -175,38 +177,55 @@ class TestSuccessfulParse(unittest.TestCase):
                symbols: SymbolTable):
         with self.subTest(program=program_case.name,
                           arguments=argument_case.name):
-            expected_references_assertion = asrt.matches_sequence(program_case.expected_symbol_references +
-                                                                  argument_case.expected_symbol_references)
+            check_parsing_of_program(self,
+                                     self.parser,
+                                     lambda first_line: ArgumentElements([first_line]),
+                                     program_case,
+                                     argument_case,
+                                     symbols)
 
-            def expected_program(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
-                return asrt_pgm_val.matches_program(
-                    command=asrt_command.equals_system_program_command(
-                        program=program_case.expected_resolved_value,
-                        arguments=argument_case.expected_resolved_values(tcds)
-                    ),
-                    stdin=asrt_pgm_val.no_stdin(),
-                    transformer=asrt_line_transformer.is_identity_transformer()
-                )
 
-            expectation = asrt_resolver.matches_resolver_of_program(
-                references=expected_references_assertion,
-                resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
-                    resolving_dependencies=asrt.equals(argument_case.expected_dir_dependencies),
-                    resolved_value=expected_program,
+def check_parsing_of_program(put: unittest.TestCase,
+                             parser: Parser[ProgramResolver],
+                             mk_argument_elements: Callable[[ArgumentElementRenderer], ArgumentElements],
+                             program_case: ProgramNameCase,
+                             argument_case: ArgumentsCase,
+                             symbols: SymbolTable):
+    with put.subTest(program=program_case.name,
+                     arguments=argument_case.name):
+        expected_references_assertion = asrt.matches_sequence(program_case.expected_symbol_references +
+                                                              argument_case.expected_symbol_references)
+
+        def expected_program(tcds: HomeAndSds) -> asrt.ValueAssertion[Program]:
+            return asrt_pgm_val.matches_program(
+                command=asrt_command.equals_system_program_command(
+                    program=program_case.expected_resolved_value,
+                    arguments=argument_case.expected_resolved_values(tcds)
                 ),
-                symbols=symbols
+                stdin=asrt_pgm_val.no_stdin(),
+                transformer=asrt_line_transformer.is_identity_transformer()
             )
 
-            source = parse_source_of(sym_ref_args.system_program_cmd_line(program_case.source_element,
-                                                                          argument_case.source_elements))
+        expectation = asrt_resolver.matches_resolver_of_program(
+            references=expected_references_assertion,
+            resolved_program_value=asrt_dir_dep_val.matches_dir_dependent_value(
+                resolving_dependencies=asrt.equals(argument_case.expected_dir_dependencies),
+                resolved_value=expected_program,
+            ),
+            symbols=symbols
+        )
 
-            # ACT #
+        source = mk_argument_elements(cmd_line_args.system_program_cmd_line(program_case.source_element,
+                                                                            argument_case.source_elements)
+                                      ).as_remaining_source
 
-            actual = self.parser.parse(source)
+        # ACT #
 
-            # ASSERT #
+        actual = parser.parse(source)
 
-            expectation.apply_without_message(self, actual)
+        # ASSERT #
+
+        expectation.apply_without_message(put, actual)
 
 
 class FileExistenceCase:

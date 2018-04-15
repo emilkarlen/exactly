@@ -43,8 +43,8 @@ from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_st
 from exactly_lib_test.test_case_utils.parse.test_resources import arguments_building as arg
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import ArgumentElements
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
+from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.program.test_resources import program_resolvers
-from exactly_lib_test.test_case_utils.program.test_resources import sym_ref_cmd_line_args as sym_ref_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.arguments_building import Stringable
