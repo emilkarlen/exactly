@@ -105,7 +105,7 @@ class TestSymbolReferences(unittest.TestCase):
                 expected_value=
                 asrt.matches_sequence([
                     asrt_pgm.is_program_reference_to(program_symbol_name),
-                    asrt_sym_ref.is_reference_data_type_symbol(argument_symbol_name),
+                    asrt_sym_ref.is_reference_to_data_type_symbol(argument_symbol_name),
                 ]),
                 input_value=
                 sym_ref_args.sym_ref_cmd_line(program_symbol_name, [ab.symbol_reference(argument_symbol_name)]),

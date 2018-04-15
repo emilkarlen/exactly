@@ -6,3 +6,7 @@ from exactly_lib_test.test_resources.arguments_building import ArgumentElementRe
 
 def sym_ref_cmd_line(symbol_name: Stringable, arguments: Sequence[Stringable] = ()) -> ArgumentElementRenderer:
     return ab.sequence([symbol_name] + list(arguments))
+
+
+def system_program_cmd_line(program_name: Stringable, arguments: Sequence[Stringable] = ()) -> ArgumentElementRenderer:
+    return ab.sequence([program_name] + list(arguments))

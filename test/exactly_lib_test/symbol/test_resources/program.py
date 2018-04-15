@@ -21,5 +21,5 @@ def matches_program_resolver(references: asrt.ValueAssertion[Sequence[SymbolRefe
                              resolved_value: asrt.ValueAssertion = asrt.anything_goes(),
                              symbols: SymbolTable = None) -> asrt.ValueAssertion[SymbolValueResolver]:
     return resolver_assertions.matches_resolver_of_program(references=references,
-                                                           resolved_value=resolved_value,
+                                                           resolved_program_value=resolved_value,
                                                            symbols=symbols)

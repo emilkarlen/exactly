@@ -30,7 +30,7 @@ def matches_reference_2(expected_name: str,
                              assertion_on_restrictions)
 
 
-def is_reference_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion[su.SymbolReference]:
+def is_reference_to_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion[su.SymbolReference]:
     return matches_reference_2(symbol_name,
                                is_any_data_type_reference_restrictions())
 
