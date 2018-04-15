@@ -55,7 +55,8 @@ class ArgumentUsageOnCommandLineRenderer(arg.ArgumentUsageVisitor):
         else:
             raise ValueError('Invalid %s: %s' % (str(arg.Multiplicity), str(x.multiplicity)))
 
-    def _multiplicity(self, arg_str: str, multiplicity: arg.Multiplicity) -> str:
+    @staticmethod
+    def _multiplicity(arg_str: str, multiplicity: arg.Multiplicity) -> str:
         return arg_str if multiplicity is arg.Multiplicity.MANDATORY else '[' + arg_str + ']'
 
     @staticmethod
