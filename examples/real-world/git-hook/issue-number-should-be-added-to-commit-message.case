@@ -26,7 +26,8 @@ $ git commit -m "commit message without issue number"
 [assert]
 
 
-stdout -from @ GET_LOG_MESSAGE_OF_LAST_COMMIT
+stdout -from
+       @ GET_LOG_MESSAGE_OF_LAST_COMMIT
        equals
 <<-
 AB-123 : commit message without issue number
