@@ -17,9 +17,8 @@ from exactly_lib.type_system.data.file_refs import simple_of_rel_option
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.util.parse.token import QuoteType, QUOTE_CHAR_FOR_TYPE
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.symbol.data.restrictions.test_resources import concrete_restriction_assertion as asrt_rr
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
-from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
+from exactly_lib_test.symbol.test_resources import symbol_reference_assertions as asrt_sym_ref
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.test_case_file_structure.test_resources import dir_dep_value_assertions as asrt_dir_dep_val
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
@@ -71,6 +70,10 @@ class TestFailingParse(unittest.TestCase):
             NameAndValue('not a plain symbol name - broken syntax due to missing end quote',
                          sym_ref_args.sym_ref_cmd_line(QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'valid_symbol_name')
                          ),
+            NameAndValue('valid symbol name - broken argument syntax due to missing end quote',
+                         sym_ref_args.sym_ref_cmd_line('valid_symbol_name',
+                                                       [QUOTE_CHAR_FOR_TYPE[QuoteType.SOFT] + 'argument'])
+                         ),
         ]
         parser = sut.program_parser()
         for case in cases:
@@ -102,7 +105,7 @@ class TestSymbolReferences(unittest.TestCase):
                 expected_value=
                 asrt.matches_sequence([
                     asrt_pgm.is_program_reference_to(program_symbol_name),
-                    is_reference_data_type_symbol(argument_symbol_name),
+                    asrt_sym_ref.is_reference_data_type_symbol(argument_symbol_name),
                 ]),
                 input_value=
                 sym_ref_args.sym_ref_cmd_line(program_symbol_name, [ab.symbol_reference(argument_symbol_name)]),
@@ -419,11 +422,6 @@ class TestResolving(unittest.TestCase):
                         resolving_case.expected.apply_with_message(self,
                                                                    actual_resolved_value,
                                                                    'resolved value')
-
-
-def is_reference_data_type_symbol(symbol_name: str) -> asrt.ValueAssertion:
-    return asrt_sym_usage.matches_reference(asrt.equals(symbol_name),
-                                            asrt_rr.is_any_data_type_reference_restrictions())
 
 
 def parse_source_of(single_line: ArgumentElementRenderer) -> ParseSource:
