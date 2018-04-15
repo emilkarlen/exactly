@@ -1,0 +1,22 @@
+[setup]
+
+
+file f.txt = "some text"
+
+def program CAT_FILE = % cat
+                       --transformed-by TO_UPPER_CASE
+
+
+[assert]
+
+
+stdout --from
+       @ CAT_FILE f.txt
+       equals
+       "SOME TEXT"
+
+stdout --from
+       % cat f.txt
+       --transformed-by TO_UPPER_CASE
+       equals
+       "SOME TEXT"
