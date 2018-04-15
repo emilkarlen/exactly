@@ -156,7 +156,7 @@ class RelativityOptionConfiguration:
             raise ValueError('Not a {}: {}'.format(SymbolsConfiguration, symbols_configuration))
 
     @property
-    def directory_structure_part(self) -> DirectoryStructurePartition:
+    def directory_structure_partition(self) -> DirectoryStructurePartition:
         raise NotImplementedError('abstract method')
 
     @property
@@ -261,7 +261,7 @@ class RelativityOptionConfigurationRelHome(RelativityOptionConfigurationForRelOp
         self._resolver_hds = relative_path_options.REL_HOME_OPTIONS_MAP[relativity].root_resolver
 
     @property
-    def directory_structure_part(self) -> DirectoryStructurePartition:
+    def directory_structure_partition(self) -> DirectoryStructurePartition:
         return DirectoryStructurePartition.HOME
 
     @property
@@ -287,7 +287,7 @@ class RelativityOptionConfigurationForRelNonHome(RelativityOptionConfiguration):
                          symbols_configuration)
 
     @property
-    def directory_structure_part(self) -> DirectoryStructurePartition:
+    def directory_structure_partition(self) -> DirectoryStructurePartition:
         return DirectoryStructurePartition.NON_HOME
 
     def root_dir__non_home(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
