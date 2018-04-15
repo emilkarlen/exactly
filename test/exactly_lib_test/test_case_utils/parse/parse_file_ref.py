@@ -12,8 +12,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect, \
     OrReferenceRestrictions, OrRestrictionPart
-from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction, \
-    FileRefRelativityRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import ReferenceRestrictions, DataTypeReferenceRestrictions
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
@@ -48,6 +47,8 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
+    string_made_up_of_just_strings_reference_restrictions, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -524,9 +525,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(defined_path_symbol.name,
                                          file_ref_reference_restrictions(accepted_relativities))),
-                     equals_symbol_reference(
-                         SymbolReference(suffix_symbol.name,
-                                         path_part_string_reference_restrictions())),
+                     is_reference_to_string_made_up_of_just_plain_strings(suffix_symbol.name),
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
@@ -562,9 +561,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(defined_path_symbol.name,
                                          file_ref_reference_restrictions(accepted_relativities))),
-                     equals_symbol_reference(
-                         SymbolReference(suffix_symbol.name,
-                                         path_part_string_reference_restrictions())),
+                     is_reference_to_string_made_up_of_just_plain_strings(suffix_symbol.name),
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
@@ -660,9 +657,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                                              symbol.value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     equals_symbol_reference(
-                         SymbolReference(symbol.name,
-                                         path_part_string_reference_restrictions())),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol.name),
                  ]),
                  symbol_table=
                  symbol_table_with_single_string_value(symbol.name,
@@ -688,10 +683,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                                              symbol_1.value + '/const' + symbol_2.value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     equals_symbol_reference(
-                         SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
-                     equals_symbol_reference(
-                         SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_1.name),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([symbol_1, symbol_2]),
@@ -717,10 +710,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                                              symbol_1.value + '/ const ' + symbol_2.value)),
                  expected_symbol_references=
                  asrt.matches_sequence([
-                     equals_symbol_reference(
-                         SymbolReference(symbol_1.name, path_part_string_reference_restrictions())),
-                     equals_symbol_reference(
-                         SymbolReference(symbol_2.name, path_part_string_reference_restrictions())),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_1.name),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([symbol_1, symbol_2]),
@@ -873,9 +864,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(symbol_1.name,
                                          file_ref_or_string_reference_restrictions(accepted_relativities))),
-                     equals_symbol_reference(
-                         SymbolReference(symbol_2.name,
-                                         path_part_string_reference_restrictions())),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([(symbol_1.name, '/absolute/path'),
@@ -908,12 +897,8 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                      equals_symbol_reference(
                          SymbolReference(symbol.name,
                                          file_ref_or_string_reference_restrictions(accepted_relativities))),
-                     equals_symbol_reference(
-                         SymbolReference(symbol_1.name,
-                                         path_part_string_reference_restrictions())),
-                     equals_symbol_reference(
-                         SymbolReference(symbol_2.name,
-                                         path_part_string_reference_restrictions())),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_1.name),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  symbol_table_with_string_values([(symbol.name, 'non-abs-str'),
@@ -975,10 +960,7 @@ class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
                          SymbolReference(symbol_1.name,
                                          file_ref_or_string_reference_restrictions(accepted_relativities))
                      ),
-                     equals_symbol_reference(
-                         SymbolReference(symbol_2.name,
-                                         path_part_string_reference_restrictions())
-                     ),
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol_2.name),
                  ]),
                  symbol_table=
                  symbol_table_from_entries([
@@ -1364,11 +1346,6 @@ def _option_string_for_relativity(relativity: RelOptionType) -> str:
     return _option_string_for(REL_OPTIONS_MAP[relativity].option_name)
 
 
-def path_part_string_reference_restrictions() -> ReferenceRestrictionsOnDirectAndIndirect:
-    return ReferenceRestrictionsOnDirectAndIndirect(StringRestriction(),
-                                                    StringRestriction())
-
-
 def file_ref_reference_restrictions(accepted_relativities: PathRelativityVariants
                                     ) -> DataTypeReferenceRestrictions:
     return ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))
@@ -1382,7 +1359,7 @@ def file_ref_or_string_reference_restrictions(accepted_relativities: PathRelativ
             ReferenceRestrictionsOnDirectAndIndirect(FileRefRelativityRestriction(accepted_relativities))),
         OrRestrictionPart(
             DataValueType.STRING,
-            path_part_string_reference_restrictions()),
+            string_made_up_of_just_strings_reference_restrictions()),
     ])
 
 
