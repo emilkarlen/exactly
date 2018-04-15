@@ -20,5 +20,5 @@ actual contents line
 -
 
 contents single-line.txt equals
---file
---rel-cd single-line.txt
+-file
+-rel-cd single-line.txt
