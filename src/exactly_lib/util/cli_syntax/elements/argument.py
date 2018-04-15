@@ -95,12 +95,76 @@ class Option(Argument):
         return '{}(name={}, argument={})'.format(type(self), repr(self._name), str(self._argument))
 
 
+class ShortAndLongOptionName(tuple):
+    """
+    An option with either a short name, a long name, or both.
+    """
+
+    def __new__(cls,
+                short_name: str = '',
+                long_name: str = ''):
+        return tuple.__new__(cls, (short_name, long_name))
+
+    @property
+    def short(self) -> str:
+        return self[0]
+
+    @property
+    def long(self) -> str:
+        return self[1]
+
+    def __str__(self):
+        return '{}(short_name={}, long_name=)'.format(type(self), repr(self.short), repr(self.long))
+
+
+class ShortAndLongOption(Argument):
+    """
+    A command line option with short and long variant, as understood by pythons CL argument parser.
+    """
+
+    def __init__(self,
+                 name: ShortAndLongOptionName,
+                 argument: str = ''):
+        self._name = name
+        self._argument = argument
+
+    @property
+    def name(self) -> ShortAndLongOptionName:
+        return self._name
+
+    @property
+    def short_name(self) -> str:
+        return self._name.short
+
+    @property
+    def long_name(self) -> str:
+        return self._name.long
+
+    @property
+    def argument(self) -> str:
+        """
+        :return: Empty `str` if option does not have an argument.
+        """
+        return self._argument
+
+    def __str__(self):
+        return '{}(name={}, argument={})'.format(type(self), repr(self._name), str(self._argument))
+
+
 def option(short_name: str = '',
            long_name: str = '',
            argument: str = '') -> Option:
     return Option(OptionName(short_name=short_name,
                              long_name=long_name),
                   argument=argument)
+
+
+def short_long_option(short_name: str = '',
+                      long_name: str = '',
+                      argument: str = '') -> ShortAndLongOption:
+    return ShortAndLongOption(ShortAndLongOptionName(short_name=short_name,
+                                                     long_name=long_name),
+                              argument=argument)
 
 
 class Multiplicity(Enum):
@@ -176,6 +240,8 @@ class ArgumentVisitor:
             return self.visit_named(x)
         if isinstance(x, Option):
             return self.visit_option(x)
+        if isinstance(x, ShortAndLongOption):
+            return self.visit_short_and_long_option(x)
         raise TypeError('Not an instance of %s: %s' % (str(Argument), str(x)))
 
     def __call__(self, x: Argument):
@@ -188,6 +254,9 @@ class ArgumentVisitor:
         raise NotImplementedError()
 
     def visit_option(self, x: Option):
+        raise NotImplementedError()
+
+    def visit_short_and_long_option(self, x: ShortAndLongOption):
         raise NotImplementedError()
 
 

@@ -70,6 +70,10 @@ class ArgumentRecordingArgumentVisitor(sut.ArgumentVisitor):
         self.visited_classes.append(sut.Option)
         return x
 
+    def visit_short_and_long_option(self, x: sut.ShortAndLongOption):
+        self.visited_classes.append(sut.ShortAndLongOption)
+        return x
+
 
 class ArgumentVisitorTest(unittest.TestCase):
     def test_constant(self):
@@ -79,7 +83,10 @@ class ArgumentVisitorTest(unittest.TestCase):
         self._check(sut.Named('value-element'), sut.Named)
 
     def test_option(self):
-        self._check(sut.Option('n'), sut.Option)
+        self._check(sut.Option(sut.OptionName('n')), sut.Option)
+
+    def test_short_and_long_option(self):
+        self._check(sut.ShortAndLongOption(sut.ShortAndLongOptionName('n')), sut.ShortAndLongOption)
 
     def test_visit_SHOULD_raise_TypeError_WHEN_argument_is_not_a_sub_class_of_argument(self):
         visitor = ArgumentRecordingArgumentVisitor()

@@ -114,11 +114,11 @@ Note: An {actor} specified in the test suite or individual test cases
 will have precedence over the {actor} specified by this option.
 """
 
-_ACTOR_OPTION = arg.option(long_name=opts.OPTION_FOR_ACTOR__LONG,
-                           argument=case_opts.ACTOR_OPTION_ARGUMENT)
+_ACTOR_OPTION = arg.short_long_option(long_name=opts.OPTION_FOR_ACTOR__LONG,
+                                      argument=case_opts.ACTOR_OPTION_ARGUMENT)
 
-_REPORTER_OPTION = arg.option(long_name=opts.OPTION_FOR_REPORTER__LONG,
-                              argument=opts.REPORTER_OPTION_ARGUMENT)
+_REPORTER_OPTION = arg.short_long_option(long_name=opts.OPTION_FOR_REPORTER__LONG,
+                                         argument=opts.REPORTER_OPTION_ARGUMENT)
 
 _REPORTER_OPTION_DESCRIPTION = """\
 Specifies in which format to report the execution of the test suite
