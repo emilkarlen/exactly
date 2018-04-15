@@ -1,10 +1,10 @@
 [setup]
 
-file my-fst-file.txt = --stdout
-                       --python --existing-file print-arguments.py "Hello, Python World!"
+file my-fst-file.txt = -stdout
+                       -python -existing-file print-arguments.py "Hello, Python World!"
 
-file my-snd-file.txt = --stdout
-                       --python --existing-file print-arguments.py :> Hello, Python World!
+file my-snd-file.txt = -stdout
+                       -python -existing-file print-arguments.py :> Hello, Python World!
 
 [assert]
 

@@ -26,7 +26,7 @@ $ git commit -m "AB-123: commit message with issue number"
 [assert]
 
 
-stdout --from @ GET_LOG_MESSAGE_OF_LAST_COMMIT
+stdout -from @ GET_LOG_MESSAGE_OF_LAST_COMMIT
        equals
 <<-
 AB-123: commit message with issue number

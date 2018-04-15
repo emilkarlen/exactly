@@ -1,13 +1,13 @@
 [setup]
 
 
-def path   INPUT_DIR         = --rel-act input-files
+def path   INPUT_DIR         = -rel-act input-files
 
-def path   OUTPUT_DIR        = --rel-act output-files
+def path   OUTPUT_DIR        = -rel-act output-files
 
 def path   OUTPUT_GOOD_DIR   = @[OUTPUT_DIR]@/good
 
-def path   OUTPUT_BAD_DIR    = --rel OUTPUT_DIR bad
+def path   OUTPUT_BAD_DIR    = -rel OUTPUT_DIR bad
 
 # The above is a variant of how a path that is relative to a symbol
 # can be defined.
@@ -34,11 +34,11 @@ file @[INPUT_DIR]@/@[NAME_OF_GOOD_FILE]@ = <<EOF
 @[GOOD_TOKEN]@ contents
 EOF
 
-file --rel INPUT_DIR @[NAME_OF_BAD_FILE]@ = <<EOF
+file -rel INPUT_DIR @[NAME_OF_BAD_FILE]@ = <<EOF
 bad contents
 EOF
 
-# "file" above uses the "--rel SYMBOL" form,
+# "file" above uses the "-rel SYMBOL" form,
 # which is equivalent to how the path i given to the first "file"
 # instruction
 
@@ -65,7 +65,7 @@ dir-contents @[INPUT_DIR]@ empty
 
 'Correct classification of good file'
 
-exists --file @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@
+exists -file @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@
 
 'The dir for good files should contain only the file found to be good'
 
@@ -78,7 +78,7 @@ dir-contents @[OUTPUT_GOOD_DIR]@ num-files == 1
 
 'Correct classification of bad file'
 
-exists --file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
+exists -file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
 
 'The dir for bad files should contain only the file found to be bad'
 

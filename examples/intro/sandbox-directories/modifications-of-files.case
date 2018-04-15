@@ -52,7 +52,7 @@ dir-contents input-files empty
 
 'Correct detection of good file'
 
-exists --file output-files/good/a-good-file.txt
+exists -file output-files/good/a-good-file.txt
 
 'The dir for good files should contain only the file found to be good'
 
@@ -65,7 +65,7 @@ dir-contents output-files/good num-files == 1
 
 'Correct detection of bad file'
 
-exists --file output-files/bad/a-bad-file.txt
+exists -file output-files/bad/a-bad-file.txt
 
 'The dir for bad files should contain only the file found to be bad'
 

@@ -8,9 +8,9 @@
 #
 # Options for home directories:
 #
-#   "act home"  : "--rel-home-act" denotes this directory (but not used in this test)
+#   "act home"  : "-rel-home-act" denotes this directory (but not used in this test)
 #
-#   "case home" : "--rel-home" denotes this directory
+#   "case home" : "-rel-home" denotes this directory
 #
 
 
@@ -25,7 +25,7 @@ home     = ..
 [setup]
 
 
-install --rel-home testdata/test-file.txt
+install -rel-home testdata/test-file.txt
 
 
 [act]
@@ -39,4 +39,4 @@ do-something-good-with test-file.txt
 [assert]
 
 
-contents test-file.txt equals --file --rel-home expectation/expected.txt
+contents test-file.txt equals -file -rel-home expectation/expected.txt

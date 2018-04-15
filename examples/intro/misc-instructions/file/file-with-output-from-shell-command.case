@@ -1,6 +1,6 @@
 [setup]
 
-file my-file.txt = --stdout $ echo "Hello, Shell World!"
+file my-file.txt = -stdout $ echo "Hello, Shell World!"
 
 [assert]
 

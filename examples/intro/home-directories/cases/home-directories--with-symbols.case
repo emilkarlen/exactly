@@ -24,9 +24,9 @@ home     = ..
 
 def string TEST_FILE                   = test-file.txt
 
-def path   TEST_DATA_DIR               = --rel-home testdata
+def path   TEST_DATA_DIR               = -rel-home testdata
 
-def path   FILE_WITH_EXPECTED_CONTENTS = --rel-home expectation/expected.txt
+def path   FILE_WITH_EXPECTED_CONTENTS = -rel-home expectation/expected.txt
 
 
 install @[TEST_DATA_DIR]@/@[TEST_FILE]@
@@ -34,7 +34,7 @@ install @[TEST_DATA_DIR]@/@[TEST_FILE]@
 #
 # The line above could also be written
 #
-# install --rel TEST_DATA_DIR @[TEST_FILE]@
+# install -rel TEST_DATA_DIR @[TEST_FILE]@
 #
 
 
@@ -47,5 +47,5 @@ do-something-good-with @[TEST_FILE]@
 [assert]
 
 
-contents @[TEST_FILE]@ equals --file @[FILE_WITH_EXPECTED_CONTENTS]@
+contents @[TEST_FILE]@ equals -file @[FILE_WITH_EXPECTED_CONTENTS]@
 
