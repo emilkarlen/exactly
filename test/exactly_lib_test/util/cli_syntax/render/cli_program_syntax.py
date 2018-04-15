@@ -117,7 +117,7 @@ class ArgumentOnCommandLineRendererTest(unittest.TestCase):
         # ACT #
         actual = renderer.visit(argument_usage)
         # ASSERT #
-        self.assertEqual('--long',
+        self.assertEqual('-long',
                          actual)
 
     def test_option_only_short_name_SHOULD_produce_short_name(self):

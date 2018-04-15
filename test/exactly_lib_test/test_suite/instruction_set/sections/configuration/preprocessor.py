@@ -9,6 +9,7 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.test_resources.arguments_building import CustomOptionArgument
 from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
     configuration_section_environment
 
@@ -59,8 +60,8 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
         self._check('= executable', ['executable'])
 
     def test_command_with_arguments(self):
-        self._check(' = executable arg1 --arg2',
-                    ['executable', 'arg1', '--arg2'])
+        self._check(' = executable arg1 {}'.format(CustomOptionArgument('arg2')),
+                    ['executable', 'arg1', str(CustomOptionArgument('arg2'))])
 
     def test_quoting(self):
         self._check("= 'executable with space' arg2 \"arg 3\"",

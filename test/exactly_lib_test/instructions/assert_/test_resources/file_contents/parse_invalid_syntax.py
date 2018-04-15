@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     TestWithConfigurationAndNegationArgumentBase, \
@@ -27,7 +28,7 @@ class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(TestWithConfigu
         # ARRANGE #
         cases = [
             NameAndValue('illegal option',
-                         '--this-is-an-illegal-option'),
+                         option_syntax.long_option_syntax('this-is-an-illegal-option')),
             NameAndValue('illegal argument',
                          'this-is-an-illegal-argument'),
         ]

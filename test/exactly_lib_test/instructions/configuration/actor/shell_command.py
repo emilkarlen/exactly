@@ -111,8 +111,8 @@ class TestSuccessfulParseAndInstructionExecutionForSourceInterpreterActorForShel
                     initial_part_of_command_without_file_argument_is('arg'))
 
     def test_command_with_arguments(self):
-        self._check(' = {actor_option} {shell_option} arg arg1 --arg2',
-                    initial_part_of_command_without_file_argument_is('arg arg1 --arg2'))
+        self._check(' = {actor_option} {shell_option} arg arg1 -arg2',
+                    initial_part_of_command_without_file_argument_is('arg arg1 -arg2'))
 
     def test_quoting(self):
         self._check("  =  {actor_option} {shell_option} 'arg with space' arg2 \"arg 3\"",
@@ -140,9 +140,9 @@ class TestSuccessfulParseAndInstructionExecutionForFileInterpreterActorForShellC
                     hds_contents=file_in_home_act_dir('file.src'))
 
     def test_command_with_arguments(self):
-        self._check(' = {actor_option} {shell_option} interpreter with --arg2',
+        self._check(' = {actor_option} {shell_option} interpreter with -arg2',
                     ['file.src'],
-                    initial_part_of_command_without_file_argument_is('interpreter with --arg2'),
+                    initial_part_of_command_without_file_argument_is('interpreter with -arg2'),
                     hds_contents=file_in_home_act_dir('file.src'))
 
     def test_quoting(self):

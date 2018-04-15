@@ -4,10 +4,10 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
-    TestCaseBase
-from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
     InvalidDestinationFileTestCasesData, \
     TestCommonFailingScenariosDueToInvalidDestinationFileBase
+from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.common_test_cases import \
+    TestCaseBase
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.utils import \
     DISALLOWED_RELATIVITIES, ALLOWED_DST_FILE_RELATIVITIES, IS_SUCCESS, just_parse
 from exactly_lib_test.instructions.multi_phase_instructions.test_resources.instruction_embryo_check import Expectation
@@ -18,6 +18,7 @@ from exactly_lib_test.section_document.test_resources.parse_source import remain
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_at_end, \
     is_at_beginning_of_line
+from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
 from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments import args_with_rel_ops
@@ -67,7 +68,7 @@ class TestFailingParseWithNoContents(unittest.TestCase):
             just_parse(single_line_source(arguments))
 
     def test_fail_when_superfluous_arguments__with_option(self):
-        arguments = '--rel-act expected-argument superfluous-argument'
+        arguments = format_rel_options('{rel_act} expected-argument superfluous-argument')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             just_parse(single_line_source(arguments))
 

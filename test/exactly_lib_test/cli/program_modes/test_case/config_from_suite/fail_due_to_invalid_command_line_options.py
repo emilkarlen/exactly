@@ -3,6 +3,7 @@ import unittest
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.exit_codes import EXIT_INVALID_USAGE
+from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.main_program import main_program_check_base as mpr_check
@@ -45,7 +46,7 @@ def _suite() -> unittest.TestSuite:
 
 class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessorAndTestActor):
     def additional_arguments(self) -> list:
-        return ['--invalid-option-that-should-cause-failure']
+        return [long_syntax('invalid-option-that-should-cause-failure')]
 
     def expected_result(self) -> asrt.ValueAssertion:
         return is_process_result_for_exit_code(exit_codes.EXIT_INVALID_USAGE)

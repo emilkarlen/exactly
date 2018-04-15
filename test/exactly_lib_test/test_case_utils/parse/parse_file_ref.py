@@ -450,7 +450,7 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
         cases = [
             '{rel_symbol_option} INVALID_SYMBOL_NAME? file_name'.format(rel_symbol_option=rel_symbol_option),
             '{rel_symbol_option} ?INVALID_SYMBOL_NAME file_name'.format(rel_symbol_option=rel_symbol_option),
-            '{rel_symbol_option} --invalid_symbol_name file_name'.format(rel_symbol_option=rel_symbol_option),
+            '{rel_symbol_option} -invalid_symbol_name file_name'.format(rel_symbol_option=rel_symbol_option),
             '{rel_symbol_option} {soft_quote}invalid_symbol_name{soft_quote} file_name'.format(
                 rel_symbol_option=rel_symbol_option,
                 soft_quote=SOFT_QUOTE_CHAR),

@@ -3,6 +3,7 @@ import unittest
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
+from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.file_structure import DirContents, File
@@ -38,7 +39,7 @@ class InvalidOptions(SetupWithReplacementOfVariableOutputWithPlaceholders):
         return DirContents([File('main.suite', ''), ])
 
     def additional_arguments(self) -> list:
-        return ['--invalid-option-that-should-cause-failure']
+        return [long_syntax('invalid-option-that-should-cause-failure')]
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
         return []

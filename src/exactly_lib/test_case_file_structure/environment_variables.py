@@ -75,6 +75,6 @@ def exists_at_assert(home_and_sds: HomeAndSds) -> dict:
 
 def replaced(home_and_sds: HomeAndSds) -> dict:
     """
-    The environment variables that are replaced by the --with-replaced-env-vars.
+    The environment variables that are replaced by the REPLACE_TEST_CASE_DIRS transformer.
     """
     return exists_at_setup_main(home_and_sds)

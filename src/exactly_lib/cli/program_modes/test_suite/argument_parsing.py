@@ -13,7 +13,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
-from exactly_lib.util.cli_syntax.option_syntax import long_option_syntax
+from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from .settings import TestSuiteExecutionSettings
 
 
@@ -65,12 +65,12 @@ class _Parser:
                              metavar=opts.TEST_SUITE_FILE_ARGUMENT,
                              type=str,
                              help='The test suite file.')
-        ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_REPORTER__LONG),
+        ret_val.add_argument(short_and_long_option_syntax.long_syntax(opts.OPTION_FOR_REPORTER__LONG),
                              metavar=opts.REPORTER_OPTION_ARGUMENT,
                              nargs=1,
                              choices=self.reporter_names,
                              help=self._reporter_option_description())
-        ret_val.add_argument(long_option_syntax(opts.OPTION_FOR_ACTOR__LONG),
+        ret_val.add_argument(short_and_long_option_syntax.long_syntax(opts.OPTION_FOR_ACTOR__LONG),
                              metavar=case_opts.ACTOR_OPTION_ARGUMENT,
                              nargs=1,
                              help=_ACTOR_OPTION_DESCRIPTION.format(

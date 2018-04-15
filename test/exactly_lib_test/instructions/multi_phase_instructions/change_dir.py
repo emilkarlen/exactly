@@ -1,6 +1,7 @@
 import os
 import unittest
 
+from exactly_lib.definitions import file_ref as file_ref_syntax
 from exactly_lib.instructions.multi_phase_instructions import change_dir as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
@@ -12,6 +13,7 @@ from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
+from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test, sds_env_utils
@@ -41,7 +43,7 @@ class TestParseSet(unittest.TestCase):
     def test_no_argument_should_denote_act_dir(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
-                arguments = '--rel-act'
+                arguments = format_rel_options('{rel_act}')
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
                 actual = parser.parse(remaining_source(arguments))
@@ -113,7 +115,7 @@ class TestParseSet(unittest.TestCase):
     def test_rel_tmp_without_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
-                arguments = '--rel-tmp'
+                arguments = file_ref_syntax.REL_TMP_OPTION
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
                 actual = parser.parse(remaining_source(arguments))
@@ -125,7 +127,7 @@ class TestParseSet(unittest.TestCase):
     def test_rel_tmp_with_argument(self):
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
-                arguments = '--rel-tmp subdir'
+                arguments = format_rel_options('{rel_tmp} subdir')
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
                 actual = parser.parse(remaining_source(arguments))
@@ -136,7 +138,7 @@ class TestParseSet(unittest.TestCase):
                 assertion.apply_without_message(self, actual.destination)
 
     def test_rel_tmp_with_superfluous_argument(self):
-        arguments = '--rel-tmp subdir superfluous'
+        arguments = format_rel_options('{rel_tmp} subdir superfluous')
         for is_after_act_phase in [False, True]:
             with self.subTest(is_after_act_phase=is_after_act_phase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
@@ -145,7 +147,7 @@ class TestParseSet(unittest.TestCase):
                     parser.parse(remaining_source(arguments))
 
     def test_rel_result_should_not_be_available_pre_act_phase(self):
-        arguments = '--rel-result'
+        arguments = file_ref_syntax.REL_RESULT_OPTION
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             parser = sut.EmbryoParser(is_after_act_phase=False)
             # ACT #
@@ -284,35 +286,35 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                   ))
 
     def test_act_root_option_should_change_to_act_dir(self):
-        self._check_argument('--rel-act',
+        self._check_argument(format_rel_options('{rel_act}'),
                              sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.root_dir)),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir)
                                                   ))
 
     def test_act_root_option_should_change_to_act_dir__dot_arg(self):
-        self._check_argument('--rel-act .',
+        self._check_argument(format_rel_options('{rel_act} .'),
                              sds_test.Arrangement(pre_action_action=ChangeDirTo(lambda sds: sds.root_dir)),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.act_dir)
                                                   ))
 
     def test_relative_tmp__without_argument(self):
-        self._check_argument('--rel-tmp',
+        self._check_argument(format_rel_options('{rel_tmp}'),
                              sds_test.Arrangement(),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.tmp.user_dir)
                                                   ))
 
     def test_relative_tmp__without_argument__dot_arg(self):
-        self._check_argument('--rel-tmp .',
+        self._check_argument(format_rel_options('{rel_tmp} .'),
                              sds_test.Arrangement(),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(lambda sds: sds.tmp.user_dir)
                                                   ))
 
     def test_relative_tmp__with_argument(self):
-        self._check_argument('--rel-tmp sub1/sub2',
+        self._check_argument(format_rel_options('{rel_tmp} sub1/sub2'),
                              sds_test.Arrangement(sds_contents_before=contents_in(RelSdsOptionType.REL_TMP,
                                                                                   DirContents([
                                                                                       Dir('sub1', [
@@ -327,7 +329,7 @@ class TestSuccessfulScenarios(TestCaseBase):
     def test_relative_result__after_act_phase(self):
         self._check_argument_for_single_case(
             True,
-            '--rel-result',
+            format_rel_options('{rel_result}'),
             sds_test.Arrangement(),
             sds_test.Expectation(expected_action_result=is_success(),
                                  post_action_check=CwdIs(lambda sds: sds.result.root_dir)
