@@ -18,12 +18,20 @@ def symbol_ref_command_line(command_line: Stringable) -> ArgumentElementRenderer
     return ab.sequence([syntax_elements.SYMBOL_REF_PROGRAM_TOKEN, command_line])
 
 
+def system_program_command_line(command_line: Stringable) -> ArgumentElementRenderer:
+    return ab.sequence([syntax_elements.SYSTEM_PROGRAM_TOKEN, command_line])
+
+
 def interpret_py_source(python_source: Stringable) -> Arguments:
     return interpret_py_source_elements(python_source).as_arguments
 
 
 def interpret_py_source_elements(python_source: Stringable) -> ArgumentElements:
     return ArgumentElements([interpret_py_source_line(python_source)])
+
+
+def system_program_argument_elements(command_line: Stringable) -> ArgumentElements:
+    return ArgumentElements([syntax_elements.SYSTEM_PROGRAM_TOKEN, command_line])
 
 
 def interpret_py_source_line(python_source: Stringable) -> ArgumentElementRenderer:
