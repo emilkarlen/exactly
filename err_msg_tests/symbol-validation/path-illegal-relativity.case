@@ -3,7 +3,7 @@
 
 [setup]
 
-def path rel_act_path = --rel-act file-name-rel-act
+def path rel_act_path = -rel-act file-name-rel-act
 
 # Cause of error: "install" only accept paths that are relative
 # the home directory

@@ -1,7 +1,7 @@
 [setup]
 
 
-def path CHECKED_FILE = --rel-act the/file
+def path CHECKED_FILE = -rel-act the/file
 
 file @[CHECKED_FILE]@
 

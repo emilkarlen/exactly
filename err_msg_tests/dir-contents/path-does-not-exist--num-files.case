@@ -4,7 +4,7 @@
 [assert]
 
 
-dir-contents --rel-act checked-dir num-files == 1
+dir-contents -rel-act checked-dir num-files == 1
 
 
 [act]

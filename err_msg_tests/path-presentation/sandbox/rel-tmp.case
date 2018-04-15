@@ -1,7 +1,7 @@
 [setup]
 
 
-def path CHECKED_FILE = --rel-tmp the/file
+def path CHECKED_FILE = -rel-tmp the/file
 
 file @[CHECKED_FILE]@
 

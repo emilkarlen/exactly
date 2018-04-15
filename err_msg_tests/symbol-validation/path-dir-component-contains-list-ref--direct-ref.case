@@ -9,7 +9,7 @@
 
 def list dir_component  = dir-name
 
-def path full = --rel-act @[dir_component]@
+def path full = -rel-act @[dir_component]@
 
 
 [act]

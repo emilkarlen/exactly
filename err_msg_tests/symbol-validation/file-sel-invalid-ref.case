@@ -4,7 +4,7 @@ def string my_fs = 'not a file matcher'
 
 [assert]
 
-dir-contents my-dir --selection my_fs empty
+dir-contents my-dir -selection my_fs empty
 
 [act]
 

@@ -8,7 +8,7 @@
 
 [setup]
 
-def path bp = --rel-home dir1
+def path bp = -rel-home dir1
 
 # cause of error: ba is defined as a path - it must be a string
 def path   ba   = fi
