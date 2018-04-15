@@ -20,8 +20,8 @@ classify-files-by-moving-to-appropriate-dir GOOD .
 
 dir-contents input-files empty
 
-exists --file output-files/good/a.txt
+exists -file output-files/good/a.txt
 dir-contents  output-files/good num-files == 1
 
-exists --file output-files/bad/b.txt
+exists -file output-files/bad/b.txt
 dir-contents  output-files/bad num-files == 1

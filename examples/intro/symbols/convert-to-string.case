@@ -7,7 +7,7 @@
 [setup]
 
 
-def path MY_PATH = --rel-act my-file.txt
+def path MY_PATH = -rel-act my-file.txt
 
 def list LIST_W_2_ELEMS = first second
 

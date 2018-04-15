@@ -8,25 +8,25 @@
 #
 # Options for sandbox directories:
 #
-#   "act"    :  "--rel-act" denotes this directory
+#   "act"    :  "-rel-act" denotes this directory
 #
-#   "result" : "--rel-result" denotes this directory (but not used in this test)
+#   "result" : "-rel-result" denotes this directory (but not used in this test)
 #
-#   "tmp" :   "--rel-tmp" denotes this directory (but not used in this test)
+#   "tmp" :   "-rel-tmp" denotes this directory (but not used in this test)
 #
 
 [setup]
 
 
-dir --rel-act input-files
-dir --rel-act output-files/good
-dir --rel-act output-files/bad
+dir -rel-act input-files
+dir -rel-act output-files/good
+dir -rel-act output-files/bad
 
-file --rel-act input-files/a-good-file.txt = <<EOF
+file -rel-act input-files/a-good-file.txt = <<EOF
 GOOD contents
 EOF
 
-file --rel-act input-files/a-bad-file.txt = <<EOF
+file -rel-act input-files/a-bad-file.txt = <<EOF
 bad contents
 EOF
 
@@ -48,7 +48,7 @@ exitcode == 0
 
 'All files should have been processed'
 
-dir-contents --rel-act input-files empty
+dir-contents -rel-act input-files empty
 
 
 
@@ -57,11 +57,11 @@ dir-contents --rel-act input-files empty
 
 'Correct detection of good file'
 
-exists --file --rel-act output-files/good/a-good-file.txt
+exists -file -rel-act output-files/good/a-good-file.txt
 
 'The dir for good files should contain only the file found to be good'
 
-dir-contents --rel-act output-files/good num-files == 1
+dir-contents -rel-act output-files/good num-files == 1
 
 
 
@@ -70,8 +70,8 @@ dir-contents --rel-act output-files/good num-files == 1
 
 'Correct detection of bad file'
 
-exists --file --rel-act output-files/bad/a-bad-file.txt
+exists -file -rel-act output-files/bad/a-bad-file.txt
 
 'The dir for bad files should contain only the file found to be bad'
 
-dir-contents --rel-act output-files/bad num-files == 1
+dir-contents -rel-act output-files/bad num-files == 1

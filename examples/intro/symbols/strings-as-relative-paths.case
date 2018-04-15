@@ -3,7 +3,7 @@
 
 def string MY_FILE = my-dir/my-file.txt
 
-file --rel-act @[MY_FILE]@ = <<EOF
+file -rel-act @[MY_FILE]@ = <<EOF
 This is
 my file!
 EOF

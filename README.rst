@@ -33,7 +33,7 @@ and is able to find the email of a person::
 
     [setup]
 
-    stdin = --file some-test-contacts.txt
+    stdin = -file some-test-contacts.txt
 
     [act]
 
@@ -101,10 +101,10 @@ appropriate output directory::
 
     dir-contents input-files empty
 
-    exists --file output-files/good/a.txt
+    exists -file output-files/good/a.txt
     dir-contents  output-files/good num-files == 1
 
-    exists --file output-files/bad/b.txt
+    exists -file output-files/bad/b.txt
     dir-contents  output-files/bad num-files == 1
 
 
@@ -137,7 +137,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [assert]
 
-    contents log.txt --transformed-by GET_TIMING_LINES equals <<EOF
+    contents log.txt -transformed-by GET_TIMING_LINES equals <<EOF
     timing TIMESTAMP begin
     timing TIMESTAMP preprocessing
     timing TIMESTAMP validation
@@ -154,7 +154,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
     def lines-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
 
-The ``--transformed-by`` option does not modify the tested file,
+The ``-transformed-by`` option does not modify the tested file,
 it just applies the assertion to a transformed version of it.
 
 
@@ -189,7 +189,7 @@ The ``actor`` instruction can specify an interpreter to test a source code file:
 
     [conf]
 
-    actor = --file python
+    actor = -file python
 
     [act]
 
@@ -211,7 +211,7 @@ It's probably most useful as a tool for experimenting::
 
     [conf]
 
-    actor = --source bash
+    actor = -source bash
 
     [act]
 
@@ -401,11 +401,11 @@ it just displays some of Exactly's features.)
     contents of the file
     EOF
 
-    file output-from-git.txt = --stdout $ git status
+    file output-from-git.txt = -stdout $ git status
 
-    file git-branch-info.txt = --stdout
+    file git-branch-info.txt = -stdout
                                $ git status
-                               --transformed-by select line-num == 1
+                               -transformed-by select line-num == 1
 
     dir root-dir-for-act-phase
 
@@ -425,9 +425,9 @@ it just displays some of Exactly's features.)
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
 
-    run --python --interpret custom-setup.py 'with an argument'
+    run -python -existing-file custom-setup.py 'with an argument'
 
-    run ( --python -c ) --source print('Setting up things...')
+    run -python -c :> print('Setting up things...')
 
 
     [act]
@@ -454,7 +454,7 @@ it just displays some of Exactly's features.)
     This is the expected output from the-system-under-test
     EOF
 
-    stdout --transformed-by REPLACE_TEST_CASE_DIRS
+    stdout -transformed-by REPLACE_TEST_CASE_DIRS
            any line : matches regex 'EXACTLY_ACT:[0-9]+'
 
     stderr empty
@@ -464,34 +464,36 @@ it just displays some of Exactly's features.)
     contents a-second-file.txt ! empty
 
     contents another-file.txt
-             --transformed-by REPLACE_TEST_CASE_DIRS
-             equals --file expected-content.txt
+             -transformed-by REPLACE_TEST_CASE_DIRS
+             equals -file expected-content.txt
 
     contents file.txt any line : matches regex 'my .* reg ex'
 
     exists actual-file
 
-    exists --dir actual-file
+    exists -dir actual-file
 
     cd this-dir-is-where-we-should-be-for-the-following-assertions
 
     run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
 
-    run --python --interpret custom-assertion.py
+    run -python -existing-file custom-assertion.py
 
 
-    file --rel-tmp modified-stdout.txt = --file --rel-result stdout
-                                         --transformed-by select line-num >= 10
+    file -rel-tmp modified-stdout.txt = -file -rel-result stdout
+                                        -transformed-by select line-num >= 10
 
-    contents --rel-tmp modified-stdout.txt
-             equals <<EOF
+    contents -rel-tmp modified-stdout.txt
+             equals
+    <<EOF
     this should be line 10 of original stdout.txt
     this should be line 11 of original stdout.txt
     EOF
 
 
-    stdout  --transformed-by ( select line-num >= 10 )
-            equals <<EOF
+    stdout  -transformed-by ( select line-num >= 10 )
+            equals
+    <<EOF
     this should be line 10 of original stdout.txt
     this should be line 11 of original stdout.txt
     EOF

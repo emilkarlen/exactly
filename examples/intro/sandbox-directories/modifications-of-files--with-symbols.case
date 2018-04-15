@@ -6,9 +6,9 @@
 [setup]
 
 
-def path   INPUT_DIR         = --rel-act input-files
+def path   INPUT_DIR         = -rel-act input-files
 
-def path   OUTPUT_DIR        = --rel-act output-files
+def path   OUTPUT_DIR        = -rel-act output-files
 
 def path   OUTPUT_GOOD_DIR   = @[OUTPUT_DIR]@/good
 
@@ -62,7 +62,7 @@ dir-contents @[INPUT_DIR]@ empty
 
 'Correct classification of good file'
 
-exists --file @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@
+exists -file @[OUTPUT_GOOD_DIR]@/@[NAME_OF_GOOD_FILE]@
 
 'The dir for good files should contain only the file found to be good'
 
@@ -75,7 +75,7 @@ dir-contents @[OUTPUT_GOOD_DIR]@ num-files == 1
 
 'Correct classification of bad file'
 
-exists --file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
+exists -file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
 
 'The dir for bad files should contain only the file found to be bad'
 
