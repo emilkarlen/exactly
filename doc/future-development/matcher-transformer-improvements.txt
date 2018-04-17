@@ -1,0 +1,26 @@
+-*- org -*-
+
+<2018-04-17 tis>
+
+* FILE-CONTENTS-MATCHER -> STRING-MATCHER
+** Rename to STRING-MATCHER
+** Add to type system as logic type
+** Add primitive: matches REG-EX
+Match on the whole string (as opposed to on individual lines)
+** Add logic operators and syntax: AND, OR ()
+
+* LINES-TRANSFORMER -> STRING-TRANSFORMER
+** Rename to STRING-TRANSFORMER
+** Two variants of "replace"
+*** Whole string (new) : REG-EX "spans" new-lines
+replace REG-EX SUBSTITUTION
+*** Line based - performs the replacement on every line
+replace -lines    [-matching LINE-MATCHER] REG-EX SUBSTITUTION
+replace -per-line [-matching LINE-MATCHER] REG-EX SUBSTITUTION
+replace-per-line  [-matching LINE-MATCHER] REG-EX SUBSTITUTION
+** Add primitive: run PROGRAM
+run PROGRAM
+run COMMAND-LINE
+** Rename / restructure "select" to new name STRINT-TRANSFORMER
+*** selection of lines: select lines matching LINE-MATCHER
+*** selection of part that matches multi-line regex: select REG-EX
