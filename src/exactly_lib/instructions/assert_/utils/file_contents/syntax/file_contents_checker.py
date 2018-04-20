@@ -32,10 +32,12 @@ class FileContentsCheckerHelp:
         return cl_syntax.cl_syntax_for_args(self.initial_args_of_invokation_variants +
                                             additional_argument_usages)
 
-    def invokation_variants__file(self) -> List[InvokationVariant]:
+    def invokation_variants__file(self, actual_file: a.Named) -> List[InvokationVariant]:
+        actual_file_arg = a.Single(a.Multiplicity.MANDATORY,
+                                   actual_file)
         return [
             invokation_variant_from_args(
-                file_contents_checker_arguments__non_program(),
+                [actual_file_arg] + file_contents_checker_arguments__non_program(),
                 self._tp.fnap(_MAIN_INVOKATION__FILE__SYNTAX_DESCRIPTION)),
         ]
 
@@ -51,10 +53,10 @@ class FileContentsCheckerHelp:
             ),
         ]
 
-    def syntax_element_descriptions_at_top(self) -> list:
+    def syntax_element_descriptions_at_top(self) -> List[SyntaxElementDescription]:
         return []
 
-    def syntax_element_descriptions_at_bottom(self) -> list:
+    def syntax_element_descriptions_at_bottom(self) -> List[SyntaxElementDescription]:
         transformation = transformation_syntax_element_description(self._checked_file)
 
         return ([transformation,
