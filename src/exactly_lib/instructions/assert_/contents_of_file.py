@@ -45,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:
-        return self._help_parts.invokation_variants__file()
+        return self._help_parts.invokation_variants__file(self.actual_file_arg)
 
     def _cls(self, additional_argument_usages: list) -> str:
         return self._cl_syntax_for_args([self.actual_file] + additional_argument_usages)
