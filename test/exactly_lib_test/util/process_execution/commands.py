@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.util.process_execution import commands as sut
 from exactly_lib.util.process_execution.command import CommandDriver
@@ -73,4 +74,9 @@ class _CommandDriverVisitorTestThatRegistersClassOfVisitedObjects(sut.CommandDri
 
 
 class _UnknownCommandDriver(CommandDriver):
-    pass
+    def arg_list_or_str_for(self, arguments: List[str]):
+        raise NotImplementedError('not used')
+
+    @property
+    def is_shell(self) -> bool:
+        raise NotImplementedError('not used')

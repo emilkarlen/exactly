@@ -35,13 +35,8 @@ class ExecutableFactoryForPosix(ExecutableFactoryBase):
 class ExecutableFactoryForWindows(ExecutableFactoryBase):
     """
     Factory for Windows.
-
-    Not implemented yet, but included to make clarify design.
     """
-
-    def make(self, command: Command) -> Executable:
-        pass
-
+    pass
 
 class ExecutableFactoryForUnsupportedSystem(ExecutableFactory):
     def make(self, command: Command) -> Executable:
