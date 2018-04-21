@@ -31,8 +31,7 @@ def suite() -> unittest.TestSuite:
 
 class TestSuccessfulDefinition(TestCaseBaseForParser):
     def test_assignment_of_program_without_arguments(self):
-        expected_exit_code = 72
-        python_source = 'exit({exit_code})'.format(exit_code=expected_exit_code)
+        python_source = 'exit(72)'
 
         resolver_of_referred_program = program_resolvers.for_py_source_on_command_line(python_source)
 
