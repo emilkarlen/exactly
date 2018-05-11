@@ -47,9 +47,9 @@ def _html_help_synopsis() -> cli_syntax.Synopsis:
 
 def _simple_argument_synopsis() -> cli_syntax.Synopsis:
     help_arg = arg.Single(arg.Multiplicity.MANDATORY,
-                          arg.Option(arg.OptionName(long_name='help')))
+                          arg.ShortAndLongOption(arg.ShortAndLongOptionName(long_name='help')))
     return _synopsis_for_args([help_arg],
-                              'Displays simple help on command line arguments.')
+                              'Help on command line arguments.')
 
 
 def _help_synopsis(additional_mandatory_constant_arguments: list,
@@ -60,7 +60,7 @@ def _help_synopsis(additional_mandatory_constant_arguments: list,
 
 
 def _synopsis_for_args(argument_usages: list,
-                       single_line_description: str) -> arg.CommandLine:
+                       single_line_description: str) -> cli_syntax.Synopsis:
     return cli_syntax.Synopsis(arg.CommandLine(argument_usages,
                                                prefix=program_info.PROGRAM_NAME),
                                docs.text(single_line_description))
