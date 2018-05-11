@@ -1,5 +1,5 @@
 #
-# Shows handling of stdin, stdout, stderr and exitcode.
+# Shows handling of stdin, stdout, stderr and exit-code.
 #
 
 [setup]
@@ -23,7 +23,7 @@ filter-lines "good"
 [assert]
 
 
-exitcode == 0
+exit-code == 0
 
 stdout equals <<EOF
 first good line

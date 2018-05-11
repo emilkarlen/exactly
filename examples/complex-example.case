@@ -71,7 +71,7 @@ $ sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
 [assert]
 
 
-exitcode != 0
+exit-code != 0
 
 stdout equals <<EOF
 This is the expected output from the-system-under-test

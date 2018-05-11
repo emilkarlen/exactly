@@ -5,9 +5,9 @@ hello-world
 [assert]
 
 '
-Exitcode of 0 indicates success
+exit code of 0 indicates success
 
 This "description" will appear in error messages related
 to the following instruction!
 '
-exitcode == 0
+exit-code == 0

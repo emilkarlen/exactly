@@ -44,7 +44,7 @@ dbupgrade @[DB_ARGS]@ -f -s @[SCRIPTS_DIR]@ -r @[RELEASE]@
 [assert]
 
 
-exitcode == 0
+exit-code == 0
 
 
 'A single release should have been registered'
