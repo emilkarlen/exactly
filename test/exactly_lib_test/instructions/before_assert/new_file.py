@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.before_assert import new_file as sut
 from exactly_lib_test.instructions.before_assert.test_resources.configuration import BeforeAssertConfigurationBase
-from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
+from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources import \
     new_file_instruction_test
 
 

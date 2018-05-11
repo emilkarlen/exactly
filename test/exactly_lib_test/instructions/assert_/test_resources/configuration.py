@@ -7,7 +7,7 @@ from exactly_lib.util.process_execution.execution_elements import with_environ
 from exactly_lib.util.process_execution.sub_process_execution import ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import check, Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
+from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check

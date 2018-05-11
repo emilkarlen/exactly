@@ -6,7 +6,7 @@ from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_environ
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.cleanup.test_resources.instruction_check import Arrangement, check, Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.configuration import \
+from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.test_case.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators, home_and_sds_populators, \

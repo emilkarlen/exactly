@@ -2,13 +2,13 @@ import unittest
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils import instruction_from_parts
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import \
+from exactly_lib.instructions.multi_phase.utils.instruction_parts import \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.instructions.assert_.test_resources.configuration import AssertConfigurationBase
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources import \
+from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources import \
     instruction_from_parts_that_executes_sub_process as test_impl
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions

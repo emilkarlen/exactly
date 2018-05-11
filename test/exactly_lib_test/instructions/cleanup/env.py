@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.cleanup import env as sut
 from exactly_lib_test.instructions.cleanup.test_resources.configuration import CleanupConfigurationBase
-from exactly_lib_test.instructions.multi_phase_instructions.instruction_integration_test_resources.env_instruction_test import \
+from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.env_instruction_test import \
     suite_for
 
 
