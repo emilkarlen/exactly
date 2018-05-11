@@ -29,12 +29,12 @@ def path   TEST_DATA_DIR               = -rel-home testdata
 def path   FILE_WITH_EXPECTED_CONTENTS = -rel-home expectation/expected.txt
 
 
-install @[TEST_DATA_DIR]@/@[TEST_FILE]@
+copy @[TEST_DATA_DIR]@/@[TEST_FILE]@
 
 #
 # The line above could also be written
 #
-# install -rel TEST_DATA_DIR @[TEST_FILE]@
+# copy -rel TEST_DATA_DIR @[TEST_FILE]@
 #
 
 

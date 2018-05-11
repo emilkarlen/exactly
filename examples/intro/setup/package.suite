@@ -6,7 +6,7 @@ stdin-contents-in-file.case
 
 files.case
 
-dir-install.case
+dir-copy.case
 
 env.case
 

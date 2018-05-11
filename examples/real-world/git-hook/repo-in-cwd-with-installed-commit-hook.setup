@@ -7,4 +7,4 @@ $ git add file-in-repo
 $ git commit -m 'file already in repo'
 
 
-install prepare-commit-msg .git/hooks
+copy prepare-commit-msg .git/hooks

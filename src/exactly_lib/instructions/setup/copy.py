@@ -73,7 +73,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         )
 
     def single_line_description(self) -> str:
-        return self._format('Installs files and directories into the {sandbox}')
+        return self._format('Copies files and directories into the {sandbox}')
 
     def main_description_rest(self) -> list:
         return self._paragraphs(_MAIN_DESCRIPTION_REST)
@@ -224,13 +224,13 @@ If {DESTINATION} is not given, then {SOURCE} is installed in the {current_dir},
 as a file/directory with the basename of {SOURCE}.
 
 
-If {DESTINATION} is given, but does not exist, then {SOURCE} is installed as
+If {DESTINATION} is given, but does not exist, then {SOURCE} is copied as
 a file/directory with the path of {DESTINATION}
 
 (the basename of {SOURCE} is not preserved).
 
 
-If {DESTINATION} does exist, it must be a directory, and {SOURCE} is installed inside that directory
+If {DESTINATION} does exist, it must be a directory, and {SOURCE} is copied into that directory
 as a file/directory with the basename of {SOURCE}.
 
 
