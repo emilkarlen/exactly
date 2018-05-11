@@ -90,7 +90,7 @@ def is_resolver_of_line_matcher_type() -> asrt.ValueAssertion[rs.SymbolValueReso
     return is_resolver_of_logic_type(LogicValueType.LINE_MATCHER, ValueType.LINE_MATCHER)
 
 
-def is_resolver_of_lines_transformer_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+def is_resolver_of_string_transformer_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
     return is_resolver_of_logic_type(LogicValueType.STRING_TRANSFORMER, ValueType.STRING_TRANSFORMER)
 
 
@@ -153,11 +153,12 @@ def matches_resolver_of_line_matcher(references: asrt.ValueAssertion[Sequence[Sy
                             symbol_table_from_none_or_value(symbols))
 
 
-def matches_resolver_of_lines_transformer(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                          resolved_value: asrt.ValueAssertion[StringTransformerValue],
-                                          custom: asrt.ValueAssertion[StringTransformerResolver] = asrt.anything_goes(),
-                                          symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
-    return matches_resolver(is_resolver_of_lines_transformer_type(),
+def matches_resolver_of_string_transformer(references: asrt.ValueAssertion[Sequence[SymbolReference]],
+                                           resolved_value: asrt.ValueAssertion[StringTransformerValue],
+                                           custom: asrt.ValueAssertion[
+                                               StringTransformerResolver] = asrt.anything_goes(),
+                                           symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
+    return matches_resolver(is_resolver_of_string_transformer_type(),
                             references,
                             asrt.is_instance_with(StringTransformerValue, resolved_value),
                             custom,

@@ -37,8 +37,8 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         resolver = StringTransformerConstant(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_lines_transformer(actual_and_expected,
-                                                                                 symbols=case.value)
+                assertion_to_check = sut.resolved_value_equals_string_transformer(actual_and_expected,
+                                                                                  symbols=case.value)
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
@@ -60,8 +60,8 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         resolver_of_actual = FileMatcherConstantResolver(actual)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_lines_transformer(expected,
-                                                                                        symbols=case.value)
+                assertion_equals_expected = sut.resolved_value_equals_string_transformer(expected,
+                                                                                         symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
@@ -83,8 +83,8 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         resolver_of_actual = StringTransformerConstant(actual)
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_equals_expected = sut.resolved_value_equals_lines_transformer(expected,
-                                                                                        symbols=case.value)
+                assertion_equals_expected = sut.resolved_value_equals_string_transformer(expected,
+                                                                                         symbols=case.value)
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
@@ -95,11 +95,11 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         actual_resolver = StringTransformerResolverConstantTestImpl(
             IdentityStringTransformer(),
             references=actual_references)
-        assertion_to_check = sut.resolved_value_equals_lines_transformer(actual_resolver.resolved_value,
-                                                                         references=asrt.matches_sequence([
+        assertion_to_check = sut.resolved_value_equals_string_transformer(actual_resolver.resolved_value,
+                                                                          references=asrt.matches_sequence([
                                                                              asrt.is_(actual_reference)
                                                                          ]),
-                                                                         )
+                                                                          )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_resolver)
 
@@ -122,9 +122,9 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
 
         for case in cases:
             with self.subTest(name=case.name):
-                assertion_to_check = sut.resolved_value_equals_lines_transformer(actual_resolver.resolved_value,
-                                                                                 references=case.value,
-                                                                                 )
+                assertion_to_check = sut.resolved_value_equals_string_transformer(actual_resolver.resolved_value,
+                                                                                  references=case.value,
+                                                                                  )
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check, actual_resolver)
 

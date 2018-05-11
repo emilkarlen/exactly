@@ -22,7 +22,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_case_utils.string_transformers import parse_string_transformer
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
-    resolved_value_equals_lines_transformer
+    resolved_value_equals_string_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes
@@ -50,7 +50,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            resolved_value_equals_lines_transformer(IdentityStringTransformer())
+            resolved_value_equals_string_transformer(IdentityStringTransformer())
         )
 
         expectation = Expectation(
@@ -130,7 +130,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
 
         expected_container = matches_container(
             assertion_on_resolver=
-            resolved_value_equals_lines_transformer(
+            resolved_value_equals_string_transformer(
                 the_sequence_transformer,
                 references=asrt.matches_sequence([
                     is_reference_to_string_transformer(symbol.name),
