@@ -1,4 +1,4 @@
-from exactly_lib.type_system.logic.lines_transformer import StringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

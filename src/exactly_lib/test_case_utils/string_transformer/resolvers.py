@@ -5,7 +5,7 @@ from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import transformers
 from exactly_lib.type_system.logic import lines_transformer_values
-from exactly_lib.type_system.logic.lines_transformer import StringTransformer, StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 

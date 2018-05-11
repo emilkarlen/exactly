@@ -4,7 +4,7 @@ from exactly_lib.symbol.object_with_symbol_references import references_from_obj
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic import lines_transformer_values
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 

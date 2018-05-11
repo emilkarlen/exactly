@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.err_msg.property_description import PropertyDes
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, IdentityStringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage

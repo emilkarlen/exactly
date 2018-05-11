@@ -4,7 +4,7 @@ from typing import Iterable
 
 import exactly_lib.test_case_utils.string_transformer.transformers as sut
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.type_system.logic import lines_transformer
+from exactly_lib.type_system.logic import string_transformer
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 
 
@@ -17,23 +17,23 @@ def suite() -> unittest.TestSuite:
 class TestLinesTransformerStructureVisitor(unittest.TestCase):
     def test_visit_identity(self):
         # ARRANGE #
-        instance = lines_transformer.IdentityStringTransformer()
+        instance = string_transformer.IdentityStringTransformer()
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([lines_transformer.IdentityStringTransformer],
+        self.assertEqual([string_transformer.IdentityStringTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
     def test_visit_sequence(self):
         # ARRANGE #
-        instance = lines_transformer.SequenceStringTransformer([])
+        instance = string_transformer.SequenceStringTransformer([])
         visitor = AVisitorThatRecordsVisitedMethods()
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([lines_transformer.SequenceStringTransformer],
+        self.assertEqual([string_transformer.SequenceStringTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
@@ -66,7 +66,7 @@ class TestLinesTransformerStructureVisitor(unittest.TestCase):
         # ACT #
         ret_val = visitor.visit(instance)
         # ASSERT #
-        self.assertEqual([lines_transformer.CustomStringTransformer],
+        self.assertEqual([string_transformer.CustomStringTransformer],
                          visitor.visited_types)
         self.assertIs(instance, ret_val)
 
@@ -88,12 +88,12 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
     def __init__(self):
         self.visited_types = []
 
-    def visit_identity(self, transformer: lines_transformer.IdentityStringTransformer):
-        self.visited_types.append(lines_transformer.IdentityStringTransformer)
+    def visit_identity(self, transformer: string_transformer.IdentityStringTransformer):
+        self.visited_types.append(string_transformer.IdentityStringTransformer)
         return transformer
 
-    def visit_sequence(self, transformer: lines_transformer.SequenceStringTransformer):
-        self.visited_types.append(lines_transformer.SequenceStringTransformer)
+    def visit_sequence(self, transformer: string_transformer.SequenceStringTransformer):
+        self.visited_types.append(string_transformer.SequenceStringTransformer)
         return transformer
 
     def visit_replace(self, transformer: sut.ReplaceStringTransformer):
@@ -104,12 +104,12 @@ class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
         self.visited_types.append(sut.SelectStringTransformer)
         return transformer
 
-    def visit_custom(self, transformer: lines_transformer.CustomStringTransformer):
-        self.visited_types.append(lines_transformer.CustomStringTransformer)
+    def visit_custom(self, transformer: string_transformer.CustomStringTransformer):
+        self.visited_types.append(string_transformer.CustomStringTransformer)
         return transformer
 
 
-class MyCustomTransformer(lines_transformer.CustomStringTransformer):
+class MyCustomTransformer(string_transformer.CustomStringTransformer):
     def __init__(self):
         super().__init__()
 

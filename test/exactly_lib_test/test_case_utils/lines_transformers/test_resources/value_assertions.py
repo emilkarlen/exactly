@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.test_case_utils.string_transformer.transformers import LinesTransformerStructureVisitor, \
     ReplaceStringTransformer, \
     SelectStringTransformer
-from exactly_lib.type_system.logic.lines_transformer import StringTransformer, IdentityStringTransformer, \
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, IdentityStringTransformer, \
     SequenceStringTransformer, CustomStringTransformer
 from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_assertions as asrt_line_matcher
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.string_transformer.resolvers import StringTrans
 from exactly_lib.test_case_utils.string_transformer.transformers import ReplaceStringTransformer, \
     SelectStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.lines_transformer import SequenceStringTransformer, CustomStringTransformer
+from exactly_lib.type_system.logic.string_transformer import SequenceStringTransformer, CustomStringTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream

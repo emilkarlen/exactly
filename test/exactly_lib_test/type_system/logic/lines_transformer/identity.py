@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.logic import lines_transformer as sut
+from exactly_lib.type_system.logic import string_transformer as sut
 
 
 def suite() -> unittest.TestSuite:

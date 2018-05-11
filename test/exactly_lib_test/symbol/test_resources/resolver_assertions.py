@@ -15,8 +15,8 @@ from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

@@ -7,8 +7,8 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, StringTransfo
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 

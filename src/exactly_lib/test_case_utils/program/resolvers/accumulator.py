@@ -12,8 +12,8 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
 from exactly_lib.test_case_utils.program.command import arguments_resolvers
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue
 from exactly_lib.util.symbol_table import SymbolTable
 
 

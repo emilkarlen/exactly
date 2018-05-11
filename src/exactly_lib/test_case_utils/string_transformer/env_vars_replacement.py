@@ -8,7 +8,7 @@ from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic import lines_transformer_values
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, CustomStringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, CustomStringTransformer
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser

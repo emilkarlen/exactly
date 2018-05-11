@@ -1,7 +1,7 @@
 from typing import Iterable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.lines_transformer import StringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
 
 
 class ToUppercaseStringTransformer(StringTransformer):

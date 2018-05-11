@@ -1,5 +1,5 @@
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver, LogicValueResolver
-from exactly_lib.type_system.logic.lines_transformer import StringTransformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.type_system.value_type import ValueType, LogicValueType
 from exactly_lib.util import symbol_table
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources.value_assertions import equals_lines_transformer
