@@ -23,7 +23,7 @@ from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.argum
 from exactly_lib_test.instructions.assert_.test_resources import expression, instruction_check
 from exactly_lib_test.instructions.assert_.test_resources.expression import int_condition
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.contents_transformation import \
-    ToUppercaseLinesTransformer
+    ToUppercaseStringTransformer
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.check_with_neg_and_rel_opts import \
     InstructionChecker
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
@@ -528,7 +528,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
 
         transform_to_uppercase = NameAndValue(
             'to_uppercase_lines_transformer',
-            ToUppercaseLinesTransformer())
+            ToUppercaseStringTransformer())
 
         symbol_table_with_lines_transformer = SymbolTable({
             transform_to_uppercase.name: container(StringTransformerConstant(transform_to_uppercase.value))

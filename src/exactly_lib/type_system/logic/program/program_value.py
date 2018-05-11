@@ -3,7 +3,7 @@ from typing import Set
 from exactly_lib.test_case_file_structure.dir_dependent_value import MultiDirDependentValue
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, StringTransformerValue
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer, StringTransformerValue
 from exactly_lib.type_system.logic.program.command_value import CommandValue
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinDataValue, StdinData
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
@@ -14,7 +14,7 @@ class Program(tuple):
     def __new__(cls,
                 command: Command,
                 stdin: StdinData,
-                transformation: LinesTransformer):
+                transformation: StringTransformer):
         return tuple.__new__(cls, (command, stdin, transformation))
 
     @property
@@ -26,7 +26,7 @@ class Program(tuple):
         return self[1]
 
     @property
-    def transformation(self) -> LinesTransformer:
+    def transformation(self) -> StringTransformer:
         return self[2]
 
 

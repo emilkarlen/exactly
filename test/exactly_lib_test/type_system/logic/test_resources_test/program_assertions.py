@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinData
 from exactly_lib.util.process_execution.commands import system_program_command
@@ -18,7 +18,7 @@ class Test(unittest.TestCase):
     def test_matches(self):
         command = system_program_command('program', [])
         stdin_data = StdinData([])
-        transformer = IdentityLinesTransformer()
+        transformer = IdentityStringTransformer()
         sut.matches_program(
             command=asrt.is_(command),
             stdin=asrt.is_(stdin_data),
@@ -28,7 +28,7 @@ class Test(unittest.TestCase):
     def test_not_matches(self):
         expected_command = system_program_command('program', [])
         expected_stdin_data = StdinData([])
-        expected_transformer = IdentityLinesTransformer()
+        expected_transformer = IdentityStringTransformer()
 
         assertion = sut.matches_program(
             command=asrt.is_(expected_command),
@@ -38,7 +38,7 @@ class Test(unittest.TestCase):
 
         actual_command = system_program_command('program', [])
         actual_stdin_data = StdinData([])
-        actual_transformer = IdentityLinesTransformer()
+        actual_transformer = IdentityStringTransformer()
 
         cases = [
             NameAndValue('unexpected command',

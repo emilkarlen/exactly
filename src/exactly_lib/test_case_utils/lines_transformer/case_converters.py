@@ -1,9 +1,9 @@
 from typing import Iterable
 
-from exactly_lib.type_system.logic.lines_transformer import CustomLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import CustomStringTransformer
 
 
-class ToUpperCaseLinesTransformer(CustomLinesTransformer):
+class ToUpperCaseLinesTransformer(CustomStringTransformer):
     @property
     def is_identity_transformer(self) -> bool:
         return False
@@ -12,7 +12,7 @@ class ToUpperCaseLinesTransformer(CustomLinesTransformer):
         return map(str.upper, lines)
 
 
-class ToLowerCaseLinesTransformer(CustomLinesTransformer):
+class ToLowerCaseLinesTransformer(CustomStringTransformer):
     @property
     def is_identity_transformer(self) -> bool:
         return False

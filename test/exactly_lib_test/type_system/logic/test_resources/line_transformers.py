@@ -1,10 +1,11 @@
 import itertools
+
 from typing import Iterable, Callable
 
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer
 
 
-class MyNonIdentityTransformer(LinesTransformer):
+class MyNonIdentityTransformer(StringTransformer):
     @property
     def is_identity_transformer(self) -> bool:
         return False
@@ -13,12 +14,12 @@ class MyNonIdentityTransformer(LinesTransformer):
         return map(lambda s: 'not identity', lines)
 
 
-class MyToUppercaseTransformer(LinesTransformer):
+class MyToUppercaseTransformer(StringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(str.upper, lines)
 
 
-class MyCountNumUppercaseCharactersTransformer(LinesTransformer):
+class MyCountNumUppercaseCharactersTransformer(StringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(get_number_of_uppercase_characters, lines)
 
@@ -31,7 +32,7 @@ def get_number_of_uppercase_characters(line: str) -> str:
     return str(ret_val)
 
 
-class DuplicateWordsTransformer(LinesTransformer):
+class DuplicateWordsTransformer(StringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(_with_preserved_new_line_ending(self._do_it), lines)
 
@@ -41,7 +42,7 @@ class DuplicateWordsTransformer(LinesTransformer):
         return ' '.join(itertools.chain.from_iterable(map(lambda x: [x, x], words)))
 
 
-class DeleteInitialWordTransformer(LinesTransformer):
+class DeleteInitialWordTransformer(StringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return map(_with_preserved_new_line_ending(self._do_it), lines)
 
@@ -53,7 +54,7 @@ class DeleteInitialWordTransformer(LinesTransformer):
         return ' '.join(words)
 
 
-class DeleteEverythingTransformer(LinesTransformer):
+class DeleteEverythingTransformer(StringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return []
 

@@ -273,7 +273,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         # ARRANGE #
         named_transformer = NameAndValue(_TRANSFORMER_SYMBOL_NAME,
                                          StringTransformerConstant(
-                                             contents_transformation.ToUppercaseLinesTransformer()))
+                                             contents_transformation.ToUppercaseStringTransformer()))
 
         contents_generator = contents_transformation.TransformedContentsSetupWithDependenceOnHomeAndSds(
             original='some\ntext',

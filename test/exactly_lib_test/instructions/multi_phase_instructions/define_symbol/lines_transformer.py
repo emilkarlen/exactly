@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import REPLACE_TRANSFORMER_NAME, \
     SEQUENCE_OPERATOR_NAME
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer, SequenceLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer, SequenceStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_resources import *
@@ -50,7 +50,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         # EXPECTATION #
 
         expected_container = matches_container(
-            resolved_value_equals_lines_transformer(IdentityLinesTransformer())
+            resolved_value_equals_lines_transformer(IdentityStringTransformer())
         )
 
         expectation = Expectation(
@@ -122,7 +122,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
         ]
         # EXPECTATION #
 
-        the_sequence_transformer = SequenceLinesTransformer([
+        the_sequence_transformer = SequenceStringTransformer([
             symbol.value,
             parse_lines_transformer.replace_transformer(regex_str,
                                                         replacement_str),

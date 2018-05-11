@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType, RelOptionType, RelNonHomeOptionType
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.new_file.test_resources.arguments_building import \
     source_of, complete_argument_elements
@@ -289,7 +289,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
 
         identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            StringTransformerResolverConstantTestImpl(IdentityLinesTransformer()))
+                                            StringTransformerResolverConstantTestImpl(IdentityStringTransformer()))
 
         symbols = SymbolTable({
             identity_transformer.name: container(identity_transformer.value),

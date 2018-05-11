@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist
 
 
@@ -39,7 +39,7 @@ class FileToCheck:
                  original_file_path: pathlib.Path,
                  checked_file_describer: FilePropertyDescriptorConstructor,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 lines_transformer: LinesTransformer,
+                 lines_transformer: StringTransformer,
                  destination_file_path_getter: DestinationFilePathGetter):
         self._original_file_path = original_file_path
         self._checked_file_describer = checked_file_describer

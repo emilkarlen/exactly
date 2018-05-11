@@ -7,7 +7,7 @@ from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, LineMatcherLine
 
 
-class FakeLinesTransformer(sut.LinesTransformer):
+class FakeStringTransformer(sut.StringTransformer):
     def __init__(self):
         pass
 

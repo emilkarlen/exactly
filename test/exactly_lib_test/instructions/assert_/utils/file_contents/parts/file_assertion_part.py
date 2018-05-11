@@ -1,9 +1,9 @@
 import unittest
 
 from exactly_lib.instructions.assert_.utils.file_contents.parts import file_assertion_part as sut
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.contents_transformation import \
-    ToUppercaseLinesTransformer
+    ToUppercaseStringTransformer
 from exactly_lib_test.instructions.assert_.utils.file_contents.contents_checkers import \
     FilePropertyDescriptorConstructorTestImpl
 from exactly_lib_test.instructions.assert_.utils.file_contents.test_resources import \
@@ -54,8 +54,8 @@ class Test(unittest.TestCase):
         ]
 
         line_trans_cases = [
-            ('identity', IdentityLinesTransformer(), lambda x: x),
-            ('to-upper', ToUppercaseLinesTransformer(), str.upper),
+            ('identity', IdentityStringTransformer(), lambda x: x),
+            ('to-upper', ToUppercaseStringTransformer(), str.upper),
         ]
 
         environment = fake_post_sds_environment()

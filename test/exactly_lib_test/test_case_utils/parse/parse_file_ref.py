@@ -54,7 +54,7 @@ from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
 from exactly_lib_test.type_system.data.test_resources.path_part_assertions import equals_path_part_string
-from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
+from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 from exactly_lib_test.util.test_resources.symbol_tables import symbol_table_from_entries
 
 
@@ -1295,7 +1295,7 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
         cases = [
             ListResolverTestImplForConstantListValue(ListValue([])),
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
-            StringTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
+            StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),
         ]
         for resolver in cases:
             with self.subTest(invalid_type=str(resolver.value_type)):

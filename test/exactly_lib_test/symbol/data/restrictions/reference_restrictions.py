@@ -21,7 +21,7 @@ from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.lines_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer
+from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer
 from exactly_lib_test.util.test_resources import symbol_tables
 
 
@@ -405,7 +405,7 @@ class TestOrReferenceRestrictions(unittest.TestCase):
             ('logic symbol',
              Entry('referenced_logic_symbol',
                    symbol_utils.container(
-                       StringTransformerResolverConstantTestImpl(FakeLinesTransformer(),
+                       StringTransformerResolverConstantTestImpl(FakeStringTransformer(),
                                                                  references=[])))
              ),
         ]

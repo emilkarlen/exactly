@@ -1,10 +1,10 @@
 from typing import Iterable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer
 
 
-class ToUppercaseLinesTransformer(LinesTransformer):
+class ToUppercaseStringTransformer(StringTransformer):
     @property
     def is_identity_transformer(self) -> bool:
         return False

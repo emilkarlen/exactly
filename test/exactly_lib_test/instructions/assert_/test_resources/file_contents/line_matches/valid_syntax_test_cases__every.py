@@ -79,7 +79,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
                                          StringTransformerConstant(
-                                             contents_transformation.ToUppercaseLinesTransformer()))
+                                             contents_transformation.ToUppercaseStringTransformer()))
 
         actual_original_contents = lines_content(['only',
                                                   'lowercase',

@@ -9,10 +9,10 @@ from exactly_lib.symbol.resolver_structure import LogicValueResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer as sut
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
-from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLinesTransformer, \
-    SelectLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceStringTransformer, \
+    SelectStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.lines_transformer import SequenceLinesTransformer, CustomLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import SequenceStringTransformer, CustomStringTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2, SymbolTable
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_token_stream
@@ -352,7 +352,7 @@ class TestParseLineTransformer(unittest.TestCase):
             remaining_source(arguments),
             Expectation(
                 resolver=resolved_value_equals_lines_transformer(
-                    SequenceLinesTransformer([
+                    SequenceStringTransformer([
                         symbol_1.value,
                         the_replace_transformer,
                         symbol_2.value,
@@ -378,9 +378,9 @@ def resolved_value_is_replace_transformer(regex_str: str,
                                                    references=references)
 
 
-def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceLinesTransformer:
-    return ReplaceLinesTransformer(re.compile(regex_str),
-                                   replacement_str)
+def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceStringTransformer:
+    return ReplaceStringTransformer(re.compile(regex_str),
+                                    replacement_str)
 
 
 def resolved_value_is_select_regex_transformer(regex_str: str,
@@ -399,14 +399,14 @@ def resolved_value_is_select_transformer(line_matcher: LineMatcher,
                                                    references=references)
 
 
-def select_regex_transformer(regex_str: str) -> SelectLinesTransformer:
+def select_regex_transformer(regex_str: str) -> SelectStringTransformer:
     return select_transformer(LineMatcherRegex(re.compile(regex_str)))
 
 
-def select_transformer(line_matcher: LineMatcher) -> SelectLinesTransformer:
-    return SelectLinesTransformer(line_matcher)
+def select_transformer(line_matcher: LineMatcher) -> SelectStringTransformer:
+    return SelectStringTransformer(line_matcher)
 
 
-class CustomLinesTransformerTestImpl(CustomLinesTransformer):
+class CustomLinesTransformerTestImpl(CustomStringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should not be used')

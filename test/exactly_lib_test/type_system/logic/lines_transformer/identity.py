@@ -10,14 +10,14 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
 
     def test_SHOULD_be_identity_transformer(self):
-        transformer = sut.IdentityLinesTransformer()
+        transformer = sut.IdentityStringTransformer()
         self.assertTrue(transformer.is_identity_transformer)
 
     def test_empty_list_of_lines(self):
         # ARRANGE #
         input_lines = []
         input_lines_iter = iter(input_lines)
-        transformer = sut.IdentityLinesTransformer()
+        transformer = sut.IdentityStringTransformer()
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -39,7 +39,7 @@ class Test(unittest.TestCase):
             'I am here',
         ]
         input_lines_iter = iter(input_lines)
-        transformer = sut.IdentityLinesTransformer()
+        transformer = sut.IdentityStringTransformer()
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
