@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.type_system.logic import test_resources_test, file_matcher, line_matcher, lines_transformer
+from exactly_lib_test.type_system.logic import test_resources_test, file_matcher, line_matcher, string_transformer
 
 
 def suite() -> unittest.TestSuite:
@@ -8,7 +8,7 @@ def suite() -> unittest.TestSuite:
         test_resources_test.suite(),
         line_matcher.suite(),
         file_matcher.suite(),
-        lines_transformer.suite(),
+        string_transformer.suite(),
     ])
 
 

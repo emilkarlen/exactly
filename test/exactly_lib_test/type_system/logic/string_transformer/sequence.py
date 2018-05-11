@@ -28,7 +28,7 @@ def equals_lines_transformer(expected: StringTransformer) -> asrt.ValueAssertion
         return asrt.is_instance(IdentityStringTransformer)
     if isinstance(expected, SequenceStringTransformer):
         return equals_sequence_transformer(expected)
-    raise TypeError('Unknown type of lines transformer: ' + str(expected))
+    raise TypeError('Unknown type of {}: {}'.format(StringTransformer, expected))
 
 
 def equals_sequence_transformer(expected: SequenceStringTransformer) -> asrt.ValueAssertion[StringTransformer]:

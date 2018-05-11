@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.type_system.logic.lines_transformer import identity, sequence
+from exactly_lib_test.type_system.logic.string_transformer import identity, sequence
 
 
 def suite() -> unittest.TestSuite:
