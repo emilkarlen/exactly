@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources import arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer, \
     StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -111,7 +111,7 @@ class TestSymbolUsages(TestCaseBase):
                                     new_file.REL_OPT_ARG_CONF.options.accepted_relativity_variants))
             ),
 
-            is_reference_to_lines_transformer(to_upper_transformer.name),
+            is_reference_to_string_transformer(to_upper_transformer.name),
 
             equals_symbol_reference(
                 SymbolReference(src_file_symbol.name,
@@ -206,7 +206,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
                 self.conf.expect_success(
                     main_side_effects_on_sds=expected_non_home_contents,
                     symbol_usages=asrt.matches_sequence([
-                        is_reference_to_lines_transformer(to_upper_transformer.name),
+                        is_reference_to_string_transformer(to_upper_transformer.name),
                     ])
                 ))
 
@@ -249,7 +249,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
                 ),
                 self.conf.expect_success(
                     symbol_usages=asrt.matches_sequence([
-                        is_reference_to_lines_transformer(to_upper_transformer.name),
+                        is_reference_to_string_transformer(to_upper_transformer.name),
                     ]),
                     main_side_effects_on_sds=non_home_dir_contains_exactly(rel_opt_conf.root_dir__non_home,
                                                                            fs.DirContents([expected_file])),

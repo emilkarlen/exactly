@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_line
     InstructionArgumentsVariantConstructor, TestCaseBase
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -126,7 +126,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         })
 
         expected_symbol_usages = asrt.matches_sequence([
-            is_reference_to_lines_transformer(named_transformer.name)
+            is_reference_to_string_transformer(named_transformer.name)
         ])
 
         self._check_variants_with_expectation_type(
