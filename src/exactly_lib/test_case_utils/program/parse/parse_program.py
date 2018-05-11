@@ -21,7 +21,7 @@ def parse_program(parser: TokenParser) -> ProgramResolver:
     program = _parse_simple_program(parser)
 
     def parse_transformer(_parser: TokenParser) -> ProgramResolver:
-        transformer = parse_lines_transformer.parse_lines_transformer_from_token_parser(_parser)
+        transformer = parse_lines_transformer.parse_string_transformer_from_token_parser(_parser)
         parser.require_is_at_eol('Unexpected arguments after ' + types.STRING_TRANSFORMER_TYPE_INFO.name.singular)
         parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return program.new_with_appended_transformations([transformer])

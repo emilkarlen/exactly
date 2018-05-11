@@ -263,10 +263,10 @@ def _parse_file_matcher(token_parser: TokenParser) -> FileMatcherResolver:
         return parse_file_matcher.parse_resolver(token_parser)
 
 
-def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
+def _parse_string_transformer(token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
     if token_parser.is_at_eol:
         return line_transformer_resolvers.StringTransformerConstant(IdentityStringTransformer())
-    return parse_lines_transformer.parse_lines_transformer_from_token_parser(token_parser)
+    return parse_lines_transformer.parse_string_transformer_from_token_parser(token_parser)
 
 
 def _parse_program(token_parser: TokenParser) -> Tuple[bool, ProgramResolver]:
@@ -280,7 +280,7 @@ _TYPE_SETUPS = {
     types.LIST_TYPE_INFO.identifier: _parse_not_whole_line(parse_list.parse_list_from_token_parser),
     types.LINE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_line_matcher),
     types.FILE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_file_matcher),
-    types.STRING_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_lines_transformer),
+    types.STRING_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_string_transformer),
     types.PROGRAM_TYPE_INFO.identifier: _parse_program,
 }
 
