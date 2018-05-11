@@ -6,7 +6,7 @@ from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.process_execution.command import Command
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
-from exactly_lib_test.type_system.logic.test_resources import line_transformer_assertions as asrt_line_trans
+from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_trans
 from exactly_lib_test.util.test_resources import command_assertions as asrt_command
 
 
