@@ -1,9 +1,10 @@
 import itertools
+
 import unittest
 from typing import Iterable
 
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
@@ -111,7 +112,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
     def runTest(self):
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
-                                         LinesTransformerConstant(
+                                         StringTransformerConstant(
                                              _DeleteAllButFirstLine()))
 
         actual_original_contents = lines_content(['1',

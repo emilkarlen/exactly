@@ -2,7 +2,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.resolver_structure import SymbolContainer, LinesTransformerResolver, LineMatcherResolver, \
+from exactly_lib.symbol.resolver_structure import SymbolContainer, StringTransformerResolver, LineMatcherResolver, \
     FileMatcherResolver
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib.type_system.data.list_value import ListValue
@@ -59,10 +59,10 @@ def lookup_file_matcher(symbols: SymbolTable, name: str) -> FileMatcherResolver:
     return ret_val
 
 
-def lookup_lines_transformer(symbols: SymbolTable, name: str) -> LinesTransformerResolver:
+def lookup_lines_transformer(symbols: SymbolTable, name: str) -> StringTransformerResolver:
     container = lookup_container(symbols, name)
     ret_val = container.resolver
-    assert isinstance(ret_val, LinesTransformerResolver), 'Referenced symbol must be LinesTransformerResolver'
+    assert isinstance(ret_val, StringTransformerResolver), 'Referenced symbol must be LinesTransformerResolver'
     return ret_val
 
 

@@ -4,7 +4,7 @@ from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol import lines_transformer
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
@@ -16,7 +16,7 @@ from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransfo
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-IDENTITY_TRANSFORMER_RESOLVER = resolvers.LinesTransformerConstant(IdentityLinesTransformer())
+IDENTITY_TRANSFORMER_RESOLVER = resolvers.StringTransformerConstant(IdentityLinesTransformer())
 
 REPLACE_TRANSFORMER_NAME = 'replace'
 
@@ -34,7 +34,7 @@ LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_TYPE_INFO.syntax_el
 
 
 class LinesTransformerDescriptor(ErrorMessagePartConstructor):
-    def __init__(self, resolver: LinesTransformerResolver):
+    def __init__(self, resolver: StringTransformerResolver):
         self.resolver = resolver
 
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
@@ -44,12 +44,12 @@ class LinesTransformerDescriptor(ErrorMessagePartConstructor):
         return [line]
 
 
-def parse_lines_transformer(source: ParseSource) -> LinesTransformerResolver:
+def parse_lines_transformer(source: ParseSource) -> StringTransformerResolver:
     with token_stream_parser.from_parse_source(source) as tp:
         return parse_optional_transformer_resolver(tp)
 
 
-def parse_optional_transformer_resolver(parser: TokenParser) -> LinesTransformerResolver:
+def parse_optional_transformer_resolver(parser: TokenParser) -> StringTransformerResolver:
     """
     :return: The identity transformer, if transformer option is not given.
     """
@@ -61,7 +61,7 @@ def parse_optional_transformer_resolver(parser: TokenParser) -> LinesTransformer
 
 def parse_optional_transformer_resolver_preceding_mandatory_element(parser: TokenParser,
                                                                     mandatory_element_name: str
-                                                                    ) -> LinesTransformerResolver:
+                                                                    ) -> StringTransformerResolver:
     """
     :return: The identity transformer, if transformer option is not given.
     """
@@ -69,20 +69,20 @@ def parse_optional_transformer_resolver_preceding_mandatory_element(parser: Toke
     return parse_optional_transformer_resolver(parser)
 
 
-def parse_lines_transformer_from_token_parser(parser: TokenParser) -> LinesTransformerResolver:
+def parse_lines_transformer_from_token_parser(parser: TokenParser) -> StringTransformerResolver:
     return parse_expression.parse(GRAMMAR, parser)
 
 
-def parse_replace(parser: TokenParser) -> LinesTransformerResolver:
+def parse_replace(parser: TokenParser) -> StringTransformerResolver:
     regex = parse_reg_ex.parse_regex(parser)
     parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
     replacement = parser.consume_mandatory_token(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
-    return resolvers.LinesTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
+    return resolvers.StringTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
 
 
-def parse_select(parser: TokenParser) -> LinesTransformerResolver:
+def parse_select(parser: TokenParser) -> StringTransformerResolver:
     line_matcher = parse_line_matcher.parse_line_matcher_from_token_parser(parser)
-    return resolvers.LinesTransformerSelectResolver(line_matcher)
+    return resolvers.StringTransformerSelectResolver(line_matcher)
 
 
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
@@ -155,7 +155,7 @@ _CONCEPT = grammar.Concept(
 
 GRAMMAR = grammar.Grammar(
     _CONCEPT,
-    mk_reference=resolvers.LinesTransformerReference,
+    mk_reference=resolvers.StringTransformerReference,
     simple_expressions={
         REPLACE_TRANSFORMER_NAME:
             grammar.SimpleExpression(parse_replace,
@@ -166,7 +166,7 @@ GRAMMAR = grammar.Grammar(
     },
     complex_expressions={
         SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
-            lines_transformer.LinesTransformerSequenceResolver,
+            lines_transformer.StringTransformerSequenceResolver,
             _SEQUENCE_SYNTAX_DESCRIPTION,
         ),
     },

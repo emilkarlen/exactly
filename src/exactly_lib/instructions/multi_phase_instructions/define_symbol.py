@@ -263,9 +263,9 @@ def _parse_file_matcher(token_parser: TokenParser) -> FileMatcherResolver:
         return parse_file_matcher.parse_resolver(token_parser)
 
 
-def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_resolvers.LinesTransformerResolver:
+def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
     if token_parser.is_at_eol:
-        return line_transformer_resolvers.LinesTransformerConstant(IdentityLinesTransformer())
+        return line_transformer_resolvers.StringTransformerConstant(IdentityLinesTransformer())
     return parse_lines_transformer.parse_lines_transformer_from_token_parser(token_parser)
 
 

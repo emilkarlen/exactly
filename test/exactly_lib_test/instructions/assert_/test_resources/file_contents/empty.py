@@ -3,7 +3,7 @@ from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
@@ -99,7 +99,7 @@ class ActualFileIsEmptyAfterTransformation(TestWithConfigurationAndNegationArgum
     def runTest(self):
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
-                                         LinesTransformerConstant(
+                                         StringTransformerConstant(
                                              DeleteEverythingLinesTransformer()))
 
         original_file_contents = 'some\ntext'

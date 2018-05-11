@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import REPLACE_TRANSFORMER_NAME, \
     SEQUENCE_OPERATOR_NAME
-from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer, SequenceLinesTransformer
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.multi_phase_instructions.define_symbol.test_case_base import TestCaseBaseForParser
@@ -136,7 +136,7 @@ class TestSuccessfulScenarios(TestCaseBaseForParser):
                     is_reference_to_lines_transformer(symbol.name),
                 ]),
                 symbols=SymbolTable({
-                    symbol.name: container(LinesTransformerConstant(symbol.value)),
+                    symbol.name: container(StringTransformerConstant(symbol.value)),
                 }),
             )
         )

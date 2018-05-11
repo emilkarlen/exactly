@@ -26,7 +26,7 @@ from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.a
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.lines_transformer import StringTransformerResolverConstantTestImpl, \
     is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
@@ -68,7 +68,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
 
         src_file = fs.File('src-file.txt', 'contents of source file')
         src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
@@ -140,7 +140,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
 
         arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                             StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
 
         src_file = PathArgumentWithRelativity('src-file.txt',
                                               conf_rel_home(RelHomeOptionType.REL_HOME_CASE))
@@ -242,7 +242,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         expected_file = fs.File('a-file-name.txt', src_file.contents.upper())
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             to_upper_transformer.name:
                 container(to_upper_transformer.value),
@@ -289,7 +289,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
         # ARRANGE #
 
         identity_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            LinesTransformerResolverConstantTestImpl(IdentityLinesTransformer()))
+                                            StringTransformerResolverConstantTestImpl(IdentityLinesTransformer()))
 
         symbols = SymbolTable({
             identity_transformer.name: container(identity_transformer.value),
@@ -379,7 +379,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
             step_of_expected_failure: Step):
         # ARRANGE #
         transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                   StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             transformer.name:
                 container(transformer.value),
@@ -433,7 +433,7 @@ class TestScenariosWithContentsFromFile(TestCaseBase):
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                             StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
 
         symbols = SymbolTable({
             arbitrary_transformer.name: container(arbitrary_transformer.value),

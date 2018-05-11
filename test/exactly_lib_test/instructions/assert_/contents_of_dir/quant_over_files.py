@@ -9,7 +9,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
-from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -531,7 +531,7 @@ class TestAssertionVariantThatTransformersMultipleFiles(unittest.TestCase):
             ToUppercaseLinesTransformer())
 
         symbol_table_with_lines_transformer = SymbolTable({
-            transform_to_uppercase.name: container(LinesTransformerConstant(transform_to_uppercase.value))
+            transform_to_uppercase.name: container(StringTransformerConstant(transform_to_uppercase.value))
         })
         expected_symbol_references = asrt.matches_sequence([
             is_reference_to_lines_transformer(transform_to_uppercase.name)
