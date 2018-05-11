@@ -9,7 +9,7 @@ from exactly_lib.test_case_utils.expression.grammar import Grammar
 from exactly_lib.test_case_utils.expression.syntax_documentation import Syntax
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
-from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
+from exactly_lib.test_case_utils.lines_transformer import parse_string_transformer
 from exactly_lib.type_system.value_type import TypeCategory
 
 
@@ -45,7 +45,7 @@ ALL_SYNTAX_ELEMENT_DOCS = (
                     parse_file_matcher.GRAMMAR),
 
     _for_logic_type(syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
-                    parse_lines_transformer.GRAMMAR),
+                    parse_string_transformer.GRAMMAR),
 
     _for_logic_type(syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
                     parse_line_matcher.GRAMMAR),

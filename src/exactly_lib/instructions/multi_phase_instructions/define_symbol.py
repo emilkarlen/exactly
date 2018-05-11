@@ -32,7 +32,7 @@ from exactly_lib.test_case_file_structure.path_relativity import PathRelativityV
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers as line_transformer_resolvers, \
-    parse_lines_transformer
+    parse_string_transformer
 from exactly_lib.test_case_utils.parse import parse_file_ref, parse_list
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_string_or_here_doc_from_token_parser
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
@@ -266,7 +266,7 @@ def _parse_file_matcher(token_parser: TokenParser) -> FileMatcherResolver:
 def _parse_string_transformer(token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
     if token_parser.is_at_eol:
         return line_transformer_resolvers.StringTransformerConstant(IdentityStringTransformer())
-    return parse_lines_transformer.parse_string_transformer_from_token_parser(token_parser)
+    return parse_string_transformer.parse_string_transformer_from_token_parser(token_parser)
 
 
 def _parse_program(token_parser: TokenParser) -> Tuple[bool, ProgramResolver]:
