@@ -59,7 +59,7 @@ def suite_for(instruction_configuration: InstructionTestConfigurationForEquals) 
         _ContentsDiffer,
         _ContentsEquals,
 
-        _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents,
+        _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents,
     ]
 
     test_cases_without_rel_opts = [
@@ -267,7 +267,7 @@ class _ContentsDoNotEqualAHereDocument(TestWithConfigurationAndNegationArgumentB
         )
 
 
-class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(
+class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(
     TestWithConfigurationAndRelativityOptionAndNegationBase):
     def runTest(self):
         # ARRANGE #
