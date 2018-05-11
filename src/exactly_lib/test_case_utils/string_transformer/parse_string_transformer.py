@@ -3,7 +3,7 @@ from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.symbol import lines_transformer
+from exactly_lib.symbol import string_transformer
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConstructor
@@ -166,7 +166,7 @@ GRAMMAR = grammar.Grammar(
     },
     complex_expressions={
         SEQUENCE_OPERATOR_NAME: grammar.ComplexExpression(
-            lines_transformer.StringTransformerSequenceResolver,
+            string_transformer.StringTransformerSequenceResolver,
             _SEQUENCE_SYNTAX_DESCRIPTION,
         ),
     },
