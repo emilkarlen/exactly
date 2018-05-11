@@ -88,8 +88,8 @@ FILE_MATCHER_TYPE_INFO = name_and_ref_target(
     'Matches properties of a file, like name and type.'
 )
 
-LINES_TRANSFORMER_TYPE_INFO = name_and_ref_target(
-    ValueType.LINES_TRANSFORMER,
+STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
+    ValueType.STRING_TRANSFORMER,
     name_with_plural_s('lines transformer'),
     'Transforms a sequence of new-line separated text lines.',
 )
@@ -106,6 +106,6 @@ ALL_TYPES_INFO_TUPLE = (
     PATH_TYPE_INFO,
     LINE_MATCHER_TYPE_INFO,
     FILE_MATCHER_TYPE_INFO,
-    LINES_TRANSFORMER_TYPE_INFO,
+    STRING_TRANSFORMER_TYPE_INFO,
     PROGRAM_TYPE_INFO,
 )

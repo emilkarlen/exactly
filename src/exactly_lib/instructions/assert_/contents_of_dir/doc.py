@@ -135,7 +135,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def see_also_targets(self) -> list:
         from exactly_lib.definitions.entity import types
         name_and_cross_refs = [types.FILE_MATCHER_TYPE_INFO,
-                               types.LINES_TRANSFORMER_TYPE_INFO,
+                               types.STRING_TRANSFORMER_TYPE_INFO,
                                syntax_elements.FILE_CONTENTS_MATCHER,
                                syntax_elements.PATH_SYNTAX_ELEMENT,
                                syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT]

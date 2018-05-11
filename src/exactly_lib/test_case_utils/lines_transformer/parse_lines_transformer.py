@@ -30,7 +30,7 @@ REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_nam
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
-LINES_TRANSFORMER_ARGUMENT = a.Named(types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name)
+LINES_TRANSFORMER_ARGUMENT = a.Named(types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 
 class LinesTransformerDescriptor(ErrorMessagePartConstructor):
@@ -40,7 +40,7 @@ class LinesTransformerDescriptor(ErrorMessagePartConstructor):
     def lines(self, environment: InstructionEnvironmentForPostSdsStep) -> list:
         transformer = self.resolver.resolve(environment.symbols)
         # FIXME
-        line = types.LINES_TRANSFORMER_TYPE_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
+        line = types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name + ' : (FIXME) ' + str(transformer)
         return [line]
 
 
@@ -88,9 +88,9 @@ def parse_select(parser: TokenParser) -> StringTransformerResolver:
 ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS = {
     '_REG_EX_': REPLACE_REGEX_ARGUMENT.name,
     '_STRING_': REPLACE_REPLACEMENT_ARGUMENT.name,
-    '_TRANSFORMER_': types.LINES_TRANSFORMER_TYPE_INFO.name.singular,
+    '_TRANSFORMER_': types.STRING_TRANSFORMER_TYPE_INFO.name.singular,
     '_LINE_MATCHER_': types.LINE_MATCHER_TYPE_INFO.name.singular,
-    '_TRANSFORMERS_': types.LINES_TRANSFORMER_TYPE_INFO.name.plural,
+    '_TRANSFORMERS_': types.STRING_TRANSFORMER_TYPE_INFO.name.plural,
 }
 
 _TEXT_PARSER = TextParser(ADDITIONAL_ERROR_MESSAGE_TEMPLATE_FORMATS)
@@ -148,8 +148,8 @@ _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
 )
 
 _CONCEPT = grammar.Concept(
-    types.LINES_TRANSFORMER_TYPE_INFO.name,
-    types.LINES_TRANSFORMER_TYPE_INFO.identifier,
+    types.STRING_TRANSFORMER_TYPE_INFO.name,
+    types.STRING_TRANSFORMER_TYPE_INFO.identifier,
     LINES_TRANSFORMER_ARGUMENT,
 )
 

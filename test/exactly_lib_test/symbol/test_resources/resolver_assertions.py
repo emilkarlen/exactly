@@ -91,7 +91,7 @@ def is_resolver_of_line_matcher_type() -> asrt.ValueAssertion[rs.SymbolValueReso
 
 
 def is_resolver_of_lines_transformer_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:
-    return is_resolver_of_logic_type(LogicValueType.LINES_TRANSFORMER, ValueType.LINES_TRANSFORMER)
+    return is_resolver_of_logic_type(LogicValueType.STRING_TRANSFORMER, ValueType.STRING_TRANSFORMER)
 
 
 def is_resolver_of_program_type() -> asrt.ValueAssertion[rs.SymbolValueResolver]:

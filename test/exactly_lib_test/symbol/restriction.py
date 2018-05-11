@@ -98,7 +98,7 @@ class TestValueTypeRestriction(unittest.TestCase):
         ValueType.FILE_MATCHER:
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
 
-        ValueType.LINES_TRANSFORMER:
+        ValueType.STRING_TRANSFORMER:
             StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),
 
         ValueType.PROGRAM:
@@ -134,9 +134,9 @@ class TestValueTypeRestriction(unittest.TestCase):
             ValueType.STRING: ValueType.LIST,
             ValueType.LIST: ValueType.PATH,
             ValueType.PATH: ValueType.FILE_MATCHER,
-            ValueType.FILE_MATCHER: ValueType.LINES_TRANSFORMER,
-            ValueType.LINES_TRANSFORMER: ValueType.STRING,
-            ValueType.PROGRAM: ValueType.LINES_TRANSFORMER,
+            ValueType.FILE_MATCHER: ValueType.STRING_TRANSFORMER,
+            ValueType.STRING_TRANSFORMER: ValueType.STRING,
+            ValueType.PROGRAM: ValueType.STRING_TRANSFORMER,
         }
 
         named_elements = empty_symbol_table()

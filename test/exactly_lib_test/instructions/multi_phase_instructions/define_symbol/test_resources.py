@@ -22,7 +22,7 @@ _STD_FORMAT_MAP = {
     'list_type': types.LIST_TYPE_INFO.identifier,
     'line_match_type': types.LINE_MATCHER_TYPE_INFO.identifier,
     'file_matcher_type': types.FILE_MATCHER_TYPE_INFO.identifier,
-    'lines_trans_type': types.LINES_TRANSFORMER_TYPE_INFO.identifier,
+    'lines_trans_type': types.STRING_TRANSFORMER_TYPE_INFO.identifier,
     'program_type': types.PROGRAM_TYPE_INFO.identifier,
     'soft_quote': SOFT_QUOTE_CHAR,
     'hard_quote': HARD_QUOTE_CHAR,

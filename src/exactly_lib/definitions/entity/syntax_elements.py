@@ -55,7 +55,7 @@ FILE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.FILE_MATCHER_TY
 
 LINE_MATCHER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINE_MATCHER_TYPE_INFO)
 
-LINES_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.LINES_TRANSFORMER_TYPE_INFO)
+LINES_TRANSFORMER_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.STRING_TRANSFORMER_TYPE_INFO)
 
 PROGRAM_SYNTAX_ELEMENT = _name_and_ref_target_of_type(types.PROGRAM_TYPE_INFO)
 

@@ -115,9 +115,9 @@ ANY_TYPE_INFO_DICT = {
         TypeInfo(types.FILE_MATCHER_TYPE_INFO,
                  _standard_type_value_args(types.FILE_MATCHER_TYPE_INFO)),
 
-    ValueType.LINES_TRANSFORMER:
-        TypeInfo(types.LINES_TRANSFORMER_TYPE_INFO,
-                 _standard_type_value_args(types.LINES_TRANSFORMER_TYPE_INFO)),
+    ValueType.STRING_TRANSFORMER:
+        TypeInfo(types.STRING_TRANSFORMER_TYPE_INFO,
+                 _standard_type_value_args(types.STRING_TRANSFORMER_TYPE_INFO)),
 
     ValueType.PROGRAM:
         TypeInfo(types.PROGRAM_TYPE_INFO,
