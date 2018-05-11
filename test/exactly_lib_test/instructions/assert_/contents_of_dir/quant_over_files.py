@@ -34,7 +34,7 @@ from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_che
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, File, Dir, empty_dir, sym_link
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

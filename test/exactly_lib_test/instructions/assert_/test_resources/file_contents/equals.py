@@ -29,7 +29,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator

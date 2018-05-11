@@ -18,7 +18,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
