@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
@@ -12,6 +14,7 @@ from exactly_lib.instructions.utils.documentation import relative_path_options_d
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import FILE_ARGUMENT_OPTION
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _EXPECTED_PATH_NAME = 'PATH-OF-EXPECTED'
@@ -116,10 +119,7 @@ class FileContentsMatcherHelp:
             self.string_or_here_doc_or_file_arg.see_also_targets()
         )
 
-    def _paragraphs(self, s: str, extra: dict = None) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def _paragraphs(self, s: str, extra: dict = None) -> List[ParagraphItem]:
         return self._parser.fnap(s, extra)
 
 

@@ -208,7 +208,7 @@ class _ArgumentDoc(SyntaxElementDescriptionTree):
         ]
 
     @staticmethod
-    def _existing_file():
+    def _existing_file() -> InvokationVariant:
         return invokation_variant_from_args([
             a.Single(a.Multiplicity.MANDATORY,
                      a.Option(pgm_syntax_elements.EXISTING_FILE_OPTION_NAME)),
@@ -219,7 +219,7 @@ class _ArgumentDoc(SyntaxElementDescriptionTree):
         )
 
     @staticmethod
-    def _text_until_end_of_line():
+    def _text_until_end_of_line() -> InvokationVariant:
         return invokation_variant_from_args([
             a.Single(a.Multiplicity.MANDATORY,
                      a.Constant(pgm_syntax_elements.REMAINING_PART_OF_CURRENT_LINE_AS_LITERAL_MARKER)),
@@ -230,14 +230,15 @@ class _ArgumentDoc(SyntaxElementDescriptionTree):
         )
 
     @staticmethod
-    def _list():
+    def _list() -> InvokationVariant:
         return invokation_variant_from_args([
             a.Single(a.Multiplicity.MANDATORY, syntax_elements.LIST_SYNTAX_ELEMENT.argument),
         ],
-            _TEXT_PARSER.fnap(_ARGUMENT__LIST_DESCRIPTION))
+            _TEXT_PARSER.fnap(_ARGUMENT__LIST_DESCRIPTION)
+        )
 
     @staticmethod
-    def _string():
+    def _string() -> InvokationVariant:
         return invokation_variant_from_args([
             a.Single(a.Multiplicity.MANDATORY, syntax_elements.STRING_SYNTAX_ELEMENT.argument),
         ],

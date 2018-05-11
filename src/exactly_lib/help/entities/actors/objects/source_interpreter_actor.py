@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
@@ -10,6 +12,7 @@ from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NA
 from exactly_lib.definitions.test_suite import formatted_section_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import section_contents
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -31,7 +34,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
         }
         self._parser = TextParser(format_map)
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> List[ParagraphItem]:
         return self._parser.fnap(_MAIN_DESCRIPTION_REST)
 
     def act_phase_contents(self) -> SectionContents:

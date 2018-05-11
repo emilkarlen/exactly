@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME
@@ -7,6 +9,7 @@ from exactly_lib.util.textformat.construction.section_contents_constructor impor
     ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from exactly_lib.util.textformat.utils import append_sections_if_contents_is_non_empty
 
@@ -36,7 +39,7 @@ class IndividualActorConstructor(ArticleContentsConstructor):
                                    doc.SectionContents(initial_paragraphs,
                                                        sub_sections))
 
-    def _default_reporter_info(self) -> list:
+    def _default_reporter_info(self) -> List[ParagraphItem]:
         from exactly_lib.definitions.entity.actors import DEFAULT_ACTOR
         if self.actor.singular_name() == DEFAULT_ACTOR.singular_name:
             return self._parser.fnap('This is the default {actor_concept}.')

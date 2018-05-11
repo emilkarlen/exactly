@@ -1,9 +1,12 @@
+from typing import List
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_opts
 from exactly_lib.test_case_utils.parse import rel_opts_configuration
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -47,5 +50,5 @@ class DocumentationElements:
     def _cl_syntax_for_args(self, argument_usages: list) -> str:
         return cl_syntax.cl_syntax_for_args(argument_usages)
 
-    def _paragraphs(self, s: str, extra: dict = None) -> list:
+    def _paragraphs(self, s: str, extra: dict = None) -> List[ParagraphItem]:
         return self._parser.fnap(s, extra)

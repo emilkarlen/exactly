@@ -1,5 +1,7 @@
 import itertools
 
+from typing import List
+
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant, \
     cli_argument_syntax_element_description
 from exactly_lib.definitions import formatting
@@ -7,6 +9,7 @@ from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.definitions.entity.syntax_elements import SYMBOL_NAME_SYNTAX_ELEMENT
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from .grammar import Grammar, SimpleExpressionDescription, OperatorExpressionDescription
 
@@ -41,7 +44,7 @@ class Syntax:
                 self.invokation_variants_parentheses()
                 )
 
-    def global_description(self) -> list:
+    def global_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(_GLOBAL_DESCRIPTION)
 
     def invokation_variants_simple(self) -> list:
@@ -118,7 +121,7 @@ class Syntax:
                 expression_dicts)
         ))
 
-    def _symbol_ref_description(self):
+    def _symbol_ref_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(_SYMBOL_REF_DESCRIPTION)
 
 

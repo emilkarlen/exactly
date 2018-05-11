@@ -1,3 +1,6 @@
+from typing import List
+
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
@@ -6,6 +9,7 @@ from exactly_lib.instructions.utils.documentation.relative_path_options_document
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 EMPTY_ARGUMENT_CONSTANT = a.Constant(EMPTY_ARGUMENT)
@@ -35,7 +39,7 @@ class StringOrHereDocOrFile:
                          instruction_arguments.HERE_DOCUMENT,
                          self._expected_file_arg])
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return path_elements(
             self._path_name,
             self._path_argument_configuration.options,
@@ -49,8 +53,5 @@ class StringOrHereDocOrFile:
             syntax_elements.STRING_SYNTAX_ELEMENT,
         ])
 
-    def _paragraphs(self, s: str, extra: dict = None) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def _paragraphs(self, s: str, extra: dict = None) -> List[ParagraphItem]:
         return self._parser.fnap(s, extra)

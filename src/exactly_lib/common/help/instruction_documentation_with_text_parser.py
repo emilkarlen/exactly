@@ -1,10 +1,12 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case.phase_names import ASSERT_PHASE_NAME
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
-from exactly_lib.util.textformat.structure.core import Text
+from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -31,10 +33,7 @@ class InstructionDocumentationWithTextParserBase(InstructionDocumentation):
     def _text(self, s: str, extra: dict = None) -> Text:
         return self._tp.text(s, extra)
 
-    def _paragraphs(self, s: str, extra: dict = None) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def _paragraphs(self, s: str, extra: dict = None) -> List[ParagraphItem]:
         return self._tp.fnap(s, extra)
 
 

@@ -17,15 +17,15 @@ class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
         }
         self._parser = TextParser(format_map)
 
-    def syntax_of_output(self) -> list:
+    def syntax_of_output(self) -> List[ParagraphItem]:
         return self._parser.fnap(_SYNTAX_OF_OUTPUT)
 
-    def exit_code_description(self) -> list:
+    def exit_code_description(self) -> List[ParagraphItem]:
         return (self._parser.fnap(_EXIT_CODE_DESCRIPTION_PRELUDE) +
                 [self._exit_value_table(_exit_values_and_descriptions())])
 
     def _exit_value_table(self, exit_value_and_description_list: list) -> ParagraphItem:
-        def _row(exit_value: ExitValue, description: str) -> list:
+        def _row(exit_value: ExitValue, description: str) -> List[TableCell]:
             return [
                 cell(paras(str(exit_value.exit_code))),
                 cell(paras(exit_value_text(exit_value))),

@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions import syntax_descriptions
@@ -76,7 +78,7 @@ class _SymbolConcept(ConceptDocumentation):
             syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
-    def _reference_paragraphs(self) -> list:
+    def _reference_paragraphs(self) -> List[ParagraphItem]:
         from exactly_lib.test_case_utils.string_transformer.parse_string_transformer import SELECT_TRANSFORMER_NAME
         from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
