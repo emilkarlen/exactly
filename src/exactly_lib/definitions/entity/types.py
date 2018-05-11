@@ -90,8 +90,8 @@ FILE_MATCHER_TYPE_INFO = name_and_ref_target(
 
 STRING_TRANSFORMER_TYPE_INFO = name_and_ref_target(
     ValueType.STRING_TRANSFORMER,
-    name_with_plural_s('lines transformer'),
-    'Transforms a sequence of new-line separated text lines.',
+    name_with_plural_s('string transformer'),
+    'Transforms a string (a sequence of new-line separated text lines).',
 )
 
 PROGRAM_TYPE_INFO = name_and_ref_target(

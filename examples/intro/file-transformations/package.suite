@@ -6,6 +6,6 @@
 
 replace-test-case-dirs.case
 
-def-lines-transformer.case
+def-string-transformer.case
 
 select.case

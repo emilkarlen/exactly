@@ -149,9 +149,9 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     def line-matcher      IS_TIMING_LINE     = regex ^timing
 
-    def lines-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
+    def string-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
 
-    def lines-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
+    def string-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
 
 The ``-transformed-by`` option does not modify the tested file,
