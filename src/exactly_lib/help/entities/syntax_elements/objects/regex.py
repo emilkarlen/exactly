@@ -48,6 +48,7 @@ DOCUMENTATION = syntax_element_documentation(
     ],
     [
         syntax_elements.STRING_SYNTAX_ELEMENT.cross_reference_target,
+        syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT.cross_reference_target,
         SEE_ALSO_URL_INFO,
     ]
 )
