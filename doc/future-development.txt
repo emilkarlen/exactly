@@ -1,5 +1,10 @@
 -*- org -*-
 
+* Make "copy" instruction available in all phases
+<2018-05-12 Sat>
+* "copy" instruction should be able to copy files from sandbox
+<2018-05-12 Sat>
+Currently, the SOURCE argument must be in the HDS.
 * dir-contents: make FILE-MATCHER able to check contents
 <2017-11-20 mån>
 Dagens E kan inte testa ett scenario från ETI: (<2017-11-25 Sat> FEL!)
