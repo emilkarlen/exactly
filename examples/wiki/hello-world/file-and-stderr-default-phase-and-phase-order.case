@@ -1,5 +1,11 @@
 hello-world -o output.txt
 
+[before-assert]
+
+def string-transformer MY_TRANSFORMER  = TO_UPPER_CASE | replace '^HELLO, ' ''
+
+def line-matcher       MY_LINE_MATCHER = regex ^WORLD!$
+
 [assert]
 
 contents output.txt
@@ -7,9 +13,3 @@ contents output.txt
          every line : matches MY_LINE_MATCHER
 
 stderr empty
-
-[before-assert]
-
-def lines-transformer MY_TRANSFORMER  = TO_UPPER_CASE | replace '^HELLO, ' ''
-
-def line-matcher      MY_LINE_MATCHER = regex ^WORLD!$

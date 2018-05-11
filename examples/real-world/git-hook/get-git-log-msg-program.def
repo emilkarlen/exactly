@@ -2,7 +2,7 @@
 
 # Need to be in [setup], since [conf] cannot contain definitions (yet)
 
-def lines-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num == 5 | replace '^\s*' ''
+def string-transformer EXTRACT_FIRST_LOG_MESSAGE = select line-num == 5 | replace '^\s*' ''
 
 def program GET_LOG_MESSAGE_OF_LAST_COMMIT = $ git log
                                              -transformed-by EXTRACT_FIRST_LOG_MESSAGE
