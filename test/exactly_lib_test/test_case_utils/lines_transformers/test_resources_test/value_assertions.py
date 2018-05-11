@@ -2,9 +2,9 @@ import re
 import unittest
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
-from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLinesTransformer, SelectLinesTransformer
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer, SequenceLinesTransformer, \
-    CustomLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceStringTransformer, SelectStringTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer, SequenceStringTransformer, \
+    CustomStringTransformer
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import value_assertions as sut
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 
@@ -18,28 +18,28 @@ class TestEquals(unittest.TestCase):
         # ARRANGE #
         cases = [
             (
-                IdentityLinesTransformer(),
-                IdentityLinesTransformer()
+                IdentityStringTransformer(),
+                IdentityStringTransformer()
             ),
             (
-                CustomLinesTransformer(),
-                CustomLinesTransformer()
+                CustomStringTransformer(),
+                CustomStringTransformer()
             ),
             (
-                ReplaceLinesTransformer(re.compile('regex'), 'replacement'),
-                ReplaceLinesTransformer(re.compile('regex'), 'replacement'),
+                ReplaceStringTransformer(re.compile('regex'), 'replacement'),
+                ReplaceStringTransformer(re.compile('regex'), 'replacement'),
             ),
             (
-                SequenceLinesTransformer([]),
-                SequenceLinesTransformer([]),
+                SequenceStringTransformer([]),
+                SequenceStringTransformer([]),
             ),
             (
-                SequenceLinesTransformer([IdentityLinesTransformer()]),
-                SequenceLinesTransformer([IdentityLinesTransformer()]),
+                SequenceStringTransformer([IdentityStringTransformer()]),
+                SequenceStringTransformer([IdentityStringTransformer()]),
             ),
             (
-                SelectLinesTransformer(LineMatcherConstant(True)),
-                SelectLinesTransformer(LineMatcherConstant(True)),
+                SelectStringTransformer(LineMatcherConstant(True)),
+                SelectStringTransformer(LineMatcherConstant(True)),
             ),
         ]
         for expected, actual in cases:
@@ -50,12 +50,12 @@ class TestEquals(unittest.TestCase):
 
     def test_not_equals__identity(self):
         # ARRANGE #
-        expected = IdentityLinesTransformer()
+        expected = IdentityStringTransformer()
 
         different_transformers = [
-            CustomLinesTransformer(),
-            SequenceLinesTransformer([]),
-            SelectLinesTransformer(LineMatcherConstant(True)),
+            CustomStringTransformer(),
+            SequenceStringTransformer([]),
+            SelectStringTransformer(LineMatcherConstant(True)),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_lines_transformer(expected)
@@ -72,16 +72,16 @@ class TestEquals(unittest.TestCase):
         unexpected_regex = re.compile('unexpected_regex')
         unexpected_replacement = 'unexpected_replacement'
 
-        expected = ReplaceLinesTransformer(expected_regex,
-                                           expected_replacement)
+        expected = ReplaceStringTransformer(expected_regex,
+                                            expected_replacement)
 
         different_transformers = [
-            IdentityLinesTransformer(),
-            CustomLinesTransformer(),
-            SequenceLinesTransformer([]),
-            SelectLinesTransformer(LineMatcherConstant(True)),
-            ReplaceLinesTransformer(unexpected_regex, expected_replacement),
-            ReplaceLinesTransformer(expected_regex, unexpected_replacement),
+            IdentityStringTransformer(),
+            CustomStringTransformer(),
+            SequenceStringTransformer([]),
+            SelectStringTransformer(LineMatcherConstant(True)),
+            ReplaceStringTransformer(unexpected_regex, expected_replacement),
+            ReplaceStringTransformer(expected_regex, unexpected_replacement),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_lines_transformer(expected)
@@ -95,14 +95,14 @@ class TestEquals(unittest.TestCase):
         expected_line_matcher = LineMatcherConstant(False)
         unexpected_line_matcher = LineMatcherConstant(True)
 
-        expected = SelectLinesTransformer(expected_line_matcher)
+        expected = SelectStringTransformer(expected_line_matcher)
 
         different_transformers = [
-            IdentityLinesTransformer(),
-            CustomLinesTransformer(),
-            SequenceLinesTransformer([]),
-            ReplaceLinesTransformer(re.compile('regex pattern'), 'replacement'),
-            SelectLinesTransformer(unexpected_line_matcher),
+            IdentityStringTransformer(),
+            CustomStringTransformer(),
+            SequenceStringTransformer([]),
+            ReplaceStringTransformer(re.compile('regex pattern'), 'replacement'),
+            SelectStringTransformer(unexpected_line_matcher),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_lines_transformer(expected)
@@ -113,17 +113,17 @@ class TestEquals(unittest.TestCase):
 
     def test_not_equals__sequence(self):
         # ARRANGE #
-        expected = SequenceLinesTransformer([IdentityLinesTransformer()])
+        expected = SequenceStringTransformer([IdentityStringTransformer()])
 
         different_transformers = [
-            IdentityLinesTransformer(),
-            CustomLinesTransformer(),
-            SelectLinesTransformer(LineMatcherConstant(False)),
-            SequenceLinesTransformer([]),
-            SequenceLinesTransformer([CustomLinesTransformer()]),
-            SequenceLinesTransformer([SelectLinesTransformer(LineMatcherConstant(False))]),
-            SequenceLinesTransformer([IdentityLinesTransformer(),
-                                      IdentityLinesTransformer()]),
+            IdentityStringTransformer(),
+            CustomStringTransformer(),
+            SelectStringTransformer(LineMatcherConstant(False)),
+            SequenceStringTransformer([]),
+            SequenceStringTransformer([CustomStringTransformer()]),
+            SequenceStringTransformer([SelectStringTransformer(LineMatcherConstant(False))]),
+            SequenceStringTransformer([IdentityStringTransformer(),
+                                       IdentityStringTransformer()]),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_lines_transformer(expected)
@@ -134,12 +134,12 @@ class TestEquals(unittest.TestCase):
 
     def test_not_equals__custom(self):
         # ARRANGE #
-        expected = CustomLinesTransformer()
+        expected = CustomStringTransformer()
 
         different_transformers = [
-            IdentityLinesTransformer(),
-            SequenceLinesTransformer([]),
-            SelectLinesTransformer(LineMatcherConstant(False)),
+            IdentityStringTransformer(),
+            SequenceStringTransformer([]),
+            SelectStringTransformer(LineMatcherConstant(False)),
         ]
         for actual in different_transformers:
             assertion_to_check = sut.equals_lines_transformer(expected)

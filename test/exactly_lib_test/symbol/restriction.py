@@ -22,7 +22,7 @@ from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResol
 from exactly_lib_test.symbol.test_resources.lines_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.type_system.data.test_resources.file_matcher import FileMatcherThatSelectsAllFilesTestImpl
-from exactly_lib_test.type_system.logic.test_resources.values import FakeLinesTransformer, \
+from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer, \
     LineMatcherNotImplementedTestImpl
 
 
@@ -99,7 +99,7 @@ class TestValueTypeRestriction(unittest.TestCase):
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
 
         ValueType.LINES_TRANSFORMER:
-            StringTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
+            StringTransformerResolverConstantTestImpl(FakeStringTransformer(), []),
 
         ValueType.PROGRAM:
             ProgramResolverForCommand(

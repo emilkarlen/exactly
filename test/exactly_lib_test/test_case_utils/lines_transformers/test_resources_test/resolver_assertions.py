@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer, SequenceLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer, SequenceStringTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils
@@ -33,7 +33,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
                          )),
 
         ]
-        actual_and_expected = IdentityLinesTransformer()
+        actual_and_expected = IdentityStringTransformer()
         resolver = StringTransformerConstant(actual_and_expected)
         for case in cases:
             with self.subTest(name=case.name):
@@ -55,7 +55,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
 
         ]
         actual = FileMatcherTestImpl()
-        expected = IdentityLinesTransformer()
+        expected = IdentityStringTransformer()
 
         resolver_of_actual = FileMatcherConstantResolver(actual)
         for case in cases:
@@ -77,8 +77,8 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
                          )),
 
         ]
-        actual = SequenceLinesTransformer([])
-        expected = IdentityLinesTransformer()
+        actual = SequenceStringTransformer([])
+        expected = IdentityStringTransformer()
 
         resolver_of_actual = StringTransformerConstant(actual)
         for case in cases:
@@ -93,7 +93,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         actual_resolver = StringTransformerResolverConstantTestImpl(
-            IdentityLinesTransformer(),
+            IdentityStringTransformer(),
             references=actual_references)
         assertion_to_check = sut.resolved_value_equals_lines_transformer(actual_resolver.resolved_value,
                                                                          references=asrt.matches_sequence([
@@ -108,7 +108,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
         actual_reference = data_symbol_utils.symbol_reference('referenced element')
         actual_references = [actual_reference]
         actual_resolver = StringTransformerResolverConstantTestImpl(
-            IdentityLinesTransformer(),
+            IdentityStringTransformer(),
             references=actual_references)
 
         cases = [
@@ -129,7 +129,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
                 assert_that_assertion_fails(assertion_to_check, actual_resolver)
 
 
-ARBITRARY_LINE_TRANSFORMER_RESOLVER = StringTransformerResolverConstantTestImpl(IdentityLinesTransformer(), [])
+ARBITRARY_LINE_TRANSFORMER_RESOLVER = StringTransformerResolverConstantTestImpl(IdentityStringTransformer(), [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

@@ -5,7 +5,7 @@ from typing import Iterable
 
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer
 from exactly_lib.util.string import lines_content, line_separated
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -141,6 +141,6 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         )
 
 
-class _DeleteAllButFirstLine(LinesTransformer):
+class _DeleteAllButFirstLine(StringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return itertools.islice(lines, 1)

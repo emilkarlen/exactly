@@ -1,11 +1,11 @@
 from typing import Iterable
 
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, original_and_model_iter_from_file_line_iter
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
-    SequenceLinesTransformer, CustomLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer, IdentityStringTransformer, \
+    SequenceStringTransformer, CustomStringTransformer
 
 
-class ReplaceLinesTransformer(LinesTransformer):
+class ReplaceStringTransformer(StringTransformer):
     def __init__(self, compiled_regular_expression, replacement: str):
         self._compiled_regular_expression = compiled_regular_expression
         self._replacement = replacement
@@ -29,7 +29,7 @@ class ReplaceLinesTransformer(LinesTransformer):
                                str(self._compiled_regular_expression))
 
 
-class SelectLinesTransformer(LinesTransformer):
+class SelectStringTransformer(StringTransformer):
     """
     Keeps lines matched by a given :class:`LineMatcher`,
     and discards lines not matched.
@@ -63,32 +63,32 @@ class LinesTransformerStructureVisitor:
     of selectors.
     """
 
-    def visit(self, transformer: LinesTransformer):
-        if isinstance(transformer, ReplaceLinesTransformer):
+    def visit(self, transformer: StringTransformer):
+        if isinstance(transformer, ReplaceStringTransformer):
             return self.visit_replace(transformer)
-        if isinstance(transformer, SelectLinesTransformer):
+        if isinstance(transformer, SelectStringTransformer):
             return self.visit_select(transformer)
-        if isinstance(transformer, CustomLinesTransformer):
+        if isinstance(transformer, CustomStringTransformer):
             return self.visit_custom(transformer)
-        if isinstance(transformer, SequenceLinesTransformer):
+        if isinstance(transformer, SequenceStringTransformer):
             return self.visit_sequence(transformer)
-        elif isinstance(transformer, IdentityLinesTransformer):
+        elif isinstance(transformer, IdentityStringTransformer):
             return self.visit_identity(transformer)
         else:
-            raise TypeError('Unknown {}: {}'.format(LinesTransformer,
+            raise TypeError('Unknown {}: {}'.format(StringTransformer,
                                                     str(transformer)))
 
-    def visit_identity(self, transformer: IdentityLinesTransformer):
+    def visit_identity(self, transformer: IdentityStringTransformer):
         raise NotImplementedError('abstract method')
 
-    def visit_sequence(self, transformer: SequenceLinesTransformer):
+    def visit_sequence(self, transformer: SequenceStringTransformer):
         raise NotImplementedError('abstract method')
 
-    def visit_replace(self, transformer: ReplaceLinesTransformer):
+    def visit_replace(self, transformer: ReplaceStringTransformer):
         raise NotImplementedError('abstract method')
 
-    def visit_select(self, transformer: SelectLinesTransformer):
+    def visit_select(self, transformer: SelectStringTransformer):
         raise NotImplementedError('abstract method')
 
-    def visit_custom(self, transformer: CustomLinesTransformer):
+    def visit_custom(self, transformer: CustomStringTransformer):
         raise NotImplementedError('abstract method')

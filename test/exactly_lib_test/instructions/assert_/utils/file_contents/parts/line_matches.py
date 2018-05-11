@@ -5,7 +5,7 @@ from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail, ExpectationTypeConfig
@@ -56,7 +56,7 @@ class TestCaseBase(unittest.TestCase):
                             ftc = sut.FileToCheck(actual_file_path,
                                                   checked_file_describer,
                                                   environment,
-                                                  IdentityLinesTransformer(),
+                                                  IdentityStringTransformer(),
                                                   dst_file_path_getter)
                             matcher_resolver = LineMatcherConstantResolver(case.matcher)
                             assertion_part = get_assertion_part_function(expectation_type,
@@ -91,7 +91,7 @@ class TestCaseBase(unittest.TestCase):
                             ftc = sut.FileToCheck(actual_file_path,
                                                   checked_file_describer,
                                                   environment,
-                                                  IdentityLinesTransformer(),
+                                                  IdentityStringTransformer(),
                                                   dst_file_path_getter)
                             matcher_resolver = LineMatcherConstantResolver(matcher)
                             assertion_part = get_assertion_part_function(expectation_type,

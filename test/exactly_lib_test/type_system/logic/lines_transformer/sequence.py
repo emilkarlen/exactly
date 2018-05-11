@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
-    SequenceLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer, IdentityStringTransformer, \
+    SequenceStringTransformer
 from exactly_lib.type_system.logic.lines_transformer_values import StringTransformerSequenceValue, \
     DirDependentStringTransformerValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
@@ -23,19 +23,19 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-def equals_lines_transformer(expected: LinesTransformer) -> asrt.ValueAssertion[LinesTransformer]:
-    if isinstance(expected, IdentityLinesTransformer):
-        return asrt.is_instance(IdentityLinesTransformer)
-    if isinstance(expected, SequenceLinesTransformer):
+def equals_lines_transformer(expected: StringTransformer) -> asrt.ValueAssertion[StringTransformer]:
+    if isinstance(expected, IdentityStringTransformer):
+        return asrt.is_instance(IdentityStringTransformer)
+    if isinstance(expected, SequenceStringTransformer):
         return equals_sequence_transformer(expected)
     raise TypeError('Unknown type of lines transformer: ' + str(expected))
 
 
-def equals_sequence_transformer(expected: SequenceLinesTransformer) -> asrt.ValueAssertion[LinesTransformer]:
+def equals_sequence_transformer(expected: SequenceStringTransformer) -> asrt.ValueAssertion[StringTransformer]:
     return asrt.is_instance_with(
-        SequenceLinesTransformer,
+        SequenceStringTransformer,
         asrt.sub_component('transformers',
-                           SequenceLinesTransformer.transformers.fget,
+                           SequenceStringTransformer.transformers.fget,
                            asrt.matches_sequence([
                                equals_lines_transformer(lt) for lt in expected.transformers
                            ])
@@ -48,20 +48,20 @@ class TestValue(unittest.TestCase):
         cases = [
             NEA('no components',
                 MultiDirDependentValueTestImpl(set(),
-                                               SequenceLinesTransformer([])),
+                                               SequenceStringTransformer([])),
                 StringTransformerSequenceValue([])
                 ),
             NEA('single component',
                 MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME},
-                                               SequenceLinesTransformer([IdentityLinesTransformer()])),
+                                               SequenceStringTransformer([IdentityStringTransformer()])),
                 StringTransformerSequenceValue([DirDependentStringTransformerValue({DirectoryStructurePartition.HOME},
                                                                                    make_identity_transformer)])
                 ),
             NEA('multiple components',
                 MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME,
                                                 DirectoryStructurePartition.NON_HOME},
-                                               SequenceLinesTransformer([IdentityLinesTransformer(),
-                                                                         IdentityLinesTransformer()])),
+                                               SequenceStringTransformer([IdentityStringTransformer(),
+                                                                          IdentityStringTransformer()])),
                 StringTransformerSequenceValue([
                     DirDependentStringTransformerValue({DirectoryStructurePartition.HOME},
                                                        make_identity_transformer),
@@ -77,8 +77,8 @@ class TestValue(unittest.TestCase):
                 assertion.apply_without_message(self, case.actual)
 
 
-def make_identity_transformer(tcds: HomeAndSds) -> LinesTransformer:
-    return IdentityLinesTransformer()
+def make_identity_transformer(tcds: HomeAndSds) -> StringTransformer:
+    return IdentityStringTransformer()
 
 
 class TestPrimitiveValue(unittest.TestCase):
@@ -86,23 +86,23 @@ class TestPrimitiveValue(unittest.TestCase):
         cases = [
             (
                 'empty list of transformers',
-                SequenceLinesTransformer([]),
+                SequenceStringTransformer([]),
                 True,
             ),
             (
                 'single identity transformer',
-                SequenceLinesTransformer([IdentityLinesTransformer()]),
+                SequenceStringTransformer([IdentityStringTransformer()]),
                 True,
             ),
             (
                 'multiple identity transformers',
-                SequenceLinesTransformer([IdentityLinesTransformer(),
-                                          IdentityLinesTransformer()]),
+                SequenceStringTransformer([IdentityStringTransformer(),
+                                           IdentityStringTransformer()]),
                 True,
             ),
             (
                 'non-identity transformer',
-                SequenceLinesTransformer([MyNonIdentityTransformer()]),
+                SequenceStringTransformer([MyNonIdentityTransformer()]),
                 False,
             ),
         ]
@@ -114,13 +114,13 @@ class TestPrimitiveValue(unittest.TestCase):
 
     def test_construct_and_get_transformers_list(self):
         # ARRANGE #
-        t_1 = IdentityLinesTransformer()
-        t_2 = IdentityLinesTransformer()
+        t_1 = IdentityStringTransformer()
+        t_2 = IdentityStringTransformer()
         transformers_given_to_constructor = [t_1, t_2]
 
         # ACT #
 
-        sequence = SequenceLinesTransformer(transformers_given_to_constructor)
+        sequence = SequenceStringTransformer(transformers_given_to_constructor)
         transformers_from_sequence = sequence.transformers
 
         # ASSERT #
@@ -130,7 +130,7 @@ class TestPrimitiveValue(unittest.TestCase):
 
     def test_WHEN_sequence_of_transformers_is_empty_THEN_output_SHOULD_be_equal_to_input(self):
         # ARRANGE #
-        sequence = SequenceLinesTransformer([])
+        sequence = SequenceStringTransformer([])
 
         input_lines = ['first',
                        'second',
@@ -149,7 +149,7 @@ class TestPrimitiveValue(unittest.TestCase):
 
         to_upper_t = MyToUppercaseTransformer()
 
-        sequence = SequenceLinesTransformer([to_upper_t])
+        sequence = SequenceStringTransformer([to_upper_t])
 
         input_lines = ['first',
                        'second',
@@ -176,8 +176,8 @@ class TestPrimitiveValue(unittest.TestCase):
         to_upper_t = MyToUppercaseTransformer()
         count_num_upper = MyCountNumUppercaseCharactersTransformer()
 
-        sequence = SequenceLinesTransformer([to_upper_t,
-                                             count_num_upper])
+        sequence = SequenceStringTransformer([to_upper_t,
+                                              count_num_upper])
 
         input_lines = ['this is',
                        'the',

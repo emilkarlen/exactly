@@ -38,7 +38,7 @@ from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import parse_s
 from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionArgumentConfiguration, \
     RelOptionsConfiguration
 from exactly_lib.test_case_utils.program.parse import parse_program
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.line_source import LineSequence
@@ -265,7 +265,7 @@ def _parse_file_matcher(token_parser: TokenParser) -> FileMatcherResolver:
 
 def _parse_lines_transformer(token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
     if token_parser.is_at_eol:
-        return line_transformer_resolvers.StringTransformerConstant(IdentityLinesTransformer())
+        return line_transformer_resolvers.StringTransformerConstant(IdentityStringTransformer())
     return parse_lines_transformer.parse_lines_transformer_from_token_parser(token_parser)
 
 

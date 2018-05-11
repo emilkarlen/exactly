@@ -10,13 +10,13 @@ from exactly_lib.test_case_utils.err_msg.error_info import ErrorMessagePartConst
 from exactly_lib.test_case_utils.expression import grammar, parser as parse_expression
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.lines_transformer import resolvers
-from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceStringTransformer
 from exactly_lib.test_case_utils.parse import parse_reg_ex
-from exactly_lib.type_system.logic.lines_transformer import IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
-IDENTITY_TRANSFORMER_RESOLVER = resolvers.StringTransformerConstant(IdentityLinesTransformer())
+IDENTITY_TRANSFORMER_RESOLVER = resolvers.StringTransformerConstant(IdentityStringTransformer())
 
 REPLACE_TRANSFORMER_NAME = 'replace'
 
@@ -77,7 +77,7 @@ def parse_replace(parser: TokenParser) -> StringTransformerResolver:
     regex = parse_reg_ex.parse_regex(parser)
     parser.require_is_not_at_eol(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
     replacement = parser.consume_mandatory_token(_MISSING_REPLACEMENT_ARGUMENT_ERR_MSG)
-    return resolvers.StringTransformerConstant(ReplaceLinesTransformer(regex, replacement.string))
+    return resolvers.StringTransformerConstant(ReplaceStringTransformer(regex, replacement.string))
 
 
 def parse_select(parser: TokenParser) -> StringTransformerResolver:

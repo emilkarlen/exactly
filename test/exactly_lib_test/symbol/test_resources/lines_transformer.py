@@ -2,7 +2,7 @@ from typing import Sequence
 
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, StringTransformerValue
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer, StringTransformerValue
 from exactly_lib.type_system.logic.lines_transformer_values import StringTransformerConstantValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -13,13 +13,13 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 class StringTransformerResolverConstantTestImpl(StringTransformerResolver):
     def __init__(self,
-                 resolved_value: LinesTransformer,
+                 resolved_value: StringTransformer,
                  references: Sequence[SymbolReference] = ()):
         self._resolved_value = resolved_value
         self._references = list(references)
 
     @property
-    def resolved_value(self) -> LinesTransformer:
+    def resolved_value(self) -> StringTransformer:
         return self._resolved_value
 
     @property

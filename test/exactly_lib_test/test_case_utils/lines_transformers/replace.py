@@ -2,7 +2,6 @@ import re
 import unittest
 
 from exactly_lib.test_case_utils.lines_transformer import transformers as sut
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 
 
 def suite() -> unittest.TestSuite:
@@ -11,8 +10,8 @@ def suite() -> unittest.TestSuite:
 
 class Test(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.ReplaceLinesTransformer(re.compile('object'),
-                                                  'transformer')
+        transformer = sut.ReplaceStringTransformer(re.compile('object'),
+                                                   'transformer')
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_every_line_SHOULD_be_transformed(self):
@@ -23,8 +22,8 @@ class Test(unittest.TestCase):
             'I object!',
         ]
         input_lines_iter = iter(input_lines)
-        transformer = sut.ReplaceLinesTransformer(re.compile('object'),
-                                                  'transformer')
+        transformer = sut.ReplaceStringTransformer(re.compile('object'),
+                                                   'transformer')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -55,8 +54,8 @@ class Test(unittest.TestCase):
             'I am there',
         ]
         input_lines_iter = iter(input_lines)
-        transformer = sut.ReplaceLinesTransformer(re.compile('here'),
-                                                  'there')
+        transformer = sut.ReplaceStringTransformer(re.compile('here'),
+                                                   'there')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -77,8 +76,8 @@ class Test(unittest.TestCase):
             'is what I want',
         ]
         input_lines_iter = iter(lines)
-        transformer = sut.ReplaceLinesTransformer(re.compile('[E][x][a][c][t][l][y]'),
-                                                  'is what I want')
+        transformer = sut.ReplaceStringTransformer(re.compile('[E][x][a][c][t][l][y]'),
+                                                   'is what I want')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -101,8 +100,8 @@ class Test(unittest.TestCase):
             '',
         ]
         input_lines_iter = iter(lines)
-        transformer = sut.ReplaceLinesTransformer(re.compile('\n'),
-                                                  '')
+        transformer = sut.ReplaceStringTransformer(re.compile('\n'),
+                                                   '')
         # ACT #
 
         actual = transformer.transform(input_lines_iter)

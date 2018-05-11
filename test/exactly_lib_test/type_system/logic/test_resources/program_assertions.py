@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer
 from exactly_lib.type_system.logic.program.program_value import Program
 from exactly_lib.type_system.logic.program.stdin_data_values import StdinData
 from exactly_lib.util.process_execution.command import Command
@@ -20,7 +20,7 @@ def no_stdin() -> asrt.ValueAssertion[StdinData]:
 
 def matches_program(command: asrt.ValueAssertion[Command],
                     stdin: asrt.ValueAssertion[StdinData],
-                    transformer: asrt.ValueAssertion[LinesTransformer]) -> asrt.ValueAssertion[Program]:
+                    transformer: asrt.ValueAssertion[StringTransformer]) -> asrt.ValueAssertion[Program]:
     return _MatchesProgramAssertion(command, stdin, transformer)
 
 
@@ -33,7 +33,7 @@ def matches_plain_program(command: asrt.ValueAssertion[Command]):
 def matches_py_source_on_cmd_line_program(py_source_to_interpret: str,
                                           stdin: asrt.ValueAssertion[StdinData] = no_stdin(),
                                           transformer: asrt.ValueAssertion[
-                                              LinesTransformer] = asrt_line_trans.is_identity_transformer()
+                                              StringTransformer] = asrt_line_trans.is_identity_transformer()
                                           ) -> asrt.ValueAssertion[Program]:
     return matches_program(asrt_command.equals_execute_py_source_command(py_source_to_interpret),
                            stdin=stdin,
@@ -44,7 +44,7 @@ class _MatchesProgramAssertion(asrt.ValueAssertion[Program]):
     def __init__(self,
                  command: asrt.ValueAssertion[Command],
                  stdin: asrt.ValueAssertion[StdinData],
-                 transformer: asrt.ValueAssertion[LinesTransformer],
+                 transformer: asrt.ValueAssertion[StringTransformer],
                  ):
         self.command = command
         self.stdin = stdin

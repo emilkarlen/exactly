@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformer
 from exactly_lib.util.file_utils import ensure_parent_directory_does_exist_and_is_a_directory
 
 
@@ -40,7 +40,7 @@ def resolve_and_create_file(path_resolver: FileRefResolver,
 
 def create_file_from_transformation_of_existing_file(src_path: pathlib.Path,
                                                      dst_path: pathlib.Path,
-                                                     transformer: LinesTransformer) -> Optional[str]:
+                                                     transformer: StringTransformer) -> Optional[str]:
     """
     :return: Error message in case of failure
     """

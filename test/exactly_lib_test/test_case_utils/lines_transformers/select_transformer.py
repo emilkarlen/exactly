@@ -4,7 +4,7 @@ from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherCo
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver, LineMatcherReferenceResolver
 from exactly_lib.test_case_utils.lines_transformer import transformers as sut
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerSelectResolver
-from exactly_lib.test_case_utils.lines_transformer.transformers import SelectLinesTransformer
+from exactly_lib.test_case_utils.lines_transformer.transformers import SelectStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
@@ -25,11 +25,11 @@ def suite() -> unittest.TestSuite:
 
 class TestSelectTransformer(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.SelectLinesTransformer(sub_string_line_matcher('MATCH'))
+        transformer = sut.SelectStringTransformer(sub_string_line_matcher('MATCH'))
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_select_with_sub_string_matcher(self):
-        transformer = sut.SelectLinesTransformer(sub_string_line_matcher('MATCH'))
+        transformer = sut.SelectStringTransformer(sub_string_line_matcher('MATCH'))
         cases = [
             NameAndValue('no lines',
                          ([],
@@ -106,7 +106,7 @@ class TestSelectTransformer(unittest.TestCase):
         for case in cases:
             line_matcher, input_lines, expected_output_lines = case.value
             with self.subTest(case_name=case.name):
-                transformer = sut.SelectLinesTransformer(line_matcher)
+                transformer = sut.SelectStringTransformer(line_matcher)
                 # ACT #
                 actual = transformer.transform(iter(input_lines))
                 # ASSERT #
@@ -119,7 +119,7 @@ class TestSelectTransformerResolver(unittest.TestCase):
     def test_sans_references(self):
         line_matcher = LineMatcherConstant(False)
 
-        resolved_value = SelectLinesTransformer(line_matcher)
+        resolved_value = SelectStringTransformer(line_matcher)
         assertion_on_resolver = asrt_resolver.resolved_value_equals_lines_transformer(
             resolved_value,
             references=asrt.is_empty_sequence)
@@ -139,7 +139,7 @@ class TestSelectTransformerResolver(unittest.TestCase):
 
         # EXPECTATION #
 
-        expected_resolved_value = SelectLinesTransformer(symbol.value)
+        expected_resolved_value = SelectStringTransformer(symbol.value)
 
         assertion_on_resolver = asrt_resolver.resolved_value_equals_lines_transformer(
             expected_resolved_value,

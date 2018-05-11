@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.path_relativity import DirectoryStruct
 from exactly_lib.util.functional import compose_first_and_second
 
 
-class LinesTransformer:
+class StringTransformer:
     """
     Transforms a sequence of lines, where each line is a string.
     """
@@ -26,22 +26,22 @@ class LinesTransformer:
         return type(self).__name__
 
 
-class StringTransformerValue(MultiDirDependentValue[LinesTransformer]):
+class StringTransformerValue(MultiDirDependentValue[StringTransformer]):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 
-    def value_when_no_dir_dependencies(self) -> LinesTransformer:
+    def value_when_no_dir_dependencies(self) -> StringTransformer:
         """
         :raises DirDependencyError: This value has dir dependencies.
         """
         raise NotImplementedError()
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> LinesTransformer:
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> StringTransformer:
         """Gives the value, regardless of actual dependency."""
         raise NotImplementedError()
 
 
-class IdentityLinesTransformer(LinesTransformer):
+class IdentityStringTransformer(StringTransformer):
     @property
     def is_identity_transformer(self) -> bool:
         return True
@@ -50,8 +50,8 @@ class IdentityLinesTransformer(LinesTransformer):
         return lines
 
 
-class SequenceLinesTransformer(LinesTransformer):
-    def __init__(self, transformers: Sequence[LinesTransformer]):
+class SequenceStringTransformer(StringTransformer):
+    def __init__(self, transformers: Sequence[StringTransformer]):
         self._transformers = tuple(transformers)
 
     @property
@@ -59,7 +59,7 @@ class SequenceLinesTransformer(LinesTransformer):
         return all([t.is_identity_transformer for t in self._transformers])
 
     @property
-    def transformers(self) -> Sequence[LinesTransformer]:
+    def transformers(self) -> Sequence[StringTransformer]:
         return self._transformers
 
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
@@ -79,7 +79,7 @@ class SequenceLinesTransformer(LinesTransformer):
                                ','.join(map(str, self._transformers)))
 
 
-class CustomLinesTransformer(LinesTransformer):
+class CustomStringTransformer(StringTransformer):
     """
     Base class for built in custom transformers.
     """

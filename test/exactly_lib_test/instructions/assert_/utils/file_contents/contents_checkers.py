@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.err_msg.property_description import PropertyDes
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -53,7 +53,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
 
     def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_not_exist(self):
         # ARRANGE #
-        transformer_resolver = StringTransformerConstant(IdentityLinesTransformer())
+        transformer_resolver = StringTransformerConstant(IdentityStringTransformer())
         assertion_part = sut.FileTransformerAsAssertionPart(transformer_resolver)
         # ACT & ASSERT #
         with self.assertRaises(PfhHardErrorException):
@@ -68,7 +68,7 @@ class TestFileTransformerAsAssertionPart(unittest.TestCase):
 
     def test_PfhHardError_SHOULD_be_raised_WHEN_file_does_exist_but_is_not_a_regular_file(self):
         # ARRANGE #
-        transformer_resolver = StringTransformerConstant(IdentityLinesTransformer())
+        transformer_resolver = StringTransformerConstant(IdentityStringTransformer())
         assertion_part = sut.FileTransformerAsAssertionPart(transformer_resolver)
         # ACT & ASSERT #
         with tmp_dir() as path_of_existing_directory:
