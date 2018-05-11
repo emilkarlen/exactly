@@ -23,7 +23,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-def equals_lines_transformer(expected: StringTransformer) -> asrt.ValueAssertion[StringTransformer]:
+def equals_string_transformer(expected: StringTransformer) -> asrt.ValueAssertion[StringTransformer]:
     if isinstance(expected, IdentityStringTransformer):
         return asrt.is_instance(IdentityStringTransformer)
     if isinstance(expected, SequenceStringTransformer):
@@ -37,7 +37,7 @@ def equals_sequence_transformer(expected: SequenceStringTransformer) -> asrt.Val
         asrt.sub_component('transformers',
                            SequenceStringTransformer.transformers.fget,
                            asrt.matches_sequence([
-                               equals_lines_transformer(lt) for lt in expected.transformers
+                               equals_string_transformer(lt) for lt in expected.transformers
                            ])
                            )
     )
@@ -72,7 +72,7 @@ class TestValue(unittest.TestCase):
         ]
         for case in cases:
             with self.subTest(case.name):
-                assertion = matches_multi_dir_dependent_value(case.expected, equals_lines_transformer)
+                assertion = matches_multi_dir_dependent_value(case.expected, equals_string_transformer)
 
                 assertion.apply_without_message(self, case.actual)
 
