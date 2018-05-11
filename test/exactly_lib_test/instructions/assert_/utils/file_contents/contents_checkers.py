@@ -10,7 +10,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import os_services as oss
 from exactly_lib.test_case_utils.err_msg.property_description import PropertyDescriptor, \
     property_descriptor_with_just_a_constant_name
-from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType

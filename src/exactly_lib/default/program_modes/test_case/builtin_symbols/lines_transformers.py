@@ -1,6 +1,6 @@
 from exactly_lib.cli.main_program import BuiltinSymbol
-from exactly_lib.test_case_utils.lines_transformer import env_vars_replacement, case_converters
-from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant, \
+from exactly_lib.test_case_utils.string_transformer import env_vars_replacement, case_converters
+from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant, \
     StringTransformerConstantOfValue
 from exactly_lib.util.textformat.structure.document import empty_section_contents
 

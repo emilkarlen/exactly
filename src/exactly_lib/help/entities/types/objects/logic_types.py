@@ -3,7 +3,7 @@ from exactly_lib.help.entities.types.contents_structure import LogicTypeWithExpr
     TypeDocumentation
 from exactly_lib.test_case_utils.file_matcher import parse_file_matcher
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
-from exactly_lib.test_case_utils.lines_transformer import parse_string_transformer
+from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import empty_section_contents

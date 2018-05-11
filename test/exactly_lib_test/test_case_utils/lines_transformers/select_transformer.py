@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver, LineMatcherReferenceResolver
-from exactly_lib.test_case_utils.lines_transformer import transformers as sut
-from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerSelectResolver
-from exactly_lib.test_case_utils.lines_transformer.transformers import SelectStringTransformer
+from exactly_lib.test_case_utils.string_transformer import transformers as sut
+from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerSelectResolver
+from exactly_lib.test_case_utils.string_transformer.transformers import SelectStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \

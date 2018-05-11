@@ -77,7 +77,7 @@ class _SymbolConcept(ConceptDocumentation):
         ]
 
     def _reference_paragraphs(self) -> list:
-        from exactly_lib.test_case_utils.lines_transformer.parse_string_transformer import SELECT_TRANSFORMER_NAME
+        from exactly_lib.test_case_utils.string_transformer.parse_string_transformer import SELECT_TRANSFORMER_NAME
         from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTINESS_CHECK_ARGUMENT
         from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EQUALS_ARGUMENT
 

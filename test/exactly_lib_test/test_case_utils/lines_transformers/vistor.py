@@ -2,7 +2,7 @@ import re
 import unittest
 from typing import Iterable
 
-import exactly_lib.test_case_utils.lines_transformer.transformers as sut
+import exactly_lib.test_case_utils.string_transformer.transformers as sut
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.type_system.logic import lines_transformer
 from exactly_lib_test.type_system.logic.test_resources.values import FakeStringTransformer

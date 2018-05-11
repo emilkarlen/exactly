@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.lines_transformer.transformers import LinesTransformerStructureVisitor, \
+from exactly_lib.test_case_utils.string_transformer.transformers import LinesTransformerStructureVisitor, \
     ReplaceStringTransformer, \
     SelectStringTransformer
 from exactly_lib.type_system.logic.lines_transformer import StringTransformer, IdentityStringTransformer, \
