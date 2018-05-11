@@ -11,11 +11,10 @@ from exactly_lib.symbol.resolver_structure import LineMatcherResolver
 from exactly_lib.test_case_utils.condition.integer import parse_integer_condition as parse_cmp_op
 from exactly_lib.test_case_utils.condition.integer.parse_integer_condition import validator_for_non_negative
 from exactly_lib.test_case_utils.line_matcher.parse_line_matcher import parse_line_matcher_from_token_parser
-from exactly_lib.test_case_utils.lines_transformer import parse_string_transformer
 from exactly_lib.test_case_utils.parse import parse_here_doc_or_file_ref
+from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib.util.messages import grammar_options_syntax
-
 
 
 def parse(token_parser: TokenParser) -> AssertionPart:

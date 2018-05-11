@@ -4,10 +4,10 @@ from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.test_case_utils.lines_transformer import parse_string_transformer
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_system_program, \
     parse_shell_command, parse_with_reference_to_program
+from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 
 
 def program_parser() -> Parser[ProgramResolver]:

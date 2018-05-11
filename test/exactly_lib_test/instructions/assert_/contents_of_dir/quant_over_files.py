@@ -9,7 +9,7 @@ from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
-from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.util.logic_types import Quantifier, ExpectationType
 from exactly_lib.util.symbol_table import SymbolTable

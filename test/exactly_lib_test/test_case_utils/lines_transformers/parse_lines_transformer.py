@@ -7,9 +7,9 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.symbol.resolver_structure import LogicValueResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
-from exactly_lib.test_case_utils.lines_transformer import parse_string_transformer as sut
-from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
-from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceStringTransformer, \
+from exactly_lib.test_case_utils.string_transformer import parse_string_transformer as sut
+from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
+from exactly_lib.test_case_utils.string_transformer.transformers import ReplaceStringTransformer, \
     SelectStringTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.type_system.logic.lines_transformer import SequenceStringTransformer, CustomStringTransformer
