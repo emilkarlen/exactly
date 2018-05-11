@@ -10,7 +10,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
     is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources import resolver_assertions as asrt_resolver
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources.values import LineMatcherFromPredicates, is_identical_to

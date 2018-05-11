@@ -23,11 +23,11 @@ from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.argument_syntax import \
-    syntax_for_replace_transformer, syntax_for_sequence_of_transformers, syntax_for_select_transformer
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.resolver_assertions import \
-    resolved_value_equals_lines_transformer
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_syntax import \
+    syntax_for_replace_transformer, syntax_for_sequence_of_transformers, syntax_for_select_transformer
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
+    resolved_value_equals_lines_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes

@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
