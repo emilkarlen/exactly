@@ -44,7 +44,7 @@ ALL_SYNTAX_ELEMENT_DOCS = (
     _for_logic_type(syntax_elements.FILE_MATCHER_SYNTAX_ELEMENT,
                     parse_file_matcher.GRAMMAR),
 
-    _for_logic_type(syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
+    _for_logic_type(syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
                     parse_string_transformer.GRAMMAR),
 
     _for_logic_type(syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,

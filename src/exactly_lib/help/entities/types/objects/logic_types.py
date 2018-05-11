@@ -21,9 +21,9 @@ FILE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     parse_file_matcher.GRAMMAR,
     empty_section_contents())
 
-LINES_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
+STRING_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     types.STRING_TRANSFORMER_TYPE_INFO,
-    syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
+    syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
     parse_string_transformer.GRAMMAR,
     empty_section_contents())
 
