@@ -6,7 +6,6 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.entity import concepts, syntax_elements, types
-from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax
 from exactly_lib.test_case_utils import negation_of_predicate
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -18,7 +17,6 @@ class FileContentsCheckerHelp:
                  checked_file: str,
                  initial_args_of_invokation_variants: list):
         self._checked_file = checked_file
-        self.contents_matcher_help = parts_cl_syntax.FileContentsMatcherHelp()
         self.instruction_name = instruction_name
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self._tp = TextParser({
