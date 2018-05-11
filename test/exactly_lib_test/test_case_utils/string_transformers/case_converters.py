@@ -12,7 +12,7 @@ def suite() -> unittest.TestSuite:
 
 class TestToUpper(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.ToUpperCaseLinesTransformer()
+        transformer = sut.ToUpperCaseStringTransformer()
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_every_line_SHOULD_be_transformed(self):
@@ -23,7 +23,7 @@ class TestToUpper(unittest.TestCase):
             'Unidentified FLYING Object',
         ]
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToUpperCaseLinesTransformer()
+        transformer = sut.ToUpperCaseStringTransformer()
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -45,7 +45,7 @@ class TestToUpper(unittest.TestCase):
         # ARRANGE #
         input_lines = []
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToUpperCaseLinesTransformer()
+        transformer = sut.ToUpperCaseStringTransformer()
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -62,7 +62,7 @@ class TestToUpper(unittest.TestCase):
 
 class TestToLower(unittest.TestCase):
     def test_SHOULD_not_be_identity_transformer(self):
-        transformer = sut.ToLowerCaseLinesTransformer()
+        transformer = sut.ToLowerCaseStringTransformer()
         self.assertFalse(transformer.is_identity_transformer)
 
     def test_every_line_SHOULD_be_transformed(self):
@@ -73,7 +73,7 @@ class TestToLower(unittest.TestCase):
             'Unidentified FLYING Object',
         ]
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToLowerCaseLinesTransformer()
+        transformer = sut.ToLowerCaseStringTransformer()
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
@@ -95,7 +95,7 @@ class TestToLower(unittest.TestCase):
         # ARRANGE #
         input_lines = []
         input_lines_iter = iter(input_lines)
-        transformer = sut.ToLowerCaseLinesTransformer()
+        transformer = sut.ToLowerCaseStringTransformer()
         # ACT #
 
         actual = transformer.transform(input_lines_iter)
