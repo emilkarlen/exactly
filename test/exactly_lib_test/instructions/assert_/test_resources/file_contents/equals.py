@@ -29,7 +29,7 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
@@ -284,7 +284,7 @@ class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedCont
         symbols.put(named_transformer.name,
                     container(named_transformer.value))
 
-        expected_symbol_reference_to_transformer = is_reference_to_lines_transformer(named_transformer.name)
+        expected_symbol_reference_to_transformer = is_reference_to_string_transformer(named_transformer.name)
 
         expected_symbol_usages = asrt.matches_sequence(
             [expected_symbol_reference_to_transformer] +

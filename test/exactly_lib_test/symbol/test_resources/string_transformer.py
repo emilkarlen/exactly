@@ -30,9 +30,9 @@ class StringTransformerResolverConstantTestImpl(StringTransformerResolver):
         return StringTransformerConstantValue(self._resolved_value)
 
 
-IS_LINES_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_TRANSFORMER)
+IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION = is_value_type_restriction(ValueType.STRING_TRANSFORMER)
 
 
-def is_reference_to_lines_transformer(name_of_transformer: str) -> asrt.ValueAssertion:
+def is_reference_to_string_transformer(name_of_transformer: str) -> asrt.ValueAssertion:
     return asrt_sym_usage.matches_reference(asrt.equals(name_of_transformer),
-                                            IS_LINES_TRANSFORMER_REFERENCE_RESTRICTION)
+                                            IS_STRING_TRANSFORMER_REFERENCE_RESTRICTION)

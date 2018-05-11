@@ -18,7 +18,7 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_stream
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_parser \
     import remaining_source
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.expression.test_resources import \
     NOT_A_SIMPLE_EXPR_NAME_AND_NOT_A_VALID_SYMBOL_NAME
@@ -295,7 +295,7 @@ class TestParseLineTransformer(unittest.TestCase):
             Expectation(
                 resolver=resolved_value_equals_lines_transformer(
                     value=symbol.value,
-                    references=asrt.matches_sequence([is_reference_to_lines_transformer(symbol.name)]),
+                    references=asrt.matches_sequence([is_reference_to_string_transformer(symbol.name)]),
                     symbols=symbols
                 ),
             ))
@@ -358,8 +358,8 @@ class TestParseLineTransformer(unittest.TestCase):
                         symbol_2.value,
                     ]),
                     references=asrt.matches_sequence([
-                        is_reference_to_lines_transformer(symbol_1.name),
-                        is_reference_to_lines_transformer(symbol_2.name),
+                        is_reference_to_string_transformer(symbol_1.name),
+                        is_reference_to_string_transformer(symbol_2.name),
                     ]),
                     symbols=SymbolTable({
                         symbol_1.name: container(StringTransformerConstant(symbol_1.value)),

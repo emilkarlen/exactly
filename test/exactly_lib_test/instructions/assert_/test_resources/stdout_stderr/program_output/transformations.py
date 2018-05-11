@@ -9,7 +9,7 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
     configuration
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.configuration import TestCaseBase
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import \
     test_transformers_setup as transformers_setup
@@ -56,7 +56,7 @@ class TestWithTransformationFromProgram(TestCaseBase):
             matcher_arguments.equals_matcher(ab.quoted_string('second')),
             Expectation(
                 symbol_usages=asrt.matches_sequence([
-                    is_reference_to_lines_transformer(transformers_setup.DELETE_INITIAL_WORD_TRANSFORMER.name),
+                    is_reference_to_string_transformer(transformers_setup.DELETE_INITIAL_WORD_TRANSFORMER.name),
                 ])
             ),
             ArrangementPostAct(
@@ -82,8 +82,8 @@ class TestWithTransformationFromProgramAndInstruction(TestCaseBase):
             matcher_arguments.equals_matcher(ab.quoted_string('second second')),
             Expectation(
                 symbol_usages=asrt.matches_sequence([
-                    is_reference_to_lines_transformer(transformer_of_program.name),
-                    is_reference_to_lines_transformer(transformer_of_instruction.name),
+                    is_reference_to_string_transformer(transformer_of_program.name),
+                    is_reference_to_string_transformer(transformer_of_instruction.name),
                 ])
             ),
             arrangement=ArrangementPostAct(
