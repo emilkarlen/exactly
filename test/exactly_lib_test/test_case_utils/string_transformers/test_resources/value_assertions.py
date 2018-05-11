@@ -9,8 +9,8 @@ from exactly_lib_test.test_case_utils.line_matcher.test_resources import value_a
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def equals_lines_transformer(expected: StringTransformer,
-                             description: str = '') -> asrt.ValueAssertion[StringTransformer]:
+def equals_string_transformer(expected: StringTransformer,
+                              description: str = '') -> asrt.ValueAssertion[StringTransformer]:
     """
     :return: A assertion on a :class:`LinesTransformer`
     """
@@ -28,8 +28,8 @@ class _EqualsAssertion(asrt.ValueAssertion):
               put: unittest.TestCase,
               actual,
               message_builder: asrt.MessageBuilder = asrt.MessageBuilder()):
-        assert_is_lines_transformer_type = asrt.is_instance(StringTransformer, self.description)
-        assert_is_lines_transformer_type.apply_with_message(
+        assert_is_string_transformer_type = asrt.is_instance(StringTransformer, self.description)
+        assert_is_string_transformer_type.apply_with_message(
             put, actual,
             message_builder.apply('Value must be a ' + str(StringTransformer)))
         assert isinstance(actual, StringTransformer)  # Type info for IDE
@@ -82,7 +82,7 @@ class _EqualityChecker(LinesTransformerStructureVisitor):
                                   SequenceStringTransformer,
                                   self.message_builder.apply('class'))
         assert isinstance(self.actual, SequenceStringTransformer)  # Type info for IDE
-        assert_components_equals = asrt.matches_sequence(list(map(equals_lines_transformer,
+        assert_components_equals = asrt.matches_sequence(list(map(equals_string_transformer,
                                                                   expected.transformers)))
         assert_components_equals.apply_with_message(self.put,
                                                     list(self.actual.transformers),

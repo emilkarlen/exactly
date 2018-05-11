@@ -46,7 +46,7 @@ class TestEquals(unittest.TestCase):
         for expected, actual in cases:
             with self.subTest(transformer=expected.__class__.__name__):
                 # ACT & ASSERT #
-                assertion = sut.equals_lines_transformer(expected)
+                assertion = sut.equals_string_transformer(expected)
                 assertion.apply_without_message(self, actual)
 
     def test_not_equals__identity(self):
@@ -59,7 +59,7 @@ class TestEquals(unittest.TestCase):
             SelectStringTransformer(LineMatcherConstant(True)),
         ]
         for actual in different_transformers:
-            assertion_to_check = sut.equals_lines_transformer(expected)
+            assertion_to_check = sut.equals_string_transformer(expected)
             with self.subTest(actual=str(actual)):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check,
@@ -85,7 +85,7 @@ class TestEquals(unittest.TestCase):
             ReplaceStringTransformer(expected_regex, unexpected_replacement),
         ]
         for actual in different_transformers:
-            assertion_to_check = sut.equals_lines_transformer(expected)
+            assertion_to_check = sut.equals_string_transformer(expected)
             with self.subTest(actual=str(actual)):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check,
@@ -106,7 +106,7 @@ class TestEquals(unittest.TestCase):
             SelectStringTransformer(unexpected_line_matcher),
         ]
         for actual in different_transformers:
-            assertion_to_check = sut.equals_lines_transformer(expected)
+            assertion_to_check = sut.equals_string_transformer(expected)
             with self.subTest(actual=str(actual)):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check,
@@ -127,7 +127,7 @@ class TestEquals(unittest.TestCase):
                                        IdentityStringTransformer()]),
         ]
         for actual in different_transformers:
-            assertion_to_check = sut.equals_lines_transformer(expected)
+            assertion_to_check = sut.equals_string_transformer(expected)
             with self.subTest(actual=str(actual)):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check,
@@ -143,7 +143,7 @@ class TestEquals(unittest.TestCase):
             SelectStringTransformer(LineMatcherConstant(False)),
         ]
         for actual in different_transformers:
-            assertion_to_check = sut.equals_lines_transformer(expected)
+            assertion_to_check = sut.equals_string_transformer(expected)
             with self.subTest(actual=str(actual)):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_to_check,
