@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
@@ -17,6 +19,7 @@ from exactly_lib.test_case_utils.condition.integer.parse_integer_condition impor
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.util.messages import expected_found
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 _OPERAND_DESCRIPTION = 'An integer in the interval [0, 255]'
 
@@ -42,7 +45,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def single_line_description(self) -> str:
         return 'Tests the ' + _PROPERTY_NAME
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION)
 
     def invokation_variants(self) -> list:

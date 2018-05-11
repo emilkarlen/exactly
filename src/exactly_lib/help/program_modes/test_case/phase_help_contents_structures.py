@@ -1,69 +1,57 @@
+from typing import List, Sequence
+
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class PhaseSequenceInfo(tuple):
     def __new__(cls,
-                preceding_phase: list,
-                succeeding_phase: list,
-                prelude: iter = ()):
-        """
-        :param preceding_phase: [ParagraphItem]
-        :param succeeding_phase: [ParagraphItem]
-        :param prelude: [ParagraphItem]
-        """
+                preceding_phase: List[ParagraphItem],
+                succeeding_phase: List[ParagraphItem],
+                prelude: Sequence[ParagraphItem] = ()):
         return tuple.__new__(cls, (list(prelude), preceding_phase, succeeding_phase))
 
     @property
-    def prelude(self) -> list:
+    def prelude(self) -> List[ParagraphItem]:
         return self[0]
 
     @property
-    def preceding_phase(self) -> list:
+    def preceding_phase(self) -> List[ParagraphItem]:
         return self[1]
 
     @property
-    def succeeding_phase(self) -> list:
+    def succeeding_phase(self) -> List[ParagraphItem]:
         return self[2]
 
 
 class ExecutionEnvironmentInfo(tuple):
     def __new__(cls,
-                cwd_at_start_of_phase: list,
-                environment_variables: list,
-                prologue: iter = ()):
-        """
-        :param cwd_at_start_of_phase: [ParagraphItem]
-        :param environment_variables: [str]
-        :param prologue: [`ParagraphItem`]
-        """
+                cwd_at_start_of_phase: List[ParagraphItem],
+                environment_variables: List[str],
+                prologue: Sequence[ParagraphItem] = ()):
         return tuple.__new__(cls, (cwd_at_start_of_phase,
                                    environment_variables,
                                    list(prologue)))
 
     @property
-    def cwd_at_start_of_phase(self) -> list:
+    def cwd_at_start_of_phase(self) -> List[ParagraphItem]:
         """
         Description of the Present Working Directory, at the start of the phase.
-        :rtype: [ParagraphItem]
         """
         return self[0]
 
     @property
-    def environment_variables(self) -> list:
+    def environment_variables(self) -> List[str]:
         """
         The names of the special environment variables that are available in the phase.
-        :rtype: [str]
         """
         return self[1]
 
     @property
-    def prologue(self) -> list:
-        """
-        :rtype: [ParagraphItem]
-        """
+    def prologue(self) -> List[ParagraphItem]:
         return self[2]
 
 

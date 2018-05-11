@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
@@ -62,15 +64,15 @@ class _SandboxConcept(ConceptDocumentation):
                          self._other_directories_than_those_listed())
         ]
 
-    def _act_dir_description_paragraphs(self) -> list:
+    def _act_dir_description_paragraphs(self) -> List[ParagraphItem]:
         rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_ACT]
         ret_val = []
-        ret_val.extend(self._tp.fnap(_ACT_DIR_DESCRIPTION))
-        ret_val.extend(_dir_env_variables_and_rel_options(env_var_name=rel_opt_info.directory_variable_name_text,
-                                                          rel_option=rel_opt_info.option_name_text))
+        ret_val += self._tp.fnap(_ACT_DIR_DESCRIPTION)
+        ret_val += _dir_env_variables_and_rel_options(env_var_name=rel_opt_info.directory_variable_name_text,
+                                                      rel_option=rel_opt_info.option_name_text)
         return ret_val
 
-    def _result_dir_description_paragraphs(self) -> list:
+    def _result_dir_description_paragraphs(self) -> List[ParagraphItem]:
         ret_val = []
         ret_val += self._tp.fnap(_RESULT_DIR_DESCRIPTION)
         ret_val.append(docs.simple_header_only_list(map(file_name_text, sds.RESULT_FILE_ALL),
@@ -78,7 +80,7 @@ class _SandboxConcept(ConceptDocumentation):
         ret_val += self._result_dir_env_variable_and_rel_option()
         return ret_val
 
-    def _tmp_user_dir_description_paragraphs(self) -> list:
+    def _tmp_user_dir_description_paragraphs(self) -> List[ParagraphItem]:
         rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_TMP]
         ret_val = []
         ret_val += self._tp.fnap(_USR_TMP_DIR_DESCRIPTION)
@@ -86,14 +88,14 @@ class _SandboxConcept(ConceptDocumentation):
                                                       rel_option=rel_opt_info.option_name_text)
         return ret_val
 
-    def _result_dir_env_variable_and_rel_option(self) -> list:
+    def _result_dir_env_variable_and_rel_option(self) -> List[ParagraphItem]:
         rel_opt_info = REL_SDS_OPTIONS_MAP[RelSdsOptionType.REL_RESULT]
         return [_dir_info_items_table(rel_opt_info.directory_variable_name_text,
                                       rel_opt_info.option_name_text,
                                       self._tp.format(_RESULT_DIR_ENV_VARIABLE))
                 ]
 
-    def _other_directories_than_those_listed(self) -> list:
+    def _other_directories_than_those_listed(self) -> List[ParagraphItem]:
         return self._tp.fnap(_OTHER_DIRECTORIES_THAN_THOSE_LISTED)
 
 

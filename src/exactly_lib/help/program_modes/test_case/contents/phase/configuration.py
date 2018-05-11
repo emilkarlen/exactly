@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestCasePhaseCrossReference
@@ -12,6 +14,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case.test_case_status import NAME_SKIP
 from exactly_lib.util.description import Description
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -41,7 +44,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
     def is_mandatory(self) -> bool:
         return False
 
-    def instruction_purpose_description(self) -> list:
+    def instruction_purpose_description(self) -> List[ParagraphItem]:
         return self._parser.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:

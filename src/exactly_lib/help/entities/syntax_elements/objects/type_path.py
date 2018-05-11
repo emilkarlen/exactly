@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help import documentation_text
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments, formatting
@@ -46,14 +48,14 @@ class _Documentation(SyntaxElementDocumentation):
             )
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             self._string_sed(),
             self._relativity_sed(),
             self._symbol_name_sed(),
         ]
 
-    def main_description_rest_paragraphs(self) -> list:
+    def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
         return self._parser.fnap(_MAIN_DESCRIPTION_REST)
 
     def see_also_targets(self) -> list:
@@ -122,11 +124,11 @@ class _Documentation(SyntaxElementDocumentation):
                                                 HDS_DIR_DISPLAY_ORDER)
 
     @staticmethod
-    def _options_for_directories_in_the_sds() -> list:
+    def _options_for_directories_in_the_sds() -> List[ParagraphItem]:
         return _options_for_directories_in_the_(REL_SDS_OPTIONS_MAP,
                                                 SDS_DIR_DISPLAY_ORDER)
 
-    def _options_for_current_directory(self) -> list:
+    def _options_for_current_directory(self) -> List[ParagraphItem]:
         return ([
                     docs.first_row_is_header_table([
                         [docs.text_cell(REL_CWD_INFO.option_name_text)]
@@ -136,7 +138,7 @@ class _Documentation(SyntaxElementDocumentation):
                 self._parser.fnap(_REL_CD_DESCRIPTION)
                 )
 
-    def _options_for_symbol(self) -> list:
+    def _options_for_symbol(self) -> List[ParagraphItem]:
         return ([
                     docs.first_column_is_header_table([
                         [
@@ -153,7 +155,7 @@ DOCUMENTATION = _Documentation()
 
 
 def _options_for_directories_in_the_(rel_opt_2_rel_option_info: dict,
-                                     rel_opts_in_display_order: list) -> list:
+                                     rel_opts_in_display_order: list) -> List[ParagraphItem]:
     rows = list(map(lambda rel_opt: _mk_dir_info_row(rel_opt_2_rel_option_info[rel_opt]),
                     rel_opts_in_display_order))
     return [

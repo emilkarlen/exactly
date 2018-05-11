@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.textformat import parse
 from exactly_lib.util.textformat.structure import document
 from exactly_lib.util.textformat.structure import lists
@@ -70,7 +72,7 @@ def para(str_or_text) -> ParagraphItem:
     return Paragraph([text_from_unknown(str_or_text)])
 
 
-def paras(str_or_text) -> list:
+def paras(str_or_text) -> List[ParagraphItem]:
     """
     :type str_or_text: Either str or Text
     Singleton list of Paragraph.

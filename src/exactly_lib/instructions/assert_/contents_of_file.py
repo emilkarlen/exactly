@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationWithCommandLineRenderingBase
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -16,6 +18,7 @@ from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_utils.parse import rel_opts_configuration, parse_file_ref
 from exactly_lib.util.cli_syntax.elements import argument as a
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 ACTUAL_PATH_ARGUMENT = a.Named('ACTUAL-PATH')
 
@@ -41,7 +44,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
     def single_line_description(self) -> str:
         return 'Tests the contents of a file'
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> list:

@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
@@ -66,7 +68,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         }
         super().__init__(TextParser(fm))
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.executable)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
         shell_command_argument = a.Single(a.Multiplicity.MANDATORY,

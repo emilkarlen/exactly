@@ -44,6 +44,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase,
@@ -63,7 +64,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def single_line_description(self) -> str:
         return self._format('Defines a ' + concepts.SYMBOL_CONCEPT_INFO.singular_name)
 
-    def _main_description_rest_body(self) -> list:
+    def _main_description_rest_body(self) -> List[ParagraphItem]:
         return self._tp.fnap(_MAIN_DESCRIPTION_REST)
 
     def invokation_variants(self) -> List[InvokationVariant]:

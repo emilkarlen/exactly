@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions import test_case_file_structure, formatting
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.formatting import SectionName
@@ -6,6 +8,7 @@ from exactly_lib.test_case.test_case_status import NAME_SKIP
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds, environment_variables
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_RESULT
 from exactly_lib.util.textformat.structure import structures as docs, table
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _TEXT_PARSER = TextParser({
@@ -20,15 +23,15 @@ _TEXT_PARSER = TextParser({
 })
 
 
-def cwd_at_start_of_phase_for_configuration_phase() -> list:
+def cwd_at_start_of_phase_for_configuration_phase() -> List[ParagraphItem]:
     return []
 
 
-def cwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> list:
+def cwd_at_start_of_phase_first_phase_executed_in_the_sandbox() -> List[ParagraphItem]:
     return _TEXT_PARSER.fnap(_CWD_AT_START_OF_PHASE_FIRST_PHASE_EXECUTED_IN_THE_SANDBOX)
 
 
-def cwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> list:
+def cwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> List[ParagraphItem]:
     return _TEXT_PARSER.fnap(
         _CWD_AT_START_OF_PHASE_IS_SAME_AS_AT_END_OF_THE,
         {'previous': previous}
@@ -51,17 +54,17 @@ def env_vars_after_act() -> list:
     return env_vars_up_to_act() + environment_variables.SET_AT_BEFORE_ASSERT__ENV_VARS
 
 
-def sequence_info__not_executed_if_execution_mode_is_skip() -> list:
+def sequence_info__not_executed_if_execution_mode_is_skip() -> List[ParagraphItem]:
     return _TEXT_PARSER.fnap(_SEQUENCE_INFO__NOT_EXECUTED_IF_EXECUTION_MODE_IS_SKIP)
 
 
-def sequence_info__succeeding_phase(following_phase: SectionName) -> list:
+def sequence_info__succeeding_phase(following_phase: SectionName) -> List[ParagraphItem]:
     return _TEXT_PARSER.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE,
                              {'following_phase': following_phase}
                              )
 
 
-def sequence_info__preceding_phase(following_phase: SectionName) -> list:
+def sequence_info__preceding_phase(following_phase: SectionName) -> List[ParagraphItem]:
     return _TEXT_PARSER.fnap(_SEQUENCE_INFO__PRECEDING_PHASE,
                              {'following_phase': following_phase}
                              )
@@ -82,7 +85,7 @@ def result_sub_dir_files_table() -> docs.ParagraphItem:
                        rows)
 
 
-def execution_environment_prologue_for_post_act_phase() -> list:
+def execution_environment_prologue_for_post_act_phase() -> List[ParagraphItem]:
     return (
         _TEXT_PARSER.fnap(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR) +
         [result_sub_dir_files_table()] +

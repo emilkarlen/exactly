@@ -153,10 +153,10 @@ def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
         '  ')
 
 
-def _interrupted_execution(setup: Setup) -> list:
+def _interrupted_execution(setup: Setup) -> List[ParagraphItem]:
     ret_val = []
-    ret_val.extend(normalize_and_parse(_INTERRUPTED_EXECUTION_PREAMBLE.format(phase=setup.phase_names)))
-    ret_val.extend(_TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
+    ret_val += normalize_and_parse(_INTERRUPTED_EXECUTION_PREAMBLE.format(phase=setup.phase_names))
+    ret_val += _TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
     ret_val.append(para(_INTERRUPTED_EXECUTION_CAUSES))
     ret_val.append(interrupted_execution_list(setup))
     return ret_val

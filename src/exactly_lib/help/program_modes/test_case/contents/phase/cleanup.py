@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference
@@ -13,6 +15,7 @@ from exactly_lib.help.program_modes.test_case.phase_help_contents_structures imp
 from exactly_lib.test_case.test_case_status import NAME_SKIP
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
 from exactly_lib.util.description import Description
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -39,7 +42,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
     def is_mandatory(self) -> bool:
         return False
 
-    def instruction_purpose_description(self) -> list:
+    def instruction_purpose_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:

@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import file_ref
 from exactly_lib.definitions import formatting
@@ -32,7 +34,7 @@ class _Documentation(SyntaxElementDocumentation):
             'REL_CD_OPTION': file_ref.REL_CWD_OPTION,
         })
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         return [
             InvokationVariant(self._tp.format('{CHR}...'),
                               self._tp.fnap(_DESCRIPTION_OF_NAKED)),

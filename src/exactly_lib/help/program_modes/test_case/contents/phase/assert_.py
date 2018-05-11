@@ -1,4 +1,4 @@
-import types
+from typing import List, Callable
 
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
@@ -60,7 +60,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
                                         prologue=execution_environment_prologue_for_post_act_phase())
 
     @property
-    def instruction_group_by(self) -> types.FunctionType:
+    def instruction_group_by(self) -> Callable[[List[WithAssertPhasePurpose]], List[InstructionGroup]]:
         return self._instruction_group_by
 
     @property
@@ -72,7 +72,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
             TestCasePhaseCrossReference(CLEANUP_PHASE_NAME.plain),
         ]
 
-    def _instruction_group_by(self, instr_docs: list) -> list:
+    def _instruction_group_by(self, instr_docs: List[WithAssertPhasePurpose]) -> List[InstructionGroup]:
         purpose_2_instructions = dict([
             (value, [])
             for value in AssertPhasePurpose
