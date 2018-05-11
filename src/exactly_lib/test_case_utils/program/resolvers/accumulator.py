@@ -1,12 +1,12 @@
 from typing import Sequence
 
 from exactly_lib.symbol.data.list_resolver import ListResolver
-from exactly_lib.symbol.lines_transformer import LinesTransformerSequenceResolver
+from exactly_lib.symbol.lines_transformer import StringTransformerSequenceResolver
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
 from exactly_lib.symbol.program import stdin_data_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
@@ -25,7 +25,7 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
     def __init__(self,
                  stdin: StdinDataResolver,
                  arguments: ArgumentsResolver,
-                 transformations: Sequence[LinesTransformerResolver],
+                 transformations: Sequence[StringTransformerResolver],
                  validators: Sequence[PreOrPostSdsValidator]):
         self.stdin = stdin
         self.arguments = arguments
@@ -35,7 +35,7 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
     def new_accumulated(self,
                         additional_stdin: StdinDataResolver,
                         additional_arguments: ArgumentsResolver,
-                        additional_transformations: Sequence[LinesTransformerResolver],
+                        additional_transformations: Sequence[StringTransformerResolver],
                         additional_validation: Sequence[PreOrPostSdsValidator],
                         ):
         """Creates a new accumulated instance."""
@@ -57,7 +57,7 @@ class ProgramElementsAccumulator(ObjectWithSymbolReferencesAndValidation):
         return self.stdin.resolve_value(symbols)
 
     def resolve_transformations(self, symbols: SymbolTable) -> LinesTransformerValue:
-        return LinesTransformerSequenceResolver(self.transformations).resolve(symbols)
+        return StringTransformerSequenceResolver(self.transformations).resolve(symbols)
 
 
 def empty() -> ProgramElementsAccumulator:

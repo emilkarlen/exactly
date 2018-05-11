@@ -3,7 +3,7 @@ from typing import Sequence
 from exactly_lib.symbol.program import stdin_data_resolver
 from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver, LogicValueResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver, LogicValueResolver
 from exactly_lib.symbol.resolver_with_validation import DirDepValueResolverWithValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
@@ -36,7 +36,7 @@ class ProgramResolver(LogicValueResolver, DirDepValueResolverWithValidation[Prog
     def new_accumulated(self,
                         additional_stdin: StdinDataResolver,
                         additional_arguments: ArgumentsResolver,
-                        additional_transformations: Sequence[LinesTransformerResolver],
+                        additional_transformations: Sequence[StringTransformerResolver],
                         additional_validation: Sequence[PreOrPostSdsValidator],
                         ):
         raise NotImplementedError('abstract method')
@@ -51,7 +51,7 @@ class ProgramResolver(LogicValueResolver, DirDepValueResolverWithValidation[Prog
                                     (),
                                     ())
 
-    def new_with_appended_transformations(self, transformations: Sequence[LinesTransformerResolver]):
+    def new_with_appended_transformations(self, transformations: Sequence[StringTransformerResolver]):
         """
         Creates a new resolver with additional transformation appended at the end of
         current transformations.

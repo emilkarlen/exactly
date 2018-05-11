@@ -32,7 +32,7 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import program as asrt_pgm
 from exactly_lib_test.symbol.test_resources import symbol_utils
-from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.lines_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_usage_assertions import matches_reference_2
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
@@ -79,7 +79,7 @@ class TestSymbolUsages(TestCaseBase):
         dst_file_symbol = NameAndValue('DST_FILE_SYMBOL', 'dst-file-name.txt')
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
 
         transformed_shell_contents_arguments = TransformableContentsConstructor(
             output_from_program(ProcOutputFile.STDOUT,
@@ -149,7 +149,7 @@ class TestSuccessfulScenariosWithProgramFromDifferentChannels(TestCaseBase):
     def test_with_transformation(self):
         text_printed_by_program = 'the text printed by the program'
         transformer = NameAndValue('TO_UPPER_CASE',
-                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                   StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         self._test(
             text_printed_by_program=text_printed_by_program,
             expected_file_contents=text_printed_by_program.upper(),
@@ -248,7 +248,7 @@ class TestSuccessfulScenariosWithDifferentSourceVariants(TestCaseBase):
         expected_file = fs.File(file_arg.name, expected_file_contents)
 
         to_upper_transformer = NameAndValue('TO_UPPER_CASE',
-                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             to_upper_transformer.name: container(to_upper_transformer.value)
         })
@@ -352,7 +352,7 @@ class TestFailingScenarios(TestCaseBase):
     def _expect_failure(self, failing_program_as_single_line: Stringable):
         failing_program = ArgumentElements([failing_program_as_single_line])
         transformer = NameAndValue('TRANSFORMER',
-                                   LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                   StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             transformer.name: container(transformer.value)
         })
@@ -395,7 +395,7 @@ class TestFailingScenarios(TestCaseBase):
 class TestCommonFailingScenariosDueToInvalidDestinationFile(TestCommonFailingScenariosDueToInvalidDestinationFileBase):
     def _file_contents_cases(self) -> InvalidDestinationFileTestCasesData:
         arbitrary_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                             LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                             StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
 
         symbols = SymbolTable({
             arbitrary_transformer.name: container(arbitrary_transformer.value),

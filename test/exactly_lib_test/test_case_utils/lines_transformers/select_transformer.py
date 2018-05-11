@@ -3,14 +3,13 @@ import unittest
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant
 from exactly_lib.test_case_utils.line_matcher.resolvers import LineMatcherConstantResolver, LineMatcherReferenceResolver
 from exactly_lib.test_case_utils.lines_transformer import transformers as sut
-from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerSelectResolver
+from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerSelectResolver
 from exactly_lib.test_case_utils.lines_transformer.transformers import SelectLinesTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources.line_matcher import LineMatcherResolverConstantTestImpl, \
     is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import resolver_assertions as asrt_resolver
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -125,7 +124,7 @@ class TestSelectTransformerResolver(unittest.TestCase):
             resolved_value,
             references=asrt.is_empty_sequence)
 
-        actual_resolver = LinesTransformerSelectResolver(
+        actual_resolver = StringTransformerSelectResolver(
             LineMatcherResolverConstantTestImpl(line_matcher))
         assertion_on_resolver.apply_without_message(self,
                                                     actual_resolver)
@@ -135,7 +134,7 @@ class TestSelectTransformerResolver(unittest.TestCase):
         symbol = NameAndValue('matcher_symbol',
                               LineMatcherConstant(True))
 
-        actual_resolver = LinesTransformerSelectResolver(
+        actual_resolver = StringTransformerSelectResolver(
             LineMatcherReferenceResolver(symbol.name))
 
         # EXPECTATION #

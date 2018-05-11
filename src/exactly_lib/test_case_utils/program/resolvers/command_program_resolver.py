@@ -5,7 +5,7 @@ from exactly_lib.symbol.program.arguments_resolver import ArgumentsResolver
 from exactly_lib.symbol.program.command_resolver import CommandResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.program.stdin_data_resolver import StdinDataResolver
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
@@ -25,7 +25,7 @@ class ProgramResolverForCommand(ProgramResolver):
     def new_accumulated(self,
                         additional_stdin: StdinDataResolver,
                         additional_arguments: ArgumentsResolver,
-                        additional_transformations: Sequence[LinesTransformerResolver],
+                        additional_transformations: Sequence[StringTransformerResolver],
                         additional_validation: Sequence[PreOrPostSdsValidator],
                         ):
         return ProgramResolverForCommand(

@@ -6,7 +6,7 @@ from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.data.list_resolver import ListResolver
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.resolver_structure import LogicValueResolver, DataValueResolver, LinesTransformerResolver, \
+from exactly_lib.symbol.resolver_structure import LogicValueResolver, DataValueResolver, StringTransformerResolver, \
     LineMatcherResolver, FileMatcherResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
@@ -155,7 +155,7 @@ def matches_resolver_of_line_matcher(references: asrt.ValueAssertion[Sequence[Sy
 
 def matches_resolver_of_lines_transformer(references: asrt.ValueAssertion[Sequence[SymbolReference]],
                                           resolved_value: asrt.ValueAssertion[LinesTransformerValue],
-                                          custom: asrt.ValueAssertion[LinesTransformerResolver] = asrt.anything_goes(),
+                                          custom: asrt.ValueAssertion[StringTransformerResolver] = asrt.anything_goes(),
                                           symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_lines_transformer_type(),
                             references,

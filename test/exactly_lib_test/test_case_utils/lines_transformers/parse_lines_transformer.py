@@ -8,7 +8,7 @@ from exactly_lib.section_document.element_parsers.token_stream_parser import Tok
 from exactly_lib.symbol.resolver_structure import LogicValueResolver
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherRegex
 from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer as sut
-from exactly_lib.test_case_utils.lines_transformer.resolvers import LinesTransformerConstant
+from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.test_case_utils.lines_transformer.transformers import ReplaceLinesTransformer, \
     SelectLinesTransformer
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
@@ -287,7 +287,7 @@ class TestParseLineTransformer(unittest.TestCase):
                               CustomLinesTransformerTestImpl())
 
         symbols = singleton_symbol_table_2(symbol.name,
-                                           container(LinesTransformerConstant(symbol.value)))
+                                           container(StringTransformerConstant(symbol.value)))
 
         # ACT & ASSERT #
         self._check(
@@ -362,8 +362,8 @@ class TestParseLineTransformer(unittest.TestCase):
                         is_reference_to_lines_transformer(symbol_2.name),
                     ]),
                     symbols=SymbolTable({
-                        symbol_1.name: container(LinesTransformerConstant(symbol_1.value)),
-                        symbol_2.name: container(LinesTransformerConstant(symbol_2.value)),
+                        symbol_1.name: container(StringTransformerConstant(symbol_1.value)),
+                        symbol_2.name: container(StringTransformerConstant(symbol_2.value)),
                     }),
                 )),
         )

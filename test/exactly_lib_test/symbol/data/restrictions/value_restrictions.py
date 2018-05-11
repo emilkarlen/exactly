@@ -12,7 +12,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.lines_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.type_system.logic.test_resources.values import FileMatcherTestImpl, FakeLinesTransformer
 
@@ -48,7 +48,7 @@ class TestAnySymbolTypeRestriction(unittest.TestCase):
         # ARRANGE #
         test_cases = [
             FileMatcherResolverConstantTestImpl(FileMatcherTestImpl()),
-            LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
+            StringTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
         ]
         restriction = vr.AnyDataTypeRestriction()
         symbols = empty_symbol_table()

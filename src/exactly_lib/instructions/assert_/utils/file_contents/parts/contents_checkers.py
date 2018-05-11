@@ -7,7 +7,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.actual_files import Co
 from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_part import FileToCheck, \
     DestinationFilePathGetter
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException, PfhHardErrorException
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo
 from exactly_lib.test_case_utils import file_properties
@@ -89,7 +89,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
     :raises PfhPfhHardErrorException: The transformation fails
     """
 
-    def __init__(self, lines_transformer_resolver: LinesTransformerResolver):
+    def __init__(self, lines_transformer_resolver: StringTransformerResolver):
         super().__init__()
         self._lines_transformer_resolver = lines_transformer_resolver
         self._destination_file_path_getter = DestinationFilePathGetter()

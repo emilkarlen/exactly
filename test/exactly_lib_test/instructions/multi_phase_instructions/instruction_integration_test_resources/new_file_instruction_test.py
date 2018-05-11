@@ -19,7 +19,7 @@ from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources i
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
 from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer, \
-    LinesTransformerResolverConstantTestImpl
+    StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     non_home_dir_contains_exactly
@@ -77,7 +77,7 @@ class TestCaseBase(unittest.TestCase):
 class TestSymbolUsages(TestCaseBase):
     def runTest(self):
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
 
         src_file = fs.File('src-file.txt', 'contents of source file')
         src_file_symbol = NameAndValue('SRC_FILE_SYMBOL', src_file.name)
@@ -173,7 +173,7 @@ class TestContentsFromExistingFile_Successfully(TestCaseBase):
         dst_rel_opt_conf = conf_rel_non_home(RelNonHomeOptionType.REL_ACT)
 
         to_upper_transformer = NameAndValue('TRANSFORMER_SYMBOL',
-                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             to_upper_transformer.name:
                 container(to_upper_transformer.value),
@@ -219,7 +219,7 @@ class TestContentsFromOutputOfShellCommand_Successfully(TestCaseBase):
         expected_file = fs.File('dst-file.txt', expected_file_contents)
 
         to_upper_transformer = NameAndValue('TO_UPPER_CASE',
-                                            LinesTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
+                                            StringTransformerResolverConstantTestImpl(MyToUppercaseTransformer()))
         symbols = SymbolTable({
             to_upper_transformer.name: container(to_upper_transformer.value)
         })

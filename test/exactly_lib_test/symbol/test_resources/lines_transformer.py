@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
 from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerConstantValue
@@ -11,7 +11,7 @@ from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_va
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-class LinesTransformerResolverConstantTestImpl(LinesTransformerResolver):
+class StringTransformerResolverConstantTestImpl(StringTransformerResolver):
     def __init__(self,
                  resolved_value: LinesTransformer,
                  references: Sequence[SymbolReference] = ()):

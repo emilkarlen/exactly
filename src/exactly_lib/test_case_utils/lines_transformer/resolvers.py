@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver, LineMatcherResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver, LineMatcherResolver
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.lines_transformer import transformers
@@ -10,7 +10,7 @@ from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
 
-class LinesTransformerConstant(LinesTransformerResolver):
+class StringTransformerConstant(StringTransformerResolver):
     """
     A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformer`
     """
@@ -29,7 +29,7 @@ class LinesTransformerConstant(LinesTransformerResolver):
         return str(type(self)) + '\'' + str(self._value) + '\''
 
 
-class LinesTransformerConstantOfValue(LinesTransformerResolver):
+class StringTransformerConstantOfValue(StringTransformerResolver):
     """
     A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformerValue`
     """
@@ -48,7 +48,7 @@ class LinesTransformerConstantOfValue(LinesTransformerResolver):
         return str(type(self)) + '\'' + str(self._value) + '\''
 
 
-class LinesTransformerReference(LinesTransformerResolver):
+class StringTransformerReference(StringTransformerResolver):
     """
     A :class:`LinesTransformerResolver` that is a reference to a symbol
     """
@@ -61,7 +61,7 @@ class LinesTransformerReference(LinesTransformerResolver):
     def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
         container = symbols.lookup(self._name_of_referenced_resolver)
         resolver = container.resolver
-        assert isinstance(resolver, LinesTransformerResolver)
+        assert isinstance(resolver, StringTransformerResolver)
         return resolver.resolve(symbols)
 
     @property
@@ -72,7 +72,7 @@ class LinesTransformerReference(LinesTransformerResolver):
         return str(type(self)) + '\'' + str(self._name_of_referenced_resolver) + '\''
 
 
-class LinesTransformerSelectResolver(LinesTransformerResolver):
+class StringTransformerSelectResolver(StringTransformerResolver):
     """
     Resolver of :class:`SelectLinesTransformer`
     """

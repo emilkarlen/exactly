@@ -4,7 +4,7 @@ from typing import Sequence, Optional
 from exactly_lib.symbol.data import string_resolver
 from exactly_lib.symbol.data.file_ref_resolver import FileRefResolver
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.symbol.resolver_structure import LinesTransformerResolver
+from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, InstructionSourceInfo, \
@@ -111,7 +111,7 @@ class FileMakerForContentsFromProgram(FileMaker):
 class FileMakerForContentsFromExistingFile(FileMaker):
     def __init__(self,
                  source_info: InstructionSourceInfo,
-                 transformer: LinesTransformerResolver,
+                 transformer: StringTransformerResolver,
                  src_path: FileRefResolver):
         self._source_info = source_info
         self._transformer = transformer

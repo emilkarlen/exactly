@@ -46,7 +46,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
     equals_symbol_reference
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.lines_transformer import LinesTransformerResolverConstantTestImpl
+from exactly_lib_test.symbol.test_resources.lines_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     string_made_up_of_just_strings_reference_restrictions, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
@@ -1295,7 +1295,7 @@ class TestTypeMustBeEitherPathOrStringErrMsgGenerator(unittest.TestCase):
         cases = [
             ListResolverTestImplForConstantListValue(ListValue([])),
             FileMatcherResolverConstantTestImpl(FileMatcherThatSelectsAllFilesTestImpl()),
-            LinesTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
+            StringTransformerResolverConstantTestImpl(FakeLinesTransformer(), []),
         ]
         for resolver in cases:
             with self.subTest(invalid_type=str(resolver.value_type)):

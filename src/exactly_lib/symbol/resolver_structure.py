@@ -101,7 +101,7 @@ class LineMatcherResolver(LogicValueResolver):
         raise NotImplementedError('abstract method')
 
 
-class LinesTransformerResolver(LogicValueResolver):
+class StringTransformerResolver(LogicValueResolver):
     """ Base class for resolvers of :class:`LinesTransformer`. """
 
     @property
