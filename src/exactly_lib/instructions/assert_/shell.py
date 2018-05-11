@@ -1,7 +1,7 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils import instruction_from_parts
-from exactly_lib.instructions.multi_phase_instructions import shell
-from exactly_lib.instructions.multi_phase_instructions.shell import TheInstructionDocumentationBase, \
+from exactly_lib.instructions.multi_phase import shell
+from exactly_lib.instructions.multi_phase.shell import TheInstructionDocumentationBase, \
     SINGLE_LINE_DESCRIPTION_FOR_ASSERT_PHASE_INSTRUCTION
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 

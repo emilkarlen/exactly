@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.before_assert.utils import instruction_from_parts
-from exactly_lib.instructions.multi_phase_instructions import new_dir as new_dir_utils
+from exactly_lib.instructions.multi_phase import new_dir as new_dir_utils
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

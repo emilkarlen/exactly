@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.instructions.multi_phase_instructions.utils.instruction_parts import InstructionParts, \
+from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource

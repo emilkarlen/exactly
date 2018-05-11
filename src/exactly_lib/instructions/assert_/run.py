@@ -1,6 +1,6 @@
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.instructions.assert_.utils import instruction_from_parts
-from exactly_lib.instructions.multi_phase_instructions import run
+from exactly_lib.instructions.multi_phase import run
 from exactly_lib.processing import exit_values
 
 
