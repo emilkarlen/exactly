@@ -54,11 +54,11 @@ class SelectStringTransformer(StringTransformer):
                                str(self._line_matcher))
 
 
-class LinesTransformerStructureVisitor:
+class StringTransformerStructureVisitor:
     """
-    Visits all variants of :class:`FileMatcher`.
+    Visits all variants of :class:`StringTransformer`.
 
-    The existence of this class means that the structure of :class:`FileMatcher`s
+    The existence of this class means that the structure of :class:`StringTransformer`s
     is fixed. The reason for this is to, among other things, support optimizations
     of selectors.
     """

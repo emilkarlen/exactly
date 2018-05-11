@@ -10,11 +10,11 @@ from exactly_lib_test.type_system.logic.test_resources.values import FakeStringT
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        unittest.makeSuite(TestLinesTransformerStructureVisitor),
+        unittest.makeSuite(TestStringTransformerStructureVisitor),
     ])
 
 
-class TestLinesTransformerStructureVisitor(unittest.TestCase):
+class TestStringTransformerStructureVisitor(unittest.TestCase):
     def test_visit_identity(self):
         # ARRANGE #
         instance = string_transformer.IdentityStringTransformer()
@@ -84,7 +84,7 @@ class TestLinesTransformerStructureVisitor(unittest.TestCase):
     pass
 
 
-class AVisitorThatRecordsVisitedMethods(sut.LinesTransformerStructureVisitor):
+class AVisitorThatRecordsVisitedMethods(sut.StringTransformerStructureVisitor):
     def __init__(self):
         self.visited_types = []
 
