@@ -59,15 +59,15 @@ def lookup_file_matcher(symbols: SymbolTable, name: str) -> FileMatcherResolver:
     return ret_val
 
 
-def lookup_lines_transformer(symbols: SymbolTable, name: str) -> StringTransformerResolver:
+def lookup_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerResolver:
     container = lookup_container(symbols, name)
     ret_val = container.resolver
-    assert isinstance(ret_val, StringTransformerResolver), 'Referenced symbol must be LinesTransformerResolver'
+    assert isinstance(ret_val, StringTransformerResolver), 'Referenced symbol must be ' + str(StringTransformerResolver)
     return ret_val
 
 
-def lookup_and_resolve_lines_transformer(symbols: SymbolTable, name: str) -> StringTransformerValue:
-    return lookup_lines_transformer(symbols, name).resolve(symbols)
+def lookup_and_resolve_string_transformer(symbols: SymbolTable, name: str) -> StringTransformerValue:
+    return lookup_string_transformer(symbols, name).resolve(symbols)
 
 
 def lookup_program(symbols: SymbolTable, name: str) -> ProgramResolver:
