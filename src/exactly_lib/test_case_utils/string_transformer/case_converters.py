@@ -3,7 +3,7 @@ from typing import Iterable
 from exactly_lib.type_system.logic.string_transformer import CustomStringTransformer
 
 
-class ToUpperCaseLinesTransformer(CustomStringTransformer):
+class ToUpperCaseStringTransformer(CustomStringTransformer):
     @property
     def is_identity_transformer(self) -> bool:
         return False
@@ -12,7 +12,7 @@ class ToUpperCaseLinesTransformer(CustomStringTransformer):
         return map(str.upper, lines)
 
 
-class ToLowerCaseLinesTransformer(CustomStringTransformer):
+class ToLowerCaseStringTransformer(CustomStringTransformer):
     @property
     def is_identity_transformer(self) -> bool:
         return False

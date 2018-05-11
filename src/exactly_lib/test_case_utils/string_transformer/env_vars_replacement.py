@@ -16,7 +16,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE = environment_variables.ENV_VAR_HOME_CASE
 
 
-class EnvVarReplacementLinesTransformer(CustomStringTransformer):
+class EnvVarReplacementStringTransformer(CustomStringTransformer):
     def __init__(self, tcds: HomeAndSds):
         self._name_and_value_list = _derive_name_and_value_list(tcds)
 
@@ -26,7 +26,7 @@ class EnvVarReplacementLinesTransformer(CustomStringTransformer):
 
 def value() -> StringTransformerValue:
     return string_transformer_values.DirDependentStringTransformerValue(DirectoryStructurePartition,
-                                                                        EnvVarReplacementLinesTransformer)
+                                                                        EnvVarReplacementStringTransformer)
 
 
 def replace(home_and_sds: HomeAndSds,
