@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, lines_transformers
+from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, string_transformers
 from exactly_lib.definitions.entity.types import PATH_TYPE_INFO
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
@@ -94,7 +94,7 @@ class TheTestCaseDirReplacementTransformerShouldBeAvailableInTheSetupPhase(Setup
                     stdout=instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
                     transform_by_pre_def_replacement_of_test_case_dirs=
                     argument_syntax.syntax_for_transformer_option(
-                        lines_transformers.EXACTLY_TEST_CASE_DIRS_REPLACEMENT),
+                        string_transformers.EXACTLY_TEST_CASE_DIRS_REPLACEMENT),
                     equals=instruction_options.EQUALS_ARGUMENT,
                 ),
                 test_case_dir_symbols.SYMBOL_ACT.name,
