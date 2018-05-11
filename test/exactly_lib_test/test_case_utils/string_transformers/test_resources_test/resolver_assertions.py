@@ -15,13 +15,11 @@ from exactly_lib_test.type_system.logic.test_resources.values import FileMatcher
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        unittest.makeSuite(TestResolvedValueEqualsLinesTransformer),
-    ])
+    return unittest.makeSuite(TestResolvedValueEqualsStringTransformer)
 
 
-class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
-    def test_equals_lines_transformer(self):
+class TestResolvedValueEqualsStringTransformer(unittest.TestCase):
+    def test_equals_string_transformer(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -29,7 +27,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_LINE_TRANSFORMER_RESOLVER),
+                             symbol_utils.container(ARBITRARY_STRING_TRANSFORMER_RESOLVER),
                          )),
 
         ]
@@ -42,7 +40,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
                 # ACT & ASSERT #
                 assertion_to_check.apply_without_message(self, resolver)
 
-    def test_SHOULD_not_equal_lines_transformer_WHEN_actual_is_file_matcher(self):
+    def test_SHOULD_not_equal_string_transformer_WHEN_actual_is_file_matcher(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -50,7 +48,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_LINE_TRANSFORMER_RESOLVER),
+                             symbol_utils.container(ARBITRARY_STRING_TRANSFORMER_RESOLVER),
                          )),
 
         ]
@@ -65,7 +63,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
                 # ACT & ASSERT #
                 assert_that_assertion_fails(assertion_equals_expected, resolver_of_actual)
 
-    def test_SHOULD_not_equal_lines_transformer_WHEN_actual_is_different_lines_transformer(self):
+    def test_SHOULD_not_equal_string_transformer_WHEN_actual_is_different_string_transformer(self):
         # ARRANGE #
         cases = [
             NameAndValue('without symbol table',
@@ -73,7 +71,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
             NameAndValue('with symbol table',
                          singleton_symbol_table_2(
                              'the symbol name',
-                             symbol_utils.container(ARBITRARY_LINE_TRANSFORMER_RESOLVER),
+                             symbol_utils.container(ARBITRARY_STRING_TRANSFORMER_RESOLVER),
                          )),
 
         ]
@@ -97,8 +95,8 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
             references=actual_references)
         assertion_to_check = sut.resolved_value_equals_string_transformer(actual_resolver.resolved_value,
                                                                           references=asrt.matches_sequence([
-                                                                             asrt.is_(actual_reference)
-                                                                         ]),
+                                                                              asrt.is_(actual_reference)
+                                                                          ]),
                                                                           )
         # ACT & ASSERT #
         assertion_to_check.apply_without_message(self, actual_resolver)
@@ -129,7 +127,7 @@ class TestResolvedValueEqualsLinesTransformer(unittest.TestCase):
                 assert_that_assertion_fails(assertion_to_check, actual_resolver)
 
 
-ARBITRARY_LINE_TRANSFORMER_RESOLVER = StringTransformerResolverConstantTestImpl(IdentityStringTransformer(), [])
+ARBITRARY_STRING_TRANSFORMER_RESOLVER = StringTransformerResolverConstantTestImpl(IdentityStringTransformer(), [])
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())
