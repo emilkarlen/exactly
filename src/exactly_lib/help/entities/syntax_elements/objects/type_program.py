@@ -34,7 +34,7 @@ class _Documentation(SyntaxElementDocumentation):
         return [
             invokation_variant_from_args([
                 a.Single(a.Multiplicity.MANDATORY, self._pgm_and_args.element),
-                a.Single(a.Multiplicity.OPTIONAL, instruction_arguments.LINES_TRANSFORMATION_ARGUMENT),
+                a.Single(a.Multiplicity.OPTIONAL, instruction_arguments.STRING_TRANSFORMATION_ARGUMENT),
             ]),
         ]
 
@@ -46,7 +46,7 @@ class _Documentation(SyntaxElementDocumentation):
 
     def _transformation_sed(self) -> SyntaxElementDescription:
         return cli_argument_syntax_element_description(
-            instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
+            instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
             _TEXT_PARSER.fnap(_TRANSFORMATION_DESCRIPTION),
             [
                 invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,
@@ -270,7 +270,7 @@ _TEXT_PARSER = TextParser({
     'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
     'hds': formatting.concept_(concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO),
     'SYMBOL_REFERENCE_SYNTAX_ELEMENT': formatting.syntax_element_(syntax_elements.SYMBOL_REFERENCE_SYNTAX_ELEMENT),
-    'TRANSFORMATION': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
+    'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
     'define_symbol': instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME,
     'TEXT_UNTIL_END_OF_LINE': instruction_arguments.TEXT_UNTIL_END_OF_LINE_ARGUMENT.name,
     'SYMBOL_NAME': formatting.syntax_element_(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT),

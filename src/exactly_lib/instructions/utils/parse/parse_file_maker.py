@@ -45,7 +45,7 @@ class FileContentsDocumentation:
         self._tp = TextParser({
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
-            'TRANSFORMATION': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
+            'TRANSFORMATION': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT.name,
             'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
         })
 
@@ -68,7 +68,7 @@ class FileContentsDocumentation:
 
     def _file_contents_sed(self) -> SyntaxElementDescription:
         optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
-                                                  instruction_arguments.LINES_TRANSFORMATION_ARGUMENT)
+                                                  instruction_arguments.STRING_TRANSFORMATION_ARGUMENT)
 
         here_doc_arg = a.Single(a.Multiplicity.MANDATORY,
                                 instruction_arguments.HERE_DOCUMENT)
@@ -106,7 +106,7 @@ class FileContentsDocumentation:
 
     def _transformation_sed(self) -> SyntaxElementDescription:
         return cli_argument_syntax_element_description(
-            instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
+            instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
             self._tp.fnap(_TRANSFORMATION_DESCRIPTION),
             [
                 invokation_variant_from_args([a.Single(a.Multiplicity.MANDATORY,

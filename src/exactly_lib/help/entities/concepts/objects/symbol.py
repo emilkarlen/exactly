@@ -55,7 +55,7 @@ class _SymbolConcept(ConceptDocumentation):
             'exists_file': instruction_names.TEST_CASE_STATUS_INSTRUCTION_NAME,
 
             'stdout': instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME,
-            'transformed': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
+            'transformed': instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
         })
 
     def purpose(self) -> DescriptionWithSubSections:
