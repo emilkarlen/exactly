@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

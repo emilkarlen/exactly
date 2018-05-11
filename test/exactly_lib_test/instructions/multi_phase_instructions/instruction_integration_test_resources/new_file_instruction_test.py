@@ -18,7 +18,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources import arguments
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.lines_transformer import is_reference_to_lines_transformer, \
+from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_lines_transformer, \
     StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \

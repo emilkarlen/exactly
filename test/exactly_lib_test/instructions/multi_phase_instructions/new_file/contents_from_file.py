@@ -26,7 +26,7 @@ from exactly_lib_test.instructions.utils.parse.parse_file_maker.test_resources.a
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import source_is_not_at_end
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_reference
-from exactly_lib_test.symbol.test_resources.lines_transformer import StringTransformerResolverConstantTestImpl, \
+from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl, \
     is_reference_to_lines_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_case_utils.parse.parse_file_ref import file_ref_or_string_reference_restrictions
