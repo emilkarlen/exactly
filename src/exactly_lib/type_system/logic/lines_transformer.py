@@ -26,7 +26,7 @@ class LinesTransformer:
         return type(self).__name__
 
 
-class LinesTransformerValue(MultiDirDependentValue[LinesTransformer]):
+class StringTransformerValue(MultiDirDependentValue[LinesTransformer]):
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
         return set()
 

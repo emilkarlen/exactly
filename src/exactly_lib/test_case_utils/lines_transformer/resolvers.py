@@ -5,7 +5,7 @@ from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.lines_transformer import transformers
 from exactly_lib.type_system.logic import lines_transformer_values
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, LinesTransformerValue
+from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, StringTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 
@@ -16,9 +16,9 @@ class StringTransformerConstant(StringTransformerResolver):
     """
 
     def __init__(self, value: LinesTransformer):
-        self._value = lines_transformer_values.LinesTransformerConstantValue(value)
+        self._value = lines_transformer_values.StringTransformerConstantValue(value)
 
-    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         return self._value
 
     @property
@@ -34,10 +34,10 @@ class StringTransformerConstantOfValue(StringTransformerResolver):
     A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformerValue`
     """
 
-    def __init__(self, value: LinesTransformerValue):
+    def __init__(self, value: StringTransformerValue):
         self._value = value
 
-    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         return self._value
 
     @property
@@ -58,7 +58,7 @@ class StringTransformerReference(StringTransformerResolver):
         self._references = [SymbolReference(name_of_referenced_resolver,
                                             ValueTypeRestriction(ValueType.LINES_TRANSFORMER))]
 
-    def resolve(self, symbols: SymbolTable) -> LinesTransformerValue:
+    def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         container = symbols.lookup(self._name_of_referenced_resolver)
         resolver = container.resolver
         assert isinstance(resolver, StringTransformerResolver)
@@ -81,7 +81,7 @@ class StringTransformerSelectResolver(StringTransformerResolver):
         self.line_matcher_resolver = line_matcher_resolver
 
     def resolve(self, symbols: SymbolTable) -> LinesTransformer:
-        return lines_transformer_values.LinesTransformerConstantValue(
+        return lines_transformer_values.StringTransformerConstantValue(
             transformers.SelectLinesTransformer(self.line_matcher_resolver.resolve(symbols)))
 
     @property

@@ -4,8 +4,8 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic.lines_transformer import LinesTransformer, IdentityLinesTransformer, \
     SequenceLinesTransformer
-from exactly_lib.type_system.logic.lines_transformer_values import LinesTransformerSequenceValue, \
-    DirDependentLinesTransformerValue
+from exactly_lib.type_system.logic.lines_transformer_values import StringTransformerSequenceValue, \
+    DirDependentStringTransformerValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import \
@@ -49,24 +49,24 @@ class TestValue(unittest.TestCase):
             NEA('no components',
                 MultiDirDependentValueTestImpl(set(),
                                                SequenceLinesTransformer([])),
-                LinesTransformerSequenceValue([])
+                StringTransformerSequenceValue([])
                 ),
             NEA('single component',
                 MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME},
                                                SequenceLinesTransformer([IdentityLinesTransformer()])),
-                LinesTransformerSequenceValue([DirDependentLinesTransformerValue({DirectoryStructurePartition.HOME},
-                                                                                 make_identity_transformer)])
+                StringTransformerSequenceValue([DirDependentStringTransformerValue({DirectoryStructurePartition.HOME},
+                                                                                   make_identity_transformer)])
                 ),
             NEA('multiple components',
                 MultiDirDependentValueTestImpl({DirectoryStructurePartition.HOME,
                                                 DirectoryStructurePartition.NON_HOME},
                                                SequenceLinesTransformer([IdentityLinesTransformer(),
                                                                          IdentityLinesTransformer()])),
-                LinesTransformerSequenceValue([
-                    DirDependentLinesTransformerValue({DirectoryStructurePartition.HOME},
-                                                      make_identity_transformer),
-                    DirDependentLinesTransformerValue({DirectoryStructurePartition.NON_HOME},
-                                                      make_identity_transformer),
+                StringTransformerSequenceValue([
+                    DirDependentStringTransformerValue({DirectoryStructurePartition.HOME},
+                                                       make_identity_transformer),
+                    DirDependentStringTransformerValue({DirectoryStructurePartition.NON_HOME},
+                                                       make_identity_transformer),
                 ])
                 ),
         ]

@@ -5,7 +5,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue
+from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue
 from exactly_lib.type_system.value_type import DataValueType, ValueType, TypeCategory, LogicValueType
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.symbol_table import SymbolTableValue, SymbolTable
@@ -116,7 +116,7 @@ class StringTransformerResolver(LogicValueResolver):
     def references(self) -> list:
         raise NotImplementedError('abstract method')
 
-    def resolve(self, named_elements: SymbolTable) -> LinesTransformerValue:
+    def resolve(self, named_elements: SymbolTable) -> StringTransformerValue:
         raise NotImplementedError('abstract method')
 
 

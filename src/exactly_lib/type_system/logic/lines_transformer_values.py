@@ -3,11 +3,11 @@ from typing import Sequence, Set, Callable
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
 from exactly_lib.type_system.logic import lines_transformer
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, LinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, LinesTransformer
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 
 
-class LinesTransformerConstantValue(LinesTransformerValue):
+class StringTransformerConstantValue(StringTransformerValue):
     """
     A :class:`LinesTransformerResolver` that is a constant :class:`LinesTransformer`
     """
@@ -22,8 +22,8 @@ class LinesTransformerConstantValue(LinesTransformerValue):
         return self._value
 
 
-class LinesTransformerSequenceValue(LinesTransformerValue):
-    def __init__(self, sequence: Sequence[LinesTransformerValue]):
+class StringTransformerSequenceValue(StringTransformerValue):
+    def __init__(self, sequence: Sequence[StringTransformerValue]):
         self._sequence = sequence
 
     def resolving_dependencies(self) -> Set[DirectoryStructurePartition]:
@@ -42,7 +42,7 @@ class LinesTransformerSequenceValue(LinesTransformerValue):
         ])
 
 
-class DirDependentLinesTransformerValue(LinesTransformerValue):
+class DirDependentStringTransformerValue(StringTransformerValue):
     def __init__(self,
                  dependencies: Set[DirectoryStructurePartition],
                  constructor: Callable[[HomeAndSds], LinesTransformer]):

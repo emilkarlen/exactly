@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.err_msg.property_description import PropertyDes
     property_descriptor_with_just_a_constant_name
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.data import file_refs
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue, IdentityLinesTransformer
+from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, IdentityLinesTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
@@ -87,7 +87,7 @@ class StringTransformerResolverWithReferences(StringTransformerResolver):
     def __init__(self, references: Sequence[SymbolReference]):
         self._references = references
 
-    def resolve(self, named_elements: SymbolTable) -> LinesTransformerValue:
+    def resolve(self, named_elements: SymbolTable) -> StringTransformerValue:
         raise NotImplementedError('should not be used in these tests')
 
     @property
