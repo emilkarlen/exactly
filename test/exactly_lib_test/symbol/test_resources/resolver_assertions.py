@@ -15,7 +15,7 @@ from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.logic.file_matcher import FileMatcher
 from exactly_lib.type_system.logic.line_matcher import LineMatcher
-from exactly_lib.type_system.logic.lines_transformer import LinesTransformerValue
+from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue
 from exactly_lib.type_system.logic.program.program_value import ProgramValue
 from exactly_lib.type_system.value_type import TypeCategory, ValueType, LogicValueType, DataValueType
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
@@ -154,12 +154,12 @@ def matches_resolver_of_line_matcher(references: asrt.ValueAssertion[Sequence[Sy
 
 
 def matches_resolver_of_lines_transformer(references: asrt.ValueAssertion[Sequence[SymbolReference]],
-                                          resolved_value: asrt.ValueAssertion[LinesTransformerValue],
+                                          resolved_value: asrt.ValueAssertion[StringTransformerValue],
                                           custom: asrt.ValueAssertion[StringTransformerResolver] = asrt.anything_goes(),
                                           symbols: SymbolTable = None) -> asrt.ValueAssertion[rs.SymbolValueResolver]:
     return matches_resolver(is_resolver_of_lines_transformer_type(),
                             references,
-                            asrt.is_instance_with(LinesTransformerValue, resolved_value),
+                            asrt.is_instance_with(StringTransformerValue, resolved_value),
                             custom,
                             symbol_table_from_none_or_value(symbols))
 
