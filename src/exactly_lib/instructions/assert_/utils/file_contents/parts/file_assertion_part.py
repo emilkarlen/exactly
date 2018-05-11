@@ -39,13 +39,13 @@ class FileToCheck:
                  original_file_path: pathlib.Path,
                  checked_file_describer: FilePropertyDescriptorConstructor,
                  environment: InstructionEnvironmentForPostSdsStep,
-                 lines_transformer: StringTransformer,
+                 string_transformer: StringTransformer,
                  destination_file_path_getter: DestinationFilePathGetter):
         self._original_file_path = original_file_path
         self._checked_file_describer = checked_file_describer
         self._environment = environment
         self._transformed_file_path = None
-        self._lines_transformer = lines_transformer
+        self._string_transformer = string_transformer
         self._destination_file_path_getter = destination_file_path_getter
 
     @property
@@ -62,7 +62,7 @@ class FileToCheck:
         """
         if self._transformed_file_path is not None:
             return self._transformed_file_path
-        if self._lines_transformer.is_identity_transformer:
+        if self._string_transformer.is_identity_transformer:
             self._transformed_file_path = self._original_file_path
             return self._transformed_file_path
         self._transformed_file_path = self._destination_file_path_getter.get(self._environment,
@@ -82,10 +82,10 @@ class FileToCheck:
         using transformed_file_path.
         """
         with self._original_file_path.open() as f:
-            if self._lines_transformer.is_identity_transformer:
+            if self._string_transformer.is_identity_transformer:
                 yield f
             else:
-                yield self._lines_transformer.transform(f)
+                yield self._string_transformer.transform(f)
 
     def _write_transformed_contents(self):
         with self._transformed_file_path.open('w') as dst_file:
