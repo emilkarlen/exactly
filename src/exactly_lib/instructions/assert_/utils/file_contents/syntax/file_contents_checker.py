@@ -88,7 +88,7 @@ def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
     optional_not_arg = negation_of_predicate.optional_negation_argument_usage()
 
     optional_transformation_option = a.Single(a.Multiplicity.OPTIONAL,
-                                              instruction_arguments.LINES_TRANSFORMATION_ARGUMENT)
+                                              instruction_arguments.STRING_TRANSFORMATION_ARGUMENT)
     return [
         optional_transformation_option,
         optional_not_arg,
@@ -134,7 +134,7 @@ def transformation_syntax_element_description(the_tested_file: str) -> SyntaxEle
         'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
     })
     return cli_argument_syntax_element_description(
-        instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,
+        instruction_arguments.STRING_TRANSFORMATION_ARGUMENT,
         text_parser.fnap(_TRANSFORMATION_DESCRIPTION),
         [
             InvokationVariant(cl_syntax.arg_syntax(instruction_arguments.TRANSFORMATION_OPTION)),
