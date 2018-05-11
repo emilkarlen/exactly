@@ -57,7 +57,7 @@ class _Documentation(SyntaxElementDocumentation):
     def see_also_targets(self) -> list:
         info_refs = cross_reference_id_list([
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
-            syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
+            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
             syntax_elements.STRING_SYNTAX_ELEMENT,
             syntax_elements.LIST_SYNTAX_ELEMENT,
             syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT,

@@ -53,7 +53,8 @@ class FileContentsCheckerHelp:
             ),
         ]
 
-    def syntax_element_descriptions_at_top(self) -> List[SyntaxElementDescription]:
+    @staticmethod
+    def syntax_element_descriptions_at_top() -> List[SyntaxElementDescription]:
         return []
 
     def syntax_element_descriptions_at_bottom(self) -> List[SyntaxElementDescription]:
@@ -63,17 +64,19 @@ class FileContentsCheckerHelp:
                  negation_of_predicate.syntax_element_description()]
         )
 
-    def see_also_targets__file(self) -> list:
+    @staticmethod
+    def see_also_targets__file() -> list:
         return [
             syntax_elements.FILE_CONTENTS_MATCHER.cross_reference_target,
-            syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
-    def see_also_targets__stdout_err(self) -> list:
+    @staticmethod
+    def see_also_targets__stdout_err() -> list:
         return [
             syntax_elements.FILE_CONTENTS_MATCHER.cross_reference_target,
             syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
-            syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
+            syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
             concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
         ]
 
@@ -128,7 +131,7 @@ Asserts that {checked_file} from a {program_type} satisfies {file_contents_match
 def transformation_syntax_element_description(the_tested_file: str) -> SyntaxElementDescription:
     text_parser = TextParser({
         'the_tested_file': the_tested_file,
-        'transformer': syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+        'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
     })
     return cli_argument_syntax_element_description(
         instruction_arguments.LINES_TRANSFORMATION_ARGUMENT,

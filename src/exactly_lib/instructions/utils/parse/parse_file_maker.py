@@ -46,7 +46,7 @@ class FileContentsDocumentation:
             'HERE_DOCUMENT': syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT.singular_name,
             'PROGRAM': syntax_elements.PROGRAM_SYNTAX_ELEMENT.singular_name,
             'TRANSFORMATION': instruction_arguments.LINES_TRANSFORMATION_ARGUMENT.name,
-            'transformer': syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
+            'transformer': syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.singular_name,
         })
 
     def syntax_element_descriptions(self) -> list:
@@ -61,7 +61,7 @@ class FileContentsDocumentation:
         name_and_cross_refs = [syntax_elements.PATH_SYNTAX_ELEMENT,
                                syntax_elements.STRING_SYNTAX_ELEMENT,
                                syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
-                               syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
+                               syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT,
                                syntax_elements.PROGRAM_SYNTAX_ELEMENT,
                                ]
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
