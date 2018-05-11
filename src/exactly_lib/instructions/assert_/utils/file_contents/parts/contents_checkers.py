@@ -89,9 +89,9 @@ class FileTransformerAsAssertionPart(AssertionPart):
     :raises PfhPfhHardErrorException: The transformation fails
     """
 
-    def __init__(self, lines_transformer_resolver: StringTransformerResolver):
+    def __init__(self, string_transformer_resolver: StringTransformerResolver):
         super().__init__()
-        self._lines_transformer_resolver = lines_transformer_resolver
+        self._string_transformer_resolver = string_transformer_resolver
         self._destination_file_path_getter = DestinationFilePathGetter()
 
         self._file_prop_check = file_properties.ActualFilePropertiesResolver(file_properties.FileType.REGULAR,
@@ -99,7 +99,7 @@ class FileTransformerAsAssertionPart(AssertionPart):
 
     @property
     def references(self) -> list:
-        return self._lines_transformer_resolver.references
+        return self._string_transformer_resolver.references
 
     def check(self,
               environment: InstructionEnvironmentForPostSdsStep,
@@ -118,14 +118,14 @@ class FileTransformerAsAssertionPart(AssertionPart):
             err_msg = self._err_msg(environment, file_to_transform, failure_info_properties)
             raise PfhHardErrorException(err_msg)
 
-        lines_transformer = self._lines_transformer_resolver \
+        string_transformer = self._string_transformer_resolver \
             .resolve(environment.symbols) \
             .value_of_any_dependency(environment.home_and_sds)
 
         return FileToCheck(actual_file_path,
                            file_to_transform.checked_file_describer,
                            environment,
-                           lines_transformer,
+                           string_transformer,
                            self._destination_file_path_getter)
 
     def _err_msg(self,
