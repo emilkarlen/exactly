@@ -18,11 +18,11 @@ from exactly_lib_test.symbol.test_resources.lines_transformer import is_referenc
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_utils.lines_transformers import parse_lines_transformer
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources import argument_syntax
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.resolver_assertions import \
-    resolved_value_equals_lines_transformer
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
+from exactly_lib_test.test_case_utils.string_transformers import parse_lines_transformer
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
+    resolved_value_equals_lines_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_hard_quotes

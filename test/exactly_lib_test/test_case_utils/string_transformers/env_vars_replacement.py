@@ -7,7 +7,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_utils.string_transformer import env_vars_replacement as sut
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_home_and_sds
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import sandbox_directory_structure
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources.replaced_env_vars import \
+from exactly_lib_test.test_case_utils.string_transformers.test_resources.replaced_env_vars import \
     ReplacedEnvVarsFileContentsGeneratorForSubDirRelationshipBetweenHomeActAndCase, \
     ReplacedEnvVarsFileContentsGeneratorWithAllReplacedVariables
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \

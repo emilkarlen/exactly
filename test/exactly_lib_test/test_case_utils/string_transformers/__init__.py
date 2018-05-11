@@ -1,10 +1,10 @@
 import unittest
 
-from exactly_lib_test.test_case_utils.lines_transformers import parse_lines_transformer
-from exactly_lib_test.test_case_utils.lines_transformers import env_vars_replacement, replace, \
+from exactly_lib_test.test_case_utils.string_transformers import env_vars_replacement, replace, \
     select_transformer, case_converters
-from exactly_lib_test.test_case_utils.lines_transformers import test_resources_test
-from exactly_lib_test.test_case_utils.lines_transformers import vistor
+from exactly_lib_test.test_case_utils.string_transformers import parse_lines_transformer
+from exactly_lib_test.test_case_utils.string_transformers import test_resources_test
+from exactly_lib_test.test_case_utils.string_transformers import vistor
 
 
 def suite() -> unittest.TestSuite:

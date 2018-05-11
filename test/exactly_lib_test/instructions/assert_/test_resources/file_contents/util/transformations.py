@@ -1,4 +1,4 @@
-from exactly_lib_test.test_case_utils.lines_transformers.test_resources import argument_syntax
+from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 
 TRANSFORMER_OPTION_ALTERNATIVES = [
     '',
