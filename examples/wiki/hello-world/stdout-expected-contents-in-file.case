@@ -6,4 +6,4 @@ hello-world
 
 stdout equals -file hello-world-output.txt
 
-exitcode == 0
+exit-code == 0

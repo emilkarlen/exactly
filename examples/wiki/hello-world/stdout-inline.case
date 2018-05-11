@@ -8,4 +8,4 @@ stdout equals <<EOF
 Hello, World!
 EOF
 
-exitcode == 0
+exit-code == 0
