@@ -44,7 +44,7 @@ class FileContentsMatcherHelp:
 
     def syntax_element_description(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(
-            syntax_elements.FILE_CONTENTS_MATCHER.argument.name,
+            syntax_elements.STRING_MATCHER.argument.name,
             [],
             self.invokation_variants()
         )

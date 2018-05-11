@@ -23,7 +23,7 @@ class FileContentsCheckerHelp:
         self.initial_args_of_invokation_variants = initial_args_of_invokation_variants
         self._tp = TextParser({
             'checked_file': checked_file,
-            'file_contents_matcher': formatting.syntax_element_(syntax_elements.FILE_CONTENTS_MATCHER),
+            'file_contents_matcher': formatting.syntax_element_(syntax_elements.STRING_MATCHER),
             'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'program_type': formatting.entity_(types.PROGRAM_TYPE_INFO),
         })
@@ -67,14 +67,14 @@ class FileContentsCheckerHelp:
     @staticmethod
     def see_also_targets__file() -> list:
         return [
-            syntax_elements.FILE_CONTENTS_MATCHER.cross_reference_target,
+            syntax_elements.STRING_MATCHER.cross_reference_target,
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
     @staticmethod
     def see_also_targets__stdout_err() -> list:
         return [
-            syntax_elements.FILE_CONTENTS_MATCHER.cross_reference_target,
+            syntax_elements.STRING_MATCHER.cross_reference_target,
             syntax_elements.PROGRAM_SYNTAX_ELEMENT.cross_reference_target,
             syntax_elements.STRING_TRANSFORMER_SYNTAX_ELEMENT.cross_reference_target,
             concepts.ACTION_TO_CHECK_CONCEPT_INFO.cross_reference_target,
@@ -83,7 +83,7 @@ class FileContentsCheckerHelp:
 
 def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
     file_contents_arg = a.Single(a.Multiplicity.MANDATORY,
-                                 syntax_elements.FILE_CONTENTS_MATCHER.argument)
+                                 syntax_elements.STRING_MATCHER.argument)
 
     optional_not_arg = negation_of_predicate.optional_negation_argument_usage()
 
@@ -98,7 +98,7 @@ def file_contents_checker_arguments__non_program() -> List[a.ArgumentUsage]:
 
 def file_contents_checker_arguments__program(program_option: a.OptionName) -> List[a.ArgumentUsage]:
     file_contents_arg = a.Single(a.Multiplicity.MANDATORY,
-                                 syntax_elements.FILE_CONTENTS_MATCHER.argument)
+                                 syntax_elements.STRING_MATCHER.argument)
 
     optional_not_arg = negation_of_predicate.optional_negation_argument_usage()
 

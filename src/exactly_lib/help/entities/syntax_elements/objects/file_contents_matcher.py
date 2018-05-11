@@ -6,7 +6,7 @@ from exactly_lib.instructions.assert_.utils.file_contents.syntax.file_contents_m
 _HELPER = FileContentsMatcherHelp()
 
 DOCUMENTATION = syntax_element_documentation(None,
-                                             syntax_elements.FILE_CONTENTS_MATCHER,
+                                             syntax_elements.STRING_MATCHER,
                                              [],
                                              _HELPER.invokation_variants(),
                                              _HELPER.referenced_syntax_element_descriptions(),

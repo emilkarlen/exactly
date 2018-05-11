@@ -100,9 +100,9 @@ INTEGER_COMPARISON_SYNTAX_ELEMENT = name_and_ref_target(
     'Matches an integer value using relational comparison with a given ' + INTEGER_SYNTAX_ELEMENT.argument.name
 )
 
-FILE_CONTENTS_MATCHER = name_and_ref_target(
-    'FILE-CONTENTS-MATCHER',
-    'Matches the contents of a regular file'
+STRING_MATCHER = name_and_ref_target(
+    'STRING-MATCHER',
+    'Matches a string (such as the contents of a regular file)'
 )
 
 ALL_SYNTAX_ELEMENTS = (
@@ -118,7 +118,7 @@ ALL_SYNTAX_ELEMENTS = (
     INTEGER_SYNTAX_ELEMENT,
     INTEGER_COMPARISON_SYNTAX_ELEMENT,
 
-    FILE_CONTENTS_MATCHER,
+    STRING_MATCHER,
 
     STRING_SYNTAX_ELEMENT,
     LIST_SYNTAX_ELEMENT,
