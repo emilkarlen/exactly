@@ -30,10 +30,10 @@ REPLACE_REPLACEMENT_ARGUMENT = a.Named(types.STRING_TYPE_INFO.syntax_element_nam
 
 _MISSING_REPLACEMENT_ARGUMENT_ERR_MSG = 'Missing ' + REPLACE_REPLACEMENT_ARGUMENT.name
 
-LINES_TRANSFORMER_ARGUMENT = a.Named(types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
+STRING_TRANSFORMER_ARGUMENT = a.Named(types.STRING_TRANSFORMER_TYPE_INFO.syntax_element_name)
 
 
-class LinesTransformerDescriptor(ErrorMessagePartConstructor):
+class StringTransformerDescriptor(ErrorMessagePartConstructor):
     def __init__(self, resolver: StringTransformerResolver):
         self.resolver = resolver
 
@@ -44,7 +44,7 @@ class LinesTransformerDescriptor(ErrorMessagePartConstructor):
         return [line]
 
 
-def parse_lines_transformer(source: ParseSource) -> StringTransformerResolver:
+def parse_string_transformer(source: ParseSource) -> StringTransformerResolver:
     with token_stream_parser.from_parse_source(source) as tp:
         return parse_optional_transformer_resolver(tp)
 
@@ -55,7 +55,7 @@ def parse_optional_transformer_resolver(parser: TokenParser) -> StringTransforme
     """
     return parser.consume_and_handle_optional_option(
         IDENTITY_TRANSFORMER_RESOLVER,
-        parse_lines_transformer_from_token_parser,
+        parse_string_transformer_from_token_parser,
         instruction_arguments.WITH_TRANSFORMED_CONTENTS_OPTION_NAME)
 
 
@@ -69,7 +69,7 @@ def parse_optional_transformer_resolver_preceding_mandatory_element(parser: Toke
     return parse_optional_transformer_resolver(parser)
 
 
-def parse_lines_transformer_from_token_parser(parser: TokenParser) -> StringTransformerResolver:
+def parse_string_transformer_from_token_parser(parser: TokenParser) -> StringTransformerResolver:
     return parse_expression.parse(GRAMMAR, parser)
 
 
@@ -109,7 +109,7 @@ That is, \\n is converted to a single newline character, \\r is converted to a c
 Unknown escapes such as \\& are left alone.
 
 
-Backreferences, such as \\6, are replaced with the substring matched by group 6 in {_REG_EX_}.
+Back-references, such as \\6, are replaced with the substring matched by group 6 in {_REG_EX_}.
 """
 
 _SELECT_TRANSFORMER_SED_DESCRIPTION = """\
@@ -150,7 +150,7 @@ _SEQUENCE_SYNTAX_DESCRIPTION = grammar.OperatorExpressionDescription(
 _CONCEPT = grammar.Concept(
     types.STRING_TRANSFORMER_TYPE_INFO.name,
     types.STRING_TRANSFORMER_TYPE_INFO.identifier,
-    LINES_TRANSFORMER_ARGUMENT,
+    STRING_TRANSFORMER_ARGUMENT,
 )
 
 GRAMMAR = grammar.Grammar(

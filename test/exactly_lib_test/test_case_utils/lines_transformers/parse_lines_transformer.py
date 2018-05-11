@@ -260,7 +260,7 @@ class TestParseLineTransformer(unittest.TestCase):
                source: TokenParser,
                expectation: Expectation):
         # ACT #
-        actual_resolver = sut.parse_lines_transformer_from_token_parser(source)
+        actual_resolver = sut.parse_string_transformer_from_token_parser(source)
         # ASSERT #
         expectation.resolver.apply_with_message(self,
                                                 actual_resolver,
