@@ -2,10 +2,10 @@ import unittest
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.logic.lines_transformer_values import StringTransformerSequenceValue, \
-    DirDependentStringTransformerValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, IdentityStringTransformer, \
     SequenceStringTransformer
+from exactly_lib.type_system.logic.string_transformer_values import StringTransformerSequenceValue, \
+    DirDependentStringTransformerValue
 from exactly_lib_test.test_case_file_structure.test_resources.dir_dependent_value import \
     matches_multi_dir_dependent_value
 from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent_value import \

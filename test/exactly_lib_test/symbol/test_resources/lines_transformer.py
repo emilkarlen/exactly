@@ -2,8 +2,8 @@ from typing import Sequence
 
 from exactly_lib.symbol.resolver_structure import StringTransformerResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
-from exactly_lib.type_system.logic.lines_transformer_values import StringTransformerConstantValue
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue
+from exactly_lib.type_system.logic.string_transformer_values import StringTransformerConstantValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
