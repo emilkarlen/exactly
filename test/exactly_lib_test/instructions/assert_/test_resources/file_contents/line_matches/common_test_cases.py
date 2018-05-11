@@ -22,7 +22,7 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
         _ParseWithSuperfluousArgument,
         _ParseWithInvalidLineMatcher,
 
-        _TestSymbolReferenceForLinesTransformerIsReported,
+        _TestSymbolReferenceForStringTransformerIsReported,
         _TestSymbolReferenceForLineMatcherIsReported,
     ]
     return unittest.TestSuite([
@@ -70,7 +70,7 @@ class _ParseWithInvalidLineMatcher(_TestCaseBase):
             utils.args_constructor_for(line_matcher=syntax_for_regex_matcher('**')))
 
 
-class _TestSymbolReferenceForLinesTransformerIsReported(_TestCaseBase):
+class _TestSymbolReferenceForStringTransformerIsReported(_TestCaseBase):
     def runTest(self):
         # ARRANGE #
         parser = self.configuration.new_parser()

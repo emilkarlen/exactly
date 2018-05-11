@@ -65,7 +65,7 @@ class TestIsResolverOfLogicType(unittest.TestCase):
                                                   ValueType.PROGRAM)
         cases = [
             NameAndValue('unexpected logic type',
-                         _LinesTransformerResolverTestImpl(),
+                         _StringTransformerResolverTestImpl(),
                          ),
             NameAndValue('data type',
                          _PathResolverTestImpl(),
@@ -244,7 +244,7 @@ class _ProgramResolverTestImpl(LogicValueResolver):
         raise NotImplementedError('not used')
 
 
-class _LinesTransformerResolverTestImpl(LogicValueResolver):
+class _StringTransformerResolverTestImpl(LogicValueResolver):
     def __init__(self,
                  explicit_references: Sequence[SymbolReference] = ()):
         self.explicit_references = explicit_references

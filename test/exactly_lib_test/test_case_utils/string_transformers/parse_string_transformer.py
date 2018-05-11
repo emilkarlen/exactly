@@ -284,7 +284,7 @@ class TestParseLineTransformer(unittest.TestCase):
     def test_reference(self):
         # ARRANGE #
         symbol = NameAndValue('the_symbol_name',
-                              CustomLinesTransformerTestImpl())
+                              CustomStringTransformerTestImpl())
 
         symbols = singleton_symbol_table_2(symbol.name,
                                            container(StringTransformerConstant(symbol.value)))
@@ -330,9 +330,9 @@ class TestParseLineTransformer(unittest.TestCase):
     def test_sequence(self):
         # ARRANGE #
         symbol_1 = NameAndValue('symbol_1_name',
-                                CustomLinesTransformerTestImpl())
+                                CustomStringTransformerTestImpl())
         symbol_2 = NameAndValue('symbol_2_name',
-                                CustomLinesTransformerTestImpl())
+                                CustomStringTransformerTestImpl())
 
         regex_str = 'regex'
         replacement_str = 'replacement'
@@ -407,6 +407,6 @@ def select_transformer(line_matcher: LineMatcher) -> SelectStringTransformer:
     return SelectStringTransformer(line_matcher)
 
 
-class CustomLinesTransformerTestImpl(CustomStringTransformer):
+class CustomStringTransformerTestImpl(CustomStringTransformer):
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         raise NotImplementedError('should not be used')
