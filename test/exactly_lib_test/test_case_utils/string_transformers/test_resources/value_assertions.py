@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_utils.string_transformer.transformers import LinesTransformerStructureVisitor, \
+from exactly_lib.test_case_utils.string_transformer.transformers import StringTransformerStructureVisitor, \
     ReplaceStringTransformer, \
     SelectStringTransformer
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, IdentityStringTransformer, \
@@ -41,7 +41,7 @@ class _EqualsAssertion(asrt.ValueAssertion):
         checker.visit(self.expected)
 
 
-class _EqualityChecker(LinesTransformerStructureVisitor):
+class _EqualityChecker(StringTransformerStructureVisitor):
     def __init__(self,
                  put: unittest.TestCase,
                  message_builder: asrt.MessageBuilder,
