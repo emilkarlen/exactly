@@ -27,11 +27,11 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 CONTENTS_ASSIGNMENT_TOKEN = instruction_arguments.ASSIGNMENT_OPERATOR
 
 PROGRAM_OUTPUT_OPTIONS = {
-    ProcOutputFile.STDOUT: a.OptionName(long_name='stdout'),
-    ProcOutputFile.STDERR: a.OptionName(long_name='stderr'),
+    ProcOutputFile.STDOUT: a.OptionName('stdout-from'),
+    ProcOutputFile.STDERR: a.OptionName('stderr-from'),
 }
 
-FILE_OPTION = a.OptionName(long_name='file')
+FILE_OPTION = a.OptionName('file')
 CONTENTS_ARGUMENT = 'CONTENTS'
 _SRC_PATH_ARGUMENT = a.Named('SOURCE-FILE-PATH')
 

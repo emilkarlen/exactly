@@ -1,9 +1,9 @@
 [setup]
 
-file my-fst-file.txt = -stdout
+file my-fst-file.txt = -stdout-from
                        -python -existing-file print-arguments.py "Hello, Python World!"
 
-file my-snd-file.txt = -stdout
+file my-snd-file.txt = -stdout-from
                        -python -existing-file print-arguments.py :> Hello, Python World!
 
 [assert]
