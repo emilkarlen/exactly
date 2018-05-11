@@ -6,8 +6,7 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.types import FILE_MATCHER_TYPE_INFO
-from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_matcher as parts_cl_syntax, \
-    file_contents_checker
+from exactly_lib.instructions.assert_.utils.file_contents.syntax import file_contents_checker
 from exactly_lib.instructions.assert_.utils.file_contents_resources import EMPTY_ARGUMENT_CONSTANT
 from exactly_lib.instructions.utils.documentation import relative_path_options_documentation as rel_path_doc
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element
@@ -37,7 +36,6 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'HARD_ERROR': exit_values.EXECUTION__HARD_ERROR.exit_identifier,
         })
-        self.file_contents_assertion_help = parts_cl_syntax.FileContentsMatcherHelp()
         self.actual_file = a.Single(a.Multiplicity.MANDATORY,
                                     _PATH_ARGUMENT)
         self.relativity_of_actual_arg = instruction_arguments.RELATIVITY_ARGUMENT

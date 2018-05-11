@@ -1,11 +1,13 @@
 from typing import List
 
-from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
-from exactly_lib.definitions import instruction_arguments
-from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, \
+    invokation_variant_from_args, InvokationVariant
+from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
-from exactly_lib.definitions.entity import syntax_elements, types
+from exactly_lib.definitions.entity import syntax_elements
+from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options
 from exactly_lib.instructions.assert_.utils.file_contents.instruction_options import EMPTY_ARGUMENT
 from exactly_lib.instructions.assert_.utils.file_contents.parse_file_contents_assertion_part import \
@@ -22,8 +24,10 @@ _EXPECTED_PATH_NAME = 'PATH-OF-EXPECTED'
 _RELATIVITY_OF_EXPECTED_PATH_NAME = 'RELATIVITY-OF-EXPECTED-PATH'
 
 
-class FileContentsMatcherHelp:
+class _StringMatcherDocumentation(SyntaxElementDocumentation):
     def __init__(self):
+        super().__init__(None, syntax_elements.STRING_MATCHER)
+
         self.expected_file_arg = a.Option(FILE_ARGUMENT_OPTION,
                                           _EXPECTED_PATH_NAME)
         self.string_or_here_doc_or_file_arg = StringOrHereDocOrFile(
@@ -36,11 +40,12 @@ class FileContentsMatcherHelp:
             'any': instruction_arguments.EXISTS_QUANTIFIER_ARGUMENT,
             'every': instruction_arguments.ALL_QUANTIFIER_ARGUMENT,
             'LINE_MATCHER': instruction_arguments.LINE_MATCHER.name,
+            'HERE_DOCUMENT': formatting.syntax_element_(syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT),
             'INTEGER_COMPARISON': syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.singular_name,
         })
 
-    def _cls(self, additional_argument_usages: list) -> str:
-        return cl_syntax.cl_syntax_for_args(additional_argument_usages)
+    def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
+        return self._parser.fnap(_MAIN_DESCRIPTION_REST)
 
     def syntax_element_description(self) -> SyntaxElementDescription:
         return SyntaxElementDescription(
@@ -49,10 +54,7 @@ class FileContentsMatcherHelp:
             self.invokation_variants()
         )
 
-    def invokation_variants(self) -> list:
-        def _cls(args: list) -> str:
-            return cl_syntax.cl_syntax_for_args(args)
-
+    def invokation_variants(self) -> List[InvokationVariant]:
         mandatory_empty_arg = a.Single(a.Multiplicity.MANDATORY,
                                        a.Constant(EMPTY_ARGUMENT))
         quantifier_arg = a.Choice(a.Multiplicity.MANDATORY,
@@ -79,63 +81,68 @@ class FileContentsMatcherHelp:
                                  a.Constant(instruction_options.NUM_LINES_ARGUMENT))
 
         return [
-            InvokationVariant(_cls([mandatory_empty_arg]),
-                              self._paragraphs(_DESCRIPTION_OF_EMPTY)),
+            invokation_variant_from_args([mandatory_empty_arg],
+                                         self._parser.fnap(_DESCRIPTION_OF_EMPTY)),
 
-            InvokationVariant(_cls([equals_arg,
-                                    self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY),
-                                    ]),
-                              self._paragraphs(_DESCRIPTION_OF_EQUALS_STRING)),
+            invokation_variant_from_args([equals_arg,
+                                          self.string_or_here_doc_or_file_arg.argument_usage(a.Multiplicity.MANDATORY),
+                                          ],
+                                         self._parser.fnap(_DESCRIPTION_OF_EQUALS_STRING)),
 
-            InvokationVariant(_cls([num_lines_arg,
-                                    syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
-                                    ]),
-                              self._paragraphs(_DESCRIPTION_OF_NUM_LINES)),
+            invokation_variant_from_args([num_lines_arg,
+                                          syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT.single_mandatory,
+                                          ],
+                                         self._parser.fnap(_DESCRIPTION_OF_NUM_LINES)),
 
-            InvokationVariant(_cls([quantifier_arg,
-                                    line_arg,
-                                    quantifier_separator_arg,
-                                    matches_arg,
-                                    line_matcher_arg,
-                                    ]),
-                              self._paragraphs(_DESCRIPTION_OF_LINE_MATCHES)),
+            invokation_variant_from_args([quantifier_arg,
+                                          line_arg,
+                                          quantifier_separator_arg,
+                                          matches_arg,
+                                          line_matcher_arg,
+                                          ],
+                                         self._parser.fnap(_DESCRIPTION_OF_LINE_MATCHES)),
         ]
 
-    def referenced_syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return self.string_or_here_doc_or_file_arg.syntax_element_descriptions()
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_ref_elements = rel_opts.see_also_name_and_cross_refs(
             EXPECTED_FILE_REL_OPT_ARG_CONFIG.options)
 
         name_and_cross_ref_elements += [
             syntax_elements.INTEGER_COMPARISON_SYNTAX_ELEMENT,
-            types.LINE_MATCHER_TYPE_INFO,
+            syntax_elements.LINE_MATCHER_SYNTAX_ELEMENT,
         ]
 
         return (
-            cross_reference_id_list(name_and_cross_ref_elements)
-            +
-            self.string_or_here_doc_or_file_arg.see_also_targets()
+                cross_reference_id_list(name_and_cross_ref_elements)
+                +
+                self.string_or_here_doc_or_file_arg.see_also_targets()
         )
 
-    def _paragraphs(self, s: str, extra: dict = None) -> List[ParagraphItem]:
-        return self._parser.fnap(s, extra)
 
+_MAIN_DESCRIPTION_REST = """\
+Lines are separated by a single new-line character
+(or a sequence representing a single new-line, on platforms
+that use multiple characters as new-line).
+"""
 
 _DESCRIPTION_OF_EMPTY = """\
-Matches if the contents is empty.
+Matches if the string is empty.
 """
 
 _DESCRIPTION_OF_EQUALS_STRING = """\
-Matches if the contents is equal to a given
-string, "here document" or file.
+Matches if the string is equal to a given
+string, {HERE_DOCUMENT} or file.
 """
 
 _DESCRIPTION_OF_LINE_MATCHES = """\
-Matches if {any}/{every} line of the contents matches {LINE_MATCHER}.
+Matches if {any}/{every} line of the string matches {LINE_MATCHER}.
 """
 
 _DESCRIPTION_OF_NUM_LINES = """\
-Matches if the number of lines of the contents matches {INTEGER_COMPARISON}.
+Matches if the number of lines of the string matches {INTEGER_COMPARISON}.
 """
+
+DOCUMENTATION = _StringMatcherDocumentation()
