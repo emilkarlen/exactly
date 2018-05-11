@@ -38,7 +38,7 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionAr
 from exactly_lib.test_case_utils.program.parse import parse_program
 from exactly_lib.test_case_utils.string_transformer import resolvers as line_transformer_resolvers, \
     parse_string_transformer
-from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
+from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.line_source import LineSequence

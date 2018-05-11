@@ -2,8 +2,8 @@ from typing import Sequence, Set, Callable
 
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition
-from exactly_lib.type_system.logic import lines_transformer
-from exactly_lib.type_system.logic.lines_transformer import StringTransformerValue, StringTransformer
+from exactly_lib.type_system.logic import string_transformer
+from exactly_lib.type_system.logic.string_transformer import StringTransformerValue, StringTransformer
 from exactly_lib.type_system.utils import resolving_dependencies_from_sequence
 
 
@@ -30,13 +30,13 @@ class StringTransformerSequenceValue(StringTransformerValue):
         return resolving_dependencies_from_sequence(self._sequence)
 
     def value_when_no_dir_dependencies(self) -> StringTransformer:
-        return lines_transformer.SequenceStringTransformer([
+        return string_transformer.SequenceStringTransformer([
             transformer.value_when_no_dir_dependencies()
             for transformer in self._sequence
         ])
 
-    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> lines_transformer.SequenceStringTransformer:
-        return lines_transformer.SequenceStringTransformer([
+    def value_of_any_dependency(self, home_and_sds: HomeAndSds) -> string_transformer.SequenceStringTransformer:
+        return string_transformer.SequenceStringTransformer([
             transformer.value_of_any_dependency(home_and_sds)
             for transformer in self._sequence
         ])

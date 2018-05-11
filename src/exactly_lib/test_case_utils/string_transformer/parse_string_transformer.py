@@ -12,7 +12,7 @@ from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.parse import parse_reg_ex
 from exactly_lib.test_case_utils.string_transformer import resolvers
 from exactly_lib.test_case_utils.string_transformer.transformers import ReplaceStringTransformer
-from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer
+from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_utils.file_matcher.resolvers import FileMatcherConstantResolver
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
-from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer, SequenceStringTransformer
+from exactly_lib.type_system.logic.string_transformer import IdentityStringTransformer, SequenceStringTransformer
 from exactly_lib.util.symbol_table import singleton_symbol_table_2
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.test_resources import symbol_utils

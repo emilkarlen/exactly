@@ -1,7 +1,7 @@
 from typing import Iterable
 
 from exactly_lib.type_system.logic.line_matcher import LineMatcher, original_and_model_iter_from_file_line_iter
-from exactly_lib.type_system.logic.lines_transformer import StringTransformer, IdentityStringTransformer, \
+from exactly_lib.type_system.logic.string_transformer import StringTransformer, IdentityStringTransformer, \
     SequenceStringTransformer, CustomStringTransformer
 
 
