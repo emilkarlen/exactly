@@ -120,7 +120,7 @@ class TestSelectTransformerResolver(unittest.TestCase):
         line_matcher = LineMatcherConstant(False)
 
         resolved_value = SelectStringTransformer(line_matcher)
-        assertion_on_resolver = asrt_resolver.resolved_value_equals_lines_transformer(
+        assertion_on_resolver = asrt_resolver.resolved_value_equals_string_transformer(
             resolved_value,
             references=asrt.is_empty_sequence)
 
@@ -141,7 +141,7 @@ class TestSelectTransformerResolver(unittest.TestCase):
 
         expected_resolved_value = SelectStringTransformer(symbol.value)
 
-        assertion_on_resolver = asrt_resolver.resolved_value_equals_lines_transformer(
+        assertion_on_resolver = asrt_resolver.resolved_value_equals_string_transformer(
             expected_resolved_value,
             references=asrt.matches_sequence(([
                 is_line_matcher_reference_to(symbol.name)

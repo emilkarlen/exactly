@@ -8,14 +8,14 @@ from exactly_lib_test.test_case_utils.test_resources import resolver_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def resolved_value_equals_lines_transformer(value: StringTransformer,
-                                            references: asrt.ValueAssertion = asrt.is_empty_sequence,
-                                            symbols: symbol_table.SymbolTable = None
-                                            ) -> asrt.ValueAssertion[LogicValueResolver]:
+def resolved_value_equals_string_transformer(value: StringTransformer,
+                                             references: asrt.ValueAssertion = asrt.is_empty_sequence,
+                                             symbols: symbol_table.SymbolTable = None
+                                             ) -> asrt.ValueAssertion[LogicValueResolver]:
     return resolver_assertions.matches_resolver_of_logic_type2(StringTransformerResolver,
                                                                LogicValueType.STRING_TRANSFORMER,
                                                                ValueType.STRING_TRANSFORMER,
                                                                equals_string_transformer(value,
-                                                                                        'resolved lines transformer'),
+                                                                                         'resolved string transformer'),
                                                                references,
                                                                symbols)

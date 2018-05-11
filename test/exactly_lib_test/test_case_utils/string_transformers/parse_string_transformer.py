@@ -27,7 +27,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.source_case import So
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.argument_syntax import \
     syntax_for_replace_transformer, syntax_for_sequence_of_transformers, syntax_for_select_transformer
 from exactly_lib_test.test_case_utils.string_transformers.test_resources.resolver_assertions import \
-    resolved_value_equals_lines_transformer
+    resolved_value_equals_string_transformer
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.quoting import surrounded_by_soft_quotes, surrounded_by_hard_quotes
@@ -293,7 +293,7 @@ class TestParseLineTransformer(unittest.TestCase):
         self._check(
             remaining_source(symbol.name),
             Expectation(
-                resolver=resolved_value_equals_lines_transformer(
+                resolver=resolved_value_equals_string_transformer(
                     value=symbol.value,
                     references=asrt.matches_sequence([is_reference_to_string_transformer(symbol.name)]),
                     symbols=symbols
@@ -351,7 +351,7 @@ class TestParseLineTransformer(unittest.TestCase):
         self._check(
             remaining_source(arguments),
             Expectation(
-                resolver=resolved_value_equals_lines_transformer(
+                resolver=resolved_value_equals_string_transformer(
                     SequenceStringTransformer([
                         symbol_1.value,
                         the_replace_transformer,
@@ -374,8 +374,8 @@ def resolved_value_is_replace_transformer(regex_str: str,
                                           references: asrt.ValueAssertion = asrt.is_empty_sequence
                                           ) -> asrt.ValueAssertion[LogicValueResolver]:
     expected_transformer = replace_transformer(regex_str, replacement_str)
-    return resolved_value_equals_lines_transformer(expected_transformer,
-                                                   references=references)
+    return resolved_value_equals_string_transformer(expected_transformer,
+                                                    references=references)
 
 
 def replace_transformer(regex_str: str, replacement_str: str) -> ReplaceStringTransformer:
@@ -387,16 +387,16 @@ def resolved_value_is_select_regex_transformer(regex_str: str,
                                                references: asrt.ValueAssertion = asrt.is_empty_sequence
                                                ) -> asrt.ValueAssertion[LogicValueResolver]:
     expected_transformer = select_regex_transformer(regex_str)
-    return resolved_value_equals_lines_transformer(expected_transformer,
-                                                   references=references)
+    return resolved_value_equals_string_transformer(expected_transformer,
+                                                    references=references)
 
 
 def resolved_value_is_select_transformer(line_matcher: LineMatcher,
                                          references: asrt.ValueAssertion = asrt.is_empty_sequence
                                          ) -> asrt.ValueAssertion[LogicValueResolver]:
     expected_transformer = select_transformer(line_matcher)
-    return resolved_value_equals_lines_transformer(expected_transformer,
-                                                   references=references)
+    return resolved_value_equals_string_transformer(expected_transformer,
+                                                    references=references)
 
 
 def select_regex_transformer(regex_str: str) -> SelectStringTransformer:
