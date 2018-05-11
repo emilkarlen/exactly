@@ -22,7 +22,7 @@ FILE_MATCHER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
     empty_section_contents())
 
 LINES_TRANSFORMER_DOCUMENTATION = LogicTypeWithExpressionGrammarDocumentation(
-    types.LINES_TRANSFORMER_TYPE_INFO,
+    types.STRING_TRANSFORMER_TYPE_INFO,
     syntax_elements.LINES_TRANSFORMER_SYNTAX_ELEMENT,
     parse_lines_transformer.GRAMMAR,
     empty_section_contents())

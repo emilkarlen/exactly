@@ -42,7 +42,7 @@ class _SymbolConcept(ConceptDocumentation):
 
             'string_type': TYPE_INFO_DICT[ValueType.STRING].identifier,
             'list_type': TYPE_INFO_DICT[ValueType.LIST].identifier,
-            'file_trans_type': TYPE_INFO_DICT[ValueType.LINES_TRANSFORMER].identifier,
+            'file_trans_type': TYPE_INFO_DICT[ValueType.STRING_TRANSFORMER].identifier,
             'max_type_width': max(map(lambda type_info: len(type_info.identifier),
                                       TYPE_INFO_DICT.values())),
             'LIST_SYMBOL': list_symbol_name,

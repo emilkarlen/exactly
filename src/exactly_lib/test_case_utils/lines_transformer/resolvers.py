@@ -56,7 +56,7 @@ class StringTransformerReference(StringTransformerResolver):
     def __init__(self, name_of_referenced_resolver: str):
         self._name_of_referenced_resolver = name_of_referenced_resolver
         self._references = [SymbolReference(name_of_referenced_resolver,
-                                            ValueTypeRestriction(ValueType.LINES_TRANSFORMER))]
+                                            ValueTypeRestriction(ValueType.STRING_TRANSFORMER))]
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         container = symbols.lookup(self._name_of_referenced_resolver)

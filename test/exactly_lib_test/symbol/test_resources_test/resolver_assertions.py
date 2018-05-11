@@ -255,11 +255,11 @@ class _LinesTransformerResolverTestImpl(LogicValueResolver):
 
     @property
     def logic_value_type(self) -> LogicValueType:
-        return LogicValueType.LINES_TRANSFORMER
+        return LogicValueType.STRING_TRANSFORMER
 
     @property
     def value_type(self) -> ValueType:
-        return ValueType.LINES_TRANSFORMER
+        return ValueType.STRING_TRANSFORMER
 
     @property
     def references(self) -> Sequence[SymbolReference]:

@@ -12,8 +12,8 @@ def resolved_value_equals_lines_transformer(value: StringTransformer,
                                             symbols: symbol_table.SymbolTable = None
                                             ) -> asrt.ValueAssertion[LogicValueResolver]:
     return resolver_assertions.matches_resolver_of_logic_type2(StringTransformerResolver,
-                                                               LogicValueType.LINES_TRANSFORMER,
-                                                               ValueType.LINES_TRANSFORMER,
+                                                               LogicValueType.STRING_TRANSFORMER,
+                                                               ValueType.STRING_TRANSFORMER,
                                                                equals_lines_transformer(value,
                                                                                         'resolved lines transformer'),
                                                                references,

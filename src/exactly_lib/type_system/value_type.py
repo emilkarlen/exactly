@@ -15,7 +15,7 @@ class DataValueType(Enum):
 class LogicValueType(Enum):
     LINE_MATCHER = 1
     FILE_MATCHER = 2
-    LINES_TRANSFORMER = 3
+    STRING_TRANSFORMER = 3
     PROGRAM = 4
 
 
@@ -26,7 +26,7 @@ class ValueType(Enum):
 
     LINE_MATCHER = 3
     FILE_MATCHER = 4
-    LINES_TRANSFORMER = 5
+    STRING_TRANSFORMER = 5
     PROGRAM = 6
 
 
@@ -37,6 +37,6 @@ VALUE_TYPE_2_TYPE_CATEGORY = {
 
     ValueType.FILE_MATCHER: TypeCategory.LOGIC,
     ValueType.LINE_MATCHER: TypeCategory.LOGIC,
-    ValueType.LINES_TRANSFORMER: TypeCategory.LOGIC,
+    ValueType.STRING_TRANSFORMER: TypeCategory.LOGIC,
     ValueType.PROGRAM: TypeCategory.LOGIC,
 }

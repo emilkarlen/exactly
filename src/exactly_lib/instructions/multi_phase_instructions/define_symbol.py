@@ -280,7 +280,7 @@ _TYPE_SETUPS = {
     types.LIST_TYPE_INFO.identifier: _parse_not_whole_line(parse_list.parse_list_from_token_parser),
     types.LINE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_line_matcher),
     types.FILE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_file_matcher),
-    types.LINES_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_lines_transformer),
+    types.STRING_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_lines_transformer),
     types.PROGRAM_TYPE_INFO.identifier: _parse_program,
 }
 
