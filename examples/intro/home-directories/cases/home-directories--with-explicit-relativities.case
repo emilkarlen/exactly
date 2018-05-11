@@ -25,7 +25,7 @@ home     = ..
 [setup]
 
 
-install -rel-home testdata/test-file.txt
+copy -rel-home testdata/test-file.txt
 
 
 [act]

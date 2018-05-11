@@ -6,11 +6,11 @@ dir a-directory
 dir even/more/directories
 
 #
-# "install" installs existing files and directories into the
-# temporary execution directory.
+# "copy" copies existing files and directories into the
+# temporary sandbox directory.
 #
 
-install dir-with-1-dir-and-2-plain-files
+copy dir-with-1-dir-and-2-plain-files
 
 
 [act]

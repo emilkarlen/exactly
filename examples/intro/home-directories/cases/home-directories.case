@@ -33,7 +33,7 @@ home     = ..
 
 # The "install" instruction looks for referenced files in the "case home" directory.
 
-install testdata/test-file.txt
+copy testdata/test-file.txt
 
 
 [act]

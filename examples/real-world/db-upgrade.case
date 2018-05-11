@@ -26,7 +26,7 @@ def string  ALW_SCRIPT_FILE = 300-NR-123-something-ALWAYS-001.sql
 
 run create-invocation_registry-table
 
-install @[SCRIPTS_ROOT_SETUP_DIR]@ @[SCRIPTS_ROOT]@
+copy @[SCRIPTS_ROOT_SETUP_DIR]@ @[SCRIPTS_ROOT]@
 
 file @[SCRIPTS_DIR]@/@[DDL_SCRIPT_FILE]@ = "INSERT INTO invocation_registry(step, name) VALUES (null, '@[DDL_SCRIPT_FILE]@');"
 

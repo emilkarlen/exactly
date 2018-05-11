@@ -393,7 +393,7 @@ it just displays some of Exactly's features.)
     [setup]
 
 
-    install this-is-an-existing-file-in-same-dir-as-test-case.txt
+    copy this-is-an-existing-file-in-same-dir-as-test-case.txt
 
     dir first/second/third
 

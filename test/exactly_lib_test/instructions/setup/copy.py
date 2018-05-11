@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.instructions.setup import install as sut
+from exactly_lib.instructions.setup import copy as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelHomeOptionType

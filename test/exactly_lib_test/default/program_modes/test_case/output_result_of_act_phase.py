@@ -81,7 +81,7 @@ class WhenValidationFailsThenOutputShouldBeAsWithoutActOption(SetupWithoutPrepro
         test_case_source = """\
 [setup]
 
-install non-existing-file
+copy non-existing-file
 
 [act]
 
