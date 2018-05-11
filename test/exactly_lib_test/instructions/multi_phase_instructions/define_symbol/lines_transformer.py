@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.instructions.multi_phase_instructions import define_symbol as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.test_case_utils.lines_transformer.parse_lines_transformer import REPLACE_TRANSFORMER_NAME, \
+from exactly_lib.test_case_utils.lines_transformer.parse_string_transformer import REPLACE_TRANSFORMER_NAME, \
     SEQUENCE_OPERATOR_NAME
 from exactly_lib.test_case_utils.lines_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.lines_transformer import IdentityStringTransformer, SequenceStringTransformer

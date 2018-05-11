@@ -4,7 +4,7 @@ from exactly_lib.section_document import parser_classes
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
-from exactly_lib.test_case_utils.lines_transformer import parse_lines_transformer
+from exactly_lib.test_case_utils.lines_transformer import parse_string_transformer
 from exactly_lib.test_case_utils.program import syntax_elements
 from exactly_lib.test_case_utils.program.parse import parse_executable_file, parse_system_program, \
     parse_shell_command, parse_with_reference_to_program
@@ -21,7 +21,7 @@ def parse_program(parser: TokenParser) -> ProgramResolver:
     program = _parse_simple_program(parser)
 
     def parse_transformer(_parser: TokenParser) -> ProgramResolver:
-        transformer = parse_lines_transformer.parse_string_transformer_from_token_parser(_parser)
+        transformer = parse_string_transformer.parse_string_transformer_from_token_parser(_parser)
         parser.require_is_at_eol('Unexpected arguments after ' + types.STRING_TRANSFORMER_TYPE_INFO.name.singular)
         parser.consume_current_line_as_string_of_remaining_part_of_current_line()
         return program.new_with_appended_transformations([transformer])
