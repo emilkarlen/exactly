@@ -1,8 +1,6 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.test_case_utils.string_transformer import parse_string_transformer
 from exactly_lib.util.cli_syntax.option_syntax import option_syntax
-from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import \
-    syntax_for_arbitrary_line_matcher_without_symbol_references
 
 
 def syntax_for_transformer_option(transformer_expression: str) -> str:
@@ -26,10 +24,6 @@ def syntax_for_select_transformer(line_matcher: str) -> str:
         parse_string_transformer.SELECT_TRANSFORMER_NAME,
         line_matcher,
     ])
-
-
-def syntax_for_arbitrary_lines_transformer_without_symbol_references() -> str:
-    return syntax_for_select_transformer(syntax_for_arbitrary_line_matcher_without_symbol_references())
 
 
 def syntax_for_sequence_of_transformers(transformer_syntax_list: list) -> str:
