@@ -24,7 +24,7 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
         _ALineMatchesRegEx,
         _AWholeLineMatchesRegEx,
 
-        _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents,
+        _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents,
     ]
     return unittest.TestSuite([
         test_case_constructor(configuration)
@@ -74,7 +74,7 @@ class _AWholeLineMatchesRegEx(TestCaseBase):
         )
 
 
-class _WhenLinesTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(TestCaseBase):
+class _WhenStringTransformerIsGivenThenComparisonShouldBeAppliedToTransformedContents(TestCaseBase):
     def runTest(self):
         # ARRANGE #
         named_transformer = NameAndValue('the_transformer',
