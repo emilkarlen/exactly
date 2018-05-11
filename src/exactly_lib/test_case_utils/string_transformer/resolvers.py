@@ -4,7 +4,7 @@ from exactly_lib.symbol.resolver_structure import StringTransformerResolver, Lin
 from exactly_lib.symbol.restriction import ValueTypeRestriction
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_utils.string_transformer import transformers
-from exactly_lib.type_system.logic import lines_transformer_values
+from exactly_lib.type_system.logic import string_transformer_values
 from exactly_lib.type_system.logic.string_transformer import StringTransformer, StringTransformerValue
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.symbol_table import SymbolTable
@@ -16,7 +16,7 @@ class StringTransformerConstant(StringTransformerResolver):
     """
 
     def __init__(self, value: StringTransformer):
-        self._value = lines_transformer_values.StringTransformerConstantValue(value)
+        self._value = string_transformer_values.StringTransformerConstantValue(value)
 
     def resolve(self, symbols: SymbolTable) -> StringTransformerValue:
         return self._value
@@ -81,7 +81,7 @@ class StringTransformerSelectResolver(StringTransformerResolver):
         self.line_matcher_resolver = line_matcher_resolver
 
     def resolve(self, symbols: SymbolTable) -> StringTransformer:
-        return lines_transformer_values.StringTransformerConstantValue(
+        return string_transformer_values.StringTransformerConstantValue(
             transformers.SelectStringTransformer(self.line_matcher_resolver.resolve(symbols)))
 
     @property
