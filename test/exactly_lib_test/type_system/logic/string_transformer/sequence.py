@@ -12,7 +12,7 @@ from exactly_lib_test.test_case_file_structure.test_resources_test.dir_dependent
     MultiDirDependentValueTestImpl
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources.line_transformers import \
+from exactly_lib_test.type_system.logic.test_resources.string_transformers import \
     MyNonIdentityTransformer, MyToUppercaseTransformer, MyCountNumUppercaseCharactersTransformer
 
 

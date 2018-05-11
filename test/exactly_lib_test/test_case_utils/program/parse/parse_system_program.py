@@ -31,8 +31,8 @@ from exactly_lib_test.test_resources.arguments_building import ArgumentElementRe
 from exactly_lib_test.test_resources.file_structure import FileSystemElement, empty_file, DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.type_system.logic.test_resources import line_transformer_assertions as asrt_line_transformer
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val
+from exactly_lib_test.type_system.logic.test_resources import string_transformer_assertions as asrt_line_transformer
 from exactly_lib_test.util.test_resources import command_assertions as asrt_command
 
 

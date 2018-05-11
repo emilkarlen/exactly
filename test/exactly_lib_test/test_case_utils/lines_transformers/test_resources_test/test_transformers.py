@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.test_case_utils.lines_transformers.test_resources import resolver_assertions as sut
-from exactly_lib_test.type_system.logic.test_resources import line_transformers as sut
+from exactly_lib_test.type_system.logic.test_resources import string_transformers as sut
 
 
 def suite() -> unittest.TestSuite:
