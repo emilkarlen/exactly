@@ -8,7 +8,6 @@ def report_suite_read_error(ex: SuiteReadError,
                             stdout_printer: FilePrinter,
                             stderr_printer: FilePrinter,
                             exit_value: ExitValue,
-
                             ) -> int:
     stdout_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
     stdout_printer.file.flush()
