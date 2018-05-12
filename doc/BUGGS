@@ -1,0 +1,41 @@
+-*- org -*-
+
+* Bug: contents: FAIL when ACTUAL-FILE -rel-act-home does not exist
+<2018-05-12 Sat>
+Should be VALIDATE error.
+Apparently, only EXPECTED-FILE is checked for existence pre-sds,
+but not ACTUAL-FILE.
+* Bug Exception: 'ascii' codec can't decode byte
+----------------------------------------
+$ xly empty-interval.case 
+IMPLEMENTATION_ERROR
+In [assert]
+empty-interval.case, line 42
+
+contents airports.csv
+         -transformed-by select line-num <= 10
+         equals
+         -file expected/airports.csv
+
+Exception:
+'ascii' codec can't decode byte 0xc3 in position 118: ordinal not in range(128)
+----------------------------------------
+** One failing part is the application of the string-stransformer in
+instructions.assert_.utils.file_contents.parts.file_assertion_part.FileToCheck#_write_transformed_contents
+
+This will give HARD_ERROR
+----------------------------------------
+    def _write_transformed_contents(self):
+        try:
+            with self._transformed_file_path.open('w') as dst_file:
+                with self.lines() as lines:
+                    for line in lines:
+                        dst_file.write(line)
+        except ValueError as ex:
+            raise PfhHardErrorException(str(ex))
+----------------------------------------
+** ... but there is also an undentified failing part
+which is, at least, not
+----------------------------------------
+exactly_lib.instructions.assert_.utils.file_contents.parts.equality.EqualityContentsAssertionPart#_do_compare
+----------------------------------------
