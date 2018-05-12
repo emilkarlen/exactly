@@ -1,0 +1,59 @@
+-*- org -*-
+
+* Nu: varje fil direkt i DIR
+
+* För varje fil i DIR (direkt/indirekt)
+
+* (För alla|Det finns) x in DIR : P(x)
+
+* dbup: För varje f in {-R *.sql} : ÄrFil(f) && HarRättNamn(f)
+
+* delar
+** mängd kataloger att applicera dir-predikat på
+*** glob pattern?
+*** rot-katalogen, enbart
+*** underkataloger som uppfyller villkor
+**** alla sub med namn N
+**** alla sub fler än två nivåer ner
+** mängd filer i katalogen att applicera fil-mängds-predikat på
+*** Kan inkludera både filer och kataloger
+*** Rekursivt eller ej
+** enskild-fil-predikat
+** filmängspredikat : empty|num-files|(any|every) file FIL-INNUTI-PREDIKAT
+
+
+DIR-CONTENTS-ASSERTION ::= DIR-SET-EXPR QUANTIFICATION DIR-PREDICATE
+                       ::| DIR                         DIR-PREDICATE
+
+DIR-SET-EXPR       ::= GLOB-PATTERN [&& type dir, time|owner...]
+
+DIR-PREDICATE      ::= FILE-SET-EXPR FILE-SET-PREDICATE
+                   ::| DIR-CONTENTS-ASSERTION
+
+FILE-SET-PREDICATE ::= empty
+                   ::| num-files
+                   ::| QUANTIFICATION FILE-PREDICATE
+
+FILE-PREDICATE     ::= FILE-OUTSIDE-PREDICATE
+                   ::| FILE-INSIDE-PREDICATE
+                   ::| && || ! ( ... )
+
+* Exempel
+** 'A SQL file name must have structure NNN-informative_name-(DDL|DML)-NNN.sql'
+*** Nu
+dir-contents @[SCRIPTS_DIR]@
+             -selection IS_SQL_FILE && ! FILE_NAME_HAS_EXPECTED_STRUCTURE
+             empty
+**** Kommentar: uttrycket är negativt - anger hur det _inte_ ska vara
+*** Vill - uttrycka villkoret positivt - hur det _ska_ vara
+dir-contents @[SCRIPTS_DIR]@ -selection IS_SQL_FILE : every file :   FILE_NAME_HAS_EXPECTED_STRUCTURE
+                                                      QUANTIFICATION FILE-PREDICATE------------------
+                             FILE-SET-EXPR---------   FILE-SET-PREDICATE-----------------------------
+             DIR-SET-EXPR--- DIR-PREDICATE-----------------------------------------------------------
+                             
+**** Liknande assertions
+dir-contents @[SCRIPTS_DIR]@ : every file : FILE_NAME_HAS_EXPECTED_STRUCTURE
+
+DIR-SET-EXPR	= single dir : @[SCRIPTS_DIR]@
+DIR-PREDICATE	= (QANTIFICATION (every file)) [in] (FILE-SET-EXPR = all files) (FILE-PREDICATE FILE_NAME_HAS_EXPECTED_STRUCTURE)
+
