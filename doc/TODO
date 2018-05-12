@@ -1,5 +1,3 @@
--*- org -*-
-
 * Ref Man: Concept "symbol"
 Examples of symbol references may now use new lines in instr args
 to improve readability.
