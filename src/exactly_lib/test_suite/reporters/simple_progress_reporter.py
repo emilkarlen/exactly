@@ -1,13 +1,15 @@
 import datetime
 import os
 import pathlib
+from typing import Dict, List, Tuple
 
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing, exit_values as test_case_exit_values
 from exactly_lib.processing.test_case_processing import Status
 from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
-from exactly_lib.util.std import StdOutputFiles, FilePrinter
+from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
 from exactly_lib.util.timedelta_format import elapsed_time_value_and_unit
 
 SUCCESS_STATUSES = {FullResultStatus.PASS,
@@ -40,7 +42,7 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
                  processing_info: TestCaseProcessingInfo):
         exit_value = test_case_exit_values.from_result(processing_info.result)
         self.output_file.write('(%fs) ' % processing_info.duration.total_seconds())
-        self.output_file.write_line(exit_value.exit_identifier)
+        self.output_file.write_colored_line(exit_value.exit_identifier, exit_value.color)
 
     def _file_path_pres(self, file: pathlib.Path):
         try:
@@ -64,8 +66,8 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
                  std_output_files: StdOutputFiles,
                  root_suite_dir_abs_path: pathlib.Path):
         self._std_output_files = std_output_files
-        self._output_file = FilePrinter(std_output_files.out)
-        self._error_file = FilePrinter(std_output_files.err)
+        self._output_file = file_printer_with_color_if_terminal(std_output_files.out)
+        self._error_file = file_printer_with_color_if_terminal(std_output_files.err)
         self._sub_reporters = []
         self._start_time = None
         self._total_time_timedelta = None
@@ -93,22 +95,21 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         lines.insert(0, '')
         self._error_file.write_line(os.linesep.join(lines))
         self._std_output_files.err.flush()
-        self._output_file.write_line(exit_value.exit_identifier)
+        self._output_file.write_colored_line(exit_value.exit_identifier, exit_value.color)
         return exit_value.exit_code
 
-    def _valid_suite_exit_value(self) -> (int, dict, exit_values.ExitValue):
+    def _valid_suite_exit_value(self) -> Tuple[int, Dict[ExitValue, int], exit_values.ExitValue]:
         errors = {}
 
         def add_error(exit_value: exit_values.ExitValue):
-            identifier = exit_value.exit_identifier
-            current = errors.setdefault(identifier, 0)
-            errors[identifier] = current + 1
+            current = errors.setdefault(exit_value, 0)
+            errors[exit_value] = current + 1
 
         num_tests = 0
         exit_value = exit_values.ALL_PASS
         for suite_reporter in self._sub_reporters:
             assert isinstance(suite_reporter, reporting.SubSuiteReporter)
-            for case, processing_info in suite_reporter.result():
+            for case_setup, processing_info in suite_reporter.result():
                 result = processing_info.result
                 num_tests += 1
                 case_exit_value = test_case_exit_values.from_result(result)
@@ -123,7 +124,7 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
 
 def format_final_result_for_valid_suite(num_cases: int,
                                         elapsed_time: datetime.timedelta,
-                                        errors: dict) -> list:
+                                        errors: Dict[ExitValue, int]) -> List[str]:
     """
     :return: The list of lines that should be reported.
     """
@@ -136,13 +137,14 @@ def format_final_result_for_valid_suite(num_cases: int,
         ret_val.append(''.join(elapsed_time_value_and_unit(elapsed_time)))
         return ' '.join(ret_val)
 
-    def error_lines() -> list:
+    def error_lines() -> List[str]:
         ret_val = []
-        sorted_exit_identifiers = sorted(errors.keys())
-        max_ident_len = max(map(len, sorted_exit_identifiers))
+        sorted_exit_values = sorted(errors.keys(), key=ExitValue.exit_identifier.fget)
+        exit_identifiers = map(ExitValue.exit_identifier.fget, errors.keys())
+        max_ident_len = max(map(len, exit_identifiers))
         format_str = '%-' + str(max_ident_len) + 's : %d'
-        for ident in sorted_exit_identifiers:
-            ret_val.append(format_str % (ident, errors[ident]))
+        for exit_value in sorted_exit_values:
+            ret_val.append(format_str % (exit_value.exit_identifier, errors[exit_value]))
         return ret_val
 
     ret_val = []

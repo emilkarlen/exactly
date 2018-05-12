@@ -9,7 +9,7 @@ from exactly_lib.execution.result import FullResultStatus, FullResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
-from exactly_lib.util.std import StdOutputFiles, FilePrinter
+from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
 
 
 class _FullExecutionHandler:
@@ -17,11 +17,16 @@ class _FullExecutionHandler:
 
     def __init__(self,
                  exit_value: ExitValue,
-                 output_files: StdOutputFiles):
+                 output_files: StdOutputFiles,
+                 out_printer: FilePrinter,
+                 err_printer: FilePrinter,
+                 ):
         self.exit_value = exit_value
         self._std = output_files
         self._out_printer = FilePrinter(output_files.out)
         self._err_printer = FilePrinter(output_files.err)
+        self._out_printer = out_printer
+        self._err_printer = err_printer
 
     def handle(self, result: FullResult):
         status = result.status
@@ -37,13 +42,13 @@ class _FullExecutionHandler:
     def complete(self, result: FullResult):
         raise NotImplementedError('abstract method')
 
-    def skipped(self, result: FullResult):
+    def skipped(self, result: FullResult) -> int:
         return self._default_non_complete_execution(result)
 
-    def validation(self, result: FullResult):
+    def validation(self, result: FullResult) -> int:
         return self._default_non_complete_execution(result)
 
-    def hard_error_or_implementation_error(self, result: FullResult):
+    def hard_error_or_implementation_error(self, result: FullResult) -> int:
         return self._default_non_complete_execution(result)
 
     def _default_non_complete_execution(self, result: FullResult) -> int:
@@ -57,23 +62,20 @@ class ResultReporter:
 
     def __init__(self, output_files: StdOutputFiles):
         self._std = output_files
-        self._out_printer = FilePrinter(output_files.out)
-        self._err_printer = FilePrinter(output_files.err)
+        self._out_printer = file_printer_with_color_if_terminal(output_files.out)
+        self._err_printer = file_printer_with_color_if_terminal(output_files.err)
 
 
 class TestSuiteSyntaxErrorReporter(ResultReporter):
-    """Reports the result of the execution via exitcode, stdout, stderr."""
-
     def report(self, ex: SuiteSyntaxError) -> int:
         from exactly_lib.test_suite.error_reporting import report_suite_read_error
-        return report_suite_read_error(ex, self._out_printer,
+        return report_suite_read_error(ex,
+                                       self._out_printer,
                                        self._err_printer,
                                        exit_values.NO_EXECUTION__SYNTAX_ERROR)
 
 
 class TestCaseResultReporter(ResultReporter):
-    """Reports the result of the execution via exitcode, stdout, stderr."""
-
     def report(self, result: test_case_processing.Result) -> int:
         exit_value = exit_values.from_result(result)
         if result.status is test_case_processing.Status.EXECUTED:
@@ -93,7 +95,7 @@ class TestCaseResultReporter(ResultReporter):
     def _report_unable_to_execute(self,
                                   exit_value: ExitValue,
                                   error_info: ErrorInfo) -> int:
-        self._out_printer.write_line(exit_value.exit_identifier)
+        self._out_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
         print_error_info(self._err_printer, error_info)
         return exit_value.exit_code
 
@@ -105,7 +107,8 @@ class _ResultReporterForNormalOutput(TestCaseResultReporter):
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: full_execution.FullResult) -> int:
-        self._out_printer.write_line(result.status.name)
+        self._out_printer.write_colored_line(result.status.name,
+                                             exit_value.color)
         print_error_message_for_full_result(self._err_printer, result)
         return exit_value.exit_code
 
@@ -124,7 +127,10 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: full_execution.FullResult) -> int:
-        handler = _FullExecutionHandlerForPreserveAndPrintSandboxDir(exit_value, self._std)
+        handler = _FullExecutionHandlerForPreserveAndPrintSandboxDir(exit_value,
+                                                                     self._std,
+                                                                     self._out_printer,
+                                                                     self._err_printer)
         return handler.handle(result)
 
 
@@ -149,15 +155,16 @@ class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
 
 
 class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
-    """Reports the result of the execution via exitcode, stdout, stderr."""
-
     def depends_on_result_in_sandbox(self) -> bool:
         return True
 
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: full_execution.FullResult) -> int:
-        handler = _FullExecutionHandlerForActPhaseOutput(exit_value, self._std)
+        handler = _FullExecutionHandlerForActPhaseOutput(exit_value,
+                                                         self._std,
+                                                         self._out_printer,
+                                                         self._err_printer)
         return handler.handle(result)
 
 
