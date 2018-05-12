@@ -97,13 +97,13 @@ A phase can be declared more than once.
 
 Contents of multiple declarations are merged, and executed in the order it appears in the file.
 
-Here, {instruction[exitcode]} is executed before {instruction[stderr]}:
+Here, {instruction[exit_code]} is executed before {instruction[stderr]}:
 
 
 ```
 [assert]
 
-exitcode == 0
+exit-code == 0
 
 [act]
 

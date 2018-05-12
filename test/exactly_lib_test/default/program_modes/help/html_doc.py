@@ -33,7 +33,7 @@ def suite_that_does_require_main_program_runner(main_program_runner: MainProgram
 
 def _main_program_test_cases() -> list:
     return [
-        ProcessTestCase('Generation of html-doc SHOULD exit with 0 exitcode '
+        ProcessTestCase('Generation of html-doc SHOULD exit with 0 exit code '
                         'AND output html',
                         PlainArrangement([HELP_COMMAND] + arguments_for.html_doc()),
                         asrt.And([

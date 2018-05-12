@@ -122,7 +122,7 @@ _REPORTER_OPTION = arg.short_long_option(long_name=opts.OPTION_FOR_REPORTER__LON
 
 _REPORTER_OPTION_DESCRIPTION = """\
 Specifies in which format to report the execution of the test suite
-(stdout, stderr, exitcode).
+(stdout, stderr, exit code).
 
 
 Options: {reporter_name_list} (default {default_reporter_name}).
