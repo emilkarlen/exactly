@@ -3,6 +3,7 @@ from contextlib import contextmanager
 
 from exactly_lib.instructions.assert_.utils.assertion_part import AssertionPart
 from exactly_lib.instructions.assert_.utils.file_contents.actual_files import FilePropertyDescriptorConstructor
+from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhHardErrorException
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
@@ -88,10 +89,13 @@ class FileToCheck:
                 yield self._string_transformer.transform(f)
 
     def _write_transformed_contents(self):
-        with self._transformed_file_path.open('w') as dst_file:
-            with self.lines() as lines:
-                for line in lines:
-                    dst_file.write(line)
+        try:
+            with self._transformed_file_path.open('w') as dst_file:
+                with self.lines() as lines:
+                    for line in lines:
+                        dst_file.write(line)
+        except ValueError as ex:
+            raise PfhHardErrorException(str(ex))
 
 
 class FileContentsAssertionPart(AssertionPart):
