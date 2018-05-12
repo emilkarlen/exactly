@@ -9,18 +9,18 @@ from exactly_lib.instructions.assert_.utils.file_contents.parts.file_assertion_p
     FileToCheck
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import PfhFailException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
+from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
+from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator, \
+    PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.test_case_utils.err_msg import diff_msg
 from exactly_lib.test_case_utils.err_msg.diff_msg import ActualInfo
 from exactly_lib.test_case_utils.err_msg.diff_msg_utils import DiffFailureInfoResolver
 from exactly_lib.test_case_utils.file_properties import must_exist_as, FileType
 from exactly_lib.test_case_utils.file_ref_check import FileRefCheckValidator, FileRefCheck
 from exactly_lib.test_case_utils.parse.parse_here_doc_or_file_ref import ExpectedValueResolver
-from exactly_lib.symbol.program.string_or_file import StringOrFileRefResolver
-from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator, \
-    PreOrPostSdsValidator, SingleStepValidator, ValidationStep
 from exactly_lib.util import file_utils
 from exactly_lib.util.file_utils import tmp_text_file_containing
 from exactly_lib.util.logic_types import ExpectationType
