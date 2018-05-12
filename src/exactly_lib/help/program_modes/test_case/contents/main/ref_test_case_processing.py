@@ -85,7 +85,7 @@ A test case file is processed in a number of steps,
 where the actual execution of the test is the last step.
 
 
-The outcome is reported by an exitcode and an identifier printed as a single line on stdout.
+The outcome is reported by an exit code and an identifier printed as a single line on stdout.
 
 
 If a step before the execution fails, then the outcome is reported and the processing is halted.

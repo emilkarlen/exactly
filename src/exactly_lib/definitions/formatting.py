@@ -94,7 +94,7 @@ class AnyInstructionNameDictionary(dict):
     """
 
     def __getitem__(self, key):
-        return InstructionName(key)
+        return InstructionName(str(key).replace('_', '-'))
 
 
 def cli_option(s: str) -> str:

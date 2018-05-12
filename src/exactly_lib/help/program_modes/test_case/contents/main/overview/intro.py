@@ -40,7 +40,7 @@ A test case is written as a plain text file:
 
 [assert]
 
-exitcode == 0
+exit-code == 0
 
 stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
 Hello, World!

@@ -29,7 +29,7 @@ By default, it must contain a single command line.
 
 
 All other phases contain "instructions".
-E.g., "exitcode" and "stdout" are instructions of the {phase[assert]} phase.
+E.g., "exit-code" and "stdout" are instructions of the {phase[assert]} phase.
 
 
 The instructions in the {phase[assert]} phase determines the outcome of the test case.
