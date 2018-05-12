@@ -1,6 +1,11 @@
+import sys
+
 import os
 import subprocess
-import sys
+from typing import Optional
+
+from exactly_lib.util import ansi_terminal_color as ansi
+from exactly_lib.util.ansi_terminal_color import ForegroundColor
 
 
 class StdOutputFiles:
@@ -58,6 +63,10 @@ class FilePrinter:
         self.file.write(line)
         self.file.write(os.linesep)
 
+    def write_colored_line(self, line: str, color: Optional[ForegroundColor]):
+        self.file.write(line)
+        self.file.write(os.linesep)
+
     def write_empty_line(self):
         self.file.write(os.linesep)
 
@@ -68,3 +77,16 @@ class FilePrinter:
     def write_lines(self, lines: iter):
         for line in lines:
             self.write_line(line)
+
+
+class FilePrinterWithAnsiColor(FilePrinter):
+    def write_colored_line(self, line: str, color: Optional[ForegroundColor]):
+        s = ansi.ansi_escape(color, line) if color else line
+        self.file.write(s)
+        self.file.write(os.linesep)
+
+
+def file_printer_with_color_if_terminal(file_object) -> FilePrinter:
+    return (FilePrinterWithAnsiColor(file_object)
+            if ansi.is_file_object_with_color(file_object)
+            else FilePrinter(file_object))

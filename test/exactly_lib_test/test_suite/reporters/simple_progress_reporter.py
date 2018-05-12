@@ -3,6 +3,7 @@ import re
 import unittest
 from pathlib import Path
 
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution import result
 from exactly_lib.processing import test_case_processing, exit_values as case_ev
 from exactly_lib.test_suite import execution
@@ -10,6 +11,7 @@ from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
+from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.string import lines_content_with_os_linesep
 from exactly_lib_test.execution.test_resources.full_result_values import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR
@@ -118,8 +120,8 @@ class TestFinalResultFormatting(unittest.TestCase):
         # ARRANGE #
         elapsed_time = datetime.timedelta(seconds=1)
         num_test_cases = 6
-        errors = {'identifier_4': 4,
-                  'longer_identifier_12': 12,
+        errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED): 4,
+                  ExitValue(12, 'longer_identifier_12', ForegroundColor.RED): 12,
                   }
         # ACT #
         actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time, errors)

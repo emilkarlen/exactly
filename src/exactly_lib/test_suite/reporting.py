@@ -1,7 +1,9 @@
 import datetime
 import pathlib
+from typing import Tuple, List
 
 from exactly_lib.processing import test_case_processing
+from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.util.std import StdOutputFiles
 from . import structure
 
@@ -74,10 +76,7 @@ class SubSuiteReporter:
     def start_time(self) -> datetime.datetime:
         return self._start_time
 
-    def result(self) -> list:
-        """
-        :rtype: [(TestCaseSetup, TestCaseProcessingInfo)]
-        """
+    def result(self) -> List[Tuple[TestCaseSetup, TestCaseProcessingInfo]]:
         return self._result
 
 
