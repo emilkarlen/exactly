@@ -6,6 +6,7 @@ from pathlib import Path
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution import result
 from exactly_lib.processing import test_case_processing, exit_values as case_ev
+from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_suite import execution
 from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite import structure
@@ -108,7 +109,9 @@ class TestFinalResultFormatting(unittest.TestCase):
         num_test_cases = 5
         errors = {}
         # ACT #
-        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time, errors)
+        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
+                                                               Path.cwd().resolve(),
+                                                               errors)
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
@@ -120,17 +123,54 @@ class TestFinalResultFormatting(unittest.TestCase):
         # ARRANGE #
         elapsed_time = datetime.timedelta(seconds=1)
         num_test_cases = 6
-        errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED): 4,
-                  ExitValue(12, 'longer_identifier_12', ForegroundColor.RED): 12,
-                  }
+        rel_root = Path.cwd().resolve()
+        errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED):
+            [
+                TestCaseSetup(Path('case-1'), rel_root / Path('fip-1')),
+                TestCaseSetup(Path('case-2'), rel_root / Path('fip-2')),
+            ],
+            ExitValue(12, 'longer_identifier_12', ForegroundColor.RED):
+                [
+                    TestCaseSetup(Path('case-3'), rel_root / Path('fip-3')),
+                ],
+        }
         # ACT #
-        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time, errors)
+        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
+                                                               rel_root,
+                                                               errors)
         # ASSERT #
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertListEqual(['',
-                              'identifier_4         : 4',
-                              'longer_identifier_12 : 12',
+                              'identifier_4',
+                              '  ' + str(Path('fip-1') / Path('case-1')),
+                              '  ' + str(Path('fip-2') / Path('case-2')),
+                              'longer_identifier_12',
+                              '  ' + str(Path('fip-3') / Path('case-3')),
+                              ],
+                             actual_lines[1:],
+                             'Lines after "Ran ..."')
+
+    def test_with_error_of_path_below_relativity_root(self):
+        # ARRANGE #
+        elapsed_time = datetime.timedelta(seconds=1)
+        num_test_cases = 6
+        rel_root = Path.cwd().resolve()
+        errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED):
+            [
+                TestCaseSetup(Path('case-1'), rel_root.parent / Path('fip-1')),
+            ],
+        }
+        # ACT #
+        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
+                                                               rel_root,
+                                                               errors)
+        # ASSERT #
+        self._assert_at_least_one_line_was_generated(actual_lines)
+        self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
+        self.assertListEqual(['',
+                              'identifier_4',
+                              '  ' + str(rel_root.parent / Path('fip-1') / Path('case-1')),
                               ],
                              actual_lines[1:],
                              'Lines after "Ran ..."')

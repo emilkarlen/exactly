@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing, exit_values as test_case_exit_values
-from exactly_lib.processing.test_case_processing import Status
+from exactly_lib.processing.test_case_processing import Status, TestCaseSetup
 from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
@@ -25,7 +25,7 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
                  root_suite_dir_abs_path: pathlib.Path):
         self.output_file = output_file
         self.suite = suite
-        self.root_suite_dir_abs_path = root_suite_dir_abs_path
+        self._rel_path_presenter = _RelPathPresenter(root_suite_dir_abs_path)
 
     def suite_begin(self):
         self.output_file.write_line('suite ' + self._file_path_pres(self.suite.source_file) + ': begin')
@@ -45,8 +45,16 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
         self.output_file.write_colored_line(exit_value.exit_identifier, exit_value.color)
 
     def _file_path_pres(self, file: pathlib.Path):
+        return self._rel_path_presenter.present(file)
+
+
+class _RelPathPresenter:
+    def __init__(self, relativity_root_abs_path: pathlib.Path):
+        self.relativity_root_abs_path = relativity_root_abs_path
+
+    def present(self, file: pathlib.Path) -> str:
         try:
-            return str(file.relative_to(self.root_suite_dir_abs_path))
+            return str(file.relative_to(self.relativity_root_abs_path))
         except ValueError:
             return str(file)
 
@@ -91,19 +99,21 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
 
     def report_final_results(self) -> int:
         num_cases, errors, exit_value = self._valid_suite_exit_value()
-        lines = format_final_result_for_valid_suite(num_cases, self._total_time_timedelta, errors)
+        lines = format_final_result_for_valid_suite(num_cases, self._total_time_timedelta,
+                                                    self._root_suite_dir_abs_path,
+                                                    errors)
         lines.insert(0, '')
         self._error_file.write_line(os.linesep.join(lines))
         self._std_output_files.err.flush()
         self._output_file.write_colored_line(exit_value.exit_identifier, exit_value.color)
         return exit_value.exit_code
 
-    def _valid_suite_exit_value(self) -> Tuple[int, Dict[ExitValue, int], exit_values.ExitValue]:
+    def _valid_suite_exit_value(self) -> Tuple[int, Dict[ExitValue, List[TestCaseSetup]], exit_values.ExitValue]:
         errors = {}
 
-        def add_error(exit_value: exit_values.ExitValue):
-            current = errors.setdefault(exit_value, 0)
-            errors[exit_value] = current + 1
+        def add_error(exit_value: exit_values.ExitValue, case: TestCaseSetup):
+            current = errors.setdefault(exit_value, [])
+            current.append(case)
 
         num_tests = 0
         exit_value = exit_values.ALL_PASS
@@ -115,19 +125,21 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
                 case_exit_value = test_case_exit_values.from_result(result)
                 if result.status is not Status.EXECUTED:
                     exit_value = exit_values.FAILED_TESTS
-                    add_error(case_exit_value)
+                    add_error(case_exit_value, case_setup)
                 elif result.execution_result.status not in SUCCESS_STATUSES:
                     exit_value = exit_values.FAILED_TESTS
-                    add_error(case_exit_value)
+                    add_error(case_exit_value, case_setup)
         return num_tests, errors, exit_value
 
 
 def format_final_result_for_valid_suite(num_cases: int,
                                         elapsed_time: datetime.timedelta,
-                                        errors: Dict[ExitValue, int]) -> List[str]:
+                                        relativity_root_abs_path: pathlib.Path,
+                                        errors: Dict[ExitValue, List[TestCaseSetup]]) -> List[str]:
     """
     :return: The list of lines that should be reported.
     """
+    path_presenter = _RelPathPresenter(relativity_root_abs_path)
 
     def num_tests_line() -> str:
         ret_val = ['Ran']
@@ -140,11 +152,10 @@ def format_final_result_for_valid_suite(num_cases: int,
     def error_lines() -> List[str]:
         ret_val = []
         sorted_exit_values = sorted(errors.keys(), key=ExitValue.exit_identifier.fget)
-        exit_identifiers = map(ExitValue.exit_identifier.fget, errors.keys())
-        max_ident_len = max(map(len, exit_identifiers))
-        format_str = '%-' + str(max_ident_len) + 's : %d'
         for exit_value in sorted_exit_values:
-            ret_val.append(format_str % (exit_value.exit_identifier, errors[exit_value]))
+            ret_val.append(exit_value.exit_identifier)
+            for case in errors[exit_value]:
+                ret_val.append('  ' + path_presenter.present(case.file_inclusion_relativity_root / case.file_path))
         return ret_val
 
     ret_val = []
