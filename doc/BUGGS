@@ -42,6 +42,11 @@ IsADirectoryError: [Errno 21] Is a directory: '/home/karlen/vcs/filelist/default
 Should be VALIDATE error.
 Apparently, only EXPECTED-FILE is checked for existence pre-sds,
 but not ACTUAL-FILE.
+
+** Maybe this is not a bug
+<2018-05-14 Mon>
+Maybe this behaviour is intentional - it is used to be able to
+refer to non-existing files.
 * Bug Exception: 'ascii' codec can't decode byte
 ----------------------------------------
 $ xly empty-interval.case 
@@ -76,3 +81,5 @@ which is, at least, not
 ----------------------------------------
 exactly_lib.instructions.assert_.utils.file_contents.parts.equality.EqualityContentsAssertionPart#_do_compare
 ----------------------------------------
+** solution might be to call open() with an "encoding" argument
+See "encoding" attribute of open() in Python doc
