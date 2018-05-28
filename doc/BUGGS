@@ -76,10 +76,12 @@ This will give HARD_ERROR
         except ValueError as ex:
             raise PfhHardErrorException(str(ex))
 ----------------------------------------
-** ... but there is also an undentified failing part
+** ... but there is also an unidentified failing part
 which is, at least, not
 ----------------------------------------
 exactly_lib.instructions.assert_.utils.file_contents.parts.equality.EqualityContentsAssertionPart#_do_compare
 ----------------------------------------
-** solution might be to call open() with an "encoding" argument
+** codec handling
+*** solution might be to call open() with an "encoding" argument
 See "encoding" attribute of open() in Python doc
+*** see codecs module
