@@ -2,11 +2,13 @@ import pathlib
 import unittest
 from typing import List
 
+from exactly_lib.execution import tmp_dir_resolving
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.processing import processors
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.test_case import os_services
 from exactly_lib.test_suite import enumeration
 from exactly_lib.test_suite import execution as sut
 from exactly_lib.test_suite import suite_hierarchy_reading
@@ -185,8 +187,9 @@ def new_executor(recorder: List[str],
         PredefinedProperties(empty_symbol_table()))
     default_configuration = processors.Configuration(test_case_definition,
                                                      test_case_handling_setup_with_identity_preprocessor(),
+                                                     os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                      False,
-                                                     'test-suite-')
+                                                     tmp_dir_resolving.mk_tmp_dir_with_prefix('test-suite-'))
 
     return sut.Executor(default_configuration,
                         StringStdOutFiles().stdout_files,

@@ -3,6 +3,7 @@ import os
 from exactly_lib.execution import partial_execution
 from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
 from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
@@ -31,7 +32,7 @@ def execute(test_case: test_case_doc.TestCase,
             predefined_properties: PredefinedProperties,
             configuration_builder: ConfigurationBuilder,
             act_phase_sub_process_executor: ActPhaseOsProcessExecutor,
-            sandbox_directory_root_name_prefix: str,
+            sandbox_root_dir_resolver: SandboxRootDirNameResolver,
             is_keep_sandbox: bool) -> FullResult:
     """
     The main method for executing a Test Case.
@@ -51,16 +52,17 @@ def execute(test_case: test_case_doc.TestCase,
         configuration_builder.timeout_in_seconds,
         predefined_symbols=predefined_properties.predefined_symbols,
     )
-    partial_result = partial_execution.execute(configuration_builder.act_phase_handling,
-                                               partial_execution.TestCase(test_case.setup_phase,
-                                                                          test_case.act_phase,
-                                                                          test_case.before_assert_phase,
-                                                                          test_case.assert_phase,
-                                                                          test_case.cleanup_phase),
-                                               partial_execution_configuration,
-                                               setup.default_settings(),
-                                               sandbox_directory_root_name_prefix,
-                                               is_keep_sandbox)
+    partial_result = partial_execution.execute(
+        configuration_builder.act_phase_handling,
+        partial_execution.TestCase(test_case.setup_phase,
+                                   test_case.act_phase,
+                                   test_case.before_assert_phase,
+                                   test_case.assert_phase,
+                                   test_case.cleanup_phase),
+        partial_execution_configuration,
+        setup.default_settings(),
+        sandbox_root_dir_resolver,
+        is_keep_sandbox)
     return new_named_phases_result_from(configuration_builder.execution_mode,
                                         partial_result)
 

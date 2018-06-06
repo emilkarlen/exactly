@@ -1,6 +1,5 @@
 import os
-import types
-from typing import List, Dict
+from typing import List, Dict, Callable
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
@@ -9,7 +8,9 @@ from exactly_lib.cli.program_modes.test_case import execution as test_case_execu
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.execution import tmp_dir_resolving
 from exactly_lib.execution.full_execution import PredefinedProperties
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
@@ -76,7 +77,7 @@ class TestSuiteDefinition(tuple):
     def __new__(cls,
                 configuration_section_instructions: Dict[str, SingleInstructionSetup],
                 configuration_section_parser: document_parser.SectionElementParser,
-                get_sds_root_name_prefix: types.FunctionType = lambda: ''):
+                get_sds_root_name_prefix: Callable[[], str] = lambda: ''):
         return tuple.__new__(cls, (configuration_section_instructions,
                                    configuration_section_parser,
                                    get_sds_root_name_prefix))
@@ -93,8 +94,12 @@ class TestSuiteDefinition(tuple):
         return self[1]
 
     @property
-    def get_sds_root_name_prefix(self) -> types.FunctionType:
+    def __get_sds_root_name_prefix(self) -> Callable[[], str]:
         return self[2]
+
+    @property
+    def sandbox_root_dir_resolver(self) -> SandboxRootDirNameResolver:
+        return tmp_dir_resolving.mk_tmp_dir_with_prefix(self.__get_sds_root_name_prefix())
 
 
 class MainProgram:
@@ -119,7 +124,7 @@ class MainProgram:
         self._default_test_case_handling_setup = default_test_case_handling_setup
         self._test_case_def_for_m_p = test_case_definition
 
-    def execute(self, command_line_arguments: list) -> int:
+    def execute(self, command_line_arguments: List[str]) -> int:
         if len(command_line_arguments) > 0:
             if command_line_arguments[0] == HELP_COMMAND:
                 return self._parse_and_exit_on_error(self._parse_and_execute_help,
@@ -148,7 +153,7 @@ class MainProgram:
                                                          test_suite_execution_settings.handling_setup,
                                                          self._act_phase_os_process_executor,
                                                          False,
-                                                         self._test_suite_definition.get_sds_root_name_prefix())
+                                                         self._test_suite_definition.sandbox_root_dir_resolver)
         executor = execution.Executor(default_configuration,
                                       self._output,
                                       suite_hierarchy_reading.Reader(
