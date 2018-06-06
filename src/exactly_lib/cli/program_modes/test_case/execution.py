@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.cli.program_modes.test_case import result_reporting
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
-from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
@@ -36,7 +36,7 @@ def execute(std_output_files: StdOutputFiles,
                       test_case_definition,
                       handling_setup,
                       act_phase_os_process_executor,
-                      settings.sandbox_directory_root_name_prefix)
+                      settings.sandbox_root_dir_resolver)
     return result_reporter.report(result)
 
 
@@ -45,14 +45,13 @@ def _process(test_case_file_path: pathlib.Path,
              test_case_definition: TestCaseDefinition,
              handling_setup: TestCaseHandlingSetup,
              act_phase_os_process_executor: ActPhaseOsProcessExecutor,
-             sandbox_directory_root_name_prefix: str,
+             sandbox_root_dir_resolver: SandboxRootDirNameResolver,
              ) -> test_case_processing.Result:
     configuration = processors.Configuration(test_case_definition,
                                              handling_setup,
                                              act_phase_os_process_executor,
                                              is_keep_sds,
-                                             tmp_dir_resolving.mk_tmp_dir_with_prefix(
-                                                 sandbox_directory_root_name_prefix))
+                                             sandbox_root_dir_resolver)
     processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
     return processor.apply(test_case_processing.test_case_setup_of_source_file(test_case_file_path))
 

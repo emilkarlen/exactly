@@ -2,6 +2,8 @@ import enum
 import pathlib
 
 from exactly_lib import program_info
+from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 
 
@@ -19,14 +21,15 @@ class TestCaseExecutionSettings:
                  initial_home_dir_path: pathlib.Path,
                  output: ReportingOption,
                  handling_setup: TestCaseHandlingSetup,
-                 sandbox_directory_root_name_prefix: str = program_info.PROGRAM_NAME + '-',
+                 sandbox_root_dir_resolver: SandboxRootDirNameResolver =
+                 tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
                  suite_to_read_config_from: pathlib.Path = None,
                  ):
         self.__test_case_file_path = test_case_file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
         self.__handling_setup = handling_setup
-        self.__sandbox_directory_root_name_prefix = sandbox_directory_root_name_prefix
+        self.__sandbox_root_dir_resolver = sandbox_root_dir_resolver
         self.__suite_to_read_config_from = suite_to_read_config_from
 
     @property
@@ -46,8 +49,8 @@ class TestCaseExecutionSettings:
         return self.__handling_setup
 
     @property
-    def sandbox_directory_root_name_prefix(self) -> str:
-        return self.__sandbox_directory_root_name_prefix
+    def sandbox_root_dir_resolver(self) -> SandboxRootDirNameResolver:
+        return self.__sandbox_root_dir_resolver
 
     @property
     def suite_to_read_config_from(self) -> pathlib.Path:
