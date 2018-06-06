@@ -3,6 +3,7 @@ import pathlib
 import shutil
 import subprocess
 import sys
+from typing import Dict
 
 from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
@@ -39,7 +40,7 @@ class Configuration(tuple):
     def __new__(cls,
                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                 hds: HomeDirectoryStructure,
-                environ: dict,
+                environ: Dict[str, str],
                 timeout_in_seconds: int = None,
                 predefined_symbols: SymbolTable = None):
         """
@@ -64,7 +65,7 @@ class Configuration(tuple):
         return self[1]
 
     @property
-    def environ(self) -> dict:
+    def environ(self) -> Dict[str, str]:
         """
         The set of environment variables available to instructions.
         These may be both read and written.
