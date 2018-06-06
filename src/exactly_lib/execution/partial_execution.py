@@ -3,12 +3,12 @@ import pathlib
 import shutil
 import subprocess
 import sys
-import tempfile
 
 from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver, mk_tmp_dir_with_prefix
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
@@ -84,15 +84,16 @@ class Configuration(tuple):
 class _ExecutionConfiguration(tuple):
     def __new__(cls,
                 configuration: Configuration,
-                sandbox_directory_root_name_prefix: str):
-        return tuple.__new__(cls, (configuration, sandbox_directory_root_name_prefix))
+                sandbox_directory_root_resolver: SandboxRootDirNameResolver):
+        return tuple.__new__(cls, (configuration,
+                                   sandbox_directory_root_resolver))
 
     @property
     def configuration(self) -> Configuration:
         return self[0]
 
     @property
-    def sandbox_directory_root_name_prefix(self) -> str:
+    def sandbox_directory_root_resolver(self) -> SandboxRootDirNameResolver:
         return self[1]
 
 
@@ -180,7 +181,7 @@ def execute(act_phase_handling: ActPhaseHandling,
     try:
         with preserved_cwd():
             exe_configuration = _ExecutionConfiguration(configuration,
-                                                        sandbox_directory_root_name_prefix)
+                                                        mk_tmp_dir_with_prefix(sandbox_directory_root_name_prefix))
 
             test_case_execution = _PartialExecutor(exe_configuration,
                                                    act_phase_handling,
@@ -458,7 +459,7 @@ class _PartialExecutor:
         os.chdir(str(self._sds.act_dir))
 
     def __construct_and_set_sds(self):
-        sds_root_dir_name = tempfile.mkdtemp(prefix=self.__exe_configuration.sandbox_directory_root_name_prefix)
+        sds_root_dir_name = self.__exe_configuration.sandbox_directory_root_resolver()
         self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
 
     def __post_setup_validation_environment(self, phase: phase_identifier.Phase
