@@ -5,7 +5,7 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.act_phase_setups.source_interpreter import python3
-from exactly_lib.execution import full_execution
+from exactly_lib.execution import full_execution, tmp_dir_resolving
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.execution.result import FullResult
 from exactly_lib.test_case import test_case_doc, os_services
@@ -41,7 +41,7 @@ class FullExecutionTestCaseBase:
                                  initial_home_dir_path,
                                  self._act_phase_handling()),
             self.__act_phase_os_process_executor,
-            program_info.PROGRAM_NAME + '-test-',
+            tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
             True)
 
         # ASSERT #

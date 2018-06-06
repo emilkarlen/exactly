@@ -3,7 +3,7 @@ import shutil
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.execution import partial_execution
+from exactly_lib.execution import partial_execution, tmp_dir_resolving
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
@@ -45,7 +45,7 @@ def execute_and_check(put: unittest.TestCase,
                                                 hds,
                                                 dict(os.environ)),
                 arrangement.initial_setup_settings,
-                program_info.PROGRAM_NAME + '-test-',
+                tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
                 is_keep_sandbox=True)
 
             expectation.partial_result.apply_with_message(put,

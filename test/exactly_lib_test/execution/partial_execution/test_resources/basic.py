@@ -4,7 +4,7 @@ import types
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.execution import partial_execution
+from exactly_lib.execution import partial_execution, tmp_dir_resolving
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -187,7 +187,7 @@ def _execute(test_case: partial_execution.TestCase,
                                         timeout_in_seconds=arrangement.timeout_in_seconds,
                                         predefined_symbols=arrangement.predefined_symbols_or_none),
         setup.default_settings(),
-        program_info.PROGRAM_NAME + '-test-',
+        tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
         is_keep_sandbox)
     return Result(arrangement.hds,
                   partial_result)

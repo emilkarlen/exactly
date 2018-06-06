@@ -8,7 +8,7 @@ from exactly_lib.execution.instruction_execution import phase_step_executors, ph
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver, mk_tmp_dir_with_prefix
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
@@ -162,7 +162,7 @@ def execute(act_phase_handling: ActPhaseHandling,
             test_case: TestCase,
             configuration: Configuration,
             initial_setup_settings: SetupSettingsBuilder,
-            sandbox_directory_root_name_prefix: str,
+            sandbox_root_dir_resolver: SandboxRootDirNameResolver,
             is_keep_sandbox: bool) -> PartialResult:
     """
     Takes care of construction of the Sandbox directory structure, including
@@ -181,7 +181,7 @@ def execute(act_phase_handling: ActPhaseHandling,
     try:
         with preserved_cwd():
             exe_configuration = _ExecutionConfiguration(configuration,
-                                                        mk_tmp_dir_with_prefix(sandbox_directory_root_name_prefix))
+                                                        sandbox_root_dir_resolver)
 
             test_case_execution = _PartialExecutor(exe_configuration,
                                                    act_phase_handling,
