@@ -1,7 +1,9 @@
 import unittest
+from typing import Tuple, Sequence
 
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
 from exactly_lib.common import instruction_setup
+from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.definitions.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
 from exactly_lib.definitions.test_suite.section_names_with_syntax import SECTION_NAME__CONF
@@ -200,9 +202,10 @@ def test_suite_definition_with_single_conf_instruction(name: str,
     return test_suite_definition_with_instructions(configuration_section_instructions)
 
 
-def test_case_definition_with_only_assert_phase_instructions(assert_phase_instructions: list
-                                                             ) -> TestCaseDefinitionForMainProgram:
-    def mk_setup(name_and_instruction):
+def test_case_definition_with_only_assert_phase_instructions(
+        assert_phase_instructions: Sequence[Tuple[str, AssertPhaseInstruction]]
+) -> TestCaseDefinitionForMainProgram:
+    def mk_setup(name_and_instruction: Tuple[str, AssertPhaseInstruction]) -> Tuple[str, SingleInstructionSetup]:
         return name_and_instruction[0], single_instruction_setup(name_and_instruction[0], name_and_instruction[1])
 
     assert_phase_instructions_dict = dict(map(mk_setup, assert_phase_instructions))
