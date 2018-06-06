@@ -41,8 +41,8 @@ class Configuration:
                  default_handling_setup: TestCaseHandlingSetup,
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  is_keep_sandbox: bool,
-                 sandbox_root_dir_resolver: SandboxRootDirNameResolver = tmp_dir_resolving.mk_tmp_dir_with_prefix(
-                     program_info.PROGRAM_NAME + '-')):
+                 sandbox_root_dir_resolver: SandboxRootDirNameResolver =
+                 tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
         self.default_handling_setup = default_handling_setup
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.test_case_definition = test_case_definition

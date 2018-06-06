@@ -7,6 +7,7 @@ from . import argument_parsing, config_from_suite
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     return unittest.TestSuite([
         argument_parsing.suite(),
+        # keep_sandbox.suite(),
         config_from_suite.suite_that_does_not_require_main_program_runner(),
     ])
 
