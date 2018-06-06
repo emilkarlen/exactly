@@ -172,19 +172,19 @@ class MainProgram:
     def _std(self) -> StdOutputFiles:
         return self._output
 
-    def _parse_and_execute_test_case(self, command_line_arguments: list) -> int:
+    def _parse_and_execute_test_case(self, command_line_arguments: List[str]) -> int:
         settings = case_argument_parsing.parse(self._default_test_case_handling_setup,
                                                command_line_arguments,
                                                COMMAND_DESCRIPTIONS)
         return self.execute_test_case(settings)
 
-    def _parse_and_execute_test_suite(self, command_line_arguments: list) -> int:
+    def _parse_and_execute_test_suite(self, command_line_arguments: List[str]) -> int:
         from exactly_lib.cli.program_modes.test_suite import argument_parsing
         settings = argument_parsing.parse(self._default_test_case_handling_setup,
                                           command_line_arguments)
         return self.execute_test_suite(settings)
 
-    def _parse_and_execute_help(self, help_command_arguments: list) -> int:
+    def _parse_and_execute_help(self, help_command_arguments: List[str]) -> int:
         from exactly_lib.cli.program_modes.help import argument_parsing
         from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
         from exactly_lib.help.the_application_help import new_application_help
@@ -208,7 +208,9 @@ class MainProgram:
         handle_help_request(self._output, application_help, help_request)
         return 0
 
-    def _parse_and_exit_on_error(self, parse_arguments_and_execute_callable, arguments: list) -> int:
+    def _parse_and_exit_on_error(self,
+                                 parse_arguments_and_execute_callable: Callable[[List[str]], int],
+                                 arguments: List[str]) -> int:
         try:
             return parse_arguments_and_execute_callable(arguments)
         except argument_parsing_utils.ArgumentParsingError as ex:
