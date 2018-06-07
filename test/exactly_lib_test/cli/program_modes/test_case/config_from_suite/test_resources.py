@@ -29,7 +29,7 @@ def run_test_case(command_line_arguments: List[str],
                   test_case_definition: TestCaseDefinitionForMainProgram,
                   test_suite_definition: TestSuiteDefinition,
                   default_test_case_handling_setup: TestCaseHandlingSetup,
-                  default_case_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver =
+                  sandbox_root_dir_name_resolver: SandboxRootDirNameResolver =
                   sandbox_root_name_resolver.for_test()
                   ) -> SubProcessResult:
     stdout_file = io.StringIO()
@@ -40,7 +40,7 @@ def run_test_case(command_line_arguments: List[str],
     main_pgm = main_program.MainProgram(
         std_output_files,
         default_test_case_handling_setup,
-        default_case_sandbox_root_dir_name_resolver,
+        sandbox_root_dir_name_resolver,
         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
         test_case_definition,
         test_suite_definition,
