@@ -1,5 +1,7 @@
+from typing import List, Sequence
+
 from exactly_lib.cli import main_program
-from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
+from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, BuiltinSymbol
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import instruction_name_and_argument_splitter
@@ -13,6 +15,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.test_case import os_services
+from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import \
     first_char_is_name_and_rest_is_argument__splitter, EMPTY_INSTRUCTIONS_SETUP
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -27,7 +30,7 @@ CONFIGURATION_SECTION_INSTRUCTIONS = instruction_setup.instruction_set_from_name
 def test_suite_definition() -> TestSuiteDefinition:
     return TestSuiteDefinition(CONFIGURATION_SECTION_INSTRUCTIONS,
                                _new_parser(),
-                               _sds_root_name_prefix_for_suite)
+                               sandbox_root_name_resolver.prefix_for_suite)
 
 
 def _new_parser() -> document_parser.SectionElementParser:
@@ -38,20 +41,17 @@ def _new_parser() -> document_parser.SectionElementParser:
                 CONFIGURATION_SECTION_INSTRUCTIONS)))
 
 
-def _sds_root_name_prefix_for_suite():
-    return 'exactly-suite-'
-
-
-def execute_main_program(arguments: list,
+def execute_main_program(arguments: List[str],
                          the_test_case_handling_setup: TestCaseHandlingSetup,
                          instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP,
                          name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter,
-                         builtin_symbols: list = (),
+                         builtin_symbols: Sequence[BuiltinSymbol] = (),
                          test_suite_definition: TestSuiteDefinition = test_suite_definition()
                          ) -> SubProcessResult:
     str_std_out_files = StringStdOutFiles()
     program = main_program.MainProgram(str_std_out_files.stdout_files,
                                        the_test_case_handling_setup,
+                                       sandbox_root_name_resolver.for_test(),
                                        os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                        TestCaseDefinitionForMainProgram(
                                            TestCaseParsingSetup(name_and_argument_splitter,

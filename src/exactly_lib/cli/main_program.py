@@ -106,6 +106,7 @@ class MainProgram:
     def __init__(self,
                  output: StdOutputFiles,
                  default_test_case_handling_setup: TestCaseHandlingSetup,
+                 default_case_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver,
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  test_case_definition: TestCaseDefinitionForMainProgram,
                  test_suite_definition: TestSuiteDefinition,
@@ -123,6 +124,7 @@ class MainProgram:
         self._act_phase_os_process_executor = act_phase_os_process_executor
         self._default_test_case_handling_setup = default_test_case_handling_setup
         self._test_case_def_for_m_p = test_case_definition
+        self._default_case_sandbox_root_dir_name_resolver = default_case_sandbox_root_dir_name_resolver
 
     def execute(self, command_line_arguments: List[str]) -> int:
         if len(command_line_arguments) > 0:
@@ -135,8 +137,7 @@ class MainProgram:
         return self._parse_and_exit_on_error(self._parse_and_execute_test_case,
                                              command_line_arguments)
 
-    def execute_test_case(self,
-                          settings: TestCaseExecutionSettings) -> int:
+    def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
         return test_case_execution.execute(self._std,
                                            self._test_case_definition,
                                            self._test_suite_definition.configuration_section_parser,
@@ -174,6 +175,7 @@ class MainProgram:
 
     def _parse_and_execute_test_case(self, command_line_arguments: List[str]) -> int:
         settings = case_argument_parsing.parse(self._default_test_case_handling_setup,
+                                               self._default_case_sandbox_root_dir_name_resolver,
                                                command_line_arguments,
                                                COMMAND_DESCRIPTIONS)
         return self.execute_test_case(settings)

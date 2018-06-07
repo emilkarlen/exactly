@@ -5,6 +5,7 @@ from exactly_lib.cli import main_program
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
 from exactly_lib.default import instruction_name_and_argument_splitter
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.element_parsers import section_element_parsers
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
@@ -13,6 +14,7 @@ from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instr
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.test_case import os_services
 from exactly_lib.util.std import StdOutputFiles
+from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.file_structure import DirContents
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -27,6 +29,8 @@ def run_test_case(command_line_arguments: List[str],
                   test_case_definition: TestCaseDefinitionForMainProgram,
                   test_suite_definition: TestSuiteDefinition,
                   default_test_case_handling_setup: TestCaseHandlingSetup,
+                  default_case_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver =
+                  sandbox_root_name_resolver.for_test()
                   ) -> SubProcessResult:
     stdout_file = io.StringIO()
     stderr_file = io.StringIO()
@@ -36,6 +40,7 @@ def run_test_case(command_line_arguments: List[str],
     main_pgm = main_program.MainProgram(
         std_output_files,
         default_test_case_handling_setup,
+        default_case_sandbox_root_dir_name_resolver,
         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
         test_case_definition,
         test_suite_definition,

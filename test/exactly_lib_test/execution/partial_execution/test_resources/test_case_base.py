@@ -3,9 +3,8 @@ import pathlib
 import shutil
 import unittest
 
-from exactly_lib import program_info
 from exactly_lib.act_phase_setups.source_interpreter import python3
-from exactly_lib.execution import partial_execution, tmp_dir_resolving
+from exactly_lib.execution import partial_execution
 from exactly_lib.execution.partial_execution import TestCase
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -13,7 +12,7 @@ from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECU
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
-from exactly_lib_test.execution.test_resources import utils
+from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 
 
@@ -42,7 +41,7 @@ class PartialExecutionTestCaseBase:
                                                     hds,
                                                     dict(os.environ)),
                     setup.default_settings(),
-                    tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
+                    sandbox_root_name_resolver.for_test(),
                     self.__dbg_do_not_delete_dir_structure)
 
                 # ASSERT #

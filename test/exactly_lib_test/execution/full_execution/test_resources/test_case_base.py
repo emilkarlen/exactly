@@ -3,16 +3,15 @@ import pathlib
 import shutil
 import unittest
 
-from exactly_lib import program_info
 from exactly_lib.act_phase_setups.source_interpreter import python3
-from exactly_lib.execution import full_execution, tmp_dir_resolving
+from exactly_lib.execution import full_execution
 from exactly_lib.execution.full_execution import PredefinedProperties
 from exactly_lib.execution.result import FullResult
 from exactly_lib.test_case import test_case_doc, os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.execution.test_resources import utils
+from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
 
 
 class FullExecutionTestCaseBase:
@@ -41,7 +40,7 @@ class FullExecutionTestCaseBase:
                                  initial_home_dir_path,
                                  self._act_phase_handling()),
             self.__act_phase_os_process_executor,
-            tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
+            sandbox_root_name_resolver.for_test(),
             True)
 
         # ASSERT #

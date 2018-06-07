@@ -19,10 +19,7 @@ def execute(std_output_files: StdOutputFiles,
             settings: TestCaseExecutionSettings,
             act_phase_os_process_executor: ActPhaseOsProcessExecutor,
             ) -> int:
-    result_reporter = _get_reporter(std_output_files,
-                                    settings.reporting_option)
-    is_keep_sandbox = result_reporter.depends_on_result_in_sandbox()
-
+    result_reporter = _get_reporter(std_output_files, settings.reporting_option)
     try:
         handling_setup = _resolve_handling_setup(settings.handling_setup,
                                                  configuration_section_parser,
@@ -32,7 +29,7 @@ def execute(std_output_files: StdOutputFiles,
         reporter = result_reporting.TestSuiteSyntaxErrorReporter(std_output_files)
         return reporter.report(ex)
     result = _process(settings.test_case_file_path,
-                      is_keep_sandbox,
+                      result_reporter.depends_on_result_in_sandbox(),
                       test_case_definition,
                       handling_setup,
                       act_phase_os_process_executor,

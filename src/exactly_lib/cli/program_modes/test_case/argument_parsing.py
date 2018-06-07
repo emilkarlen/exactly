@@ -1,6 +1,7 @@
 import argparse
 import pathlib
 import shlex
+from typing import List, Dict
 
 from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
@@ -9,6 +10,7 @@ from exactly_lib.cli.program_modes.test_case.settings import ReportingOption, Te
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
@@ -18,8 +20,9 @@ from exactly_lib.util.messages import grammar_options_syntax
 
 
 def parse(default: TestCaseHandlingSetup,
-          argv: list,
-          commands: dict) -> TestCaseExecutionSettings:
+          default_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver,
+          argv: List[str],
+          commands: Dict[str, str]) -> TestCaseExecutionSettings:
     """
     :raises ArgumentParsingError Invalid usage
     """
@@ -47,6 +50,7 @@ def parse(default: TestCaseHandlingSetup,
                                      _resolve_and_fail_if_is_not_an_existing_file(test_case_file_path.parent),
                                      output,
                                      actual_handling_setup,
+                                     sandbox_root_dir_resolver=default_sandbox_root_dir_name_resolver,
                                      suite_to_read_config_from=suite_file)
 
 
@@ -54,7 +58,7 @@ def _resolve_and_fail_if_is_not_an_existing_file(test_case_file_path) -> pathlib
     return argument_parsing_utils.resolve_existing_path(test_case_file_path)
 
 
-def _new_argument_parser(commands: dict) -> argparse.ArgumentParser:
+def _new_argument_parser(commands: Dict[str, str]) -> argparse.ArgumentParser:
     def command_description(n_d) -> str:
         return '%s - %s' % (n_d[0], n_d[1])
 
