@@ -39,7 +39,7 @@ class _FullExecutionHandler:
         else:
             return self.hard_error_or_implementation_error(result)
 
-    def complete(self, result: FullResult):
+    def complete(self, result: FullResult) -> int:
         raise NotImplementedError('abstract method')
 
     def skipped(self, result: FullResult) -> int:
@@ -113,29 +113,30 @@ class _ResultReporterForNormalOutput(TestCaseResultReporter):
         return exit_value.exit_code
 
 
-class _FullExecutionHandlerForPreserveAndPrintSandboxDir(_FullExecutionHandler):
-    def complete(self, result: FullResult):
-        self._out_printer.write_line(str(result.sds.root_dir))
-        print_error_message_for_full_result(self._err_printer, result)
-        return self.exit_value.exit_code
-
-
 class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return True
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: full_execution.FullResult) -> int:
-        handler = _FullExecutionHandlerForPreserveAndPrintSandboxDir(exit_value,
-                                                                     self._std,
-                                                                     self._out_printer,
-                                                                     self._err_printer)
-        return handler.handle(result)
+                              result: FullResult) -> int:
+        self._out_printer.write_line(str(result.sds.root_dir))
+
+        self._err_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
+        print_error_message_for_full_result(self._err_printer, result)
+
+        return exit_value.exit_code
+
+    def _report_unable_to_execute(self,
+                                  exit_value: ExitValue,
+                                  error_info: ErrorInfo) -> int:
+        self._err_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
+        print_error_info(self._err_printer, error_info)
+        return exit_value.exit_code
 
 
 class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
-    def complete(self, result: FullResult):
+    def complete(self, result: FullResult) -> int:
         def copy_file(input_file_path: pathlib.Path,
                       output_file):
             with input_file_path.open() as f:
@@ -160,7 +161,7 @@ class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: full_execution.FullResult) -> int:
+                              result: FullResult) -> int:
         handler = _FullExecutionHandlerForActPhaseOutput(exit_value,
                                                          self._std,
                                                          self._out_printer,
