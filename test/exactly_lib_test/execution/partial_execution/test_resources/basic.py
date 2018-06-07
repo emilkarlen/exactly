@@ -3,8 +3,7 @@ import shutil
 import types
 import unittest
 
-from exactly_lib import program_info
-from exactly_lib.execution import partial_execution, tmp_dir_resolving
+from exactly_lib.execution import partial_execution
 from exactly_lib.execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -15,6 +14,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.functional import Composition
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.act_source_executor import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
@@ -187,7 +187,7 @@ def _execute(test_case: partial_execution.TestCase,
                                         timeout_in_seconds=arrangement.timeout_in_seconds,
                                         predefined_symbols=arrangement.predefined_symbols_or_none),
         setup.default_settings(),
-        tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
+        sandbox_root_name_resolver.for_test(),
         is_keep_sandbox)
     return Result(arrangement.hds,
                   partial_result)

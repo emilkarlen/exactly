@@ -4,9 +4,7 @@ import subprocess
 import sys
 import unittest
 
-from exactly_lib import program_info
 from exactly_lib.execution import partial_execution as sut
-from exactly_lib.execution import tmp_dir_resolving
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.section_document.model import new_empty_section_contents
@@ -25,6 +23,7 @@ from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
+from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess, \
@@ -364,7 +363,7 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
                                   hds,
                                   dict(os.environ)),
                 setup_settings,
-                tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
+                sandbox_root_name_resolver.for_test(),
                 is_keep_sandbox)
 
 

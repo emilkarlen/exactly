@@ -2,12 +2,12 @@ import os
 import shutil
 import unittest
 
-from exactly_lib import program_info
-from exactly_lib.execution import partial_execution, tmp_dir_resolving
+from exactly_lib.execution import partial_execution
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.util.file_utils import preserved_cwd
+from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from .basic import Result
@@ -45,7 +45,7 @@ def execute_and_check(put: unittest.TestCase,
                                                 hds,
                                                 dict(os.environ)),
                 arrangement.initial_setup_settings,
-                tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-test-'),
+                sandbox_root_name_resolver.for_test(),
                 is_keep_sandbox=True)
 
             expectation.partial_result.apply_with_message(put,
