@@ -17,7 +17,7 @@ def suite() -> unittest.TestSuite:
 
 
 class Test(TestCaseBase):
-    def test_full_sequence(self):
+    def test(self):
         self._check(
             Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr()),
             Expectation(PartialResultStatus.PASS,
