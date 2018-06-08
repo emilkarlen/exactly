@@ -1,10 +1,11 @@
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
-    TestSuiteSectionInstructionCrossReference
+    TestSuiteSectionInstructionCrossReference, TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import actors, concepts
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
     PHASE_NAME_DICTIONARY
@@ -34,6 +35,7 @@ class _ActorConcept(ConceptDocumentation):
     def see_also_targets(self) -> list:
         return (
                 [
+                    TestCasePhaseCrossReference(phase_names.ACT_PHASE_NAME.plain),
                     conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
                     TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
                                                            ACTOR_INSTRUCTION_NAME),
@@ -48,7 +50,8 @@ class _ActorConcept(ConceptDocumentation):
 ACTOR_CONCEPT = _ActorConcept()
 
 _AFTER_SINGLE_LINE_DESCRIPTION = """\
-The {actor_concept} handles {phase[act]} phase - interprets the contents in the test case file,
+The {actor_concept} handles {phase[act]} phase -
+interprets the contents of the {phase[act]} phase in the test case file,
 and executes it as the {action_to_check}.
 """
 
