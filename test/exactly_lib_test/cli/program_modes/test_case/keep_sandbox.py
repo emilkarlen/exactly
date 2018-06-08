@@ -8,10 +8,11 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.phase_step_identifiers.phase_step import STEP__MAIN, STEP__VALIDATE_POST_SETUP, \
-    STEP__ACT__PREPARE, STEP__ACT__EXECUTE
+    STEP__ACT__PREPARE, STEP__ACT__EXECUTE, STEP__ACT__PARSE, STEP__VALIDATE_PRE_SDS
+from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.exit_values import EXECUTION__IMPLEMENTATION_ERROR, EXECUTION__HARD_ERROR, EXECUTION__FAIL, \
-    EXECUTION__VALIDATE, EXECUTION__PASS
+    EXECUTION__VALIDATE, EXECUTION__PASS, NO_EXECUTION__SYNTAX_ERROR
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
@@ -41,6 +42,7 @@ from exactly_lib_test.test_suite.execution.test_resources import instruction_nam
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestFailureBeforeCreationOfSds),
         unittest.makeSuite(TestPhasesInPartialExecution),
     ])
 
@@ -99,6 +101,146 @@ class Case:
         self.expectation = expectation
 
 
+class TestFailureBeforeCreationOfSds(unittest.TestCase):
+    def test_failing_parse(self):
+        # ARRANGE #
+        test_case_definition = test_case_definition_for(instruction_set())
+        act_phase_constructor = ActSourceAndExecutorConstructorThatRunsConstantActions()
+        test_case_source = lines_content([
+            section_header(phase_identifier.SETUP.identifier),
+            'not_the_name_of_an_instruction',
+        ])
+
+        expectation = Expectation(NO_EXECUTION__SYNTAX_ERROR, output_is_empty)
+        # ACT & ASSERT #
+        _check(self,
+               test_case_definition,
+               act_phase_constructor,
+               test_case_source,
+               self.sandbox_dir_resolver_that_should_not_be_called,
+               expectation)
+
+    def test_setup(self):
+        # ARRANGE #
+        cases = {
+            EXECUTION__VALIDATE:
+                setup_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
+
+            EXECUTION__HARD_ERROR:
+                setup_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
+
+            EXECUTION__IMPLEMENTATION_ERROR:
+                setup_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
+        }
+        # ACT & ASSERT #
+        self._check_and_assert_sds_is_not_created_and_stdout_is_empty(phase_identifier.SETUP, cases)
+
+    def test_act(self):
+        # ARRANGE #
+        cases = {
+            STEP__ACT__PARSE:
+                {
+                    EXECUTION__IMPLEMENTATION_ERROR:
+                        ActSourceAndExecutorConstructorThatRunsConstantActions(parse_action=DO_RAISES_EXCEPTION),
+
+                },
+            STEP__VALIDATE_PRE_SDS:
+                {
+                    EXECUTION__VALIDATE:
+                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                            validate_pre_sds_action=SVH_VALIDATION_ERROR),
+
+                    EXECUTION__HARD_ERROR:
+                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                            validate_pre_sds_action=SVH_HARD_ERROR),
+
+                    EXECUTION__IMPLEMENTATION_ERROR:
+                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                            validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
+                },
+        }
+        test_case_definition = test_case_definition_for(instruction_set())
+
+        test_case_source = ''
+
+        for step, exit_value_2_constructor in cases.items():
+            for exit_value, constructor in exit_value_2_constructor.items():
+                expectation = Expectation(exit_value, output_is_empty)
+                with self.subTest(step=step,
+                                  exit_value=exit_value.exit_identifier):
+                    # ACT & ASSERT #
+                    _check(self,
+                           test_case_definition,
+                           constructor,
+                           test_case_source,
+                           self.sandbox_dir_resolver_that_should_not_be_called,
+                           expectation)
+
+    def test_before_assert(self):
+        # ARRANGE #
+        cases = {
+            EXECUTION__VALIDATE:
+                before_assert_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
+
+            EXECUTION__HARD_ERROR:
+                before_assert_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
+
+            EXECUTION__IMPLEMENTATION_ERROR:
+                before_assert_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
+        }
+        # ACT & ASSERT #
+        self._check_and_assert_sds_is_not_created_and_stdout_is_empty(phase_identifier.BEFORE_ASSERT, cases)
+
+    def test_assert(self):
+        # ARRANGE #
+        cases = {
+            EXECUTION__VALIDATE:
+                assert_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
+
+            EXECUTION__HARD_ERROR:
+                assert_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
+
+            EXECUTION__IMPLEMENTATION_ERROR:
+                assert_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
+        }
+        # ACT & ASSERT #
+        self._check_and_assert_sds_is_not_created_and_stdout_is_empty(phase_identifier.ASSERT, cases)
+
+    def test_cleanup(self):
+        # ARRANGE #
+        cases = {
+            EXECUTION__VALIDATE:
+                cleanup_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
+
+            EXECUTION__HARD_ERROR:
+                cleanup_phase_instruction_that(validate_pre_sds=SVH_HARD_ERROR),
+
+            EXECUTION__IMPLEMENTATION_ERROR:
+                cleanup_phase_instruction_that(validate_pre_sds_initial_action=DO_RAISES_EXCEPTION),
+        }
+        # ACT & ASSERT #
+        self._check_and_assert_sds_is_not_created_and_stdout_is_empty(phase_identifier.CLEANUP, cases)
+
+    def _check_and_assert_sds_is_not_created_and_stdout_is_empty(self,
+                                                                 phase: Phase,
+                                                                 cases: Dict[ExitValue, TestCaseInstruction]):
+        for exit_value, instruction in cases.items():
+            case = Case(Arrangement(phase, instruction),
+                        Expectation(exit_value,
+                                    output_is_empty))
+            with self.subTest(exit_identifier=exit_value.exit_identifier):
+                _check_instruction(self,
+                                   self.sandbox_dir_resolver_that_should_not_be_called,
+                                   case)
+
+    def sandbox_dir_resolver_that_should_not_be_called(self, dir_name: str) -> SandboxRootDirNameResolver:
+        def ret_val():
+            self.fail('SDS dir name resolver should not be called')
+            return 'unused'
+
+        return ret_val
+
+
 class TestPhasesInPartialExecution(unittest.TestCase):
     def test_WHEN_pass_THEN_sds_SHOULD_be_printed(self):
         # ARRANGE #
@@ -110,6 +252,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                test_case_definition,
                ActSourceAndExecutorConstructorThatRunsConstantActions(),
                test_case_source,
+               self.sandbox_dir_resolver_of_given_dir,
                expectation)
 
     def test_setup(self):
@@ -187,6 +330,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                            test_case_definition,
                            constructor,
                            test_case_source,
+                           self.sandbox_dir_resolver_of_given_dir,
                            expectation)
 
     def test_before_assert(self):
@@ -274,10 +418,20 @@ class TestPhasesInPartialExecution(unittest.TestCase):
                                         output_is_sds_which_should_be_preserved))
                 with self.subTest(step=step,
                                   exit_identifier=exit_value.exit_identifier):
-                    _check_instruction(self, case)
+                    _check_instruction(self,
+                                       self.sandbox_dir_resolver_of_given_dir,
+                                       case)
+
+    @staticmethod
+    def sandbox_dir_resolver_of_given_dir(dir_name: str) -> SandboxRootDirNameResolver:
+        def ret_val():
+            return dir_name
+
+        return ret_val
 
 
 def _check_instruction(put: unittest.TestCase,
+                       mk_sds_resolver: Callable[[str], SandboxRootDirNameResolver],
                        case: Case):
     # ARRANGE #
 
@@ -295,6 +449,7 @@ def _check_instruction(put: unittest.TestCase,
            test_case_definition,
            ActSourceAndExecutorConstructorThatRunsConstantActions(),
            test_case_source,
+           mk_sds_resolver,
            case.expectation)
 
 
@@ -302,6 +457,7 @@ def _check(put: unittest.TestCase,
            test_case_definition: TestCaseDefinitionForMainProgram,
            act_source_and_executor_constructor: ActSourceAndExecutorConstructor,
            test_case_source: str,
+           mk_sds_resolver: Callable[[str], SandboxRootDirNameResolver],
            expectation: Expectation,
            ):
     # ARRANGE #
@@ -324,15 +480,12 @@ def _check(put: unittest.TestCase,
     with tempfile.TemporaryDirectory() as dir_name:
         dir_name = resolved_path_name(dir_name)
 
-        def sandbox_root_dir_name_resolver() -> str:
-            return dir_name
-
         actual_result = run_test_case(command_line_arguments,
                                       source_files_dir_contents,
                                       test_case_definition,
                                       test_suite_definition,
                                       tc_handling_setup,
-                                      sandbox_root_dir_name_resolver=sandbox_root_dir_name_resolver)
+                                      sandbox_root_dir_name_resolver=mk_sds_resolver(dir_name))
 
         # ASSERT #
 
