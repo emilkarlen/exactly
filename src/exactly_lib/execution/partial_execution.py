@@ -1,10 +1,10 @@
 import os
-import pathlib
 import shutil
-import subprocess
 import sys
-from typing import Dict
+from typing import Dict, Callable, Sequence
 
+from exactly_lib.execution.act_phase_execution import StdinConfiguration, PhaseFailureResultConstructor, \
+    ActPhaseExecutor
 from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
 from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.phase_step_identifiers import phase_step
@@ -12,27 +12,20 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
-    ActPhaseHandling, ActPhaseOsProcessExecutor, ParseException
-from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor, ParseException
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
-    InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import construct_at, SandboxDirectoryStructure, \
-    stdin_contents_file
-from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_message, \
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import construct_at, SandboxDirectoryStructure
+from exactly_lib.util.failure_details import new_failure_details_from_message, \
     new_failure_details_from_exception
-from exactly_lib.util.file_utils import write_new_text_file, resolved_path_name, preserved_cwd, \
-    open_and_make_read_only_on_close
-from exactly_lib.util.std import StdOutputFiles, StdFiles
+from exactly_lib.util.file_utils import resolved_path_name, preserved_cwd
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from . import result
 from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
 
 
@@ -237,11 +230,16 @@ class _PartialExecutor:
         if res.is_failure:
             return res
         self._setup_post_sds_environment()
+
+        res = self.__setup__main()
+        if res.is_failure:
+            self.__cleanup_main(PreviousPhase.SETUP)
+            return res
+
         act_program_executor = self.__act_program_executor()
         res = self._sequence_with_cleanup(
             PreviousPhase.SETUP,
             [
-                self.__setup__main,
                 self.__setup__validate_post_setup,
                 act_program_executor.validate_post_setup,
                 self.__before_assert__validate_post_setup,
@@ -262,14 +260,16 @@ class _PartialExecutor:
             ret_val = res
         return ret_val
 
-    def _sequence(self, actions: list) -> PartialResult:
+    def _sequence(self, actions: Sequence[Callable[[], PartialResult]]) -> PartialResult:
         for action in actions:
             res = action()
             if res.is_failure:
                 return res
         return new_partial_result_pass(self._sds)
 
-    def _sequence_with_cleanup(self, previous_phase: PreviousPhase, actions: list) -> PartialResult:
+    def _sequence_with_cleanup(self,
+                               previous_phase: PreviousPhase,
+                               actions: Sequence[Callable[[], PartialResult]]) -> PartialResult:
         for action in actions:
             res = action()
             if res.is_failure:
@@ -319,7 +319,7 @@ class _PartialExecutor:
                                                   self.__test_case.setup_phase)
 
     def __act__create_executor_and_parse(self) -> PartialResult:
-        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__PARSE, None)
+        failure_con = PhaseFailureResultConstructor(phase_step.ACT__PARSE, None)
 
         def action():
             res = self.__act__create_and_set_executor(phase_step.ACT__PARSE)
@@ -336,7 +336,7 @@ class _PartialExecutor:
                                                                         phase_step.ACT__PARSE)
 
     def __act__validate_symbols(self) -> PartialResult:
-        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS, None)
+        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS, None)
 
         def action():
             executor = phase_step_executors.ValidateSymbolsExecutor(self.__instruction_environment_pre_sds)
@@ -351,7 +351,7 @@ class _PartialExecutor:
                                                                         phase_step.ACT__VALIDATE_SYMBOLS)
 
     def __act__validate_pre_sds(self) -> PartialResult:
-        failure_con = _PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS, None)
+        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS, None)
 
         def action():
             res = self.__act_source_and_executor.validate_pre_sds(self.__instruction_environment_pre_sds)
@@ -400,10 +400,11 @@ class _PartialExecutor:
                                                   self.__test_case.setup_phase)
 
     def __act_program_executor(self):
-        return _ActProgramExecution(self.__act_source_and_executor,
-                                    self.__post_setup_validation_environment(phase_identifier.ACT),
-                                    self.__post_sds_environment(phase_identifier.ACT),
-                                    self.___step_execution_result)
+        return ActPhaseExecutor(self.__act_source_and_executor,
+                                self.__post_setup_validation_environment(phase_identifier.ACT),
+                                self.__post_sds_environment(phase_identifier.ACT),
+                                StdinConfiguration(self.___step_execution_result.stdin_settings.file_name,
+                                                   self.___step_execution_result.stdin_settings.contents))
 
     def __before_assert__validate_post_setup(self) -> PartialResult:
         return self.__run_instructions_phase_step(
@@ -499,7 +500,7 @@ class _PartialExecutor:
                                                   self._sds)
 
     def __act__create_and_set_executor(self, step: PhaseStep) -> PartialResult:
-        failure_con = _PhaseFailureResultConstructor(step, None)
+        failure_con = PhaseFailureResultConstructor(step, None)
         section_contents = self.__test_case.act_phase
         instructions = []
         for element in section_contents.elements:
@@ -528,148 +529,3 @@ class _PartialExecutor:
                                  None,
                                  PhaseFailureInfo(step,
                                                   new_failure_details_from_exception(ex, str(sys.exc_info()))))
-
-
-class _PhaseFailureResultConstructor:
-    def __init__(self,
-                 step: PhaseStep,
-                 sds: SandboxDirectoryStructure):
-        self.step = step
-        self.sds = sds
-
-    def apply(self,
-              status: PartialResultStatus,
-              failure_details: FailureDetails) -> PartialResult:
-        return PartialResult(status,
-                             self.sds,
-                             result.PhaseFailureInfo(self.step,
-                                                     failure_details))
-
-    def implementation_error(self, ex: Exception) -> PartialResult:
-        return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
-                          new_failure_details_from_exception(ex))
-
-    def implementation_error_msg(self, msg: str) -> PartialResult:
-        return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
-                          new_failure_details_from_message(msg))
-
-
-class _ActProgramExecution:
-    def __init__(self,
-                 act_source_and_executor: ActSourceAndExecutor,
-                 environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
-                 environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
-                 step_execution_result: _StepExecutionResult()):
-        self.act_source_and_executor = act_source_and_executor
-        self.environment_for_validate_post_setup = environment_for_validate_post_setup
-        self.environment_for_other_steps = environment_for_other_steps
-        self.home_and_sds = environment_for_other_steps.home_and_sds
-        self.step_execution_result = step_execution_result
-        self.script_output_dir_path = environment_for_other_steps.home_and_sds.sds.test_case_dir
-
-    def validate_post_setup(self) -> PartialResult:
-        step = phase_step.ACT__VALIDATE_POST_SETUP
-
-        def action():
-            res = self.act_source_and_executor.validate_post_setup(self.environment_for_validate_post_setup)
-            if res.is_success:
-                return self._pass()
-            else:
-                return self._failure_from(step,
-                                          PartialResultStatus(res.status.value),
-                                          new_failure_details_from_message(res.failure_message))
-
-        return self._with_implementation_exception_handling(step, action)
-
-    def prepare(self) -> PartialResult:
-        step = phase_step.ACT__PREPARE
-
-        def action():
-            res = self.act_source_and_executor.prepare(self.environment_for_other_steps,
-                                                       self.script_output_dir_path)
-            if res.is_success:
-                return self._pass()
-            else:
-                return self._failure_from(step,
-                                          PartialResultStatus.HARD_ERROR,
-                                          new_failure_details_from_message(res.failure_message))
-
-        return self._with_implementation_exception_handling(step, action)
-
-    def execute(self) -> PartialResult:
-        step = phase_step.ACT__EXECUTE
-
-        def action():
-            exit_code_or_hard_error = self._execute_with_stdin_handling()
-            if exit_code_or_hard_error.is_exit_code:
-                return self._pass()
-            else:
-                return self._failure_from(step,
-                                          PartialResultStatus.HARD_ERROR,
-                                          exit_code_or_hard_error.failure_details)
-
-        return self._with_implementation_exception_handling(step, action)
-
-    def _execute_with_stdin_handling(self) -> ExitCodeOrHardError:
-        if self.step_execution_result.has_custom_stdin:
-            file_name = self._custom_stdin_file_name()
-            return self._run_act_program_with_opened_stdin_file(file_name)
-        else:
-            return self._run_act_program_with_stdin_file(subprocess.DEVNULL)
-
-    def _run_act_program_with_opened_stdin_file(self, file_name: pathlib.Path) -> ExitCodeOrHardError:
-        try:
-            with file_name.open() as f_stdin:
-                return self._run_act_program_with_stdin_file(f_stdin)
-        except IOError as ex:
-            return new_eh_hard_error(new_failure_details_from_exception(
-                ex,
-                'Failure to open stdin file: ' + str(file_name)))
-
-    def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
-        """
-        Pre-condition: write has been executed.
-        """
-        sds = self.home_and_sds.sds
-        with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
-            with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
-                exit_code_or_hard_error = self.act_source_and_executor.execute(
-                    self.environment_for_other_steps,
-                    self.script_output_dir_path,
-                    StdFiles(f_stdin,
-                             StdOutputFiles(f_stdout,
-                                            f_stderr)))
-                if exit_code_or_hard_error.is_exit_code:
-                    self._store_exit_code(exit_code_or_hard_error.exit_code)
-                return exit_code_or_hard_error
-
-    def _store_exit_code(self, exitcode: int):
-        with open_and_make_read_only_on_close(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:
-            f.write(str(exitcode))
-
-    def _custom_stdin_file_name(self) -> pathlib.Path:
-        settings = self.step_execution_result.stdin_settings
-        if settings.file_name is not None:
-            return settings.file_name
-        else:
-            file_path = stdin_contents_file(self.home_and_sds.sds)
-            write_new_text_file(file_path, settings.contents)
-            return file_path
-
-    def _with_implementation_exception_handling(self, step: phase_step.PhaseStep, action) -> PartialResult:
-        try:
-            return action()
-        except Exception as ex:
-            return self._failure_con_for(step).implementation_error(ex)
-
-    def _pass(self) -> PartialResult:
-        return new_partial_result_pass(self.home_and_sds.sds)
-
-    def _failure_from(self,
-                      step: PhaseStep,
-                      status: PartialResultStatus,
-                      failure_details: FailureDetails) -> PartialResult:
-        return self._failure_con_for(step).apply(status, failure_details)
-
-    def _failure_con_for(self, step: PhaseStep) -> _PhaseFailureResultConstructor:
-        return _PhaseFailureResultConstructor(step, self.home_and_sds.sds)
