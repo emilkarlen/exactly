@@ -11,6 +11,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO
+from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -84,19 +85,15 @@ def _new_argument_parser(commands: Dict[str, str]) -> argparse.ArgumentParser:
     ret_val.add_argument(short_and_long_option_syntax.long_syntax(opt.OPTION_FOR_EXECUTING_ACT_PHASE__LONG),
                          default=False,
                          action="store_true",
-                         help="""\
-                        Executes the full test case, but instead of "reporting" the result,
-                        the output from the act phase script is emitted:
-                        Output on stdout/stderr from the script is printed to stdout/stderr.
-                        The exit code from the act script becomes the exit code from the program.""")
+                         help=TEXT_PARSER.format(EXECUTING_ACT_PHASE_OPTION_DESCRIPTION))
     ret_val.add_argument(short_and_long_option_syntax.long_syntax(opt.OPTION_FOR_ACTOR__LONG),
                          metavar=opt.ACTOR_OPTION_ARGUMENT,
                          nargs=1,
-                         help=TEXT_PARSER.format(_ACTOR_OPTION_DESCRIPTION))
+                         help=TEXT_PARSER.format(ACTOR_OPTION_DESCRIPTION))
     ret_val.add_argument(short_and_long_option_syntax.long_syntax(opt.OPTION_FOR_SUITE__LONG),
                          metavar=opt.SUITE_OPTION_METAVAR,
                          nargs=1,
-                         help=_SUITE_OPTION_DESCRIPTION)
+                         help=TEXT_PARSER.format(SUITE_OPTION_DESCRIPTION))
     ret_val.add_argument(short_and_long_option_syntax.long_syntax(opt.OPTION_FOR_PREPROCESSOR__LONG),
                          metavar=opt.PREPROCESSOR_OPTION_ARGUMENT,
                          nargs=1,
@@ -112,19 +109,30 @@ def _parse_preprocessor(default_preprocessor: Preprocessor,
         return PreprocessorViaExternalProgram(shlex.split(preprocessor_argument[0]))
 
 
-_ACTOR_OPTION_DESCRIPTION = """\
+ACTOR_OPTION_DESCRIPTION = """\
 Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program that serves as the interpreter.
 
-{ARGUMENT} is an absolute path followed by optional arguments (using {shell_syntax_concept}).
+
+{interpreter_program} is an absolute path followed by optional arguments (using {shell_syntax_concept}).
 
 Note that an {ACTOR_CONCEPT} specified in the test case has precedence over the
 {ACTOR_CONCEPT} given here.
 """
 
-_SUITE_OPTION_DESCRIPTION = """\
-A test suite to read configuration from.
+SUITE_OPTION_DESCRIPTION = """\
+Reads configuration from the given suite.
 
-The test case is executed as if it were part of the given suite.
+The test case is executed as if it were part of the suite.
+"""
+
+EXECUTING_ACT_PHASE_OPTION_DESCRIPTION = """\
+Executes the test case as usual, but instead of "reporting" the result,
+the outcome of {phase[act]:syntax} is emitted:
+
+
+output on stdout/stderr from {phase[act]:syntax} becomes the output on stdout/stderr;
+
+the exit code from {phase[act]:syntax} becomes the exit code from the program.
 """
 
 KEEPING_SANDBOX_OPTION_DESCRIPTION = """\
@@ -151,9 +159,10 @@ then processing is considered to have failed.
 """
 
 TEXT_PARSER = TextParser({
+    'phase': PHASE_NAME_DICTIONARY,
     'preprocessor': opt.PREPROCESSOR_OPTION_ARGUMENT,
     'sandbox': formatting.concept_(SANDBOX_CONCEPT_INFO),
-    'ARGUMENT': opt.ACTOR_OPTION_ARGUMENT,
+    'interpreter_program': opt.ACTOR_OPTION_ARGUMENT,
     'INTERPRETER_ACTOR_TERM': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,
     'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
