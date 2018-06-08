@@ -120,7 +120,8 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: FullResult) -> int:
-        self._out_printer.write_line(str(result.sds.root_dir))
+        if result.has_sds:
+            self._out_printer.write_line(str(result.sds.root_dir))
 
         self._err_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
         print_error_message_for_full_result(self._err_printer, result)

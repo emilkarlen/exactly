@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Optional
 
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -83,7 +84,7 @@ class FailureInfoVisitor:
 
 class ResultBase:
     def __init__(self,
-                 sds: SandboxDirectoryStructure,
+                 sds: Optional[SandboxDirectoryStructure],
                  failure_info: FailureInfo):
         self.__sds = sds
         self.__failure_info = failure_info
@@ -93,7 +94,7 @@ class ResultBase:
         return self.__sds is not None
 
     @property
-    def sds(self) -> SandboxDirectoryStructure:
+    def sds(self) -> Optional[SandboxDirectoryStructure]:
         return self.__sds
 
     @property
