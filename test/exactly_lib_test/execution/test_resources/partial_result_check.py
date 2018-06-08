@@ -36,7 +36,7 @@ def partial_result_status_is(expected: PartialResultStatus) -> asrt.ValueAsserti
                                                     asrt.equals(expected)))
 
 
-def expected_pass(directory_structure: SandboxDirectoryStructure) -> ExpectedPartialResult:
+def expected_pass(sds: SandboxDirectoryStructure) -> ExpectedPartialResult:
     return ExpectedPartialResult(PartialResultStatus.PASS,
-                                 directory_structure,
+                                 sds,
                                  ExpectedFailureForNoFailure())

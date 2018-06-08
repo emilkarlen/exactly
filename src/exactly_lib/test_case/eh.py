@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.util.failure_details import FailureDetails
 
 
@@ -7,8 +9,8 @@ class ExitCodeOrHardError(tuple):
     """
 
     def __new__(cls,
-                exit_code: int,
-                failure_message: FailureDetails):
+                exit_code: Optional[int],
+                failure_message: Optional[FailureDetails]):
         return tuple.__new__(cls, (exit_code, failure_message))
 
     @property
@@ -20,19 +22,15 @@ class ExitCodeOrHardError(tuple):
         return self[0] is None
 
     @property
-    def exit_code(self) -> int:
+    def exit_code(self) -> Optional[int]:
         return self[0]
 
     @property
-    def failure_details(self) -> FailureDetails:
+    def failure_details(self) -> Optional[FailureDetails]:
         """
         :return None iff the object represents SUCCESS.
         """
         return self[1]
-
-    @property
-    def is_hard_error(self) -> bool:
-        return not self.is_exit_code
 
     def __str__(self):
         if self.is_exit_code:

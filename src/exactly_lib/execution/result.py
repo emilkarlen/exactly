@@ -85,7 +85,7 @@ class FailureInfoVisitor:
 class ResultBase:
     def __init__(self,
                  sds: Optional[SandboxDirectoryStructure],
-                 failure_info: FailureInfo):
+                 failure_info: Optional[FailureInfo]):
         self.__sds = sds
         self.__failure_info = failure_info
 
@@ -123,8 +123,8 @@ class PartialResultStatus(Enum):
 class PartialResult(ResultBase):
     def __init__(self,
                  status: PartialResultStatus,
-                 sds: SandboxDirectoryStructure,
-                 failure_info: FailureInfo):
+                 sds: Optional[SandboxDirectoryStructure],
+                 failure_info: Optional[FailureInfo]):
         super().__init__(sds, failure_info)
         self.__status = status
 
@@ -160,8 +160,8 @@ class FullResultStatus(Enum):
 class FullResult(ResultBase):
     def __init__(self,
                  status: FullResultStatus,
-                 sds: SandboxDirectoryStructure,
-                 failure_info: FailureInfo):
+                 sds: Optional[SandboxDirectoryStructure],
+                 failure_info: Optional[FailureInfo]):
         super().__init__(sds, failure_info)
         self.__status = status
 

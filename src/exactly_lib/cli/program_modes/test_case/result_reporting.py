@@ -4,7 +4,6 @@ import shutil
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.result_reporting import print_error_message_for_full_result, print_error_info
-from exactly_lib.execution import full_execution
 from exactly_lib.execution.result import FullResultStatus, FullResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.test_case_processing import ErrorInfo
@@ -89,7 +88,7 @@ class TestCaseResultReporter(ResultReporter):
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: full_execution.FullResult) -> int:
+                              result: FullResult) -> int:
         raise NotImplementedError('abstract method')
 
     def _report_unable_to_execute(self,
@@ -106,7 +105,7 @@ class _ResultReporterForNormalOutput(TestCaseResultReporter):
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: full_execution.FullResult) -> int:
+                              result: FullResult) -> int:
         self._out_printer.write_colored_line(result.status.name,
                                              exit_value.color)
         print_error_message_for_full_result(self._err_printer, result)
