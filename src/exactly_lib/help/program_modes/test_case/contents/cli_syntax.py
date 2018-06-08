@@ -1,5 +1,6 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
+from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
@@ -27,6 +28,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         super().__init__(program_info.PROGRAM_NAME)
         from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
         self.parser = TextParser({
+            'preprocessor': _PREPROCESSOR_OPTION.argument,
             'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
             'TEST_CASE_FILE': _FILE_ARGUMENT.name,
             'phase': PHASE_NAME_DICTIONARY,
@@ -68,15 +70,13 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                             )
 
     def _keep_sandbox_argument(self) -> cli_syntax.DescribedArgument:
-        extra_format_map = {
-            'sandbox': formatting.concept_(SANDBOX_CONCEPT_INFO),
-        }
-        return cli_syntax.DescribedArgument(_KEEP_SANDBOX_OPTION,
-                                            self.parser.fnap(_KEEPING_SANDBOX_OPTION_DESCRIPTION, extra_format_map),
-                                            see_also_items=[
-                                                CrossReferenceIdSeeAlsoItem(
-                                                    SANDBOX_CONCEPT_INFO.cross_reference_target),
-                                            ])
+        return cli_syntax.DescribedArgument(
+            _KEEP_SANDBOX_OPTION,
+            argument_parsing.TEXT_PARSER.fnap(argument_parsing.KEEPING_SANDBOX_OPTION_DESCRIPTION),
+            see_also_items=[
+                CrossReferenceIdSeeAlsoItem(
+                    SANDBOX_CONCEPT_INFO.cross_reference_target),
+            ])
 
     def _execute_act_phase_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(_EXECUTING_ACT_PHASE_OPTION,
@@ -84,11 +84,8 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                             )
 
     def _preprocessor_argument(self) -> cli_syntax.DescribedArgument:
-        extra_format_map = {
-            'preprocessor': _PREPROCESSOR_OPTION.argument,
-        }
         return cli_syntax.DescribedArgument(_PREPROCESSOR_OPTION,
-                                            self.parser.fnap(_PREPROCESSOR_OPTION_DESCRIPTION, extra_format_map),
+                                            self.parser.fnap(_PREPROCESSOR_OPTION_DESCRIPTION),
                                             see_also_items=see_also_items_from_cross_refs([
                                                 PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
                                                 SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target
@@ -136,11 +133,6 @@ Note: An {actor_concept} specified in the test case will have precedence over th
 
 _ACTOR_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_ACTOR__LONG,
                                       argument=opt.ACTOR_OPTION_ARGUMENT)
-
-_KEEPING_SANDBOX_OPTION_DESCRIPTION = """\
-Executes a test case as normal, but the {sandbox} is preserved,
-and it's root directory is the only output on stdout.
-"""
 
 _KEEP_SANDBOX_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG,
                                              short_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT)
