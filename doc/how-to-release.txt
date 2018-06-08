@@ -6,7 +6,7 @@ https://packaging.python.org/
 
 * Run tests towards installed program
 
-* Set version number in src/exactly_lib/program_info.py
+* Set version number in src/exactly_lib/program_info.py (if not already done)
 
 * Make sure release year is included in COPYRIGHT
 
