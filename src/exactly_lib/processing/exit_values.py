@@ -36,7 +36,7 @@ def _for_full_result(result: FullResultStatus, color: ForegroundColor) -> ExitVa
 
 _FOR_FULL_RESULT = {
     FullResultStatus.PASS: _for_full_result(FullResultStatus.PASS, ForegroundColor.GREEN),
-    FullResultStatus.VALIDATE: _for_full_result(FullResultStatus.VALIDATE, ForegroundColor.YELLOW),
+    FullResultStatus.VALIDATION_ERROR: _for_full_result(FullResultStatus.VALIDATION_ERROR, ForegroundColor.YELLOW),
     FullResultStatus.FAIL: _for_full_result(FullResultStatus.FAIL, ForegroundColor.RED),
     FullResultStatus.SKIPPED: _for_full_result(FullResultStatus.SKIPPED, ForegroundColor.CYAN),
     FullResultStatus.XFAIL: _for_full_result(FullResultStatus.XFAIL, ForegroundColor.CYAN),
@@ -52,7 +52,7 @@ def from_full_result(status: FullResultStatus) -> ExitValue:
 
 
 EXECUTION__PASS = from_full_result(FullResultStatus.PASS)
-EXECUTION__VALIDATE = from_full_result(FullResultStatus.VALIDATE)
+EXECUTION__VALIDATION_ERROR = from_full_result(FullResultStatus.VALIDATION_ERROR)
 EXECUTION__FAIL = from_full_result(FullResultStatus.FAIL)
 EXECUTION__SKIPPED = from_full_result(FullResultStatus.SKIPPED)
 EXECUTION__XFAIL = from_full_result(FullResultStatus.XFAIL)

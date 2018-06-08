@@ -180,7 +180,7 @@ def interrupted_execution_list(setup: Setup) -> ParagraphItem:
                   step_with_single_exit_value(
                       [],
                       _failure_condition_of_post_setup_validation(setup),
-                      exit_values.EXECUTION__VALIDATE)
+                      exit_values.EXECUTION__VALIDATION_ERROR)
                   ),
         list_item('Hard error',
                   step_with_single_exit_value(
@@ -205,7 +205,7 @@ def _error_in_validation_before_execution() -> list:
     ret_val = []
     ret_val += _TEXT_PARSER.fnap(_ERROR_IN_VALIDATION_BEFORE_EXECUTION_PREAMBLE)
     ret_val += _TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
-    ret_val.append(singe_exit_value_display(exit_values.EXECUTION__VALIDATE))
+    ret_val.append(singe_exit_value_display(exit_values.EXECUTION__VALIDATION_ERROR))
     return ret_val
 
 

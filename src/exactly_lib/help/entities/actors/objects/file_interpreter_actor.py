@@ -31,12 +31,12 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
 
     def __init__(self):
         super().__init__(FILE_INTERPRETER_ACTOR)
-        from exactly_lib.processing.exit_values import EXECUTION__VALIDATE
+        from exactly_lib.processing.exit_values import EXECUTION__VALIDATION_ERROR
         format_map = {
             'phase': PHASE_NAME_DICTIONARY,
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
-            'VALIDATION': EXECUTION__VALIDATE.exit_identifier,
+            'VALIDATION': EXECUTION__VALIDATION_ERROR.exit_identifier,
             'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),

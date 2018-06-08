@@ -240,7 +240,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                              SourceAndStatus(
                                  failing_source_line=name_of_failing_instruction,
                                  expected_result_statuses=result_for_executed_status_matches(
-                                     FullResultStatus.VALIDATE))),
+                                     FullResultStatus.VALIDATION_ERROR))),
             ])
 
     def test_assertion_fails(self):

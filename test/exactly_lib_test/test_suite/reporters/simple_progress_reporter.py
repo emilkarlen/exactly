@@ -70,7 +70,7 @@ class TestExecutionOfSuite(unittest.TestCase):
             (FULL_RESULT_FAIL, case_ev.EXECUTION__FAIL, suite_ev.FAILED_TESTS),
             (FULL_RESULT_SKIP, case_ev.EXECUTION__SKIPPED, suite_ev.ALL_PASS),
             (FULL_RESULT_HARD_ERROR, case_ev.EXECUTION__HARD_ERROR, suite_ev.FAILED_TESTS),
-            (FULL_RESULT_VALIDATE, case_ev.EXECUTION__VALIDATE, suite_ev.FAILED_TESTS),
+            (FULL_RESULT_VALIDATE, case_ev.EXECUTION__VALIDATION_ERROR, suite_ev.FAILED_TESTS),
             (FULL_RESULT_IMPLEMENTATION_ERROR, case_ev.EXECUTION__IMPLEMENTATION_ERROR, suite_ev.FAILED_TESTS),
         ]
         for case_result, expected_case_exit_value, expected_suite_exit_value in cases:

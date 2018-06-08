@@ -328,7 +328,7 @@ class _PartialExecutor:
             try:
                 self.__act_source_and_executor.parse(self.__instruction_environment_pre_sds)
             except ParseException as ex:
-                return failure_con.apply(PartialResultStatus(PartialResultStatus.VALIDATE),
+                return failure_con.apply(PartialResultStatus(PartialResultStatus.VALIDATION_ERROR),
                                          new_failure_details_from_message(ex.cause.failure_message))
             return new_partial_result_pass(None)
 

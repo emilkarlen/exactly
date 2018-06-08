@@ -73,7 +73,7 @@ class DefaultActorConfShouldSucceedWhenActPhaseIsASingleCommandLineOfAnExecutabl
 class DefaultActorConfShouldFailWhenActPhaseIsMultipleCommandLines(
     SetupWithoutPreprocessorAndDefaultActor):
     def expected_result(self) -> asrt.ValueAssertion:
-        return process_result_for_exit_value(exit_values.EXECUTION__VALIDATE)
+        return process_result_for_exit_value(exit_values.EXECUTION__VALIDATION_ERROR)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> list:
         return [

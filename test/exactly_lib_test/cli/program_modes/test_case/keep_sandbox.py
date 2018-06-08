@@ -12,7 +12,7 @@ from exactly_lib.execution.phase_step_identifiers.phase_step import STEP__MAIN, 
 from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.exit_values import EXECUTION__IMPLEMENTATION_ERROR, EXECUTION__HARD_ERROR, EXECUTION__FAIL, \
-    EXECUTION__VALIDATE, EXECUTION__PASS, NO_EXECUTION__SYNTAX_ERROR
+    EXECUTION__VALIDATION_ERROR, EXECUTION__PASS, NO_EXECUTION__SYNTAX_ERROR
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
@@ -123,7 +123,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
     def test_setup(self):
         # ARRANGE #
         cases = {
-            EXECUTION__VALIDATE:
+            EXECUTION__VALIDATION_ERROR:
                 setup_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
 
             EXECUTION__HARD_ERROR:
@@ -146,7 +146,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
                 },
             STEP__VALIDATE_PRE_SDS:
                 {
-                    EXECUTION__VALIDATE:
+                    EXECUTION__VALIDATION_ERROR:
                         ActSourceAndExecutorConstructorThatRunsConstantActions(
                             validate_pre_sds_action=SVH_VALIDATION_ERROR),
 
@@ -179,7 +179,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
     def test_before_assert(self):
         # ARRANGE #
         cases = {
-            EXECUTION__VALIDATE:
+            EXECUTION__VALIDATION_ERROR:
                 before_assert_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
 
             EXECUTION__HARD_ERROR:
@@ -194,7 +194,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
     def test_assert(self):
         # ARRANGE #
         cases = {
-            EXECUTION__VALIDATE:
+            EXECUTION__VALIDATION_ERROR:
                 assert_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
 
             EXECUTION__HARD_ERROR:
@@ -209,7 +209,7 @@ class TestFailureBeforeCreationOfSds(unittest.TestCase):
     def test_cleanup(self):
         # ARRANGE #
         cases = {
-            EXECUTION__VALIDATE:
+            EXECUTION__VALIDATION_ERROR:
                 cleanup_phase_instruction_that(validate_pre_sds=SVH_VALIDATION_ERROR),
 
             EXECUTION__HARD_ERROR:
@@ -260,7 +260,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
         cases = {
             STEP__VALIDATE_POST_SETUP:
                 {
-                    EXECUTION__VALIDATE:
+                    EXECUTION__VALIDATION_ERROR:
                         setup_phase_instruction_that(validate_post_setup=SVH_VALIDATION_ERROR),
 
                     EXECUTION__HARD_ERROR:
@@ -286,7 +286,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
         cases = {
             STEP__VALIDATE_POST_SETUP:
                 {
-                    EXECUTION__VALIDATE:
+                    EXECUTION__VALIDATION_ERROR:
                         ActSourceAndExecutorConstructorThatRunsConstantActions(
                             validate_post_setup_action=SVH_VALIDATION_ERROR),
 
@@ -338,7 +338,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
         cases = {
             STEP__VALIDATE_POST_SETUP:
                 {
-                    EXECUTION__VALIDATE:
+                    EXECUTION__VALIDATION_ERROR:
                         before_assert_phase_instruction_that(validate_post_setup=SVH_VALIDATION_ERROR),
 
                     EXECUTION__HARD_ERROR:
@@ -367,7 +367,7 @@ class TestPhasesInPartialExecution(unittest.TestCase):
         cases = {
             STEP__VALIDATE_POST_SETUP:
                 {
-                    EXECUTION__VALIDATE:
+                    EXECUTION__VALIDATION_ERROR:
                         assert_phase_instruction_that(validate_post_setup=SVH_VALIDATION_ERROR),
 
                     EXECUTION__HARD_ERROR:
