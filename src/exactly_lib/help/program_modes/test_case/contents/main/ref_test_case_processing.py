@@ -53,7 +53,7 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
                            step_with_single_exit_value(
                                self.fnap(PURPOSE_OF_VALIDATION),
                                self.text_parser.para(FAILURE_CONDITION_OF_VALIDATION),
-                               exit_values.EXECUTION__VALIDATE)
+                               exit_values.EXECUTION__VALIDATION_ERROR)
                            ),
             docs.list_item('execution',
                            self.fnap(EXECUTION_DESCRIPTION) +

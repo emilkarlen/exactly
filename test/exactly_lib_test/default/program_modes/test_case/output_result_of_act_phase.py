@@ -91,7 +91,7 @@ ignored action
 
     def expected_result(self) -> asrt.ValueAssertion:
         return asrt_process_result_info.assertion_on_process_result(
-            asrt_process_result.is_result_for_exit_value(exit_values.EXECUTION__VALIDATE))
+            asrt_process_result.is_result_for_exit_value(exit_values.EXECUTION__VALIDATION_ERROR))
 
 
 if __name__ == '__main__':

@@ -69,7 +69,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.VALIDATE,
+            Expectation(PartialResultStatus.VALIDATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message_assertion(
                             conf.step,
                             test_case.the_extra(conf.phase)[0].source,
@@ -98,7 +98,7 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.VALIDATE,
+            Expectation(PartialResultStatus.VALIDATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion(
                             conf.step,
                             asrt.equals(error_message_for_failed_restriction)),

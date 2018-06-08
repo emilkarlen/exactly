@@ -47,7 +47,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_validation_error('error in act/validate-pre-sds'))),
-            Expectation(PartialResultStatus.VALIDATE,
+            Expectation(PartialResultStatus.VALIDATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
@@ -83,7 +83,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_post_setup=validate_action_that_returns(
                             svh.new_svh_validation_error('error in act/validate-post-setup'))),
-            Expectation(PartialResultStatus.VALIDATE,
+            Expectation(PartialResultStatus.VALIDATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),

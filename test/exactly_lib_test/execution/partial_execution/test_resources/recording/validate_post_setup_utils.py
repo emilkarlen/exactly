@@ -47,7 +47,7 @@ class TestValidationError(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.VALIDATE,
+            Expectation(PartialResultStatus.VALIDATION_ERROR,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             conf.step,
                             test_case.the_extra(conf.phase)[0].source,

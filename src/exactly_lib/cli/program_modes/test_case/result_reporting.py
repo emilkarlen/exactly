@@ -178,7 +178,7 @@ RESULT_REPORTERS = {
 
 _FULL_EXECUTION__SKIPPED = {FullResultStatus.SKIPPED}
 
-_FULL_EXECUTION__VALIDATE = {FullResultStatus.VALIDATE}
+_FULL_EXECUTION__VALIDATE = {FullResultStatus.VALIDATION_ERROR}
 
 _FULL_EXECUTION__COMPLETE = {FullResultStatus.PASS,
                              FullResultStatus.FAIL,

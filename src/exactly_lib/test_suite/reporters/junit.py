@@ -16,7 +16,7 @@ FAIL_STATUSES = {FullResultStatus.FAIL,
                  FullResultStatus.XPASS,
                  }
 
-ERROR_STATUSES = {FullResultStatus.VALIDATE,
+ERROR_STATUSES = {FullResultStatus.VALIDATION_ERROR,
                   FullResultStatus.HARD_ERROR,
                   FullResultStatus.IMPLEMENTATION_ERROR,
                   }

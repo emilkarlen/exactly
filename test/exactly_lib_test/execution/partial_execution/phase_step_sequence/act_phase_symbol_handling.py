@@ -71,7 +71,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages_with_ref_to_undefined_symbol)),
-            Expectation(PartialResultStatus.VALIDATE,
+            Expectation(PartialResultStatus.VALIDATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
                             phase_step.ACT__PARSE,
@@ -107,7 +107,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages)),
-            Expectation(PartialResultStatus.VALIDATE,
+            Expectation(PartialResultStatus.VALIDATION_ERROR,
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
                             phase_step.ACT__PARSE,
