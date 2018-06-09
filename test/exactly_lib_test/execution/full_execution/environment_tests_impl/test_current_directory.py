@@ -1,9 +1,9 @@
 import os
 import unittest
 
+from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
-from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.eh import new_eh_exit_code

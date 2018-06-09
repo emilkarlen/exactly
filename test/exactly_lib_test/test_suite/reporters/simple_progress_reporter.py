@@ -4,7 +4,7 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.execution import result
+from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.processing import test_case_processing, exit_values as case_ev
 from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_suite import execution
@@ -186,7 +186,7 @@ class TestFinalResultFormatting(unittest.TestCase):
                          'Line that reports number of tests and elapsed time')
 
 
-def _suite_executor_for_case_processing_that_unconditionally(execution_result: result.FullResult,
+def _suite_executor_for_case_processing_that_unconditionally(execution_result: FullResult,
                                                              root_suite: structure.TestSuite,
                                                              std_output_files: StringStdOutFiles,
                                                              root_file_path: Path) -> SuitesExecutor:

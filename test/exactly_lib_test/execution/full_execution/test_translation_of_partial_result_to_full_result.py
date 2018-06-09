@@ -1,8 +1,7 @@
 import unittest
 
-from exactly_lib.execution.full_execution import translate_status
+from exactly_lib.execution.full_execution.result import FullResultStatus, translate_status
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
-from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.test_case.test_case_status import ExecutionMode
 
 

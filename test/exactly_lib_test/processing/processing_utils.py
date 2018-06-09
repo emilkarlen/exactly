@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution.result import FullResult, new_skipped
+from exactly_lib.execution.full_execution.result import FullResult, new_skipped
 from exactly_lib.processing import processing_utils as sut
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.preprocessor import IdentityPreprocessor

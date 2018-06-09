@@ -1,8 +1,10 @@
 import pathlib
 
 from exactly_lib import program_info
-from exactly_lib.execution import full_execution, tmp_dir_resolving
-from exactly_lib.execution.result import FullResult
+from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution.full_execution import execution
+from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
@@ -26,7 +28,7 @@ class TestCaseDefinition:
 
     def __init__(self,
                  test_case_parsing_setup: TestCaseParsingSetup,
-                 predefined_properties: full_execution.PredefinedProperties):
+                 predefined_properties: PredefinedProperties):
         self.test_case_parsing_setup = test_case_parsing_setup
         self.predefined_properties = predefined_properties
 
@@ -127,7 +129,7 @@ class _Executor(processing_utils.Executor):
                  default_act_phase_setup: ActPhaseSetup,
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  is_keep_sandbox: bool,
-                 predefined_properties: full_execution.PredefinedProperties,
+                 predefined_properties: PredefinedProperties,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
                  tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
         self.predefined_properties = predefined_properties
@@ -140,12 +142,12 @@ class _Executor(processing_utils.Executor):
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
         dir_containing_test_case_file = test_case_file_path.parent.resolve()
-        return full_execution.execute(test_case,
-                                      self.predefined_properties,
-                                      ConfigurationBuilder(dir_containing_test_case_file,
+        return execution.execute(test_case,
+                                 self.predefined_properties,
+                                 ConfigurationBuilder(dir_containing_test_case_file,
                                                            dir_containing_test_case_file,
                                                            act_phase_handling_for_setup(self.default_act_phase_setup)),
-                                      self.act_phase_os_process_executor,
-                                      self._sandbox_root_dir_resolver,
-                                      self._is_keep_sandbox,
-                                      )
+                                 self.act_phase_os_process_executor,
+                                 self._sandbox_root_dir_resolver,
+                                 self._is_keep_sandbox,
+                                 )
