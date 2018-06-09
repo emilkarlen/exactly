@@ -1,16 +1,16 @@
 import os
 import sys
-from typing import Sequence, Callable, Optional
+from typing import Sequence, Optional
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.full_execution.configuration import FullExeInputConfiguration
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
-from exactly_lib.execution.impl.result import PhaseStepFailure
+from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.impl.act_phase_execution import PhaseFailureResultConstructor, \
-    ActPhaseExecutor, StdinConfiguration
+    ActPhaseExecutor
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
@@ -21,7 +21,7 @@ from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.setup import StdinSettings, SetupSettingsBuilder
+from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
 from exactly_lib.util.failure_details import new_failure_details_from_message, new_failure_details_from_exception
@@ -51,33 +51,6 @@ class ExecutionConfiguration(tuple):
         return self[2]
 
 
-class _StepExecutionResult:
-    def __init__(self):
-        self.__script_source = None
-        self.__stdin_settings = None
-
-    @property
-    def script_source(self) -> str:
-        return self.__script_source
-
-    @script_source.setter
-    def script_source(self, x: str):
-        self.__script_source = x
-
-    @property
-    def has_custom_stdin(self) -> bool:
-        return self.__stdin_settings.file_name is not None or \
-               self.__stdin_settings.contents is not None
-
-    @property
-    def stdin_settings(self) -> StdinSettings:
-        return self.__stdin_settings
-
-    @stdin_settings.setter
-    def stdin_settings(self, x: StdinSettings):
-        self.__stdin_settings = x
-
-
 def execute(exe_conf: ExecutionConfiguration,
             test_case: TestCase) -> PartialResult:
     executor = _PartialExecutor(exe_conf,
@@ -95,7 +68,7 @@ class _PartialExecutor:
         self.conf = exe_conf.conf_phase_values
         self.__test_case = test_case
         self.__setup_settings_builder = exe_conf.setup_settings_builder
-        self.___step_execution_result = _StepExecutionResult()
+        self.stdin_conf_from_setup = None
         self.__source_setup = None
         self.os_services = None
         self.__act_source_and_executor = None
@@ -159,17 +132,17 @@ class _PartialExecutor:
             return self._final_failure_result_from(res_from_assert)
         return self._final_pass_result()
 
-    def _sequence(self, actions: Sequence[Callable[[], Optional[PhaseStepFailure]]]) -> Optional[PhaseStepFailure]:
+    def _sequence(self, actions: Sequence[ActionWithFailureAsResult]) -> Optional[PhaseStepFailure]:
         for action in actions:
             res = action()
             if res is not None:
                 return res
         return None
 
-    def _sequence_with_cleanup(self,
-                               previous_phase: PreviousPhase,
-                               actions: Sequence[Callable[[], Optional[PhaseStepFailure]]]) -> Optional[
-        PhaseStepFailure]:
+    def _sequence_with_cleanup(
+            self,
+            previous_phase: PreviousPhase,
+            actions: Sequence[ActionWithFailureAsResult]) -> Optional[PhaseStepFailure]:
         for action in actions:
             res = action()
             if res is not None:
@@ -281,7 +254,7 @@ class _PartialExecutor:
                                                          self.__post_sds_environment(phase_identifier.SETUP),
                                                          self.__setup_settings_builder),
                                                      self.__test_case.setup_phase)
-        self.___step_execution_result.stdin_settings = self.__setup_settings_builder.stdin
+        self.stdin_conf_from_setup = self.__setup_settings_builder.stdin.as_stdin_configuration
 
         return ret_val
 
@@ -295,8 +268,7 @@ class _PartialExecutor:
         return ActPhaseExecutor(self.__act_source_and_executor,
                                 self.__post_setup_validation_environment(phase_identifier.ACT),
                                 self.__post_sds_environment(phase_identifier.ACT),
-                                StdinConfiguration(self.___step_execution_result.stdin_settings.file_name,
-                                                   self.___step_execution_result.stdin_settings.contents))
+                                self.stdin_conf_from_setup)
 
     def __before_assert__validate_post_setup(self) -> Optional[PhaseStepFailure]:
         return self.__run_instructions_phase_step(
@@ -412,7 +384,7 @@ class _PartialExecutor:
         return None
 
     @staticmethod
-    def __execute_action_and_catch_implementation_exception(action: Callable[[], Optional[PhaseStepFailure]],
+    def __execute_action_and_catch_implementation_exception(action: ActionWithFailureAsResult,
                                                             step: PhaseStep) -> Optional[PhaseStepFailure]:
         try:
             return action()

@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
@@ -9,10 +10,36 @@ from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 
 
-class StdinSettings:
+class StdinConfiguration:
+    def __init__(self,
+                 file_name: Optional[pathlib.Path],
+                 string_contents: Optional[str]):
+        self.__file_name = file_name
+        self.__string_contents = string_contents
+
+    @property
+    def string_contents(self) -> str:
+        return self.__string_contents
+
+    @property
+    def file_name(self) -> pathlib.Path:
+        return self.__file_name
+
+    @property
+    def has_custom_stdin(self) -> bool:
+        return self.__file_name is not None or \
+               self.__string_contents is not None
+
+
+class StdinSettingsBuilder:
     def __init__(self):
         self.__stdin_file_name = None
         self.__stdin_contents = None
+
+    @property
+    def as_stdin_configuration(self) -> StdinConfiguration:
+        return StdinConfiguration(self.__stdin_file_name,
+                                  self.__stdin_contents)
 
     def set_empty(self):
         self.__stdin_file_name = None
@@ -39,10 +66,10 @@ class StdinSettings:
 
 class SetupSettingsBuilder:
     def __init__(self):
-        self.__stdin_settings = StdinSettings()
+        self.__stdin_settings = StdinSettingsBuilder()
 
     @property
-    def stdin(self) -> StdinSettings:
+    def stdin(self) -> StdinSettingsBuilder:
         return self.__stdin_settings
 
 

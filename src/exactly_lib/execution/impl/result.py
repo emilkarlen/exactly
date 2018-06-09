@@ -1,3 +1,5 @@
+from typing import Callable, Optional
+
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.util.failure_details import FailureDetails
@@ -57,3 +59,6 @@ class PhaseStepFailure:
     @property
     def failure_info(self) -> FailureInfo:
         return self.__failure_info
+
+
+ActionWithFailureAsResult = Callable[[], Optional[PhaseStepFailure]]

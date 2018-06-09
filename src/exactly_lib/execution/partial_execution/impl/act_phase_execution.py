@@ -1,41 +1,21 @@
 import pathlib
 import subprocess
-from typing import Optional, Callable
+from typing import Optional
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
-from exactly_lib.execution.impl.result import PhaseStepFailure
+from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
+from exactly_lib.test_case.phases.setup import StdinConfiguration
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \
     new_failure_details_from_message
 from exactly_lib.util.file_utils import open_and_make_read_only_on_close, write_new_text_file
 from exactly_lib.util.std import StdFiles, StdOutputFiles
-
-
-class StdinConfiguration:
-    def __init__(self,
-                 file_name: Optional[pathlib.Path],
-                 string_contents: Optional[str]):
-        self.__file_name = file_name
-        self.__string_contents = string_contents
-
-    @property
-    def string_contents(self) -> str:
-        return self.__string_contents
-
-    @property
-    def file_name(self) -> pathlib.Path:
-        return self.__file_name
-
-    @property
-    def has_custom_stdin(self) -> bool:
-        return self.__file_name is not None or \
-               self.__string_contents is not None
 
 
 class PhaseFailureResultConstructor:
@@ -163,7 +143,7 @@ class ActPhaseExecutor:
 
 def _with_implementation_exception_handling(
         step: phase_step.PhaseStep,
-        action: Callable[[], Optional[PhaseStepFailure]]) -> Optional[PhaseStepFailure]:
+        action: ActionWithFailureAsResult) -> Optional[PhaseStepFailure]:
     try:
         return action()
     except Exception as ex:
