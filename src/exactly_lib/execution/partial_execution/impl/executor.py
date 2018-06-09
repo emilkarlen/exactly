@@ -14,7 +14,7 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ParseException
+from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
@@ -31,12 +31,10 @@ class ExecutionConfiguration(tuple):
     def __new__(cls,
                 configuration: Configuration,
                 sandbox_directory_root_resolver: SandboxRootDirNameResolver,
-                act_phase_handling: ActPhaseHandling,
                 setup_settings_builder: SetupSettingsBuilder,
                 ):
         return tuple.__new__(cls, (configuration,
                                    sandbox_directory_root_resolver,
-                                   act_phase_handling,
                                    setup_settings_builder))
 
     @property
@@ -48,12 +46,8 @@ class ExecutionConfiguration(tuple):
         return self[1]
 
     @property
-    def act_phase_handling(self) -> ActPhaseHandling:
-        return self[2]
-
-    @property
     def setup_settings_builder(self) -> SetupSettingsBuilder:
-        return self[3]
+        return self[2]
 
 
 class _StepExecutionResult:
@@ -103,7 +97,7 @@ class _PartialExecutor:
         self.__source_setup = None
         self.os_services = None
         self.__act_source_and_executor = None
-        self.__act_source_and_executor_constructor = exe_conf.act_phase_handling.source_and_executor_constructor
+        self.__act_source_and_executor_constructor = exe_conf.conf.act_phase_handling.source_and_executor_constructor
         self.__instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
             self.conf.hds,
             self.conf.environ,
@@ -178,14 +172,6 @@ class _PartialExecutor:
     @property
     def _sds(self) -> SandboxDirectoryStructure:
         return self.__sandbox_directory_structure
-
-    @property
-    def exe_configuration(self) -> ExecutionConfiguration:
-        return self.exe_conf
-
-    @property
-    def configuration(self) -> Configuration:
-        return self.conf
 
     def _setup_post_sds_environment(self):
         self.__construct_and_set_sds()
@@ -411,8 +397,8 @@ class _PartialExecutor:
             else:
                 msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
                 return failure_con.implementation_error_msg(msg)
-        self.__act_source_and_executor = self.exe_configuration.act_phase_handling.source_and_executor_constructor.apply(
-            self.configuration.act_phase_os_process_executor,
+        self.__act_source_and_executor = self.conf.act_phase_handling.source_and_executor_constructor.apply(
+            self.conf.act_phase_os_process_executor,
             self.__instruction_environment_pre_sds,
             instructions)
         return new_partial_result_pass(None)

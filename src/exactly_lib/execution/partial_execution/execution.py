@@ -5,13 +5,11 @@ from exactly_lib.execution.partial_execution.impl import executor
 from exactly_lib.execution.partial_execution.impl.executor import ExecutionConfiguration
 from exactly_lib.execution.partial_execution.result import PartialResult
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.file_utils import preserved_cwd
 
 
-def execute(act_phase_handling: ActPhaseHandling,
-            test_case: TestCase,
+def execute(test_case: TestCase,
             configuration: Configuration,
             initial_setup_settings: SetupSettingsBuilder,
             sandbox_root_dir_resolver: SandboxRootDirNameResolver,
@@ -34,7 +32,6 @@ def execute(act_phase_handling: ActPhaseHandling,
         with preserved_cwd():
             ret_val = executor.execute(ExecutionConfiguration(configuration,
                                                               sandbox_root_dir_resolver,
-                                                              act_phase_handling,
                                                               initial_setup_settings),
                                        test_case)
             return ret_val

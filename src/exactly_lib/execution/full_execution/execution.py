@@ -39,13 +39,13 @@ def execute(test_case: test_case_doc.TestCase,
     _prepare_environment_variables(environ)
     partial_execution_configuration = Configuration(
         act_phase_sub_process_executor,
+        configuration_builder.act_phase_handling,
         configuration_builder.hds,
         environ,
         configuration_builder.timeout_in_seconds,
         predefined_symbols=predefined_properties.predefined_symbols,
     )
     partial_result = execution.execute(
-        configuration_builder.act_phase_handling,
         TestCase(test_case.setup_phase,
                  test_case.act_phase,
                  test_case.before_assert_phase,

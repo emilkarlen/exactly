@@ -1,7 +1,7 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
+from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 
@@ -9,10 +9,11 @@ from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or
 class Configuration(tuple):
     def __new__(cls,
                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
+                act_phase_handling: ActPhaseHandling,
                 hds: HomeDirectoryStructure,
                 environ: Dict[str, str],
-                timeout_in_seconds: int = None,
-                predefined_symbols: SymbolTable = None):
+                timeout_in_seconds: Optional[int] = None,
+                predefined_symbols: Optional[SymbolTable] = None):
         """
         :param timeout_in_seconds: None if no timeout
         """
@@ -20,18 +21,23 @@ class Configuration(tuple):
                                    timeout_in_seconds,
                                    environ,
                                    act_phase_os_process_executor,
-                                   symbol_table_from_none_or_value(predefined_symbols)))
+                                   symbol_table_from_none_or_value(predefined_symbols),
+                                   act_phase_handling))
 
     @property
     def act_phase_os_process_executor(self) -> ActPhaseOsProcessExecutor:
         return self[3]
 
     @property
+    def act_phase_handling(self) -> ActPhaseHandling:
+        return self[5]
+
+    @property
     def hds(self) -> HomeDirectoryStructure:
         return self[0]
 
     @property
-    def timeout_in_seconds(self) -> int:
+    def timeout_in_seconds(self) -> Optional[int]:
         return self[1]
 
     @property
