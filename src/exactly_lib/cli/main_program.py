@@ -8,9 +8,9 @@ from exactly_lib.cli.program_modes.test_case import execution as test_case_execu
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.full_execution.configuration import PredefinedProperties
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
@@ -99,7 +99,7 @@ class TestSuiteDefinition(tuple):
 
     @property
     def sandbox_root_dir_resolver(self) -> SandboxRootDirNameResolver:
-        return tmp_dir_resolving.mk_tmp_dir_with_prefix(self.__get_sds_root_name_prefix())
+        return sandbox_dir_resolving.mk_tmp_dir_with_prefix(self.__get_sds_root_name_prefix())
 
 
 class MainProgram:

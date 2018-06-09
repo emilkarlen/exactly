@@ -2,7 +2,7 @@ import os
 import pathlib
 import unittest
 
-from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.execution import phase_step
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor, \
     ActSourceAndExecutor, ActPhaseOsProcessExecutor

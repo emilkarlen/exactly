@@ -1,8 +1,8 @@
 import pathlib
 
+from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.full_execution.result import FullResult, FullResultStatus, new_pass, new_skipped
-from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.act_phase import ActPhaseSetup

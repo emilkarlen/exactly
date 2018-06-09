@@ -3,8 +3,8 @@ import re
 import time
 import unittest
 
-from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
-from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
+from exactly_lib.execution import phase_step_simple as step
+from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.line_source import LineSequence

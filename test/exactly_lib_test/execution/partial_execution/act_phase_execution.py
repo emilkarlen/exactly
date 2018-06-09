@@ -4,10 +4,10 @@ import subprocess
 import sys
 import unittest
 
+from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
-from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException

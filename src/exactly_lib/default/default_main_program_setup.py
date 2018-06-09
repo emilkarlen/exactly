@@ -7,7 +7,7 @@ from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.default.program_modes import test_suite
 from exactly_lib.default.program_modes.test_case import builtin_symbols, default_instructions_setup, \
     test_case_handling_setup
-from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.test_case import os_services
@@ -18,7 +18,7 @@ def default_main_program() -> main_program.MainProgram:
     return main_program.MainProgram(StdOutputFiles(sys.stdout,
                                                    sys.stderr),
                                     test_case_handling_setup.setup(),
-                                    tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
+                                    sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
                                     os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                     TestCaseDefinitionForMainProgram(
                                         TestCaseParsingSetup(instruction_name_and_argument_splitter.splitter,

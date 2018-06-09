@@ -2,6 +2,7 @@ import os
 import sys
 from typing import Sequence, Callable
 
+from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor
@@ -9,9 +10,8 @@ from exactly_lib.execution.partial_execution.configuration import Configuration,
 from exactly_lib.execution.partial_execution.impl.act_phase_execution import PhaseFailureResultConstructor, \
     ActPhaseExecutor, StdinConfiguration
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult, new_partial_result_pass
-from exactly_lib.execution.phase_step_identifiers import phase_step
-from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ParseException

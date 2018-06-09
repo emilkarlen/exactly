@@ -2,8 +2,8 @@ import enum
 import pathlib
 
 from exactly_lib import program_info
-from exactly_lib.execution import tmp_dir_resolving
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution import sandbox_dir_resolving
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 
 
@@ -22,7 +22,7 @@ class TestCaseExecutionSettings:
                  output: ReportingOption,
                  handling_setup: TestCaseHandlingSetup,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
-                 tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
+                 sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
                  suite_to_read_config_from: pathlib.Path = None,
                  ):
         self.__test_case_file_path = test_case_file_path

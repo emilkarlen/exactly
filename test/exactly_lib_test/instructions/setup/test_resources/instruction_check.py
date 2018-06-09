@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import phase_identifier

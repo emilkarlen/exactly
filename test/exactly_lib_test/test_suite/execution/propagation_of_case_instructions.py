@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from typing import List
 
-from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -189,7 +189,7 @@ def new_executor(recorder: List[str],
                                                      test_case_handling_setup_with_identity_preprocessor(),
                                                      os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                                      False,
-                                                     tmp_dir_resolving.mk_tmp_dir_with_prefix('test-suite-'))
+                                                     sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-'))
 
     return sut.Executor(default_configuration,
                         StringStdOutFiles().stdout_files,

@@ -1,6 +1,7 @@
 import os
 from typing import Dict
 
+from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution.result import FullResult, new_configuration_phase_failure_from, \
     new_named_phases_result_from
@@ -9,8 +10,7 @@ from exactly_lib.execution.impl import phase_step_executors, phase_step_executio
 from exactly_lib.execution.partial_execution import execution
 from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
-from exactly_lib.execution.phase_step_identifiers import phase_step
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor

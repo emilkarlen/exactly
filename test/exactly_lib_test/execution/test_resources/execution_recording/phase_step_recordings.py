@@ -2,8 +2,8 @@ import types
 import unittest
 from operator import attrgetter
 
-from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
-from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
+from exactly_lib.execution import phase_step_simple as step
+from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phase_identifier import PHASES_FOR_PARTIAL_EXECUTION
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction

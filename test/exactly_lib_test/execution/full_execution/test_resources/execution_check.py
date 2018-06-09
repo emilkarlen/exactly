@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.test_case import os_services
@@ -44,6 +44,6 @@ def check(put: unittest.TestCase,
         arrangement.predefined_properties,
         arrangement.configuration_builder,
         arrangement.act_phase_os_process_executor,
-        tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-full-execution'),
+        sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-full-execution'),
         is_keep_sandbox)
     expectation.full_result.apply(put, result, asrt.MessageBuilder('FullResult'))

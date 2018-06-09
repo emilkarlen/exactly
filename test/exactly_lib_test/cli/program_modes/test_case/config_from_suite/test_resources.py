@@ -5,7 +5,7 @@ from exactly_lib.cli import main_program
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestSuiteDefinition
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.element_parsers import section_element_parsers
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \

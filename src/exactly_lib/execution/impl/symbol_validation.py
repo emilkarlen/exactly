@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.execution.impl.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
@@ -10,7 +10,7 @@ from exactly_lib.util.symbol_table import SymbolTable
 
 
 def validate_symbol_usages(symbol_usages: Sequence[su.SymbolUsage],
-                           symbols: SymbolTable) -> PartialInstructionControlledFailureInfo:
+                           symbols: SymbolTable) -> Optional[PartialInstructionControlledFailureInfo]:
     for symbol_usage in symbol_usages:
         result = validate_symbol_usage(symbol_usage, symbols)
         if result is not None:
@@ -31,13 +31,13 @@ def validate_symbol_usage(usage: su.SymbolUsage,
 
 def _validate_symbol_definition(symbol_table: SymbolTable,
                                 definition: su.SymbolDefinition,
-                                ) -> PartialInstructionControlledFailureInfo:
+                                ) -> Optional[PartialInstructionControlledFailureInfo]:
     if symbol_table.contains(definition.name):
         already_defined_resolver_container = symbol_table.lookup(definition.name)
         assert isinstance(already_defined_resolver_container, SymbolContainer), \
             'Value in SymTbl must be ResolverContainer'
         return PartialInstructionControlledFailureInfo(
-            PartialControlledFailureEnum.VALIDATION,
+            PartialControlledFailureEnum.VALIDATION_ERROR,
             'Symbol `{}\' has already been defined:\n\n{}'.format(
                 definition.name,
                 error_message_format.source_lines(
@@ -53,17 +53,17 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
 
 def _validate_symbol_reference(symbol_table: SymbolTable,
                                reference: su.SymbolReference,
-                               ) -> PartialInstructionControlledFailureInfo:
+                               ) -> Optional[PartialInstructionControlledFailureInfo]:
     assert isinstance(reference, su.SymbolReference)
     if not symbol_table.contains(reference.name):
         error_message = _undefined_symbol_error_message(reference)
         return PartialInstructionControlledFailureInfo(
-            PartialControlledFailureEnum.VALIDATION,
+            PartialControlledFailureEnum.VALIDATION_ERROR,
             error_message)
     else:
         err_msg = _validate_reference(reference, symbol_table)
         if err_msg is not None:
-            return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION, err_msg)
+            return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION_ERROR, err_msg)
     return None
 
 
@@ -80,7 +80,7 @@ def _undefined_symbol_error_message(reference: su.SymbolReference) -> str:
 
 
 def _validate_reference(symbol_reference: su.SymbolReference,
-                        symbols: SymbolTable) -> str:
+                        symbols: SymbolTable) -> Optional[str]:
     referenced_resolver_container = symbols.lookup(symbol_reference.name)
     assert isinstance(referenced_resolver_container, SymbolContainer), \
         'Values in SymbolTable must be ResolverContainer'

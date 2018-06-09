@@ -1,11 +1,11 @@
 import pathlib
 
 from exactly_lib import program_info
-from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution.result import FullResult
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -44,7 +44,7 @@ class Configuration:
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  is_keep_sandbox: bool,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
-                 tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
+                 sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
         self.default_handling_setup = default_handling_setup
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.test_case_definition = test_case_definition
@@ -131,7 +131,7 @@ class _Executor(processing_utils.Executor):
                  is_keep_sandbox: bool,
                  predefined_properties: PredefinedProperties,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
-                 tmp_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
+                 sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
         self.predefined_properties = predefined_properties
         self.default_act_phase_setup = default_act_phase_setup
         self.act_phase_os_process_executor = act_phase_os_process_executor
