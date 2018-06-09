@@ -1,7 +1,7 @@
 import unittest
 
-from exactly_lib.execution.phase_step_identifiers import phase_step_simple as step
-from exactly_lib.execution.phase_step_identifiers.phase_step import SimplePhaseStep
+from exactly_lib.execution import phase_step_simple as step
+from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib_test.execution.partial_execution.test_resources.basic import Arrangement, test__va

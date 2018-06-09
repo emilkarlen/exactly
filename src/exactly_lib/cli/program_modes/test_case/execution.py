@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.cli.program_modes.test_case import result_reporting
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition

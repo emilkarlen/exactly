@@ -2,7 +2,7 @@ from exactly_lib.execution.failure_info import InstructionFailureInfo
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     execute_element
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult, new_partial_result_pass
-from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
+from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source

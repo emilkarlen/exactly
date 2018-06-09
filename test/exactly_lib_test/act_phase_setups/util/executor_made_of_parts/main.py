@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence, Dict
 
 from exactly_lib.act_phase_setups.util.executor_made_of_parts import parts as sut
-from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.execution import phase_step
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
 from exactly_lib.test_case import eh

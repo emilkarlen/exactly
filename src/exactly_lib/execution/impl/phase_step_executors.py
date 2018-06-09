@@ -1,6 +1,5 @@
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.execution.symbols_handling.symbol_validation import validate_symbol_usages
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instr
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -13,6 +12,7 @@ from exactly_lib.test_case.phases.result import pfh
 from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from .symbol_validation import validate_symbol_usages
 
 
 def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidationErrorOrHardError) \
@@ -20,7 +20,7 @@ def _from_success_or_validation_error_or_hard_error(res: svh.SuccessOrValidation
     if res.is_success:
         return None
     elif res.is_validation_error:
-        return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION,
+        return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION_ERROR,
                                                        res.failure_message)
     else:
         return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.HARD_ERROR,

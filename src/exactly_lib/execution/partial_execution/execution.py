@@ -3,7 +3,7 @@ import shutil
 from exactly_lib.execution.partial_execution.configuration import TestCase, Configuration
 from exactly_lib.execution.partial_execution.impl import executor
 from exactly_lib.execution.partial_execution.result import PartialResult
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.file_utils import preserved_cwd

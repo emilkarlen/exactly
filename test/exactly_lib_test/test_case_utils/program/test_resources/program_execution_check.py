@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from typing import Optional
 
-from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.execution import phase_step
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parser_classes import Parser
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \

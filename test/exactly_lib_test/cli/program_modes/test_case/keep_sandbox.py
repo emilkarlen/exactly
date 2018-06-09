@@ -7,9 +7,9 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.execution.phase_step_identifiers.phase_step import STEP__MAIN, STEP__VALIDATE_POST_SETUP, \
+from exactly_lib.execution.phase_step import STEP__MAIN, STEP__VALIDATE_POST_SETUP, \
     STEP__ACT__PREPARE, STEP__ACT__EXECUTE, STEP__ACT__PARSE, STEP__VALIDATE_PRE_SDS
-from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.exit_values import EXECUTION__IMPLEMENTATION_ERROR, EXECUTION__HARD_ERROR, EXECUTION__FAIL, \
     EXECUTION__VALIDATION_ERROR, EXECUTION__PASS, NO_EXECUTION__SYNTAX_ERROR

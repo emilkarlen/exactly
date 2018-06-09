@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
-from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \

@@ -13,7 +13,7 @@ class PartialControlledFailureEnum(Enum):
 
     "controlled" means that implementation errors are not handled.
     """
-    VALIDATION = 1
+    VALIDATION_ERROR = 1
     FAIL = 2
     HARD_ERROR = 99
 

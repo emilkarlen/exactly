@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.phase_step_identifiers import phase_step
+from exactly_lib.execution import phase_step
 from exactly_lib.instructions.multi_phase.utils.instruction_embryo import InstructionEmbryoParser, \
     InstructionEmbryo
 from exactly_lib.section_document.parse_source import ParseSource

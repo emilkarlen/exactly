@@ -1,7 +1,7 @@
 import unittest
 
+from exactly_lib.execution.impl import symbol_validation as sut
 from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum
-from exactly_lib.execution.symbols_handling import symbol_validation as sut
 from exactly_lib.symbol import resolver_structure as vs, symbol_usage as su
 from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data import string_resolvers
@@ -34,7 +34,7 @@ class TestSymbolReference(unittest.TestCase):
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
-        self.assertIs(PartialControlledFailureEnum.VALIDATION,
+        self.assertIs(PartialControlledFailureEnum.VALIDATION_ERROR,
                       actual.status)
 
     def test_WHEN_referenced_symbol_is_in_symbol_table_but_does_not_satisfy_value_restriction_THEN_validation_error(
@@ -46,7 +46,7 @@ class TestSymbolReference(unittest.TestCase):
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
-        self.assertIs(PartialControlledFailureEnum.VALIDATION,
+        self.assertIs(PartialControlledFailureEnum.VALIDATION_ERROR,
                       actual.status)
 
     def test_WHEN_referenced_symbol_is_in_symbol_table_and_satisfies_value_restriction_THEN_no_error(self):
@@ -68,7 +68,7 @@ class TestSymbolDefinition(unittest.TestCase):
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
-        self.assertIs(PartialControlledFailureEnum.VALIDATION,
+        self.assertIs(PartialControlledFailureEnum.VALIDATION_ERROR,
                       actual.status)
 
     def test_WHEN_defined_symbol_not_in_symbol_table_THEN_None_and_added_to_symbol_table(self):
@@ -169,7 +169,7 @@ class TestValidationOfList(unittest.TestCase):
         # ACT #
         actual = sut.validate_symbol_usages(symbol_usages, symbol_table)
         self.assertIsNotNone(actual, 'result should indicate error')
-        self.assertIs(PartialControlledFailureEnum.VALIDATION,
+        self.assertIs(PartialControlledFailureEnum.VALIDATION_ERROR,
                       actual.status)
 
 

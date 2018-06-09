@@ -44,7 +44,7 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
             ('WHEN referenced value not in symbol table THEN error',
              Arrangement(symbol_usages=[ne_tr.element_reference('undefined')],
                          environment=env_with_empty_symbol_table()),
-             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_is_empty())
              ),
             ('WHEN referenced value is in symbol table THEN None',
@@ -65,7 +65,7 @@ class TestSymbolReference(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
              Arrangement(symbol_usages=[ne_tr.element_reference('defined'),
                                         ne_tr.element_reference('undefined')],
                          environment=env_with_symbol_table([symbol_of('defined')])),
-             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_contains_exactly_names({'defined'}))
              ),
         ]
@@ -84,7 +84,7 @@ class TestValueDefinition(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
             ('WHEN value to defined is in symbol table THEN validation error',
              Arrangement(symbol_usages=[sym_tr.string_symbol_definition('already-defined')],
                          environment=env_with_singleton_symbol_table(symbol_of('already-defined'))),
-             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_contains_exactly_names({'already-defined'}))
              ),
             ('WHEN defined value not in symbol table THEN None and added to symbol table',
@@ -104,7 +104,7 @@ class TestValueDefinition(TestCaseBaseWithShortDescriptionOfTestClassAndAnObject
              Arrangement(symbol_usages=[sym_tr.string_symbol_definition('undefined'),
                                         sym_tr.string_symbol_definition('already-defined')],
                          environment=env_with_singleton_symbol_table(symbol_of('already-defined'))),
-             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_contains_exactly_names({'undefined', 'already-defined'}))
              ),
         ]
@@ -131,7 +131,7 @@ class TestCombinationOfDefinitionAndReference(TestCaseBaseWithShortDescriptionOf
              Arrangement(symbol_usages=[ne_tr.element_reference('define'),
                                         sym_tr.string_symbol_definition('define')],
                          environment=env_with_empty_symbol_table()),
-             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION),
+             Expectation(return_value=error_with_status(PartialControlledFailureEnum.VALIDATION_ERROR),
                          environment=symbol_table_is_empty())
              ),
         ]
