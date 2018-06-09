@@ -2,8 +2,9 @@ import os
 import shutil
 import unittest
 
+from exactly_lib.execution.full_execution.configuration import FullExeInputConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
-from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
@@ -41,12 +42,12 @@ def execute_and_check(put: unittest.TestCase,
         with preserved_cwd():
             partial_result = sut.execute(
                 arrangement.test_case,
-                Configuration(arrangement.act_phase_os_process_executor,
-                              arrangement.act_phase_handling,
-                              hds,
-                              dict(os.environ)),
+                FullExeInputConfiguration(dict(os.environ),
+                                          arrangement.act_phase_os_process_executor,
+                                          sandbox_root_name_resolver.for_test()),
+                ConfPhaseValues(arrangement.act_phase_handling,
+                                hds),
                 arrangement.initial_setup_settings,
-                sandbox_root_name_resolver.for_test(),
                 is_keep_sandbox=True)
 
             expectation.partial_result.apply_with_message(put,

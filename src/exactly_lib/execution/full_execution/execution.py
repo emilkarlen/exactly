@@ -2,13 +2,13 @@ import os
 from typing import Dict
 
 from exactly_lib.execution import phase_step
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.full_execution.configuration import PredefinedProperties, FullExeInputConfiguration
 from exactly_lib.execution.full_execution.result import FullResult, new_configuration_phase_failure_from, \
     new_named_phases_result_from
 from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
 from exactly_lib.execution.partial_execution import execution
-from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents
@@ -35,15 +35,16 @@ def execute(test_case: test_case_doc.TestCase,
         return new_configuration_phase_failure_from(partial_result)
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return new_skipped()
+    conf_from_outside = FullExeInputConfiguration(dict(os.environ),
+                                                  act_phase_sub_process_executor,
+                                                  sandbox_root_dir_resolver,
+                                                  predefined_properties.predefined_symbols)
     environ = dict(os.environ)
     _prepare_environment_variables(environ)
-    partial_execution_configuration = Configuration(
-        act_phase_sub_process_executor,
+    conf_phase_values = ConfPhaseValues(
         configuration_builder.act_phase_handling,
         configuration_builder.hds,
-        environ,
         configuration_builder.timeout_in_seconds,
-        predefined_symbols=predefined_properties.predefined_symbols,
     )
     partial_result = execution.execute(
         TestCase(test_case.setup_phase,
@@ -51,9 +52,9 @@ def execute(test_case: test_case_doc.TestCase,
                  test_case.before_assert_phase,
                  test_case.assert_phase,
                  test_case.cleanup_phase),
-        partial_execution_configuration,
+        conf_from_outside,
+        conf_phase_values,
         setup.default_settings(),
-        sandbox_root_dir_resolver,
         is_keep_sandbox)
     return new_named_phases_result_from(configuration_builder.execution_mode,
                                         partial_result)

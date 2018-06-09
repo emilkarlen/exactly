@@ -1,61 +1,35 @@
-from typing import Dict, Optional
+from typing import Optional
 
 from exactly_lib.section_document.model import SectionContents
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor, ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
 
 
-class Configuration(tuple):
+class ConfPhaseValues(tuple):
+    """Values resolved from the conf phase"""
     def __new__(cls,
-                act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                 act_phase_handling: ActPhaseHandling,
                 hds: HomeDirectoryStructure,
-                environ: Dict[str, str],
-                timeout_in_seconds: Optional[int] = None,
-                predefined_symbols: Optional[SymbolTable] = None):
+                timeout_in_seconds: Optional[int] = None):
         """
         :param timeout_in_seconds: None if no timeout
         """
-        return tuple.__new__(cls, (hds,
+        return tuple.__new__(cls, (act_phase_handling,
+                                   hds,
                                    timeout_in_seconds,
-                                   environ,
-                                   act_phase_os_process_executor,
-                                   symbol_table_from_none_or_value(predefined_symbols),
-                                   act_phase_handling))
-
-    @property
-    def act_phase_os_process_executor(self) -> ActPhaseOsProcessExecutor:
-        return self[3]
+                                   ))
 
     @property
     def act_phase_handling(self) -> ActPhaseHandling:
-        return self[5]
-
-    @property
-    def hds(self) -> HomeDirectoryStructure:
         return self[0]
 
     @property
-    def timeout_in_seconds(self) -> Optional[int]:
+    def hds(self) -> HomeDirectoryStructure:
         return self[1]
 
     @property
-    def environ(self) -> Dict[str, str]:
-        """
-        The set of environment variables available to instructions.
-        These may be both read and written.
-        """
+    def timeout_in_seconds(self) -> Optional[int]:
         return self[2]
-
-    @property
-    def predefined_symbols(self) -> SymbolTable:
-        """
-        Symbols that should be available in all steps.
-
-        Should probably not be updated.
-        """
-        return self[4]
 
 
 class TestCase(tuple):

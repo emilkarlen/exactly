@@ -4,8 +4,9 @@ import types
 import unittest
 from typing import Callable
 
+from exactly_lib.execution.full_execution.configuration import FullExeInputConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
-from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
@@ -182,14 +183,14 @@ def _execute(test_case: TestCase,
         environ = {}
     partial_result = sut.execute(
         test_case,
-        Configuration(arrangement.act_phase_os_process_executor,
-                      arrangement.act_phase_handling,
-                      arrangement.hds,
-                      environ,
-                      timeout_in_seconds=arrangement.timeout_in_seconds,
-                      predefined_symbols=arrangement.predefined_symbols_or_none),
+        FullExeInputConfiguration(environ,
+                                  arrangement.act_phase_os_process_executor,
+                                  sandbox_root_name_resolver.for_test(),
+                                  arrangement.predefined_symbols_or_none),
+        ConfPhaseValues(arrangement.act_phase_handling,
+                        arrangement.hds,
+                        timeout_in_seconds=arrangement.timeout_in_seconds),
         setup.default_settings(),
-        sandbox_root_name_resolver.for_test(),
         is_keep_sandbox)
     return Result(arrangement.hds,
                   partial_result)
