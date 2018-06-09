@@ -181,9 +181,9 @@ def _execute(test_case: TestCase,
     if environ is None:
         environ = {}
     partial_result = sut.execute(
-        arrangement.act_phase_handling,
         test_case,
         Configuration(arrangement.act_phase_os_process_executor,
+                      arrangement.act_phase_handling,
                       arrangement.hds,
                       environ,
                       timeout_in_seconds=arrangement.timeout_in_seconds,

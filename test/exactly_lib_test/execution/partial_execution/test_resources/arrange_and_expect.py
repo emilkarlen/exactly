@@ -40,9 +40,9 @@ def execute_and_check(put: unittest.TestCase,
     with home_directory_structure() as hds:
         with preserved_cwd():
             partial_result = sut.execute(
-                arrangement.act_phase_handling,
                 arrangement.test_case,
                 Configuration(arrangement.act_phase_os_process_executor,
+                              arrangement.act_phase_handling,
                               hds,
                               dict(os.environ)),
                 arrangement.initial_setup_settings,

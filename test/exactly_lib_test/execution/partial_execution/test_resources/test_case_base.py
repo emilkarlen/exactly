@@ -36,9 +36,9 @@ class PartialExecutionTestCaseBase:
             with home_directory_structure() as hds:
                 # ACT #
                 partial_result = sut.execute(
-                    self.__act_phase_handling,
                     self._test_case(),
                     Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                  self.__act_phase_handling,
                                   hds,
                                   dict(os.environ)),
                     setup.default_settings(),

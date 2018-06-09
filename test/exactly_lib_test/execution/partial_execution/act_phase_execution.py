@@ -358,9 +358,9 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
         with preserved_cwd():
             os.chdir(str(current_directory))
             return sut.execute(
-                ActPhaseHandling(constructor),
                 test_case,
                 Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                              ActPhaseHandling(constructor),
                               hds,
                               dict(os.environ)),
                 setup_settings,
