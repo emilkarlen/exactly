@@ -4,9 +4,10 @@ import subprocess
 import sys
 import unittest
 
-from exactly_lib.execution import partial_execution as sut
+from exactly_lib.execution.partial_execution import execution as sut
+from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
 from exactly_lib.execution.phase_step_identifiers import phase_step_simple as phase_step
-from exactly_lib.execution.result import PartialResultStatus
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException
@@ -215,7 +216,7 @@ def _stderr_result_file_contains(expected_contents: str) -> asrt.ValueAssertion:
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
                                                 setup_settings: SetupSettingsBuilder,
-                                                expected_contents_of_stdin: str) -> sut.PartialResult:
+                                                expected_contents_of_stdin: str) -> PartialResult:
     """
     Tests contents of stdin by executing a Python program that stores
     the contents of stdin in a file.
@@ -337,20 +338,20 @@ class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSu
         return new_eh_exit_code(self.exit_code)
 
 
-def _empty_test_case() -> sut.TestCase:
-    return sut.TestCase(new_empty_section_contents(),
-                        new_empty_section_contents(),
-                        new_empty_section_contents(),
-                        new_empty_section_contents(),
-                        new_empty_section_contents())
+def _empty_test_case() -> TestCase:
+    return TestCase(new_empty_section_contents(),
+                    new_empty_section_contents(),
+                    new_empty_section_contents(),
+                    new_empty_section_contents(),
+                    new_empty_section_contents())
 
 
 def _execute(constructor: ActSourceAndExecutorConstructor,
-             test_case: sut.TestCase,
+             test_case: TestCase,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
              is_keep_sandbox: bool = False,
              current_directory: pathlib.Path = None,
-             ) -> sut.PartialResult:
+             ) -> PartialResult:
     if current_directory is None:
         current_directory = pathlib.Path.cwd()
     with home_directory_structure() as hds:
@@ -359,9 +360,9 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
             return sut.execute(
                 ActPhaseHandling(constructor),
                 test_case,
-                sut.Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                  hds,
-                                  dict(os.environ)),
+                Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                              hds,
+                              dict(os.environ)),
                 setup_settings,
                 sandbox_root_name_resolver.for_test(),
                 is_keep_sandbox)

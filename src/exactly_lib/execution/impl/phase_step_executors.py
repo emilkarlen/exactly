@@ -1,4 +1,4 @@
-from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
+from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.execution.symbols_handling.symbol_validation import validate_symbol_usages
 from exactly_lib.test_case.os_services import OsServices

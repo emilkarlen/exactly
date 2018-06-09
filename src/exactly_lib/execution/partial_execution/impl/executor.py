@@ -1,78 +1,30 @@
 import os
-import shutil
 import sys
-from typing import Dict, Callable, Sequence
+from typing import Sequence, Callable
 
-from exactly_lib.execution.act_phase_execution import StdinConfiguration, PhaseFailureResultConstructor, \
-    ActPhaseExecutor
-from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
-from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor
+from exactly_lib.execution.failure_info import PhaseFailureInfo
+from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
+from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor
+from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.impl.act_phase_execution import PhaseFailureResultConstructor, \
+    ActPhaseExecutor, StdinConfiguration
+from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult, new_partial_result_pass
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
 from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor, ParseException
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ParseException
 from exactly_lib.test_case.os_services import new_default
 from exactly_lib.test_case.phases import common
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.setup import SetupSettingsBuilder, StdinSettings
+from exactly_lib.test_case.phases.setup import StdinSettings, SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import environment_variables
-from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import construct_at, SandboxDirectoryStructure
-from exactly_lib.util.failure_details import new_failure_details_from_message, \
-    new_failure_details_from_exception
-from exactly_lib.util.file_utils import resolved_path_name, preserved_cwd
-from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
-from .result import PartialResult, PartialResultStatus, new_partial_result_pass, PhaseFailureInfo
-
-
-class Configuration(tuple):
-    def __new__(cls,
-                act_phase_os_process_executor: ActPhaseOsProcessExecutor,
-                hds: HomeDirectoryStructure,
-                environ: Dict[str, str],
-                timeout_in_seconds: int = None,
-                predefined_symbols: SymbolTable = None):
-        """
-        :param timeout_in_seconds: None if no timeout
-        """
-        return tuple.__new__(cls, (hds,
-                                   timeout_in_seconds,
-                                   environ,
-                                   act_phase_os_process_executor,
-                                   symbol_table_from_none_or_value(predefined_symbols)))
-
-    @property
-    def act_phase_os_process_executor(self) -> ActPhaseOsProcessExecutor:
-        return self[3]
-
-    @property
-    def hds(self) -> HomeDirectoryStructure:
-        return self[0]
-
-    @property
-    def timeout_in_seconds(self) -> int:
-        return self[1]
-
-    @property
-    def environ(self) -> Dict[str, str]:
-        """
-        The set of environment variables available to instructions.
-        These may be both read and written.
-        """
-        return self[2]
-
-    @property
-    def predefined_symbols(self) -> SymbolTable:
-        """
-        Symbols that should be available in all steps.
-
-        Should probably not be updated.
-        """
-        return self[4]
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
+from exactly_lib.util.failure_details import new_failure_details_from_message, new_failure_details_from_exception
+from exactly_lib.util.file_utils import resolved_path_name
 
 
 class _ExecutionConfiguration(tuple):
@@ -89,40 +41,6 @@ class _ExecutionConfiguration(tuple):
     @property
     def sandbox_directory_root_resolver(self) -> SandboxRootDirNameResolver:
         return self[1]
-
-
-class TestCase(tuple):
-    def __new__(cls,
-                setup_phase: SectionContents,
-                act_phase: SectionContents,
-                before_assert_phase: SectionContents,
-                assert_phase: SectionContents,
-                cleanup_phase: SectionContents):
-        return tuple.__new__(cls, (setup_phase,
-                                   act_phase,
-                                   before_assert_phase,
-                                   assert_phase,
-                                   cleanup_phase))
-
-    @property
-    def setup_phase(self) -> SectionContents:
-        return self[0]
-
-    @property
-    def act_phase(self) -> SectionContents:
-        return self[1]
-
-    @property
-    def before_assert_phase(self) -> SectionContents:
-        return self[2]
-
-    @property
-    def assert_phase(self) -> SectionContents:
-        return self[3]
-
-    @property
-    def cleanup_phase(self) -> SectionContents:
-        return self[4]
 
 
 class _StepExecutionResult:
@@ -152,41 +70,17 @@ class _StepExecutionResult:
         self.__stdin_settings = x
 
 
-def execute(act_phase_handling: ActPhaseHandling,
+def execute(configuration: Configuration,
+            sandbox_directory_root_resolver: SandboxRootDirNameResolver,
+            act_phase_handling: ActPhaseHandling,
             test_case: TestCase,
-            configuration: Configuration,
-            initial_setup_settings: SetupSettingsBuilder,
-            sandbox_root_dir_resolver: SandboxRootDirNameResolver,
-            is_keep_sandbox: bool) -> PartialResult:
-    """
-    Takes care of construction of the Sandbox directory structure, including
-    the root directory, and executes a given Test Case in this directory.
-
-    Preserves Current Working Directory.
-
-    Perhaps the test case should be executed in a sub process, so that
-    Environment Variables and Current Working Directory of the process that executes
-    the main program is not modified.
-
-    The responsibility of this method is not the most natural!!
-    Please refactor if a more natural responsibility evolves!
-    """
-    ret_val = None
-    try:
-        with preserved_cwd():
-            exe_configuration = _ExecutionConfiguration(configuration,
-                                                        sandbox_root_dir_resolver)
-
-            test_case_execution = _PartialExecutor(exe_configuration,
-                                                   act_phase_handling,
-                                                   test_case,
-                                                   initial_setup_settings)
-            ret_val = test_case_execution.execute()
-            return ret_val
-    finally:
-        if not is_keep_sandbox:
-            if ret_val is not None and ret_val.has_sds:
-                shutil.rmtree(str(ret_val.sds.root_dir))
+            setup_settings_builder: SetupSettingsBuilder) -> PartialResult:
+    executor = _PartialExecutor(_ExecutionConfiguration(configuration,
+                                                        sandbox_directory_root_resolver),
+                                act_phase_handling,
+                                test_case,
+                                setup_settings_builder)
+    return executor.execute()
 
 
 class _PartialExecutor:

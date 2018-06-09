@@ -2,7 +2,8 @@ import os
 import shutil
 import unittest
 
-from exactly_lib.execution import partial_execution
+from exactly_lib.execution.partial_execution import execution as sut
+from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
@@ -15,7 +16,7 @@ from .basic import Result
 
 class Arrangement:
     def __init__(self,
-                 test_case: partial_execution.TestCase,
+                 test_case: TestCase,
                  act_phase_handling: ActPhaseHandling,
                  initial_setup_settings: setup.SetupSettingsBuilder = setup.default_settings(),
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
@@ -38,12 +39,12 @@ def execute_and_check(put: unittest.TestCase,
                       expectation: Expectation):
     with home_directory_structure() as hds:
         with preserved_cwd():
-            partial_result = partial_execution.execute(
+            partial_result = sut.execute(
                 arrangement.act_phase_handling,
                 arrangement.test_case,
-                partial_execution.Configuration(arrangement.act_phase_os_process_executor,
-                                                hds,
-                                                dict(os.environ)),
+                Configuration(arrangement.act_phase_os_process_executor,
+                              hds,
+                              dict(os.environ)),
                 arrangement.initial_setup_settings,
                 sandbox_root_name_resolver.for_test(),
                 is_keep_sandbox=True)

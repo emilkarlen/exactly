@@ -1,12 +1,12 @@
 from typing import List
 
-import exactly_lib_test.section_document.test_resources.elements
-from exactly_lib.execution import partial_execution
+from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import SectionContents, SectionContentElement
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
+from exactly_lib_test.section_document.test_resources import elements
 
 
 class LinesGenerator:
@@ -30,7 +30,7 @@ class InstructionLineConstructor:
         self.lines_generator = lines_generator
 
     def apply(self, instruction: TestCaseInstruction) -> model.SectionContentElement:
-        return exactly_lib_test.section_document.test_resources.elements.new_instruction_element(
+        return elements.new_instruction_element(
             self.lines_generator.next_line(),
             instruction)
 
@@ -45,13 +45,13 @@ def partial_test_case_with_instructions(
         act_phase_instructions: list = (),
         before_assert_phase_instructions: list = (),
         assert_phase_instructions: list = (),
-        cleanup_phase_instructions: list = ()) -> partial_execution.TestCase:
+        cleanup_phase_instructions: list = ()) -> TestCase:
     instruction_line_con = instruction_line_constructor()
 
     def section_contents(instructions: list) -> SectionContents:
         return SectionContents(tuple(map(instruction_line_con, instructions)))
 
-    return partial_execution.TestCase(
+    return TestCase(
         section_contents(setup_phase_instructions),
         section_contents(act_phase_instructions),
         section_contents(before_assert_phase_instructions),

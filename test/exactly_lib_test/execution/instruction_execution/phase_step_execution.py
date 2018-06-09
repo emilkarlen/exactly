@@ -1,9 +1,9 @@
 import unittest
 
-from exactly_lib.execution.instruction_execution.phase_step_execution import execute_phase_prim, Failure
-from exactly_lib.execution.instruction_execution.single_instruction_executor import ControlledInstructionExecutor, \
+from exactly_lib.execution.impl.phase_step_execution import execute_phase_prim, Failure
+from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \

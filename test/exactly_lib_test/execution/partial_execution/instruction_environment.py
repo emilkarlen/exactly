@@ -1,7 +1,7 @@
 import functools
 import unittest
 
-from exactly_lib.execution import partial_execution as sut
+from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phase_identifier import PhaseEnum
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -54,7 +54,7 @@ def log_dir_is_correct_for_each_phase(recordings: dict,
                         'Log directory per phase')
 
 
-def test_case_that_does_nothing() -> sut.TestCase:
+def test_case_that_does_nothing() -> TestCase:
     return TestCaseWithCommonDefaultInstructions().test_case
 
 

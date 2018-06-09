@@ -2,10 +2,10 @@ import pathlib
 import subprocess
 from typing import Optional, Callable
 
-from exactly_lib.execution import result
+from exactly_lib.execution.failure_info import PhaseFailureInfo
+from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult, new_partial_result_pass
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep
-from exactly_lib.execution.result import PartialResultStatus, PartialResult, new_partial_result_pass
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -50,8 +50,8 @@ class PhaseFailureResultConstructor:
               failure_details: FailureDetails) -> PartialResult:
         return PartialResult(status,
                              self.sds,
-                             result.PhaseFailureInfo(self.step,
-                                                     failure_details))
+                             PhaseFailureInfo(self.step,
+                                              failure_details))
 
     def implementation_error(self, ex: Exception) -> PartialResult:
         return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,

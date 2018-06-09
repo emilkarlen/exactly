@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exactly_lib.execution import result
+from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
@@ -68,7 +68,7 @@ class SingleInstructionExecutionFailure(tuple):
     """
 
     def __new__(cls,
-                status: result.PartialResultStatus,
+                status: PartialResultStatus,
                 source_location: line_source.SourceLocationPath,
                 details: failure_details.FailureDetails):
         return tuple.__new__(cls, (status,
@@ -76,7 +76,7 @@ class SingleInstructionExecutionFailure(tuple):
                                    details))
 
     @property
-    def status(self) -> result.PartialResultStatus:
+    def status(self) -> PartialResultStatus:
         """
         :return: Never PartialResultStatus.PASS
         """
@@ -105,14 +105,16 @@ def execute_element(executor: ControlledInstructionExecutor,
         fail_info = executor.apply(instruction)
         if fail_info is None:
             return None
-        return SingleInstructionExecutionFailure(result.PartialResultStatus(fail_info.status.value),
-                                                 element.source_location_path,
-                                                 failure_details.new_failure_details_from_message(
-                                                     fail_info.error_message))
+        return SingleInstructionExecutionFailure(
+            PartialResultStatus(fail_info.status.value),
+            element.source_location_path,
+            failure_details.new_failure_details_from_message(
+                fail_info.error_message))
     except Exception as ex:
-        return SingleInstructionExecutionFailure(result.PartialResultStatus.IMPLEMENTATION_ERROR,
-                                                 element.source_location_path,
-                                                 failure_details.new_failure_details_from_exception(ex))
+        return SingleInstructionExecutionFailure(
+            PartialResultStatus.IMPLEMENTATION_ERROR,
+            element.source_location_path,
+            failure_details.new_failure_details_from_exception(ex))
 
 
 _INSTRUCTION_TYPE_ERROR_MESSAGE = 'Instruction in test-case must be ' + str(TestCaseInstruction)
