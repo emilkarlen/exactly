@@ -211,7 +211,7 @@ class _PartialExecutor:
                                                   self.__test_case.setup_phase)
 
     def __act__create_executor_and_parse(self) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(phase_step.ACT__PARSE, None)
+        failure_con = PhaseFailureResultConstructor(phase_step.ACT__PARSE)
 
         def action() -> Optional[PhaseStepFailure]:
             res = self.__act__create_and_set_executor(phase_step.ACT__PARSE)
@@ -228,7 +228,7 @@ class _PartialExecutor:
                                                                         phase_step.ACT__PARSE)
 
     def __act__validate_symbols(self) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS, None)
+        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS)
 
         def action() -> Optional[PhaseStepFailure]:
             executor = phase_step_executors.ValidateSymbolsExecutor(self.__instruction_environment_pre_sds)
@@ -243,7 +243,7 @@ class _PartialExecutor:
                                                                         phase_step.ACT__VALIDATE_SYMBOLS)
 
     def __act__validate_pre_sds(self) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS, None)
+        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS)
 
         def action() -> Optional[PhaseStepFailure]:
             res = self.__act_source_and_executor.validate_pre_sds(self.__instruction_environment_pre_sds)
@@ -392,7 +392,7 @@ class _PartialExecutor:
                                                   self._sds)
 
     def __act__create_and_set_executor(self, step: PhaseStep) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(step, None)
+        failure_con = PhaseFailureResultConstructor(step)
         section_contents = self.__test_case.act_phase
         instructions = []
         for element in section_contents.elements:
@@ -418,14 +418,13 @@ class _PartialExecutor:
             return action()
         except Exception as ex:
             return PhaseStepFailure(PartialResultStatus.IMPLEMENTATION_ERROR,
-                                    None,
                                     PhaseFailureInfo(step,
-                                                new_failure_details_from_exception(ex, str(sys.exc_info()))))
+                                                     new_failure_details_from_exception(ex, str(sys.exc_info()))))
 
-    def _final_failure_result_from(self, phase_result: PhaseStepFailure) -> PartialResult:
-        return PartialResult(phase_result.status,
+    def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialResult:
+        return PartialResult(failure.status,
                              self.__sandbox_directory_structure,
-                             phase_result.failure_info)
+                             failure.failure_info)
 
     def _final_pass_result(self) -> PartialResult:
         return PartialResult(PartialResultStatus.PASS,
