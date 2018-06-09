@@ -63,7 +63,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
-        expectation = Expectation(partial_result=partial_result_status_is(PartialResultStatus.VALIDATION_ERROR))
+        expectation = Expectation(phase_result=partial_result_status_is(PartialResultStatus.VALIDATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([phase_step.ACT__PARSE],
@@ -83,7 +83,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
-        expectation = Expectation(partial_result=partial_result_status_is(PartialResultStatus.IMPLEMENTATION_ERROR))
+        expectation = Expectation(phase_result=partial_result_status_is(PartialResultStatus.IMPLEMENTATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([phase_step.ACT__PARSE],

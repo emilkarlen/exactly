@@ -47,17 +47,8 @@ def new_pass(sds: SandboxDirectoryStructure) -> FullResult:
                       None)
 
 
-def new_configuration_phase_failure_from(partial_result: PartialResult) -> FullResult:
-    full_status = FullResultStatus.HARD_ERROR
-    if partial_result.status is PartialResultStatus.IMPLEMENTATION_ERROR:
-        full_status = FullResultStatus.IMPLEMENTATION_ERROR
-    return FullResult(full_status,
-                      None,
-                      partial_result.failure_info)
-
-
-def new_named_phases_result_from(execution_mode: ExecutionMode,
-                                 partial_result: PartialResult) -> FullResult:
+def new_from_result_of_partial_execution(execution_mode: ExecutionMode,
+                                         partial_result: PartialResult) -> FullResult:
     return FullResult(translate_status(execution_mode, partial_result.status),
                       partial_result.sds,
                       partial_result.failure_info)

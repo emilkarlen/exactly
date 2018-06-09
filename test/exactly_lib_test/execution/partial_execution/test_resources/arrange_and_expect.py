@@ -30,8 +30,8 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  assertion_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 partial_result: asrt.ValueAssertion = asrt.anything_goes()):
-        self.partial_result = partial_result
+                 phase_result: asrt.ValueAssertion = asrt.anything_goes()):
+        self.phase_result = phase_result
         self.assertion_on_sds = assertion_on_sds
 
 
@@ -50,9 +50,9 @@ def execute_and_check(put: unittest.TestCase,
                 arrangement.initial_setup_settings,
                 is_keep_sandbox=True)
 
-            expectation.partial_result.apply_with_message(put,
-                                                          partial_result,
-                                                          'partial_result')
+            expectation.phase_result.apply_with_message(put,
+                                                        partial_result,
+                                                        'phase_result')
             result = Result(hds, partial_result)
             expectation.assertion_on_sds.apply_with_message(put,
                                                             result.partial_result.sds,

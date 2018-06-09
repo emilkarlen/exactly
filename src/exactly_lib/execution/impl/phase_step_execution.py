@@ -1,13 +1,13 @@
+from typing import Optional
+
 from exactly_lib.execution.failure_info import InstructionFailureInfo
+from exactly_lib.execution.impl.result import Failure, PhaseStepFailure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     execute_element
-from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult, new_partial_result_pass
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
-from exactly_lib.util.failure_details import FailureDetails
-from exactly_lib.util.line_source import SourceLocationPath
 
 
 class ElementHeaderExecutor:
@@ -20,53 +20,12 @@ class ElementHeaderExecutorThatDoesNothing(ElementHeaderExecutor):
         pass
 
 
-class Failure(tuple):
-    def __new__(cls,
-                status: PartialResultStatus,
-                source_location: SourceLocationPath,
-                failure_details: FailureDetails,
-                element_description: str = None):
-        """
-        :param source_location: None if no source is related to the failure.
-        """
-        return tuple.__new__(cls, (status, source_location, failure_details, element_description))
-
-    @property
-    def status(self) -> PartialResultStatus:
-        return self[0]
-
-    @property
-    def source_location(self) -> SourceLocationPath:
-        """
-        :return: None if no source is related to the failure.
-        """
-        return self[1]
-
-    @property
-    def failure_details(self) -> FailureDetails:
-        return self[2]
-
-    @property
-    def element_description(self) -> str:
-        """
-        :return: May be None
-        """
-        return self[3]
-
-
-def non_instruction_failure(status: PartialResultStatus,
-                            failure_details: FailureDetails) -> Failure:
-    return Failure(status,
-                   None,
-                   failure_details)
-
-
 def execute_phase(phase_contents: SectionContents,
                   header_executor_for_comment: ElementHeaderExecutor,
                   header_executor_for_instruction: ElementHeaderExecutor,
                   instruction_executor: ControlledInstructionExecutor,
                   phase_step: PhaseStep,
-                  sds: SandboxDirectoryStructure) -> PartialResult:
+                  sds: Optional[SandboxDirectoryStructure]) -> Optional[PhaseStepFailure]:
     """
     Executes the elements of a given phase/step.
     Catches exceptions thrown by instruction-execution and "reports" them as
@@ -81,16 +40,16 @@ def execute_phase(phase_contents: SectionContents,
     :param instruction_executor: Is executed for each element that is an instruction, after
     header_executor_for_instruction has been executed.
     Exceptions raised by this object are translated to IMPLEMENTATION_ERROR.
-    :return: PASS status, if there was no error. Otherwise, the first error.
+    :return: None, if there was no error. Otherwise, the first error.
     """
     failure = execute_phase_prim(phase_contents,
                                  header_executor_for_comment,
                                  header_executor_for_instruction,
                                  instruction_executor)
     if failure is None:
-        return new_partial_result_pass(sds)
+        return None
     else:
-        return PartialResult(
+        return PhaseStepFailure(
             failure.status,
             sds,
             InstructionFailureInfo(phase_step,
@@ -103,7 +62,7 @@ def execute_phase(phase_contents: SectionContents,
 def execute_phase_prim(phase_contents: SectionContents,
                        header_executor_for_comment: ElementHeaderExecutor,
                        header_executor_for_instruction: ElementHeaderExecutor,
-                       instruction_executor: ControlledInstructionExecutor) -> Failure:
+                       instruction_executor: ControlledInstructionExecutor) -> Optional[Failure]:
     """
     Executes the elements of a given phase/step.
     Catches exceptions thrown by instruction-execution and "reports" them as
@@ -118,7 +77,7 @@ def execute_phase_prim(phase_contents: SectionContents,
     :param instruction_executor: Is executed for each element that is an instruction, after
     header_executor_for_instruction has been executed.
     Exceptions raised by this object are translated to IMPLEMENTATION_ERROR.
-    :return: PASS status, if there was no error. Otherwise, the first error.
+    :return: None, if there was no error. Otherwise, the first error.
     """
     for element in phase_contents.elements:
         assert isinstance(element, SectionContentElement)

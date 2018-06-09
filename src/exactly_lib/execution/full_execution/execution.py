@@ -1,15 +1,16 @@
 import os
-from typing import Dict
+from typing import Dict, Optional
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.full_execution.configuration import PredefinedProperties, FullExeInputConfiguration
-from exactly_lib.execution.full_execution.result import FullResult, new_configuration_phase_failure_from, \
-    new_named_phases_result_from
+from exactly_lib.execution.full_execution.result import FullResult, FullResultStatus, \
+    new_from_result_of_partial_execution
 from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
+from exactly_lib.execution.impl.result import PhaseStepFailure
 from exactly_lib.execution.partial_execution import execution
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
+from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
@@ -29,10 +30,10 @@ def execute(test_case: test_case_doc.TestCase,
     """
     The main method for executing a Test Case.
     """
-    partial_result = _execute_configuration_phase(configuration_builder,
-                                                  test_case.configuration_phase)
-    if partial_result.status is not PartialResultStatus.PASS:
-        return new_configuration_phase_failure_from(partial_result)
+    conf_phase_failure = _execute_configuration_phase(configuration_builder,
+                                                      test_case.configuration_phase)
+    if conf_phase_failure is not None:
+        return new_configuration_phase_failure_from(conf_phase_failure)
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return new_skipped()
     conf_from_outside = FullExeInputConfiguration(dict(os.environ),
@@ -56,8 +57,8 @@ def execute(test_case: test_case_doc.TestCase,
         conf_phase_values,
         setup.default_settings(),
         is_keep_sandbox)
-    return new_named_phases_result_from(configuration_builder.execution_mode,
-                                        partial_result)
+    return new_from_result_of_partial_execution(configuration_builder.execution_mode,
+                                                partial_result)
 
 
 def _prepare_environment_variables(environ: Dict[str, str]):
@@ -67,10 +68,19 @@ def _prepare_environment_variables(environ: Dict[str, str]):
 
 
 def _execute_configuration_phase(phase_environment: ConfigurationBuilder,
-                                 configuration_phase: SectionContents) -> PartialResult:
+                                 configuration_phase: SectionContents) -> Optional[PhaseStepFailure]:
     return phase_step_execution.execute_phase(configuration_phase,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_executors.ConfigurationMainExecutor(phase_environment),
                                               phase_step.CONFIGURATION__MAIN,
                                               None)
+
+
+def new_configuration_phase_failure_from(phase_result: PhaseStepFailure) -> FullResult:
+    full_status = FullResultStatus.HARD_ERROR
+    if phase_result.status is PartialResultStatus.IMPLEMENTATION_ERROR:
+        full_status = FullResultStatus.IMPLEMENTATION_ERROR
+    return FullResult(full_status,
+                      None,
+                      phase_result.failure_info)
