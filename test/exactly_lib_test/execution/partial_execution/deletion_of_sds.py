@@ -42,7 +42,7 @@ def sandbox_directory_structure_does_not_exist(put: unittest.TestCase,
     put.assertFalse(actual.partial_result.sds.root_dir.exists())
 
 
-def _common_assertions(actual, put):
+def _common_assertions(actual: Result, put):
     put.assertTrue(actual.partial_result.has_sds,
                    'SDS is expected to have been created')
 

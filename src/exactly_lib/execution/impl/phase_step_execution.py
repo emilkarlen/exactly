@@ -51,7 +51,6 @@ def execute_phase(phase_contents: SectionContents,
     else:
         return PhaseStepFailure(
             failure.status,
-            sds,
             InstructionFailureInfo(phase_step,
                                    failure.source_location,
                                    failure.failure_details,

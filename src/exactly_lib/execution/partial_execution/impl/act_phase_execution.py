@@ -10,8 +10,7 @@ from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, \
-    stdin_contents_file
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \
     new_failure_details_from_message
 from exactly_lib.util.file_utils import open_and_make_read_only_on_close, write_new_text_file
@@ -40,19 +39,15 @@ class StdinConfiguration:
 
 
 class PhaseFailureResultConstructor:
-    def __init__(self,
-                 step: PhaseStep,
-                 sds: SandboxDirectoryStructure):
+    def __init__(self, step: PhaseStep):
         self.step = step
-        self.sds = sds
 
     def apply(self,
               status: PartialResultStatus,
               failure_details: FailureDetails) -> PhaseStepFailure:
         return PhaseStepFailure(status,
-                                self.sds,
                                 PhaseFailureInfo(self.step,
-                                            failure_details))
+                                                 failure_details))
 
     def implementation_error(self, ex: Exception) -> PhaseStepFailure:
         return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
@@ -84,11 +79,11 @@ class ActPhaseExecutor:
             if res.is_success:
                 return None
             else:
-                return self._failure_from(step,
-                                          PartialResultStatus(res.status.value),
-                                          new_failure_details_from_message(res.failure_message))
+                return _failure_from(step,
+                                     PartialResultStatus(res.status.value),
+                                     new_failure_details_from_message(res.failure_message))
 
-        return self._with_implementation_exception_handling(step, action)
+        return _with_implementation_exception_handling(step, action)
 
     def prepare(self) -> Optional[PhaseStepFailure]:
         step = phase_step.ACT__PREPARE
@@ -99,11 +94,11 @@ class ActPhaseExecutor:
             if res.is_success:
                 return None
             else:
-                return self._failure_from(step,
-                                          PartialResultStatus.HARD_ERROR,
-                                          new_failure_details_from_message(res.failure_message))
+                return _failure_from(step,
+                                     PartialResultStatus.HARD_ERROR,
+                                     new_failure_details_from_message(res.failure_message))
 
-        return self._with_implementation_exception_handling(step, action)
+        return _with_implementation_exception_handling(step, action)
 
     def execute(self) -> Optional[PhaseStepFailure]:
         step = phase_step.ACT__EXECUTE
@@ -113,11 +108,11 @@ class ActPhaseExecutor:
             if exit_code_or_hard_error.is_exit_code:
                 return None
             else:
-                return self._failure_from(step,
-                                          PartialResultStatus.HARD_ERROR,
-                                          exit_code_or_hard_error.failure_details)
+                return _failure_from(step,
+                                     PartialResultStatus.HARD_ERROR,
+                                     exit_code_or_hard_error.failure_details)
 
-        return self._with_implementation_exception_handling(step, action)
+        return _with_implementation_exception_handling(step, action)
 
     def _execute_with_stdin_handling(self) -> ExitCodeOrHardError:
         if self.stdin_configuration.has_custom_stdin:
@@ -165,20 +160,21 @@ class ActPhaseExecutor:
             write_new_text_file(file_path, configuration.string_contents)
             return file_path
 
-    def _with_implementation_exception_handling(self,
-                                                step: phase_step.PhaseStep,
-                                                action: Callable[[], Optional[PhaseStepFailure]]) -> Optional[
-        PhaseStepFailure]:
-        try:
-            return action()
-        except Exception as ex:
-            return self._failure_con_for(step).implementation_error(ex)
 
-    def _failure_from(self,
-                      step: PhaseStep,
-                      status: PartialResultStatus,
-                      failure_details: FailureDetails) -> PhaseStepFailure:
-        return self._failure_con_for(step).apply(status, failure_details)
+def _with_implementation_exception_handling(
+        step: phase_step.PhaseStep,
+        action: Callable[[], Optional[PhaseStepFailure]]) -> Optional[PhaseStepFailure]:
+    try:
+        return action()
+    except Exception as ex:
+        return _failure_con_for(step).implementation_error(ex)
 
-    def _failure_con_for(self, step: PhaseStep) -> PhaseFailureResultConstructor:
-        return PhaseFailureResultConstructor(step, self.home_and_sds.sds)
+
+def _failure_from(step: PhaseStep,
+                  status: PartialResultStatus,
+                  failure_details: FailureDetails) -> PhaseStepFailure:
+    return _failure_con_for(step).apply(status, failure_details)
+
+
+def _failure_con_for(step: PhaseStep) -> PhaseFailureResultConstructor:
+    return PhaseFailureResultConstructor(step)

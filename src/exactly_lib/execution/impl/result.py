@@ -1,8 +1,5 @@
-from typing import Optional
-
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.line_source import SourceLocationPath
 
@@ -44,24 +41,19 @@ class Failure(tuple):
 class PhaseStepFailure:
     def __init__(self,
                  status: PartialResultStatus,
-                 sds: Optional[SandboxDirectoryStructure],
-                 failure_info: Optional[FailureInfo]):
-        self.__sds = sds
+                 failure_info: FailureInfo):
+        """
+
+        :param status: Must not be PASS
+        :param failure_info:
+        """
         self.__failure_info = failure_info
         self.__status = status
 
     @property
-    def has_sds(self) -> bool:
-        return self.__sds is not None
-
-    @property
-    def sds(self) -> Optional[SandboxDirectoryStructure]:
-        return self.__sds
-
-    @property
-    def failure_info(self) -> Optional[FailureInfo]:
-        return self.__failure_info
-
-    @property
     def status(self) -> PartialResultStatus:
         return self.__status
+
+    @property
+    def failure_info(self) -> FailureInfo:
+        return self.__failure_info
