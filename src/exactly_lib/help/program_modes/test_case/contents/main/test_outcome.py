@@ -6,7 +6,8 @@ from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.doc_format import exit_value_text
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.test_case import phase_names
-from exactly_lib.execution.result import PartialResultStatus, FullResultStatus
+from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.result import FullResultStatus
 from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     FAILURE_CONDITION_OF_PREPROCESSING

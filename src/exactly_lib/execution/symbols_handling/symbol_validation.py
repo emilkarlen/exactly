@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from exactly_lib.execution.instruction_execution.single_instruction_executor import \
+from exactly_lib.execution.impl.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.symbol import symbol_usage as su
 from exactly_lib.symbol.err_msg import restriction_failure_renderer

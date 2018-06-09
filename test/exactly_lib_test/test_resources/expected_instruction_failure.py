@@ -1,8 +1,8 @@
 import unittest
 
+from exactly_lib.execution.failure_info import FailureInfo, InstructionFailureInfo, PhaseFailureInfo
 from exactly_lib.execution.phase_step_identifiers.phase_step import PhaseStep, SimplePhaseStep
-from exactly_lib.execution.result import InstructionFailureInfo, FullResultStatus, FullResult, FailureInfo, \
-    PhaseFailureInfo
+from exactly_lib.execution.result import FullResultStatus, FullResult
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

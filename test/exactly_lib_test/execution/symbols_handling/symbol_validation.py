@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.instruction_execution.single_instruction_executor import PartialControlledFailureEnum
+from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum
 from exactly_lib.execution.symbols_handling import symbol_validation as sut
 from exactly_lib.symbol import resolver_structure as vs, symbol_usage as su
 from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers

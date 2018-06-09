@@ -1,7 +1,9 @@
 import os
 
-from exactly_lib.execution import partial_execution
-from exactly_lib.execution.instruction_execution import phase_step_executors, phase_step_execution
+from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
+from exactly_lib.execution.partial_execution import execution
+from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.execution.tmp_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents
@@ -13,7 +15,7 @@ from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.util.symbol_table import SymbolTable
 from . import result
-from .result import FullResult, PartialResult, PartialResultStatus, FullResultStatus
+from .result import FullResult, FullResultStatus
 
 
 class PredefinedProperties:
@@ -45,20 +47,20 @@ def execute(test_case: test_case_doc.TestCase,
         return result.new_skipped()
     environ = dict(os.environ)
     _prepare_environment_variables(environ)
-    partial_execution_configuration = partial_execution.Configuration(
+    partial_execution_configuration = Configuration(
         act_phase_sub_process_executor,
         configuration_builder.hds,
         environ,
         configuration_builder.timeout_in_seconds,
         predefined_symbols=predefined_properties.predefined_symbols,
     )
-    partial_result = partial_execution.execute(
+    partial_result = execution.execute(
         configuration_builder.act_phase_handling,
-        partial_execution.TestCase(test_case.setup_phase,
-                                   test_case.act_phase,
-                                   test_case.before_assert_phase,
-                                   test_case.assert_phase,
-                                   test_case.cleanup_phase),
+        TestCase(test_case.setup_phase,
+                 test_case.act_phase,
+                 test_case.before_assert_phase,
+                 test_case.assert_phase,
+                 test_case.cleanup_phase),
         partial_execution_configuration,
         setup.default_settings(),
         sandbox_root_dir_resolver,

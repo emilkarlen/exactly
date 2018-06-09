@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.execution import result
+from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.phase_step_identifiers import phase_step
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing as tcp
@@ -68,8 +69,9 @@ def full_result_with_failure_info(status: result.FullResultStatus,
                                   failure_phase_step=phase_step.ASSERT__MAIN) -> result.FullResult:
     return result.FullResult(status,
                              DUMMY_SDS,
-                             result.PhaseFailureInfo(failure_phase_step,
-                                                     new_failure_details_from_message('failure message')))
+                             PhaseFailureInfo(failure_phase_step,
+                                              new_failure_details_from_message(
+                                                  'failure message')))
 
 
 def full_result_without_failure_info(status: result.FullResultStatus) -> result.FullResult:

@@ -2,9 +2,11 @@ import pathlib
 import shutil
 import types
 import unittest
+from typing import Callable
 
-from exactly_lib.execution import partial_execution
-from exactly_lib.execution.result import PartialResult
+from exactly_lib.execution.partial_execution import execution as sut
+from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
@@ -59,17 +61,17 @@ class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
         self.__test_case = None
 
     @property
-    def test_case(self) -> partial_execution.TestCase:
+    def test_case(self) -> TestCase:
         if self.__test_case is None:
             self.__test_case = self._generate()
         return self.__test_case
 
-    def _generate(self) -> partial_execution.TestCase:
+    def _generate(self) -> TestCase:
         return build(self)
 
 
-def build(tc: TestCaseGeneratorBase) -> partial_execution.TestCase:
-    return partial_execution.TestCase(
+def build(tc: TestCaseGeneratorBase) -> TestCase:
+    return TestCase(
         tc.setup_phase(),
         tc.act_phase(),
         tc.before_assert_phase(),
@@ -139,9 +141,9 @@ class Arrangement:
 
 
 def test(put: unittest.TestCase,
-         test_case: partial_execution.TestCase,
+         test_case: TestCase,
          act_phase_handling: ActPhaseHandling,
-         assertions: types.FunctionType,
+         assertions: Callable[[unittest.TestCase, Result], None],
          is_keep_sandbox: bool = True):
     with preserved_cwd():
         result = _execute(test_case,
@@ -156,7 +158,7 @@ def test(put: unittest.TestCase,
 
 
 def test__va(put: unittest.TestCase,
-             test_case: partial_execution.TestCase,
+             test_case: TestCase,
              arrangement: Arrangement,
              assertions_on_result: asrt.ValueAssertion):
     with preserved_cwd():
@@ -172,20 +174,20 @@ def test__va(put: unittest.TestCase,
         shutil.rmtree(str(result.sds.root_dir))
 
 
-def _execute(test_case: partial_execution.TestCase,
+def _execute(test_case: TestCase,
              arrangement: Arrangement,
              is_keep_sandbox: bool = True) -> Result:
     environ = arrangement.environ
     if environ is None:
         environ = {}
-    partial_result = partial_execution.execute(
+    partial_result = sut.execute(
         arrangement.act_phase_handling,
         test_case,
-        partial_execution.Configuration(arrangement.act_phase_os_process_executor,
-                                        arrangement.hds,
-                                        environ,
-                                        timeout_in_seconds=arrangement.timeout_in_seconds,
-                                        predefined_symbols=arrangement.predefined_symbols_or_none),
+        Configuration(arrangement.act_phase_os_process_executor,
+                      arrangement.hds,
+                      environ,
+                      timeout_in_seconds=arrangement.timeout_in_seconds,
+                      predefined_symbols=arrangement.predefined_symbols_or_none),
         setup.default_settings(),
         sandbox_root_name_resolver.for_test(),
         is_keep_sandbox)

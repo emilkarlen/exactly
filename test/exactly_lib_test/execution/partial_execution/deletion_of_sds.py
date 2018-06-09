@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution import partial_execution as sut
+from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, dummy_act_phase_handling, \
     Result
@@ -47,7 +47,7 @@ def _common_assertions(actual, put):
                    'SDS is expected to have been created')
 
 
-def test_case_that_does_nothing() -> sut.TestCase:
+def test_case_that_does_nothing() -> TestCase:
     return partial_test_case_with_instructions(
         act_phase_instructions=[act_phase_instruction_with_source(LineSequence(1, ('line',)))],
     )

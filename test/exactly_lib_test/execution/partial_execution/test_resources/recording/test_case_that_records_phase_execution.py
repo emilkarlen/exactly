@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from exactly_lib.execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.result import sh
