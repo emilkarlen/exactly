@@ -1,6 +1,7 @@
 import unittest
 
-from exactly_lib.execution.impl.phase_step_execution import Failure, ElementHeaderExecutor
+from exactly_lib.execution.impl.phase_step_execution import ElementHeaderExecutor
+from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
 from exactly_lib.execution.partial_execution.result import PartialResultStatus

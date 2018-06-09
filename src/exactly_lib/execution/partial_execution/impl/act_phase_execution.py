@@ -4,7 +4,8 @@ from typing import Optional, Callable
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
-from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult, new_partial_result_pass
+from exactly_lib.execution.impl.result import PhaseStepFailure
+from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
@@ -47,17 +48,17 @@ class PhaseFailureResultConstructor:
 
     def apply(self,
               status: PartialResultStatus,
-              failure_details: FailureDetails) -> PartialResult:
-        return PartialResult(status,
-                             self.sds,
-                             PhaseFailureInfo(self.step,
-                                              failure_details))
+              failure_details: FailureDetails) -> PhaseStepFailure:
+        return PhaseStepFailure(status,
+                                self.sds,
+                                PhaseFailureInfo(self.step,
+                                            failure_details))
 
-    def implementation_error(self, ex: Exception) -> PartialResult:
+    def implementation_error(self, ex: Exception) -> PhaseStepFailure:
         return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
                           new_failure_details_from_exception(ex))
 
-    def implementation_error_msg(self, msg: str) -> PartialResult:
+    def implementation_error_msg(self, msg: str) -> PhaseStepFailure:
         return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
                           new_failure_details_from_message(msg))
 
@@ -75,13 +76,13 @@ class ActPhaseExecutor:
         self.stdin_configuration = stdin_configuration
         self.script_output_dir_path = environment_for_other_steps.home_and_sds.sds.test_case_dir
 
-    def validate_post_setup(self) -> PartialResult:
+    def validate_post_setup(self) -> Optional[PhaseStepFailure]:
         step = phase_step.ACT__VALIDATE_POST_SETUP
 
-        def action() -> PartialResult:
+        def action() -> Optional[PhaseStepFailure]:
             res = self.act_source_and_executor.validate_post_setup(self.environment_for_validate_post_setup)
             if res.is_success:
-                return self._pass()
+                return None
             else:
                 return self._failure_from(step,
                                           PartialResultStatus(res.status.value),
@@ -89,14 +90,14 @@ class ActPhaseExecutor:
 
         return self._with_implementation_exception_handling(step, action)
 
-    def prepare(self) -> PartialResult:
+    def prepare(self) -> Optional[PhaseStepFailure]:
         step = phase_step.ACT__PREPARE
 
-        def action() -> PartialResult:
+        def action() -> Optional[PhaseStepFailure]:
             res = self.act_source_and_executor.prepare(self.environment_for_other_steps,
                                                        self.script_output_dir_path)
             if res.is_success:
-                return self._pass()
+                return None
             else:
                 return self._failure_from(step,
                                           PartialResultStatus.HARD_ERROR,
@@ -104,13 +105,13 @@ class ActPhaseExecutor:
 
         return self._with_implementation_exception_handling(step, action)
 
-    def execute(self) -> PartialResult:
+    def execute(self) -> Optional[PhaseStepFailure]:
         step = phase_step.ACT__EXECUTE
 
-        def action() -> PartialResult:
+        def action() -> Optional[PhaseStepFailure]:
             exit_code_or_hard_error = self._execute_with_stdin_handling()
             if exit_code_or_hard_error.is_exit_code:
-                return self._pass()
+                return None
             else:
                 return self._failure_from(step,
                                           PartialResultStatus.HARD_ERROR,
@@ -166,19 +167,17 @@ class ActPhaseExecutor:
 
     def _with_implementation_exception_handling(self,
                                                 step: phase_step.PhaseStep,
-                                                action: Callable[[], PartialResult]) -> PartialResult:
+                                                action: Callable[[], Optional[PhaseStepFailure]]) -> Optional[
+        PhaseStepFailure]:
         try:
             return action()
         except Exception as ex:
             return self._failure_con_for(step).implementation_error(ex)
 
-    def _pass(self) -> PartialResult:
-        return new_partial_result_pass(self.home_and_sds.sds)
-
     def _failure_from(self,
                       step: PhaseStep,
                       status: PartialResultStatus,
-                      failure_details: FailureDetails) -> PartialResult:
+                      failure_details: FailureDetails) -> PhaseStepFailure:
         return self._failure_con_for(step).apply(status, failure_details)
 
     def _failure_con_for(self, step: PhaseStep) -> PhaseFailureResultConstructor:
