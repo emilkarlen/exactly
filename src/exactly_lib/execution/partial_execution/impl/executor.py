@@ -27,20 +27,33 @@ from exactly_lib.util.failure_details import new_failure_details_from_message, n
 from exactly_lib.util.file_utils import resolved_path_name
 
 
-class _ExecutionConfiguration(tuple):
+class ExecutionConfiguration(tuple):
     def __new__(cls,
                 configuration: Configuration,
-                sandbox_directory_root_resolver: SandboxRootDirNameResolver):
+                sandbox_directory_root_resolver: SandboxRootDirNameResolver,
+                act_phase_handling: ActPhaseHandling,
+                setup_settings_builder: SetupSettingsBuilder,
+                ):
         return tuple.__new__(cls, (configuration,
-                                   sandbox_directory_root_resolver))
+                                   sandbox_directory_root_resolver,
+                                   act_phase_handling,
+                                   setup_settings_builder))
 
     @property
-    def configuration(self) -> Configuration:
+    def conf(self) -> Configuration:
         return self[0]
 
     @property
-    def sandbox_directory_root_resolver(self) -> SandboxRootDirNameResolver:
+    def sds_root_resolver(self) -> SandboxRootDirNameResolver:
         return self[1]
+
+    @property
+    def act_phase_handling(self) -> ActPhaseHandling:
+        return self[2]
+
+    @property
+    def setup_settings_builder(self) -> SetupSettingsBuilder:
+        return self[3]
 
 
 class _StepExecutionResult:
@@ -70,41 +83,32 @@ class _StepExecutionResult:
         self.__stdin_settings = x
 
 
-def execute(configuration: Configuration,
-            sandbox_directory_root_resolver: SandboxRootDirNameResolver,
-            act_phase_handling: ActPhaseHandling,
-            test_case: TestCase,
-            setup_settings_builder: SetupSettingsBuilder) -> PartialResult:
-    executor = _PartialExecutor(_ExecutionConfiguration(configuration,
-                                                        sandbox_directory_root_resolver),
-                                act_phase_handling,
-                                test_case,
-                                setup_settings_builder)
+def execute(exe_conf: ExecutionConfiguration,
+            test_case: TestCase) -> PartialResult:
+    executor = _PartialExecutor(exe_conf,
+                                test_case)
     return executor.execute()
 
 
 class _PartialExecutor:
     def __init__(self,
-                 exe_configuration: _ExecutionConfiguration,
-                 act_phase_handling: ActPhaseHandling,
-                 test_case: TestCase,
-                 setup_settings_builder: SetupSettingsBuilder):
+                 exe_conf: ExecutionConfiguration,
+                 test_case: TestCase):
         self.__sandbox_directory_structure = None
-        self.__exe_configuration = exe_configuration
-        self.__configuration = exe_configuration.configuration
-        self.__act_phase_handling = act_phase_handling
+        self.exe_conf = exe_conf
+        self.conf = exe_conf.conf
         self.__test_case = test_case
-        self.__setup_settings_builder = setup_settings_builder
+        self.__setup_settings_builder = exe_conf.setup_settings_builder
         self.___step_execution_result = _StepExecutionResult()
         self.__source_setup = None
         self.os_services = None
         self.__act_source_and_executor = None
-        self.__act_source_and_executor_constructor = act_phase_handling.source_and_executor_constructor
+        self.__act_source_and_executor_constructor = exe_conf.act_phase_handling.source_and_executor_constructor
         self.__instruction_environment_pre_sds = InstructionEnvironmentForPreSdsStep(
-            self.__configuration.hds,
-            self.__configuration.environ,
-            self.__configuration.timeout_in_seconds,
-            self.__configuration.predefined_symbols.copy())
+            self.conf.hds,
+            self.conf.environ,
+            self.conf.timeout_in_seconds,
+            self.conf.predefined_symbols.copy())
 
     def execute(self) -> PartialResult:
         self.__set_pre_sds_environment_variables()
@@ -176,19 +180,19 @@ class _PartialExecutor:
         return self.__sandbox_directory_structure
 
     @property
-    def exe_configuration(self) -> _ExecutionConfiguration:
-        return self.__exe_configuration
+    def exe_configuration(self) -> ExecutionConfiguration:
+        return self.exe_conf
 
     @property
     def configuration(self) -> Configuration:
-        return self.__configuration
+        return self.conf
 
     def _setup_post_sds_environment(self):
         self.__construct_and_set_sds()
         self.os_services = new_default()
         self.__set_cwd_to_act_dir()
         self.__set_post_sds_environment_variables()
-        self.__post_sds_symbol_table = self.__configuration.predefined_symbols.copy()
+        self.__post_sds_symbol_table = self.conf.predefined_symbols.copy()
 
     def __setup__validate_symbols(self) -> PartialResult:
         return self.__validate_symbols(phase_step.SETUP__VALIDATE_SYMBOLS,
@@ -348,39 +352,39 @@ class _PartialExecutor:
                                                   phase_contents)
 
     def __set_pre_sds_environment_variables(self):
-        self.__configuration.environ.update(
-            environment_variables.set_at_setup_pre_validate(self.__configuration.hds))
+        self.conf.environ.update(
+            environment_variables.set_at_setup_pre_validate(self.conf.hds))
 
     def __set_cwd_to_act_dir(self):
         os.chdir(str(self._sds.act_dir))
 
     def __construct_and_set_sds(self):
-        sds_root_dir_name = self.__exe_configuration.sandbox_directory_root_resolver()
+        sds_root_dir_name = self.exe_conf.sds_root_resolver()
         self.__sandbox_directory_structure = construct_at(resolved_path_name(sds_root_dir_name))
 
     def __post_setup_validation_environment(self, phase: phase_identifier.Phase
                                             ) -> common.InstructionEnvironmentForPostSdsStep:
-        return common.InstructionEnvironmentForPostSdsStep(self.__configuration.hds,
-                                                           self.__configuration.environ,
+        return common.InstructionEnvironmentForPostSdsStep(self.conf.hds,
+                                                           self.conf.environ,
                                                            self.__sandbox_directory_structure,
                                                            phase.identifier,
-                                                           timeout_in_seconds=self.__configuration.timeout_in_seconds,
+                                                           timeout_in_seconds=self.conf.timeout_in_seconds,
                                                            symbols=self.__instruction_environment_pre_sds.symbols)
 
     def __post_sds_environment(self,
                                phase: phase_identifier.Phase) -> common.InstructionEnvironmentForPostSdsStep:
-        return common.InstructionEnvironmentForPostSdsStep(self.__configuration.hds,
-                                                           self.__configuration.environ,
+        return common.InstructionEnvironmentForPostSdsStep(self.conf.hds,
+                                                           self.conf.environ,
                                                            self.__sandbox_directory_structure,
                                                            phase.identifier,
-                                                           timeout_in_seconds=self.__configuration.timeout_in_seconds,
+                                                           timeout_in_seconds=self.conf.timeout_in_seconds,
                                                            symbols=self.__post_sds_symbol_table)
 
     def __set_post_sds_environment_variables(self):
-        self.__configuration.environ.update(environment_variables.set_at_setup_main(self._sds))
+        self.conf.environ.update(environment_variables.set_at_setup_main(self._sds))
 
     def __set_assert_environment_variables(self):
-        self.__configuration.environ.update(environment_variables.set_at_assert(self._sds))
+        self.conf.environ.update(environment_variables.set_at_assert(self._sds))
 
     def __run_instructions_phase_step(self,
                                       step: PhaseStep,
@@ -407,7 +411,7 @@ class _PartialExecutor:
             else:
                 msg = 'Act phase contains an element that is not an instruction: ' + str(element.element_type)
                 return failure_con.implementation_error_msg(msg)
-        self.__act_source_and_executor = self.__act_phase_handling.source_and_executor_constructor.apply(
+        self.__act_source_and_executor = self.exe_configuration.act_phase_handling.source_and_executor_constructor.apply(
             self.configuration.act_phase_os_process_executor,
             self.__instruction_environment_pre_sds,
             instructions)

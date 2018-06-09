@@ -2,6 +2,7 @@ import shutil
 
 from exactly_lib.execution.partial_execution.configuration import TestCase, Configuration
 from exactly_lib.execution.partial_execution.impl import executor
+from exactly_lib.execution.partial_execution.impl.executor import ExecutionConfiguration
 from exactly_lib.execution.partial_execution.result import PartialResult
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -31,11 +32,11 @@ def execute(act_phase_handling: ActPhaseHandling,
     ret_val = None
     try:
         with preserved_cwd():
-            ret_val = executor.execute(configuration,
-                                       sandbox_root_dir_resolver,
-                                       act_phase_handling,
-                                       test_case,
-                                       initial_setup_settings)
+            ret_val = executor.execute(ExecutionConfiguration(configuration,
+                                                              sandbox_root_dir_resolver,
+                                                              act_phase_handling,
+                                                              initial_setup_settings),
+                                       test_case)
             return ret_val
     finally:
         if not is_keep_sandbox:
