@@ -1,6 +1,7 @@
 import types
 import unittest
 from operator import attrgetter
+from typing import Callable
 
 from exactly_lib.execution import phase_step_simple as step
 from exactly_lib.execution.phase_step import SimplePhaseStep
@@ -94,7 +95,7 @@ class StepRecordingAction:
     def __init__(self,
                  phase_step: SimplePhaseStep,
                  phase_2_step_2_recorded_value: dict,
-                 value_to_record_from_step_arguments_getter: types.FunctionType):
+                 value_to_record_from_step_arguments_getter: Callable):
         self.value_to_record_from_step_arguments_getter = value_to_record_from_step_arguments_getter
         self.phase_2_step_2_recorded_value = phase_2_step_2_recorded_value
         self.phase_step = phase_step

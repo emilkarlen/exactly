@@ -4,8 +4,9 @@ import shutil
 import unittest
 
 from exactly_lib.act_phase_setups.source_interpreter import python3
+from exactly_lib.execution.full_execution.configuration import FullExeInputConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
-from exactly_lib.execution.partial_execution.configuration import Configuration
+from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.execution.partial_execution.result import PartialResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -37,12 +38,12 @@ class PartialExecutionTestCaseBase:
                 # ACT #
                 partial_result = sut.execute(
                     self._test_case(),
-                    Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                  self.__act_phase_handling,
-                                  hds,
-                                  dict(os.environ)),
+                    FullExeInputConfiguration(dict(os.environ),
+                                              DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                              sandbox_root_name_resolver.for_test()),
+                    ConfPhaseValues(self.__act_phase_handling,
+                                    hds),
                     setup.default_settings(),
-                    sandbox_root_name_resolver.for_test(),
                     self.__dbg_do_not_delete_dir_structure)
 
                 # ASSERT #

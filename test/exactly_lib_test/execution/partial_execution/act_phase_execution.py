@@ -5,8 +5,9 @@ import sys
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
+from exactly_lib.execution.full_execution.configuration import FullExeInputConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
-from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
+from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
@@ -359,12 +360,12 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
             os.chdir(str(current_directory))
             return sut.execute(
                 test_case,
-                Configuration(DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                              ActPhaseHandling(constructor),
-                              hds,
-                              dict(os.environ)),
+                FullExeInputConfiguration(dict(os.environ),
+                                          DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                          sandbox_root_name_resolver.for_test()),
+                ConfPhaseValues(ActPhaseHandling(constructor),
+                                hds),
                 setup_settings,
-                sandbox_root_name_resolver.for_test(),
                 is_keep_sandbox)
 
 
