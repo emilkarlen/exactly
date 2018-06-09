@@ -3,7 +3,7 @@ import unittest
 from typing import List
 
 from exactly_lib.execution import tmp_dir_resolving
-from exactly_lib.execution.full_execution import PredefinedProperties
+from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser

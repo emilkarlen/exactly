@@ -4,9 +4,9 @@ import shutil
 import unittest
 
 from exactly_lib.act_phase_setups.source_interpreter import python3
-from exactly_lib.execution import full_execution
-from exactly_lib.execution.full_execution import PredefinedProperties
-from exactly_lib.execution.result import FullResult
+from exactly_lib.execution.full_execution import execution
+from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.test_case import test_case_doc, os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
@@ -33,7 +33,7 @@ class FullExecutionTestCaseBase:
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         initial_home_dir_path = self.initial_home_dir_path.resolve()
-        full_result = full_execution.execute(
+        full_result = execution.execute(
             self._test_case(),
             PredefinedProperties(),
             ConfigurationBuilder(initial_home_dir_path,

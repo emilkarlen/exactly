@@ -1,5 +1,10 @@
 import os
+from typing import Dict
 
+from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.full_execution.result import FullResult, new_configuration_phase_failure_from, \
+    new_named_phases_result_from
+from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.execution.impl import phase_step_executors, phase_step_execution
 from exactly_lib.execution.partial_execution import execution
 from exactly_lib.execution.partial_execution.configuration import Configuration, TestCase
@@ -13,21 +18,6 @@ from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib.test_case_file_structure import environment_variables
-from exactly_lib.util.symbol_table import SymbolTable
-from . import result
-from .result import FullResult, FullResultStatus
-
-
-class PredefinedProperties:
-    """Properties that are forwarded to the right place in the execution."""
-
-    def __init__(self,
-                 predefined_symbols: SymbolTable = None):
-        self.__predefined_symbols = predefined_symbols
-
-    @property
-    def predefined_symbols(self) -> SymbolTable:
-        return self.__predefined_symbols
 
 
 def execute(test_case: test_case_doc.TestCase,
@@ -44,7 +34,7 @@ def execute(test_case: test_case_doc.TestCase,
     if partial_result.status is not PartialResultStatus.PASS:
         return new_configuration_phase_failure_from(partial_result)
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
-        return result.new_skipped()
+        return new_skipped()
     environ = dict(os.environ)
     _prepare_environment_variables(environ)
     partial_execution_configuration = Configuration(
@@ -69,36 +59,7 @@ def execute(test_case: test_case_doc.TestCase,
                                         partial_result)
 
 
-def new_configuration_phase_failure_from(partial_result: PartialResult) -> FullResult:
-    full_status = FullResultStatus.HARD_ERROR
-    if partial_result.status is PartialResultStatus.IMPLEMENTATION_ERROR:
-        full_status = FullResultStatus.IMPLEMENTATION_ERROR
-    return FullResult(full_status,
-                      None,
-                      partial_result.failure_info)
-
-
-def new_named_phases_result_from(execution_mode: ExecutionMode,
-                                 partial_result: PartialResult) -> FullResult:
-    return FullResult(translate_status(execution_mode, partial_result.status),
-                      partial_result.sds,
-                      partial_result.failure_info)
-
-
-def translate_status(execution_mode: ExecutionMode,
-                     ps: PartialResultStatus) -> FullResultStatus:
-    """
-    :param execution_mode: Must not be ExecutionMode.SKIPPED
-    """
-    if execution_mode is ExecutionMode.FAIL:
-        if ps is PartialResultStatus.FAIL:
-            return FullResultStatus.XFAIL
-        elif ps is PartialResultStatus.PASS:
-            return FullResultStatus.XPASS
-    return FullResultStatus(ps.value)
-
-
-def _prepare_environment_variables(environ: dict):
+def _prepare_environment_variables(environ: Dict[str, str]):
     for ev in environment_variables.ALL_ENV_VARS:
         if ev in environ:
             del environ[ev]

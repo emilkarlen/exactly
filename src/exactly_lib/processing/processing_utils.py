@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.execution.result import FullResult
+from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.processing.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo, \

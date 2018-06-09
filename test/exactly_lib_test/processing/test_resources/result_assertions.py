@@ -1,4 +1,4 @@
-from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.processing.test_case_processing import Status, AccessErrorType, Result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

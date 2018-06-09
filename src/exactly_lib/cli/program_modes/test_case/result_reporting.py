@@ -4,7 +4,7 @@ import shutil
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.result_reporting import print_error_message_for_full_result, print_error_info
-from exactly_lib.execution.result import FullResultStatus, FullResult
+from exactly_lib.execution.full_execution.result import FullResultStatus, FullResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError

@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from pathlib import Path
 
-from exactly_lib.execution.result import new_skipped
+from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.test_case_processing import TestCaseSetup, new_internal_error, new_executed, \
     new_access_error, test_case_setup_of_source_file

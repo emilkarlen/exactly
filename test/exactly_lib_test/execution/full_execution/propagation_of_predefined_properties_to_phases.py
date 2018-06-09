@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution.full_execution import PredefinedProperties
+from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.execution.phase_step_identifiers.phase_step_simple import \
     ALL_SETUP_WITH_ENV_ARG, ALL_ASSERT_WITH_ENV_ARG, ALL_BEFORE_ASSERT_WITH_ENV_ARG, \
     ALL_CLEANUP_WITH_ENV_ARG, ALL_ACT_WITH_ENV_ARG

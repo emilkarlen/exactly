@@ -1,7 +1,7 @@
 import pathlib
 from enum import Enum
 
-from exactly_lib.execution.result import FullResult
+from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.error_description import ErrorDescription
 from exactly_lib.util import line_source

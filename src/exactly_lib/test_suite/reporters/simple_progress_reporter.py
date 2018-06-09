@@ -4,7 +4,7 @@ import pathlib
 from typing import Dict, List, Tuple
 
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing, exit_values as test_case_exit_values
 from exactly_lib.processing.test_case_processing import Status, TestCaseSetup
 from exactly_lib.test_suite import reporting, structure, exit_values

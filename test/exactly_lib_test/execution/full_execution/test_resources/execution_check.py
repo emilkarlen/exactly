@@ -1,8 +1,9 @@
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.execution import full_execution, tmp_dir_resolving
-from exactly_lib.execution.full_execution import PredefinedProperties
+from exactly_lib.execution import tmp_dir_resolving
+from exactly_lib.execution.full_execution import execution
+from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
@@ -38,7 +39,7 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation,
           is_keep_sandbox: bool = False):
-    result = full_execution.execute(
+    result = execution.execute(
         arrangement.test_case,
         arrangement.predefined_properties,
         arrangement.configuration_builder,

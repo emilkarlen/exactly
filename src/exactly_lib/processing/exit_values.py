@@ -1,5 +1,5 @@
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 

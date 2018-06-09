@@ -1,6 +1,7 @@
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions.doc_format import exit_value_text
 from exactly_lib.definitions.entity.suite_reporters import PROGRESS_REPORTER
+from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.help import texts
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.processing import exit_values as case_exit_values
@@ -81,7 +82,7 @@ def _all_pass_description() -> str:
 
 def _failed_tests_description() -> str:
     non_pass_result_statuses = set()
-    for st in list(case_exit_values.FullResultStatus):
+    for st in list(FullResultStatus):
         if st not in reporter.SUCCESS_STATUSES:
             non_pass_result_statuses.add(st)
     return ("""\

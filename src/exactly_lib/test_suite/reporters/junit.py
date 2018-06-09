@@ -5,7 +5,7 @@ import platform
 from xml.etree import ElementTree as ET
 
 from exactly_lib.common.result_reporting import error_message_for_full_result, error_message_for_error_info
-from exactly_lib.execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.processing.test_case_processing import Status, TestCaseSetup, Result
 from exactly_lib.test_suite import reporting, structure
 from exactly_lib.test_suite.reporters import simple_progress_reporter as simple_reporter
