@@ -4,7 +4,7 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.default.program_modes import test_suite
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser

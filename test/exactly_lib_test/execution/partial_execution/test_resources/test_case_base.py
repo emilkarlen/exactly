@@ -4,7 +4,7 @@ import shutil
 import unittest
 
 from exactly_lib.act_phase_setups.source_interpreter import python3
-from exactly_lib.execution.full_execution.configuration import FullExeInputConfiguration
+from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.configuration import TestCase
@@ -38,9 +38,9 @@ class PartialExecutionTestCaseBase:
                 # ACT #
                 partial_result = sut.execute(
                     self._test_case(),
-                    FullExeInputConfiguration(dict(os.environ),
-                                              DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                              sandbox_root_name_resolver.for_test()),
+                    ExecutionConfiguration(dict(os.environ),
+                                           DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                           sandbox_root_name_resolver.for_test()),
                     ConfPhaseValues(self.__act_phase_handling,
                                     hds),
                     setup.default_settings(),

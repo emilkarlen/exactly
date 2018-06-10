@@ -9,7 +9,7 @@ from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSe
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution import sandbox_dir_resolving
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup

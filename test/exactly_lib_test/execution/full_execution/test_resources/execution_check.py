@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib import program_info
 from exactly_lib.execution import sandbox_dir_resolving
+from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution import execution
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor

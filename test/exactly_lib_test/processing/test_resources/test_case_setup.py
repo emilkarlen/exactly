@@ -1,5 +1,5 @@
 from exactly_lib.act_phase_setups import command_line
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IdentityPreprocessor

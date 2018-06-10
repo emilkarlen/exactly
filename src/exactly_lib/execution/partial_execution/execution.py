@@ -1,16 +1,16 @@
 import shutil
 
-from exactly_lib.execution.full_execution.configuration import FullExeInputConfiguration
+from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution.configuration import TestCase, ConfPhaseValues
 from exactly_lib.execution.partial_execution.impl import executor
-from exactly_lib.execution.partial_execution.impl.executor import ExecutionConfiguration
+from exactly_lib.execution.partial_execution.impl.executor import Configuration
 from exactly_lib.execution.partial_execution.result import PartialResult
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.file_utils import preserved_cwd
 
 
 def execute(test_case: TestCase,
-            full_exe_input_conf: FullExeInputConfiguration,
+            full_exe_input_conf: ExecutionConfiguration,
             conf_phase_values: ConfPhaseValues,
             initial_setup_settings: SetupSettingsBuilder,
             is_keep_sandbox: bool) -> PartialResult:
@@ -30,9 +30,9 @@ def execute(test_case: TestCase,
     ret_val = None
     try:
         with preserved_cwd():
-            ret_val = executor.execute(ExecutionConfiguration(full_exe_input_conf,
-                                                              conf_phase_values,
-                                                              initial_setup_settings),
+            ret_val = executor.execute(Configuration(full_exe_input_conf,
+                                                     conf_phase_values,
+                                                     initial_setup_settings),
                                        test_case)
             return ret_val
     finally:
