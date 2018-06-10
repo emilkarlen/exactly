@@ -143,14 +143,9 @@ class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
                 for data in f:
                     output_file.write(data)
 
-        def act_phase_exit_code(exit_code_file: pathlib.Path) -> int:
-            with exit_code_file.open() as f:
-                exit_code_string = f.read()
-                return int(exit_code_string)
-
         copy_file(result.sds.result.stdout_file, self._std.out)
         copy_file(result.sds.result.stderr_file, self._std.err)
-        exit_code = act_phase_exit_code(result.sds.result.exitcode_file)
+        exit_code = result.action_to_check_outcome.exit_code
         shutil.rmtree(str(result.sds.root_dir))
         return exit_code
 
