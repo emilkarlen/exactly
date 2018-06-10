@@ -5,7 +5,7 @@ from typing import Optional
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialResultStatus, ActionToCheckOutcome
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
@@ -39,6 +39,18 @@ class PhaseFailureResultConstructor:
 
 
 class ActPhaseExecutor:
+    """
+    Methods that corresponds to each step of the execution of the ATC.
+
+    These methods must be invoked in the correct order (as defined by partial execution).
+
+    A single object must be used for a single execution.
+
+    Creates the ACT outcome files (under result/)
+
+    Stores parts of the ACT outcome as an object in the instance.
+    """
+
     def __init__(self,
                  act_source_and_executor: ActSourceAndExecutor,
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
@@ -50,6 +62,15 @@ class ActPhaseExecutor:
         self.home_and_sds = environment_for_other_steps.home_and_sds
         self.stdin_configuration = stdin_configuration
         self.script_output_dir_path = environment_for_other_steps.home_and_sds.sds.test_case_dir
+
+        self._action_to_check_outcome = None
+
+    @property
+    def action_to_check_outcome(self) -> Optional[ActionToCheckOutcome]:
+        """
+        :return: Not None iff all steps have executed successfully.
+        """
+        return self._action_to_check_outcome
 
     def validate_post_setup(self) -> Optional[PhaseStepFailure]:
         step = phase_step.ACT__VALIDATE_POST_SETUP
@@ -123,9 +144,13 @@ class ActPhaseExecutor:
                     StdFiles(f_stdin,
                              StdOutputFiles(f_stdout,
                                             f_stderr)))
-                if exit_code_or_hard_error.is_exit_code:
-                    self._store_exit_code(exit_code_or_hard_error.exit_code)
+                self._register_outcome(exit_code_or_hard_error)
                 return exit_code_or_hard_error
+
+    def _register_outcome(self, exit_code_or_hard_error: ExitCodeOrHardError):
+        if exit_code_or_hard_error.is_exit_code:
+            self._action_to_check_outcome = ActionToCheckOutcome(exit_code_or_hard_error.exit_code)
+            self._store_exit_code(exit_code_or_hard_error.exit_code)
 
     def _store_exit_code(self, exitcode: int):
         with open_and_make_read_only_on_close(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:

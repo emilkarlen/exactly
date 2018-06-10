@@ -62,7 +62,6 @@ class _PartialExecutor:
     def __init__(self,
                  exe_conf: ExecutionConfiguration,
                  test_case: TestCase):
-        self.__sandbox_directory_structure = None
         self.exe_conf = exe_conf
         self.full_exe_conf = exe_conf.full_exe_input_conf
         self.conf = exe_conf.conf_phase_values
@@ -79,6 +78,9 @@ class _PartialExecutor:
             self.full_exe_conf.environ,
             self.conf.timeout_in_seconds,
             self.full_exe_conf.predefined_symbols.copy())
+
+        self.__sandbox_directory_structure = None
+        self._action_to_check_outcome = None
 
     def execute(self) -> PartialResult:
         self.__set_pre_sds_environment_variables()
@@ -115,6 +117,8 @@ class _PartialExecutor:
                 act_program_executor.prepare,
                 act_program_executor.execute,
             ])
+        self._action_to_check_outcome = act_program_executor.action_to_check_outcome
+
         if res is not None:
             return self._final_failure_result_from(res)
         self.__set_assert_environment_variables()
@@ -264,7 +268,7 @@ class _PartialExecutor:
                                                       self.__post_setup_validation_environment(phase_identifier.SETUP)),
                                                   self.__test_case.setup_phase)
 
-    def __act_program_executor(self):
+    def __act_program_executor(self) -> ActPhaseExecutor:
         return ActPhaseExecutor(self.__act_source_and_executor,
                                 self.__post_setup_validation_environment(phase_identifier.ACT),
                                 self.__post_sds_environment(phase_identifier.ACT),
@@ -396,9 +400,11 @@ class _PartialExecutor:
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialResult:
         return PartialResult(failure.status,
                              self.__sandbox_directory_structure,
+                             self._action_to_check_outcome,
                              failure.failure_info)
 
     def _final_pass_result(self) -> PartialResult:
         return PartialResult(PartialResultStatus.PASS,
                              self.__sandbox_directory_structure,
+                             self._action_to_check_outcome,
                              None)

@@ -10,6 +10,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     Expectation, Arrangement, execute_test_case_with_recording
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
+from exactly_lib_test.execution.test_resources.partial_result_check import action_to_check_has_not_executed_completely
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 
 
@@ -48,6 +49,7 @@ class TestValidationError(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(PartialResultStatus.VALIDATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             conf.step,
                             test_case.the_extra(conf.phase)[0].source,
@@ -67,6 +69,7 @@ class TestHardError(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             conf.step,
                             test_case.the_extra(conf.phase)[0].source,
@@ -85,6 +88,7 @@ class TestImplementationError(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             conf.step,
                             test_case.the_extra(conf.phase)[0].source,
@@ -93,7 +97,7 @@ class TestImplementationError(TestCaseBase):
                         True))
 
 
-def suite_for(configuration: Configuration) -> list:
+def suite_for(configuration: Configuration) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
     ret_val.addTests([TestValidationError(configuration),
                       TestHardError(configuration),

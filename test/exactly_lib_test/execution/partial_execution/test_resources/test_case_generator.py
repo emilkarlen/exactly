@@ -1,10 +1,10 @@
-from enum import Enum
+from enum import IntEnum
 
 from exactly_lib.execution.partial_execution.configuration import TestCase
 from exactly_lib.section_document import model
 
 
-class PartialPhase(Enum):
+class PartialPhase(IntEnum):
     SETUP = 1
     ACT = 2
     BEFORE_ASSERT = 3
@@ -14,7 +14,7 @@ class PartialPhase(Enum):
 
 class TestCaseGeneratorForPartialExecutionBase:
     """
-    Base class for generation of Test Cases for full execution.
+    Base class for generation of Test Cases for partial execution.
     """
 
     def __init__(self):
@@ -35,9 +35,9 @@ class TestCaseGeneratorForPartialExecutionBase:
 
     def _generate(self) -> TestCase:
         return TestCase(
-                self.phase_contents_for(PartialPhase.SETUP),
+            self.phase_contents_for(PartialPhase.SETUP),
             self.phase_contents_for_act(PartialPhase.ACT),
-                self.phase_contents_for(PartialPhase.BEFORE_ASSERT),
-                self.phase_contents_for(PartialPhase.ASSERT),
-                self.phase_contents_for(PartialPhase.CLEANUP)
+            self.phase_contents_for(PartialPhase.BEFORE_ASSERT),
+            self.phase_contents_for(PartialPhase.ASSERT),
+            self.phase_contents_for(PartialPhase.CLEANUP)
         )
