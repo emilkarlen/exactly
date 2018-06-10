@@ -9,7 +9,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
-from exactly_lib_test.execution.test_resources.expected_instruction_failure import ExpectedFailureForNoFailure
+from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForNoFailure
 from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_executed_completely
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 

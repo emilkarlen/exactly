@@ -15,7 +15,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     Expectation, Arrangement, execute_test_case_with_recording
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
-from exactly_lib_test.execution.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
+from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.result_assertions import \
     action_to_check_has_not_executed_completely

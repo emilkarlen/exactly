@@ -1,115 +1,96 @@
 import unittest
 
 from exactly_lib.execution.failure_info import FailureInfo, InstructionFailureInfo, PhaseFailureInfo
-from exactly_lib.execution.full_execution.result import FullResultStatus, FullResult
 from exactly_lib.execution.phase_step import PhaseStep, SimplePhaseStep
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
 
 
-class ExpectedFailureDetails(tuple):
-    def __new__(cls,
-                error_message_or_none: asrt.ValueAssertion,
-                exception_class_or_none):
+class ExpectedFailureDetails(asrt.ValueAssertion[FailureDetails]):
+    def __init__(self,
+                 error_message_or_none: asrt.ValueAssertion,
+                 exception_class_or_none):
         if error_message_or_none is not None:
             if isinstance(error_message_or_none, str):
                 raise TypeError(error_message_or_none)
-        return tuple.__new__(cls, (error_message_or_none,
-                                   exception_class_or_none))
+        self._error_message_or_none = error_message_or_none
+        self._exception_class_or_none = exception_class_or_none
+
+    def apply(self,
+              put: unittest.TestCase,
+              value: FailureDetails,
+              message_builder: MessageBuilder = MessageBuilder()):
+        self.assertions(put, value, message_builder.apply(''))
 
     @property
     def error_message_or_none(self) -> asrt.ValueAssertion:
-        return self[0]
+        return self._error_message_or_none
 
     @property
     def exception_class_or_none(self):
-        return self[1]
+        return self._exception_class_or_none
 
     def assertions(self,
-                   unittest_case: unittest.TestCase,
+                   put: unittest.TestCase,
                    actual: FailureDetails,
                    message_header: str = None):
         message_builder = asrt.new_message_builder(message_header)
         if self.error_message_or_none is None and self.exception_class_or_none is None:
-            unittest_case.assertIsNone(actual,
-                                       message_header)
+            put.assertIsNone(actual,
+                             message_header)
         elif self.error_message_or_none is not None:
-            self.error_message_or_none.apply_with_message(unittest_case,
+            self.error_message_or_none.apply_with_message(put,
                                                           actual.failure_message,
                                                           message_builder.for_sub_component('failure message'))
         else:
-            unittest_case.assertIsInstance(actual.exception,
-                                           self.exception_class_or_none,
-                                           message_builder.for_sub_component('exception class'))
+            put.assertIsInstance(actual.exception,
+                                 self.exception_class_or_none,
+                                 message_builder.for_sub_component('exception class'))
 
 
-def new_expected_failure_message(msg: str):
+def new_expected_failure_message(msg: str) -> ExpectedFailureDetails:
     return ExpectedFailureDetails(asrt.equals(msg), None)
 
 
-def new_expected_exception(exception_class):
+def new_expected_exception(exception_class) -> ExpectedFailureDetails:
     return ExpectedFailureDetails(None, exception_class)
 
 
-class ExpectedFailure:
-    def assertions(self,
-                   unittest_case: unittest.TestCase,
-                   actual_failure_info: FailureInfo):
+class ExpectedFailure(asrt.ValueAssertion[FailureInfo]):
+
+    def apply(self,
+              put: unittest.TestCase,
+              value: FailureInfo,
+              message_builder: MessageBuilder = MessageBuilder()):
+        self._assertions(put, value)
+
+    def _assertions(self,
+                    unittest_case: unittest.TestCase,
+                    actual_failure_info: FailureInfo):
         raise NotImplementedError()
 
 
-class ExpectedStatusAndFailure(tuple):
-    def __new__(cls,
-                status: FullResultStatus,
-                failure: ExpectedFailure):
-        return tuple.__new__(cls, (status, failure))
-
-    def assertions(self,
-                   utc: unittest.TestCase,
-                   actual_status: FullResultStatus,
-                   actual_failure_info: FailureInfo):
-        utc.assertEqual(self.status,
-                        actual_status,
-                        'Status')
-        self.failure.assertions(utc,
-                                actual_failure_info)
-
-    def assertions_on_status_and_failure(self,
-                                         utc: unittest.TestCase,
-                                         actual_result: FullResult):
-        self.assertions(utc,
-                        actual_result.status,
-                        actual_result.failure_info)
-
-    @property
-    def status(self) -> FullResultStatus:
-        return self[0]
-
-    @property
-    def failure(self) -> ExpectedFailure:
-        return self[1]
-
-
 class ExpectedFailureForNoFailure(ExpectedFailure):
-    def assertions(self,
-                   unittest_case: unittest.TestCase,
-                   actual_failure_info: FailureInfo):
+    def _assertions(self,
+                    unittest_case: unittest.TestCase,
+                    actual_failure_info: FailureInfo):
         unittest_case.assertIsNone(actual_failure_info,
                                    'There should be no failure')
 
 
-class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
-    def __new__(cls,
-                phase_step: PhaseStep,
-                source_line: line_source.LineSequence,
-                error_message_or_none: asrt.ValueAssertion,
-                exception_class_or_none):
-        return tuple.__new__(cls, (phase_step,
-                                   source_line,
-                                   ExpectedFailureDetails(error_message_or_none,
-                                                          exception_class_or_none)))
+class ExpectedFailureForInstructionFailure(ExpectedFailure):
+    def __init__(self,
+                 phase_step: PhaseStep,
+                 source_line: line_source.LineSequence,
+                 error_message_or_none: asrt.ValueAssertion,
+                 exception_class_or_none):
+        self._phase_step = phase_step
+        self._source_line = source_line
+        self._expected_failure_details = ExpectedFailureDetails(error_message_or_none,
+                                                                exception_class_or_none)
 
     @staticmethod
     def new_with_message(phase_step: PhaseStep,
@@ -164,9 +145,9 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
         self.expected_failure.assertions(unittest_case,
                                          actual_details)
 
-    def assertions(self,
-                   unittest_case: unittest.TestCase,
-                   actual: FailureInfo):
+    def _assertions(self,
+                    unittest_case: unittest.TestCase,
+                    actual: FailureInfo):
         unittest_case.assertIsNotNone(actual,
                                       'Failure info should be present')
         unittest_case.assertIsInstance(actual, InstructionFailureInfo,
@@ -179,25 +160,25 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure, tuple):
 
     @property
     def phase_step(self) -> PhaseStep:
-        return self[0]
+        return self._phase_step
 
     @property
     def source_line(self) -> line_source.LineSequence:
-        return self[1]
+        return self._source_line
 
     @property
     def expected_failure(self) -> ExpectedFailureDetails:
-        return self[2]
+        return self._expected_failure_details
 
 
-class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
-    def __new__(cls,
-                phase_step: PhaseStep,
-                error_message_or_none: asrt.ValueAssertion,
-                exception_class_or_none):
-        return tuple.__new__(cls, (phase_step,
-                                   ExpectedFailureDetails(error_message_or_none,
-                                                          exception_class_or_none)))
+class ExpectedFailureForPhaseFailure(ExpectedFailure):
+    def __init__(self,
+                 phase_step: PhaseStep,
+                 error_message_or_none: asrt.ValueAssertion,
+                 exception_class_or_none):
+        self._phase_step = phase_step
+        self._failure_details = ExpectedFailureDetails(error_message_or_none,
+                                                       exception_class_or_none)
 
     @staticmethod
     def new_with_step(phase_step: PhaseStep):
@@ -232,9 +213,9 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
         self.expected_failure.assertions(unittest_case,
                                          actual_details)
 
-    def assertions(self,
-                   unittest_case: unittest.TestCase,
-                   actual: FailureInfo):
+    def _assertions(self,
+                    unittest_case: unittest.TestCase,
+                    actual: FailureInfo):
         unittest_case.assertIsNotNone(actual,
                                       'Failure info should be present')
         unittest_case.assertIsInstance(actual, PhaseFailureInfo,
@@ -246,8 +227,8 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure, tuple):
 
     @property
     def phase_step(self) -> PhaseStep:
-        return self[0]
+        return self._phase_step
 
     @property
     def expected_failure(self) -> ExpectedFailureDetails:
-        return self[1]
+        return self._failure_details
