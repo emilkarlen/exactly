@@ -12,9 +12,8 @@ from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidato
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
-from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

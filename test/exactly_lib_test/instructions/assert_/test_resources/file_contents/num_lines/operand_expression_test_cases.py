@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.symbol.test_resources.string import is_string_made_up_of_just_strings_reference_to
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
+from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

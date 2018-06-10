@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.test_resources.configuration import A
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.run_instruction_test import \
     suite_for, Configuration
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions
+from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

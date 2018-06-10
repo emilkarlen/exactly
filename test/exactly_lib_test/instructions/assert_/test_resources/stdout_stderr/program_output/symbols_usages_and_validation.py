@@ -17,9 +17,9 @@ from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restricti
     is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.test_case.result.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

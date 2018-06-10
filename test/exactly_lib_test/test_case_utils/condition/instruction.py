@@ -11,10 +11,9 @@ from exactly_lib.test_case_utils.err_msg.property_description import \
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, \
     symbol_reference_assertions as asrt_sym_ref
-from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh, svh_assertions as asrt_svh
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_utils.condition.test_resources.operand_resolver import operand_resolver_that
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
