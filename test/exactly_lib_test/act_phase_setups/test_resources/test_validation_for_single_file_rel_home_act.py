@@ -1,11 +1,10 @@
 import pathlib
-import pathlib
 import unittest
 
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import \
     test_validation_for_single_line_source as single_line_source

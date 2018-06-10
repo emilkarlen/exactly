@@ -8,7 +8,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     Configuration
 from exactly_lib_test.instructions.setup.test_resources.configuration import SetupConfigurationBase
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import Expectation
-from exactly_lib_test.test_case.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

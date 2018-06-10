@@ -8,8 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import pfh, svh
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     assert_phase_instruction_that
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check as sut

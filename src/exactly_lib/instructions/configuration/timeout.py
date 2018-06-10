@@ -12,7 +12,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import sh
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 

@@ -2,10 +2,8 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListElementRecorder, ListRecorder
 from exactly_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that, \
     assert_phase_instruction_that, setup_phase_instruction_that, configuration_phase_instruction_that, \

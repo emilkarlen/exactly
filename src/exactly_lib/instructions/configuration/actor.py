@@ -4,7 +4,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import sh
 
 
 def setup(instruction_name: str) -> SingleInstructionSetup:

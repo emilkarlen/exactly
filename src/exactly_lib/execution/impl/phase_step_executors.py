@@ -8,10 +8,8 @@ from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, Previo
 from exactly_lib.test_case.phases.common import SymbolUser
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, \
     ConfigurationBuilder
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.result import pfh, sh, svh
 from .symbol_validation import validate_symbol_usages
 
 

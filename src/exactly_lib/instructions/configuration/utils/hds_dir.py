@@ -10,7 +10,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import sh
 
 
 class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextParserBase):

@@ -7,8 +7,7 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
 from exactly_lib.test_case.eh import ExitCodeOrHardError
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.test_resources import test_actions
 from exactly_lib_test.test_resources import actions

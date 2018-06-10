@@ -9,7 +9,7 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, SymbolUser
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_utils.parse import parse_string
 
 

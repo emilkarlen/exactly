@@ -6,8 +6,7 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, \
     TestCaseInstructionWithSymbols
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import sh, svh
 
 
 class StdinConfiguration:

@@ -9,10 +9,8 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.test_resources.actions import do_return, action_of

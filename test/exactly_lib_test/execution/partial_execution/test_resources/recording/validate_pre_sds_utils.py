@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \

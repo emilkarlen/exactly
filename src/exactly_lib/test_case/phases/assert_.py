@@ -4,8 +4,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep, TestCaseInstructionWithSymbols
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import pfh, svh
 
 
 class AssertPhaseInstruction(TestCaseInstructionWithSymbols):

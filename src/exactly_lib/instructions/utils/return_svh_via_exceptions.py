@@ -1,4 +1,4 @@
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import svh
 
 
 class SvhException(Exception):

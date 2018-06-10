@@ -11,7 +11,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check as sds_contents_check

@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.result import pfh
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import SB
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfiguration, TestWithConfigurationBase
