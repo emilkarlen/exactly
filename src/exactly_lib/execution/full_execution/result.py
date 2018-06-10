@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.partial_execution.result import PartialResult, PartialResultStatus
-from exactly_lib.execution.result import ResultBase
+from exactly_lib.execution.result import ResultBase, ActionToCheckOutcome
 from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
@@ -26,8 +26,9 @@ class FullResult(ResultBase):
     def __init__(self,
                  status: FullResultStatus,
                  sds: Optional[SandboxDirectoryStructure],
+                 action_to_check_outcome: Optional[ActionToCheckOutcome],
                  failure_info: Optional[FailureInfo]):
-        super().__init__(sds, failure_info)
+        super().__init__(sds, action_to_check_outcome, failure_info)
         self.__status = status
 
     @property
@@ -38,12 +39,14 @@ class FullResult(ResultBase):
 def new_skipped() -> FullResult:
     return FullResult(FullResultStatus.SKIPPED,
                       None,
+                      None,
                       None)
 
 
 def new_pass(sds: SandboxDirectoryStructure) -> FullResult:
     return FullResult(FullResultStatus.PASS,
                       sds,
+                      None,
                       None)
 
 
@@ -51,6 +54,7 @@ def new_from_result_of_partial_execution(execution_mode: ExecutionMode,
                                          partial_result: PartialResult) -> FullResult:
     return FullResult(translate_status(execution_mode, partial_result.status),
                       partial_result.sds,
+                      None,
                       partial_result.failure_info)
 
 

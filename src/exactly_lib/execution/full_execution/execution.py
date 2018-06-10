@@ -74,4 +74,5 @@ def new_configuration_phase_failure_from(phase_result: PhaseStepFailure) -> Full
         full_status = FullResultStatus.IMPLEMENTATION_ERROR
     return FullResult(full_status,
                       None,
+                      None,
                       phase_result.failure_info)
