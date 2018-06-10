@@ -11,7 +11,7 @@ from exactly_lib_test.util.test_resources.line_source_assertions import assert_e
 
 class ExpectedFailureDetails(asrt.ValueAssertion[FailureDetails]):
     def __init__(self,
-                 error_message_or_none: asrt.ValueAssertion,
+                 error_message_or_none: asrt.ValueAssertion[str],
                  exception_class_or_none):
         if error_message_or_none is not None:
             if isinstance(error_message_or_none, str):
@@ -104,7 +104,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure):
     @staticmethod
     def new_with_message_assertion(phase_step: PhaseStep,
                                    source_line: line_source.LineSequence,
-                                   error_message: asrt.ValueAssertion):
+                                   error_message: asrt.ValueAssertion[str]):
         return ExpectedFailureForInstructionFailure(phase_step,
                                                     source_line,
                                                     error_message,
@@ -112,7 +112,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure):
 
     @staticmethod
     def new_with_phase_and_message_assertion(phase_step: PhaseStep,
-                                             error_message: asrt.ValueAssertion):
+                                             error_message: asrt.ValueAssertion[str]):
         return ExpectedFailureForInstructionFailure(phase_step,
                                                     None,
                                                     error_message,
@@ -142,8 +142,8 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure):
             assert_equals_line_sequence(unittest_case,
                                         self.source_line,
                                         actual_line)
-        self.expected_failure.assertions(unittest_case,
-                                         actual_details)
+        self.expected_failure.apply_without_message(unittest_case,
+                                                    actual_details)
 
     def _assertions(self,
                     unittest_case: unittest.TestCase,
@@ -174,7 +174,7 @@ class ExpectedFailureForInstructionFailure(ExpectedFailure):
 class ExpectedFailureForPhaseFailure(ExpectedFailure):
     def __init__(self,
                  phase_step: PhaseStep,
-                 error_message_or_none: asrt.ValueAssertion,
+                 error_message_or_none: asrt.ValueAssertion[str],
                  exception_class_or_none):
         self._phase_step = phase_step
         self._failure_details = ExpectedFailureDetails(error_message_or_none,
@@ -210,8 +210,9 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure):
         unittest_case.assertEqual(self.phase_step.step,
                                   phase_step.step,
                                   'Step')
-        self.expected_failure.assertions(unittest_case,
-                                         actual_details)
+        self.expected_failure.apply_with_message(unittest_case,
+                                                 actual_details,
+                                                 'failure_details')
 
     def _assertions(self,
                     unittest_case: unittest.TestCase,
@@ -230,5 +231,5 @@ class ExpectedFailureForPhaseFailure(ExpectedFailure):
         return self._phase_step
 
     @property
-    def expected_failure(self) -> ExpectedFailureDetails:
+    def expected_failure(self) -> asrt.ValueAssertion[FailureDetails]:
         return self._failure_details
