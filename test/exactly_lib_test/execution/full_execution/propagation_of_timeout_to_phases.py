@@ -7,8 +7,7 @@ from exactly_lib.execution.phase_step_simple import \
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.result import sh
-from exactly_lib_test.execution.full_execution.test_resources import execution_check
-from exactly_lib_test.execution.test_resources import full_result_assertions
+from exactly_lib_test.execution.full_execution.test_resources import execution_check, result_assertions
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     builder_of_test_case_that_records_property_of_env_for_each_step_of_partial_execution, \
     act_phase_handling_that_records_property_of_constructor_argument
@@ -45,7 +44,7 @@ class Test(unittest.TestCase):
                                                                           default_timeout)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder_with_default_timeout)
-        expectation = execution_check.Expectation(full_result=full_result_assertions.is_pass)
+        expectation = execution_check.Expectation(full_result=result_assertions.is_pass)
         # ACT & ASSERT #
         execution_check.check(self, arrangement, expectation)
         # ASSERT #
@@ -78,7 +77,7 @@ class Test(unittest.TestCase):
                                                                           expected_timeout)
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder_with_default_timeout)
-        expectation = execution_check.Expectation(full_result=full_result_assertions.is_pass)
+        expectation = execution_check.Expectation(full_result=result_assertions.is_pass)
         # ACT & ASSERT #
         execution_check.check(self, arrangement, expectation)
         # ASSERT #

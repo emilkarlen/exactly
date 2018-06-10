@@ -25,13 +25,13 @@ from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
+from exactly_lib_test.execution.partial_execution.test_resources.result import partial_result_status_is
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorConstructorForConstantExecutor, ActSourceAndExecutorThatJustReturnsSuccess, \
     ActSourceAndExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
-from exactly_lib_test.execution.test_resources.partial_result_check import partial_result_status_is
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.actions import do_raise
