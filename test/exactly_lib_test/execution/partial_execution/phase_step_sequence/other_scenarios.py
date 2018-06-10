@@ -13,6 +13,9 @@ from exactly_lib_test.execution.partial_execution.test_resources.test_case_gener
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
+from exactly_lib_test.execution.test_resources.partial_result_check import action_to_check_has_executed_completely, \
+    action_to_check_has_not_executed_completely
+from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 
@@ -30,6 +33,7 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.SETUP__MAIN,
                             test_case.the_extra(PartialPhase.SETUP)[0].source,
@@ -49,8 +53,10 @@ class Test(TestCaseBase):
                  test.setup_phase_instruction_that(
                      main=do_raise(test.ImplementationErrorTestException())))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.SETUP__MAIN,
                             test_case.the_extra(PartialPhase.SETUP)[0].source,
@@ -72,8 +78,10 @@ class Test(TestCaseBase):
                  test.before_assert_phase_instruction_that(
                      main=do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(0)),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_executed_completely(0),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.BEFORE_ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
@@ -108,8 +116,10 @@ class Test(TestCaseBase):
                  test.before_assert_phase_instruction_that(
                      main=do_raise(test.ImplementationErrorTestException())))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(12)),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_executed_completely(12),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.BEFORE_ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
@@ -145,8 +155,10 @@ class Test(TestCaseBase):
                  test.assert_phase_instruction_that(
                      main=do_return(pfh.new_pfh_fail('fail msg from ASSERT'))))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(PartialResultStatus.FAIL,
+                        action_to_check_has_executed_completely(5),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].source,
@@ -184,8 +196,10 @@ class Test(TestCaseBase):
                  test.assert_phase_instruction_that(
                      main=do_return(pfh.new_pfh_hard_error('hard error msg from ASSERT'))))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(72)),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_executed_completely(72),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].source,
@@ -223,8 +237,10 @@ class Test(TestCaseBase):
                  test.assert_phase_instruction_that(
                      main=do_raise(test.ImplementationErrorTestException())))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_executed_completely(5),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(PartialPhase.ASSERT)[0].source,
@@ -262,8 +278,10 @@ class Test(TestCaseBase):
                  test.cleanup_phase_instruction_that(
                      main=do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(3)),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_executed_completely(3),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.CLEANUP__MAIN,
                             test_case.the_extra(PartialPhase.CLEANUP)[0].source,
@@ -301,8 +319,10 @@ class Test(TestCaseBase):
                  test.cleanup_phase_instruction_that(
                      main=do_raise(test.ImplementationErrorTestException())))
         self._check(
-            Arrangement(test_case),
+            Arrangement(test_case,
+                        act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_executed_completely(5),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             phase_step.CLEANUP__MAIN,
                             test_case.the_extra(PartialPhase.CLEANUP)[0].source,

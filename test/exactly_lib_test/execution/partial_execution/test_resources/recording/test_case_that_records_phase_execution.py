@@ -1,7 +1,8 @@
 import types
 import unittest
+from typing import Optional
 
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialResultStatus, ActionToCheckOutcome
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.result import sh
@@ -18,6 +19,7 @@ from exactly_lib_test.execution.test_resources.test_actions import execute_actio
     prepare_action_that_returns
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Arrangement(tuple):
@@ -70,13 +72,15 @@ class Arrangement(tuple):
 class Expectation(tuple):
     def __new__(cls,
                 expected_status: PartialResultStatus,
+                expected_action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]],
                 expected_failure_info: ExpectedFailure,
                 expected_internal_recording: list,
                 sandbox_directory_structure_should_exist: bool):
         return tuple.__new__(cls, (expected_status,
                                    expected_failure_info,
                                    expected_internal_recording,
-                                   sandbox_directory_structure_should_exist))
+                                   sandbox_directory_structure_should_exist,
+                                   expected_action_to_check_outcome))
 
     @property
     def status(self) -> PartialResultStatus:
@@ -93,6 +97,10 @@ class Expectation(tuple):
     @property
     def sandbox_directory_structure_should_exist(self) -> bool:
         return self[3]
+
+    @property
+    def expected_action_to_check_outcome(self) -> asrt.ValueAssertion[Optional[ActionToCheckOutcome]]:
+        return self[4]
 
 
 class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
@@ -129,12 +137,18 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
         self.put.assertListEqual(self.__expectation.internal_recording,
                                  self.__recorder.recorded_elements,
                                  msg)
+
         if self.__expectation.sandbox_directory_structure_should_exist:
             self.put.assertTrue(self.partial_result.has_sds)
             self.put.assertIsNotNone(self.partial_result.sds)
         else:
             self.put.assertFalse(self.partial_result.has_sds)
             self.put.assertIsNone(self.partial_result.sds)
+
+        self.__expectation.expected_action_to_check_outcome.apply_with_message(
+            self.put,
+            self.partial_result.action_to_check_outcome,
+            'action-to-check-outcome')
 
 
 class TestCaseBase(unittest.TestCase):
@@ -155,10 +169,11 @@ def execute_test_case_with_recording(put: unittest.TestCase,
     constant_actions_runner = ActSourceAndExecutorThatRunsConstantActions(
         symbol_usages_action=arrangement.act_executor_symbol_usages,
         parse_action=arrangement.act_executor_parse,
+        validate_pre_sds_action=arrangement.act_executor_validate_pre_sds,
         validate_post_setup_action=arrangement.act_executor_validate_post_setup,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,
-        validate_pre_sds_action=arrangement.act_executor_validate_pre_sds)
+    )
     constructor = ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
         arrangement.test_case_generator.recorder,
         constant_actions_runner)

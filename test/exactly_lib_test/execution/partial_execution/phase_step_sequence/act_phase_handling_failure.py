@@ -12,6 +12,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
     PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
+from exactly_lib_test.execution.test_resources.partial_result_check import action_to_check_has_not_executed_completely
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
     prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises
@@ -30,6 +31,7 @@ class Test(TestCaseBase):
                         act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_hard_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
@@ -48,6 +50,7 @@ class Test(TestCaseBase):
                         act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_validation_error('error in act/validate-pre-sds'))),
             Expectation(PartialResultStatus.VALIDATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             'error in act/validate-pre-sds'),
@@ -66,6 +69,7 @@ class Test(TestCaseBase):
                         act_executor_validate_pre_sds=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_PRE_SDS,
                             test.ImplementationErrorTestException),
@@ -84,6 +88,7 @@ class Test(TestCaseBase):
                         act_executor_validate_post_setup=validate_action_that_returns(
                             svh.new_svh_validation_error('error in act/validate-post-setup'))),
             Expectation(PartialResultStatus.VALIDATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
@@ -107,6 +112,7 @@ class Test(TestCaseBase):
                         act_executor_validate_post_setup=validate_action_that_returns(
                             svh.new_svh_hard_error('error in act/validate-post-setup'))),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             'error in act/validate-post-setup'),
@@ -130,6 +136,7 @@ class Test(TestCaseBase):
                         act_executor_validate_post_setup=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_POST_SETUP,
                             test.ImplementationErrorTestException),
@@ -153,6 +160,7 @@ class Test(TestCaseBase):
                         act_executor_prepare=prepare_action_that_returns_hard_error_with_message(
                             'error in act/prepare')),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__PREPARE,
                             'error in act/prepare'),
@@ -179,6 +187,7 @@ class Test(TestCaseBase):
                         act_executor_prepare=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__PREPARE,
                             test.ImplementationErrorTestException),
@@ -205,6 +214,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_returns_hard_error_with_message(
                             'error in execute')),
             Expectation(PartialResultStatus.HARD_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__EXECUTE,
                             'error in execute'),
@@ -232,6 +242,7 @@ class Test(TestCaseBase):
                         act_executor_execute=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__EXECUTE,
                             test.ImplementationErrorTestException),

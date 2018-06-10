@@ -17,20 +17,37 @@ class PartialResultStatus(Enum):
     IMPLEMENTATION_ERROR = 100
 
 
+class ActionToCheckOutcome(tuple):
+    def __new__(cls,
+                exit_code: int):
+        return tuple.__new__(cls, (exit_code,))
+
+    @property
+    def exit_code(self) -> int:
+        return self[0]
+
+
 class PartialResult(ResultBase):
     def __init__(self,
                  status: PartialResultStatus,
                  sds: Optional[SandboxDirectoryStructure],
+                 action_to_check_outcome: Optional[ActionToCheckOutcome],
                  failure_info: Optional[FailureInfo]):
         super().__init__(sds, failure_info)
         self.__status = status
+        self.__action_to_check_outcome = action_to_check_outcome
 
     @property
     def status(self) -> PartialResultStatus:
         return self.__status
 
+    @property
+    def has_action_to_check_outcome(self) -> bool:
+        return self.__action_to_check_outcome is not None
 
-def new_partial_result_pass(sds: SandboxDirectoryStructure) -> PartialResult:
-    return PartialResult(PartialResultStatus.PASS,
-                         sds,
-                         None)
+    @property
+    def action_to_check_outcome(self) -> Optional[ActionToCheckOutcome]:
+        """
+        :return: Not None iff Action To Check has been completely executed
+        """
+        return self.__action_to_check_outcome

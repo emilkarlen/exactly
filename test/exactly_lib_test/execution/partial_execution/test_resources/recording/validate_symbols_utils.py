@@ -16,6 +16,8 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
+from exactly_lib_test.execution.test_resources.partial_result_check import \
+    action_to_check_has_not_executed_completely
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     value_restriction_that_is_unconditionally_unsatisfied
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -40,6 +42,10 @@ class Configuration:
 
     def instruction_that_raises(self, exception: Exception) -> TestCaseInstruction:
         raise NotImplementedError()
+
+    @property
+    def phase_is_after_act(self) -> bool:
+        return self.phase > PartialPhase.ACT
 
 
 def suite_for(configuration: Configuration) -> unittest.TestSuite:
@@ -70,6 +76,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(PartialResultStatus.VALIDATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_message_assertion(
                             conf.step,
                             test_case.the_extra(conf.phase)[0].source,
@@ -99,6 +106,7 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(PartialResultStatus.VALIDATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion(
                             conf.step,
                             asrt.equals(error_message_for_failed_restriction)),
@@ -117,6 +125,7 @@ class TestImplementationError(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+                        action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             conf.step,
                             test_case.the_extra(conf.phase)[0].source,
