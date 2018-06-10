@@ -2,8 +2,8 @@ import pathlib
 
 from exactly_lib import program_info
 from exactly_lib.execution import sandbox_dir_resolving
+from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution import execution
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import processing_utils

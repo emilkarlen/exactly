@@ -17,7 +17,7 @@ class PredefinedProperties:
         return self.__predefined_symbols
 
 
-class FullExeInputConfiguration(tuple):
+class ExecutionConfiguration(tuple):
     """Configuration that is passed to full execution"""
 
     def __new__(cls,

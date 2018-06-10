@@ -3,7 +3,7 @@ import unittest
 from typing import List, Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties
+from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.processing import processors as sut
 from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup

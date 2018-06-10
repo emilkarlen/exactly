@@ -2,7 +2,7 @@ import os
 from typing import Dict, Optional
 
 from exactly_lib.execution import phase_step
-from exactly_lib.execution.full_execution.configuration import PredefinedProperties, FullExeInputConfiguration
+from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution.result import FullResult, FullResultStatus, \
     new_from_result_of_partial_execution
 from exactly_lib.execution.full_execution.result import new_skipped
@@ -36,10 +36,10 @@ def execute(test_case: test_case_doc.TestCase,
         return new_configuration_phase_failure_from(conf_phase_failure)
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return new_skipped()
-    conf_from_outside = FullExeInputConfiguration(dict(os.environ),
-                                                  act_phase_sub_process_executor,
-                                                  sandbox_root_dir_resolver,
-                                                  predefined_properties.predefined_symbols)
+    exe_conf = ExecutionConfiguration(dict(os.environ),
+                                      act_phase_sub_process_executor,
+                                      sandbox_root_dir_resolver,
+                                      predefined_properties.predefined_symbols)
     environ = dict(os.environ)
     _prepare_environment_variables(environ)
     conf_phase_values = ConfPhaseValues(
@@ -53,7 +53,7 @@ def execute(test_case: test_case_doc.TestCase,
                  test_case.before_assert_phase,
                  test_case.assert_phase,
                  test_case.cleanup_phase),
-        conf_from_outside,
+        exe_conf,
         conf_phase_values,
         setup.default_settings(),
         is_keep_sandbox)
