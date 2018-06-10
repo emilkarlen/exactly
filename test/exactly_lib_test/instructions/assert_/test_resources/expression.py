@@ -14,7 +14,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
     equivalent_source_variants__with_source_check
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions as svh_asrt
+from exactly_lib_test.test_case.result.test_resources import svh_assertions as svh_asrt
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

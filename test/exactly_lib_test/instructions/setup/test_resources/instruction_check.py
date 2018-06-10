@@ -18,10 +18,9 @@ from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
-from exactly_lib_test.test_case.result.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

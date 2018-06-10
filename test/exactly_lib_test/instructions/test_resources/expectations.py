@@ -1,4 +1,4 @@
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions
+from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

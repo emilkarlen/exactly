@@ -32,8 +32,9 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
     is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, here_doc_assertion_utils as hd
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case.result.test_resources import svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
-from exactly_lib_test.test_case_utils.test_resources import svh_assertions, relativity_options as rel_opt_conf
+from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt_conf
 from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
