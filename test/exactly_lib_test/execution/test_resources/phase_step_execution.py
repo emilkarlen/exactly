@@ -1,63 +1,9 @@
-import unittest
-
 from exactly_lib.execution.impl.phase_step_execution import ElementHeaderExecutor
-from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocationPath
-from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureDetails
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-
-
-class ExpectedResult(tuple):
-    def __new__(cls,
-                status: PartialResultStatus,
-                line: asrt.ValueAssertion[SourceLocationPath],
-                failure_details: ExpectedFailureDetails):
-        return tuple.__new__(cls, (status,
-                                   line,
-                                   failure_details))
-
-    def assertions(self,
-                   unittest_case: unittest.TestCase,
-                   return_value: Failure):
-        if self.status is PartialResultStatus.PASS:
-            unittest_case.assertIsNone(return_value,
-                                       'Return value must be None (representing success)')
-        else:
-            unittest_case.assertIsNotNone(return_value,
-                                          'Return value must not be None (representing failure)')
-            unittest_case.assertEqual(self.status,
-                                      return_value.status,
-                                      'Status')
-            self.line.apply_with_message(unittest_case,
-                                         return_value.source_location,
-                                         'source location path')
-            self.failure_details.assertions(unittest_case,
-                                            return_value.failure_details,
-                                            'Failure details')
-
-    @property
-    def status(self) -> PartialResultStatus:
-        return self[0]
-
-    @property
-    def line(self) -> asrt.ValueAssertion[line_source.SourceLocationPath]:
-        return self[1]
-
-    @property
-    def failure_details(self) -> ExpectedFailureDetails:
-        return self[2]
-
-
-def expected_success() -> ExpectedResult:
-    return ExpectedResult(PartialResultStatus.PASS,
-                          None,
-                          None)
 
 
 class Recorder:

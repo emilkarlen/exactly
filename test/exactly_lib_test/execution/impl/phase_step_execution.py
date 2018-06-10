@@ -1,4 +1,5 @@
 import unittest
+from typing import Optional
 
 from exactly_lib.execution.impl.phase_step_execution import execute_phase_prim
 from exactly_lib.execution.impl.result import Failure
@@ -7,15 +8,16 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
+from exactly_lib_test.execution.test_resources import failure_assertions as asrt_failure
 from exactly_lib_test.execution.test_resources.failure_info_check import new_expected_failure_message, \
     new_expected_exception
-from exactly_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \
-    RecordingMedia, \
+from exactly_lib_test.execution.test_resources.phase_step_execution import RecordingMedia, \
     TestInstruction, ElementHeaderExecutorThatRecordsHeaderAndLineNumber, \
     InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess, \
     InstructionExecutorThatRecordsInstructionNameAndFailsFor, TestException, \
     InstructionExecutorThatRecordsInstructionNameAndRaisesExceptionFor, any_instruction, instruction_with_name
 from exactly_lib_test.section_document.test_resources.elements import new_comment_element, new_instruction_element
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_single_line_source_location_path
 
 
@@ -28,7 +30,7 @@ class Test(unittest.TestCase):
         phase_contents = SectionContents(())
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
-            expected_success(),
+            asrt_failure.is_not_present(),
             [])
 
     def test_when_there_are_only_comment_elements_than_the_result_should_be_pass(self):
@@ -36,7 +38,7 @@ class Test(unittest.TestCase):
                                           new_comment_element(Line(2, '2'))))
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
-            expected_success(),
+            asrt_failure.is_not_present(),
             ['comment header for source line number: 1',
              'comment header for source line number: 2'])
 
@@ -46,7 +48,7 @@ class Test(unittest.TestCase):
                                           ))
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
-            expected_success(),
+            asrt_failure.is_not_present(),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
@@ -66,7 +68,7 @@ class Test(unittest.TestCase):
                                           ))
         self._standard_test_with_successful_instruction_executor(
             phase_contents,
-            expected_success(),
+            asrt_failure.is_not_present(),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
 
@@ -103,9 +105,9 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            ExpectedResult(PartialResultStatus.FAIL,
-                           equals_single_line_source_location_path(Line(1, '1')),
-                           new_expected_failure_message('fail message')),
+            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+                                         equals_single_line_source_location_path(Line(1, '1')),
+                                         new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
@@ -124,9 +126,9 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            ExpectedResult(PartialResultStatus.HARD_ERROR,
-                           equals_single_line_source_location_path(Line(1, '1')),
-                           new_expected_failure_message('hard error message')),
+            asrt_failure.is_present_with(PartialResultStatus.HARD_ERROR,
+                                         equals_single_line_source_location_path(Line(1, '1')),
+                                         new_expected_failure_message('hard error message')),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
@@ -144,9 +146,9 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            ExpectedResult(PartialResultStatus.IMPLEMENTATION_ERROR,
-                           equals_single_line_source_location_path(Line(1, '1')),
-                           new_expected_exception(TestException)),
+            asrt_failure.is_present_with(PartialResultStatus.IMPLEMENTATION_ERROR,
+                                         equals_single_line_source_location_path(Line(1, '1')),
+                                         new_expected_exception(TestException)),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
@@ -167,9 +169,9 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            ExpectedResult(PartialResultStatus.FAIL,
-                           equals_single_line_source_location_path(Line(1, '1')),
-                           new_expected_failure_message('fail message')),
+            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+                                         equals_single_line_source_location_path(Line(1, '1')),
+                                         new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction'])
 
@@ -192,9 +194,9 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            ExpectedResult(PartialResultStatus.FAIL,
-                           equals_single_line_source_location_path(Line(2, '2')),
-                           new_expected_failure_message('fail message')),
+            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+                                         equals_single_line_source_location_path(Line(2, '2')),
+                                         new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
              'instruction header for source line number: 2',
@@ -218,9 +220,9 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            ExpectedResult(PartialResultStatus.FAIL,
-                           equals_single_line_source_location_path(Line(2, '2')),
-                           new_expected_failure_message('fail message')),
+            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+                                         equals_single_line_source_location_path(Line(2, '2')),
+                                         new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
              'instruction header for source line number: 2',
@@ -243,16 +245,16 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            ExpectedResult(PartialResultStatus.FAIL,
-                           equals_single_line_source_location_path(Line(1, '1')),
-                           new_expected_failure_message('fail message')),
+            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+                                         equals_single_line_source_location_path(Line(1, '1')),
+                                         new_expected_failure_message('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
              ])
 
     def _standard_test_with_successful_instruction_executor(self,
                                                             phase_contents: SectionContents,
-                                                            expected_result: ExpectedResult,
+                                                            expected_result: asrt.ValueAssertion[Optional[Failure]],
                                                             expected_recordings: list):
         recording_media = RecordingMedia()
         instruction_executor = InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess(
@@ -270,7 +272,7 @@ class Test(unittest.TestCase):
                        recording_media: RecordingMedia,
                        phase_contents: SectionContents,
                        instruction_executor: ControlledInstructionExecutor,
-                       expected_result: ExpectedResult,
+                       expected_result: asrt.ValueAssertion[Optional[Failure]],
                        expected_recordings: list):
         failure = self._run_std(recording_media,
                                 phase_contents,
@@ -294,12 +296,13 @@ class Test(unittest.TestCase):
             instruction_executor)
 
     def __check(self,
-                expected_result: ExpectedResult,
+                expected_result: asrt.ValueAssertion[Optional[Failure]],
                 actual_result: Failure,
                 expected_recordings: list,
                 actual_recording_media: RecordingMedia):
-        expected_result.assertions(self,
-                                   actual_result)
+        expected_result.apply_with_message(self,
+                                           actual_result,
+                                           'failure')
         self.assertEqual(expected_recordings,
                          actual_recording_media.output,
                          'Recorded executions')
