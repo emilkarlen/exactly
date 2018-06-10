@@ -6,8 +6,8 @@ from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
-from exactly_lib.test_case.eh import new_eh_exit_code
 from exactly_lib.test_case.result import svh
+from exactly_lib.test_case.result.eh import new_eh_exit_code
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
