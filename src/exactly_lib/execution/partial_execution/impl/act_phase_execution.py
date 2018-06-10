@@ -5,8 +5,9 @@ from typing import Optional
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
-from exactly_lib.execution.partial_execution.result import PartialResultStatus, ActionToCheckOutcome
+from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
 from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep

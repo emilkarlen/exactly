@@ -1,7 +1,8 @@
 import unittest
 from typing import Optional
 
-from exactly_lib.execution.partial_execution.result import PartialResult, PartialResultStatus, ActionToCheckOutcome
+from exactly_lib.execution.partial_execution.result import PartialResult, PartialResultStatus
+from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
