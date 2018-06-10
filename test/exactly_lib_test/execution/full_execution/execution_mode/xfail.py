@@ -13,8 +13,8 @@ from exactly_lib_test.execution.full_execution.test_resources.recording.test_cas
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
-from exactly_lib_test.execution.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure, \
-    ExpectedFailureForNoFailure
+from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForNoFailure, \
+    ExpectedFailureForInstructionFailure
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 
 

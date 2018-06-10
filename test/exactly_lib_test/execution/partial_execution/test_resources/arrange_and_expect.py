@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
+from exactly_lib.execution.partial_execution.result import PartialResult
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
@@ -30,7 +31,7 @@ class Arrangement:
 class Expectation:
     def __init__(self,
                  assertion_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
-                 phase_result: asrt.ValueAssertion = asrt.anything_goes()):
+                 phase_result: asrt.ValueAssertion[PartialResult] = asrt.anything_goes()):
         self.phase_result = phase_result
         self.assertion_on_sds = assertion_on_sds
 

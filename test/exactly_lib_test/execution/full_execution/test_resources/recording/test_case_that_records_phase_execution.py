@@ -1,6 +1,7 @@
 import types
 import unittest
 
+from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -13,10 +14,10 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
     ActSourceAndExecutorWrapperConstructorThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
-from exactly_lib_test.execution.test_resources.expected_instruction_failure import ExpectedFailure
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_returns_exit_code, prepare_action_that_returns
 from exactly_lib_test.test_resources.actions import do_nothing
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 class Arrangement(tuple):
@@ -62,7 +63,7 @@ class Arrangement(tuple):
 class Expectation(tuple):
     def __new__(cls,
                 expected_status: FullResultStatus,
-                expected_failure_info: ExpectedFailure,
+                expected_failure_info: asrt.ValueAssertion[FailureInfo],
                 expected_internal_recording: list,
                 sandbox_directory_structure_should_exist: bool):
         return tuple.__new__(cls, (expected_status,
@@ -75,7 +76,7 @@ class Expectation(tuple):
         return self[0]
 
     @property
-    def failure_info(self) -> ExpectedFailure:
+    def failure_info(self) -> asrt.ValueAssertion[FailureInfo]:
         return self[1]
 
     @property
@@ -115,8 +116,9 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         self.utc.assertEqual(self.__expectation.status,
                              self.full_result.status,
                              'Unexpected result status')
-        self.__expectation.failure_info.assertions(self.utc,
-                                                   self.full_result.failure_info)
+        self.__expectation.failure_info.apply_with_message(self.utc,
+                                                           self.full_result.failure_info,
+                                                           'failure_info')
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
         self.utc.assertListEqual(self.__expectation.internal_recording,
                                  self.__recorder.recorded_elements,

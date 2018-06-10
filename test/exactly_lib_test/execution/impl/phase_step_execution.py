@@ -7,8 +7,7 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
-from exactly_lib_test.execution.test_resources.expected_instruction_failure import \
-    new_expected_failure_message, \
+from exactly_lib_test.execution.test_resources.failure_info_check import new_expected_failure_message, \
     new_expected_exception
 from exactly_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \
     RecordingMedia, \

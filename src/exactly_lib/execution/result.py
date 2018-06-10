@@ -47,8 +47,5 @@ class ResultBase:
         return self.__failure_info is not None
 
     @property
-    def failure_info(self) -> FailureInfo:
-        """
-        Precondition: is_failure
-        """
+    def failure_info(self) -> Optional[FailureInfo]:
         return self.__failure_info

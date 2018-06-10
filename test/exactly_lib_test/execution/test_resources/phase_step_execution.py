@@ -9,7 +9,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocationPath
-from exactly_lib_test.execution.test_resources.expected_instruction_failure import ExpectedFailureDetails
+from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureDetails
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
