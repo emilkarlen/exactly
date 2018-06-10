@@ -17,9 +17,8 @@ from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECU
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles

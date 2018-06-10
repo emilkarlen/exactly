@@ -3,8 +3,7 @@ from typing import Iterable, Sequence, Optional
 
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreSds, \
     PathResolvingEnvironmentPostSds, PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import sh, svh
 
 
 class ValidationStep(Enum):

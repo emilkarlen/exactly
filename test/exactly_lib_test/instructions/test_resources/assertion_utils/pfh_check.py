@@ -1,4 +1,4 @@
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.result import pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

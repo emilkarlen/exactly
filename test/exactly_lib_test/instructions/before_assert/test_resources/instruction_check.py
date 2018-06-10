@@ -10,8 +10,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import sh, svh
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.process_execution.execution_elements import ProcessExecutionSettings, with_no_timeout
 from exactly_lib.util.symbol_table import SymbolTable
@@ -19,7 +18,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
     ActEnvironment, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import InstructionExecutionBase
-from exactly_lib_test.test_case.test_resources import sh_assertions
+from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result

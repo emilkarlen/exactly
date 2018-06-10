@@ -22,7 +22,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
 from exactly_lib.test_case.phase_identifier import Phase, PhaseEnum
 from exactly_lib.test_case.phases.common import TestCaseInstruction
-from exactly_lib.test_case.phases.result import sh, pfh, svh
+from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import run_test_case, \

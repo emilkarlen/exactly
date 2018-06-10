@@ -4,8 +4,7 @@ import types
 
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 

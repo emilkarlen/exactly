@@ -3,8 +3,8 @@ from typing import Sequence
 from exactly_lib.symbol.symbol_usage import SymbolDefinition, SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as instrs
-from exactly_lib.test_case.phases.result import sh
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
+from exactly_lib.test_case.result import sh
 
 
 def setup_phase_instruction_that_defines_symbol(symbol_definition: SymbolDefinition) -> SetupPhaseInstruction:

@@ -5,7 +5,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.parts import Parse
 from exactly_lib.act_phase_setups.util.source_code_lines_utils import all_source_code_lines
 from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import svh
 
 
 class ParserForSingleLineUsingStandardSyntax(Parser):

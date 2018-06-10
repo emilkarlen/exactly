@@ -6,7 +6,8 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.result import pfh, svh
+from exactly_lib.test_case.result import pfh
+from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_utils.condition.comparison_structures import ComparisonHandler
 
 

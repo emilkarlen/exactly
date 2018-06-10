@@ -6,7 +6,7 @@ from exactly_lib.execution.phase_step_simple import \
     ALL_CLEANUP_WITH_ENV_ARG
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import sh
 from exactly_lib_test.execution.full_execution.test_resources import execution_check, result_assertions
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     builder_of_test_case_that_records_property_of_env_for_each_step_of_partial_execution, \

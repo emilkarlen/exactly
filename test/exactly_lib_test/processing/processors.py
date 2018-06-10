@@ -14,7 +14,7 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier, os_services
 from exactly_lib.test_case.phase_identifier import Phase
-from exactly_lib.test_case.phases.result import svh, pfh
+from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.line_source import Line, source_location_path_of, SourceLocationPath, SourceLocation, \
     single_line_sequence
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation

@@ -2,16 +2,16 @@ from typing import Sequence, Any, Callable
 
 from exactly_lib.instructions.assert_.utils.return_pfh_via_exceptions import translate_pfh_exception_to_pfh
 from exactly_lib.symbol.object_with_symbol_references import references_from_objects_with_symbol_references
+from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolUsage
+from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import pfh, svh
-from exactly_lib.test_case import pre_or_post_validation
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator, \
     PreOrPostSdsSvhValidationErrorValidator
-from exactly_lib.symbol.resolver_with_validation import ObjectWithSymbolReferencesAndValidation
+from exactly_lib.test_case.result import pfh, svh
 
 
 class AssertionPart(ObjectWithSymbolReferencesAndValidation):

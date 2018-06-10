@@ -4,8 +4,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     test_case_with_two_instructions_in_each_phase

@@ -8,7 +8,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import MainSte
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case.phases.result import sh, pfh
+from exactly_lib.test_case.result import pfh, sh
 
 
 class MainStepResultTranslator:

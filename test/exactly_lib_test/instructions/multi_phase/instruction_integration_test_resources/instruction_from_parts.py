@@ -12,7 +12,7 @@ from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestri
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
-from exactly_lib.test_case.phases.result import pfh, sh
+from exactly_lib.test_case.result import pfh, sh
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives

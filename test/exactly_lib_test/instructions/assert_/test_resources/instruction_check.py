@@ -9,8 +9,7 @@ from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check

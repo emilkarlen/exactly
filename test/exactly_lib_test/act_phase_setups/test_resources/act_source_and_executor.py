@@ -8,7 +8,7 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstru
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import svh
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution

@@ -1,5 +1,5 @@
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.result import pfh
 from exactly_lib.util.string import line_separated
 
 

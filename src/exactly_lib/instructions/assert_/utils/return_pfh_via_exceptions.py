@@ -1,4 +1,4 @@
-from exactly_lib.test_case.phases.result import pfh
+from exactly_lib.test_case.result import pfh
 
 
 class PfhException(Exception):

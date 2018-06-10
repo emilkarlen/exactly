@@ -11,8 +11,7 @@ from exactly_lib.test_case.act_phase_handling import ParseException
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, SymbolUser
-from exactly_lib.test_case.phases.result import sh
-from exactly_lib.test_case.phases.result import svh
+from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.act_phase_setups.test_resources.act_phase_execution import Arrangement, simple_success, \

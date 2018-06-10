@@ -3,8 +3,7 @@ import unittest
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
-from exactly_lib.test_case.phases.result import pfh
-from exactly_lib.test_case.phases.result import sh
+from exactly_lib.test_case.result import pfh, sh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \

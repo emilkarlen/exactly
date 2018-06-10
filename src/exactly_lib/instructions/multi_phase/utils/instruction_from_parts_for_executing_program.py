@@ -11,8 +11,8 @@ from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths, \
     instruction_log_dir, InstructionSourceInfo
-from exactly_lib.test_case.phases.result import sh, pfh
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
+from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.util.process_execution import sub_process_execution as spe
 from exactly_lib.util.process_execution.sub_process_execution import ResultAndStderr, failure_message_for_nonzero_status
 
