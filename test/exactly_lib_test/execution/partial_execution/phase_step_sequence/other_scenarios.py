@@ -12,11 +12,11 @@ from exactly_lib_test.execution.partial_execution.test_resources.test_case_gener
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
+from exactly_lib_test.execution.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_executed_completely, \
     action_to_check_has_not_executed_completely
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
-from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailureForInstructionFailure
 
 
 def suite() -> unittest.TestSuite:

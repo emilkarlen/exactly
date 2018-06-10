@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources.expected_instruction_failure import ExpectedFailure
+from exactly_lib_test.execution.test_resources.expected_instruction_failure import ExpectedFailure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

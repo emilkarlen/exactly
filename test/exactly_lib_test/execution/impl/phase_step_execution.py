@@ -7,6 +7,9 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
+from exactly_lib_test.execution.test_resources.expected_instruction_failure import \
+    new_expected_failure_message, \
+    new_expected_exception
 from exactly_lib_test.execution.test_resources.phase_step_execution import ExpectedResult, expected_success, \
     RecordingMedia, \
     TestInstruction, ElementHeaderExecutorThatRecordsHeaderAndLineNumber, \
@@ -14,9 +17,6 @@ from exactly_lib_test.execution.test_resources.phase_step_execution import Expec
     InstructionExecutorThatRecordsInstructionNameAndFailsFor, TestException, \
     InstructionExecutorThatRecordsInstructionNameAndRaisesExceptionFor, any_instruction, instruction_with_name
 from exactly_lib_test.section_document.test_resources.elements import new_comment_element, new_instruction_element
-from exactly_lib_test.test_resources.expected_instruction_failure import \
-    new_expected_failure_message, \
-    new_expected_exception
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_single_line_source_location_path
 
 
