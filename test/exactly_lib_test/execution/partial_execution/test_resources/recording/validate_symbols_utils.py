@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
-from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -30,7 +30,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 class Configuration:
     def __init__(self,
                  phase: PartialPhase,
-                 step: PhaseStep,
+                 step: SimplePhaseStep,
                  expected_steps_before_failing_instruction: list):
         super().__init__()
         self.phase = phase

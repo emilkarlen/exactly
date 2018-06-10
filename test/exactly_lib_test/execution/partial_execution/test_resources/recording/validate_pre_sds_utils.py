@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
-from exactly_lib.execution.phase_step import PhaseStep
+from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -18,7 +18,7 @@ from exactly_lib_test.execution.test_resources.result_assertions import \
 class Configuration:
     def __init__(self,
                  phase: PartialPhase,
-                 step: PhaseStep,
+                 step: SimplePhaseStep,
                  expected_steps: list):
         super().__init__()
         self.phase = phase
