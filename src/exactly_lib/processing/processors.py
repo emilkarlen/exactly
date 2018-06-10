@@ -1,8 +1,9 @@
+import os
 import pathlib
 
 from exactly_lib import program_info
 from exactly_lib.execution import sandbox_dir_resolving
-from exactly_lib.execution.configuration import PredefinedProperties
+from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
@@ -78,11 +79,12 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(configuration.default_handling_setup.act_phase_setup,
-                     configuration.act_phase_os_process_executor,
-                     configuration.is_keep_sandbox,
-                     configuration.test_case_definition.predefined_properties,
-                     configuration.sandbox_root_dir_resolver)
+    return _Executor(ExecutionConfiguration(dict(os.environ),
+                                            configuration.act_phase_os_process_executor,
+                                            configuration.sandbox_root_dir_resolver,
+                                            configuration.test_case_definition.predefined_properties.predefined_symbols),
+                     configuration.default_handling_setup.act_phase_setup,
+                     configuration.is_keep_sandbox)
 
 
 class _SourceReader(processing_utils.SourceReader):
@@ -126,28 +128,20 @@ def act_phase_handling_for_setup(setup: ActPhaseSetup) -> ActPhaseHandling:
 
 class _Executor(processing_utils.Executor):
     def __init__(self,
+                 exe_conf: ExecutionConfiguration,
                  default_act_phase_setup: ActPhaseSetup,
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
-                 is_keep_sandbox: bool,
-                 predefined_properties: PredefinedProperties,
-                 sandbox_root_dir_resolver: SandboxRootDirNameResolver =
-                 sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
-        self.predefined_properties = predefined_properties
+                 is_keep_sandbox: bool):
         self.default_act_phase_setup = default_act_phase_setup
-        self.act_phase_os_process_executor = act_phase_os_process_executor
         self._is_keep_sandbox = is_keep_sandbox
-        self._sandbox_root_dir_resolver = sandbox_root_dir_resolver
+        self._exe_conf = exe_conf
 
     def apply(self,
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullResult:
         dir_containing_test_case_file = test_case_file_path.parent.resolve()
-        return execution.execute(test_case,
-                                 self.predefined_properties,
+        return execution.execute(self._exe_conf,
                                  ConfigurationBuilder(dir_containing_test_case_file,
-                                                           dir_containing_test_case_file,
-                                                           act_phase_handling_for_setup(self.default_act_phase_setup)),
-                                 self.act_phase_os_process_executor,
-                                 self._sandbox_root_dir_resolver,
+                                                      dir_containing_test_case_file,
+                                                      act_phase_handling_for_setup(self.default_act_phase_setup)),
                                  self._is_keep_sandbox,
-                                 )
+                                 test_case)

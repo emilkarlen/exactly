@@ -4,13 +4,14 @@ import shutil
 import unittest
 
 from exactly_lib.act_phase_setups.source_interpreter import python3
-from exactly_lib.execution.configuration import PredefinedProperties
+from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.test_case import test_case_doc, os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import utils, sandbox_root_name_resolver
 
 
@@ -19,7 +20,8 @@ class FullExecutionTestCaseBase:
                  unittest_case: unittest.TestCase,
                  dbg_do_not_delete_dir_structure=False,
                  act_phase_handling: ActPhaseHandling = None,
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor =
+                 os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR):
         self.__unittest_case = unittest_case
         self.__dbg_do_not_delete_dir_structure = dbg_do_not_delete_dir_structure
         self.__full_result = None
@@ -33,15 +35,18 @@ class FullExecutionTestCaseBase:
         self.__initial_home_dir_path = pathlib.Path().resolve()
         # ACT #
         initial_home_dir_path = self.initial_home_dir_path.resolve()
+        exe_conf = ExecutionConfiguration(dict(os.environ),
+                                          self.__act_phase_os_process_executor,
+                                          sandbox_root_name_resolver.for_test(),
+                                          SymbolTable())
+        configuration_builder = ConfigurationBuilder(initial_home_dir_path,
+                                                     initial_home_dir_path,
+                                                     self._act_phase_handling())
         full_result = execution.execute(
-            self._test_case(),
-            PredefinedProperties(),
-            ConfigurationBuilder(initial_home_dir_path,
-                                 initial_home_dir_path,
-                                 self._act_phase_handling()),
-            self.__act_phase_os_process_executor,
-            sandbox_root_name_resolver.for_test(),
-            True)
+            exe_conf,
+            configuration_builder,
+            True,
+            self._test_case())
 
         # ASSERT #
         self.__full_result = full_result
