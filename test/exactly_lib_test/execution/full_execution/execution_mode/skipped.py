@@ -5,13 +5,13 @@ from exactly_lib.execution.full_execution.result import FullResultStatus
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case.test_case_status import ExecutionMode
+from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_full_result
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     test_case_with_two_instructions_in_each_phase
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
     Expectation, Arrangement, TestCaseBase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
-from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForNoFailure, \
-    ExpectedFailureForInstructionFailure
+from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
 from exactly_lib_test.test_resources.actions import do_return
 
 
@@ -27,8 +27,7 @@ class Test(TestCaseBase):
                      ExecutionMode.SKIP))
         self._check(
             Arrangement(test_case),
-            Expectation(FullResultStatus.SKIPPED,
-                        ExpectedFailureForNoFailure(),
+            Expectation(asrt_full_result.is_skipped(),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN],
                         False))
@@ -42,11 +41,11 @@ class Test(TestCaseBase):
                      ExecutionMode.SKIP))
         self._check(
             Arrangement(test_case),
-            Expectation(FullResultStatus.HARD_ERROR,
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.CONFIGURATION__MAIN,
-                            test_case.the_extra(phase_identifier.CONFIGURATION)[0].source,
-                            'hard error msg'),
+            Expectation(asrt_full_result.is_failure(FullResultStatus.HARD_ERROR,
+                                                    ExpectedFailureForInstructionFailure.new_with_message(
+                                                        phase_step.CONFIGURATION__MAIN,
+                                                        test_case.the_extra(phase_identifier.CONFIGURATION)[0].source,
+                                                        'hard error msg')),
                         [phase_step.CONFIGURATION__MAIN],
                         False))
 
@@ -59,11 +58,11 @@ class Test(TestCaseBase):
                  test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
             Arrangement(test_case),
-            Expectation(FullResultStatus.HARD_ERROR,
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.CONFIGURATION__MAIN,
-                            test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
-                            'hard error msg'),
+            Expectation(asrt_full_result.is_failure(FullResultStatus.HARD_ERROR,
+                                                    ExpectedFailureForInstructionFailure.new_with_message(
+                                                        phase_step.CONFIGURATION__MAIN,
+                                                        test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
+                                                        'hard error msg')),
                         [phase_step.CONFIGURATION__MAIN],
                         False))
 

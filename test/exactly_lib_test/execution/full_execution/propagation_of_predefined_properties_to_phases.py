@@ -10,7 +10,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.functional import Composition
 from exactly_lib.util.symbol_table import SymbolTable
-from exactly_lib_test.execution.full_execution.test_resources import execution_check, result_assertions
+from exactly_lib_test.execution.full_execution.test_resources import execution_check, \
+    result_assertions as asrt_full_result
 from exactly_lib_test.execution.test_resources.execution_recording.recording2 import PropertyRecorderBuilder, \
     act_phase_handling_that_records_property_of_env_for_each_step, \
     test_case_that_records_property_of_env_for_each_step_of_partial_execution
@@ -57,7 +58,7 @@ class TestPredefinedSymbols(unittest.TestCase):
         arrangement = execution_check.Arrangement(test_case,
                                                   configuration_builder,
                                                   predefined_properties=predefined_properties)
-        expectation = execution_check.Expectation(full_result=result_assertions.is_pass)
+        expectation = execution_check.Expectation(full_result=asrt_full_result.is_pass())
         # ACT & ASSERT #
         execution_check.check(self, arrangement, expectation)
         # ASSERT #
