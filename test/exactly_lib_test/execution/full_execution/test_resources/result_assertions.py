@@ -10,20 +10,26 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def is_pass() -> asrt.ValueAssertion[FullResult]:
+def is_pass(sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] =
+            asrt.is_instance(SandboxDirectoryStructure),
+            action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] =
+            asrt.is_instance(ActionToCheckOutcome)
+            ) -> asrt.ValueAssertion[FullResult]:
     return matches(status=asrt.is_(FullResultStatus.PASS),
                    failure_info=asrt.is_none,
-                   sds=asrt.is_instance(SandboxDirectoryStructure),
-                   # action_to_check_outcome=asrt.is_instance(ActionToCheckOutcome))
-                   )
+                   sds=sds,
+                   action_to_check_outcome=action_to_check_outcome)
 
 
-def is_xpass() -> asrt.ValueAssertion[FullResult]:
+def is_xpass(sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] =
+             asrt.is_instance(SandboxDirectoryStructure),
+             action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] =
+             asrt.is_instance(ActionToCheckOutcome)
+             ) -> asrt.ValueAssertion[FullResult]:
     return matches(status=asrt.is_(FullResultStatus.XPASS),
                    failure_info=asrt.is_none,
-                   sds=asrt.is_instance(SandboxDirectoryStructure),
-                   # action_to_check_outcome=asrt.is_instance(ActionToCheckOutcome))
-                   )
+                   sds=sds,
+                   action_to_check_outcome=action_to_check_outcome)
 
 
 def is_skipped() -> asrt.ValueAssertion[FullResult]:

@@ -14,7 +14,10 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
+from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_executed_completely
+from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -24,35 +27,38 @@ def suite() -> unittest.TestSuite:
 class Test(TestCaseBase):
     def test_full_sequence(self):
         self._check(
-            Arrangement(test_case_with_two_instructions_in_each_phase()),
-            Expectation(asrt_full_result.is_pass(),
-                        [phase_step.CONFIGURATION__MAIN,
-                         phase_step.CONFIGURATION__MAIN] +
-                        [phase_step.ACT__PARSE] +
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+            Arrangement(test_case_with_two_instructions_in_each_phase(),
+                        execute_test_action=execute_action_that_returns_exit_code(72)),
+            Expectation(asrt_full_result.is_pass(
+                action_to_check_outcome=action_to_check_has_executed_completely(72)
+            ),
+                [phase_step.CONFIGURATION__MAIN,
+                 phase_step.CONFIGURATION__MAIN] +
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+                True))
 
     def test_hard_error_in_configuration_phase(self):
         test_case_generator = test_case_with_two_instructions_in_each_phase() \
@@ -65,7 +71,8 @@ class Test(TestCaseBase):
                                                         phase_step.CONFIGURATION__MAIN,
                                                         test_case_generator.the_extra(phase_identifier.CONFIGURATION)[
                                                             0].source,
-                                                        'hard error msg')),
+                                                        'hard error msg'),
+                                                    action_to_check_outcome=asrt.is_none),
                         [phase_step.CONFIGURATION__MAIN],
                         False))
 
@@ -80,7 +87,8 @@ class Test(TestCaseBase):
                                                     ExpectedFailureForInstructionFailure.new_with_exception(
                                                         phase_step.CONFIGURATION__MAIN,
                                                         test_case.the_extra(phase_identifier.CONFIGURATION)[0].source,
-                                                        test.ImplementationErrorTestException)),
+                                                        test.ImplementationErrorTestException),
+                                                    action_to_check_outcome=asrt.is_none),
                         [phase_step.CONFIGURATION__MAIN],
                         False))
 
