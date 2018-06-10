@@ -1,5 +1,6 @@
 import types
 import unittest
+from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.full_execution.result import FullResultStatus
@@ -63,7 +64,7 @@ class Arrangement(tuple):
 class Expectation(tuple):
     def __new__(cls,
                 expected_status: FullResultStatus,
-                expected_failure_info: asrt.ValueAssertion[FailureInfo],
+                expected_failure_info: asrt.ValueAssertion[Optional[FailureInfo]],
                 expected_internal_recording: list,
                 sandbox_directory_structure_should_exist: bool):
         return tuple.__new__(cls, (expected_status,
@@ -76,7 +77,7 @@ class Expectation(tuple):
         return self[0]
 
     @property
-    def failure_info(self) -> asrt.ValueAssertion[FailureInfo]:
+    def failure_info(self) -> asrt.ValueAssertion[Optional[FailureInfo]]:
         return self[1]
 
     @property

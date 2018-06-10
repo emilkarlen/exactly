@@ -9,8 +9,6 @@ from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.execution.test_resources import failure_assertions as asrt_failure
-from exactly_lib_test.execution.test_resources.failure_info_check import new_expected_failure_message, \
-    new_expected_exception
 from exactly_lib_test.execution.test_resources.phase_step_execution import RecordingMedia, \
     TestInstruction, ElementHeaderExecutorThatRecordsHeaderAndLineNumber, \
     InstructionExecutorThatRecordsInstructionNameAndReturnsSuccess, \
@@ -18,6 +16,7 @@ from exactly_lib_test.execution.test_resources.phase_step_execution import Recor
     InstructionExecutorThatRecordsInstructionNameAndRaisesExceptionFor, any_instruction, instruction_with_name
 from exactly_lib_test.section_document.test_resources.elements import new_comment_element, new_instruction_element
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources import failure_details_assertions as asrt_failure_details
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_single_line_source_location_path
 
 
@@ -107,7 +106,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(1, '1')),
-                                         new_expected_failure_message('fail message')),
+                                         asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
@@ -128,7 +127,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialResultStatus.HARD_ERROR,
                                          equals_single_line_source_location_path(Line(1, '1')),
-                                         new_expected_failure_message('hard error message')),
+                                         asrt_failure_details.is_failure_message_of('hard error message')),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
@@ -148,7 +147,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialResultStatus.IMPLEMENTATION_ERROR,
                                          equals_single_line_source_location_path(Line(1, '1')),
-                                         new_expected_exception(TestException)),
+                                         asrt_failure_details.is_exception(TestException)),
             ['instruction header for source line number: 1',
              'instruction executor: The instruction'])
 
@@ -171,7 +170,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(1, '1')),
-                                         new_expected_failure_message('fail message')),
+                                         asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction'])
 
@@ -196,7 +195,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(2, '2')),
-                                         new_expected_failure_message('fail message')),
+                                         asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
              'instruction header for source line number: 2',
@@ -222,7 +221,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(2, '2')),
-                                         new_expected_failure_message('fail message')),
+                                         asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
              'instruction header for source line number: 2',
@@ -247,7 +246,7 @@ class Test(unittest.TestCase):
             instruction_executor,
             asrt_failure.is_present_with(PartialResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(1, '1')),
-                                         new_expected_failure_message('fail message')),
+                                         asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
              'instruction executor: First instruction',
              ])
