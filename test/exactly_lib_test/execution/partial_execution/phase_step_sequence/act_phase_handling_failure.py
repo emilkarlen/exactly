@@ -12,7 +12,7 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
     PRE_SDS_VALIDATION_STEPS__ONCE, SYMBOL_VALIDATION_STEPS__ONCE
-from exactly_lib_test.execution.test_resources.partial_result_check import action_to_check_has_not_executed_completely
+from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_not_executed_completely
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises, \
     execute_action_that_returns_hard_error_with_message, \
     prepare_action_that_returns_hard_error_with_message, validate_action_that_returns, validate_action_that_raises

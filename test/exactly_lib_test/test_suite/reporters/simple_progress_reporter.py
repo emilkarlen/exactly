@@ -14,7 +14,8 @@ from exactly_lib.test_suite.execution import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.string import lines_content_with_os_linesep
-from exactly_lib_test.execution.test_resources.full_result_values import FULL_RESULT_HARD_ERROR, FULL_RESULT_VALIDATE, \
+from exactly_lib_test.execution.full_execution.test_resources.result_values import FULL_RESULT_HARD_ERROR, \
+    FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR
 from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
