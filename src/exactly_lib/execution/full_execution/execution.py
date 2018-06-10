@@ -1,8 +1,7 @@
-import os
 from typing import Dict, Optional
 
 from exactly_lib.execution import phase_step
-from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
+from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution.result import FullResult, FullResultStatus, \
     new_from_result_of_partial_execution
 from exactly_lib.execution.full_execution.result import new_skipped
@@ -11,22 +10,19 @@ from exactly_lib.execution.impl.result import PhaseStepFailure
 from exactly_lib.execution.partial_execution import execution
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.result import PartialResultStatus
-from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
-from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib.test_case_file_structure import environment_variables
 
 
-def execute(test_case: test_case_doc.TestCase,
-            predefined_properties: PredefinedProperties,
+def execute(conf: ExecutionConfiguration,
             configuration_builder: ConfigurationBuilder,
-            act_phase_sub_process_executor: ActPhaseOsProcessExecutor,
-            sandbox_root_dir_resolver: SandboxRootDirNameResolver,
-            is_keep_sandbox: bool) -> FullResult:
+            is_keep_sandbox: bool,
+            test_case: test_case_doc.TestCase,
+            ) -> FullResult:
     """
     The main method for executing a Test Case.
     """
@@ -36,12 +32,7 @@ def execute(test_case: test_case_doc.TestCase,
         return new_configuration_phase_failure_from(conf_phase_failure)
     if configuration_builder.execution_mode is ExecutionMode.SKIP:
         return new_skipped()
-    exe_conf = ExecutionConfiguration(dict(os.environ),
-                                      act_phase_sub_process_executor,
-                                      sandbox_root_dir_resolver,
-                                      predefined_properties.predefined_symbols)
-    environ = dict(os.environ)
-    _prepare_environment_variables(environ)
+    _prepare_environment_variables(conf.environ)
     conf_phase_values = ConfPhaseValues(
         configuration_builder.act_phase_handling,
         configuration_builder.hds,
@@ -53,7 +44,7 @@ def execute(test_case: test_case_doc.TestCase,
                  test_case.before_assert_phase,
                  test_case.assert_phase,
                  test_case.cleanup_phase),
-        exe_conf,
+        conf,
         conf_phase_values,
         setup.default_settings(),
         is_keep_sandbox)

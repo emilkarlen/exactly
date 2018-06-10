@@ -1,14 +1,14 @@
+import os
 import unittest
 
-from exactly_lib import program_info
-from exactly_lib.execution import sandbox_dir_resolving
-from exactly_lib.execution.configuration import PredefinedProperties
+from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
+from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -18,7 +18,8 @@ class Arrangement:
                  configuration_builder: ConfigurationBuilder,
                  initial_settings_builder: SetupSettingsBuilder = None,
                  predefined_properties: PredefinedProperties = PredefinedProperties(),
-                 act_phase_os_process_executor: ActPhaseOsProcessExecutor = os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
+                 act_phase_os_process_executor: ActPhaseOsProcessExecutor =
+                 os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
         self.test_case = test_case
         self.predefined_properties = predefined_properties
@@ -39,11 +40,13 @@ def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation,
           is_keep_sandbox: bool = False):
+    exe_conf = ExecutionConfiguration(dict(os.environ),
+                                      arrangement.act_phase_os_process_executor,
+                                      sandbox_root_name_resolver.for_test(),
+                                      arrangement.predefined_properties.predefined_symbols)
     result = execution.execute(
-        arrangement.test_case,
-        arrangement.predefined_properties,
+        exe_conf,
         arrangement.configuration_builder,
-        arrangement.act_phase_os_process_executor,
-        sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-full-execution'),
-        is_keep_sandbox)
+        is_keep_sandbox,
+        arrangement.test_case)
     expectation.full_result.apply(put, result, asrt.MessageBuilder('FullResult'))
