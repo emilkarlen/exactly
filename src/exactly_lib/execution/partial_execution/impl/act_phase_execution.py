@@ -9,9 +9,9 @@ from exactly_lib.execution.partial_execution.result import PartialResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
-from exactly_lib.test_case.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import StdinConfiguration
+from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_hard_error
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import stdin_contents_file
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \
     new_failure_details_from_message
