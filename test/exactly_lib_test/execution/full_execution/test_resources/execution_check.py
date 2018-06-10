@@ -3,6 +3,7 @@ import unittest
 
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
+from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
@@ -32,7 +33,7 @@ class Arrangement:
 
 class Expectation:
     def __init__(self,
-                 full_result: asrt.ValueAssertion = asrt.anything_goes()):
+                 full_result: asrt.ValueAssertion[FullResult] = asrt.anything_goes()):
         self.full_result = full_result
 
 

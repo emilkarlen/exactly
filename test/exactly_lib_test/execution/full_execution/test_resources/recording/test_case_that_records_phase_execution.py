@@ -1,9 +1,7 @@
 import types
 import unittest
-from typing import Optional
 
-from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.full_execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullResult
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.result import sh, svh
@@ -63,30 +61,25 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                expected_status: FullResultStatus,
-                expected_failure_info: asrt.ValueAssertion[Optional[FailureInfo]],
+                expected_result: asrt.ValueAssertion[FullResult],
                 expected_internal_recording: list,
                 sandbox_directory_structure_should_exist: bool):
-        return tuple.__new__(cls, (expected_status,
-                                   expected_failure_info,
+        return tuple.__new__(cls, (expected_result,
                                    expected_internal_recording,
-                                   sandbox_directory_structure_should_exist))
+                                   sandbox_directory_structure_should_exist,
+                                   ))
 
     @property
-    def status(self) -> FullResultStatus:
+    def full_result(self) -> asrt.ValueAssertion[FullResult]:
         return self[0]
 
     @property
-    def failure_info(self) -> asrt.ValueAssertion[Optional[FailureInfo]]:
+    def internal_recording(self) -> list:
         return self[1]
 
     @property
-    def internal_recording(self) -> list:
-        return self[2]
-
-    @property
     def sandbox_directory_structure_should_exist(self) -> bool:
-        return self[3]
+        return self[2]
 
 
 class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
@@ -114,12 +107,9 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         return self._test_case_generator.test_case
 
     def _assertions(self):
-        self.utc.assertEqual(self.__expectation.status,
-                             self.full_result.status,
-                             'Unexpected result status')
-        self.__expectation.failure_info.apply_with_message(self.utc,
-                                                           self.full_result.failure_info,
-                                                           'failure_info')
+        self.__expectation.full_result.apply_with_message(self.utc,
+                                                          self.full_result,
+                                                          'full_result')
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
         self.utc.assertListEqual(self.__expectation.internal_recording,
                                  self.__recorder.recorded_elements,

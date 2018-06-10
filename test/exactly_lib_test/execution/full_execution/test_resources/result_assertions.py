@@ -9,12 +9,42 @@ from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
-is_pass = asrt.OnTransformed(FullResult.status.fget,
-                             asrt.Equals(FullResultStatus.PASS,
-                                         'Status is expected to be PASS'))
+
+def is_pass() -> asrt.ValueAssertion[FullResult]:
+    return matches(status=asrt.is_(FullResultStatus.PASS),
+                   failure_info=asrt.is_none,
+                   sds=asrt.is_instance(SandboxDirectoryStructure),
+                   # action_to_check_outcome=asrt.is_instance(ActionToCheckOutcome))
+                   )
 
 
-def full_result_matches(
+def is_xpass() -> asrt.ValueAssertion[FullResult]:
+    return matches(status=asrt.is_(FullResultStatus.XPASS),
+                   failure_info=asrt.is_none,
+                   sds=asrt.is_instance(SandboxDirectoryStructure),
+                   # action_to_check_outcome=asrt.is_instance(ActionToCheckOutcome))
+                   )
+
+
+def is_skipped() -> asrt.ValueAssertion[FullResult]:
+    return matches(status=asrt.is_(FullResultStatus.SKIPPED),
+                   failure_info=asrt.is_none,
+                   sds=asrt.is_none,
+                   action_to_check_outcome=asrt.is_none)
+
+
+def is_failure(status: FullResultStatus,
+               failure_info: asrt.ValueAssertion[Optional[FailureInfo]] = asrt.is_instance(FailureInfo),
+               sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
+               action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
+               ) -> asrt.ValueAssertion[FullResult]:
+    return matches(status=asrt.is_(status),
+                   sds=sds,
+                   action_to_check_outcome=action_to_check_outcome,
+                   failure_info=failure_info)
+
+
+def matches(
         status: asrt.ValueAssertion[FullResultStatus] = asrt.anything_goes(),
         sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
         action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
