@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.assert_.utils import return_pfh_via_exceptions as sut
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

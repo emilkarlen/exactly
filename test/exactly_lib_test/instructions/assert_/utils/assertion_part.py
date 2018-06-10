@@ -10,9 +10,9 @@ from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.pre_or_post_validation import ConstantSuccessValidator
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.restrictions_assertions import is_value_type_restriction
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources.instruction_environment import fake_post_sds_environment
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh
 from exactly_lib_test.test_case_utils.test_resources.pre_or_post_sds_validator import ValidatorThat

@@ -8,8 +8,8 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativity_options import \
     MK_SUB_DIR_OF_ACT_AND_MAKE_IT_CURRENT_DIRECTORY
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -50,7 +50,7 @@ class TestLineBreaksWithEmptyActualFile(TestWithConfigurationBase):
                  source_assertion=
                  asrt_source.source_is_at_end,
                  main_result_assertion=
-                 pfh_check.is_pass(),
+                 pfh_assertions.is_pass(),
                  ),
             Case('transformation and CONTENTS-MATCHER on separate line',
                  source=
@@ -61,7 +61,7 @@ class TestLineBreaksWithEmptyActualFile(TestWithConfigurationBase):
                  source_assertion=
                  asrt_source.source_is_at_end,
                  main_result_assertion=
-                 pfh_check.is_pass(),
+                 pfh_assertions.is_pass(),
                  ),
             Case('negation and CONTENTS-MATCHER on separate line',
                  source=
@@ -72,7 +72,7 @@ class TestLineBreaksWithEmptyActualFile(TestWithConfigurationBase):
                  source_assertion=
                  asrt_source.source_is_at_end,
                  main_result_assertion=
-                 pfh_check.is_fail(),
+                 pfh_assertions.is_fail(),
                  ),
         ]
         for case in cases:

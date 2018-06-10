@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.assert_.test_resources.configuration import A
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.change_dir_instruction_test import \
     Configuration, suite_for
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -25,7 +25,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
                            symbol_usages=symbol_usages)
 
     def expect_target_is_not_a_directory(self):
-        return Expectation(main_result=pfh_check.is_hard_error())
+        return Expectation(main_result=pfh_assertions.is_hard_error())
 
 
 if __name__ == '__main__':
