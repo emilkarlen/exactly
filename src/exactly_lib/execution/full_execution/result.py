@@ -43,10 +43,11 @@ def new_skipped() -> FullResult:
                       None)
 
 
-def new_pass(sds: SandboxDirectoryStructure) -> FullResult:
+def new_pass(sds: SandboxDirectoryStructure,
+             action_to_check_outcome: ActionToCheckOutcome) -> FullResult:
     return FullResult(FullResultStatus.PASS,
                       sds,
-                      None,
+                      action_to_check_outcome,
                       None)
 
 
@@ -54,7 +55,7 @@ def new_from_result_of_partial_execution(execution_mode: ExecutionMode,
                                          partial_result: PartialResult) -> FullResult:
     return FullResult(translate_status(execution_mode, partial_result.status),
                       partial_result.sds,
-                      None,
+                      partial_result.action_to_check_outcome,
                       partial_result.failure_info)
 
 

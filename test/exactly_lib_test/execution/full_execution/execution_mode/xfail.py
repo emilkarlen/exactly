@@ -15,7 +15,10 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
+from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_executed_completely
+from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -30,46 +33,50 @@ class Test(TestCaseBase):
             .add(phase_identifier.ASSERT,
                  test.assert_phase_instruction_that(
                      main=do_return(pfh.new_pfh_fail('fail message'))))
-        self._check(Arrangement(test_case),
-                    Expectation(asrt_full_result.is_failure(FullResultStatus.XFAIL,
-                                                            ExpectedFailureForInstructionFailure.new_with_message(
-                                                                phase_step.ASSERT__MAIN,
-                                                                test_case.the_extra(phase_identifier.ASSERT)[0].source,
-                                                                'fail message')),
-                                [phase_step.CONFIGURATION__MAIN,
-                                 phase_step.CONFIGURATION__MAIN] +
-                                [phase_step.ACT__PARSE] +
-                                SYMBOL_VALIDATION_STEPS__TWICE +
-                                PRE_SDS_VALIDATION_STEPS__TWICE +
-                                [phase_step.SETUP__MAIN,
-                                 phase_step.SETUP__MAIN,
+        self._check(Arrangement(test_case,
+                                execute_test_action=execute_action_that_returns_exit_code(11)),
+                    Expectation(asrt_full_result.is_failure(
+                        FullResultStatus.XFAIL,
+                        ExpectedFailureForInstructionFailure.new_with_message(
+                            phase_step.ASSERT__MAIN,
+                            test_case.the_extra(phase_identifier.ASSERT)[0].source,
+                            'fail message'),
+                        action_to_check_outcome=action_to_check_has_executed_completely(11)),
+                        [phase_step.CONFIGURATION__MAIN,
+                         phase_step.CONFIGURATION__MAIN] +
+                        [phase_step.ACT__PARSE] +
+                        SYMBOL_VALIDATION_STEPS__TWICE +
+                        PRE_SDS_VALIDATION_STEPS__TWICE +
+                        [phase_step.SETUP__MAIN,
+                         phase_step.SETUP__MAIN,
 
-                                 phase_step.SETUP__VALIDATE_POST_SETUP,
-                                 phase_step.SETUP__VALIDATE_POST_SETUP,
-                                 phase_step.ACT__VALIDATE_POST_SETUP,
-                                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                                 phase_step.ASSERT__VALIDATE_POST_SETUP,
-                                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.SETUP__VALIDATE_POST_SETUP,
+                         phase_step.ACT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                         phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                                 phase_step.ACT__PREPARE,
-                                 phase_step.ACT__EXECUTE,
+                         phase_step.ACT__PREPARE,
+                         phase_step.ACT__EXECUTE,
 
-                                 phase_step.BEFORE_ASSERT__MAIN,
-                                 phase_step.BEFORE_ASSERT__MAIN,
-                                 phase_step.ASSERT__MAIN,
-                                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                                 ],
-                                True))
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.BEFORE_ASSERT__MAIN,
+                         phase_step.ASSERT__MAIN,
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                         ],
+                        True))
 
     def test_with_assert_phase_that_passes(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
             .add(phase_identifier.CONFIGURATION,
                  test.ConfigurationPhaseInstructionThatSetsExecutionMode(ExecutionMode.FAIL))
         self._check(
-            Arrangement(test_case),
-            Expectation(asrt_full_result.is_xpass(),
+            Arrangement(test_case,
+                        execute_test_action=execute_action_that_returns_exit_code(64)),
+            Expectation(asrt_full_result.is_xpass(action_to_check_outcome=action_to_check_has_executed_completely(64)),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +
                         [phase_step.ACT__PARSE] +
@@ -110,7 +117,8 @@ class Test(TestCaseBase):
                                                     ExpectedFailureForInstructionFailure.new_with_message(
                                                         phase_step.CONFIGURATION__MAIN,
                                                         test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
-                                                        'hard error msg')),
+                                                        'hard error msg'),
+                                                    action_to_check_outcome=asrt.is_none),
                         [phase_step.CONFIGURATION__MAIN],
                         False))
 
@@ -122,38 +130,41 @@ class Test(TestCaseBase):
                  test.cleanup_phase_instruction_that(
                      main=do_raise(test.ImplementationErrorTestException())))
         self._check(
-            Arrangement(test_case),
-            Expectation(asrt_full_result.is_failure(FullResultStatus.IMPLEMENTATION_ERROR,
-                                                    ExpectedFailureForInstructionFailure.new_with_exception(
-                                                        phase_step.CLEANUP__MAIN,
-                                                        test_case.the_extra(phase_identifier.CLEANUP)[0].source,
-                                                        test.ImplementationErrorTestException)),
-                        [phase_step.CONFIGURATION__MAIN,
-                         phase_step.CONFIGURATION__MAIN] +
-                        [phase_step.ACT__PARSE] +
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+            Arrangement(test_case,
+                        execute_test_action=execute_action_that_returns_exit_code(128)),
+            Expectation(asrt_full_result.is_failure(
+                FullResultStatus.IMPLEMENTATION_ERROR,
+                ExpectedFailureForInstructionFailure.new_with_exception(
+                    phase_step.CLEANUP__MAIN,
+                    test_case.the_extra(phase_identifier.CLEANUP)[0].source,
+                    test.ImplementationErrorTestException),
+                action_to_check_outcome=action_to_check_has_executed_completely(128)),
+                [phase_step.CONFIGURATION__MAIN,
+                 phase_step.CONFIGURATION__MAIN] +
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+                True))
 
 
 if __name__ == '__main__':
