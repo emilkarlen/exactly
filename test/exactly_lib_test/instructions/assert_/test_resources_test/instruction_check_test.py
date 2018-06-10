@@ -15,11 +15,11 @@ from exactly_lib_test.instructions.assert_.test_resources import instruction_che
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import is_pass, \
     Expectation
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as utils
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.instructions.test_resources.symbol_table_check_help import \
     get_symbol_table_from_path_resolving_environment_that_is_first_arg, \
     get_symbol_table_from_instruction_environment_that_is_first_arg, do_fail_if_symbol_table_does_not_equal
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, symbol_reference_assertions as sym_asrt
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     act_dir_contains_exactly, tmp_user_dir_contains_exactly
@@ -175,7 +175,7 @@ class TestMiscCases(TestCaseBase):
                 utils.single_line_source(),
                 sut.ArrangementPostAct(),
                 Expectation(
-                    main_result=pfh_check.is_fail()),
+                    main_result=pfh_assertions.is_fail()),
             )
 
     def test_fail_due_to_fail_of_side_effects_on_files(self):

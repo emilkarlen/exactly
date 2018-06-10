@@ -7,7 +7,7 @@ from exactly_lib_test.instructions.assert_.test_resources.configuration import A
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.shell_instruction_test import \
     Configuration, suite_for
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 
 
 def suite() -> unittest.TestSuite:
@@ -22,7 +22,7 @@ class TheConfiguration(AssertConfigurationBase, Configuration):
         return sut.setup('instruction name')
 
     def expectation_for_non_zero_exitcode(self) -> Expectation:
-        return Expectation(main_result=pfh_check.is_fail())
+        return Expectation(main_result=pfh_assertions.is_fail())
 
     def expectation_for_zero_exitcode(self) -> Expectation:
         return Expectation()

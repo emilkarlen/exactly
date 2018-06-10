@@ -9,9 +9,9 @@ from exactly_lib.test_case_utils.condition.comparison_structures import Comparis
 from exactly_lib.test_case_utils.err_msg.property_description import \
     property_descriptor_with_just_a_constant_name
 from exactly_lib.util.logic_types import ExpectationType
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check as asrt_pfh
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils, \
     symbol_reference_assertions as asrt_sym_ref
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions as asrt_pfh
 from exactly_lib_test.test_case.test_resources import instruction_environment
 from exactly_lib_test.test_case_utils.condition.test_resources.operand_resolver import operand_resolver_that
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions as asrt_svh

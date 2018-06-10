@@ -10,7 +10,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators, home_and_sds_populators, \
     sds_populator
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
@@ -44,11 +44,11 @@ class AssertConfigurationBase(ConfigurationBase):
 
     def expect_failure_of_main(self,
                                assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
-        return Expectation(main_result=pfh_check.is_fail(assertion_on_error_message))
+        return Expectation(main_result=pfh_assertions.is_fail(assertion_on_error_message))
 
     def expect_hard_error_of_main(self,
                                   assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):
-        return Expectation(main_result=pfh_check.is_hard_error(assertion_on_error_message))
+        return Expectation(main_result=pfh_assertions.is_hard_error(assertion_on_error_message))
 
     def expect_failing_validation_pre_sds(self,
                                           assertion_on_error_message: asrt.ValueAssertion = asrt.anything_goes()):

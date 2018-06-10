@@ -14,13 +14,13 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.assert_.test_resources import instruction_check, expression
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation, is_pass
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducerFromActResult
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 
@@ -114,10 +114,10 @@ class TestArgumentWithSymbolReferences(TestBase):
         for case in test_cases:
             for sub_name, actual_value, result_expectation in [('pass',
                                                                 case.actual_value_for_pass,
-                                                                pfh_check.is_pass()),
+                                                                pfh_assertions.is_pass()),
                                                                ('fail',
                                                                 case.actual_value_for_fail,
-                                                                pfh_check.is_fail())]:
+                                                                pfh_assertions.is_fail())]:
                 with self.subTest(name=case.name, sub_name=sub_name):
                     self._run(
                         remaining_source(case.argument,
@@ -210,7 +210,7 @@ def string_symbol_references_of(symbol_name_and_value_list: list) -> list:
 
 
 _IS_PASS = is_pass()
-_IS_FAIL = Expectation(main_result=pfh_check.is_fail())
+_IS_FAIL = Expectation(main_result=pfh_assertions.is_fail())
 
 if __name__ == '__main__':
     unittest.TextTestRunner().run(suite())

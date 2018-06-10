@@ -12,7 +12,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActEnvironment
-from exactly_lib_test.instructions.test_resources.assertion_utils import pfh_check
+from exactly_lib_test.test_case.result.test_resources import pfh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_case_utils.test_resources import svh_assertions
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -29,7 +29,7 @@ class Expectation:
             validation_pre_sds: asrt.ValueAssertion[svh.SuccessOrValidationErrorOrHardError] =
             svh_assertions.is_success(),
 
-            main_result: asrt.ValueAssertion[pfh.PassOrFailOrHardError] = pfh_check.is_pass(),
+            main_result: asrt.ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
             symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
             main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
             main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
