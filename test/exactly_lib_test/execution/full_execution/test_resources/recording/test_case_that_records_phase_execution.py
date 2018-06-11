@@ -15,6 +15,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.recorder impo
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import validate_action_that_returns, \
     execute_action_that_returns_exit_code, prepare_action_that_returns
+from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_assertions import is_sds_root_dir
 from exactly_lib_test.test_resources.actions import do_nothing
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -105,9 +106,8 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
                                                           self.full_result,
                                                           'full_result')
         if self.full_result.has_sds:
-            self.utc.assertTrue(
-                self.sds.root_dir.is_dir(),
-                'Sandbox directory structure root is expected to be a directory')
+            is_sds_root_dir().apply_with_message(self.utc, str(self.sds.root_dir),
+                                                 'SDS root dir')
 
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
         self.utc.assertListEqual(self.__expectation.internal_recording,
