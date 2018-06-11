@@ -12,43 +12,50 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Mes
 
 
 def dir_contains_exactly(relativity_option: RelOptionType,
-                         expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+                         expected_contents: file_structure.DirContents
+                         ) -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('relativity_option=' + str(relativity_option),
                               REL_OPTIONS_MAP[relativity_option].root_resolver.from_non_home,
                               DirContainsExactly(expected_contents))
 
 
-def act_dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def act_dir_contains_exactly(expected_contents: file_structure.DirContents
+                             ) -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('act dir',
                               SandboxDirectoryStructure.act_dir.fget,
                               DirContainsExactly(expected_contents))
 
 
-def test_case_dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def test_case_dir_contains_exactly(expected_contents: file_structure.DirContents
+                                   ) -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('act dir',
                               SandboxDirectoryStructure.test_case_dir.fget,
                               DirContainsExactly(expected_contents))
 
 
-def tmp_user_dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def tmp_user_dir_contains_exactly(expected_contents: file_structure.DirContents
+                                  ) -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('tmp/usr dir',
                               lambda sds: sds.tmp.user_dir,
                               DirContainsExactly(expected_contents))
 
 
-def tmp_internal_dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def tmp_internal_dir_contains_exactly(expected_contents: file_structure.DirContents
+                                      ) -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('tmp/internal dir',
                               lambda sds: sds.tmp.internal_dir,
                               DirContainsExactly(expected_contents))
 
 
-def result_dir_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def result_dir_contains_exactly(expected_contents: file_structure.DirContents
+                                ) -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('result dir',
                               lambda sds: sds.result.root_dir,
                               DirContainsExactly(expected_contents))
 
 
-def cwd_contains_exactly(expected_contents: file_structure.DirContents) -> asrt.ValueAssertion:
+def cwd_contains_exactly(expected_contents: file_structure.DirContents
+                         ) -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.sub_component('result dir',
                               lambda sds: pathlib.Path().cwd(),
                               DirContainsExactly(expected_contents))

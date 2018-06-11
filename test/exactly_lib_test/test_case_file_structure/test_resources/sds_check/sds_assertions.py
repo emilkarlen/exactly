@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.test_case_file_structure import sandbox_directory_structure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_resources.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
@@ -8,7 +8,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Mes
 
 def is_sandbox_directory_structure_after_execution(fc: FileChecker,
                                                    root_dir_name: str):
-    sds = sandbox_directory_structure.SandboxDirectoryStructure(root_dir_name)
+    sds = SandboxDirectoryStructure(root_dir_name)
     fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
                                                           5)
     fc.assert_exists_dir(sds.test_case_dir)
@@ -38,7 +38,7 @@ class _IsSdsRootDir(asrt.ValueAssertion[str]):
         put.assertIsInstance(value, str)
 
         fc = FileChecker(put, message_builder.apply(''))
-        sds = sandbox_directory_structure.SandboxDirectoryStructure(value)
+        sds = SandboxDirectoryStructure(value)
 
         fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
                                                               5)
@@ -49,3 +49,24 @@ class _IsSdsRootDir(asrt.ValueAssertion[str]):
         fc.assert_exists_dir(sds.act_dir)
 
         fc.assert_exists_dir(sds.log_dir)
+
+
+def sds_root_dir_exists_and_has_sds_dirs() -> asrt.ValueAssertion[SandboxDirectoryStructure]:
+    return asrt.on_transformed(lambda sds: str(sds.root_dir),
+                               is_sds_root_dir())
+
+
+def is_existing_sds_with_post_execution_files() -> asrt.ValueAssertion[SandboxDirectoryStructure]:
+    return _SdsRootDirExistsAndContainsPostExecutionFiles()
+
+
+class _SdsRootDirExistsAndContainsPostExecutionFiles(asrt.ValueAssertion[SandboxDirectoryStructure]):
+    def apply(self,
+              put: unittest.TestCase,
+              value: SandboxDirectoryStructure,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIsInstance(value, SandboxDirectoryStructure)
+
+        fc = FileChecker(put, message_builder.apply(''))
+
+        is_sandbox_directory_structure_after_execution(fc, str(value.root_dir))

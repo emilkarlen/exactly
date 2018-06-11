@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, ActSourceAndExecutorConstructor, \
@@ -16,11 +16,13 @@ from exactly_lib.util.std import StdFiles
 
 class Validator:
     def validate_pre_sds(self,
-                         environment: InstructionEnvironmentForPreSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                         environment: InstructionEnvironmentForPreSdsStep
+                         ) -> svh.SuccessOrValidationErrorOrHardError:
         raise NotImplementedError(str(type(self)))
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         raise NotImplementedError(str(type(self)))
 
 
@@ -66,8 +68,20 @@ class Executor:
         raise NotImplementedError(str(type(self)))
 
 
+ExecutableObject = SymbolUser
+
+ValidatorConstructorType = Callable[[InstructionEnvironmentForPreSdsStep,
+                                     ExecutableObject],
+                                    Validator]
+
+ExecutorConstructorType = Callable[[ActPhaseOsProcessExecutor,
+                                    InstructionEnvironmentForPreSdsStep,
+                                    ExecutableObject],
+                                   Executor]
+
+
 class Parser:
-    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> SymbolUser:
+    def apply(self, act_phase_instructions: Sequence[ActPhaseInstruction]) -> ExecutableObject:
         """
         :raises ParseException
 
@@ -80,8 +94,8 @@ class Parser:
 class Constructor(ActSourceAndExecutorConstructor):
     def __init__(self,
                  parser: Parser,
-                 validator_constructor,
-                 executor_constructor):
+                 validator_constructor: ValidatorConstructorType,
+                 executor_constructor: ExecutorConstructorType):
         self.parser = parser
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
@@ -89,7 +103,7 @@ class Constructor(ActSourceAndExecutorConstructor):
     def apply(self,
               os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              act_phase_instructions: list) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         return ActSourceAndExecutorMadeFromParserValidatorAndExecutor(self.parser,
                                                                       self.validator_constructor,
                                                                       self.executor_constructor,
@@ -105,11 +119,11 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
 
     def __init__(self,
                  parser: Parser,
-                 validator_constructor,
-                 executor_constructor,
+                 validator_constructor: ValidatorConstructorType,
+                 executor_constructor: ExecutorConstructorType,
                  os_process_executor: ActPhaseOsProcessExecutor,
                  environment: InstructionEnvironmentForPreSdsStep,
-                 act_phase_instructions: list):
+                 act_phase_instructions: Sequence[ActPhaseInstruction]):
         self.parser = parser
         self.validator_constructor = validator_constructor
         self.executor_constructor = executor_constructor
@@ -133,7 +147,8 @@ class ActSourceAndExecutorMadeFromParserValidatorAndExecutor(ActSourceAndExecuto
         return self._validator.validate_pre_sds(environment)
 
     def validate_post_setup(self,
-                            environment: InstructionEnvironmentForPostSdsStep) -> svh.SuccessOrValidationErrorOrHardError:
+                            environment: InstructionEnvironmentForPostSdsStep
+                            ) -> svh.SuccessOrValidationErrorOrHardError:
         return self._validator.validate_post_setup(environment)
 
     def prepare(self,
