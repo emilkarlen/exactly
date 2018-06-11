@@ -4,6 +4,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import pfh, sh
+from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_that_records_phase_execution import \
@@ -13,8 +14,6 @@ from exactly_lib_test.execution.test_resources import instruction_test_resources
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import PRE_SDS_VALIDATION_STEPS__TWICE, \
     SYMBOL_VALIDATION_STEPS__TWICE
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure
-from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_executed_completely, \
-    action_to_check_has_not_executed_completely
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 
@@ -31,20 +30,24 @@ class Test(TestCaseBase):
                      main=do_return(sh.new_sh_hard_error('hard error msg from setup'))))
         self._check(
             Arrangement(test_case),
-            Expectation(PartialExeResultStatus.HARD_ERROR,
-                        action_to_check_has_not_executed_completely(),
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.SETUP__MAIN,
-                            test_case.the_extra(PartialPhase.SETUP)[0].source,
-                            'hard error msg from setup'),
-                        [phase_step.ACT__PARSE] +
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
-                         ],
-                        True))
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.HARD_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.SETUP__MAIN,
+                        test_case.the_extra(PartialPhase.SETUP)[0].source,
+                        'hard error msg from setup'),
+                ),
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 ],
+            ))
 
     def test_implementation_error_in_setup_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -54,22 +57,25 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
-            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                        action_to_check_has_not_executed_completely(),
-                        ExpectedFailureForInstructionFailure.new_with_exception(
-                            phase_step.SETUP__MAIN,
-                            test_case.the_extra(PartialPhase.SETUP)[0].source,
-                            test.ImplementationErrorTestException),
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForInstructionFailure.new_with_exception(
+                        phase_step.SETUP__MAIN,
+                        test_case.the_extra(PartialPhase.SETUP)[0].source,
+                        test.ImplementationErrorTestException),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        [phase_step.ACT__PARSE] +
-
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
-                         ],
-                        True))
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 ],
+            ))
 
     def test_hard_error_in_before_assert_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -79,35 +85,39 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(0)),
-            Expectation(PartialExeResultStatus.HARD_ERROR,
-                        action_to_check_has_executed_completely(0),
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.BEFORE_ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
-                            'hard error msg'),
-                        [phase_step.ACT__PARSE] +
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.HARD_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(0),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.BEFORE_ASSERT__MAIN,
+                        test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
+                        'hard error msg'),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
+                 ],
+            ))
 
     def test_implementation_error_in_before_assert_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -117,36 +127,39 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(12)),
-            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                        action_to_check_has_executed_completely(12),
-                        ExpectedFailureForInstructionFailure.new_with_exception(
-                            phase_step.BEFORE_ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
-                            test.ImplementationErrorTestException),
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(12),
+                    ExpectedFailureForInstructionFailure.new_with_exception(
+                        phase_step.BEFORE_ASSERT__MAIN,
+                        test_case.the_extra(PartialPhase.BEFORE_ASSERT)[0].source,
+                        test.ImplementationErrorTestException),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
-
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.BEFORE_ASSERT),
+                 ],
+            ))
 
     def test_fail_in_assert_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -156,38 +169,41 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
-            Expectation(PartialExeResultStatus.FAIL,
-                        action_to_check_has_executed_completely(5),
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.ASSERT)[0].source,
-                            'fail msg from ASSERT'),
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.FAIL,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(5),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.ASSERT__MAIN,
+                        test_case.the_extra(PartialPhase.ASSERT)[0].source,
+                        'fail msg from ASSERT'),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
-
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+            ))
 
     def test_hard_error_in_assert_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -197,38 +213,41 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(72)),
-            Expectation(PartialExeResultStatus.HARD_ERROR,
-                        action_to_check_has_executed_completely(72),
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.ASSERT)[0].source,
-                            'hard error msg from ASSERT'),
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.HARD_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(72),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.ASSERT__MAIN,
+                        test_case.the_extra(PartialPhase.ASSERT)[0].source,
+                        'hard error msg from ASSERT'),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
-
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+            ))
 
     def test_implementation_error_in_assert_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -238,38 +257,41 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
-            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                        action_to_check_has_executed_completely(5),
-                        ExpectedFailureForInstructionFailure.new_with_exception(
-                            phase_step.ASSERT__MAIN,
-                            test_case.the_extra(PartialPhase.ASSERT)[0].source,
-                            test.ImplementationErrorTestException),
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(5),
+                    ExpectedFailureForInstructionFailure.new_with_exception(
+                        phase_step.ASSERT__MAIN,
+                        test_case.the_extra(PartialPhase.ASSERT)[0].source,
+                        test.ImplementationErrorTestException),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
-
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+            ))
 
     def test_hard_error_in_cleanup_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -279,38 +301,41 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(3)),
-            Expectation(PartialExeResultStatus.HARD_ERROR,
-                        action_to_check_has_executed_completely(3),
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.CLEANUP__MAIN,
-                            test_case.the_extra(PartialPhase.CLEANUP)[0].source,
-                            'hard error msg from CLEANUP'),
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.HARD_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(3),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.CLEANUP__MAIN,
+                        test_case.the_extra(PartialPhase.CLEANUP)[0].source,
+                        'hard error msg from CLEANUP'),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
-
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+            ))
 
     def test_implementation_error_in_cleanup_main_step(self):
         test_case = TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr() \
@@ -320,38 +345,41 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
-            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                        action_to_check_has_executed_completely(5),
-                        ExpectedFailureForInstructionFailure.new_with_exception(
-                            phase_step.CLEANUP__MAIN,
-                            test_case.the_extra(PartialPhase.CLEANUP)[0].source,
-                            test.ImplementationErrorTestException),
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(5),
+                    ExpectedFailureForInstructionFailure.new_with_exception(
+                        phase_step.CLEANUP__MAIN,
+                        test_case.the_extra(PartialPhase.CLEANUP)[0].source,
+                        test.ImplementationErrorTestException),
+                ),
+                [phase_step.ACT__PARSE] +
 
-                        [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__TWICE +
+                PRE_SDS_VALIDATION_STEPS__TWICE +
+                [phase_step.SETUP__MAIN,
+                 phase_step.SETUP__MAIN,
 
-                        SYMBOL_VALIDATION_STEPS__TWICE +
-                        PRE_SDS_VALIDATION_STEPS__TWICE +
-                        [phase_step.SETUP__MAIN,
-                         phase_step.SETUP__MAIN,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
-
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+            ))
 
 
 if __name__ == '__main__':

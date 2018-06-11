@@ -10,9 +10,7 @@ def action_to_check_has_not_executed_completely() -> asrt.ValueAssertion[Optiona
 
 def action_to_check_has_executed_completely(exit_code: int) -> asrt.ValueAssertion[Optional[ActionToCheckOutcome]]:
     return asrt.is_not_none_and_instance_with(ActionToCheckOutcome,
-                                              asrt.sub_component('exit_code',
-                                                                 ActionToCheckOutcome.exit_code.fget,
-                                                                 asrt.equals(exit_code)))
+                                              matches(asrt.equals(exit_code)))
 
 
 def action_to_check_has_executed_completely_iff_phase_is_after_act(
@@ -23,3 +21,15 @@ def action_to_check_has_executed_completely_iff_phase_is_after_act(
         return action_to_check_has_executed_completely(exit_code)
     else:
         return action_to_check_has_not_executed_completely()
+
+
+def matches(exit_code: asrt.ValueAssertion[int] = asrt.anything_goes()) -> asrt.ValueAssertion[ActionToCheckOutcome]:
+    return asrt.is_instance_with(ActionToCheckOutcome,
+                                 asrt.sub_component('exit_code',
+                                                    ActionToCheckOutcome.exit_code.fget,
+                                                    exit_code)
+                                 )
+
+
+def is_exit_code(exit_code: int) -> asrt.ValueAssertion[ActionToCheckOutcome]:
+    return matches(exit_code=asrt.equals(exit_code))

@@ -1,10 +1,7 @@
 import types
 import unittest
-from typing import Optional
 
-from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
-from exactly_lib.execution.result import ActionToCheckOutcome
+from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.result import sh, svh
@@ -71,36 +68,22 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                expected_status: PartialExeResultStatus,
-                expected_action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]],
-                expected_failure_info: asrt.ValueAssertion[FailureInfo],
-                expected_internal_recording: list,
-                sandbox_directory_structure_should_exist: bool):
-        return tuple.__new__(cls, (expected_status,
-                                   expected_failure_info,
-                                   expected_internal_recording,
-                                   sandbox_directory_structure_should_exist,
-                                   expected_action_to_check_outcome))
+                result: asrt.ValueAssertion[PartialExeResult],
+                expected_internal_recording: list):
+        return tuple.__new__(cls, (result,
+                                   expected_internal_recording))
 
     @property
-    def status(self) -> PartialExeResultStatus:
+    def result(self) -> asrt.ValueAssertion[PartialExeResult]:
         return self[0]
 
     @property
-    def failure_info(self) -> asrt.ValueAssertion[FailureInfo]:
+    def internal_recording(self) -> list:
         return self[1]
 
     @property
-    def internal_recording(self) -> list:
-        return self[2]
-
-    @property
     def sandbox_directory_structure_should_exist(self) -> bool:
-        return self[3]
-
-    @property
-    def expected_action_to_check_outcome(self) -> asrt.ValueAssertion[Optional[ActionToCheckOutcome]]:
-        return self[4]
+        return self[2]
 
 
 class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
@@ -128,28 +111,14 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
         return self._test_case_generator.test_case
 
     def _assertions(self):
-        self.put.assertEqual(self.__expectation.status,
-                             self.partial_result.status,
-                             'Unexpected result status')
-        self.__expectation.failure_info.apply_with_message(self.put,
-                                                           self.partial_result.failure_info,
-                                                           'failure_info')
+        self.__expectation.result.apply_with_message(self.put,
+                                                     self.partial_result,
+                                                     'result')
+
         msg = 'Difference in the sequence of executed phases and steps'
         self.put.assertListEqual(self.__expectation.internal_recording,
                                  self.__recorder.recorded_elements,
                                  msg)
-
-        if self.__expectation.sandbox_directory_structure_should_exist:
-            self.put.assertTrue(self.partial_result.has_sds)
-            self.put.assertIsNotNone(self.partial_result.sds)
-        else:
-            self.put.assertFalse(self.partial_result.has_sds)
-            self.put.assertIsNone(self.partial_result.sds)
-
-        self.__expectation.expected_action_to_check_outcome.apply_with_message(
-            self.put,
-            self.partial_result.action_to_check_outcome,
-            'action-to-check-outcome')
 
 
 class TestCaseBase(unittest.TestCase):
