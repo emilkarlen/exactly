@@ -11,7 +11,7 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
 from exactly_lib.execution.partial_execution.impl.act_phase_execution import PhaseFailureResultConstructor, \
     ActPhaseExecutor
-from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case import phase_identifier
@@ -52,7 +52,7 @@ class Configuration(tuple):
 
 
 def execute(exe_conf: Configuration,
-            test_case: TestCase) -> PartialResult:
+            test_case: TestCase) -> PartialExeResult:
     executor = _PartialExecutor(exe_conf,
                                 test_case)
     return executor.execute()
@@ -82,7 +82,7 @@ class _PartialExecutor:
         self.__sandbox_directory_structure = None
         self._action_to_check_outcome = None
 
-    def execute(self) -> PartialResult:
+    def execute(self) -> PartialExeResult:
         self.__set_pre_sds_environment_variables()
         res = self._sequence([
             self.__act__create_executor_and_parse,
@@ -197,7 +197,7 @@ class _PartialExecutor:
             try:
                 self.__act_source_and_executor.parse(self.__instruction_environment_pre_sds)
             except ParseException as ex:
-                return failure_con.apply(PartialResultStatus(PartialResultStatus.VALIDATION_ERROR),
+                return failure_con.apply(PartialExeResultStatus(PartialExeResultStatus.VALIDATION_ERROR),
                                          new_failure_details_from_message(ex.cause.failure_message))
             return None
 
@@ -213,7 +213,7 @@ class _PartialExecutor:
             if res is None:
                 return None
             else:
-                return failure_con.apply(PartialResultStatus(res.status.value),
+                return failure_con.apply(PartialExeResultStatus(res.status.value),
                                          new_failure_details_from_message(res.error_message))
 
         return self.__execute_action_and_catch_implementation_exception(action,
@@ -227,7 +227,7 @@ class _PartialExecutor:
             if res.is_success:
                 return None
             else:
-                return failure_con.apply(PartialResultStatus(res.status.value),
+                return failure_con.apply(PartialExeResultStatus(res.status.value),
                                          new_failure_details_from_message(res.failure_message))
 
         return self.__execute_action_and_catch_implementation_exception(action,
@@ -393,18 +393,18 @@ class _PartialExecutor:
         try:
             return action()
         except Exception as ex:
-            return PhaseStepFailure(PartialResultStatus.IMPLEMENTATION_ERROR,
+            return PhaseStepFailure(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                                     PhaseFailureInfo(step,
                                                      new_failure_details_from_exception(ex, str(sys.exc_info()))))
 
-    def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialResult:
-        return PartialResult(failure.status,
-                             self.__sandbox_directory_structure,
-                             self._action_to_check_outcome,
-                             failure.failure_info)
+    def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:
+        return PartialExeResult(failure.status,
+                                self.__sandbox_directory_structure,
+                                self._action_to_check_outcome,
+                                failure.failure_info)
 
-    def _final_pass_result(self) -> PartialResult:
-        return PartialResult(PartialResultStatus.PASS,
-                             self.__sandbox_directory_structure,
-                             self._action_to_check_outcome,
-                             None)
+    def _final_pass_result(self) -> PartialExeResult:
+        return PartialExeResult(PartialExeResultStatus.PASS,
+                                self.__sandbox_directory_structure,
+                                self._action_to_check_outcome,
+                                None)

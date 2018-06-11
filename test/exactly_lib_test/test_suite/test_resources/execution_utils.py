@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
-from exactly_lib.execution.full_execution.result import FullResult, FullResultStatus, new_pass, new_skipped
+from exactly_lib.execution.full_execution.result import FullExeResult, FullExeResultStatus, new_pass, new_skipped
 from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing as tcp
@@ -66,26 +66,26 @@ DUMMY_CASE_PROCESSING = case_processing.Configuration(
 DUMMY_SDS = SandboxDirectoryStructure('test-root-dir')
 
 
-def full_result_with_failure_info(status: FullResultStatus,
-                                  failure_phase_step=phase_step.ASSERT__MAIN) -> FullResult:
-    return FullResult(status,
-                      DUMMY_SDS,
-                      None,
-                      PhaseFailureInfo(failure_phase_step,
+def full_result_with_failure_info(status: FullExeResultStatus,
+                                  failure_phase_step=phase_step.ASSERT__MAIN) -> FullExeResult:
+    return FullExeResult(status,
+                         DUMMY_SDS,
+                         None,
+                         PhaseFailureInfo(failure_phase_step,
                                        new_failure_details_from_message(
                                            'failure message')))
 
 
-def full_result_without_failure_info(status: FullResultStatus) -> FullResult:
-    return FullResult(status,
-                      DUMMY_SDS,
-                      None,
-                      None)
+def full_result_without_failure_info(status: FullExeResultStatus) -> FullExeResult:
+    return FullExeResult(status,
+                         DUMMY_SDS,
+                         None,
+                         None)
 
 
 FULL_RESULT_PASS = new_pass(DUMMY_SDS, ActionToCheckOutcome(0))
 FULL_RESULT_SKIP = new_skipped()
-FULL_RESULT_FAIL = full_result_with_failure_info(FullResultStatus.FAIL)
+FULL_RESULT_FAIL = full_result_with_failure_info(FullExeResultStatus.FAIL)
 
 T_C_H_S = test_case_handling_setup_with_identity_preprocessor()
 

@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -75,7 +75,7 @@ class TestValidationErrorDueToReferenceToUndefinedSymbol(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.VALIDATION_ERROR,
+            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_message_assertion(
                             conf.step,
@@ -105,7 +105,7 @@ class TestValidationErrorDueToFailedReferenceRestrictions(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.VALIDATION_ERROR,
+            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_phase_and_message_assertion(
                             conf.step,
@@ -124,7 +124,7 @@ class TestImplementationError(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             conf.step,

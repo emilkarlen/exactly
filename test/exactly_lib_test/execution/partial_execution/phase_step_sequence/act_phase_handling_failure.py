@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -30,7 +30,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_hard_error('error in act/validate-pre-sds'))),
-            Expectation(PartialResultStatus.HARD_ERROR,
+            Expectation(PartialExeResultStatus.HARD_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
@@ -49,7 +49,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_pre_sds=validate_action_that_returns(
                             svh.new_svh_validation_error('error in act/validate-pre-sds'))),
-            Expectation(PartialResultStatus.VALIDATION_ERROR,
+            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_PRE_SDS,
@@ -68,7 +68,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_pre_sds=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
-            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_PRE_SDS,
@@ -87,7 +87,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_post_setup=validate_action_that_returns(
                             svh.new_svh_validation_error('error in act/validate-post-setup'))),
-            Expectation(PartialResultStatus.VALIDATION_ERROR,
+            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
@@ -111,7 +111,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_post_setup=validate_action_that_returns(
                             svh.new_svh_hard_error('error in act/validate-post-setup'))),
-            Expectation(PartialResultStatus.HARD_ERROR,
+            Expectation(PartialExeResultStatus.HARD_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__VALIDATE_POST_SETUP,
@@ -135,7 +135,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_validate_post_setup=validate_action_that_raises(
                             test.ImplementationErrorTestException())),
-            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__VALIDATE_POST_SETUP,
@@ -159,7 +159,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_prepare=prepare_action_that_returns_hard_error_with_message(
                             'error in act/prepare')),
-            Expectation(PartialResultStatus.HARD_ERROR,
+            Expectation(PartialExeResultStatus.HARD_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__PREPARE,
@@ -186,7 +186,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_prepare=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
-            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__PREPARE,
@@ -213,7 +213,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_hard_error_with_message(
                             'error in execute')),
-            Expectation(PartialResultStatus.HARD_ERROR,
+            Expectation(PartialExeResultStatus.HARD_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_message(
                             phase_step.ACT__EXECUTE,
@@ -241,7 +241,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_raises(
                             test.ImplementationErrorTestException())),
-            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_exception(
                             phase_step.ACT__EXECUTE,

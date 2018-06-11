@@ -5,20 +5,20 @@ import platform
 from xml.etree import ElementTree as ET
 
 from exactly_lib.common.result_reporting import error_message_for_full_result, error_message_for_error_info
-from exactly_lib.execution.full_execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.processing.test_case_processing import Status, TestCaseSetup, Result
 from exactly_lib.test_suite import reporting, structure
 from exactly_lib.test_suite.reporters import simple_progress_reporter as simple_reporter
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter
 
-FAIL_STATUSES = {FullResultStatus.FAIL,
-                 FullResultStatus.XPASS,
+FAIL_STATUSES = {FullExeResultStatus.FAIL,
+                 FullExeResultStatus.XPASS,
                  }
 
-ERROR_STATUSES = {FullResultStatus.VALIDATION_ERROR,
-                  FullResultStatus.HARD_ERROR,
-                  FullResultStatus.IMPLEMENTATION_ERROR,
+ERROR_STATUSES = {FullExeResultStatus.VALIDATION_ERROR,
+                  FullExeResultStatus.HARD_ERROR,
+                  FullExeResultStatus.IMPLEMENTATION_ERROR,
                   }
 
 NON_PASS_STATUSES = FAIL_STATUSES.union(ERROR_STATUSES)

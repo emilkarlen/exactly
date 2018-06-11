@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -44,7 +44,7 @@ class TestSuccessfulScenarios(TestCaseBase):
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages),
                         act_executor_execute=execute_action_that_returns_exit_code(128)),
-            Expectation(PartialResultStatus.PASS,
+            Expectation(PartialExeResultStatus.PASS,
                         action_to_check_has_executed_completely(128),
                         ExpectedFailureForNoFailure(),
                         [phase_step.ACT__PARSE] +
@@ -76,7 +76,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages_with_ref_to_undefined_symbol)),
-            Expectation(PartialResultStatus.VALIDATION_ERROR,
+            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
@@ -91,7 +91,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_raise(test.ImplementationErrorTestException())),
-            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [
@@ -114,7 +114,7 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages)),
-            Expectation(PartialResultStatus.VALIDATION_ERROR,
+            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
                         [

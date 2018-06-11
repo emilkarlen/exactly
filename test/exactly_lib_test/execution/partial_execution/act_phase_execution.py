@@ -8,7 +8,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.result import PartialResultStatus, PartialResult
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActPhaseHandling, ActSourceAndExecutorConstructor, ParseException
@@ -62,7 +62,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
-        expectation = Expectation(phase_result=partial_result_status_is(PartialResultStatus.VALIDATION_ERROR))
+        expectation = Expectation(phase_result=partial_result_status_is(PartialExeResultStatus.VALIDATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([phase_step.ACT__PARSE],
@@ -82,7 +82,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
-        expectation = Expectation(phase_result=partial_result_status_is(PartialResultStatus.IMPLEMENTATION_ERROR))
+        expectation = Expectation(phase_result=partial_result_status_is(PartialExeResultStatus.IMPLEMENTATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([phase_step.ACT__PARSE],
@@ -216,7 +216,7 @@ def _stderr_result_file_contains(expected_contents: str) -> asrt.ValueAssertion:
 
 def _check_contents_of_stdin_for_setup_settings(put: unittest.TestCase,
                                                 setup_settings: SetupSettingsBuilder,
-                                                expected_contents_of_stdin: str) -> PartialResult:
+                                                expected_contents_of_stdin: str) -> PartialExeResult:
     """
     Tests contents of stdin by executing a Python program that stores
     the contents of stdin in a file.
@@ -351,7 +351,7 @@ def _execute(constructor: ActSourceAndExecutorConstructor,
              setup_settings: SetupSettingsBuilder = setup.default_settings(),
              is_keep_sandbox: bool = False,
              current_directory: pathlib.Path = None,
-             ) -> PartialResult:
+             ) -> PartialExeResult:
     if current_directory is None:
         current_directory = pathlib.Path.cwd()
     with home_directory_structure() as hds:

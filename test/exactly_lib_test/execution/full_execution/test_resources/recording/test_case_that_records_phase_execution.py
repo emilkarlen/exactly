@@ -1,7 +1,7 @@
 import types
 import unittest
 
-from exactly_lib.execution.full_execution.result import FullResult
+from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.result import sh, svh
@@ -61,7 +61,7 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                expected_result: asrt.ValueAssertion[FullResult],
+                expected_result: asrt.ValueAssertion[FullExeResult],
                 expected_internal_recording: list,
                 sandbox_directory_structure_should_exist: bool):
         return tuple.__new__(cls, (expected_result,
@@ -70,7 +70,7 @@ class Expectation(tuple):
                                    ))
 
     @property
-    def full_result(self) -> asrt.ValueAssertion[FullResult]:
+    def full_result(self) -> asrt.ValueAssertion[FullExeResult]:
         return self[0]
 
     @property

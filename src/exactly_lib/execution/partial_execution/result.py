@@ -6,9 +6,9 @@ from exactly_lib.execution.result import ResultBase, ActionToCheckOutcome
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
-class PartialResultStatus(Enum):
+class PartialExeResultStatus(Enum):
     """
-    Implementation notes: integer values must correspond to FullResultStatus
+    Implementation notes: integer values must correspond to FullExeResultStatus
     """
     PASS = 0
     VALIDATION_ERROR = 1
@@ -17,9 +17,11 @@ class PartialResultStatus(Enum):
     IMPLEMENTATION_ERROR = 100
 
 
-class PartialResult(ResultBase):
+class PartialExeResult(ResultBase):
+    """The result of a partial execution"""
+
     def __init__(self,
-                 status: PartialResultStatus,
+                 status: PartialExeResultStatus,
                  sds: Optional[SandboxDirectoryStructure],
                  action_to_check_outcome: Optional[ActionToCheckOutcome],
                  failure_info: Optional[FailureInfo]):
@@ -27,5 +29,5 @@ class PartialResult(ResultBase):
         self.__status = status
 
     @property
-    def status(self) -> PartialResultStatus:
+    def status(self) -> PartialExeResultStatus:
         return self.__status

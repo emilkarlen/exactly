@@ -5,7 +5,7 @@ from typing import Sequence
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo, FailureInfoVisitor
-from exactly_lib.execution.full_execution.result import FullResult
+from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_case import error_description
 from exactly_lib.util.error_message_format import source_line_sequence
@@ -13,13 +13,13 @@ from exactly_lib.util.line_source import SourceLocationPath, SourceLocation
 from exactly_lib.util.std import FilePrinter
 
 
-def error_message_for_full_result(the_full_result: FullResult) -> str:
+def error_message_for_full_result(the_full_result: FullExeResult) -> str:
     output_file = io.StringIO()
     print_error_message_for_full_result(FilePrinter(output_file), the_full_result)
     return output_file.getvalue()
 
 
-def print_error_message_for_full_result(printer: FilePrinter, the_full_result: FullResult):
+def print_error_message_for_full_result(printer: FilePrinter, the_full_result: FullExeResult):
     if the_full_result.is_failure:
         failure_info = the_full_result.failure_info
         _SourceDisplayer(printer).visit(failure_info)

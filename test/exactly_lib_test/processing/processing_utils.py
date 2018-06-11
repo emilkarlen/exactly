@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.execution.full_execution.result import FullResult, new_skipped
+from exactly_lib.execution.full_execution.result import FullExeResult, new_skipped
 from exactly_lib.processing import processing_utils as sut
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
@@ -273,7 +273,7 @@ class ExecutorThat(sut.Executor):
 
     def apply(self,
               test_case_file_path: pathlib.Path,
-              test_case: test_case_doc.TestCase) -> FullResult:
+              test_case: test_case_doc.TestCase) -> FullExeResult:
         return self.f()
 
 
@@ -284,7 +284,7 @@ class ExecutorThatReturnsIfSame(sut.Executor):
 
     def apply(self,
               test_case_file_path: pathlib.Path,
-              test_case: test_case_doc.TestCase) -> FullResult:
+              test_case: test_case_doc.TestCase) -> FullExeResult:
         return if_same_then_else_raise(self.expected,
                                        test_case,
                                        self.returns)

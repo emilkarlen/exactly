@@ -4,7 +4,7 @@ from typing import List, Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution.configuration import PredefinedProperties
-from exactly_lib.execution.full_execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.processing import processors as sut
 from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
@@ -79,7 +79,7 @@ class TestFileInclusionResultStatus(unittest.TestCase):
                         self.assertEqual(Status.EXECUTED,
                                          result.status)
                         self.assertFalse(result.execution_result.is_failure)
-                        self.assertEqual(FullResultStatus.PASS,
+                        self.assertEqual(FullExeResultStatus.PASS,
                                          result.execution_result.status)
                         self.assertEqual([phase.section_name],
                                          recording_output)
@@ -223,7 +223,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                              SourceAndStatus(
                                  failing_source_line=name_of_failing_instruction,
                                  expected_result_statuses=result_for_executed_status_matches(
-                                     FullResultStatus.IMPLEMENTATION_ERROR))),
+                                     FullExeResultStatus.IMPLEMENTATION_ERROR))),
             ])
 
     def test_instruction_validation_fails(self):
@@ -240,7 +240,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                              SourceAndStatus(
                                  failing_source_line=name_of_failing_instruction,
                                  expected_result_statuses=result_for_executed_status_matches(
-                                     FullResultStatus.VALIDATION_ERROR))),
+                                     FullExeResultStatus.VALIDATION_ERROR))),
             ])
 
     def test_assertion_fails(self):
@@ -253,7 +253,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                              SourceAndStatus(
                                  failing_source_line=name_of_failing_instruction,
                                  expected_result_statuses=result_for_executed_status_matches(
-                                     FullResultStatus.FAIL))),
+                                     FullExeResultStatus.FAIL))),
             ])
 
 

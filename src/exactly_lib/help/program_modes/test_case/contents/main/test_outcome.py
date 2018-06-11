@@ -6,8 +6,8 @@ from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.doc_format import exit_value_text
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.test_case import phase_names
-from exactly_lib.execution.full_execution.result import FullResultStatus
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
@@ -131,7 +131,7 @@ The outcome of the {phase[assert]} phase.
 
 
 def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
-    def _row(tc_status: str, assert_outcome: PartialResultStatus, test_outcome: FullResultStatus) -> list:
+    def _row(tc_status: str, assert_outcome: PartialExeResultStatus, test_outcome: FullExeResultStatus) -> list:
         return [cell(paras(tc_status)),
                 cell(paras(assert_outcome.name if assert_outcome is not None else '')),
                 cell(paras(test_outcome.name)),
@@ -143,13 +143,13 @@ def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
             cell(paras('{phase[assert]:syntax}'.format(phase=setup.phase_names))),
             cell(paras('Test Case')),
         ],
-        _row(test_case_status.NAME_PASS, PartialResultStatus.PASS, FullResultStatus.PASS),
-        _row(test_case_status.NAME_PASS, PartialResultStatus.FAIL, FullResultStatus.FAIL),
+        _row(test_case_status.NAME_PASS, PartialExeResultStatus.PASS, FullExeResultStatus.PASS),
+        _row(test_case_status.NAME_PASS, PartialExeResultStatus.FAIL, FullExeResultStatus.FAIL),
 
-        _row(test_case_status.NAME_FAIL, PartialResultStatus.PASS, FullResultStatus.XPASS),
-        _row(test_case_status.NAME_FAIL, PartialResultStatus.FAIL, FullResultStatus.XFAIL),
+        _row(test_case_status.NAME_FAIL, PartialExeResultStatus.PASS, FullExeResultStatus.XPASS),
+        _row(test_case_status.NAME_FAIL, PartialExeResultStatus.FAIL, FullExeResultStatus.XFAIL),
 
-        _row(test_case_status.NAME_SKIP, None, FullResultStatus.SKIPPED),
+        _row(test_case_status.NAME_SKIP, None, FullExeResultStatus.SKIPPED),
     ],
         '  ')
 

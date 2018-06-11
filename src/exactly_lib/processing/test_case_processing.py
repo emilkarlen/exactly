@@ -1,7 +1,7 @@
 import pathlib
 from enum import Enum
 
-from exactly_lib.execution.full_execution.result import FullResult
+from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.error_description import ErrorDescription
 from exactly_lib.util import line_source
@@ -71,7 +71,7 @@ class Result(tuple):
                 status: Status,
                 error_info: ErrorInfo = None,
                 error_type: AccessErrorType = None,
-                execution_result: FullResult = None):
+                execution_result: FullExeResult = None):
         """
         :param error_info:
         :param error_type: Given iff status is Status.ACCESS_ERROR
@@ -92,7 +92,7 @@ class Result(tuple):
         return self[2]
 
     @property
-    def execution_result(self) -> FullResult:
+    def execution_result(self) -> FullExeResult:
         return self[3]
 
     @property
@@ -115,7 +115,7 @@ def new_access_error(error: AccessErrorType,
                   error_type=error)
 
 
-def new_executed(execution_result: FullResult) -> Result:
+def new_executed(execution_result: FullExeResult) -> Result:
     return Result(Status.EXECUTED,
                   execution_result=execution_result)
 
