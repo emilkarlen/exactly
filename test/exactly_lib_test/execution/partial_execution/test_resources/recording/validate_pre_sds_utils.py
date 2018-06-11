@@ -50,7 +50,7 @@ class TestValidationError(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.VALIDATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
@@ -74,7 +74,7 @@ class TestHardError(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
@@ -97,7 +97,7 @@ class TestImplementationError(TestCaseBase):
             self,
             Arrangement(test_case),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_no_sds(),
                     asrt_result.has_no_action_to_check_outcome(),

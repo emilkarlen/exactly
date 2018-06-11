@@ -26,7 +26,7 @@ class Test(TestCaseBase):
                     Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(),
                                 act_executor_execute=execute_action_that_returns_exit_code(expected_exit_code)),
                     Expectation(
-                        asrt_result.matches3(
+                        asrt_result.matches2(
                             PartialExeResultStatus.PASS,
                             asrt_result.has_sds(),
                             asrt_result.has_action_to_check_outcome_with_exit_code(expected_exit_code),

@@ -79,18 +79,7 @@ def has_action_to_check_outcome_with_exit_code(exit_code: int) -> asrt.ValueAsse
     return has_action_to_check_outcome(asrt_atc.is_exit_code(exit_code))
 
 
-def matches2(sds: asrt.ValueAssertion[PartialExeResult],
-             action_to_check_outcome: asrt.ValueAssertion[PartialExeResult],
-             other: asrt.ValueAssertion[PartialExeResult] = asrt.anything_goes()
-             ) -> asrt.ValueAssertion[PartialExeResult]:
-    return asrt.and_([
-        other,
-        sds,
-        action_to_check_outcome,
-    ])
-
-
-def matches3(status: PartialExeResultStatus,
+def matches2(status: PartialExeResultStatus,
              sds: asrt.ValueAssertion[PartialExeResult],
              action_to_check_outcome: asrt.ValueAssertion[PartialExeResult],
              failure_info: asrt.ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes()

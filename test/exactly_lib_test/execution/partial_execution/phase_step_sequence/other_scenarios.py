@@ -31,7 +31,7 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
@@ -58,7 +58,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_no_action_to_check_outcome(),
@@ -86,7 +86,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(0)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(0),
@@ -128,7 +128,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(12)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(12),
@@ -170,7 +170,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.FAIL,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
@@ -214,7 +214,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(72)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(72),
@@ -258,7 +258,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
@@ -302,7 +302,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(3)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.HARD_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(3),
@@ -346,7 +346,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         act_executor_execute=execute_action_that_returns_exit_code(5)),
             Expectation(
-                asrt_result.matches3(
+                asrt_result.matches2(
                     PartialExeResultStatus.IMPLEMENTATION_ERROR,
                     asrt_result.has_sds(),
                     asrt_result.has_action_to_check_outcome_with_exit_code(5),
