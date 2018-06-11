@@ -62,11 +62,9 @@ class Arrangement(tuple):
 class Expectation(tuple):
     def __new__(cls,
                 expected_result: asrt.ValueAssertion[FullExeResult],
-                expected_internal_recording: list,
-                sandbox_directory_structure_should_exist: bool):
+                expected_internal_recording: list):
         return tuple.__new__(cls, (expected_result,
                                    expected_internal_recording,
-                                   sandbox_directory_structure_should_exist,
                                    ))
 
     @property
@@ -76,10 +74,6 @@ class Expectation(tuple):
     @property
     def internal_recording(self) -> list:
         return self[1]
-
-    @property
-    def sandbox_directory_structure_should_exist(self) -> bool:
-        return self[2]
 
 
 class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
@@ -110,18 +104,15 @@ class _TestCaseThatRecordsExecution(FullExecutionTestCaseBase):
         self.__expectation.full_result.apply_with_message(self.utc,
                                                           self.full_result,
                                                           'full_result')
+        if self.full_result.has_sds:
+            self.utc.assertTrue(
+                self.sds.root_dir.is_dir(),
+                'Sandbox directory structure root is expected to be a directory')
+
         msg = 'Difference in the sequence of executed phases and steps that are executed internally'
         self.utc.assertListEqual(self.__expectation.internal_recording,
                                  self.__recorder.recorded_elements,
                                  msg)
-        if self.__expectation.sandbox_directory_structure_should_exist:
-            self.utc.assertIsNotNone(self.sds)
-            self.utc.assertTrue(
-                self.sds.root_dir.is_dir(),
-                'Sandbox directory structure root is expected to be a directory')
-        else:
-            self.utc.assertIsNone(self.sds,
-                                  'Sandbox directory structure is expected to not be created')
 
 
 class TestCaseBase(unittest.TestCase):

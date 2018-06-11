@@ -6,7 +6,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import pfh, sh
 from exactly_lib.test_case.test_case_status import ExecutionMode
-from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_full_result
+from exactly_lib_test.execution.full_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     test_case_with_two_instructions_in_each_phase
 from exactly_lib_test.execution.full_execution.test_resources.recording.test_case_that_records_phase_execution import \
@@ -18,7 +18,6 @@ from exactly_lib_test.execution.test_resources.failure_info_check import Expecte
 from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_executed_completely
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 from exactly_lib_test.test_resources.actions import do_return, do_raise
-from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -35,13 +34,16 @@ class Test(TestCaseBase):
                      main=do_return(pfh.new_pfh_fail('fail message'))))
         self._check(Arrangement(test_case,
                                 execute_test_action=execute_action_that_returns_exit_code(11)),
-                    Expectation(asrt_full_result.is_failure(
-                        FullExeResultStatus.XFAIL,
-                        ExpectedFailureForInstructionFailure.new_with_message(
-                            phase_step.ASSERT__MAIN,
-                            test_case.the_extra(phase_identifier.ASSERT)[0].source,
-                            'fail message'),
-                        action_to_check_outcome=action_to_check_has_executed_completely(11)),
+                    Expectation(
+                        asrt_result.matches2(
+                            FullExeResultStatus.XFAIL,
+                            asrt_result.has_sds(),
+                            asrt_result.has_action_to_check_outcome_with_exit_code(11),
+                            ExpectedFailureForInstructionFailure.new_with_message(
+                                phase_step.ASSERT__MAIN,
+                                test_case.the_extra(phase_identifier.ASSERT)[0].source,
+                                'fail message'),
+                        ),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +
                         [phase_step.ACT__PARSE] +
@@ -67,7 +69,7 @@ class Test(TestCaseBase):
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          ],
-                        True))
+                    ))
 
     def test_with_assert_phase_that_passes(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
@@ -76,7 +78,7 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         execute_test_action=execute_action_that_returns_exit_code(64)),
-            Expectation(asrt_full_result.is_xpass(action_to_check_outcome=action_to_check_has_executed_completely(64)),
+            Expectation(asrt_result.is_xpass(action_to_check_outcome=action_to_check_has_executed_completely(64)),
                         [phase_step.CONFIGURATION__MAIN,
                          phase_step.CONFIGURATION__MAIN] +
                         [phase_step.ACT__PARSE] +
@@ -103,7 +105,7 @@ class Test(TestCaseBase):
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                          ],
-                        True))
+                        ))
 
     def test_with_configuration_phase_with_hard_error(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
@@ -113,14 +115,18 @@ class Test(TestCaseBase):
                  test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
             Arrangement(test_case),
-            Expectation(asrt_full_result.is_failure(FullExeResultStatus.HARD_ERROR,
-                                                    ExpectedFailureForInstructionFailure.new_with_message(
-                                                        phase_step.CONFIGURATION__MAIN,
-                                                        test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
-                                                        'hard error msg'),
-                                                    action_to_check_outcome=asrt.is_none),
-                        [phase_step.CONFIGURATION__MAIN],
-                        False))
+            Expectation(
+                asrt_result.matches2(
+                    FullExeResultStatus.HARD_ERROR,
+                    asrt_result.has_no_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForInstructionFailure.new_with_message(
+                        phase_step.CONFIGURATION__MAIN,
+                        test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
+                        'hard error msg'),
+                ),
+                [phase_step.CONFIGURATION__MAIN],
+            ))
 
     def test_with_implementation_error(self):
         test_case = test_case_with_two_instructions_in_each_phase() \
@@ -132,13 +138,16 @@ class Test(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         execute_test_action=execute_action_that_returns_exit_code(128)),
-            Expectation(asrt_full_result.is_failure(
-                FullExeResultStatus.IMPLEMENTATION_ERROR,
-                ExpectedFailureForInstructionFailure.new_with_exception(
-                    phase_step.CLEANUP__MAIN,
-                    test_case.the_extra(phase_identifier.CLEANUP)[0].source,
-                    test.ImplementationErrorTestException),
-                action_to_check_outcome=action_to_check_has_executed_completely(128)),
+            Expectation(
+                asrt_result.matches2(
+                    FullExeResultStatus.IMPLEMENTATION_ERROR,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(128),
+                    ExpectedFailureForInstructionFailure.new_with_exception(
+                        phase_step.CLEANUP__MAIN,
+                        test_case.the_extra(phase_identifier.CLEANUP)[0].source,
+                        test.ImplementationErrorTestException),
+                ),
                 [phase_step.CONFIGURATION__MAIN,
                  phase_step.CONFIGURATION__MAIN] +
                 [phase_step.ACT__PARSE] +
@@ -164,7 +173,7 @@ class Test(TestCaseBase):
                  phase_step.ASSERT__MAIN,
                  (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
                  ],
-                True))
+            ))
 
 
 if __name__ == '__main__':
