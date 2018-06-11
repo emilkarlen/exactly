@@ -8,7 +8,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.configuration import TestCase
-from exactly_lib.execution.partial_execution.result import PartialResult
+from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
@@ -68,7 +68,7 @@ class PartialExecutionTestCaseBase:
         return self.__put
 
     @property
-    def partial_result(self) -> PartialResult:
+    def partial_result(self) -> PartialExeResult:
         return self.__partial_result
 
     @property

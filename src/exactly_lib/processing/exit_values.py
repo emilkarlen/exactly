@@ -1,5 +1,5 @@
 from exactly_lib.common.exit_value import ExitValue
-from exactly_lib.execution.full_execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 
@@ -28,37 +28,38 @@ NO_EXECUTION__PRE_PROCESS_ERROR = from_access_error(processing.AccessErrorType.P
 NO_EXECUTION__SYNTAX_ERROR = from_access_error(processing.AccessErrorType.SYNTAX_ERROR)
 
 
-def _for_full_result(result: FullResultStatus, color: ForegroundColor) -> ExitValue:
+def _for_full_result(result: FullExeResultStatus, color: ForegroundColor) -> ExitValue:
     return ExitValue(result.value,
                      result.name,
                      color)
 
 
 _FOR_FULL_RESULT = {
-    FullResultStatus.PASS: _for_full_result(FullResultStatus.PASS, ForegroundColor.GREEN),
-    FullResultStatus.VALIDATION_ERROR: _for_full_result(FullResultStatus.VALIDATION_ERROR, ForegroundColor.YELLOW),
-    FullResultStatus.FAIL: _for_full_result(FullResultStatus.FAIL, ForegroundColor.RED),
-    FullResultStatus.SKIPPED: _for_full_result(FullResultStatus.SKIPPED, ForegroundColor.CYAN),
-    FullResultStatus.XFAIL: _for_full_result(FullResultStatus.XFAIL, ForegroundColor.CYAN),
-    FullResultStatus.XPASS: _for_full_result(FullResultStatus.XPASS, ForegroundColor.RED),
-    FullResultStatus.HARD_ERROR: _for_full_result(FullResultStatus.HARD_ERROR, ForegroundColor.PURPLE),
-    FullResultStatus.IMPLEMENTATION_ERROR: _for_full_result(FullResultStatus.IMPLEMENTATION_ERROR,
-                                                            ForegroundColor.PURPLE),
+    FullExeResultStatus.PASS: _for_full_result(FullExeResultStatus.PASS, ForegroundColor.GREEN),
+    FullExeResultStatus.VALIDATION_ERROR: _for_full_result(FullExeResultStatus.VALIDATION_ERROR,
+                                                           ForegroundColor.YELLOW),
+    FullExeResultStatus.FAIL: _for_full_result(FullExeResultStatus.FAIL, ForegroundColor.RED),
+    FullExeResultStatus.SKIPPED: _for_full_result(FullExeResultStatus.SKIPPED, ForegroundColor.CYAN),
+    FullExeResultStatus.XFAIL: _for_full_result(FullExeResultStatus.XFAIL, ForegroundColor.CYAN),
+    FullExeResultStatus.XPASS: _for_full_result(FullExeResultStatus.XPASS, ForegroundColor.RED),
+    FullExeResultStatus.HARD_ERROR: _for_full_result(FullExeResultStatus.HARD_ERROR, ForegroundColor.PURPLE),
+    FullExeResultStatus.IMPLEMENTATION_ERROR: _for_full_result(FullExeResultStatus.IMPLEMENTATION_ERROR,
+                                                               ForegroundColor.PURPLE),
 }
 
 
-def from_full_result(status: FullResultStatus) -> ExitValue:
+def from_full_result(status: FullExeResultStatus) -> ExitValue:
     return _FOR_FULL_RESULT[status]
 
 
-EXECUTION__PASS = from_full_result(FullResultStatus.PASS)
-EXECUTION__VALIDATION_ERROR = from_full_result(FullResultStatus.VALIDATION_ERROR)
-EXECUTION__FAIL = from_full_result(FullResultStatus.FAIL)
-EXECUTION__SKIPPED = from_full_result(FullResultStatus.SKIPPED)
-EXECUTION__XFAIL = from_full_result(FullResultStatus.XFAIL)
-EXECUTION__XPASS = from_full_result(FullResultStatus.XPASS)
-EXECUTION__HARD_ERROR = from_full_result(FullResultStatus.HARD_ERROR)
-EXECUTION__IMPLEMENTATION_ERROR = from_full_result(FullResultStatus.IMPLEMENTATION_ERROR)
+EXECUTION__PASS = from_full_result(FullExeResultStatus.PASS)
+EXECUTION__VALIDATION_ERROR = from_full_result(FullExeResultStatus.VALIDATION_ERROR)
+EXECUTION__FAIL = from_full_result(FullExeResultStatus.FAIL)
+EXECUTION__SKIPPED = from_full_result(FullExeResultStatus.SKIPPED)
+EXECUTION__XFAIL = from_full_result(FullExeResultStatus.XFAIL)
+EXECUTION__XPASS = from_full_result(FullExeResultStatus.XPASS)
+EXECUTION__HARD_ERROR = from_full_result(FullExeResultStatus.HARD_ERROR)
+EXECUTION__IMPLEMENTATION_ERROR = from_full_result(FullExeResultStatus.IMPLEMENTATION_ERROR)
 
 ALL_EXIT_VALUES = ([
                        NO_EXECUTION__FILE_ACCESS_ERROR,

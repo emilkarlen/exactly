@@ -3,7 +3,7 @@ import unittest
 from typing import Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -71,7 +71,7 @@ class Arrangement(tuple):
 
 class Expectation(tuple):
     def __new__(cls,
-                expected_status: PartialResultStatus,
+                expected_status: PartialExeResultStatus,
                 expected_action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]],
                 expected_failure_info: asrt.ValueAssertion[FailureInfo],
                 expected_internal_recording: list,
@@ -83,7 +83,7 @@ class Expectation(tuple):
                                    expected_action_to_check_outcome))
 
     @property
-    def status(self) -> PartialResultStatus:
+    def status(self) -> PartialExeResultStatus:
         return self[0]
 
     @property

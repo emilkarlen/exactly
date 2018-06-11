@@ -4,7 +4,7 @@ import shutil
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.result_reporting import print_error_message_for_full_result, print_error_info
-from exactly_lib.execution.full_execution.result import FullResultStatus, FullResult
+from exactly_lib.execution.full_execution.result import FullExeResultStatus, FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.test_case_processing import ErrorInfo
 from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
@@ -27,7 +27,7 @@ class _FullExecutionHandler:
         self._out_printer = out_printer
         self._err_printer = err_printer
 
-    def handle(self, result: FullResult):
+    def handle(self, result: FullExeResult):
         status = result.status
         if status in _FULL_EXECUTION__SKIPPED:
             return self.skipped(result)
@@ -38,19 +38,19 @@ class _FullExecutionHandler:
         else:
             return self.hard_error_or_implementation_error(result)
 
-    def complete(self, result: FullResult) -> int:
+    def complete(self, result: FullExeResult) -> int:
         raise NotImplementedError('abstract method')
 
-    def skipped(self, result: FullResult) -> int:
+    def skipped(self, result: FullExeResult) -> int:
         return self._default_non_complete_execution(result)
 
-    def validation(self, result: FullResult) -> int:
+    def validation(self, result: FullExeResult) -> int:
         return self._default_non_complete_execution(result)
 
-    def hard_error_or_implementation_error(self, result: FullResult) -> int:
+    def hard_error_or_implementation_error(self, result: FullExeResult) -> int:
         return self._default_non_complete_execution(result)
 
-    def _default_non_complete_execution(self, result: FullResult) -> int:
+    def _default_non_complete_execution(self, result: FullExeResult) -> int:
         self._out_printer.write_line(result.status.name)
         print_error_message_for_full_result(self._err_printer, result)
         return self.exit_value.exit_code
@@ -88,7 +88,7 @@ class TestCaseResultReporter(ResultReporter):
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: FullResult) -> int:
+                              result: FullExeResult) -> int:
         raise NotImplementedError('abstract method')
 
     def _report_unable_to_execute(self,
@@ -105,7 +105,7 @@ class _ResultReporterForNormalOutput(TestCaseResultReporter):
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: FullResult) -> int:
+                              result: FullExeResult) -> int:
         self._out_printer.write_colored_line(result.status.name,
                                              exit_value.color)
         print_error_message_for_full_result(self._err_printer, result)
@@ -118,7 +118,7 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: FullResult) -> int:
+                              result: FullExeResult) -> int:
         if result.has_sds:
             self._out_printer.write_line(str(result.sds.root_dir))
 
@@ -136,7 +136,7 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
 
 
 class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
-    def complete(self, result: FullResult) -> int:
+    def complete(self, result: FullExeResult) -> int:
         def copy_file(input_file_path: pathlib.Path,
                       output_file):
             with input_file_path.open() as f:
@@ -156,7 +156,7 @@ class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
 
     def report_full_execution(self,
                               exit_value: ExitValue,
-                              result: FullResult) -> int:
+                              result: FullExeResult) -> int:
         handler = _FullExecutionHandlerForActPhaseOutput(exit_value,
                                                          self._std,
                                                          self._out_printer,
@@ -170,12 +170,12 @@ RESULT_REPORTERS = {
     ReportingOption.ACT_PHASE_OUTPUT: _ResultReporterForActPhaseOutput,
 }
 
-_FULL_EXECUTION__SKIPPED = {FullResultStatus.SKIPPED}
+_FULL_EXECUTION__SKIPPED = {FullExeResultStatus.SKIPPED}
 
-_FULL_EXECUTION__VALIDATE = {FullResultStatus.VALIDATION_ERROR}
+_FULL_EXECUTION__VALIDATE = {FullExeResultStatus.VALIDATION_ERROR}
 
-_FULL_EXECUTION__COMPLETE = {FullResultStatus.PASS,
-                             FullResultStatus.FAIL,
-                             FullResultStatus.XPASS,
-                             FullResultStatus.XFAIL,
+_FULL_EXECUTION__COMPLETE = {FullExeResultStatus.PASS,
+                             FullExeResultStatus.FAIL,
+                             FullExeResultStatus.XPASS,
+                             FullExeResultStatus.XFAIL,
                              }

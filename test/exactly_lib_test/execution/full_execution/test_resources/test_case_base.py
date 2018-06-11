@@ -6,7 +6,7 @@ import unittest
 from exactly_lib.act_phase_setups.source_interpreter import python3
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
-from exactly_lib.execution.full_execution.result import FullResult
+from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.test_case import test_case_doc, os_services
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
@@ -79,7 +79,7 @@ class FullExecutionTestCaseBase:
         return self.__initial_home_dir_path
 
     @property
-    def full_result(self) -> FullResult:
+    def full_result(self) -> FullExeResult:
         return self.__full_result
 
     @property

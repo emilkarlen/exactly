@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.execution.phase_step import SimplePhaseStep
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import svh
@@ -50,7 +50,7 @@ class TestValidationError(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.VALIDATION_ERROR,
+            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             conf.step,
@@ -70,7 +70,7 @@ class TestHardError(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.HARD_ERROR,
+            Expectation(PartialExeResultStatus.HARD_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_message(
                             conf.step,
@@ -89,7 +89,7 @@ class TestImplementationError(TestCaseBase):
         execute_test_case_with_recording(
             self,
             Arrangement(test_case),
-            Expectation(PartialResultStatus.IMPLEMENTATION_ERROR,
+            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                         action_to_check_has_not_executed_completely(),
                         ExpectedFailureForInstructionFailure.new_with_exception(
                             conf.step,

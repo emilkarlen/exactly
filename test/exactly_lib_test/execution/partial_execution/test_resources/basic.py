@@ -7,7 +7,7 @@ from typing import Callable
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.result import PartialResult
+from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phase_identifier import PhaseEnum
@@ -35,7 +35,7 @@ class Result(tuple):
 
     def __new__(cls,
                 hds: HomeDirectoryStructure,
-                partial_result: PartialResult):
+                partial_result: PartialExeResult):
         return tuple.__new__(cls, (hds,
                                    partial_result))
 
@@ -48,7 +48,7 @@ class Result(tuple):
         return self.partial_result.sds
 
     @property
-    def partial_result(self) -> PartialResult:
+    def partial_result(self) -> PartialExeResult:
         return self[1]
 
 

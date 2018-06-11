@@ -5,7 +5,7 @@ from exactly_lib.execution.impl.phase_step_execution import execute_phase_prim
 from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.line_source import Line
 from exactly_lib_test.execution.test_resources import failure_assertions as asrt_failure
@@ -104,7 +104,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+            asrt_failure.is_present_with(PartialExeResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(1, '1')),
                                          asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
@@ -125,7 +125,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(PartialResultStatus.HARD_ERROR,
+            asrt_failure.is_present_with(PartialExeResultStatus.HARD_ERROR,
                                          equals_single_line_source_location_path(Line(1, '1')),
                                          asrt_failure_details.is_failure_message_of('hard error message')),
             ['instruction header for source line number: 1',
@@ -145,7 +145,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(PartialResultStatus.IMPLEMENTATION_ERROR,
+            asrt_failure.is_present_with(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                                          equals_single_line_source_location_path(Line(1, '1')),
                                          asrt_failure_details.is_exception(TestException)),
             ['instruction header for source line number: 1',
@@ -168,7 +168,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+            asrt_failure.is_present_with(PartialExeResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(1, '1')),
                                          asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
@@ -193,7 +193,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+            asrt_failure.is_present_with(PartialExeResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(2, '2')),
                                          asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
@@ -219,7 +219,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+            asrt_failure.is_present_with(PartialExeResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(2, '2')),
                                          asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',
@@ -244,7 +244,7 @@ class Test(unittest.TestCase):
             recording_media,
             phase_contents,
             instruction_executor,
-            asrt_failure.is_present_with(PartialResultStatus.FAIL,
+            asrt_failure.is_present_with(PartialExeResultStatus.FAIL,
                                          equals_single_line_source_location_path(Line(1, '1')),
                                          asrt_failure_details.is_failure_message_of('fail message')),
             ['instruction header for source line number: 1',

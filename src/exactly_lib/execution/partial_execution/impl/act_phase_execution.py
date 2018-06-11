@@ -5,7 +5,7 @@ from typing import Optional
 from exactly_lib.execution import phase_step
 from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
@@ -24,18 +24,18 @@ class PhaseFailureResultConstructor:
         self.step = step
 
     def apply(self,
-              status: PartialResultStatus,
+              status: PartialExeResultStatus,
               failure_details: FailureDetails) -> PhaseStepFailure:
         return PhaseStepFailure(status,
                                 PhaseFailureInfo(self.step,
                                                  failure_details))
 
     def implementation_error(self, ex: Exception) -> PhaseStepFailure:
-        return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
+        return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                           new_failure_details_from_exception(ex))
 
     def implementation_error_msg(self, msg: str) -> PhaseStepFailure:
-        return self.apply(PartialResultStatus.IMPLEMENTATION_ERROR,
+        return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                           new_failure_details_from_message(msg))
 
 
@@ -82,7 +82,7 @@ class ActPhaseExecutor:
                 return None
             else:
                 return _failure_from(step,
-                                     PartialResultStatus(res.status.value),
+                                     PartialExeResultStatus(res.status.value),
                                      new_failure_details_from_message(res.failure_message))
 
         return _with_implementation_exception_handling(step, action)
@@ -97,7 +97,7 @@ class ActPhaseExecutor:
                 return None
             else:
                 return _failure_from(step,
-                                     PartialResultStatus.HARD_ERROR,
+                                     PartialExeResultStatus.HARD_ERROR,
                                      new_failure_details_from_message(res.failure_message))
 
         return _with_implementation_exception_handling(step, action)
@@ -111,7 +111,7 @@ class ActPhaseExecutor:
                 return None
             else:
                 return _failure_from(step,
-                                     PartialResultStatus.HARD_ERROR,
+                                     PartialExeResultStatus.HARD_ERROR,
                                      exit_code_or_hard_error.failure_details)
 
         return _with_implementation_exception_handling(step, action)
@@ -177,7 +177,7 @@ def _with_implementation_exception_handling(
 
 
 def _failure_from(step: PhaseStep,
-                  status: PartialResultStatus,
+                  status: PartialExeResultStatus,
                   failure_details: FailureDetails) -> PhaseStepFailure:
     return _failure_con_for(step).apply(status, failure_details)
 

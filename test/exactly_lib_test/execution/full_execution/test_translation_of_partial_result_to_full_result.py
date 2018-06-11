@@ -1,41 +1,41 @@
 import unittest
 
-from exactly_lib.execution.full_execution.result import FullResultStatus, translate_status
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus, translate_status
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.test_case.test_case_status import ExecutionMode
 
 
 class Test(unittest.TestCase):
     def test_PASS(self):
-        self.assertEqual(FullResultStatus.PASS,
+        self.assertEqual(FullExeResultStatus.PASS,
                          translate_status(ExecutionMode.PASS,
-                                          PartialResultStatus.PASS))
+                                          PartialExeResultStatus.PASS))
 
-        self.assertEqual(FullResultStatus.FAIL,
+        self.assertEqual(FullExeResultStatus.FAIL,
                          translate_status(ExecutionMode.PASS,
-                                          PartialResultStatus.FAIL))
+                                          PartialExeResultStatus.FAIL))
 
-        self.assertEqual(FullResultStatus.HARD_ERROR,
+        self.assertEqual(FullExeResultStatus.HARD_ERROR,
                          translate_status(ExecutionMode.PASS,
-                                          PartialResultStatus.HARD_ERROR))
+                                          PartialExeResultStatus.HARD_ERROR))
 
-        self.assertEqual(FullResultStatus.IMPLEMENTATION_ERROR,
+        self.assertEqual(FullExeResultStatus.IMPLEMENTATION_ERROR,
                          translate_status(ExecutionMode.PASS,
-                                          PartialResultStatus.IMPLEMENTATION_ERROR))
+                                          PartialExeResultStatus.IMPLEMENTATION_ERROR))
 
     def test_FAIL(self):
-        self.assertEqual(FullResultStatus.XPASS,
+        self.assertEqual(FullExeResultStatus.XPASS,
                          translate_status(ExecutionMode.FAIL,
-                                          PartialResultStatus.PASS))
+                                          PartialExeResultStatus.PASS))
 
-        self.assertEqual(FullResultStatus.XFAIL,
+        self.assertEqual(FullExeResultStatus.XFAIL,
                          translate_status(ExecutionMode.FAIL,
-                                          PartialResultStatus.FAIL))
+                                          PartialExeResultStatus.FAIL))
 
-        self.assertEqual(FullResultStatus.HARD_ERROR,
+        self.assertEqual(FullExeResultStatus.HARD_ERROR,
                          translate_status(ExecutionMode.FAIL,
-                                          PartialResultStatus.HARD_ERROR))
+                                          PartialExeResultStatus.HARD_ERROR))
 
-        self.assertEqual(FullResultStatus.IMPLEMENTATION_ERROR,
+        self.assertEqual(FullExeResultStatus.IMPLEMENTATION_ERROR,
                          translate_status(ExecutionMode.FAIL,
-                                          PartialResultStatus.IMPLEMENTATION_ERROR))
+                                          PartialExeResultStatus.IMPLEMENTATION_ERROR))

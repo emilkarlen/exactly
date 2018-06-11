@@ -1,7 +1,7 @@
 from exactly_lib.definitions import doc_format
 from exactly_lib.definitions.entity.conf_params import TEST_CASE_STATUS_CONF_PARAM_INFO
 from exactly_lib.definitions.test_case import phase_names
-from exactly_lib.execution.full_execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
@@ -29,7 +29,7 @@ DOCUMENTATION = _ExecutionModeConfigurationParameter()
 
 _TEXT_PARSER = TextParser({
     'assert_phase': phase_names.ASSERT_PHASE_NAME,
-    'full_result_skipped': FullResultStatus.SKIPPED.name,
+    'full_result_skipped': FullExeResultStatus.SKIPPED.name,
 
     'ASSERT_PASS': exit_values.EXECUTION__PASS.exit_identifier,
     'ASSERT_FAIL': exit_values.EXECUTION__FAIL.exit_identifier,

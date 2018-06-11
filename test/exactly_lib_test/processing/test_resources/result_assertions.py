@@ -1,4 +1,4 @@
-from exactly_lib.execution.full_execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.processing.test_case_processing import Status, AccessErrorType, Result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -15,8 +15,8 @@ def result_matches(status: Status,
     ])
 
 
-def result_for_executed_status_matches(full_result_status: FullResultStatus) -> asrt.ValueAssertion[Result]:
-    def get_full_result_status(result: Result) -> FullResultStatus:
+def result_for_executed_status_matches(full_result_status: FullExeResultStatus) -> asrt.ValueAssertion[Result]:
+    def get_full_result_status(result: Result) -> FullExeResultStatus:
         return result.execution_result.status
 
     return asrt.and_([

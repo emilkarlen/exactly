@@ -1,14 +1,14 @@
 from typing import Callable, Optional
 
 from exactly_lib.execution.failure_info import FailureInfo
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.util.failure_details import FailureDetails
 from exactly_lib.util.line_source import SourceLocationPath
 
 
 class Failure(tuple):
     def __new__(cls,
-                status: PartialResultStatus,
+                status: PartialExeResultStatus,
                 source_location: SourceLocationPath,
                 failure_details: FailureDetails,
                 element_description: str = None):
@@ -18,7 +18,7 @@ class Failure(tuple):
         return tuple.__new__(cls, (status, source_location, failure_details, element_description))
 
     @property
-    def status(self) -> PartialResultStatus:
+    def status(self) -> PartialExeResultStatus:
         return self[0]
 
     @property
@@ -42,7 +42,7 @@ class Failure(tuple):
 
 class PhaseStepFailure:
     def __init__(self,
-                 status: PartialResultStatus,
+                 status: PartialExeResultStatus,
                  failure_info: FailureInfo):
         """
 
@@ -53,7 +53,7 @@ class PhaseStepFailure:
         self.__status = status
 
     @property
-    def status(self) -> PartialResultStatus:
+    def status(self) -> PartialExeResultStatus:
         return self.__status
 
     @property

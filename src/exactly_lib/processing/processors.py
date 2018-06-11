@@ -5,7 +5,7 @@ from exactly_lib import program_info
 from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties, ExecutionConfiguration
 from exactly_lib.execution.full_execution import execution
-from exactly_lib.execution.full_execution.result import FullResult
+from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import processing_utils
 from exactly_lib.processing import test_case_processing as processing
@@ -137,7 +137,7 @@ class _Executor(processing_utils.Executor):
 
     def apply(self,
               test_case_file_path: pathlib.Path,
-              test_case: test_case_doc.TestCase) -> FullResult:
+              test_case: test_case_doc.TestCase) -> FullExeResult:
         dir_containing_test_case_file = test_case_file_path.parent.resolve()
         return execution.execute(self._exe_conf,
                                  ConfigurationBuilder(dir_containing_test_case_file,

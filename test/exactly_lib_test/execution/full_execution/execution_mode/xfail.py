@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.full_execution.result import FullResultStatus
+from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import pfh, sh
@@ -36,7 +36,7 @@ class Test(TestCaseBase):
         self._check(Arrangement(test_case,
                                 execute_test_action=execute_action_that_returns_exit_code(11)),
                     Expectation(asrt_full_result.is_failure(
-                        FullResultStatus.XFAIL,
+                        FullExeResultStatus.XFAIL,
                         ExpectedFailureForInstructionFailure.new_with_message(
                             phase_step.ASSERT__MAIN,
                             test_case.the_extra(phase_identifier.ASSERT)[0].source,
@@ -113,7 +113,7 @@ class Test(TestCaseBase):
                  test.configuration_phase_instruction_that(do_return(sh.new_sh_hard_error('hard error msg'))))
         self._check(
             Arrangement(test_case),
-            Expectation(asrt_full_result.is_failure(FullResultStatus.HARD_ERROR,
+            Expectation(asrt_full_result.is_failure(FullExeResultStatus.HARD_ERROR,
                                                     ExpectedFailureForInstructionFailure.new_with_message(
                                                         phase_step.CONFIGURATION__MAIN,
                                                         test_case.the_extra(phase_identifier.CONFIGURATION)[1].source,
@@ -133,7 +133,7 @@ class Test(TestCaseBase):
             Arrangement(test_case,
                         execute_test_action=execute_action_that_returns_exit_code(128)),
             Expectation(asrt_full_result.is_failure(
-                FullResultStatus.IMPLEMENTATION_ERROR,
+                FullExeResultStatus.IMPLEMENTATION_ERROR,
                 ExpectedFailureForInstructionFailure.new_with_exception(
                     phase_step.CLEANUP__MAIN,
                     test_case.the_extra(phase_identifier.CLEANUP)[0].source,

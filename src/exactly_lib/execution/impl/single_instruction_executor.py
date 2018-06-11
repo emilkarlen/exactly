@@ -1,6 +1,6 @@
 from enum import Enum
 
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
@@ -9,7 +9,7 @@ from exactly_lib.util import line_source
 
 class PartialControlledFailureEnum(Enum):
     """
-    Implementation notes: integer values must correspond to PartialResultStatus
+    Implementation notes: integer values must correspond to PartialExeResultStatus
 
     "controlled" means that implementation errors are not handled.
     """
@@ -68,7 +68,7 @@ class SingleInstructionExecutionFailure(tuple):
     """
 
     def __new__(cls,
-                status: PartialResultStatus,
+                status: PartialExeResultStatus,
                 source_location: line_source.SourceLocationPath,
                 details: failure_details.FailureDetails):
         return tuple.__new__(cls, (status,
@@ -76,9 +76,9 @@ class SingleInstructionExecutionFailure(tuple):
                                    details))
 
     @property
-    def status(self) -> PartialResultStatus:
+    def status(self) -> PartialExeResultStatus:
         """
-        :return: Never PartialResultStatus.PASS
+        :return: Never PartialExeResultStatus.PASS
         """
         return self[0]
 
@@ -106,13 +106,13 @@ def execute_element(executor: ControlledInstructionExecutor,
         if fail_info is None:
             return None
         return SingleInstructionExecutionFailure(
-            PartialResultStatus(fail_info.status.value),
+            PartialExeResultStatus(fail_info.status.value),
             element.source_location_path,
             failure_details.new_failure_details_from_message(
                 fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(
-            PartialResultStatus.IMPLEMENTATION_ERROR,
+            PartialExeResultStatus.IMPLEMENTATION_ERROR,
             element.source_location_path,
             failure_details.new_failure_details_from_exception(ex))
 

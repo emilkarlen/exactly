@@ -4,7 +4,7 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution.configuration import TestCase, ConfPhaseValues
 from exactly_lib.execution.partial_execution.impl import executor
 from exactly_lib.execution.partial_execution.impl.executor import Configuration
-from exactly_lib.execution.partial_execution.result import PartialResult
+from exactly_lib.execution.partial_execution.result import PartialExeResult
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.util.file_utils import preserved_cwd
 
@@ -13,7 +13,7 @@ def execute(test_case: TestCase,
             full_exe_input_conf: ExecutionConfiguration,
             conf_phase_values: ConfPhaseValues,
             initial_setup_settings: SetupSettingsBuilder,
-            is_keep_sandbox: bool) -> PartialResult:
+            is_keep_sandbox: bool) -> PartialExeResult:
     """
     Takes care of construction of the Sandbox directory structure, including
     the root directory, and executes a given Test Case in this directory.

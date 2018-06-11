@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.execution import phase_step_simple as phase_step
-from exactly_lib.execution.partial_execution.result import PartialResultStatus
+from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
@@ -25,7 +25,7 @@ class Test(TestCaseBase):
                 self._check(
                     Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(),
                                 act_executor_execute=execute_action_that_returns_exit_code(expected_exit_code)),
-                    Expectation(PartialResultStatus.PASS,
+                    Expectation(PartialExeResultStatus.PASS,
                                 action_to_check_has_executed_completely(expected_exit_code),
                                 ExpectedFailureForNoFailure(),
 
