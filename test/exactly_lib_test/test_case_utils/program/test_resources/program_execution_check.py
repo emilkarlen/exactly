@@ -21,7 +21,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
 from exactly_lib_test.test_resources.execution import tmp_dir
-from exactly_lib_test.test_resources.execution.utils import ProcessResult
+from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction, home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -30,7 +30,7 @@ from exactly_lib_test.test_resources.value_assertions.value_assertion import Mes
 
 class ResultWithTransformationData:
     def __init__(self,
-                 process_result: ProcessResult,
+                 process_result: SubProcessResult,
                  result_of_transformation: str):
         self.process_result = process_result
         self.result_of_transformation = result_of_transformation
@@ -71,10 +71,10 @@ class ResultWithTransformationDataAssertion(asrt.ValueAssertion[ResultWithTransf
                             pr.exitcode,
                             message_builder.for_sub_component('exitcode'))
         self.stdout_contents.apply(put,
-                                   pr.stdout_contents,
+                                   pr.stdout,
                                    message_builder.for_sub_component('stdout'))
         self.stderr_contents.apply(put,
-                                   pr.stderr_contents,
+                                   pr.stderr,
                                    message_builder.for_sub_component('stderr'))
         self.contents_after_transformation.apply(put,
                                                  value.result_of_transformation,
@@ -226,8 +226,8 @@ class Executor:
         stderr_contents = file_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDERR))
         stdout_contents = file_utils.contents_of(proc_exe_result.path_of(ProcOutputFile.STDOUT))
         result_of_transformation = file_utils.contents_of(execution_result.path_of_file_with_transformed_contents)
-        proc_result_data = ProcessResult(proc_exe_result.exit_code,
-                                         stdout_contents,
-                                         stderr_contents)
+        proc_result_data = SubProcessResult(proc_exe_result.exit_code,
+                                            stdout_contents,
+                                            stderr_contents)
         return ResultWithTransformationData(proc_result_data,
                                             result_of_transformation)

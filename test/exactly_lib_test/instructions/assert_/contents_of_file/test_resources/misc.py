@@ -11,8 +11,8 @@ from exactly_lib_test.test_case_file_structure.test_resources import home_and_sd
 from exactly_lib_test.test_case_file_structure.test_resources.home_and_sds_populators import \
     HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments
-from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsAction
 
@@ -76,9 +76,9 @@ class _ActResultProducer(ActResultProducer):
         self.home_and_sds_2_str = home_and_sds_2_str
         self.file_name = file_name
 
-    def apply(self, act_environment: ActEnvironment) -> ProcessResult:
+    def apply(self, act_environment: ActEnvironment) -> SubProcessResult:
         self._populate_act_dir(act_environment)
-        return ProcessResult()
+        return SubProcessResult()
 
     def _populate_act_dir(self, act_environment: ActEnvironment):
         actual_contents = self.home_and_sds_2_str(act_environment.home_and_sds)

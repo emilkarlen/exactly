@@ -21,8 +21,8 @@ from exactly_lib_test.section_document.test_resources.parse_source_assertions im
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions
-from exactly_lib_test.test_resources.execution import utils
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.process import SubProcessResult
 
 
 def suite() -> unittest.TestSuite:
@@ -193,7 +193,7 @@ def _actual_exitcode(exit_code: int) -> ArrangementPostAct:
 
 
 def act_result_of(exit_code: int):
-    return ActResultProducerFromActResult(utils.ProcessResult(exitcode=exit_code))
+    return ActResultProducerFromActResult(SubProcessResult(exitcode=exit_code))
 
 
 def symbol_table_with_string_constant_symbols(symbol_name_and_value_list: list) -> SymbolTable:

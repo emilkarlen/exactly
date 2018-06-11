@@ -13,8 +13,8 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_asse
     sds_root_dir_exists_and_has_sds_dirs
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     result_dir_contains_exactly
-from exactly_lib_test.test_resources.execution.utils import ProcessResult
 from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import py_program
 
@@ -27,7 +27,7 @@ class Case:
     def __init__(self,
                  name: str,
                  python_src: str,
-                 expectation: ProcessResult
+                 expectation: SubProcessResult
                  ):
         self.name = name
         self.python_src = python_src
@@ -40,9 +40,9 @@ class Test(unittest.TestCase):
         cases = [
             Case('zero exit code, no output',
                  lines_content(py_program.exit_with_code(0)),
-                 ProcessResult(exitcode=0,
-                               stdout_contents='',
-                               stderr_contents=''),
+                 SubProcessResult(exitcode=0,
+                                  stdout='',
+                                  stderr=''),
                  ),
         ]
         empty_test_case = partial_test_case_with_instructions()
@@ -60,7 +60,7 @@ class Test(unittest.TestCase):
 py_pgm = lines_content(py_program.exit_with_code(0))
 
 
-def is_pass_with(expectation: ProcessResult) -> asrt.ValueAssertion[PartialExeResult]:
+def is_pass_with(expectation: SubProcessResult) -> asrt.ValueAssertion[PartialExeResult]:
     return asrt_partial_result.is_pass(
         action_to_check_outcome=asrt_atc.is_exit_code(expectation.exitcode),
         sds=asrt.and_([
@@ -69,11 +69,11 @@ def is_pass_with(expectation: ProcessResult) -> asrt.ValueAssertion[PartialExeRe
         ]))
 
 
-def result_files(expectation: ProcessResult) -> DirContents:
+def result_files(expectation: SubProcessResult) -> DirContents:
     return DirContents([
         File(sds_files.RESULT_FILE__EXITCODE, str(expectation.exitcode)),
-        File(sds_files.RESULT_FILE__STDOUT, expectation.stdout_contents),
-        File(sds_files.RESULT_FILE__STDERR, expectation.stderr_contents),
+        File(sds_files.RESULT_FILE__STDOUT, expectation.stdout),
+        File(sds_files.RESULT_FILE__STDERR, expectation.stderr),
     ])
 
 

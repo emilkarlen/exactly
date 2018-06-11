@@ -2,7 +2,7 @@ import pathlib
 import shutil
 import types
 import unittest
-from typing import Callable
+from typing import Callable, Optional
 
 from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
@@ -16,6 +16,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.functional import Composition
+from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.act_source_executor import \
@@ -149,13 +150,15 @@ class Arrangement:
                                                                       pathlib.Path().resolve()),
                  environ: dict = None,
                  timeout_in_seconds: int = None,
-                 predefined_symbols: SymbolTable = None):
+                 predefined_symbols: SymbolTable = None,
+                 atc_output_dup: Optional[StdOutputFiles] = None):
         self.act_phase_handling = act_phase_handling
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.hds = hds
         self.environ = environ
         self.timeout_in_seconds = timeout_in_seconds
         self.predefined_symbols_or_none = predefined_symbols
+        self.atc_output_dup = atc_output_dup
 
 
 def test(put: unittest.TestCase,
@@ -204,7 +207,8 @@ def _execute(test_case: TestCase,
         ExecutionConfiguration(environ,
                                arrangement.act_phase_os_process_executor,
                                sandbox_root_name_resolver.for_test(),
-                               arrangement.predefined_symbols_or_none),
+                               arrangement.predefined_symbols_or_none,
+                               atc_output_dup=arrangement.atc_output_dup),
         ConfPhaseValues(arrangement.act_phase_handling,
                         arrangement.hds,
                         timeout_in_seconds=arrangement.timeout_in_seconds),
