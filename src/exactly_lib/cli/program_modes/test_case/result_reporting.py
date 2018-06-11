@@ -145,9 +145,9 @@ class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
 
         copy_file(result.sds.result.stdout_file, self._std.out)
         copy_file(result.sds.result.stderr_file, self._std.err)
-        exit_code = result.action_to_check_outcome.exit_code
         shutil.rmtree(str(result.sds.root_dir))
-        return exit_code
+
+        return result.action_to_check_outcome.exit_code
 
 
 class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
