@@ -10,9 +10,9 @@ from exactly_lib_test.test_resources.file_utils import tmp_file_containing
 
 class SubProcessResult(tuple):
     def __new__(cls,
-                exitcode: int,
-                stdout: str,
-                stderr: str):
+                exitcode: int = 0,
+                stdout: str = '',
+                stderr: str = ''):
         return tuple.__new__(cls, (exitcode, stdout, stderr))
 
     @property
@@ -26,10 +26,6 @@ class SubProcessResult(tuple):
     @property
     def stderr(self) -> str:
         return self[2]
-
-    @property
-    def output_files(self) -> StdOutputFiles:
-        return StdOutputFiles(self.stdout, self.stderr)
 
 
 stdout_file_name = 'stdout.txt'
