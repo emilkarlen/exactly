@@ -90,7 +90,7 @@ class FileChecker:
                                                 file_system_element.file_system_element_contents)
 
     def _msg(self, message: str) -> str:
-        return self.message_builder.for_sub_component(message)
+        return self.message_builder.for_sub_component(message).apply('')
 
     def assert_dir_contains_file(self,
                                  dir_path: pathlib.Path,

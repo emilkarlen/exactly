@@ -5,7 +5,6 @@ from pathlib import Path
 from exactly_lib import program_info
 from exactly_lib.test_case_file_structure import sandbox_directory_structure
 from exactly_lib.util.file_utils import resolved_path
-from exactly_lib_test.test_resources.file_checks import FileChecker
 
 
 def suite() -> unittest.TestSuite:
@@ -68,26 +67,6 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
     def _assert_exists_dir(self, p: Path):
         self.assertTrue(p.exists(), p.name + ' should exist')
         self.assertTrue(p.is_dir(), p.name + ' should be a directory')
-
-
-def is_sandbox_directory_structure_after_execution(fc: FileChecker,
-                                                   root_dir_name: str):
-    sds = sandbox_directory_structure.SandboxDirectoryStructure(root_dir_name)
-    fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
-                                                          5)
-    fc.assert_exists_dir(sds.test_case_dir)
-    fc.assert_exists_dir(sds.tmp.root_dir)
-    fc.assert_exists_dir(sds.tmp.internal_dir)
-    fc.assert_exists_dir(sds.tmp.user_dir)
-    fc.assert_exists_dir(sds.act_dir)
-
-    fc.assert_exists_dir_with_given_number_of_files_in_it(sds.result.root_dir,
-                                                          3)
-    fc.assert_exists_plain_file(sds.result.exitcode_file)
-    fc.assert_exists_plain_file(sds.result.stdout_file)
-    fc.assert_exists_plain_file(sds.result.stderr_file)
-
-    fc.assert_exists_dir(sds.log_dir)
 
 
 if __name__ == '__main__':
