@@ -23,6 +23,8 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
+from exactly_lib_test.execution.partial_execution.test_resources.act_phase_handling import \
+    act_phase_handling_for_execution_of_python_source
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
@@ -139,7 +141,7 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         python_source = _PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_FILE.format(file='stdout',
                                                                          value='output from program')
-        act_phase_handling = _act_phase_handling_for_execution_of_python_source(python_source)
+        act_phase_handling = act_phase_handling_for_execution_of_python_source(python_source)
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=act_phase_handling)
         # ASSERT #
@@ -151,7 +153,7 @@ class TestExecute(unittest.TestCase):
         # ARRANGE #
         python_source = _PYTHON_PROGRAM_THAT_WRITES_VALUE_TO_FILE.format(file='stderr',
                                                                          value='output from program')
-        act_phase_handling = _act_phase_handling_for_execution_of_python_source(python_source)
+        act_phase_handling = act_phase_handling_for_execution_of_python_source(python_source)
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=act_phase_handling)
         # ASSERT #
@@ -297,34 +299,6 @@ class _ExecutorThatExecutesPythonProgramFile(ActSourceAndExecutorThatJustReturns
                                     stdout=std_files.output.out,
                                     stderr=std_files.output.err)
         return new_eh_exit_code(exit_code)
-
-
-class _ExecutorThatExecutesPythonProgramSource(ActSourceAndExecutorThatJustReturnsSuccess):
-    PYTHON_FILE_NAME = 'program.py'
-
-    def __init__(self, python_program_source: str):
-        self.python_program_source = python_program_source
-
-    def execute(self,
-                environment: InstructionEnvironmentForPostSdsStep,
-                script_output_dir_path: pathlib.Path,
-                std_files: StdFiles) -> ExitCodeOrHardError:
-        python_file = pathlib.Path() / self.PYTHON_FILE_NAME
-        with python_file.open(mode='w') as f:
-            f.write(self.python_program_source)
-
-        exit_code = subprocess.call([sys.executable, str(python_file)],
-                                    timeout=60,
-                                    stdin=std_files.stdin,
-                                    stdout=std_files.output.out,
-                                    stderr=std_files.output.err)
-        return new_eh_exit_code(exit_code)
-
-
-def _act_phase_handling_for_execution_of_python_source(python_source: str) -> ActPhaseHandling:
-    executor = _ExecutorThatExecutesPythonProgramSource(python_source)
-    constructor = ActSourceAndExecutorConstructorForConstantExecutor(executor)
-    return ActPhaseHandling(constructor)
 
 
 class _ExecutorThatReturnsConstantExitCode(ActSourceAndExecutorThatJustReturnsSuccess):

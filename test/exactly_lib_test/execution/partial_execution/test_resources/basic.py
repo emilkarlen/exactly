@@ -52,6 +52,23 @@ class Result(tuple):
         return self[1]
 
 
+def result_assertion(hds: asrt.ValueAssertion[HomeDirectoryStructure] = asrt.anything_goes(),
+                     sds: asrt.ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
+                     partial_result: asrt.ValueAssertion[PartialExeResult] = asrt.anything_goes(),
+                     ) -> asrt.ValueAssertion[Result]:
+    return asrt.and_([
+        asrt.sub_component('hds',
+                           Result.hds.fget,
+                           hds),
+        asrt.sub_component('sds',
+                           Result.sds.fget,
+                           sds),
+        asrt.sub_component('partial_result',
+                           Result.partial_result.fget,
+                           partial_result),
+    ])
+
+
 class TestCaseGeneratorForPartialExecutionBase(TestCaseGeneratorBase):
     """
     Base class for generation of Test Cases for partial execution.
@@ -161,11 +178,12 @@ def test(put: unittest.TestCase,
 def test__va(put: unittest.TestCase,
              test_case: TestCase,
              arrangement: Arrangement,
-             assertions_on_result: asrt.ValueAssertion):
+             assertions_on_result: asrt.ValueAssertion[Result],
+             is_keep_sandbox_during_assertions: bool = False):
     with preserved_cwd():
         result = _execute(test_case,
                           arrangement,
-                          is_keep_sandbox=False)
+                          is_keep_sandbox=is_keep_sandbox_during_assertions)
 
         assertions_on_result.apply(put,
                                    result,

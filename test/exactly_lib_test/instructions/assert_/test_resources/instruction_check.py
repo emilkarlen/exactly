@@ -10,6 +10,7 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import pfh, svh
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActEnvironment
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
@@ -30,7 +31,7 @@ class Expectation:
 
             main_result: asrt.ValueAssertion[pfh.PassOrFailOrHardError] = pfh_assertions.is_pass(),
             symbol_usages: asrt.ValueAssertion = asrt.is_empty_sequence,
-            main_side_effects_on_sds: asrt.ValueAssertion = asrt.anything_goes(),
+            main_side_effects_on_sds: asrt.ValueAssertion[SandboxDirectoryStructure] = asrt.anything_goes(),
             main_side_effects_on_home_and_sds: asrt.ValueAssertion = asrt.anything_goes(),
             source: asrt.ValueAssertion = asrt.anything_goes(),
     ):

@@ -133,9 +133,6 @@ class ActPhaseExecutor:
                 'Failure to open stdin file: ' + str(file_name)))
 
     def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
-        """
-        Pre-condition: write has been executed.
-        """
         sds = self.home_and_sds.sds
         with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
             with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
