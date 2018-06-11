@@ -17,7 +17,9 @@ def is_pass(sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] =
             ) -> asrt.ValueAssertion[FullExeResult]:
     return matches(status=asrt.is_(FullExeResultStatus.PASS),
                    failure_info=asrt.is_none,
+                   has_sds=asrt.equals(True),
                    sds=sds,
+                   has_action_to_check_outcome=asrt.equals(True),
                    action_to_check_outcome=action_to_check_outcome)
 
 
@@ -28,14 +30,18 @@ def is_xpass(sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] =
              ) -> asrt.ValueAssertion[FullExeResult]:
     return matches(status=asrt.is_(FullExeResultStatus.XPASS),
                    failure_info=asrt.is_none,
+                   has_sds=asrt.equals(True),
                    sds=sds,
+                   has_action_to_check_outcome=asrt.equals(True),
                    action_to_check_outcome=action_to_check_outcome)
 
 
 def is_skipped() -> asrt.ValueAssertion[FullExeResult]:
     return matches(status=asrt.is_(FullExeResultStatus.SKIPPED),
                    failure_info=asrt.is_none,
+                   has_sds=asrt.equals(False),
                    sds=asrt.is_none,
+                   has_action_to_check_outcome=asrt.equals(False),
                    action_to_check_outcome=asrt.is_none)
 
 
@@ -52,7 +58,9 @@ def is_failure(status: FullExeResultStatus,
 
 def matches(
         status: asrt.ValueAssertion[FullExeResultStatus] = asrt.anything_goes(),
+        has_sds: asrt.ValueAssertion[bool] = asrt.anything_goes(),
         sds: asrt.ValueAssertion[Optional[SandboxDirectoryStructure]] = asrt.anything_goes(),
+        has_action_to_check_outcome: asrt.ValueAssertion[bool] = asrt.anything_goes(),
         action_to_check_outcome: asrt.ValueAssertion[Optional[ActionToCheckOutcome]] = asrt.anything_goes(),
         failure_info: asrt.ValueAssertion[Optional[FailureInfo]] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[FullExeResult]:
@@ -60,9 +68,15 @@ def matches(
         asrt.sub_component('status',
                            FullExeResult.status.fget,
                            status),
+        asrt.sub_component('has_sds',
+                           FullExeResult.has_sds.fget,
+                           has_sds),
         asrt.sub_component('sds',
                            FullExeResult.sds.fget,
                            sds),
+        asrt.sub_component('has_action_to_check_outcome',
+                           FullExeResult.has_action_to_check_outcome.fget,
+                           has_action_to_check_outcome),
         asrt.sub_component('action_to_check_outcome',
                            FullExeResult.action_to_check_outcome.fget,
                            action_to_check_outcome),
