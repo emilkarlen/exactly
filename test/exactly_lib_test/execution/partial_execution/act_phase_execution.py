@@ -22,9 +22,9 @@ from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_cod
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib.util.std import StdFiles
+from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
-from exactly_lib_test.execution.partial_execution.test_resources.result import partial_result_status_is
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
@@ -62,7 +62,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
-        expectation = Expectation(phase_result=partial_result_status_is(PartialExeResultStatus.VALIDATION_ERROR))
+        expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.VALIDATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([phase_step.ACT__PARSE],
@@ -82,7 +82,7 @@ class TestExecutionSequence(unittest.TestCase):
         arrangement = Arrangement(test_case=_empty_test_case(),
                                   act_phase_handling=ActPhaseHandling(constructor))
         # ASSERT #
-        expectation = Expectation(phase_result=partial_result_status_is(PartialExeResultStatus.IMPLEMENTATION_ERROR))
+        expectation = Expectation(phase_result=asrt_result.status_is(PartialExeResultStatus.IMPLEMENTATION_ERROR))
         # APPLY #
         execute_and_check(self, arrangement, expectation)
         self.assertEqual([phase_step.ACT__PARSE],

@@ -4,6 +4,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
+from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorThatRecordsExecutionWithExtraInstructionList, \
     TestCaseGeneratorForExecutionRecording
@@ -14,8 +15,6 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
     PRE_SDS_VALIDATION_STEPS__ONCE
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForNoFailure, \
     ExpectedFailureForPhaseFailure
-from exactly_lib_test.execution.test_resources.result_assertions import action_to_check_has_not_executed_completely, \
-    action_to_check_has_executed_completely
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_reference
@@ -44,29 +43,33 @@ class TestSuccessfulScenarios(TestCaseBase):
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages),
                         act_executor_execute=execute_action_that_returns_exit_code(128)),
-            Expectation(PartialExeResultStatus.PASS,
-                        action_to_check_has_executed_completely(128),
-                        ExpectedFailureForNoFailure(),
-                        [phase_step.ACT__PARSE] +
-                        SYMBOL_VALIDATION_STEPS__ONCE +
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.PASS,
+                    asrt_result.has_sds(),
+                    asrt_result.has_action_to_check_outcome_with_exit_code(128),
+                    ExpectedFailureForNoFailure(),
+                ),
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__ONCE +
 
-                        PRE_SDS_VALIDATION_STEPS__ONCE +
+                PRE_SDS_VALIDATION_STEPS__ONCE +
 
-                        [phase_step.SETUP__MAIN,
+                [phase_step.SETUP__MAIN,
 
-                         phase_step.SETUP__VALIDATE_POST_SETUP,
-                         phase_step.ACT__VALIDATE_POST_SETUP,
-                         phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                         phase_step.ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
 
-                         phase_step.ACT__PREPARE,
-                         phase_step.ACT__EXECUTE,
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
 
-                         phase_step.BEFORE_ASSERT__MAIN,
-                         phase_step.ASSERT__MAIN,
-                         (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
-                         ],
-                        sandbox_directory_structure_should_exist=True))
+                 phase_step.BEFORE_ASSERT__MAIN,
+                 phase_step.ASSERT__MAIN,
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ASSERT),
+                 ],
+            ))
 
 
 class TestFailingScenarios(TestCaseBase):
@@ -76,30 +79,37 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages_with_ref_to_undefined_symbol)),
-            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
-                        action_to_check_has_not_executed_completely(),
-                        ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
-                        [
-                            phase_step.ACT__PARSE,
-                            phase_step.SETUP__VALIDATE_SYMBOLS,
-                            phase_step.ACT__VALIDATE_SYMBOLS,
-                        ],
-                        sandbox_directory_structure_should_exist=False))
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.VALIDATION_ERROR,
+                    asrt_result.has_no_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
+                ),
+                [
+                    phase_step.ACT__PARSE,
+                    phase_step.SETUP__VALIDATE_SYMBOLS,
+                    phase_step.ACT__VALIDATE_SYMBOLS,
+                ],
+            ))
 
     def test_implementation_error_in_validate_symbols(self):
         test_case = _single_successful_instruction_in_each_phase()
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_raise(test.ImplementationErrorTestException())),
-            Expectation(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                        action_to_check_has_not_executed_completely(),
-                        ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
-                        [
-                            phase_step.ACT__PARSE,
-                            phase_step.SETUP__VALIDATE_SYMBOLS,
-                            phase_step.ACT__VALIDATE_SYMBOLS,
-                        ],
-                        sandbox_directory_structure_should_exist=False))
+            Expectation(
+                asrt_result.matches3(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                                     asrt_result.has_no_sds(),
+                                     asrt_result.has_no_action_to_check_outcome(),
+                                     ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
+                                     ),
+                [
+                    phase_step.ACT__PARSE,
+                    phase_step.SETUP__VALIDATE_SYMBOLS,
+                    phase_step.ACT__VALIDATE_SYMBOLS,
+                ],
+            ))
 
     def test_symbol_that_does_not_meet_restriction_in_validate_symbols(self):
         test_case = _single_successful_instruction_in_each_phase()
@@ -114,15 +124,19 @@ class TestFailingScenarios(TestCaseBase):
         self._check(
             Arrangement(test_case,
                         act_executor_symbol_usages=do_return(symbol_usages)),
-            Expectation(PartialExeResultStatus.VALIDATION_ERROR,
-                        action_to_check_has_not_executed_completely(),
-                        ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
-                        [
-                            phase_step.ACT__PARSE,
-                            phase_step.SETUP__VALIDATE_SYMBOLS,
-                            phase_step.ACT__VALIDATE_SYMBOLS,
-                        ],
-                        sandbox_directory_structure_should_exist=False))
+            Expectation(
+                asrt_result.matches3(
+                    PartialExeResultStatus.VALIDATION_ERROR,
+                    asrt_result.has_no_sds(),
+                    asrt_result.has_no_action_to_check_outcome(),
+                    ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
+                ),
+                [
+                    phase_step.ACT__PARSE,
+                    phase_step.SETUP__VALIDATE_SYMBOLS,
+                    phase_step.ACT__VALIDATE_SYMBOLS,
+                ],
+            ))
 
 
 def _single_successful_instruction_in_each_phase() -> TestCaseGeneratorForExecutionRecording:
