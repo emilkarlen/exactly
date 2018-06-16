@@ -25,9 +25,9 @@ from exactly_lib_test.processing.test_resources.result_assertions import result_
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     setup_with_null_act_phase_and_null_preprocessing, configuration_with_no_instructions_and_no_preprocessor
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
-from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.actions import do_return, do_raise
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
+from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_path

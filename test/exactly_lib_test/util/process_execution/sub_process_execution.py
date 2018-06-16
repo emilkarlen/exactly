@@ -3,8 +3,8 @@ import unittest
 from exactly_lib.util.process_execution import process_output_files, sub_process_execution as sut
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout
 from exactly_lib.util.process_execution.process_output_files import FileNames
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa

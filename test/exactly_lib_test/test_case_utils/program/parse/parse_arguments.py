@@ -29,7 +29,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.invalid_source_tokens
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opts
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import RelativityOptionConfiguration
-from exactly_lib_test.test_resources.file_structure import empty_file, DirContents
+from exactly_lib_test.test_resources.files.file_structure import empty_file, DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

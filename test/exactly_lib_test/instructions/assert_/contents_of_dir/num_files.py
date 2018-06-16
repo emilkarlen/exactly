@@ -21,8 +21,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     PassOrFail, ExpectationTypeConfig
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
-from exactly_lib_test.test_resources.file_structure import Dir
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file
+from exactly_lib_test.test_resources.files.file_structure import Dir, DirContents, empty_file
 
 
 def suite() -> unittest.TestSuite:

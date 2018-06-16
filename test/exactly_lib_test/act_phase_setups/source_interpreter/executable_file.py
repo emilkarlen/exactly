@@ -17,7 +17,7 @@ from exactly_lib_test.execution.test_resources import eh_assertions
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     test_case_dir_contains_exactly
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.util.test_resources import py_program
 
 

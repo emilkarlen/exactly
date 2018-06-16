@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources.file_checks import FileChecker
+from exactly_lib_test.test_resources.files.file_checks import FileChecker
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 

@@ -2,7 +2,7 @@ from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomePopulator
-from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.files.file_structure import DirContents
 
 
 def empty() -> HomePopulator:

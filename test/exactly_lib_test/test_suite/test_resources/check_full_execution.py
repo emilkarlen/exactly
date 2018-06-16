@@ -16,8 +16,8 @@ from exactly_lib.test_suite.execution import Executor
 from exactly_lib.test_suite.suite_hierarchy_reading import Reader, Environment
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
-from exactly_lib_test.test_resources.file_structure import DirContents
-from exactly_lib_test.test_resources.str_std_out_files import null_output_files
+from exactly_lib_test.test_resources.files.file_structure import DirContents
+from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
     ExecutionTracingRootSuiteReporter
 

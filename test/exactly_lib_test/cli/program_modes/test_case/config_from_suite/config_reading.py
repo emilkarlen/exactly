@@ -32,7 +32,7 @@ from exactly_lib_test.processing.test_resources.act_phase import act_setup_that_
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     setup_with_null_act_phase_and_null_preprocessing
 from exactly_lib_test.test_resources.actions import do_return
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_exit_value
 

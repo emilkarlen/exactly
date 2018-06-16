@@ -2,7 +2,7 @@ from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
-from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.files import file_structure
 
 
 class HomeOrSdsPopulatorForRelOptionType(HomeOrSdsPopulator):

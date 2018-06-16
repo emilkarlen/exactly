@@ -16,10 +16,10 @@ from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instr
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.test_case import os_services
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
+from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import \
     first_char_is_name_and_rest_is_argument__splitter, EMPTY_INSTRUCTIONS_SETUP
 from exactly_lib_test.test_resources.process import SubProcessResult
-from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 
 CONFIGURATION_SECTION_INSTRUCTIONS = instruction_setup.instruction_set_from_name_and_setup_constructor_list(
     [

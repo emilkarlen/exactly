@@ -5,7 +5,7 @@ from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionTy
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators as sut
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_sds
-from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 
 

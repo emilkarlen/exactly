@@ -14,7 +14,7 @@ from exactly_lib_test.act_phase_setups.test_resources.test_validation_for_single
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
-from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 

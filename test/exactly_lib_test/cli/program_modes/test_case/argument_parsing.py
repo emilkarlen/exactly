@@ -3,7 +3,7 @@ import unittest
 from exactly_lib.cli.program_modes.test_case import argument_parsing as sut
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.processing.test_resources.test_case_setup import test_case_handling_setup
-from exactly_lib_test.test_resources.file_utils import tmp_file_containing
+from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
 
 
 def suite() -> unittest.TestSuite:

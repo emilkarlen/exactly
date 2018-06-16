@@ -15,7 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.tra
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File
 
 
 def suite_for(instruction_configuration: InstructionTestConfiguration) -> unittest.TestSuite:

@@ -15,7 +15,7 @@ from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util import line_source
 from exactly_lib_test.test_case.test_resources import error_info
-from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING, \
     FULL_RESULT_PASS, test_suite, TestCaseProcessorThatGivesConstantPerCase

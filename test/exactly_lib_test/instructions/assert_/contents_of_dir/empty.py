@@ -8,8 +8,7 @@ from exactly_lib_test.instructions.assert_.contents_of_dir.test_resources.instru
     AssertionVariantArgumentsConstructor
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     PassOrFail
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, sym_link
-from exactly_lib_test.test_resources.file_structure import empty_dir, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, sym_link, empty_dir, Dir
 
 
 def suite() -> unittest.TestSuite:

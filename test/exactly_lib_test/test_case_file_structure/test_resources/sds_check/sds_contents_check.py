@@ -5,7 +5,7 @@ from typing import Callable
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
-from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.file_assertions import DirContainsExactly
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder

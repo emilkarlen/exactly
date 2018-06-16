@@ -10,7 +10,7 @@ from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.test_suite.reporting import SubSuiteReporter
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.python_program_execution import \
     abs_path_to_interpreter_quoted_for_exactly, \
     abs_path_to_interpreter
