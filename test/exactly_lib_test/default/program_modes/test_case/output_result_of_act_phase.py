@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_EXECUTING_ACT_PHASE
@@ -32,7 +33,7 @@ class OutputAndExitCodeFromActPhaseIsEmittedWhenTestCaseExecutesSuccessfully(Set
     std_out = 'output to stdout'
     std_err = 'output to stderr'
 
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         return [OPTION_FOR_EXECUTING_ACT_PHASE]
 
     def test_case(self) -> str:

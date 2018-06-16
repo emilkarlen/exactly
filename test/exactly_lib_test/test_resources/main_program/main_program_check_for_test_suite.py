@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 import exactly_lib.cli.cli_environment.common_cli_options as opt
 from exactly_lib_test.test_resources.files.file_structure import DirContents
@@ -15,13 +16,13 @@ class SetupBase:
     def expected_exit_code(self) -> int:
         raise NotImplementedError()
 
-    def expected_stdout_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_lines(self, root_path: pathlib.Path) -> List[str]:
         return self.expected_stdout_run_lines(root_path) + self.expected_stdout_reporting_lines(root_path)
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         raise NotImplementedError()
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         raise NotImplementedError()
 
     def _check_base(self,
@@ -81,7 +82,7 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
                         preprocessor_source_file_name: str) -> list:
         return [opt.SUITE_COMMAND]
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         raise NotImplementedError()
 
     def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
@@ -116,10 +117,10 @@ class SetupWithoutPreprocessor(main_program_check_base.SetupWithoutPreprocessor,
         raise NotImplementedError()
 
     def first_arguments(self,
-                        root_path: pathlib.Path) -> list:
+                        root_path: pathlib.Path) -> List[str]:
         return [opt.SUITE_COMMAND]
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         raise NotImplementedError()
 
     def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
@@ -142,7 +143,7 @@ class SetupWithoutPreprocessorWithTestActor(SetupWithoutPreprocessor):
     and uses the test actor as default for test cases.
     """
 
-    def arguments_for_interpreter(self) -> list:
+    def arguments_for_interpreter(self) -> List[str]:
         return ARGUMENTS_FOR_TEST_INTERPRETER
 
 
@@ -151,5 +152,5 @@ class SetupWithoutPreprocessorWithDefaultActor(SetupWithoutPreprocessor):
     Setup that executes a suite that does not use a preprocessor.
     """
 
-    def arguments_for_interpreter(self) -> list:
+    def arguments_for_interpreter(self) -> List[str]:
         return []

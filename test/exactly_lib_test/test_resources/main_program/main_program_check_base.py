@@ -2,7 +2,7 @@ import pathlib
 import sys
 import tempfile
 import unittest
-from typing import List
+from typing import List, Sequence, Callable
 
 from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
@@ -18,7 +18,7 @@ class SetupBase:
     def file_argument_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         raise NotImplementedError()
 
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         """
         Arguments that appears before the suite file argument.
         :return:
@@ -97,21 +97,15 @@ def run_default_main_program_via_sub_process(put: unittest.TestCase,
 
 def check_with_just_main_program_runner(setup: SetupWithJustMainProgramRunner,
                                         put: unittest.TestCase,
-                                        runner):
-    """
-    :param runner: (unittest.TestCase, list) -> SubProcessResult
-    """
+                                        runner: Callable[[unittest.TestCase, List[str]], SubProcessResult]):
     sub_process_result = runner(put, setup.arguments())
     setup.check(put, sub_process_result)
 
 
-def check(additional_arguments: list,
+def check(additional_arguments: List[str],
           setup: SetupWithoutPreprocessor,
           put: unittest.TestCase,
-          runner):
-    """
-    :param runner: (unittest.TestCase, list) -> SubProcessResult
-    """
+          runner: Callable[[unittest.TestCase, List[str]], SubProcessResult]):
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-suite-test-') as tmp_dir:
         tmp_dir_path = resolved_path(tmp_dir)
         setup.file_structure(tmp_dir_path).write_to(tmp_dir_path)
@@ -127,10 +121,7 @@ def check(additional_arguments: list,
 
 def check_with_tmp_dir_contents(setup: SetupWithTmpCwdDirContents,
                                 put: unittest.TestCase,
-                                runner):
-    """
-    :param runner: (unittest.TestCase, list) -> SubProcessResult
-    """
+                                runner: Callable[[unittest.TestCase, List[str]], SubProcessResult]):
     with tmp_dir_as_cwd() as tmp_dir_path:
         setup.file_structure(tmp_dir_path).write_to(tmp_dir_path)
         arguments = setup.arguments(tmp_dir_path)
@@ -140,13 +131,10 @@ def check_with_tmp_dir_contents(setup: SetupWithTmpCwdDirContents,
                     sub_process_result)
 
 
-def check_with_pre_proc(additional_arguments: list,
+def check_with_pre_proc(additional_arguments: List[str],
                         setup: SetupWithPreprocessor,
                         put: unittest.TestCase,
-                        runner):
-    """
-    :param runner: (unittest.TestCase, list) -> SubProcessResult
-    """
+                        runner: Callable[[unittest.TestCase, List[str]], SubProcessResult]):
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-suite-test-preprocessor-') as pre_proc_dir:
         preprocessor_file_path = resolved_path(pre_proc_dir) / 'preprocessor.py'
         with preprocessor_file_path.open('w') as f:
@@ -235,20 +223,14 @@ class TestForSetupWithTmpCwdDirContents(unittest.TestCase):
         return str(self.setup) + '/' + self.main_program_runner.description_for_test_name()
 
 
-def tests_for_setup_with_tmp_cwd(setups: list,
+def tests_for_setup_with_tmp_cwd(setups: Sequence[SetupWithTmpCwdDirContents],
                                  main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    """
-    :type setups: [TestForSetupWithTmpDirContents]
-    """
     return unittest.TestSuite([TestForSetupWithTmpCwdDirContents(setup, main_program_runner)
                                for setup in setups])
 
 
-def tests_for_setup_with_just_main_program_runner(setups: list,
+def tests_for_setup_with_just_main_program_runner(setups: Sequence[SetupWithJustMainProgramRunner],
                                                   main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    """
-    :type setups: [SetupWithOnlMainProgramRunner]
-    """
     return unittest.TestSuite([TestForSetupWithOnlMainProgramRunner(setup, main_program_runner)
                                for setup in setups])
 

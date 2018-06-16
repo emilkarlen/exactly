@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
     OPTION_FOR_KEEPING_SANDBOX_DIRECTORY
@@ -63,7 +64,7 @@ class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithout
 
 
 class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         return [OPTION_FOR_KEEPING_SANDBOX_DIRECTORY]
 
     def test_case(self) -> str:
