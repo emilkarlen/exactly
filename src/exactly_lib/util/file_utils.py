@@ -3,6 +3,7 @@ import pathlib
 import tempfile
 from contextlib import contextmanager
 from stat import S_IREAD, S_IRGRP, S_IROTH
+from typing import List
 
 from exactly_lib.util import exception
 
@@ -64,7 +65,7 @@ def ensure_parent_directory_does_exist_and_is_a_directory(dst_file_path: pathlib
     return ensure_directory_exists_as_a_directory(dst_file_path.parent)
 
 
-def lines_of(file_path: pathlib.Path) -> list:
+def lines_of(file_path: pathlib.Path) -> List[str]:
     with file_path.open() as f:
         return f.readlines()
 
