@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import file_assertions as f_asrt
 
 

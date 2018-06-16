@@ -1,10 +1,10 @@
 import pathlib
 from typing import Sequence, List
 
-import exactly_lib_test.test_resources.programs.python_program_execution
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.test_resources.file_utils import write_file
 from exactly_lib_test.test_resources.files import executable_files
+from exactly_lib_test.test_resources.files.file_utils import write_file
+from exactly_lib_test.test_resources.programs import python_program_execution
 
 
 class FileSystemElement:
@@ -53,7 +53,7 @@ class _ExecutableFileWithPythonSourceCode(File):
     def write_to(self,
                  parent_dir_path: pathlib.Path):
         file_path = parent_dir_path / self.file_name
-        exactly_lib_test.test_resources.programs.python_program_execution.write_executable_file_with_python_source(
+        python_program_execution.write_executable_file_with_python_source(
             file_path,
             self.contents)
 

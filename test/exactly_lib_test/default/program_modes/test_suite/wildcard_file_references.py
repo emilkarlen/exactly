@@ -7,7 +7,7 @@ import unittest
 from exactly_lib.processing.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.test_resources.file_structure import DirContents, Dir, File, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, Dir, File, empty_file
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output

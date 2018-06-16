@@ -15,8 +15,8 @@ from exactly_lib_test.test_case_file_structure.test_resources import home_and_sd
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import HomeOrSdsPopulator
 from exactly_lib_test.test_case_utils.parse.test_resources.arguments_building import Arguments, ArgumentElements
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home
-from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_file, empty_dir, Dir
+from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     SETUP_CWD_INSIDE_STD_BUT_NOT_A_STD_DIR

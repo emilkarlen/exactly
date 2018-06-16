@@ -13,7 +13,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_cont
     SubDirOfSdsContainsExactly
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     HomeAndSdsActionFromSdsAction
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

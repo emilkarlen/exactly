@@ -28,8 +28,8 @@ from exactly_lib_test.test_case_utils.program.test_resources import arguments_bu
 from exactly_lib_test.test_case_utils.test_resources.path_arg_with_relativity import PathArgumentWithRelativity
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_any, conf_rel_home, \
     conf_rel_non_home
-from exactly_lib_test.test_resources import file_structure as fs
-from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.programs.shell_commands import command_that_prints_line_to_stdout, \
     command_that_exits_with_code

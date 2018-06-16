@@ -3,6 +3,7 @@ import pathlib
 import sys
 import tempfile
 from contextlib import contextmanager
+from typing import Sequence
 
 from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
@@ -18,9 +19,10 @@ def write_file(path: pathlib.Path, contents: str):
 def absolute_path_to_executable_file() -> pathlib.Path:
     yield sys.executable
 
+
 @contextmanager
 def tmp_file_containing(contents: str,
-                        suffix: str='',
+                        suffix: str = '',
                         directory=None) -> pathlib.Path:
     """
     Returns a context manager (used by with tmp_file(...) as file_path) ...
@@ -46,8 +48,8 @@ def tmp_file_containing(contents: str,
             path.unlink()
 
 
-def tmp_file_containing_lines(content_lines: list,
-                              suffix: str='') -> pathlib.Path:
+def tmp_file_containing_lines(content_lines: Sequence[str],
+                              suffix: str = '') -> pathlib.Path:
     """
     Short cut to tmp_file_containing combined with giving the contents as a string of lines.
     """
@@ -56,8 +58,8 @@ def tmp_file_containing_lines(content_lines: list,
 
 
 class NullFile(object):
-    def write(self, *_):
-        pass
+    def write(self, *args, **kwargs):
+        return 0
 
     def flush(self):
         pass

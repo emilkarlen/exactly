@@ -6,7 +6,7 @@ from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
-from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndDefaultActor

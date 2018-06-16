@@ -13,7 +13,7 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_case.test_resources.act_source_and_executor_constructor import \
     ActSourceAndExecutorConstructorThatRaisesException
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
-from exactly_lib_test.test_resources import file_structure as fs
+from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 

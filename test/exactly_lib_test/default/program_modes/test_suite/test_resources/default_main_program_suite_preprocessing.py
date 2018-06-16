@@ -7,7 +7,7 @@ from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources import string_formatting
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from exactly_lib_test.test_suite.reporters.test_resources import simple_progress_reporter_output
 

@@ -5,8 +5,7 @@ from exactly_lib.test_case_file_structure.home_directory_structure import HomeDi
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration, TestCaseSourceSetup
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_resources.file_structure import DirContents
-from exactly_lib_test.test_resources.file_structure import File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.util.test_resources import py_program
 
 

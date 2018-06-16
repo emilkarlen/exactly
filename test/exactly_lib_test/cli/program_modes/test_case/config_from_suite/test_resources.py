@@ -15,8 +15,8 @@ from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instr
 from exactly_lib.test_case import os_services
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir_as_cwd
-from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.files.file_structure import DirContents
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.process import SubProcessResult
 
 

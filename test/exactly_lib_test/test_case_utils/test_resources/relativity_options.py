@@ -31,7 +31,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.non_home_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check import sds_contents_check
 from exactly_lib_test.test_resources import arguments_building
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
-from exactly_lib_test.test_resources.file_structure import DirContents
+from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables
 

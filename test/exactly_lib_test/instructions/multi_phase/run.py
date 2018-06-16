@@ -24,7 +24,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.home_populators im
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
 from exactly_lib_test.test_case_utils.program.test_resources import arguments_building as pgm_args
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as args
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.programs.py_programs import py_pgm_that_exits_with_value_on_command_line
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import home_and_sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \

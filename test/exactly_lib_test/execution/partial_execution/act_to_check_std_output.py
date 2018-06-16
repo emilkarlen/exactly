@@ -13,7 +13,7 @@ from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_asse
     sds_root_dir_exists_and_has_sds_dirs
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
     result_dir_contains_exactly
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import py_program

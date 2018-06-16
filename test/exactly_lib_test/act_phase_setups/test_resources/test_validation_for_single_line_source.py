@@ -11,8 +11,7 @@ from exactly_lib_test.test_case.test_resources.act_phase_instruction import inst
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents, contents_in
 from exactly_lib_test.test_case_file_structure.test_resources.paths import fake_hds
-from exactly_lib_test.test_resources.file_structure import DirContents
-from exactly_lib_test.test_resources.file_structure import empty_dir_contents
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly
 
 

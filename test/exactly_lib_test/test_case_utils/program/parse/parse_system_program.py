@@ -28,7 +28,7 @@ from exactly_lib_test.test_case_utils.program.test_resources import command_cmd_
 from exactly_lib_test.test_case_utils.test_resources import arguments_building as ab
 from exactly_lib_test.test_case_utils.test_resources import relativity_options
 from exactly_lib_test.test_resources.arguments_building import ArgumentElementRenderer
-from exactly_lib_test.test_resources.file_structure import FileSystemElement, empty_file, DirContents
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElement, empty_file, DirContents
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.type_system.logic.test_resources import program_assertions as asrt_pgm_val

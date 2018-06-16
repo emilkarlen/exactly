@@ -16,7 +16,7 @@ from exactly_lib_test.test_case_utils.parse.test_resources.relativity_arguments 
 from exactly_lib_test.test_case_utils.test_resources import relativity_options as rel_opt
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import \
     RelativityOptionConfigurationForRelSds, RelativityOptionConfigurationForRelNonHome
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, Dir, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, Dir, empty_file
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols import sds_test
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.sds_env_utils import SdsAction, \
     MkDirAndChangeToItInsideOfSdsButOutsideOfAnyOfTheRelativityOptionDirs

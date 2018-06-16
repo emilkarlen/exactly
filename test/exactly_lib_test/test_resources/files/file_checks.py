@@ -3,8 +3,10 @@ This module should probably be replaced by corresponding ValueAssertion in file_
 """
 import pathlib
 import unittest
+from typing import Sequence
 
-from exactly_lib_test.test_resources import file_structure
+from exactly_lib_test.test_resources.files import file_structure
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -19,10 +21,12 @@ class FileChecker:
     def assert_is_existing_empty_dir(self, p: pathlib.Path):
         self.assert_exists_dir_with_given_number_of_files_in_it(p, 0)
 
-    def assert_exists_dir_with_given_number_of_files_in_it(self,
-                                                           p: pathlib.Path,
-                                                           expected_number_of_files: int,
-                                                           expected_file_system_elements: list = None):
+    def assert_exists_dir_with_given_number_of_files_in_it(
+            self,
+            p: pathlib.Path,
+            expected_number_of_files: int,
+            expected_file_system_elements: Sequence[FileSystemElement] = None):
+        
         self.assert_exists_dir(p)
         directory_contents = list(p.iterdir())
         expected_file_names = ''
@@ -71,7 +75,7 @@ class FileChecker:
 
     def assert_dir_matches_exactly(self,
                                    dir_path: pathlib.Path,
-                                   expected: list):
+                                   expected: Sequence[FileSystemElement]):
         self.assert_exists_dir_with_given_number_of_files_in_it(dir_path,
                                                                 len(expected),
                                                                 expected_file_system_elements=expected)
@@ -79,7 +83,7 @@ class FileChecker:
 
     def assert_dir_contains_at_least(self,
                                      dir_path: pathlib.Path,
-                                     expected: list):
+                                     expected: Sequence[FileSystemElement]):
         for file_system_element in expected:
             if isinstance(file_system_element, file_structure.File):
                 self.assert_dir_contains_file(dir_path, file_system_element)

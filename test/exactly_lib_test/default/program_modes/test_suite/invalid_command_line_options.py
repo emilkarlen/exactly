@@ -6,7 +6,7 @@ from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
     SetupWithJustMainProgramRunner, tests_for_setup_with_just_main_program_runner
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner

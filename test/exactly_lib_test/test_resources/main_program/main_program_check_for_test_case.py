@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib_test.test_resources import string_formatting
-from exactly_lib_test.test_resources.file_structure import File, DirContents
+from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.process import SubProcessResult, SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion

@@ -26,7 +26,7 @@ from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions imp
     equals_symbol_reference_with_restriction_on_direct_target
 from exactly_lib_test.test_case_file_structure.test_resources import home_and_sds_populators
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
-from exactly_lib_test.test_resources.file_structure import DirContents, empty_dir, File, empty_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, File, empty_file
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources import symbol_tables
 

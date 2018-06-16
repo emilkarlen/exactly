@@ -1,7 +1,7 @@
 import io
 
 from exactly_lib.util.std import StdOutputFiles
-from exactly_lib_test.test_resources.file_utils import NULL_FILE
+from exactly_lib_test.test_resources.files.file_utils import NULL_FILE
 
 
 def null_output_files() -> StdOutputFiles:

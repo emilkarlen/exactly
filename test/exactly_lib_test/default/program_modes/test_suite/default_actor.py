@@ -8,7 +8,7 @@ from exactly_lib.util.string import lines_content
 from exactly_lib_test.default.program_modes.test_case.act_phase import PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process
-from exactly_lib_test.test_resources.file_structure import DirContents, File, python_executable_file
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, python_executable_file
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_suite
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
     tests_for_setup_without_preprocessor

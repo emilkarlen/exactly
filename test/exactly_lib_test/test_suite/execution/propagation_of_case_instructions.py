@@ -15,10 +15,10 @@ from exactly_lib.test_suite import suite_hierarchy_reading
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatRaisesSourceError
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir
-from exactly_lib_test.test_resources.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_resources.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.execution.test_resources import instruction_name_extractor, instruction_setup
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor

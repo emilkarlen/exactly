@@ -34,10 +34,10 @@ from exactly_lib_test.execution.test_resources.execution_recording.act_program_e
     ActSourceAndExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
-from exactly_lib_test.test_resources import file_structure as fs
 from exactly_lib_test.test_resources.actions import do_raise
-from exactly_lib_test.test_resources.execution.tmp_dir import tmp_dir, tmp_dir_as_cwd
-from exactly_lib_test.test_resources.file_checks import FileChecker
+from exactly_lib_test.test_resources.files import file_structure as fs
+from exactly_lib_test.test_resources.files.file_checks import FileChecker
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir, tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions import file_assertions as fa
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
