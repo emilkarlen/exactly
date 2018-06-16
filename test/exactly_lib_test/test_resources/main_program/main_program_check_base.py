@@ -2,14 +2,13 @@ import pathlib
 import sys
 import tempfile
 import unittest
+from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
-from exactly_lib_test.processing.test_resources.test_case_setup import test_case_handling_setup
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir_contents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.main_program import main_program_via_sub_process_utils
-from exactly_lib_test.test_resources.main_program.execute_main_program import execute_main_program
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import ARGUMENTS_FOR_TEST_INTERPRETER
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -83,7 +82,7 @@ class SetupWithoutPreprocessor(SetupBase):
     def file_structure(self, root_path: pathlib.Path) -> DirContents:
         raise NotImplementedError()
 
-    def first_arguments(self, root_path: pathlib.Path) -> list:
+    def first_arguments(self, root_path: pathlib.Path) -> List[str]:
         raise NotImplementedError()
 
     def arguments_for_interpreter(self) -> list:
@@ -91,15 +90,9 @@ class SetupWithoutPreprocessor(SetupBase):
 
 
 def run_default_main_program_via_sub_process(put: unittest.TestCase,
-                                             arguments: list) -> SubProcessResult:
+                                             arguments: List[str]) -> SubProcessResult:
     return main_program_via_sub_process_utils.run_default_main_program_via_sub_process(
         put, arguments)
-
-
-def run_stripped_main_program_internally(put: unittest.TestCase,
-                                         arguments: list) -> SubProcessResult:
-    return execute_main_program(arguments,
-                                test_case_handling_setup())
 
 
 def check_with_just_main_program_runner(setup: SetupWithJustMainProgramRunner,

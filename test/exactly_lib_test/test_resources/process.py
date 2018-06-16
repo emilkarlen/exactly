@@ -1,6 +1,7 @@
 import pathlib
 import subprocess
 import tempfile
+from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
@@ -87,7 +88,7 @@ def _contents_of_file(path: pathlib.Path) -> str:
         return f.read()
 
 
-def run_subprocess(cmd_and_args: list,
+def run_subprocess(cmd_and_args: List[str],
                    stdin_contents: str = '') -> SubProcessResult:
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir:
         return capture_subprocess(cmd_and_args,
