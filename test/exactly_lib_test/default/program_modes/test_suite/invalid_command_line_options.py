@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
@@ -38,13 +39,13 @@ class InvalidOptions(SetupWithReplacementOfVariableOutputWithPlaceholders):
     def file_structure(self, root_path: pathlib.Path) -> DirContents:
         return DirContents([File('main.suite', ''), ])
 
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         return [long_syntax('invalid-option-that-should-cause-failure')]
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         return []
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         return []
 
     def expected_exit_code(self) -> int:

@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
@@ -35,7 +36,7 @@ def suite() -> unittest.TestSuite:
 
 
 class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessorAndTestActor):
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         return [long_syntax('invalid-option-that-should-cause-failure')]
 
     def expected_result(self) -> asrt.ValueAssertion:

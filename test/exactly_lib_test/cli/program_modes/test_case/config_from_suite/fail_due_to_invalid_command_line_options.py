@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.exit_codes import EXIT_INVALID_USAGE
@@ -45,7 +46,7 @@ def _suite() -> unittest.TestSuite:
 
 
 class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPreprocessorAndTestActor):
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         return [long_syntax('invalid-option-that-should-cause-failure')]
 
     def expected_result(self) -> asrt.ValueAssertion:
@@ -56,7 +57,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
 
 
 class WhenNeitherTestSuiteNorTestCaseFileExistsResultShouldBeFileAccessError(mpr_check.SetupWithJustMainProgramRunner):
-    def arguments(self) -> list:
+    def arguments(self) -> List[str]:
         return cli_args_for('non-existing.suite', 'non-existing.case')
 
     def check(self,
