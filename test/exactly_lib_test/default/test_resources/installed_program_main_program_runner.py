@@ -1,5 +1,6 @@
 import shutil
 import unittest
+from typing import List
 
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult, run_subprocess
@@ -13,7 +14,7 @@ class RunInstalledProgramViaOsInSubProcess(MainProgramRunner):
     def description_for_test_name(self) -> str:
         return 'run installed program'
 
-    def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
+    def run(self, put: unittest.TestCase, arguments: List[str]) -> SubProcessResult:
         if self._main_program_path is None:
             put.fail('Cannot find executable "%s" in path.' % self._executable_file_name_base)
         cmd_and_args = [self._main_program_path] + arguments

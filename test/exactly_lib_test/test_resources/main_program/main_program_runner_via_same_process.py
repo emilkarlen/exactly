@@ -1,5 +1,6 @@
 import types
 import unittest
+from typing import List
 
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.processing.instruction_setup import InstructionsSetup
@@ -29,7 +30,7 @@ class RunViaMainProgramInternally(MainProgramRunner):
     def description_for_test_name(self) -> str:
         return 'run internally'
 
-    def run(self, put: unittest.TestCase, arguments: list) -> SubProcessResult:
+    def run(self, put: unittest.TestCase, arguments: List[str]) -> SubProcessResult:
         return execute_main_program.execute_main_program(arguments,
                                                          self.the_test_case_handling_setup,
                                                          self.instructions_setup,
