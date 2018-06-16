@@ -138,7 +138,7 @@ class MainProgram:
                                              command_line_arguments)
 
     def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
-        return test_case_execution.execute(self._std,
+        return test_case_execution.execute(self._output,
                                            self._test_case_definition,
                                            self._test_suite_definition.configuration_section_parser,
                                            settings,
@@ -168,10 +168,6 @@ class MainProgram:
                                       processors.new_processor_that_should_not_pollute_current_process,
                                       test_suite_execution_settings.suite_root_file_path)
         return executor.execute()
-
-    @property
-    def _std(self) -> StdOutputFiles:
-        return self._output
 
     def _parse_and_execute_test_case(self, command_line_arguments: List[str]) -> int:
         settings = case_argument_parsing.parse(self._default_test_case_handling_setup,
@@ -216,6 +212,6 @@ class MainProgram:
         try:
             return parse_arguments_and_execute_callable(arguments)
         except argument_parsing_utils.ArgumentParsingError as ex:
-            self._std.err.write(ex.error_message)
-            self._std.err.write(os.linesep)
+            self._output.err.write(ex.error_message)
+            self._output.err.write(os.linesep)
             return exit_codes.EXIT_INVALID_USAGE
