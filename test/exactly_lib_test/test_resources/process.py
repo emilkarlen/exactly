@@ -35,8 +35,7 @@ stdin_file_name = 'stdin.txt'
 
 
 class ProcessExecutor:
-    def execute(self,
-                files: StdFiles) -> int:
+    def execute(self, files: StdFiles) -> int:
         """
         :return: exit code
         """
@@ -45,7 +44,7 @@ class ProcessExecutor:
 
 class ProcessExecutorForSubProcess(ProcessExecutor):
     def __init__(self,
-                 cmd_and_args: list):
+                 cmd_and_args: List[str]):
         self.__cmd_and_args = cmd_and_args
 
     def execute(self, files: StdFiles) -> int:
@@ -56,7 +55,7 @@ class ProcessExecutorForSubProcess(ProcessExecutor):
                                stderr=files.output.err)
 
 
-def capture_subprocess(cmd_and_args: list,
+def capture_subprocess(cmd_and_args: List[str],
                        tmp_dir: pathlib.Path,
                        stdin_contents: str = '') -> SubProcessResult:
     return capture_process_executor_result(ProcessExecutorForSubProcess(cmd_and_args),
@@ -111,7 +110,7 @@ class SubProcessResultInfo(tuple):
         return self[1]
 
 
-def run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg: list,
+def run_subprocess_with_file_arg__full(cmd_and_args_except_file_arg: List[str],
                                        file_contents: str) -> SubProcessResultInfo:
     with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir_name:
         tmp_dir_path = pathlib.Path(tmp_dir_name).resolve()
