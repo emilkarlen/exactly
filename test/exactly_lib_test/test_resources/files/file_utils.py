@@ -57,6 +57,11 @@ def tmp_file_containing_lines(content_lines: Sequence[str],
                                suffix=suffix)
 
 
+def contents_of_file(path: pathlib.Path) -> str:
+    with path.open() as f:
+        return f.read()
+
+
 class NullFile(object):
     def write(self, *args, **kwargs):
         return 0
