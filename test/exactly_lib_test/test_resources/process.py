@@ -6,7 +6,7 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib.util.std import StdFiles, StdOutputFiles
-from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
+from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing, contents_of_file
 
 
 class SubProcessResult(tuple):
@@ -78,13 +78,8 @@ def capture_process_executor_result(executor: ProcessExecutor,
                                                      StdOutputFiles(f_stdout,
                                                                     f_stderr)))
     return SubProcessResult(exitcode,
-                            _contents_of_file(stdout_path),
-                            _contents_of_file(stderr_path))
-
-
-def _contents_of_file(path: pathlib.Path) -> str:
-    with path.open() as f:
-        return f.read()
+                            contents_of_file(stdout_path),
+                            contents_of_file(stderr_path))
 
 
 def run_subprocess(cmd_and_args: List[str],
