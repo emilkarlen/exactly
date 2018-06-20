@@ -1,5 +1,7 @@
 import pathlib
+from typing import Sequence
 
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep, SymbolUser
 from exactly_lib.test_case.result import sh, svh
@@ -98,7 +100,7 @@ class ActSourceAndExecutorConstructor:
     def apply(self,
               os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              act_phase_instructions: list) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         raise NotImplementedError()
 
 

@@ -4,6 +4,7 @@ from typing import Sequence
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseHandling, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
@@ -92,7 +93,7 @@ class ActSourceAndExecutorConstructorThatRunsConstantActions(ActSourceAndExecuto
     def apply(self,
               os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              act_phase_instructions: list) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         self.apply_action_before_executor_is_constructed(environment, act_phase_instructions)
         return ActSourceAndExecutorThatRunsConstantActions(
             parse_action=self.parse_action,
