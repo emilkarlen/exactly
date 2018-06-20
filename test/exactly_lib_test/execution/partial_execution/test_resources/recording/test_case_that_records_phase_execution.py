@@ -81,10 +81,6 @@ class Expectation(tuple):
     def internal_recording(self) -> list:
         return self[1]
 
-    @property
-    def sandbox_directory_structure_should_exist(self) -> bool:
-        return self[2]
-
 
 class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
     """
