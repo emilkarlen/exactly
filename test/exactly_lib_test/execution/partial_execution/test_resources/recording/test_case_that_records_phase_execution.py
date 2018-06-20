@@ -69,16 +69,16 @@ class Arrangement(tuple):
 class Expectation(tuple):
     def __new__(cls,
                 result: asrt.ValueAssertion[PartialExeResult],
-                expected_internal_recording: list):
+                step_recordings: list):
         return tuple.__new__(cls, (result,
-                                   expected_internal_recording))
+                                   step_recordings))
 
     @property
     def result(self) -> asrt.ValueAssertion[PartialExeResult]:
         return self[0]
 
     @property
-    def internal_recording(self) -> list:
+    def step_recordings(self) -> list:
         return self[1]
 
 
@@ -112,7 +112,7 @@ class _TestCaseThatRecordsExecution(PartialExecutionTestCaseBase):
                                                      'result')
 
         msg = 'Difference in the sequence of executed phases and steps'
-        self.put.assertListEqual(self.__expectation.internal_recording,
+        self.put.assertListEqual(self.__expectation.step_recordings,
                                  self.__recorder.recorded_elements,
                                  msg)
 
