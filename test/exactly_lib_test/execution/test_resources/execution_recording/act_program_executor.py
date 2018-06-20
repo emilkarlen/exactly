@@ -5,6 +5,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
     ActSourceAndExecutorConstructor, ActPhaseOsProcessExecutor
+from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \
     InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.result import sh, svh
@@ -82,7 +83,7 @@ class ActSourceAndExecutorWrapperConstructorThatRecordsSteps(ActSourceAndExecuto
     def apply(self,
               os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              act_phase_instructions: list) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         return ActSourceAndExecutorWrapperThatRecordsSteps(self.__recorder, self.__wrapped)
 
 
@@ -137,5 +138,5 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
     def apply(self,
               os_process_executor: ActPhaseOsProcessExecutor,
               environment: InstructionEnvironmentForPreSdsStep,
-              act_phase_instructions: list) -> ActSourceAndExecutor:
+              act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         return self.executor
