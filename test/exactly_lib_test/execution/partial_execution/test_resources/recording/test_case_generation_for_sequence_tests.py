@@ -54,10 +54,6 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
     def recorder(self) -> ListRecorder:
         return self.__recorder
 
-    @property
-    def internal_instruction_recorder(self) -> list:
-        return self.__recorder.recorded_elements
-
     def phase_contents_for(self, phase: PartialPhase) -> model.SectionContents:
         return phase_contents(self._all_elements_for(phase))
 
