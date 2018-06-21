@@ -9,17 +9,17 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case_utils.program.command import command_resolvers
 
 
-def new_for_script_language_setup(script_language_setup: SourceInterpreterSetup) -> ActPhaseSetup:
-    return ActPhaseSetup(Constructor(script_language_setup))
+def new_for_source_interpreter_setup(setup: SourceInterpreterSetup) -> ActPhaseSetup:
+    return ActPhaseSetup(Constructor(setup))
 
 
 class Constructor(parts.Constructor):
-    def __init__(self, script_language_setup: SourceInterpreterSetup):
+    def __init__(self, setup: SourceInterpreterSetup):
         super().__init__(pa.Parser(),
                          parts.UnconditionallySuccessfulValidator,
                          lambda os_process_executor, environment, source_code: ExecutorForSourceInterpreterSetup(
                              os_process_executor,
-                             script_language_setup,
+                             setup,
                              source_code))
 
 
@@ -27,11 +27,11 @@ class ActSourceFileNameGeneratorForSourceInterpreterSetup(pa.ActSourceFileNameGe
     FILE_NAME_STEM = 'act-source'
 
     def __init__(self,
-                 script_language_setup: SourceInterpreterSetup):
-        self.script_language_setup = script_language_setup
+                 setup: SourceInterpreterSetup):
+        self.setup = setup
 
     def base_name(self) -> str:
-        return self.script_language_setup.base_name_from_stem(self.FILE_NAME_STEM)
+        return self.setup.base_name_from_stem(self.FILE_NAME_STEM)
 
 
 class ExecutorForSourceInterpreterSetup(pa.ExecutorBase):

@@ -3,7 +3,7 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstru
 
 class ActPhaseSetup(tuple):
     """
-    TODO: Believe that the ActPhaseParser can completely replace this class
+    TODO: Believe that the ActSourceAndExecutorConstructor can completely replace this class
     (since the other members probably will be refactored away)
     """
 

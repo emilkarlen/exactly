@@ -27,14 +27,14 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestThatScriptSourceIsWrittenToTestCaseDir),
         unittest.makeSuite(TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError),
 
-        common_tests.suite_for(sut.Constructor(python3.script_language_setup()),
+        common_tests.suite_for(sut.Constructor(python3.source_interpreter_setup()),
                                is_shell=False),
     ])
 
 
 class TheConfiguration(Configuration):
     def __init__(self):
-        self.setup = sut.new_for_script_language_setup(python3.script_language_setup())
+        self.setup = sut.new_for_source_interpreter_setup(python3.source_interpreter_setup())
         super().__init__(self.setup.source_and_executor_constructor)
 
     @contextmanager
@@ -82,7 +82,7 @@ def _instructions_for(statements: list) -> list:
 class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.TestCase):
     def runTest(self):
         language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
-        act_phase_setup = sut.new_for_script_language_setup(language_setup)
+        act_phase_setup = sut.new_for_source_interpreter_setup(language_setup)
         empty_source = []
         check_execution(self,
                         act_phase_setup.source_and_executor_constructor,
@@ -95,7 +95,7 @@ class TestWhenInterpreterDoesNotExistThanExecuteShouldGiveHardError(unittest.Tes
 class TestThatScriptSourceIsWrittenToTestCaseDir(unittest.TestCase):
     def runTest(self):
         language_setup = SourceInterpreterSetup(_SourceFileManagerWithNonExistingInterpreter())
-        act_phase_setup = sut.new_for_script_language_setup(language_setup)
+        act_phase_setup = sut.new_for_source_interpreter_setup(language_setup)
         source = [instr(['print(1)'])]
         expected_file_name = language_setup.base_name_from_stem(
             sut.ActSourceFileNameGeneratorForSourceInterpreterSetup.FILE_NAME_STEM)

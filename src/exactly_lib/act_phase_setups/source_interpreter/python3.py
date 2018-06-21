@@ -6,7 +6,7 @@ from exactly_lib.act_phase_setups.source_interpreter.source_file_management impo
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor
 
 
-def script_language_setup() -> source_file_management.SourceInterpreterSetup:
+def source_interpreter_setup() -> source_file_management.SourceInterpreterSetup:
     return source_file_management.SourceInterpreterSetup(_file_manager())
 
 
@@ -19,7 +19,7 @@ def _file_manager() -> source_file_management.SourceFileManager:
 
 
 def new_act_source_and_executor_constructor() -> ActSourceAndExecutorConstructor:
-    return Constructor(script_language_setup())
+    return Constructor(source_interpreter_setup())
 
 
 def new_act_phase_handling() -> ActPhaseHandling:
