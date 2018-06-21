@@ -8,9 +8,10 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources.act_source_executor import ActSourceAndExecutorThatRunsConstantActions
-from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
-    ActSourceAndExecutorWrapperConstructorThatRecordsSteps
+from exactly_lib_test.execution.test_resources.act_source_and_executors import \
+    ActSourceAndExecutorThatRunsConstantActions
+from exactly_lib_test.execution.test_resources.execution_recording import \
+    act_program_executor as step_recording_executors
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code, \
@@ -140,7 +141,7 @@ def execute_test_case_with_recording(put: unittest.TestCase,
         prepare_action=arrangement.act_executor_prepare,
         execute_action=arrangement.act_executor_execute,
     )
-    constructor = ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
+    constructor = step_recording_executors.constructor_of_constant(
         arrangement.test_case_generator.recorder,
         constant_actions_runner)
     act_phase_handling = ActPhaseHandling(constructor)

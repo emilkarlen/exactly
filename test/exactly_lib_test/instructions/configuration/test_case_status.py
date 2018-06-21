@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.test_case import test_case_status as tcs
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
-from exactly_lib_test.execution.test_resources.act_source_executor import act_phase_handling_that_runs_constant_actions
+from exactly_lib_test.execution.test_resources.act_phase_handlings import act_phase_handling_that_runs_constant_actions
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation

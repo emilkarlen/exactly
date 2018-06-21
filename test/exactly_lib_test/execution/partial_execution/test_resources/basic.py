@@ -19,7 +19,7 @@ from exactly_lib.util.functional import Composition
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
-from exactly_lib_test.execution.test_resources.act_source_executor import \
+from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
