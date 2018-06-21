@@ -151,14 +151,14 @@ class Arrangement:
                  environ: dict = None,
                  timeout_in_seconds: int = None,
                  predefined_symbols: SymbolTable = None,
-                 atc_output_dup: Optional[StdOutputFiles] = None):
+                 exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
         self.act_phase_handling = act_phase_handling
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.hds = hds
         self.environ = environ
         self.timeout_in_seconds = timeout_in_seconds
         self.predefined_symbols_or_none = predefined_symbols
-        self.atc_output_dup = atc_output_dup
+        self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
 
 
 def test(put: unittest.TestCase,
@@ -208,7 +208,7 @@ def _execute(test_case: TestCase,
                                arrangement.act_phase_os_process_executor,
                                sandbox_root_name_resolver.for_test(),
                                arrangement.predefined_symbols_or_none,
-                               atc_output_dup=arrangement.atc_output_dup),
+                               exe_atc_and_skip_assertions=arrangement.exe_atc_and_skip_assertions),
         ConfPhaseValues(arrangement.act_phase_handling,
                         arrangement.hds,
                         timeout_in_seconds=arrangement.timeout_in_seconds),

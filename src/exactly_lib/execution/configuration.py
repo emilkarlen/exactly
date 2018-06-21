@@ -26,12 +26,12 @@ class ExecutionConfiguration(tuple):
                 act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                 sandbox_root_dir_resolver: SandboxRootDirNameResolver,
                 predefined_symbols: Optional[SymbolTable] = None,
-                atc_output_dup: Optional[StdOutputFiles] = None):
+                exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
         return tuple.__new__(cls, (environ,
                                    act_phase_os_process_executor,
                                    sandbox_root_dir_resolver,
                                    symbol_table_from_none_or_value(predefined_symbols),
-                                   atc_output_dup))
+                                   exe_atc_and_skip_assertions))
 
     @property
     def environ(self) -> Dict[str, str]:
@@ -59,9 +59,10 @@ class ExecutionConfiguration(tuple):
         return self[3]
 
     @property
-    def atc_output_dup(self) -> Optional[StdOutputFiles]:
+    def exe_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
         """
         If not None, the output from the Action To Check should
-        be duplicated to these files.
+        be executed with output directed to the given files,
+        and assertions should be skipped.
         """
         return self[4]

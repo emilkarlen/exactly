@@ -10,8 +10,9 @@ from exactly_lib.test_case.result.sh import SuccessOrHardError
 
 class PreviousPhase(Enum):
     SETUP = 1
-    BEFORE_ASSERT = 2
-    ASSERT = 3
+    ACT = 2
+    BEFORE_ASSERT = 3
+    ASSERT = 4
 
 
 class CleanupPhaseInstruction(TestCaseInstructionWithSymbols):
