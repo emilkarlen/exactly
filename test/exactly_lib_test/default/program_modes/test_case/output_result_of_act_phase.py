@@ -39,7 +39,6 @@ class OutputAndExitCodeFromActPhaseIsEmittedWhenTestCaseExecutesSuccessfully(Set
     def test_case(self) -> str:
         test_case_source = """\
 [act]
-import os
 import sys
 sys.stdout.write("{output_to_stdout}")
 sys.stderr.write("{output_to_stderr}")

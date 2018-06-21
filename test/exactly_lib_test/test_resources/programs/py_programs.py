@@ -2,13 +2,27 @@ from exactly_lib.util.process_execution.process_output_files import ProcOutputFi
 
 
 def py_pgm_that_exits_with_value_on_command_line(stderr_output: str) -> str:
-    return """
+    return """\
 import sys
 
-sys.stderr.write('{}');
+sys.stderr.write('{}')
 val = int(sys.argv[1])
 sys.exit(val)
 """.format(stderr_output)
+
+
+def py_pgm_with_stdout_stderr_exit_code(stdout_output: str,
+                                        stderr_output: str,
+                                        exit_code: int) -> str:
+    return """\
+import sys
+
+sys.stdout.write('{stdout}')
+sys.stderr.write('{stderr}')
+sys.exit({exit_code})
+""".format(stdout=stdout_output,
+           stderr=stderr_output,
+           exit_code=exit_code)
 
 
 def single_line_pgm_that_prints_to_stdout(output: str) -> str:

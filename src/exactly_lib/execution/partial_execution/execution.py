@@ -15,6 +15,8 @@ def execute(test_case: TestCase,
             initial_setup_settings: SetupSettingsBuilder,
             is_keep_sandbox: bool) -> PartialExeResult:
     """
+    Part of execution that is independent of the "status" (SKIP, PASS, FAIL, ...)
+
     Takes care of construction of the Sandbox directory structure, including
     the root directory, and executes a given Test Case in this directory.
 

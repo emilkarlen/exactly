@@ -121,6 +121,13 @@ class _PartialExecutor:
 
         if res is not None:
             return self._final_failure_result_from(res)
+
+        if self.exe_conf.exe_atc_and_skip_assertions is not None:
+            return self._finish_with_cleanup_phase(PreviousPhase.ACT, None)
+        else:
+            return self._continue_from_before_assert()
+
+    def _continue_from_before_assert(self) -> PartialExeResult:
         self.__set_assert_environment_variables()
         res = self.__before_assert__main()
         if res is not None:
@@ -129,11 +136,16 @@ class _PartialExecutor:
 
         res_from_assert = self.__assert__main()
 
-        res = self.__cleanup_main(PreviousPhase.ASSERT)
+        return self._finish_with_cleanup_phase(PreviousPhase.ASSERT, res_from_assert)
+
+    def _finish_with_cleanup_phase(self,
+                                   previous_phase: PreviousPhase,
+                                   failure_from_previous_step: Optional[PhaseStepFailure]) -> PartialExeResult:
+        res = self.__cleanup_main(previous_phase)
         if res is not None:
             return self._final_failure_result_from(res)
-        if res_from_assert is not None:
-            return self._final_failure_result_from(res_from_assert)
+        if failure_from_previous_step is not None:
+            return self._final_failure_result_from(failure_from_previous_step)
         return self._final_pass_result()
 
     def _sequence(self, actions: Sequence[ActionWithFailureAsResult]) -> Optional[PhaseStepFailure]:
@@ -272,7 +284,8 @@ class _PartialExecutor:
         return ActPhaseExecutor(self.__act_source_and_executor,
                                 self.__post_setup_validation_environment(phase_identifier.ACT),
                                 self.__post_sds_environment(phase_identifier.ACT),
-                                self.stdin_conf_from_setup)
+                                self.stdin_conf_from_setup,
+                                self.exe_conf.exe_atc_and_skip_assertions)
 
     def __before_assert__validate_post_setup(self) -> Optional[PhaseStepFailure]:
         return self.__run_instructions_phase_step(

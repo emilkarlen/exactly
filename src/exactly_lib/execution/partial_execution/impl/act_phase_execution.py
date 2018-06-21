@@ -1,5 +1,6 @@
 import pathlib
 import subprocess
+from contextlib import contextmanager
 from typing import Optional
 
 from exactly_lib.execution import phase_step
@@ -56,13 +57,15 @@ class ActPhaseExecutor:
                  act_source_and_executor: ActSourceAndExecutor,
                  environment_for_validate_post_setup: InstructionEnvironmentForPostSdsStep,
                  environment_for_other_steps: InstructionEnvironmentForPostSdsStep,
-                 stdin_configuration: StdinConfiguration):
+                 stdin_configuration: StdinConfiguration,
+                 exe_atc_and_skip_assertions: Optional[StdOutputFiles]):
         self.act_source_and_executor = act_source_and_executor
         self.environment_for_validate_post_setup = environment_for_validate_post_setup
         self.environment_for_other_steps = environment_for_other_steps
         self.home_and_sds = environment_for_other_steps.home_and_sds
         self.stdin_configuration = stdin_configuration
         self.script_output_dir_path = environment_for_other_steps.home_and_sds.sds.test_case_dir
+        self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
 
         self._action_to_check_outcome = None
 
@@ -133,22 +136,34 @@ class ActPhaseExecutor:
                 'Failure to open stdin file: ' + str(file_name)))
 
     def _run_act_program_with_stdin_file(self, f_stdin) -> ExitCodeOrHardError:
-        sds = self.home_and_sds.sds
-        with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
-            with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
-                exit_code_or_hard_error = self.act_source_and_executor.execute(
-                    self.environment_for_other_steps,
-                    self.script_output_dir_path,
-                    StdFiles(f_stdin,
-                             StdOutputFiles(f_stdout,
-                                            f_stderr)))
-                self._register_outcome(exit_code_or_hard_error)
-                return exit_code_or_hard_error
+        with self._std_output_files() as std_output_files:
+            std_files = StdFiles(f_stdin, std_output_files)
+            return self._run_act_program_with_std_files(std_files)
+
+    def _run_act_program_with_std_files(self,
+                                        std_files: StdFiles) -> ExitCodeOrHardError:
+        exit_code_or_hard_error = self.act_source_and_executor.execute(
+            self.environment_for_other_steps,
+            self.script_output_dir_path,
+            std_files)
+        self._register_outcome(exit_code_or_hard_error)
+        return exit_code_or_hard_error
+
+    @contextmanager
+    def _std_output_files(self):
+        if self.exe_atc_and_skip_assertions is not None:
+            yield self.exe_atc_and_skip_assertions
+        else:
+            sds = self.home_and_sds.sds
+            with open_and_make_read_only_on_close(str(sds.result.stdout_file), 'w') as f_stdout:
+                with open_and_make_read_only_on_close(str(sds.result.stderr_file), 'w') as f_stderr:
+                    yield StdOutputFiles(f_stdout, f_stderr)
 
     def _register_outcome(self, exit_code_or_hard_error: ExitCodeOrHardError):
         if exit_code_or_hard_error.is_exit_code:
             self._action_to_check_outcome = ActionToCheckOutcome(exit_code_or_hard_error.exit_code)
-            self._store_exit_code(exit_code_or_hard_error.exit_code)
+            if self.exe_atc_and_skip_assertions is None:
+                self._store_exit_code(exit_code_or_hard_error.exit_code)
 
     def _store_exit_code(self, exitcode: int):
         with open_and_make_read_only_on_close(str(self.home_and_sds.sds.result.exitcode_file), 'w') as f:

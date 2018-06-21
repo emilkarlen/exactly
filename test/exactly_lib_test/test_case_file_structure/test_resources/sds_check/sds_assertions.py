@@ -1,8 +1,11 @@
 import unittest
 
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, \
+    RESULT_FILE__EXITCODE
 from exactly_lib_test.test_resources.files.file_checks import FileChecker
+from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.file_assertions import DirContainsExactly
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
@@ -60,7 +63,31 @@ def is_existing_sds_with_post_execution_files() -> asrt.ValueAssertion[SandboxDi
     return _SdsRootDirExistsAndContainsPostExecutionFiles()
 
 
+def is_existing_sds_with_post_execution_w_only_exitcode_result_files(exit_code: int) \
+        -> asrt.ValueAssertion[SandboxDirectoryStructure]:
+    return asrt.and_([
+        sds_root_dir_exists_and_has_sds_dirs(),
+        asrt.sub_component('result-dir',
+                           lambda sds: sds.result.root_dir,
+                           DirContainsExactly(DirContents([
+                               File(RESULT_FILE__EXITCODE, str(exit_code))
+                           ])))
+    ])
+
+
 class _SdsRootDirExistsAndContainsPostExecutionFiles(asrt.ValueAssertion[SandboxDirectoryStructure]):
+    def apply(self,
+              put: unittest.TestCase,
+              value: SandboxDirectoryStructure,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertIsInstance(value, SandboxDirectoryStructure)
+
+        fc = FileChecker(put, message_builder.apply(''))
+
+        is_sandbox_directory_structure_after_execution(fc, str(value.root_dir))
+
+
+class _SdsRootDirExistsAndContainsPostExecutionWOnlyExitCodeResultFiles(asrt.ValueAssertion[SandboxDirectoryStructure]):
     def apply(self,
               put: unittest.TestCase,
               value: SandboxDirectoryStructure,

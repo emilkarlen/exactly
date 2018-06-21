@@ -39,8 +39,9 @@ def setup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success(
                                       action_of(symbol_usages_initial_action, symbol_usages))
 
 
-def act_phase_instruction_with_source(source_code: LineSequence = LineSequence(72, (
-        'Dummy source code from act_phase_instruction_with_source',))) -> ActPhaseInstruction:
+def act_phase_instruction_with_source(source_code: LineSequence =
+                                      LineSequence(72, ('Dummy source code from act_phase_instruction_with_source',))
+                                      ) -> ActPhaseInstruction:
     return SourceCodeInstruction(source_code)
 
 

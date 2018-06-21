@@ -7,7 +7,8 @@ from exactly_lib_test.execution.partial_execution.phase_step_sequence import \
     validate_post_setup, \
     other_scenarios, \
     act_phase_handling_failure, \
-    act_phase_symbol_handling
+    act_phase_symbol_handling, \
+    action_to_check_output
 
 
 def suite() -> unittest.TestSuite:
@@ -19,6 +20,7 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(act_phase_handling_failure.suite())
     ret_val.addTest(act_phase_symbol_handling.suite())
     ret_val.addTest(other_scenarios.suite())
+    ret_val.addTest(action_to_check_output.suite())
     return ret_val
 
 
