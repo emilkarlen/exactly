@@ -1,9 +1,11 @@
+import pathlib
 import unittest
 
 from exactly_lib.instructions.multi_phase import new_file
 from exactly_lib.instructions.utils.parse import parse_file_maker
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.common import TestCaseInstructionWithSymbols
@@ -64,6 +66,9 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
     return unittest.TestSuite(suites)
 
 
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
+
+
 class TestCaseBase(unittest.TestCase):
     def __init__(self, conf: ConfigurationBase):
         super().__init__()
@@ -98,7 +103,7 @@ class TestSymbolUsages(TestCaseBase):
 
         # ACT #
 
-        instruction = self.conf.parser().parse(source)
+        instruction = self.conf.parser().parse(THE_FS_LOCATION_INFO, source)
         assert isinstance(instruction, TestCaseInstructionWithSymbols)  # Sanity check
 
         # ASSERT #
@@ -134,7 +139,7 @@ class TestParseShouldFailWhenRelativityOfSourceIsRelResult(TestCaseBase):
         # ACT #
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             # ACT #
-            self.conf.parser().parse(source)
+            self.conf.parser().parse(THE_FS_LOCATION_INFO, source)
 
 
 class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(TestCaseBase):
@@ -144,7 +149,7 @@ class TestParseShouldSucceedWhenRelativityOfSourceIsRelResult(TestCaseBase):
 
         source = remaining_source(instruction_arguments)
         # ACT #
-        self.conf.parser().parse(source)
+        self.conf.parser().parse(THE_FS_LOCATION_INFO, source)
 
 
 def instruction_arguments_for_src_file_rel_result() -> str:

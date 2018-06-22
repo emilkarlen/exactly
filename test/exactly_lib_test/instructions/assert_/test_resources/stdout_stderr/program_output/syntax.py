@@ -1,7 +1,9 @@
+import pathlib
 import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib_test.instructions.assert_.test_resources.file_contents import matcher_arguments
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output import \
     arguments_building as po_ab
@@ -20,6 +22,9 @@ def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unit
     ])
 
 
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
+
+
 class TestFailingParseDueToMissingProgram(TestCaseBase):
     def runTest(self):
         # ARRANGE #
@@ -29,7 +34,7 @@ class TestFailingParseDueToMissingProgram(TestCaseBase):
         source = arguments.as_remaining_source
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             # ACT #
-            self.configuration.parser().parse(source)
+            self.configuration.parser().parse(THE_FS_LOCATION_INFO, source)
 
 
 class TestFailingParseDueToMissingContentsMatcher(TestCaseBase):
@@ -45,4 +50,4 @@ class TestFailingParseDueToMissingContentsMatcher(TestCaseBase):
         source = arguments.as_remaining_source
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             # ACT #
-            self.configuration.parser().parse(source)
+            self.configuration.parser().parse(THE_FS_LOCATION_INFO, source)

@@ -1,5 +1,7 @@
+import pathlib
 import unittest
 
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.value_type import ValueType
@@ -30,6 +32,9 @@ def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unit
         TestFailingValidationPreSds(conf),
         TestFailingValidationPostSds(conf),
     ])
+
+
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestSymbolReferences(TestCaseBase):
@@ -71,7 +76,7 @@ class TestSymbolReferences(TestCaseBase):
 
         # ACT #
 
-        actual = self.configuration.parser().parse(source)
+        actual = self.configuration.parser().parse(THE_FS_LOCATION_INFO, source)
         actual_symbol_usages = actual.symbol_usages()
 
         # ASSERT #

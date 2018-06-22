@@ -1,14 +1,19 @@
+import pathlib
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import equivalent_source_variants
 
 
 def suite() -> unittest.TestSuite:
     return unittest.makeSuite(TestParse)
+
+
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestParse(unittest.TestCase):
@@ -23,4 +28,4 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg=instruction_argument):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
+                        parser.parse(THE_FS_LOCATION_INFO, source)
