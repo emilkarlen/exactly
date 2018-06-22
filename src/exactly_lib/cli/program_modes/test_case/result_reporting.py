@@ -1,5 +1,4 @@
-import pathlib
-import shutil
+from typing import Optional
 
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption
 from exactly_lib.common.exit_value import ExitValue
@@ -86,6 +85,9 @@ class TestCaseResultReporter(ResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         raise NotImplementedError('abstract method')
 
+    def exe_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
+        return None
+
     def report_full_execution(self,
                               exit_value: ExitValue,
                               result: FullExeResult) -> int:
@@ -137,22 +139,15 @@ class _ResultReporterForPreserveAndPrintSandboxDir(TestCaseResultReporter):
 
 class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
     def complete(self, result: FullExeResult) -> int:
-        def copy_file(input_file_path: pathlib.Path,
-                      output_file):
-            with input_file_path.open() as f:
-                for data in f:
-                    output_file.write(data)
-
-        copy_file(result.sds.result.stdout_file, self._std.out)
-        copy_file(result.sds.result.stderr_file, self._std.err)
-        shutil.rmtree(str(result.sds.root_dir))
-
         return result.action_to_check_outcome.exit_code
 
 
 class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
-        return True
+        return False
+
+    def exe_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
+        return self._std
 
     def report_full_execution(self,
                               exit_value: ExitValue,

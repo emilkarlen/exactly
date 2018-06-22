@@ -1,5 +1,6 @@
 import os
 import pathlib
+from typing import Optional
 
 from exactly_lib import program_info
 from exactly_lib.execution import sandbox_dir_resolving
@@ -22,6 +23,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.util.line_source import source_location_path_of_non_empty_location_path
+from exactly_lib.util.std import StdOutputFiles
 
 
 class TestCaseDefinition:
@@ -45,11 +47,13 @@ class Configuration:
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor,
                  is_keep_sandbox: bool,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
-                 sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-')):
+                 sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
+                 exe_atc_and_skip_assertions: Optional[StdOutputFiles] = None):
         self.default_handling_setup = default_handling_setup
         self.act_phase_os_process_executor = act_phase_os_process_executor
         self.test_case_definition = test_case_definition
         self.is_keep_sandbox = is_keep_sandbox
+        self.exe_atc_and_skip_assertions = exe_atc_and_skip_assertions
         self.sandbox_root_dir_resolver = sandbox_root_dir_resolver
 
 
@@ -82,7 +86,8 @@ def new_executor_that_may_pollute_current_processes(configuration: Configuration
     return _Executor(ExecutionConfiguration(dict(os.environ),
                                             configuration.act_phase_os_process_executor,
                                             configuration.sandbox_root_dir_resolver,
-                                            configuration.test_case_definition.predefined_properties.predefined_symbols),
+                                            configuration.test_case_definition.predefined_properties.predefined_symbols,
+                                            configuration.exe_atc_and_skip_assertions),
                      configuration.default_handling_setup.act_phase_setup,
                      configuration.is_keep_sandbox)
 

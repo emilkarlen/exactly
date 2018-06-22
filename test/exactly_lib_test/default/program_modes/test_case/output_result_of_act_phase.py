@@ -10,6 +10,7 @@ from exactly_lib_test.test_resources.main_program.main_program_check_base import
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndTestActor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
+from exactly_lib_test.test_resources.process import SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt, \
     process_result_info_assertions as asrt_process_result_info, \
     process_result_assertions as asrt_process_result
@@ -50,11 +51,11 @@ sys.exit({exit_code})
         )
         return test_case_source
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             asrt_process_result.sub_process_result(
-                exitcode=asrt.Equals(self.exit_code),
-                stdout=asrt.Equals(self.std_out),
+                exitcode=asrt.equals(self.exit_code),
+                stdout=asrt.equals(self.std_out),
             ))
 
 
