@@ -19,7 +19,7 @@ class InstructionAndDescriptionParser(SectionElementParser):
     """
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedInstruction:
         """
         :raises FileSourceError The description or instruction cannot be parsed.
@@ -46,7 +46,7 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedInstruction:
         return parse_and_compute_source(self.instruction_parser, source)
 
@@ -68,10 +68,10 @@ class ParserFromSequenceOfParsers(SectionElementParser):
         self._parsers_to_try = parsers_to_try
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         for parser in self._parsers_to_try:
-            element = parser.parse(file_inclusion_relativity_root, source)
+            element = parser.parse(file_reference_relativity_root_dir, source)
             if element is not None:
                 return element
         return None
@@ -88,7 +88,7 @@ class StandardSyntaxCommentAndEmptyLineParser(SectionElementParser):
     """
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> Optional[ParsedNonInstructionElement]:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):

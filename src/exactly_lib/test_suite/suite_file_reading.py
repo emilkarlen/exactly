@@ -30,12 +30,12 @@ def read_suite_document(suite_file_path: pathlib.Path,
     :raises parse.SuiteSyntaxError: The suite file has syntax errors
     """
     source = new_for_file(suite_file_path)
-    file_inclusion_relativity_root = suite_file_path.parent
+    file_reference_relativity_root_dir = suite_file_path.parent
     parser = _Parser(configuration_section_parser,
                      test_case_parsing_setup)
     try:
         return parser.apply(suite_file_path,
-                            file_inclusion_relativity_root,
+                            file_reference_relativity_root_dir,
                             source)
     except FileSourceError as ex:
         raise parse.SuiteSyntaxError(suite_file_path,
@@ -88,10 +88,10 @@ class _Parser:
 
     def apply(self,
               suite_file_path: pathlib.Path,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               suite_file_source: ParseSource) -> test_suite_doc.TestSuiteDocument:
         document = self.__section_doc_parser.parse(suite_file_path,
-                                                   file_inclusion_relativity_root,
+                                                   file_reference_relativity_root_dir,
                                                    suite_file_source)
         return test_suite_doc.TestSuiteDocument(
             document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CONF),

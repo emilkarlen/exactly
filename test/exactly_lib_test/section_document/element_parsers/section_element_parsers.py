@@ -39,11 +39,11 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
         mocked_parser.parse = MagicMock(return_value=None)
         source_text = 'first line'
         source = ParseSource(source_text)
-        file_inclusion_relativity_root = pathlib.Path()
+        file_reference_relativity_root_dir = pathlib.Path()
         # ACT #
-        mocked_parser.parse(file_inclusion_relativity_root, source)
+        mocked_parser.parse(file_reference_relativity_root_dir, source)
         # ASSERT #
-        mocked_parser.parse.assert_called_once_with(file_inclusion_relativity_root, source)
+        mocked_parser.parse.assert_called_once_with(file_reference_relativity_root_dir, source)
 
     def test_None_SHOULD_be_returned_WHEN_all_parsers_return_None(self):
         # ARRANGE #
@@ -232,7 +232,7 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescr
         self.instruction_line_identifier = instruction_line_identifier
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> sut.ParsedInstruction:
         first_line_number = source.current_line_number
         dummy_source = line_source.LineSequence(first_line_number, (source.current_line_text,))
@@ -251,7 +251,7 @@ class _InstructionParserThatGivesConstant(sut.InstructionAndDescriptionParser):
         self.return_value = return_value
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> sut.ParsedInstruction:
         return self.return_value
 

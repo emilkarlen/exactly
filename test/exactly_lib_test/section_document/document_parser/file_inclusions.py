@@ -38,7 +38,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCombinationOfDocuments),
         unittest.makeSuite(TestMultipleInclusionsOfSameFile),
         unittest.makeSuite(TestInclusionFromInclusion),
-        unittest.makeSuite(TestFileInclusionRelativityRootIsGivenToElementParser),
+        unittest.makeSuite(TestFileReferenceRelativityRootIsGivenToElementParser),
         unittest.makeSuite(TestDetectionOfInclusionCycles),
         unittest.makeSuite(TestAbsPathOfDirContainingFile),
     ])
@@ -924,7 +924,7 @@ class TestInclusionFromInclusion(unittest.TestCase):
                                    is_file_access_error(expected_file_access_error))
 
 
-class TestFileInclusionRelativityRootIsGivenToElementParser(unittest.TestCase):
+class TestFileReferenceRelativityRootIsGivenToElementParser(unittest.TestCase):
     def test(self):
         # ARRANGE #
         setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(

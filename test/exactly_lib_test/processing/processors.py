@@ -71,7 +71,7 @@ class TestFileInclusionResultStatus(unittest.TestCase):
                     processor = proc_case.value(configuration)
                     with tmp_dir_as_cwd(cwd_contents):
                         test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
-                                                        file_inclusion_relativity_root=pathlib.Path.cwd())
+                                                        file_reference_relativity_root_dir=pathlib.Path.cwd())
                         # ACT #
                         result = processor.apply(test_case_setup)
                         # ASSERT #
@@ -107,7 +107,7 @@ class TestFileInclusionResultStatus(unittest.TestCase):
                     assert isinstance(processor, Processor)
                     with tmp_dir_as_cwd(cwd_contents):
                         test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
-                                                        file_inclusion_relativity_root=pathlib.Path.cwd())
+                                                        file_reference_relativity_root_dir=pathlib.Path.cwd())
                         # ACT #
                         result = processor.apply(test_case_setup)
                         # ASSERT #
@@ -179,7 +179,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                         assert isinstance(processor, Processor)
                         with tmp_dir_as_cwd(cwd_contents):
                             test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
-                                                            file_inclusion_relativity_root=pathlib.Path.cwd())
+                                                            file_reference_relativity_root_dir=pathlib.Path.cwd())
                             # ACT #
                             result = processor.apply(test_case_setup)
                             # ASSERT #

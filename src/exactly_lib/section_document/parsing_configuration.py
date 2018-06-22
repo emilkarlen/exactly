@@ -14,11 +14,11 @@ class DocumentParser:
 
     def parse(self,
               source_file_path: Optional[pathlib.Path],
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> model.Document:
         """
         :param source_file_path: None if the source is not a file.
-        :param file_inclusion_relativity_root: A directory that file inclusion paths are relative to.
+        :param file_reference_relativity_root_dir: A directory that file reference paths are relative to.
         :param source: The source to parse - the contents of source_file_path, if the source is from a file.
         :raises ParseError The test case cannot be parsed.
         """
@@ -27,7 +27,7 @@ class DocumentParser:
 
 class SectionElementParser:
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         """
         May return None if source is recognized.
@@ -38,6 +38,9 @@ class SectionElementParser:
         while a raised SourceError means that this parser recognizes the source (e.g. by
         being the name of an instruction), but that there is some syntax error related to
         the recognized element (e.g. instruction).
+
+        :param file_reference_relativity_root_dir: A directory that file reference paths are relative to.
+        :param source: Remaining source to parse
 
         :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
         have been consumed by this parser.

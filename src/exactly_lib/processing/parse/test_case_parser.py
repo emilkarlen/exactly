@@ -17,7 +17,7 @@ class Parser:
               test_case: TestCaseSetup,
               test_case_source: ParseSource) -> test_case_doc.TestCase:
         document = self.__section_document_parser.parse(test_case.file_path,
-                                                        test_case.file_inclusion_relativity_root,
+                                                        test_case.file_reference_relativity_root_dir,
                                                         test_case_source)
         return test_case_doc.TestCase(
             document.elements_for_section_or_empty_if_phase_not_present(phase_identifier.CONFIGURATION.section_name),

@@ -59,7 +59,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
             do_raise_ex_if_included_file_is_not_existing_file_rel_file_incl_path
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         current_line = source.current_line_text
         if current_line == UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE:
@@ -74,7 +74,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
                 for file_name in current_line_parts[1:]
             ]
             if self._do_raise_ex_if_included_file_is_not_existing_file:
-                self._do_raise_ex_if_any_file_not_exists(file_inclusion_relativity_root,
+                self._do_raise_ex_if_any_file_not_exists(file_reference_relativity_root_dir,
                                                          paths_to_include)
             return ParsedFileInclusionDirective(consumed_source, paths_to_include)
         elif current_line_parts[0] == SYNTAX_ERROR_INSTRUCTION_NAME:
@@ -87,10 +87,10 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
             raise ValueError('Unknown source: ' + current_line)
 
     @staticmethod
-    def _do_raise_ex_if_any_file_not_exists(file_inclusion_relativity_root: pathlib.Path,
+    def _do_raise_ex_if_any_file_not_exists(file_reference_relativity_root_dir: pathlib.Path,
                                             paths_to_include: Sequence[pathlib.Path]):
         for included_file_path in paths_to_include:
-            p = file_inclusion_relativity_root / included_file_path
+            p = file_reference_relativity_root_dir / included_file_path
             if not p.exists():
                 raise ValueError('Path of included file does not exist: ' + str(p))
 

@@ -16,7 +16,7 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedInstruction:
         first_line = source.current_line
         description = _DescriptionExtractor(source).apply()
