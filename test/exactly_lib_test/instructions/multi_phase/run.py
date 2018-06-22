@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.instructions.multi_phase import run as sut
 from exactly_lib.instructions.multi_phase.utils.instruction_from_parts_for_executing_program import \
     TheInstructionEmbryo
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds

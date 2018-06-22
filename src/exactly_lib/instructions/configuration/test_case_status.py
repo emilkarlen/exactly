@@ -6,7 +6,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import conf_params, concepts
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
     extract_single_eq_argument_string
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine

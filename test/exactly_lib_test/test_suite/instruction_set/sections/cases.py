@@ -1,7 +1,7 @@
 import pathlib
 import unittest
 
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections import cases as sut
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \

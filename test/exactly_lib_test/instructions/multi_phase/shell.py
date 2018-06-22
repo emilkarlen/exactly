@@ -2,7 +2,7 @@ import sys
 import unittest
 
 from exactly_lib.instructions.multi_phase import shell as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name

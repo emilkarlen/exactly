@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
 from exactly_lib.instructions.configuration import test_case_status as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import test_case_status as tcs
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder

@@ -1,7 +1,7 @@
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import is_option_argument
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
