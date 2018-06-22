@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 from typing import List
 
@@ -9,6 +10,7 @@ from exactly_lib.instructions.setup import stdin as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver
@@ -50,6 +52,9 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
+
+
 class TestParse(unittest.TestCase):
     def test_invalid_syntax(self):
         test_cases = [
@@ -70,7 +75,7 @@ class TestParse(unittest.TestCase):
         for source in test_cases:
             with self.subTest(msg='first line of source=' + source.remaining_part_of_current_line):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(source)
+                    parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_succeed_when_syntax_is_correct__with_relativity_option(self):
         parser = sut.Parser()
@@ -82,12 +87,12 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg='Argument ' + instruction_argument):
                 for source in equivalent_source_variants__with_source_check(self,
                                                                             assignment_str_of(instruction_argument)):
-                    parser.parse(source)
+                    parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_succeed_when_syntax_is_correct__string(self):
         parser = sut.Parser()
         for source in equivalent_source_variants__with_source_check(self, assignment_str_of('string')):
-            parser.parse(source)
+            parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_successful_single_last_line(self):
         test_cases = [
@@ -102,14 +107,14 @@ class TestParse(unittest.TestCase):
         parser = sut.Parser()
         for instruction_argument in test_cases:
             for source in equivalent_source_variants__with_source_check(self, assignment_str_of(instruction_argument)):
-                parser.parse(source)
+                parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_here_document(self):
         source = assignment_of_list_of_args(['<<MARKER'],
                                             ['single line',
                                              'MARKER',
                                              'following line'])
-        sut.Parser().parse(source)
+        sut.Parser().parse(THE_FS_LOCATION_INFO, source)
         is_at_beginning_of_line(4).apply_with_message(self, source, 'source')
 
 
