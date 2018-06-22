@@ -7,8 +7,7 @@ from exactly_lib_test.execution.partial_execution import \
     phase_step_sequence, \
     environment_variables, \
     propagation_of_symbols, \
-    propagation_of_hds, \
-    act_to_check_std_output
+    propagation_of_hds
 
 
 def suite() -> unittest.TestSuite:
@@ -20,7 +19,6 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(environment_variables.suite())
     ret_val.addTest(propagation_of_hds.suite())
     ret_val.addTest(propagation_of_symbols.suite())
-    ret_val.addTest(act_to_check_std_output.suite())
     return ret_val
 
 
