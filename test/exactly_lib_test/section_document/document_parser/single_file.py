@@ -53,7 +53,7 @@ NO_FILE_INCLUSIONS = []
 class ParseTestBase(unittest.TestCase):
     def _parse_lines(self,
                      parser: DocumentParser,
-                     lines: list) -> model.Document:
+                     lines: Sequence[str]) -> model.Document:
         ptc_source = source_of_lines(lines)
         return parser.parse(EXPECTED_SOURCE_FILE_PATH,
                             DUMMY_FILE_INCLUSION_RELATIVITY_ROOT,
@@ -61,7 +61,7 @@ class ParseTestBase(unittest.TestCase):
 
     def _parse_and_check(self,
                          parser: DocumentParser,
-                         lines: list,
+                         lines: Sequence[str],
                          expected_document: Dict[str, Sequence[asrt.ValueAssertion[model.SectionContentElement]]]):
         # ACT #
         actual_document = self._parse_lines(parser, lines)

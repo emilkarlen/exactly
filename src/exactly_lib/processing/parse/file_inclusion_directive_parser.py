@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
@@ -31,7 +32,7 @@ class FileInclusionDirectiveParser(SectionElementParser):
 
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedFileInclusionDirective:
+              source: ParseSource) -> Optional[ParsedFileInclusionDirective]:
         parts = source.current_line_text.strip().split()
         if len(parts) == 0 or parts[0] != self._directive_token:
             return None

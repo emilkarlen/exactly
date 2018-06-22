@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence, Dict, List
+from typing import Sequence, Dict, List, Optional
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
@@ -22,7 +22,7 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
         self._configuration = internal_conf_of(configuration)
 
     def parse(self,
-              source_file_path: pathlib.Path,
+              source_file_path: Optional[pathlib.Path],
               file_inclusion_relativity_root: pathlib.Path,
               source: ParseSource) -> model.Document:
         return parse_source(self._configuration,
@@ -257,7 +257,7 @@ class _Impl:
 
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
-    def parse_element_at_current_line_using_current_section_element_parser(self) -> model.SectionContentElement:
+    def parse_element_at_current_line_using_current_section_element_parser(self):
         parsed_element = self.parser_for_current_section.parse(self._file_inclusion_relativity_root,
                                                                self._document_source)
         if parsed_element is None:

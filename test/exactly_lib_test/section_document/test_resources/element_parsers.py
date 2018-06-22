@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.section_document import parsing_configuration
 from exactly_lib.section_document.exceptions import SourceError
@@ -12,7 +13,7 @@ from exactly_lib_test.section_document.document_parser.test_resources.element_pa
 class SectionElementParserThatReturnsNone(SectionElementParser):
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
+              source: ParseSource) -> Optional[ParsedSectionElement]:
         return None
 
 

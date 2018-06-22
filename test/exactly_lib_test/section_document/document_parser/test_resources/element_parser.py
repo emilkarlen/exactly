@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.model import InstructionInfo
@@ -60,7 +60,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
 
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
+              source: ParseSource) -> Optional[ParsedSectionElement]:
         current_line = source.current_line_text
         if current_line == UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE:
             return None

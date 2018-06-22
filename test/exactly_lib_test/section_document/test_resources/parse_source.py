@@ -5,12 +5,12 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib_test.test_resources.string_formatting import StringFormatter
 
 
-def source_of_lines(lines: list) -> ParseSource:
+def source_of_lines(lines: Sequence[str]) -> ParseSource:
     return ParseSource('\n'.join(lines))
 
 
 def source4(first_line: str,
-            following_lines: list = ()) -> ParseSource:
+            following_lines: Sequence[str] = ()) -> ParseSource:
     return ParseSource('\n'.join([first_line] + list(following_lines)))
 
 
@@ -43,7 +43,7 @@ def single_line_source(arguments: str) -> ParseSource:
 
 
 def argument_list_source(arguments: List[str],
-                         following_lines: iter = ()) -> ParseSource:
+                         following_lines: Sequence[str] = ()) -> ParseSource:
     return source4(' '.join(map(_quote, arguments)),
                    following_lines)
 
