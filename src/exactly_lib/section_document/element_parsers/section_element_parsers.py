@@ -7,7 +7,7 @@ from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     new_comment_element, ParsedInstruction, ParsedNonInstructionElement
-from exactly_lib.section_document.parsing_configuration import SectionElementParser
+from exactly_lib.section_document.parsing_configuration import SectionElementParser, FileSystemLocationInfo
 from exactly_lib.util import line_source
 
 
@@ -19,7 +19,7 @@ class InstructionAndDescriptionParser(SectionElementParser):
     """
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ParsedInstruction:
         """
         :raises FileSourceError The description or instruction cannot be parsed.
@@ -61,10 +61,10 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ParsedInstruction:
         return parse_and_compute_source(self.instruction_parser,
-                                        file_reference_relativity_root_dir,
+                                        fs_location_info,
                                         source)
 
 
@@ -85,10 +85,10 @@ class ParserFromSequenceOfParsers(SectionElementParser):
         self._parsers_to_try = parsers_to_try
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         for parser in self._parsers_to_try:
-            element = parser.parse(file_reference_relativity_root_dir, source)
+            element = parser.parse(fs_location_info, source)
             if element is not None:
                 return element
         return None
@@ -105,7 +105,7 @@ class StandardSyntaxCommentAndEmptyLineParser(SectionElementParser):
     """
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedNonInstructionElement]:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):
@@ -147,13 +147,13 @@ def standard_syntax_element_parser(instruction_or_directive_parser: SectionEleme
 
 
 def parse_and_compute_source(parser: InstructionParser,
-                             file_reference_relativity_root_dir: pathlib.Path,
+                             fs_location_info: FileSystemLocationInfo,
                              source: ParseSource,
                              description: str = None) -> ParsedInstruction:
     source_before = source.remaining_source
     first_line_number = source.current_line_number
     len_before_parse = len(source_before)
-    instruction = parser.parse(file_reference_relativity_root_dir, source)
+    instruction = parser.parse(fs_location_info, source)
     len_after_parse = len(source.remaining_source)
     len_instruction_source = len_before_parse - len_after_parse
     instruction_source = source_before[:len_instruction_source]

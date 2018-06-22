@@ -11,7 +11,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, ParsedInstruction, \
     new_empty_element, new_comment_element
 from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration, \
-    DocumentParser
+    DocumentParser, FileSystemLocationInfo
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line, SourceLocation, single_line_sequence
@@ -544,7 +544,7 @@ class SectionElementParserForEmptyCommentAndInstructionLines(
         self._section_name = section_name
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ParsedSectionElement:
         current_line = source.current_line_text
         if current_line == '':

@@ -7,7 +7,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     ParsedFileInclusionDirective, ParsedInstruction
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionConfiguration, \
-    SectionsConfiguration
+    SectionsConfiguration, FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSection
 
@@ -59,7 +59,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
             do_raise_ex_if_included_file_is_not_existing_file_rel_file_incl_path
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         current_line = source.current_line_text
         if current_line == UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE:
@@ -74,7 +74,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
                 for file_name in current_line_parts[1:]
             ]
             if self._do_raise_ex_if_included_file_is_not_existing_file:
-                self._do_raise_ex_if_any_file_not_exists(file_reference_relativity_root_dir,
+                self._do_raise_ex_if_any_file_not_exists(fs_location_info.file_reference_relativity_root_dir,
                                                          paths_to_include)
             return ParsedFileInclusionDirective(consumed_source, paths_to_include)
         elif current_line_parts[0] == SYNTAX_ERROR_INSTRUCTION_NAME:

@@ -11,7 +11,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration, \
-    DocumentParser
+    DocumentParser, FileSystemLocationInfo
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation
@@ -173,7 +173,8 @@ class _Impl:
                  visited_paths: List[pathlib.Path]):
         self.configuration = configuration
         self._element_builder = element_builder
-        self._file_reference_relativity_root_dir = file_reference_relativity_root_dir
+        # self._file_reference_relativity_root_dir = file_reference_relativity_root_dir
+        self._fs_location_info = FileSystemLocationInfo(file_reference_relativity_root_dir)
         self._document_source = document_source
         self._current_line = self._get_current_line_or_none_if_is_at_eof()
         self._parser_for_current_section = None
@@ -258,7 +259,7 @@ class _Impl:
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
     def parse_element_at_current_line_using_current_section_element_parser(self):
-        parsed_element = self.parser_for_current_section.parse(self._file_reference_relativity_root_dir,
+        parsed_element = self.parser_for_current_section.parse(self._fs_location_info,
                                                                self._document_source)
         if parsed_element is None:
             raise FileSourceError(new_source_error_of_single_line(self._document_source.current_line,
@@ -329,13 +330,14 @@ class _Impl:
             included_doc = parse_file(conf,
                                       file_to_include,
                                       self._element_builder.location_path_of(inclusion_directive.source),
-                                      self._file_reference_relativity_root_dir,
+                                      self._fs_location_info.file_reference_relativity_root_dir,
                                       self.visited_paths)
             _add_raw_doc(self._section_name_2_element_list, included_doc)
 
 
 def resolve_file_reference_relativity_root_dir(relativity_root: pathlib.Path,
-                                               file_inclusion_chain: Sequence[line_source.SourceLocation]) -> pathlib.Path:
+                                               file_inclusion_chain: Sequence[line_source.SourceLocation]
+                                               ) -> pathlib.Path:
     try:
         return relativity_root.resolve()
     except RuntimeError as ex:

@@ -1,5 +1,4 @@
 import io
-import pathlib
 import shlex
 
 from exactly_lib.section_document import syntax
@@ -8,6 +7,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.exceptions import new_source_error_of_single_line
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.util.line_source import Line
 
 
@@ -16,13 +16,13 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
         self.instruction_parser = instruction_parser
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ParsedInstruction:
         first_line = source.current_line
         description = _DescriptionExtractor(source).apply()
         self._consume_space_and_comment_lines(source, first_line)
         return parse_and_compute_source(self.instruction_parser,
-                                        file_reference_relativity_root_dir,
+                                        fs_location_info,
                                         source,
                                         description)
 
