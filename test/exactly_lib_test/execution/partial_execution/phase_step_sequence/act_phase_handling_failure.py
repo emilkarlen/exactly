@@ -258,7 +258,7 @@ class Test(TestCaseBase):
                  phase_step.ACT__PREPARE,
                  phase_step.ACT__EXECUTE,
 
-                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ACT),
                  ],
             ))
 
@@ -289,7 +289,7 @@ class Test(TestCaseBase):
                  phase_step.ACT__PREPARE,
                  phase_step.ACT__EXECUTE,
 
-                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ACT),
                  ],
             ))
 
