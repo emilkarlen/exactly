@@ -5,6 +5,7 @@ from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
 from exactly_lib.instructions.configuration import test_case_status as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case import test_case_status as tcs
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -25,7 +26,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-THE_FILE_REF_REL_ROOT_DIR = pathlib.Path.cwd()
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestParse(unittest.TestCase):
@@ -39,7 +40,7 @@ class TestParse(unittest.TestCase):
             with self.subTest(argument_str):
                 for source in equivalent_source_variants(self, argument_str):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.Parser().parse(THE_FILE_REF_REL_ROOT_DIR, source)
+                        sut.Parser().parse(THE_FS_LOCATION_INFO, source)
 
 
 class TestCaseBaseForParser(TestCaseBase):

@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
@@ -111,8 +112,8 @@ class Executor(InstructionExecutionBase):
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        the_file_ref_rel_root_dir = pathlib.Path.cwd()
-        instruction = parser.parse(the_file_ref_rel_root_dir, source)
+        fs_location_info = FileSystemLocationInfo(pathlib.Path.cwd())
+        instruction = parser.parse(fs_location_info, source)
         self._check_instruction(BeforeAssertPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, BeforeAssertPhaseInstruction)

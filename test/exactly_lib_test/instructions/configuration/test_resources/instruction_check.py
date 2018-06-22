@@ -6,6 +6,7 @@ from time import strftime, localtime
 from exactly_lib import program_info
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
@@ -63,8 +64,8 @@ class Executor:
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        the_file_ref_rel_root_dir = pathlib.Path.cwd()
-        instruction = parser.parse(the_file_ref_rel_root_dir, source)
+        fs_location_info = FileSystemLocationInfo(pathlib.Path.cwd())
+        instruction = parser.parse(fs_location_info, source)
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,
