@@ -8,8 +8,9 @@ from exactly_lib.section_document.exceptions import SourceError, FileSourceError
     new_source_error_of_single_line
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, ParsedSectionElementVisitor, \
+from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
+from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation
@@ -34,74 +35,18 @@ class DocumentParser:
         raise NotImplementedError()
 
 
-class SectionElementParser:
-    def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
-        """
-        May return None if source is recognized.
-        Unrecognized source may also be reported by raising SourceError.
-
-        The possibility to return None exists to help constructing parsers from parts -
-        a return value of None means that some other parser may try to parse the same source,
-        while a raised SourceError means that this parser recognizes the source (e.g. by
-        being the name of an instruction), but that there is some syntax error related to
-        the recognized element (e.g. instruction).
-
-        :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
-        have been consumed by this parser.
-        :raises SourceError: The element cannot be parsed.
-        """
-        raise NotImplementedError()
+def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
+    return _DocumentParserForSectionsConfiguration(configuration)
 
 
-class SectionConfiguration(tuple):
-    def __new__(cls,
-                section_name: str,
-                parser: SectionElementParser):
-        return tuple.__new__(cls, (section_name, parser))
-
-    @property
-    def section_name(self) -> str:
-        return self[0]
-
-    @property
-    def parser(self) -> SectionElementParser:
-        return self[1]
-
-
-class SectionsConfiguration:
-    """
-    Sections and their instruction parser.
-    """
-
-    def __init__(self,
-                 parsers_for_named_sections: Sequence[SectionConfiguration],
-                 default_section_name: str = None,
-                 section_element_name_for_error_messages: str = 'section'):
-        self.section_element_name_for_error_messages = section_element_name_for_error_messages
-        self._parsers_for_named_sections = parsers_for_named_sections
-        self._section2parser = {
-            pfs.section_name: pfs.parser
-            for pfs in parsers_for_named_sections
-        }
-
-        self.default_section_name = default_section_name
-        if default_section_name is not None:
-            if default_section_name not in self._section2parser:
-                raise ValueError('The name of the default section "%s" does not correspond to any section: %s' %
-                                 (default_section_name,
-                                  str(self._section2parser.keys()))
-                                 )
-
-    def sections(self) -> Dict[str, SectionElementParser]:
-        return self._section2parser
-
-    def parser_for_section(self, section_name: str) -> SectionElementParser:
-        return self._section2parser[section_name]
-
-    def has_section(self, section_name: str) -> bool:
-        return section_name in self._section2parser
+def parse(configuration: SectionsConfiguration,
+          source_file_path: pathlib.Path) -> model.Document:
+    raw_doc = _parse_file(_internal_conf_of(configuration),
+                          source_file_path,
+                          [],
+                          _resolve_file_inclusion_relativity_root(pathlib.Path.cwd(), []),
+                          [])
+    return _build_document(raw_doc)
 
 
 class _SectionsConfigurationInternal:
@@ -126,23 +71,9 @@ class _SectionsConfigurationInternal:
         return section_name in self.section2parser
 
 
-def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
-    return _DocumentParserForSectionsConfiguration(configuration)
-
-
-def parse(configuration: SectionsConfiguration,
-          source_file_path: pathlib.Path) -> model.Document:
-    raw_doc = _parse_file(_internal_conf_of(configuration),
-                          source_file_path,
-                          [],
-                          _resolve_file_inclusion_relativity_root(pathlib.Path.cwd(), []),
-                          [])
-    return _build_document(raw_doc)
-
-
-def read_source_file(file_path: pathlib.Path,
-                     file_path_for_error_message: pathlib.Path,
-                     file_inclusion_chain: Sequence[SourceLocation]) -> ParseSource:
+def _read_source_file(file_path: pathlib.Path,
+                      file_path_for_error_message: pathlib.Path,
+                      file_inclusion_chain: Sequence[SourceLocation]) -> ParseSource:
     try:
         return new_for_file(file_path)
     except OSError as ex:
@@ -183,9 +114,9 @@ def _parse_file(conf: _SectionsConfigurationInternal,
                 previously_visited_paths: List[pathlib.Path],
                 ) -> RawDoc:
     path_to_file = file_inclusion_relativity_root / file_path
-    source = read_source_file(path_to_file,
-                              file_path,
-                              file_inclusion_chain)
+    source = _read_source_file(path_to_file,
+                               file_path,
+                               file_inclusion_chain)
     resolved_path_of_current_file = path_to_file.resolve()
     if resolved_path_of_current_file in previously_visited_paths:
         raise FileAccessError(file_path,

@@ -2,8 +2,8 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.section_document import document_parser as sut
-from exactly_lib.section_document.document_parser import SectionsConfiguration
 from exactly_lib.section_document.model import Document
+from exactly_lib.section_document.parsing_configuration import SectionsConfiguration
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import SECTIONS_CONFIGURATION
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd

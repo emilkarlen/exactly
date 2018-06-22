@@ -1,6 +1,7 @@
 import pathlib
 
 from exactly_lib.section_document import document_parser
+from exactly_lib.section_document import parsing_configuration
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
@@ -8,7 +9,7 @@ from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
 
 
-class ActPhaseParser(document_parser.SectionElementParser):
+class ActPhaseParser(parsing_configuration.SectionElementParser):
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
               source: document_parser.ParseSource) -> ParsedInstruction:

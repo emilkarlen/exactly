@@ -3,9 +3,9 @@ from pathlib import Path, PosixPath, PurePosixPath
 from typing import List, Dict, Sequence
 
 from exactly_lib.section_document import document_parser as sut
-from exactly_lib.section_document.document_parser import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.model import SectionContentElement, ElementType
+from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.arrangement_and_expectation import Expectation, \
