@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.section_document import section_element_parser as sut
+from exactly_lib.section_document import parsed_section_element as sut
 from exactly_lib.section_document.model import InstructionInfo, Instruction, ElementType
 from exactly_lib.util import line_source
 

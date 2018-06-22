@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.processing.parse import act_phase_source_parser as sut
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.section_element_parser import ParsedInstruction
+from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 

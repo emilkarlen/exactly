@@ -6,7 +6,7 @@ from exactly_lib.section_document import syntax
 from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.section_element_parser import ParsedSectionElement, new_empty_element, \
+from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     new_comment_element, ParsedInstruction, ParsedNonInstructionElement
 from exactly_lib.util import line_source
 

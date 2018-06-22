@@ -1,7 +1,7 @@
 import pathlib
 from typing import Sequence
 
-from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedFileInclusionDirective
+from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, ParsedFileInclusionDirective
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

@@ -3,7 +3,7 @@ import pathlib
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.model import InstructionInfo
-from exactly_lib.section_document.section_element_parser import ParsedInstruction
+from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.util.line_source import LineSequence
 
