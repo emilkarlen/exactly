@@ -11,7 +11,7 @@ OPTION_FOR_EXECUTING_ACT_PHASE = short_and_long_option_syntax.long_syntax(OPTION
 OPTION_FOR_PREPROCESSOR__LONG = 'preprocessor'
 OPTION_FOR_PREPROCESSOR = short_and_long_option_syntax.long_syntax(OPTION_FOR_PREPROCESSOR__LONG)
 
-PREPROCESSOR_OPTION_ARGUMENT = 'PROGRAM'
+PREPROCESSOR_OPTION_ARGUMENT = 'COMMAND'
 
 OPTION_FOR_ACTOR__LONG = 'actor'
 OPTION_FOR_ACTOR = short_and_long_option_syntax.long_syntax(OPTION_FOR_ACTOR__LONG)
