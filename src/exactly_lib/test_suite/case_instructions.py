@@ -1,3 +1,4 @@
+import pathlib
 from typing import List, Sequence
 
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -28,8 +29,12 @@ class CaseSetupPhaseInstructionParser(InstructionParser):
     def __init__(self, case_instruction_parser: InstructionParser):
         self._case_instruction_parser = case_instruction_parser
 
-    def parse(self, source: ParseSource) -> CaseSetupPhaseInstruction:
-        return CaseSetupPhaseInstruction(self._case_instruction_parser.parse(source))
+    def parse(self,
+              file_reference_relativity_root_dir: pathlib.Path,
+              source: ParseSource) -> CaseSetupPhaseInstruction:
+        return CaseSetupPhaseInstruction(
+            self._case_instruction_parser.parse(file_reference_relativity_root_dir, source)
+        )
 
 
 class TestCaseSectionContentElementFactory:

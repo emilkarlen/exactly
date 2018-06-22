@@ -1,4 +1,5 @@
 import types
+from typing import Callable
 
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.instruction_arguments import INTEGER_ARGUMENT
@@ -58,7 +59,7 @@ def parse_integer_matcher(parser: TokenParser,
 
 def parse_integer_comparison_operator_and_rhs(
         parser: TokenParser,
-        custom_integer_restriction: types.FunctionType = None) -> IntegerComparisonOperatorAndRightOperand:
+        custom_integer_restriction: Callable[[int], str] = None) -> IntegerComparisonOperatorAndRightOperand:
     my_parser = token_parser_with_additional_error_message_format_map(parser, {'INTEGER': INTEGER_ARGUMENT.name})
 
     operator = parse_comparison_operator(my_parser)

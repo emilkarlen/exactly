@@ -3,7 +3,8 @@ from typing import List
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import model
-from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.element_parsers.section_element_parsers import \
+    InstructionParserWithoutFileReferenceRelativityRoot
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -27,11 +28,11 @@ class SetupPhaseInstructionThatRegistersString(SetupPhaseInstruction):
         return sh.new_sh_success()
 
 
-class InstructionParserForRecordingInstructions(InstructionParser):
+class InstructionParserForRecordingInstructions(InstructionParserWithoutFileReferenceRelativityRoot):
     def __init__(self, recorder: List[str]):
         self.recorder = recorder
 
-    def parse(self, source: ParseSource) -> model.Instruction:
+    def parse_from_source(self, source: ParseSource) -> model.Instruction:
         str_to_record = source.remaining_part_of_current_line
         source.consume_current_line()
         return SetupPhaseInstructionThatRegistersString(self.recorder, str_to_record)

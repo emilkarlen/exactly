@@ -1,7 +1,8 @@
 import os
 import unittest
 
-from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser, \
+    InstructionParserWithoutFileReferenceRelativityRoot
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.common import TestCaseInstruction, InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -47,12 +48,12 @@ def raises_test_error() -> asrt.ValueAssertion:
     return RaisesTestError()
 
 
-class ParserThatGives(InstructionParser):
+class ParserThatGives(InstructionParserWithoutFileReferenceRelativityRoot):
     def __init__(self,
                  instruction: TestCaseInstruction):
         self.instruction = instruction
 
-    def parse(self, source: ParseSource) -> TestCaseInstruction:
+    def parse_from_source(self, source: ParseSource) -> TestCaseInstruction:
         return self.instruction
 
 

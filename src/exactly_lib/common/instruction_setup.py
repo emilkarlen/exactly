@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.model import Instruction
@@ -15,8 +17,10 @@ class SingleInstructionSetup(InstructionParser):
     def documentation(self) -> InstructionDocumentation:
         return self._documentation
 
-    def parse(self, source: ParseSource) -> Instruction:
-        return self._parser.parse(source)
+    def parse(self,
+              file_reference_relativity_root_dir: pathlib.Path,
+              source: ParseSource) -> Instruction:
+        return self._parser.parse(file_reference_relativity_root_dir, source)
 
 
 def instruction_set_from_name_and_setup_constructor_list(name_and_setup_pair_list: list) -> dict:
