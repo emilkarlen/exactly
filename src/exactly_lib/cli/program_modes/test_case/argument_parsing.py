@@ -126,8 +126,8 @@ The test case is executed as if it were part of the suite.
 """
 
 EXECUTING_ACT_PHASE_OPTION_DESCRIPTION = """\
-Executes the test case, except {phase[before_assert]:syntax} and {phase[assert]:syntax}.
-But instead of "reporting" the result,
+{phase[before_assert]:syntax} and {phase[assert]:syntax} are skipped;
+and instead of "reporting" the result,
 the outcome of {phase[act]:syntax} is emitted:
 
 
@@ -136,8 +136,8 @@ output on stdout/stderr from {phase[act]:syntax} becomes the output on stdout/st
 the exit code from {phase[act]:syntax} becomes the exit code from the program.
 
 
-If an error occurs, then it is reported as usual
-(in addition to the output from {phase[act]:syntax}).
+If an error occurs, the normal error information is emitted to stderr
+(following the output from {phase[act]:syntax}).
 """
 
 KEEPING_SANDBOX_OPTION_DESCRIPTION = """\

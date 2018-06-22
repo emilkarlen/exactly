@@ -25,6 +25,37 @@ sys.exit({exit_code})
            exit_code=exit_code)
 
 
+def py_pgm_with_stdout_stderr_and_sleep_in_between(stdout_output_before_sleep: str,
+                                                   stderr_output_before_sleep: str,
+                                                   stdout_output_after_sleep: str,
+                                                   stderr_output_after_sleep: str,
+                                                   sleep_seconds: int,
+                                                   exit_code: int) -> str:
+    return """\
+import sys
+import time
+
+def write_to(f, s):
+  f.write(s)
+  f.flush()
+
+write_to(sys.stdout, '{stdout_output_before_sleep}')
+write_to(sys.stderr, '{stderr_output_before_sleep}')
+
+time.sleep({sleep_seconds})
+
+write_to(sys.stdout, '{stdout_output_after_sleep}')
+write_to(sys.stderr, '{stderr_output_after_sleep}')
+
+sys.exit({exit_code})
+""".format(stdout_output_before_sleep=stdout_output_before_sleep,
+           stderr_output_before_sleep=stderr_output_before_sleep,
+           stdout_output_after_sleep=stdout_output_after_sleep,
+           stderr_output_after_sleep=stderr_output_after_sleep,
+           sleep_seconds=sleep_seconds,
+           exit_code=exit_code)
+
+
 def single_line_pgm_that_prints_to_stdout(output: str) -> str:
     return single_line_pgm_that_prints_to(ProcOutputFile.STDOUT, output)
 
