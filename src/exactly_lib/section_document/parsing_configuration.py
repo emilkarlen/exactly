@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence, Dict
+from typing import Sequence, Dict, Optional
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse_source import ParseSource
@@ -13,7 +13,7 @@ class DocumentParser:
     """
 
     def parse(self,
-              source_file_path: pathlib.Path,
+              source_file_path: Optional[pathlib.Path],
               file_inclusion_relativity_root: pathlib.Path,
               source: ParseSource) -> model.Document:
         """
@@ -28,7 +28,7 @@ class DocumentParser:
 class SectionElementParser:
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
+              source: ParseSource) -> Optional[ParsedSectionElement]:
         """
         May return None if source is recognized.
         Unrecognized source may also be reported by raising SourceError.

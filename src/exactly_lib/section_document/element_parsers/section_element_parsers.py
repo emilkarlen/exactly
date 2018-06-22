@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence, Callable
+from typing import Sequence, Callable, Optional
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
@@ -69,7 +69,7 @@ class ParserFromSequenceOfParsers(SectionElementParser):
 
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedSectionElement:
+              source: ParseSource) -> Optional[ParsedSectionElement]:
         for parser in self._parsers_to_try:
             element = parser.parse(file_inclusion_relativity_root, source)
             if element is not None:
@@ -89,7 +89,7 @@ class StandardSyntaxCommentAndEmptyLineParser(SectionElementParser):
 
     def parse(self,
               file_inclusion_relativity_root: pathlib.Path,
-              source: ParseSource) -> ParsedNonInstructionElement:
+              source: ParseSource) -> Optional[ParsedNonInstructionElement]:
         first_line = source.current_line
         if syntax.is_empty_line(first_line.text):
             return new_empty_element(self._consume_and_return_current_line(source,
