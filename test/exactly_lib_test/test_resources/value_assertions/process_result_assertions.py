@@ -6,27 +6,17 @@ from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
-def is_result_for_exit_value(expected: ExitValue) -> asrt.ValueAssertion:
-    """
-    :rtype: A ValueAssertion on a SubProcessResult.
-    """
+def is_result_for_exit_value(expected: ExitValue) -> asrt.ValueAssertion[SubProcessResult]:
     return SubProcessExitValueAssertion(expected)
 
 
-def is_result_for_exit_code(exit_code: int) -> asrt.ValueAssertion:
-    """
-    :rtype: A ValueAssertion on a SubProcessResult.
-    """
+def is_result_for_exit_code(exit_code: int) -> asrt.ValueAssertion[SubProcessResult]:
     return asrt.sub_component('exit code',
                               SubProcessResult.exitcode.fget,
                               asrt.Equals(exit_code))
 
 
-def stdout(assertion_on_str: asrt.ValueAssertion) -> asrt.ValueAssertion:
-    """
-    :type assertion_on_str: An assertion on a str.
-    :rtype: A ValueAssertion on a SubProcessResult.
-    """
+def stdout(assertion_on_str: asrt.ValueAssertion[str]) -> asrt.ValueAssertion[SubProcessResult]:
     return asrt.sub_component('stdout',
                               SubProcessResult.stdout.fget,
                               assertion_on_str)
@@ -50,7 +40,7 @@ def sub_process_result(exitcode: asrt.ValueAssertion = asrt.anything_goes(),
                                  ]))
 
 
-class SubProcessExitValueAssertion(asrt.ValueAssertion):
+class SubProcessExitValueAssertion(asrt.ValueAssertion[SubProcessResult]):
     def __init__(self,
                  expected: ExitValue,
                  message: str = None):

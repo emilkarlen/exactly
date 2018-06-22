@@ -21,6 +21,7 @@ from exactly_lib_test.test_resources.files.file_structure import FileSystemEleme
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndDefaultActor
+from exactly_lib_test.test_resources.process import SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
     process_result_for_exit_value
@@ -33,7 +34,7 @@ def suite_that_requires_main_program_runner_with_default_setup(main_program_runn
 class AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(SetupWithoutPreprocessorAndDefaultActor):
     name_of_source_file_to_interpret = 'system-under-test.py'
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
@@ -70,7 +71,7 @@ class AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(SetupWitho
 class TheTestCaseDirReplacementTransformerShouldBeAvailableInTheSetupPhase(SetupWithoutPreprocessorAndDefaultActor):
     name_of_source_file_to_interpret = 'system-under-test.py'
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:

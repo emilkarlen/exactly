@@ -35,7 +35,7 @@ def suite() -> unittest.TestSuite:
 
 
 class EmptyTestCaseShouldPass(SetupWithoutPreprocessorAndTestActor):
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
     def test_case(self) -> str:
@@ -48,7 +48,7 @@ class AllPhasesEmptyShouldPass(SetupWithoutPreprocessorAndTestActor):
                            for phase in phase_identifier.ALL]
         return lines_content(test_case_lines)
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
 
@@ -59,7 +59,7 @@ class WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(SetupWithout
         ]
         return lines_content(test_case_lines)
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return process_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR)
 
 
@@ -77,7 +77,7 @@ class EnvironmentVariablesAreSetCorrectly(SetupWithoutPreprocessorAndTestActor):
         ]
         return lines_content(test_case_source_lines)
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return asrt.And([
             process_result_info_assertions.is_process_result_for_exit_code(exit_values.EXECUTION__PASS.exit_code),
             ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(),

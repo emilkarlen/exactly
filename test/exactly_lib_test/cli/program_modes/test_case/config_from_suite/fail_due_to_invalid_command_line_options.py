@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.main_program.main_program_check_for_test_ca
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.main_program.main_program_runner_via_same_process import \
     RunViaMainProgramInternally
-from exactly_lib_test.test_resources.process import SubProcessResult
+from exactly_lib_test.test_resources.process import SubProcessResult, SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_process_result
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.process_result_info_assertions import \
@@ -49,7 +49,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
     def additional_arguments(self) -> List[str]:
         return [long_syntax('invalid-option-that-should-cause-failure')]
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return is_process_result_for_exit_code(exit_codes.EXIT_INVALID_USAGE)
 
     def test_case(self) -> str:

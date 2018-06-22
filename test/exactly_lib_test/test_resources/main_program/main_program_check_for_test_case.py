@@ -14,10 +14,7 @@ class SetupForTestCaseBase(main_program_check_base.SetupBase):
     def test_case(self) -> str:
         raise NotImplementedError()
 
-    def expected_result(self) -> ValueAssertion:
-        """
-        :return: A ValueAssertion where the value argument is SubProcessResultInfo
-        """
+    def expected_result(self) -> ValueAssertion[SubProcessResultInfo]:
         raise NotImplementedError()
 
     def check(self,
@@ -58,8 +55,7 @@ class SetupWithoutPreprocessorAndTestActor(SetupWithoutPreprocessor):
 
 
 class SetupWithoutPreprocessorAndDefaultActor(SetupWithoutPreprocessor):
-    def first_arguments(self,
-                        root_path: pathlib.Path) -> List[str]:
+    def first_arguments(self, root_path: pathlib.Path) -> List[str]:
         return []
 
     def file_structure(self,
