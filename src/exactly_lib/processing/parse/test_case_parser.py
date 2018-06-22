@@ -10,7 +10,7 @@ from exactly_lib.test_case import test_case_doc, phase_identifier
 
 class Parser:
     def __init__(self,
-                 section_document_parser: document_parser.DocumentParser):
+                 section_document_parser: parsing_configuration.DocumentParser):
         self.__section_document_parser = section_document_parser
 
     def apply(self,
