@@ -1,12 +1,12 @@
 import tempfile
 from typing import TypeVar, Callable, Tuple
 
-from exactly_lib.util.std import StdOutputFiles
+from exactly_lib.util.std import StdOutputFiles, StdOutputFilesContents
 
 ResultType = TypeVar('ResultType')
 
 
-def capture_stdout_err(action: Callable[[StdOutputFiles], ResultType]) -> Tuple[StdOutputFiles, ResultType]:
+def capture_stdout_err(action: Callable[[StdOutputFiles], ResultType]) -> Tuple[StdOutputFilesContents, ResultType]:
     with tempfile.TemporaryFile(mode='r+t') as stdout_file:
         with tempfile.TemporaryFile(mode='r+t') as stderr_file:
             std_files = StdOutputFiles(stdout_file, stderr_file)
@@ -15,7 +15,7 @@ def capture_stdout_err(action: Callable[[StdOutputFiles], ResultType]) -> Tuple[
             stdout_file_contents = _contents_of(stdout_file)
             stderr_file_contents = _contents_of(stderr_file)
 
-            return StdOutputFiles(stdout_file_contents, stderr_file_contents), result
+            return StdOutputFilesContents(stdout_file_contents, stderr_file_contents), result
 
 
 def _contents_of(f) -> str:
