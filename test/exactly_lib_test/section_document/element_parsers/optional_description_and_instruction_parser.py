@@ -5,7 +5,8 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
-from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
+from exactly_lib.section_document.element_parsers.section_element_parsers import \
+    InstructionParserWithoutFileReferenceRelativityRoot
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
@@ -20,8 +21,8 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-class SingleInstructionParserThatConsumesCurrentLine(InstructionParser):
-    def parse(self, source: ParseSource) -> model.Instruction:
+class SingleInstructionParserThatConsumesCurrentLine(InstructionParserWithoutFileReferenceRelativityRoot):
+    def parse_from_source(self, source: ParseSource) -> model.Instruction:
         ret_val = Instruction(source.current_line_number,
                               source.remaining_part_of_current_line)
         source.consume_current_line()

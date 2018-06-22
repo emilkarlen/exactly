@@ -1,4 +1,5 @@
-from typing import Callable
+import pathlib
+from typing import Callable, Dict
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
@@ -15,24 +16,25 @@ InstructionNameExtractor = Callable[[str], str]
 class InstructionParserForDictionaryOfInstructions(InstructionParser):
     def __init__(self,
                  instruction_name_extractor_function: InstructionNameExtractor,
-                 instruction_name__2__single_instruction_parser: dict):
+                 instruction_name__2__single_instruction_parser: Dict[str, InstructionParser]):
         """
         :param instruction_name_extractor_function Callable that extracts an instruction name from a source line.
         The source line text is assumed to contain at least
         an instruction name.
-        :param instruction_name__2__single_instruction_parser: dict: str -> SingleTypeOfInstructionParser
         """
         self.__instruction_name__2__single_instruction_parser = instruction_name__2__single_instruction_parser
         for value in self.__instruction_name__2__single_instruction_parser.values():
             assert isinstance(value, InstructionParser)
         self._instruction_name_extractor_function = instruction_name_extractor_function
 
-    def parse(self, source: ParseSource) -> model.Instruction:
+    def parse(self,
+              file_reference_relativity_root_dir: pathlib.Path,
+              source: ParseSource) -> model.Instruction:
         first_line = source.current_line
         name = self._extract_name(source)
         parser = self._lookup_parser(first_line, name)
         source.consume_initial_space_on_current_line()
-        return self._parse(source, parser, name)
+        return self._parse(file_reference_relativity_root_dir, source, parser, name)
 
     def _extract_name(self, source: ParseSource) -> str:
         try:
@@ -54,7 +56,8 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         return self.__instruction_name__2__single_instruction_parser[name]
 
     @staticmethod
-    def _parse(source: ParseSource,
+    def _parse(file_reference_relativity_root_dir: pathlib.Path,
+               source: ParseSource,
                parser: InstructionParser,
                name: str) -> model.Instruction:
         """
@@ -62,7 +65,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         """
         first_line = source.current_line
         try:
-            return parser.parse(source)
+            return parser.parse(file_reference_relativity_root_dir, source)
         except SingleInstructionInvalidArgumentException as ex:
             raise InvalidInstructionArgumentException(line_sequence_from_line(first_line),
                                                       name,

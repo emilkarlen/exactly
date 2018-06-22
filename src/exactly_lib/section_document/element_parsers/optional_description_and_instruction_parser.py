@@ -21,7 +21,10 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
         first_line = source.current_line
         description = _DescriptionExtractor(source).apply()
         self._consume_space_and_comment_lines(source, first_line)
-        return parse_and_compute_source(self.instruction_parser, source, description)
+        return parse_and_compute_source(self.instruction_parser,
+                                        file_reference_relativity_root_dir,
+                                        source,
+                                        description)
 
     @staticmethod
     def _consume_space_and_comment_lines(source: ParseSource, first_line: Line):

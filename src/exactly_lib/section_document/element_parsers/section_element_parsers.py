@@ -34,7 +34,22 @@ class InstructionParser:
     Raises an exception if the parse fails.
     """
 
-    def parse(self, source: ParseSource) -> model.Instruction:
+    def parse(self,
+              file_reference_relativity_root_dir: pathlib.Path,
+              source: ParseSource) -> model.Instruction:
+        """
+        :raises FileSourceError The instruction cannot be parsed.
+        """
+        raise NotImplementedError()
+
+
+class InstructionParserWithoutFileReferenceRelativityRoot(InstructionParser):
+    def parse(self,
+              file_reference_relativity_root_dir: pathlib.Path,
+              source: ParseSource) -> model.Instruction:
+        return self.parse_from_source(source)
+
+    def parse_from_source(self, source: ParseSource) -> model.Instruction:
         """
         :raises FileSourceError The instruction cannot be parsed.
         """
@@ -48,7 +63,9 @@ class InstructionWithoutDescriptionParser(InstructionAndDescriptionParser):
     def parse(self,
               file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedInstruction:
-        return parse_and_compute_source(self.instruction_parser, source)
+        return parse_and_compute_source(self.instruction_parser,
+                                        file_reference_relativity_root_dir,
+                                        source)
 
 
 class ParserFromSequenceOfParsers(SectionElementParser):
@@ -130,12 +147,13 @@ def standard_syntax_element_parser(instruction_or_directive_parser: SectionEleme
 
 
 def parse_and_compute_source(parser: InstructionParser,
+                             file_reference_relativity_root_dir: pathlib.Path,
                              source: ParseSource,
                              description: str = None) -> ParsedInstruction:
     source_before = source.remaining_source
     first_line_number = source.current_line_number
     len_before_parse = len(source_before)
-    instruction = parser.parse(source)
+    instruction = parser.parse(file_reference_relativity_root_dir, source)
     len_after_parse = len(source.remaining_source)
     len_instruction_source = len_before_parse - len_after_parse
     instruction_source = source_before[:len_instruction_source]

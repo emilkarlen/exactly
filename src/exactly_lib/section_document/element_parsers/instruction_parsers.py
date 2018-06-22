@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -14,7 +16,9 @@ class InstructionParserThatConsumesCurrentLine(InstructionParser):
     Precondition: The source must have a current line.
     """
 
-    def parse(self, source: ParseSource) -> model.Instruction:
+    def parse(self,
+              file_reference_relativity_root_dir: pathlib.Path,
+              source: ParseSource) -> model.Instruction:
         rest_of_line = source.remaining_part_of_current_line
         source.consume_current_line()
         return self._parse(rest_of_line)
