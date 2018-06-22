@@ -115,6 +115,13 @@ class _PartialExecutor:
                 self.__before_assert__validate_post_setup,
                 self.__assert__validate_post_setup,
                 act_program_executor.prepare,
+            ])
+        if res is not None:
+            return self._final_failure_result_from(res)
+
+        res = self._sequence_with_cleanup(
+            PreviousPhase.ACT,
+            [
                 act_program_executor.execute,
             ])
         self._action_to_check_outcome = act_program_executor.action_to_check_outcome
@@ -148,7 +155,8 @@ class _PartialExecutor:
             return self._final_failure_result_from(failure_from_previous_step)
         return self._final_pass_result()
 
-    def _sequence(self, actions: Sequence[ActionWithFailureAsResult]) -> Optional[PhaseStepFailure]:
+    @staticmethod
+    def _sequence(actions: Sequence[ActionWithFailureAsResult]) -> Optional[PhaseStepFailure]:
         for action in actions:
             res = action()
             if res is not None:
