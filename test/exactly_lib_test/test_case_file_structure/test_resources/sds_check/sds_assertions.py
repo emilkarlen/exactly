@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, \
     RESULT_FILE__EXITCODE
-from exactly_lib_test.test_resources.files.file_checks import FileChecker
+from exactly_lib_test.test_resources.files.file_checks import FileChecker, file_does_not_exist
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.file_assertions import DirContainsExactly
@@ -57,6 +57,11 @@ class _IsSdsRootDir(asrt.ValueAssertion[str]):
 def sds_root_dir_exists_and_has_sds_dirs() -> asrt.ValueAssertion[SandboxDirectoryStructure]:
     return asrt.on_transformed(lambda sds: str(sds.root_dir),
                                is_sds_root_dir())
+
+
+def sds_root_dir_does_not_exist() -> asrt.ValueAssertion[SandboxDirectoryStructure]:
+    return asrt.on_transformed(lambda sds: sds.root_dir,
+                               file_does_not_exist())
 
 
 def is_existing_sds_with_post_execution_files() -> asrt.ValueAssertion[SandboxDirectoryStructure]:
