@@ -1,8 +1,10 @@
+import pathlib
 import unittest
 
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor as sut
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
@@ -22,6 +24,9 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
+
+
 class TestFailingParse(unittest.TestCase):
     def test_fail_when_invalid_syntax(self):
         test_cases = [
@@ -35,7 +40,7 @@ class TestFailingParse(unittest.TestCase):
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
+                        parser.parse(THE_FS_LOCATION_INFO, source)
 
 
 class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
@@ -44,7 +49,7 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
                expected_command_and_arguments: list):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument_source):
             # ARRANGE #
-            instruction = sut.Parser().parse(source)
+            instruction = sut.Parser().parse(THE_FS_LOCATION_INFO, source)
             assert isinstance(instruction, ConfigurationSectionInstruction)
             environment = configuration_section_environment()
             # ACT #
