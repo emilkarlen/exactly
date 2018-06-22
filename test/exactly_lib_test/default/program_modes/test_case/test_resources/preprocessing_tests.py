@@ -3,6 +3,7 @@ from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.main_program import main_program_check_for_test_case
+from exactly_lib_test.test_resources.process import SubProcessResultInfo
 from exactly_lib_test.test_resources.value_assertions import process_result_info_assertions, value_assertion as asrt
 
 IF_BASENAME_IS_PASS_THEN_EMPTY_TC_ELSE_TC_THAT_WILL_CAUSE_PARSER_ERROR = """
@@ -31,7 +32,7 @@ class TransformationIntoTestCaseThatPass(main_program_check_for_test_case.SetupW
     def preprocessor_source(self) -> str:
         return IF_BASENAME_IS_PASS_THEN_EMPTY_TC_ELSE_TC_THAT_WILL_CAUSE_PARSER_ERROR
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return process_result_info_assertions.process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
 
@@ -48,5 +49,5 @@ class TransformationIntoTestCaseThatParserError(main_program_check_for_test_case
     def preprocessor_source(self) -> str:
         return IF_BASENAME_IS_PASS_THEN_EMPTY_TC_ELSE_TC_THAT_WILL_CAUSE_PARSER_ERROR
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return process_result_info_assertions.is_process_result_for_exit_code(exit_values.NO_EXECUTION_EXIT_CODE)

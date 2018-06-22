@@ -69,7 +69,7 @@ class WhenParseFailsThenOutputShouldBeAsWithoutActOption(SetupWithoutPreprocesso
 """
         return test_case_source
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             asrt_process_result.is_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR))
 
@@ -90,7 +90,7 @@ ignored action
 """
         return test_case_source
 
-    def expected_result(self) -> asrt.ValueAssertion:
+    def expected_result(self) -> asrt.ValueAssertion[SubProcessResultInfo]:
         return asrt_process_result_info.assertion_on_process_result(
             asrt_process_result.is_result_for_exit_value(exit_values.EXECUTION__VALIDATION_ERROR))
 
