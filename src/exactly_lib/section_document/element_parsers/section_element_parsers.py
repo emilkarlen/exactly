@@ -1,4 +1,3 @@
-import pathlib
 from typing import Sequence, Callable, Optional
 
 from exactly_lib.section_document import model
@@ -35,7 +34,7 @@ class InstructionParser:
     """
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
         """
         :raises FileSourceError The instruction cannot be parsed.
@@ -45,7 +44,7 @@ class InstructionParser:
 
 class InstructionParserWithoutFileReferenceRelativityRoot(InstructionParser):
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
         return self.parse_from_source(source)
 

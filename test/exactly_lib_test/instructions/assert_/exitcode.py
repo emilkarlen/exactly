@@ -1,9 +1,11 @@
+import pathlib
 import unittest
 
 from exactly_lib.instructions.assert_ import exitcode as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -37,6 +39,9 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
+
+
 class TestParse(unittest.TestCase):
     def test_invalid_syntax(self):
         test_cases = [
@@ -49,11 +54,12 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg=instruction_argument):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
+                        parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_valid_syntax(self):
         parser = sut.Parser()
-        actual_instruction = parser.parse(remaining_source('{op} 1'.format(op=comparators.EQ.name)))
+        actual_instruction = parser.parse(THE_FS_LOCATION_INFO,
+                                          remaining_source('{op} 1'.format(op=comparators.EQ.name)))
         self.assertIsInstance(actual_instruction,
                               AssertPhaseInstruction)
 

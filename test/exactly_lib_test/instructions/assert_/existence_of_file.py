@@ -1,8 +1,10 @@
+import pathlib
 import unittest
 
 from exactly_lib.instructions.assert_ import existence_of_file as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelSdsOptionType, \
     PathRelativityVariants, RelHomeOptionType
 from exactly_lib.test_case_utils.file_properties import FileType
@@ -37,6 +39,8 @@ def suite() -> unittest.TestSuite:
 
 
 FILE_TYPE_OPTIONS_DICT = dict(sut.FILE_TYPE_OPTIONS)
+
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 def file_type_option(file_type: FileType) -> str:
@@ -76,7 +80,7 @@ class TestParseInvalidSyntax(instruction_check.TestCaseBase):
             with self.subTest(instruction_argument=instruction_argument):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(source)
+                        parser.parse(THE_FS_LOCATION_INFO, source)
 
 
 class TheInstructionArgumentsVariantConstructor(InstructionArgumentsVariantConstructorWithTemplateStringBase):
@@ -325,13 +329,13 @@ EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS = PathRelativityVariants(
     True)
 
 ACCEPTED_REL_OPT_CONFIGURATIONS = (
-    list(map(rel_opt_conf.conf_rel_any, EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS.rel_option_types)) +
+        list(map(rel_opt_conf.conf_rel_any, EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS.rel_option_types)) +
 
-    [rel_opt_conf.symbol_conf_rel_any(RelOptionType.REL_TMP,
-                                      'symbol_name',
-                                      EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS)] +
+        [rel_opt_conf.symbol_conf_rel_any(RelOptionType.REL_TMP,
+                                          'symbol_name',
+                                          EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS)] +
 
-    [rel_opt_conf.default_conf_rel_any(RelOptionType.REL_CWD)]
+        [rel_opt_conf.default_conf_rel_any(RelOptionType.REL_CWD)]
 )
 
 UNACCEPTED_REL_OPT_CONFIGURATIONS = [

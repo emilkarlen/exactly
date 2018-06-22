@@ -1,9 +1,11 @@
+import pathlib
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
 from exactly_lib.instructions.assert_.contents_of_dir import config
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType, RelHomeOptionType, \
@@ -39,6 +41,9 @@ class TestCaseBaseForParser(unittest.TestCase):
             ACCEPTED_REL_OPT_CONFIGURATIONS)
 
 
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
+
+
 class TestWithAssertionVariantBase(TestCaseBaseForParser):
     @property
     def assertion_variant_without_symbol_references(self) -> AssertionVariantArgumentsConstructor:
@@ -62,7 +67,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                     for source in equivalent_source_variants(self,
                                                              instruction_arguments_without_valid_file_matcher_arg):
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            parser.parse(source)
+                            parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_raise_exception_WHEN_there_are_superfluous_arguments(self):
         valid_instruction_arguments_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
@@ -80,7 +85,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                                   expectation_type=str(expectation_type)):
                     for source in equivalent_source_variants(self, instruction_args_with_superfluous_arguments):
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            parser.parse(source)
+                            parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_raise_exception_WHEN_there_is_an_initial_illegal_option(self):
         valid_instruction_arguments_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
@@ -99,7 +104,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                                   expectation_type=str(expectation_type)):
                     for source in equivalent_source_variants(self, instruction_args_with_invalid_initial_option):
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            parser.parse(source)
+                            parser.parse(THE_FS_LOCATION_INFO, source)
 
     def test_raise_exception_WHEN_relativity_is_unaccepted(self):
         valid_instruction_argument_syntax_con = CompleteArgumentsConstructor(CommonArgumentsConstructor('file-name'),
@@ -113,7 +118,7 @@ class TestParseInvalidSyntaxBase(TestWithAssertionVariantBase):
                                   expectation_type=str(expectation_type)):
                     for source in equivalent_source_variants(self, first_line_arguments):
                         with self.assertRaises(SingleInstructionInvalidArgumentException):
-                            parser.parse(source)
+                            parser.parse(THE_FS_LOCATION_INFO, source)
 
 
 class TestCommonFailureConditionsBase(TestWithAssertionVariantBase):
@@ -177,7 +182,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         # ACT #
 
-        instruction = sut.parser.Parser().parse(source)
+        instruction = sut.parser.Parser().parse(THE_FS_LOCATION_INFO, source)
         assert isinstance(instruction, AssertPhaseInstruction)
         actual = instruction.symbol_usages()
 
@@ -211,7 +216,7 @@ class TestCommonSymbolReferencesBase(TestWithAssertionVariantBase):
 
         # ACT #
 
-        actual_instruction = sut.parser.Parser().parse(source)
+        actual_instruction = sut.parser.Parser().parse(THE_FS_LOCATION_INFO, source)
 
         assert isinstance(actual_instruction, AssertPhaseInstruction)
 
@@ -239,13 +244,13 @@ DEFAULT_REL_OPT_CONFIG = rel_opt_conf.default_conf_rel_any(RelOptionType.REL_CWD
 ARBITRARY_ACCEPTED_REL_OPT_CONFIG = rel_opt_conf.conf_rel_any(RelOptionType.REL_TMP)
 
 ACCEPTED_REL_OPT_CONFIGURATIONS = (
-    list(map(rel_opt_conf.conf_rel_any, EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS.rel_option_types)) +
+        list(map(rel_opt_conf.conf_rel_any, EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS.rel_option_types)) +
 
-    [rel_opt_conf.symbol_conf_rel_any(RelOptionType.REL_TMP,
-                                      'symbol_name',
-                                      EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS)] +
+        [rel_opt_conf.symbol_conf_rel_any(RelOptionType.REL_TMP,
+                                          'symbol_name',
+                                          EXPECTED_ACCEPTED_PATH_RELATIVITY_VARIANTS)] +
 
-    [rel_opt_conf.default_conf_rel_any(RelOptionType.REL_CWD)]
+        [rel_opt_conf.default_conf_rel_any(RelOptionType.REL_CWD)]
 )
 
 UNACCEPTED_REL_OPT_CONFIGURATIONS = [

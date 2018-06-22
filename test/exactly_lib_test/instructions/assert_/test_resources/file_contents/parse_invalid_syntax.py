@@ -1,7 +1,9 @@
+import pathlib
 import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources.arguments_building import args
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
@@ -23,6 +25,9 @@ def suite_for(configuration: InstructionTestConfiguration) -> unittest.TestSuite
     return suite_for__conf__not_argument(configuration, test_cases)
 
 
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
+
+
 class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         # ARRANGE #
@@ -41,7 +46,7 @@ class ParseShouldFailWhenActualIsFollowedByIllegalOptionOrString(TestWithConfigu
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
-                    parser.parse(source)
+                    parser.parse(THE_FS_LOCATION_INFO, source)
                 assert_is_single_instruction_invalid_argument_exception().apply_with_message(
                     self,
                     cm.exception,
@@ -60,7 +65,7 @@ class ParseShouldFailWhenCheckIsMissing(TestWithConfigurationAndNegationArgument
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
-                    parser.parse(source)
+                    parser.parse(THE_FS_LOCATION_INFO, source)
                 assert_is_single_instruction_invalid_argument_exception().apply_with_message(
                     self,
                     cm.exception,
@@ -89,7 +94,7 @@ class ParseShouldFailWhenCheckIsIllegal(TestWithConfigurationAndNegationArgument
                              ),
                     )
                     with self.assertRaises(SingleInstructionInvalidArgumentException) as cm:
-                        parser.parse(source)
+                        parser.parse(THE_FS_LOCATION_INFO, source)
                     assert_is_single_instruction_invalid_argument_exception().apply_with_message(
                         self,
                         cm.exception,
