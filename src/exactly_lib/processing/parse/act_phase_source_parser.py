@@ -11,7 +11,7 @@ from exactly_lib.util.line_source import LineSequence
 
 class ActPhaseParser(parsing_configuration.SectionElementParser):
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedInstruction:
         first_line_number = source.current_line_number
         current_line = source.current_line_text

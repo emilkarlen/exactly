@@ -11,8 +11,8 @@ from exactly_lib.util.line_source import SourceLocationPath
 class TestCaseSetup:
     def __init__(self,
                  file_path: pathlib.Path,
-                 file_inclusion_relativity_root: pathlib.Path):
-        self.__file_inclusion_relativity_root = file_inclusion_relativity_root
+                 file_reference_relativity_root_dir: pathlib.Path):
+        self.__file_reference_relativity_root_dir = file_reference_relativity_root_dir
         self.__file_path = file_path
 
     @property
@@ -20,8 +20,8 @@ class TestCaseSetup:
         return self.__file_path
 
     @property
-    def file_inclusion_relativity_root(self) -> pathlib.Path:
-        return self.__file_inclusion_relativity_root
+    def file_reference_relativity_root_dir(self) -> pathlib.Path:
+        return self.__file_reference_relativity_root_dir
 
 
 def test_case_setup_of_source_file(source_file: pathlib.Path) -> TestCaseSetup:

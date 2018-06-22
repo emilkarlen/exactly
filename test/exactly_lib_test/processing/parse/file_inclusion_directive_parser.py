@@ -21,13 +21,13 @@ class TestParse(unittest.TestCase):
         # ARRANGE #
         inclusion_directive_name = 'the-directive'
         parser = sut.FileInclusionDirectiveParser(inclusion_directive_name)
-        file_inclusion_relativity_root = pathlib.Path()
+        file_reference_relativity_root_dir = pathlib.Path()
         source = source_of_lines([
             inclusion_directive_name + 'non-space arg',
             'second line',
         ])
         # ACT #
-        actual = parser.parse(file_inclusion_relativity_root, source)
+        actual = parser.parse(file_reference_relativity_root_dir, source)
         # ASSERT #
         self.assertIsNone(actual, 'return value')
 
@@ -39,7 +39,7 @@ class TestParse(unittest.TestCase):
         # ARRANGE #
         inclusion_directive_name = 'include'
         parser = sut.FileInclusionDirectiveParser(inclusion_directive_name)
-        file_inclusion_relativity_root = pathlib.Path()
+        file_reference_relativity_root_dir = pathlib.Path()
         cases = [
             NameAndValue('missing argument',
                          inclusion_directive_name,
@@ -57,7 +57,7 @@ class TestParse(unittest.TestCase):
                 # ACT #
                 with self.assertRaises(SourceError) as cm:
                     # ACT & ASSERT #
-                    parser.parse(file_inclusion_relativity_root, source)
+                    parser.parse(file_reference_relativity_root_dir, source)
                 actual_exception = cm.exception
                 assert isinstance(actual_exception, SourceError)
 
@@ -83,7 +83,7 @@ class TestParse(unittest.TestCase):
                          inclusion_directive_name + '   ' + file_name + '     ',
                          ),
         ]
-        file_inclusion_relativity_root = pathlib.Path()
+        file_reference_relativity_root_dir = pathlib.Path()
         for case in cases:
             with self.subTest(case.name):
                 source = source_of_lines([
@@ -91,7 +91,7 @@ class TestParse(unittest.TestCase):
                     'second line',
                 ])
                 # ACT #
-                actual = parser.parse(file_inclusion_relativity_root, source)
+                actual = parser.parse(file_reference_relativity_root_dir, source)
                 # ASSERT #
                 expected_directive = is_file_inclusion_directive(
                     matches_file_inclusion_directive(
@@ -117,14 +117,14 @@ class TestParse(unittest.TestCase):
         parser = sut.FileInclusionDirectiveParser(inclusion_directive_name)
 
         path_arg = pathlib.PurePosixPath('first') / 'second'
-        file_inclusion_relativity_root = pathlib.Path()
+        file_reference_relativity_root_dir = pathlib.Path()
         inclusion_directive_line = inclusion_directive_name + ' ' + str(path_arg)
         source = source_of_lines([
             inclusion_directive_line,
             'second line',
         ])
         # ACT #
-        actual = parser.parse(file_inclusion_relativity_root, source)
+        actual = parser.parse(file_reference_relativity_root_dir, source)
         # ASSERT #
         expected_directive = is_file_inclusion_directive(
             matches_file_inclusion_directive(

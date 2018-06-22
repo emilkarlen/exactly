@@ -155,7 +155,7 @@ def format_final_result_for_valid_suite(num_cases: int,
         for exit_value in sorted_exit_values:
             ret_val.append(exit_value.exit_identifier)
             for case in errors[exit_value]:
-                ret_val.append('  ' + path_presenter.present(case.file_inclusion_relativity_root / case.file_path))
+                ret_val.append('  ' + path_presenter.present(case.file_reference_relativity_root_dir / case.file_path))
         return ret_val
 
     ret_val = []

@@ -23,11 +23,11 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
 
     def parse(self,
               source_file_path: Optional[pathlib.Path],
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> model.Document:
         return parse_source(self._configuration,
                             SectionContentElementBuilder(source_file_path, []),
-                            file_inclusion_relativity_root,
+                            file_reference_relativity_root_dir,
                             source)
 
 
@@ -58,7 +58,7 @@ def parse(configuration: SectionsConfiguration,
     raw_doc = parse_file(internal_conf_of(configuration),
                          source_file_path,
                          [],
-                         resolve_file_inclusion_relativity_root(pathlib.Path.cwd(), []),
+                         resolve_file_reference_relativity_root_dir(pathlib.Path.cwd(), []),
                          [])
     return build_document(raw_doc)
 
@@ -86,10 +86,10 @@ RawDoc = Dict[str, List[SectionContentElement]]
 def parse_file(conf: _SectionsConfigurationInternal,
                file_path: pathlib.Path,
                file_inclusion_chain: Sequence[line_source.SourceLocation],
-               file_inclusion_relativity_root: pathlib.Path,
+               file_reference_relativity_root_dir: pathlib.Path,
                previously_visited_paths: List[pathlib.Path],
                ) -> RawDoc:
-    path_to_file = file_inclusion_relativity_root / file_path
+    path_to_file = file_reference_relativity_root_dir / file_path
     source = _read_source_file(path_to_file,
                                file_path,
                                file_inclusion_chain)
@@ -99,24 +99,24 @@ def parse_file(conf: _SectionsConfigurationInternal,
                               'Cyclic inclusion of file',
                               file_inclusion_chain)
     visited_paths = previously_visited_paths + [resolved_path_of_current_file]
-    file_inclusion_relativity_root = path_to_file.parent
+    file_reference_relativity_root_dir = path_to_file.parent
     return _parse_source(conf,
                          SectionContentElementBuilder(file_path,
                                                       file_inclusion_chain,
                                                       resolved_path_of_current_file.parent),
-                         file_inclusion_relativity_root,
+                         file_reference_relativity_root_dir,
                          source,
                          visited_paths)
 
 
 def parse_source(conf: _SectionsConfigurationInternal,
                  element_builder: SectionContentElementBuilder,
-                 file_inclusion_relativity_root: pathlib.Path,
+                 file_reference_relativity_root_dir: pathlib.Path,
                  source: ParseSource,
                  ) -> model.Document:
     raw_doc = _parse_source(conf,
                             element_builder,
-                            file_inclusion_relativity_root,
+                            file_reference_relativity_root_dir,
                             source,
                             [])
     return build_document(raw_doc)
@@ -124,13 +124,13 @@ def parse_source(conf: _SectionsConfigurationInternal,
 
 def _parse_source(conf: _SectionsConfigurationInternal,
                   element_builder: SectionContentElementBuilder,
-                  file_inclusion_relativity_root: pathlib.Path,
+                  file_reference_relativity_root_dir: pathlib.Path,
                   source: ParseSource,
                   visited_paths: List[pathlib.Path],
                   ) -> RawDoc:
     impl = _Impl(conf,
                  element_builder,
-                 file_inclusion_relativity_root,
+                 file_reference_relativity_root_dir,
                  source,
                  visited_paths)
     return impl.apply()
@@ -168,12 +168,12 @@ class _Impl:
     def __init__(self,
                  configuration: _SectionsConfigurationInternal,
                  element_builder: SectionContentElementBuilder,
-                 file_inclusion_relativity_root: pathlib.Path,
+                 file_reference_relativity_root_dir: pathlib.Path,
                  document_source: ParseSource,
                  visited_paths: List[pathlib.Path]):
         self.configuration = configuration
         self._element_builder = element_builder
-        self._file_inclusion_relativity_root = file_inclusion_relativity_root
+        self._file_reference_relativity_root_dir = file_reference_relativity_root_dir
         self._document_source = document_source
         self._current_line = self._get_current_line_or_none_if_is_at_eof()
         self._parser_for_current_section = None
@@ -258,7 +258,7 @@ class _Impl:
             self._current_line = self._get_current_line_or_none_if_is_at_eof()
 
     def parse_element_at_current_line_using_current_section_element_parser(self):
-        parsed_element = self.parser_for_current_section.parse(self._file_inclusion_relativity_root,
+        parsed_element = self.parser_for_current_section.parse(self._file_reference_relativity_root_dir,
                                                                self._document_source)
         if parsed_element is None:
             raise FileSourceError(new_source_error_of_single_line(self._document_source.current_line,
@@ -329,13 +329,13 @@ class _Impl:
             included_doc = parse_file(conf,
                                       file_to_include,
                                       self._element_builder.location_path_of(inclusion_directive.source),
-                                      self._file_inclusion_relativity_root,
+                                      self._file_reference_relativity_root_dir,
                                       self.visited_paths)
             _add_raw_doc(self._section_name_2_element_list, included_doc)
 
 
-def resolve_file_inclusion_relativity_root(relativity_root: pathlib.Path,
-                                           file_inclusion_chain: Sequence[line_source.SourceLocation]) -> pathlib.Path:
+def resolve_file_reference_relativity_root_dir(relativity_root: pathlib.Path,
+                                               file_inclusion_chain: Sequence[line_source.SourceLocation]) -> pathlib.Path:
     try:
         return relativity_root.resolve()
     except RuntimeError as ex:

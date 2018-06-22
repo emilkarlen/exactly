@@ -31,7 +31,7 @@ class FileInclusionDirectiveParser(SectionElementParser):
         self._directive_token = directive_token
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> Optional[ParsedFileInclusionDirective]:
         parts = source.current_line_text.strip().split()
         if len(parts) == 0 or parts[0] != self._directive_token:

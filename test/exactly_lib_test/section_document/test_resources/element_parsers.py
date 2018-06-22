@@ -12,14 +12,14 @@ from exactly_lib_test.section_document.document_parser.test_resources.element_pa
 
 class SectionElementParserThatReturnsNone(SectionElementParser):
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         return None
 
 
 class SectionElementParserThatRaisesSourceError(parsing_configuration.SectionElementParser):
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedSectionElement:
         raise SourceError(consume_current_line_and_return_it_as_line_sequence(source),
                           'Unconditional failure')
@@ -31,7 +31,7 @@ class SectionElementParserThatReturnsConstantAndConsumesCurrentLine(
         self.return_value = return_value
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedSectionElement:
         source.consume_current_line()
         return self.return_value

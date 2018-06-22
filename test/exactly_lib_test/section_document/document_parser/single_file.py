@@ -544,7 +544,7 @@ class SectionElementParserForEmptyCommentAndInstructionLines(
         self._section_name = section_name
 
     def parse(self,
-              file_inclusion_relativity_root: pathlib.Path,
+              file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> ParsedSectionElement:
         current_line = source.current_line_text
         if current_line == '':
