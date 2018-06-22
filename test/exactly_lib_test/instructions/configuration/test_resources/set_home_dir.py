@@ -55,6 +55,9 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
     ])
 
 
+THE_FILE_REF_REL_ROOT_DIR = pathlib.Path.cwd()
+
+
 class TestCaseForConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
     def __init__(self, configuration: Configuration):
         super().__init__(configuration)
@@ -75,21 +78,21 @@ class TestParse_fail_when_there_is_no_arguments(TestCaseForConfigurationBase):
     def runTest(self):
         for source in equivalent_source_variants(self, '   '):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                self.conf.parser().parse(source)
+                self.conf.parser().parse(THE_FILE_REF_REL_ROOT_DIR, source)
 
 
 class TestParse_fail_when_just_eq_argument(TestCaseForConfigurationBase):
     def runTest(self):
         for source in equivalent_source_variants(self, '  = '):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                self.conf.parser().parse(source)
+                self.conf.parser().parse(THE_FILE_REF_REL_ROOT_DIR, source)
 
 
 class TestParse_fail_when_there_is_more_than_one_argument(TestCaseForConfigurationBase):
     def runTest(self):
         for source in equivalent_source_variants(self, ' = argument-1 argument-2'):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                self.conf.parser().parse(source)
+                self.conf.parser().parse(THE_FILE_REF_REL_ROOT_DIR, source)
 
 
 class TestFailingExecution_hard_error_WHEN_path_does_not_exist(TestCaseForConfigurationBase):

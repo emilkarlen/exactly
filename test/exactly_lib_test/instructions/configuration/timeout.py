@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from exactly_lib.instructions.configuration import timeout as sut
@@ -22,6 +23,9 @@ def suite() -> unittest.TestSuite:
     ])
 
 
+THE_FILE_REF_REL_ROOT_DIR = pathlib.Path.cwd()
+
+
 class TestFailingParse(unittest.TestCase):
     def test(self):
         cases = [
@@ -35,7 +39,7 @@ class TestFailingParse(unittest.TestCase):
             with self.subTest(argument_str):
                 for source in equivalent_source_variants(self, argument_str):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.Parser().parse(source)
+                        sut.Parser().parse(THE_FILE_REF_REL_ROOT_DIR, source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
