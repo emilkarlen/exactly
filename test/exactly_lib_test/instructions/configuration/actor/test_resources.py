@@ -45,7 +45,8 @@ class Expectation:
 def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
-    instruction = sut.Parser().parse(arrangement.source)
+    the_file_ref_rel_root_dir = pathlib.Path.cwd()
+    instruction = sut.Parser().parse(the_file_ref_rel_root_dir, arrangement.source)
     configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
     assert isinstance(instruction, ConfigurationPhaseInstruction)
     instruction.main(configuration_builder)

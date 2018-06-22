@@ -1,3 +1,4 @@
+import pathlib
 import unittest
 
 from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
@@ -19,9 +20,12 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         unittest.makeSuite(TestParse),
-        unittest.makeSuite(TestChangeMode),
+        unittest.makeSuite(TestChangeStatus),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
+
+
+THE_FILE_REF_REL_ROOT_DIR = pathlib.Path.cwd()
 
 
 class TestParse(unittest.TestCase):
@@ -35,7 +39,7 @@ class TestParse(unittest.TestCase):
             with self.subTest(argument_str):
                 for source in equivalent_source_variants(self, argument_str):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.Parser().parse(source)
+                        sut.Parser().parse(THE_FILE_REF_REL_ROOT_DIR, source)
 
 
 class TestCaseBaseForParser(TestCaseBase):
@@ -51,7 +55,7 @@ class TestCaseBaseForParser(TestCaseBase):
                         Expectation(configuration=AssertExecutionMode(expected)))
 
 
-class TestChangeMode(TestCaseBaseForParser):
+class TestChangeStatus(TestCaseBaseForParser):
     def test_PASS(self):
         self._run(expected=tcs.ExecutionMode.PASS,
                   initial=tcs.ExecutionMode.SKIP,

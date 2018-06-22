@@ -1,4 +1,5 @@
 import os
+import pathlib
 import unittest
 
 from exactly_lib.execution import phase_step
@@ -101,7 +102,8 @@ class Executor(InstructionExecutionBase):
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        instruction = parser.parse(source)
+        the_file_ref_rel_root_dir = pathlib.Path.cwd()
+        instruction = parser.parse(the_file_ref_rel_root_dir, source)
         self._check_instruction(CleanupPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, CleanupPhaseInstruction)

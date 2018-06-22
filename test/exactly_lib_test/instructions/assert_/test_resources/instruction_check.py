@@ -1,4 +1,5 @@
 import os
+import pathlib
 import unittest
 
 from exactly_lib.execution import phase_step
@@ -76,7 +77,8 @@ class Executor:
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        instruction = parser.parse(source)
+        the_file_ref_rel_root_dir = pathlib.Path.cwd()
+        instruction = parser.parse(the_file_ref_rel_root_dir, source)
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,
