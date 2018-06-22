@@ -45,7 +45,6 @@ _COMMENT_START = 'COMMENT'
 _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
 
 EXPECTED_SOURCE_FILE_PATH = pathlib.Path('dummy source file path')
-DUMMY_FILE_INCLUSION_RELATIVITY_ROOT = pathlib.Path.cwd()
 
 NO_FILE_INCLUSIONS = []
 
@@ -56,7 +55,7 @@ class ParseTestBase(unittest.TestCase):
                      lines: Sequence[str]) -> model.Document:
         ptc_source = source_of_lines(lines)
         return parser.parse(EXPECTED_SOURCE_FILE_PATH,
-                            DUMMY_FILE_INCLUSION_RELATIVITY_ROOT,
+                            EXPECTED_SOURCE_FILE_PATH.parent,
                             ptc_source)
 
     def _parse_and_check(self,
