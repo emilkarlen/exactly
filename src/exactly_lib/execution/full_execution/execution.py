@@ -64,8 +64,7 @@ def _execute_configuration_phase(phase_environment: ConfigurationBuilder,
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                               phase_step_executors.ConfigurationMainExecutor(phase_environment),
-                                              phase_step.CONFIGURATION__MAIN,
-                                              None)
+                                              phase_step.CONFIGURATION__MAIN)
 
 
 def new_configuration_phase_failure_from(phase_result: PhaseStepFailure) -> FullExeResult:

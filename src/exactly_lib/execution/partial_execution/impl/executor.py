@@ -385,8 +385,7 @@ class _PartialExecutor:
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   phase_step_execution.ElementHeaderExecutorThatDoesNothing(),
                                                   instruction_executor,
-                                                  step,
-                                                  self._sds)
+                                                  step)
 
     def __act__create_and_set_executor(self, step: PhaseStep) -> Optional[PhaseStepFailure]:
         failure_con = PhaseFailureResultConstructor(step)
