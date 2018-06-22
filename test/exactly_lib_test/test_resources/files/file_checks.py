@@ -8,6 +8,7 @@ from typing import Sequence
 from exactly_lib_test.test_resources.files import file_structure
 from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 
 
 class FileChecker:
@@ -26,7 +27,7 @@ class FileChecker:
             p: pathlib.Path,
             expected_number_of_files: int,
             expected_file_system_elements: Sequence[FileSystemElement] = None):
-        
+
         self.assert_exists_dir(p)
         directory_contents = list(p.iterdir())
         expected_file_names = ''
@@ -107,3 +108,16 @@ class FileChecker:
                                     dir_path: pathlib.Path,
                                     sym_link: file_structure.Link):
         raise NotImplementedError()
+
+
+def file_does_not_exist() -> asrt.ValueAssertion[pathlib.Path]:
+    return _FileDoesNotExist()
+
+
+class _FileDoesNotExist(asrt.ValueAssertion[pathlib.Path]):
+    def apply(self,
+              put: unittest.TestCase,
+              value: pathlib.Path,
+              message_builder: MessageBuilder = MessageBuilder()):
+        put.assertFalse(value.exists(),
+                        message_builder.msg_for_sub_component('exists'))
