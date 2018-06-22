@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.default.program_modes.test_case.builtin_symbols import test_case_dir_symbols, string_transformers
 from exactly_lib.definitions.entity.types import PATH_TYPE_INFO
@@ -16,6 +17,7 @@ from exactly_lib_test.default.test_resources.internal_main_program_runner import
 from exactly_lib_test.default.test_resources.test_case_file_elements import phase_header_line
 from exactly_lib_test.test_case_utils.string_transformers.test_resources import argument_syntax
 from exactly_lib_test.test_resources.files import file_structure
+from exactly_lib_test.test_resources.files.file_structure import FileSystemElement
 from exactly_lib_test.test_resources.main_program.main_program_check_base import tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
     SetupWithoutPreprocessorAndDefaultActor
@@ -34,7 +36,7 @@ class AllPredefinedTestCaseDirSymbolsShouldBeAvailableInTheSetupPhase(SetupWitho
     def expected_result(self) -> asrt.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
-    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> list:
+    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
         return [
             file_structure.File(self.name_of_source_file_to_interpret,
                                 PYTHON_PROGRAM_THAT_EXISTS_WITH_STATUS_0)
@@ -71,7 +73,7 @@ class TheTestCaseDirReplacementTransformerShouldBeAvailableInTheSetupPhase(Setup
     def expected_result(self) -> asrt.ValueAssertion:
         return process_result_for_exit_value(exit_values.EXECUTION__PASS)
 
-    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> list:
+    def _additional_files_in_file_structure(self, root_path: pathlib.Path) -> List[FileSystemElement]:
         return [
             file_structure.File(self.name_of_source_file_to_interpret,
                                 PYTHON_PROGRAM_THAT_PRINTS_THE_CURRENT_DIRECTORY)

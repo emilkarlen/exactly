@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 import exactly_lib.cli.cli_environment.common_cli_options as opt
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options
@@ -37,10 +38,10 @@ class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithou
             File('the.case', ''),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         return []
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_xml = suite_xml(attributes={
             'name': 'main.suite',
             'tests': '1',

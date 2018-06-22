@@ -3,6 +3,7 @@ NOTE: These tests should not use MainProgramRunner, but should be normal (à la 
 """
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.processing.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
@@ -41,14 +42,14 @@ class ReferencesToCaseFilesThatMatchesNoFiles(SetupWithReplacementOfVariableOutp
                                               '?.case'])),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -66,14 +67,14 @@ class ReferencesToSuiteFilesThatMatchesNoFiles(SetupWithReplacementOfVariableOut
                                               '?.suite'])),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -93,7 +94,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(SetupWithReplacement
             empty_file('a.case'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -102,7 +103,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeQuestionMark(SetupWithReplacement
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -123,7 +124,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
             empty_file('a.suite'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'a.suite'),
@@ -134,7 +135,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeQuestionMark(
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -156,7 +157,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(SetupWithReplaceme
             empty_file('_c.case'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -166,7 +167,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeCharacterRange(SetupWithReplaceme
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -188,7 +189,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(SetupWithReplacem
             empty_file('_c.suite'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / '_a.suite'),
@@ -201,7 +202,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeCharacterRange(SetupWithReplacem
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -224,7 +225,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
             empty_file('_c.suite'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / '_c.suite'),
@@ -233,7 +234,7 @@ class ReferencesToSuiteFilesThatMatchesFilesTypeNegatedCharacterRange(
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -256,7 +257,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
             empty_file('_c.case'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -264,7 +265,7 @@ class ReferencesToCaseFilesThatMatchesFilesTypeNegatedCharacterRange(
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -295,7 +296,7 @@ class ReferencesToCaseFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutpu
             empty_file('2.case'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -306,7 +307,7 @@ class ReferencesToCaseFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutpu
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -337,7 +338,7 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutp
             empty_file('2.suite'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'sub-dir-1' / 'a.suite'),
@@ -352,7 +353,7 @@ class ReferencesToSuiteFilesInAnyDirectSubDir(SetupWithReplacementOfVariableOutp
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -383,7 +384,7 @@ class ReferencesToCaseFilesInAnySubDir(SetupWithReplacementOfVariableOutputWithP
             empty_file('2.case'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -398,7 +399,7 @@ class ReferencesToCaseFilesInAnySubDir(SetupWithReplacementOfVariableOutputWithP
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -429,7 +430,7 @@ class ReferencesToSuiteFilesInAnySubDir(SetupWithReplacementOfVariableOutputWith
             empty_file('_2.suite'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / '_1.suite'),
@@ -450,7 +451,7 @@ class ReferencesToSuiteFilesInAnySubDir(SetupWithReplacementOfVariableOutputWith
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -471,10 +472,10 @@ class ReferencesToCaseFilesThatAreDirectories(SetupWithReplacementOfVariableOutp
             empty_file('3'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         return []
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
 
@@ -495,10 +496,10 @@ class ReferencesToSuiteFilesThatAreDirectories(SetupWithReplacementOfVariableOut
             empty_file('3'),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         return []
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
 
@@ -525,7 +526,7 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(SetupWithReplacementOfVariab
             ]),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -536,7 +537,7 @@ class ReferencesToCaseFilesInSubDirThatMatchesFiles(SetupWithReplacementOfVariab
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 

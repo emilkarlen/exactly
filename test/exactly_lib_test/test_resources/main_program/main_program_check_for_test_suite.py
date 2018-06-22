@@ -79,7 +79,7 @@ class SetupWithPreprocessor(main_program_check_base.SetupWithPreprocessor,
     def first_arguments(self,
                         root_path: pathlib.Path,
                         python_executable_file_name: str,
-                        preprocessor_source_file_name: str) -> list:
+                        preprocessor_source_file_name: str) -> List[str]:
         return [opt.SUITE_COMMAND]
 
     def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
