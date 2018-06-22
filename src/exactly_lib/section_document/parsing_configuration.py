@@ -1,8 +1,28 @@
 import pathlib
 from typing import Sequence, Dict
 
+from exactly_lib.section_document import model
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
+
+
+class DocumentParser:
+    """
+    Base class for parsers that parse a "plain file"
+    (i.e., a file that do not need pre-processing).
+    """
+
+    def parse(self,
+              source_file_path: pathlib.Path,
+              file_inclusion_relativity_root: pathlib.Path,
+              source: ParseSource) -> model.Document:
+        """
+        :param source_file_path: None if the source is not a file.
+        :param file_inclusion_relativity_root: A directory that file inclusion paths are relative to.
+        :param source: The source to parse - the contents of source_file_path, if the source is from a file.
+        :raises ParseError The test case cannot be parsed.
+        """
+        raise NotImplementedError('abstract method')
 
 
 class SectionElementParser:
@@ -23,7 +43,7 @@ class SectionElementParser:
         have been consumed by this parser.
         :raises SourceError: The element cannot be parsed.
         """
-        raise NotImplementedError()
+        raise NotImplementedError('abstract method')
 
 
 class SectionConfiguration(tuple):
