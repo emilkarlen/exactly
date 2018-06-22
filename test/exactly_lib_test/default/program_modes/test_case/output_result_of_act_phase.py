@@ -60,7 +60,7 @@ sys.exit({exit_code})
 
 
 class WhenParseFailsThenOutputShouldBeAsWithoutActOption(SetupWithoutPreprocessorAndTestActor):
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         return [OPTION_FOR_EXECUTING_ACT_PHASE]
 
     def test_case(self) -> str:
@@ -75,7 +75,7 @@ class WhenParseFailsThenOutputShouldBeAsWithoutActOption(SetupWithoutPreprocesso
 
 
 class WhenValidationFailsThenOutputShouldBeAsWithoutActOption(SetupWithoutPreprocessorAndTestActor):
-    def additional_arguments(self) -> list:
+    def additional_arguments(self) -> List[str]:
         return [OPTION_FOR_EXECUTING_ACT_PHASE]
 
     def test_case(self) -> str:

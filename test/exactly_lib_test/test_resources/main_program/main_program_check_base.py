@@ -74,7 +74,7 @@ class SetupWithPreprocessor(SetupBase):
     def first_arguments(self,
                         root_path: pathlib.Path,
                         python_executable_file_name: str,
-                        preprocessor_source_file_name: str) -> list:
+                        preprocessor_source_file_name: str) -> List[str]:
         raise NotImplementedError()
 
 
@@ -85,7 +85,7 @@ class SetupWithoutPreprocessor(SetupBase):
     def first_arguments(self, root_path: pathlib.Path) -> List[str]:
         raise NotImplementedError()
 
-    def arguments_for_interpreter(self) -> list:
+    def arguments_for_interpreter(self) -> List[str]:
         return ARGUMENTS_FOR_TEST_INTERPRETER
 
 

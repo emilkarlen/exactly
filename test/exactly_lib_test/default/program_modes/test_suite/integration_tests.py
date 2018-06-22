@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.processing.exit_values import EXECUTION__PASS
 from exactly_lib.test_suite import exit_values
@@ -41,14 +42,14 @@ class EmptySuite(SetupWithReplacementOfVariableOutputWithPlaceholders):
             File('empty.suite', ''),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'empty.suite'),
             expected_line.suite_end(root_path / 'empty.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -101,7 +102,7 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(SetupWithReplacementOfVariab
                  ])),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -109,7 +110,7 @@ class SuiteWithSingleTestCaseWithOnlySectionHeaders(SetupWithReplacementOfVariab
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 
@@ -136,7 +137,7 @@ class ComplexSuccessfulSuite(SetupWithReplacementOfVariableOutputWithPlaceholder
             File('sub-sub.suite', ''),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'sub-sub.suite'),
@@ -151,7 +152,7 @@ class ComplexSuccessfulSuite(SetupWithReplacementOfVariableOutputWithPlaceholder
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.ALL_PASS)
 

@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from typing import List
 
 from exactly_lib.processing.exit_values import NO_EXECUTION__SYNTAX_ERROR
 from exactly_lib.test_suite import exit_values
@@ -37,10 +38,10 @@ class SuiteReferenceToNonExistingCaseFile(SetupWithReplacementOfVariableOutputWi
                                               'non-existing.case'])),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         return []
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
 
@@ -58,10 +59,10 @@ class SuiteReferenceToNonExistingSuiteFile(SetupWithReplacementOfVariableOutputW
                                               'non-existing.suite'])),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         return []
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_invalid_suite(root_path, exit_values.INVALID_SUITE)
 
@@ -81,7 +82,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(SetupWithReplacementOfVariableOutputW
                  lines_content(['[invalid section]'])),
         ])
 
-    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_run_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return [
             expected_line.suite_begin(root_path / 'main.suite'),
@@ -89,7 +90,7 @@ class SuiteWithSingleCaseWithInvalidSyntax(SetupWithReplacementOfVariableOutputW
             expected_line.suite_end(root_path / 'main.suite'),
         ]
 
-    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> list:
+    def expected_stdout_reporting_lines(self, root_path: pathlib.Path) -> List[str]:
         expected_line = simple_progress_reporter_output.ExpectedLine(root_path)
         return expected_line.summary_for_valid_suite(root_path, exit_values.FAILED_TESTS)
 
