@@ -6,7 +6,6 @@ from exactly_lib.execution.impl.single_instruction_executor import ControlledIns
     execute_element
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, SectionContentElement, ElementType
-from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util import line_source
 
 
@@ -24,8 +23,7 @@ def execute_phase(phase_contents: SectionContents,
                   header_executor_for_comment: ElementHeaderExecutor,
                   header_executor_for_instruction: ElementHeaderExecutor,
                   instruction_executor: ControlledInstructionExecutor,
-                  phase_step: PhaseStep,
-                  sds: Optional[SandboxDirectoryStructure]) -> Optional[PhaseStepFailure]:
+                  phase_step: PhaseStep) -> Optional[PhaseStepFailure]:
     """
     Executes the elements of a given phase/step.
     Catches exceptions thrown by instruction-execution and "reports" them as
