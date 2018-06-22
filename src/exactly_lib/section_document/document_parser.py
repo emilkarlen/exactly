@@ -8,7 +8,7 @@ from exactly_lib.section_document.exceptions import SourceError, FileSourceError
     new_source_error_of_single_line
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedSectionElementVisitor, \
+from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
@@ -82,8 +82,8 @@ class SectionsConfiguration:
         self.section_element_name_for_error_messages = section_element_name_for_error_messages
         self._parsers_for_named_sections = parsers_for_named_sections
         self._section2parser = {
-            pfp.section_name: pfp.parser
-            for pfp in parsers_for_named_sections
+            pfs.section_name: pfs.parser
+            for pfs in parsers_for_named_sections
         }
 
         self.default_section_name = default_section_name

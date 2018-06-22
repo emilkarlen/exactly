@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParser, InstructionAndDescriptionParser, parse_and_compute_source
 from exactly_lib.section_document.exceptions import new_source_error_of_single_line
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.section_element_parser import ParsedInstruction
+from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.util.line_source import Line
 
 

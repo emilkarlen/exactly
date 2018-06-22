@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation, line_sequence_from_line
@@ -64,7 +64,7 @@ class FileSourceError(ParseError):
 
     def __init__(self,
                  source_error: SourceError,
-                 maybe_section_name: str,
+                 maybe_section_name: Optional[str],
                  location_path: Sequence[SourceLocation]):
         super().__init__(source_error.message,
                          location_path)
@@ -76,7 +76,7 @@ class FileSourceError(ParseError):
         return self._source_error
 
     @property
-    def maybe_section_name(self) -> str:
+    def maybe_section_name(self) -> Optional[str]:
         return self._maybe_section_name
 
 

@@ -3,7 +3,7 @@ from typing import Sequence, Dict
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import InstructionInfo, ElementType
-from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedInstruction, \
+from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, ParsedInstruction, \
     ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.util import line_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

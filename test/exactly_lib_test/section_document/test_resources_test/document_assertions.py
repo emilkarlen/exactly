@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.section_document.model import InstructionInfo, Instruction, ElementType
-from exactly_lib.section_document.section_element_parser import ParsedInstruction, ParsedNonInstructionElement, \
+from exactly_lib.section_document.parsed_section_element import ParsedInstruction, ParsedNonInstructionElement, \
     ParsedFileInclusionDirective
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.section_document.test_resources import document_assertions as sut

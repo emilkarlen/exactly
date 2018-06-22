@@ -9,7 +9,7 @@ from exactly_lib.section_document.document_parser import DocumentParser, new_par
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.section_element_parser import ParsedSectionElement, ParsedInstruction, \
+from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, ParsedInstruction, \
     new_empty_element, new_comment_element
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util import line_source
