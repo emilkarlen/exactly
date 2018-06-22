@@ -8,12 +8,12 @@ from exactly_lib.execution.configuration import ExecutionConfiguration
 from exactly_lib.execution.partial_execution import execution as sut
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
-from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
+from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActSourceAndExecutorConstructor
 from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.cleanup import PreviousPhase
 from exactly_lib.test_case.result import sh
-from exactly_lib.util.line_source import LineSequence
+from exactly_lib.util.line_source import LineSequence, single_line_sequence
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.partial_execution.test_resources import result_assertions as asrt_result
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
@@ -23,6 +23,8 @@ from exactly_lib_test.execution.partial_execution.test_resources.recording.test_
     TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import PartialPhase
 from exactly_lib_test.execution.test_resources import instruction_test_resources as test, sandbox_root_name_resolver
+from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorWrapperConstructorThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.phase_steps import \
@@ -32,7 +34,7 @@ from exactly_lib_test.execution.test_resources.execution_recording.phase_steps i
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForInstructionFailure, \
     ExpectedFailureForNoFailure
 from exactly_lib_test.execution.test_resources.failure_info_check import ExpectedFailureForPhaseFailure
-from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_hard_error_with_message
+from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_raises
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.capture_out_files import capture_stdout_err
@@ -50,9 +52,18 @@ def suite() -> unittest.TestSuite:
 class Arrangement:
     def __init__(self,
                  test_case: TestCaseGeneratorForExecutionRecording,
+                 act_source_and_exe_constructor: ActSourceAndExecutorConstructor,
                  timeout_in_seconds: Optional[int] = None):
         self.test_case_generator = test_case
+        self.act_source_and_exe_constructor = act_source_and_exe_constructor
         self.timeout_in_seconds = timeout_in_seconds
+
+
+def arr_for_py3_source(test_case: TestCaseGeneratorForExecutionRecording,
+                       timeout_in_seconds: Optional[int] = None) -> Arrangement:
+    return Arrangement(test_case,
+                       python3.new_act_source_and_executor_constructor(),
+                       timeout_in_seconds)
 
 
 class Expectation:
@@ -73,10 +84,10 @@ def check(put: unittest.TestCase,
           expectation: Expectation):
     constructor = ActSourceAndExecutorWrapperConstructorThatRecordsSteps(
         arrangement.test_case_generator.recorder,
-        python3.new_act_source_and_executor_constructor())
+        arrangement.act_source_and_exe_constructor)
     act_phase_handling = ActPhaseHandling(constructor)
 
-    def action(std_files: StdOutputFiles):
+    def action(std_files: StdOutputFiles) -> PartialExeResult:
         exe_conf = ExecutionConfiguration(dict(os.environ),
                                           DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                           sandbox_root_name_resolver.for_test(),
@@ -122,7 +133,7 @@ class TestSuccess(TestCaseBase):
                                           expected_exit_code)
             with self.subTest(expected_exit_code=expected_exit_code):
                 self._check(
-                    Arrangement(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(
+                    arr_for_py3_source(TestCaseGeneratorWithExtraInstrsBetweenRecordingInstr(
                         act_phase_source=py_pgm_setup.as_line_sequence()
                     ),
                     ),
@@ -173,7 +184,7 @@ class TestFailure(TestCaseBase):
                  test.setup_phase_instruction_that(
                      main=do_return(sh.new_sh_hard_error('hard error msg from setup'))))
         self._check(
-            Arrangement(test_case),
+            arr_for_py3_source(test_case),
             Expectation(
                 asrt_result.matches2(
                     PartialExeResultStatus.HARD_ERROR,
@@ -196,6 +207,41 @@ class TestFailure(TestCaseBase):
                  ],
             ))
 
+    def test_implementation_error_in_act_execute(self):
+        test_case = _single_successful_instruction_in_each_phase(single_line_sequence(72, 'ignored'))
+        self._check(
+            Arrangement(test_case,
+                        ActSourceAndExecutorConstructorThatRunsConstantActions(
+                            execute_action=execute_action_that_raises(
+                                test.ImplementationErrorTestException()))),
+            Expectation(
+                asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                                     asrt_result.has_sds(),
+                                     asrt_result.has_no_action_to_check_outcome(),
+                                     ExpectedFailureForPhaseFailure.new_with_exception(
+                                         phase_step.ACT__EXECUTE,
+                                         test.ImplementationErrorTestException)
+                                     ),
+                atc_stdout_output=asrt.equals(''),
+                atc_stderr_output=asrt.equals(''),
+                step_recordings=
+                [phase_step.ACT__PARSE] +
+                SYMBOL_VALIDATION_STEPS__ONCE +
+                PRE_SDS_VALIDATION_STEPS__ONCE +
+                [phase_step.SETUP__MAIN,
+
+                 phase_step.SETUP__VALIDATE_POST_SETUP,
+                 phase_step.ACT__VALIDATE_POST_SETUP,
+                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
+                 phase_step.ASSERT__VALIDATE_POST_SETUP,
+
+                 phase_step.ACT__PREPARE,
+                 phase_step.ACT__EXECUTE,
+
+                 (phase_step.CLEANUP__MAIN, PreviousPhase.ACT),
+                 ],
+            ))
+
     def test_timeout_in_action_to_check(self):
         stdout_before_sleep = 'some output on stdout before going into sleep'
         stderr_before_sleep = 'some output on stderr before going into sleep'
@@ -210,8 +256,8 @@ class TestFailure(TestCaseBase):
         test_case = _single_successful_instruction_in_each_phase(
             act_phase_source=py_pgm_line_sequence)
         self._check(
-            Arrangement(test_case,
-                        timeout_in_seconds=1),
+            arr_for_py3_source(test_case,
+                               timeout_in_seconds=1),
             Expectation(
                 asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
                                      asrt_result.has_sds(),
@@ -243,43 +289,6 @@ class TestFailure(TestCaseBase):
                  ],
             ))
 
-    def _test_hard_error_in_act_execute(self):
-        py_pgm_setup = PyProgramSetup('some output to stdout',
-                                      'some output to stderr',
-                                      72)
-        test_case = _single_successful_instruction_in_each_phase(py_pgm_setup.as_line_sequence())
-        self._check(
-            Arrangement(test_case,
-                        act_executor_execute=execute_action_that_returns_hard_error_with_message(
-                            'error in execute')),
-            Expectation(
-                asrt_result.matches2(PartialExeResultStatus.HARD_ERROR,
-                                     asrt_result.has_sds(),
-                                     asrt_result.has_no_action_to_check_outcome(),
-                                     ExpectedFailureForPhaseFailure.new_with_message(
-                                         phase_step.ACT__EXECUTE,
-                                         'error in execute')
-                                     ),
-                atc_stdout_output=asrt.equals(''),
-                atc_stderr_output=asrt.equals(''),
-                step_recordings=
-                [phase_step.ACT__PARSE] +
-                SYMBOL_VALIDATION_STEPS__ONCE +
-                PRE_SDS_VALIDATION_STEPS__ONCE +
-                [phase_step.SETUP__MAIN,
-
-                 phase_step.SETUP__VALIDATE_POST_SETUP,
-                 phase_step.ACT__VALIDATE_POST_SETUP,
-                 phase_step.BEFORE_ASSERT__VALIDATE_POST_SETUP,
-                 phase_step.ASSERT__VALIDATE_POST_SETUP,
-
-                 phase_step.ACT__PREPARE,
-                 phase_step.ACT__EXECUTE,
-
-                 (phase_step.CLEANUP__MAIN, PreviousPhase.SETUP),
-                 ],
-            ))
-
     def test_hard_error_in_cleanup_main_step(self):
         py_pgm_setup = PyProgramSetup('some output to stdout',
                                       'some output to stderr',
@@ -290,7 +299,7 @@ class TestFailure(TestCaseBase):
                  test.cleanup_phase_instruction_that(
                      main=do_return(sh.new_sh_hard_error('hard error msg from CLEANUP'))))
         self._check(
-            Arrangement(test_case),
+            arr_for_py3_source(test_case),
             Expectation(
                 asrt_result.matches2(
                     PartialExeResultStatus.HARD_ERROR,
