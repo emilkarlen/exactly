@@ -1,5 +1,4 @@
 import os
-import sys
 from typing import Sequence, Optional
 
 from exactly_lib.execution import phase_step
@@ -9,8 +8,7 @@ from exactly_lib.execution.impl import phase_step_executors, phase_step_executio
 from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
 from exactly_lib.execution.impl.single_instruction_executor import ControlledInstructionExecutor
 from exactly_lib.execution.partial_execution.configuration import ConfPhaseValues, TestCase
-from exactly_lib.execution.partial_execution.impl.act_phase_execution import PhaseFailureResultConstructor, \
-    ActPhaseExecutor
+from exactly_lib.execution.partial_execution.impl.act_phase_execution import ActPhaseExecutor
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus, PartialExeResult
 from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.section_document.model import SectionContents, ElementType
@@ -24,7 +22,8 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.phases.setup import SetupSettingsBuilder
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure, construct_at
-from exactly_lib.util.failure_details import new_failure_details_from_message, new_failure_details_from_exception
+from exactly_lib.util.failure_details import new_failure_details_from_message, new_failure_details_from_exception, \
+    FailureDetails
 from exactly_lib.util.file_utils import resolved_path_name
 
 
@@ -58,6 +57,26 @@ def execute(exe_conf: Configuration,
     return executor.execute()
 
 
+class _PhaseStepFailureResultConstructor:
+    def __init__(self, step: PhaseStep):
+        self.step = step
+
+    def apply(self,
+              status: PartialExeResultStatus,
+              failure_details: FailureDetails) -> PhaseStepFailure:
+        return PhaseStepFailure(status,
+                                PhaseFailureInfo(self.step,
+                                                 failure_details))
+
+    def implementation_error(self, ex: Exception) -> PhaseStepFailure:
+        return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                          new_failure_details_from_exception(ex))
+
+    def implementation_error_msg(self, msg: str) -> PhaseStepFailure:
+        return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
+                          new_failure_details_from_message(msg))
+
+
 class _PartialExecutor:
     def __init__(self,
                  conf: Configuration,
@@ -70,6 +89,7 @@ class _PartialExecutor:
         self.stdin_conf_from_setup = None
         self.__source_setup = None
         self.os_services = None
+        self._act_program_executor = None
         self.__act_source_and_executor = None
         self.__act_source_and_executor_constructor = \
             conf.conf_phase_values.act_phase_handling.source_and_executor_constructor
@@ -106,15 +126,15 @@ class _PartialExecutor:
             self.__cleanup_main(PreviousPhase.SETUP)
             return self._final_failure_result_from(res)
 
-        act_program_executor = self.__act_program_executor()
+        self._act_program_executor = self.__act_program_executor()
         res = self._sequence_with_cleanup(
             PreviousPhase.SETUP,
             [
                 self.__setup__validate_post_setup,
-                act_program_executor.validate_post_setup,
+                self.__act__validate_post_setup,
                 self.__before_assert__validate_post_setup,
                 self.__assert__validate_post_setup,
-                act_program_executor.prepare,
+                self.__act__prepare,
             ])
         if res is not None:
             return self._final_failure_result_from(res)
@@ -122,9 +142,9 @@ class _PartialExecutor:
         res = self._sequence_with_cleanup(
             PreviousPhase.ACT,
             [
-                act_program_executor.execute,
+                self.__act__execute,
             ])
-        self._action_to_check_outcome = act_program_executor.action_to_check_outcome
+        self._action_to_check_outcome = self._act_program_executor.action_to_check_outcome
 
         if res is not None:
             return self._final_failure_result_from(res)
@@ -208,24 +228,23 @@ class _PartialExecutor:
                                                   self.__test_case.setup_phase)
 
     def __act__create_executor_and_parse(self) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(phase_step.ACT__PARSE)
+        failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__PARSE)
 
         def action() -> Optional[PhaseStepFailure]:
-            res = self.__act__create_and_set_executor(phase_step.ACT__PARSE)
+            res = self.__act__create_and_set_executor(failure_con)
             if res is not None:
                 return res
             try:
                 self.__act_source_and_executor.parse(self.__instruction_environment_pre_sds)
             except ParseException as ex:
-                return failure_con.apply(PartialExeResultStatus(PartialExeResultStatus.VALIDATION_ERROR),
+                return failure_con.apply(PartialExeResultStatus.VALIDATION_ERROR,
                                          new_failure_details_from_message(ex.cause.failure_message))
             return None
 
-        return self.__execute_action_and_catch_implementation_exception(action,
-                                                                        phase_step.ACT__PARSE)
+        return _execute_action_and_catch_implementation_exception(action, failure_con)
 
     def __act__validate_symbols(self) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS)
+        failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_SYMBOLS)
 
         def action() -> Optional[PhaseStepFailure]:
             executor = phase_step_executors.ValidateSymbolsExecutor(self.__instruction_environment_pre_sds)
@@ -236,11 +255,10 @@ class _PartialExecutor:
                 return failure_con.apply(PartialExeResultStatus(res.status.value),
                                          new_failure_details_from_message(res.error_message))
 
-        return self.__execute_action_and_catch_implementation_exception(action,
-                                                                        phase_step.ACT__VALIDATE_SYMBOLS)
+        return _execute_action_and_catch_implementation_exception(action, failure_con)
 
     def __act__validate_pre_sds(self) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS)
+        failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_PRE_SDS)
 
         def action() -> Optional[PhaseStepFailure]:
             res = self.__act_source_and_executor.validate_pre_sds(self.__instruction_environment_pre_sds)
@@ -250,8 +268,25 @@ class _PartialExecutor:
                 return failure_con.apply(PartialExeResultStatus(res.status.value),
                                          new_failure_details_from_message(res.failure_message))
 
-        return self.__execute_action_and_catch_implementation_exception(action,
-                                                                        phase_step.ACT__VALIDATE_PRE_SDS)
+        return _execute_action_and_catch_implementation_exception(action, failure_con)
+
+    def __act__validate_post_setup(self) -> Optional[PhaseStepFailure]:
+        failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__VALIDATE_POST_SETUP)
+
+        return _execute_action_and_catch_implementation_exception(
+            self._act_program_executor.validate_post_setup(failure_con.apply), failure_con)
+
+    def __act__prepare(self) -> Optional[PhaseStepFailure]:
+        failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__PREPARE)
+
+        return _execute_action_and_catch_implementation_exception(
+            self._act_program_executor.prepare(failure_con.apply), failure_con)
+
+    def __act__execute(self) -> Optional[PhaseStepFailure]:
+        failure_con = _PhaseStepFailureResultConstructor(phase_step.ACT__EXECUTE)
+
+        return _execute_action_and_catch_implementation_exception(
+            self._act_program_executor.execute(failure_con.apply), failure_con)
 
     def __before_assert__validate_pre_sds(self) -> Optional[PhaseStepFailure]:
         return self.__run_instructions_phase_step(
@@ -387,8 +422,8 @@ class _PartialExecutor:
                                                   instruction_executor,
                                                   step)
 
-    def __act__create_and_set_executor(self, step: PhaseStep) -> Optional[PhaseStepFailure]:
-        failure_con = PhaseFailureResultConstructor(step)
+    def __act__create_and_set_executor(self, failure_con: _PhaseStepFailureResultConstructor
+                                       ) -> Optional[PhaseStepFailure]:
         section_contents = self.__test_case.act_phase
         instructions = []
         for element in section_contents.elements:
@@ -407,16 +442,6 @@ class _PartialExecutor:
             instructions)
         return None
 
-    @staticmethod
-    def __execute_action_and_catch_implementation_exception(action: ActionWithFailureAsResult,
-                                                            step: PhaseStep) -> Optional[PhaseStepFailure]:
-        try:
-            return action()
-        except Exception as ex:
-            return PhaseStepFailure(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                                    PhaseFailureInfo(step,
-                                                     new_failure_details_from_exception(ex, str(sys.exc_info()))))
-
     def _final_failure_result_from(self, failure: PhaseStepFailure) -> PartialExeResult:
         return PartialExeResult(failure.status,
                                 self.__sandbox_directory_structure,
@@ -428,3 +453,12 @@ class _PartialExecutor:
                                 self.__sandbox_directory_structure,
                                 self._action_to_check_outcome,
                                 None)
+
+
+def _execute_action_and_catch_implementation_exception(action: ActionWithFailureAsResult,
+                                                       failure_con: _PhaseStepFailureResultConstructor
+                                                       ) -> Optional[PhaseStepFailure]:
+    try:
+        return action()
+    except Exception as ex:
+        return failure_con.implementation_error(ex)

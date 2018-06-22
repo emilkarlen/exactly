@@ -57,9 +57,9 @@ class _ExpectedFailureDetails(asrt.ValueAssertion[FailureDetails]):
             put.assertIsNone(actual,
                              message_header)
         elif self.error_message_or_none is not None:
-            self.error_message_or_none.apply_with_message(put,
-                                                          actual.failure_message,
-                                                          message_builder.for_sub_component('failure message'))
+            self.error_message_or_none.apply(put,
+                                             actual.failure_message,
+                                             message_builder.for_sub_component('failure message'))
         else:
             put.assertIsInstance(actual.exception,
                                  self.exception_class_or_none,

@@ -102,7 +102,9 @@ class TestFailingScenarios(TestCaseBase):
                 asrt_result.matches2(PartialExeResultStatus.IMPLEMENTATION_ERROR,
                                      asrt_result.has_no_sds(),
                                      asrt_result.has_no_action_to_check_outcome(),
-                                     ExpectedFailureForPhaseFailure.new_with_step(phase_step.ACT__VALIDATE_SYMBOLS),
+                                     ExpectedFailureForPhaseFailure.new_with_exception(
+                                         phase_step.ACT__VALIDATE_SYMBOLS,
+                                         test.ImplementationErrorTestException)
                                      ),
                 [
                     phase_step.ACT__PARSE,
