@@ -4,7 +4,7 @@ from typing import Optional
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedFileInclusionDirective
-from exactly_lib.section_document.parsing_configuration import SectionElementParser
+from exactly_lib.section_document.parsing_configuration import SectionElementParser, FileSystemLocationInfo
 from exactly_lib.util.line_source import line_sequence_from_line
 
 
@@ -31,7 +31,7 @@ class FileInclusionDirectiveParser(SectionElementParser):
         self._directive_token = directive_token
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedFileInclusionDirective]:
         parts = source.current_line_text.strip().split()
         if len(parts) == 0 or parts[0] != self._directive_token:

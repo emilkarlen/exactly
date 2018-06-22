@@ -25,9 +25,19 @@ class DocumentParser:
         raise NotImplementedError('abstract method')
 
 
+class FileSystemLocationInfo(tuple):
+    def __new__(cls, file_reference_relativity_root_dir: pathlib.Path):
+        return tuple.__new__(cls, (file_reference_relativity_root_dir,))
+
+    @property
+    def file_reference_relativity_root_dir(self) -> pathlib.Path:
+        """A directory that file reference paths are relative to"""
+        return self[0]
+
+
 class SectionElementParser:
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         """
         May return None if source is recognized.
@@ -39,7 +49,6 @@ class SectionElementParser:
         being the name of an instruction), but that there is some syntax error related to
         the recognized element (e.g. instruction).
 
-        :param file_reference_relativity_root_dir: A directory that file reference paths are relative to.
         :param source: Remaining source to parse
 
         :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_

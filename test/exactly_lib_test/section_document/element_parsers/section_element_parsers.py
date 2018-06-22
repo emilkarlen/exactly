@@ -9,7 +9,7 @@ from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedNonInstructionElement
-from exactly_lib.section_document.parsing_configuration import SectionElementParser
+from exactly_lib.section_document.parsing_configuration import SectionElementParser, FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.line_source import single_line_sequence
@@ -232,7 +232,7 @@ class _InstructionParserForInstructionLineThatStartsWith(sut.InstructionAndDescr
         self.instruction_line_identifier = instruction_line_identifier
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> sut.ParsedInstruction:
         first_line_number = source.current_line_number
         dummy_source = line_source.LineSequence(first_line_number, (source.current_line_text,))
@@ -251,7 +251,7 @@ class _InstructionParserThatGivesConstant(sut.InstructionAndDescriptionParser):
         self.return_value = return_value
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> sut.ParsedInstruction:
         return self.return_value
 
