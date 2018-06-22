@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.instructions.configuration import timeout as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.execution.test_resources.act_phase_handlings import act_phase_handling_that_runs_constant_actions
@@ -23,7 +24,7 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-THE_FILE_REF_REL_ROOT_DIR = pathlib.Path.cwd()
+THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestFailingParse(unittest.TestCase):
@@ -39,7 +40,7 @@ class TestFailingParse(unittest.TestCase):
             with self.subTest(argument_str):
                 for source in equivalent_source_variants(self, argument_str):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.Parser().parse(THE_FILE_REF_REL_ROOT_DIR, source)
+                        sut.Parser().parse(THE_FS_LOCATION_INFO, source)
 
 
 class TestCaseBaseForParser(TestCaseBase):

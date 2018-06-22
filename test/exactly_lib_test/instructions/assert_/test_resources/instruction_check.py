@@ -5,6 +5,7 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -77,8 +78,8 @@ class Executor:
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        the_file_ref_rel_root_dir = pathlib.Path.cwd()
-        instruction = parser.parse(the_file_ref_rel_root_dir, source)
+        fs_location_info = FileSystemLocationInfo(pathlib.Path.cwd())
+        instruction = parser.parse(fs_location_info, source)
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,
