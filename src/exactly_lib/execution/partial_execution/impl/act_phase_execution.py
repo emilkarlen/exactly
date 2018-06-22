@@ -1,13 +1,10 @@
 import pathlib
 import subprocess
 from contextlib import contextmanager
-from typing import Optional
+from typing import Optional, Callable
 
-from exactly_lib.execution import phase_step
-from exactly_lib.execution.failure_info import PhaseFailureInfo
 from exactly_lib.execution.impl.result import PhaseStepFailure, ActionWithFailureAsResult
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
-from exactly_lib.execution.phase_step import PhaseStep
 from exactly_lib.execution.result import ActionToCheckOutcome
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
@@ -19,25 +16,7 @@ from exactly_lib.util.failure_details import FailureDetails, new_failure_details
 from exactly_lib.util.file_utils import open_and_make_read_only_on_close, write_new_text_file
 from exactly_lib.util.std import StdFiles, StdOutputFiles
 
-
-class PhaseFailureResultConstructor:
-    def __init__(self, step: PhaseStep):
-        self.step = step
-
-    def apply(self,
-              status: PartialExeResultStatus,
-              failure_details: FailureDetails) -> PhaseStepFailure:
-        return PhaseStepFailure(status,
-                                PhaseFailureInfo(self.step,
-                                                 failure_details))
-
-    def implementation_error(self, ex: Exception) -> PhaseStepFailure:
-        return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                          new_failure_details_from_exception(ex))
-
-    def implementation_error_msg(self, msg: str) -> PhaseStepFailure:
-        return self.apply(PartialExeResultStatus.IMPLEMENTATION_ERROR,
-                          new_failure_details_from_message(msg))
+PhaseStepFailureConstructorType = Callable[[PartialExeResultStatus, FailureDetails], PhaseStepFailure]
 
 
 class ActPhaseExecutor:
@@ -76,48 +55,39 @@ class ActPhaseExecutor:
         """
         return self._action_to_check_outcome
 
-    def validate_post_setup(self) -> Optional[PhaseStepFailure]:
-        step = phase_step.ACT__VALIDATE_POST_SETUP
-
+    def validate_post_setup(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
         def action() -> Optional[PhaseStepFailure]:
             res = self.act_source_and_executor.validate_post_setup(self.environment_for_validate_post_setup)
             if res.is_success:
                 return None
             else:
-                return _failure_from(step,
-                                     PartialExeResultStatus(res.status.value),
-                                     new_failure_details_from_message(res.failure_message))
+                return failure_con(PartialExeResultStatus(res.status.value),
+                                   new_failure_details_from_message(res.failure_message))
 
-        return _with_implementation_exception_handling(step, action)
+        return action
 
-    def prepare(self) -> Optional[PhaseStepFailure]:
-        step = phase_step.ACT__PREPARE
-
+    def prepare(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
         def action() -> Optional[PhaseStepFailure]:
             res = self.act_source_and_executor.prepare(self.environment_for_other_steps,
                                                        self.script_output_dir_path)
             if res.is_success:
                 return None
             else:
-                return _failure_from(step,
-                                     PartialExeResultStatus.HARD_ERROR,
-                                     new_failure_details_from_message(res.failure_message))
+                return failure_con(PartialExeResultStatus.HARD_ERROR,
+                                   new_failure_details_from_message(res.failure_message))
 
-        return _with_implementation_exception_handling(step, action)
+        return action
 
-    def execute(self) -> Optional[PhaseStepFailure]:
-        step = phase_step.ACT__EXECUTE
-
+    def execute(self, failure_con: PhaseStepFailureConstructorType) -> ActionWithFailureAsResult:
         def action() -> Optional[PhaseStepFailure]:
             exit_code_or_hard_error = self._execute_with_stdin_handling()
             if exit_code_or_hard_error.is_exit_code:
                 return None
             else:
-                return _failure_from(step,
-                                     PartialExeResultStatus.HARD_ERROR,
-                                     exit_code_or_hard_error.failure_details)
+                return failure_con(PartialExeResultStatus.HARD_ERROR,
+                                   exit_code_or_hard_error.failure_details)
 
-        return _with_implementation_exception_handling(step, action)
+        return action
 
     def _execute_with_stdin_handling(self) -> ExitCodeOrHardError:
         if self.stdin_configuration.has_custom_stdin:
@@ -177,22 +147,3 @@ class ActPhaseExecutor:
             file_path = stdin_contents_file(self.home_and_sds.sds)
             write_new_text_file(file_path, configuration.string_contents)
             return file_path
-
-
-def _with_implementation_exception_handling(
-        step: phase_step.PhaseStep,
-        action: ActionWithFailureAsResult) -> Optional[PhaseStepFailure]:
-    try:
-        return action()
-    except Exception as ex:
-        return _failure_con_for(step).implementation_error(ex)
-
-
-def _failure_from(step: PhaseStep,
-                  status: PartialExeResultStatus,
-                  failure_details: FailureDetails) -> PhaseStepFailure:
-    return _failure_con_for(step).apply(status, failure_details)
-
-
-def _failure_con_for(step: PhaseStep) -> PhaseFailureResultConstructor:
-    return PhaseFailureResultConstructor(step)
