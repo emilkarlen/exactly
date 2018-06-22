@@ -1,7 +1,6 @@
-import sys
-
 import os
 import subprocess
+import sys
 from typing import Optional
 
 from exactly_lib.util import ansi_terminal_color as ansi
@@ -21,6 +20,22 @@ class StdOutputFiles:
 
     @property
     def err(self):
+        return self._stderr_file
+
+
+class StdOutputFilesContents:
+    def __init__(self,
+                 stdout_file: str,
+                 stderr_file: str):
+        self._stdout_file = stdout_file
+        self._stderr_file = stderr_file
+
+    @property
+    def out(self) -> str:
+        return self._stdout_file
+
+    @property
+    def err(self) -> str:
         return self._stderr_file
 
 

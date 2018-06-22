@@ -32,7 +32,7 @@ def execute(std_output_files: StdOutputFiles,
                                              act_phase_os_process_executor,
                                              result_reporter.depends_on_result_in_sandbox(),
                                              settings.sandbox_root_dir_resolver,
-                                             result_reporter.exe_atc_and_skip_assertions())
+                                             result_reporter.execute_atc_and_skip_assertions())
     result = _process(settings.test_case_file_path,
                       configuration)
     return result_reporter.report(result)

@@ -1,4 +1,3 @@
-import os
 import unittest
 
 from exactly_lib.common.exit_value import ExitValue
@@ -60,6 +59,6 @@ class SubProcessExitValueAssertion(asrt.ValueAssertion[SubProcessResult]):
         put.assertEqual(self.expected.exit_code,
                         value.exitcode,
                         message_builder.for_sub_component('exitcode').apply(msg_info))
-        put.assertEqual(self.expected.exit_identifier + os.linesep,
+        put.assertEqual(self.expected.exit_identifier + '\n',
                         value.stdout,
                         message_builder.for_sub_component('exit identifier').apply(msg_info))

@@ -76,6 +76,10 @@ def complete_with_main_program_runner_with_default_setup(mpr: MainProgramRunner)
     return ret_val
 
 
+def just_with_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
+    return suite_that_does_require_main_program_runner_with_default_setup(mpr)
+
+
 if __name__ == '__main__':
     from exactly_lib_test.default.test_resources.internal_main_program_runner import \
         main_program_runner_with_default_setup__in_same_process

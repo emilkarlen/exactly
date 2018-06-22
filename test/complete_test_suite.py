@@ -14,3 +14,7 @@ def complete_with_any_main_program_runner(mpr: MainProgramRunner) -> unittest.Te
 
 def complete_with_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
     return exactly_lib_test.complete_with_main_program_runner_with_default_setup(mpr)
+
+
+def just_with_main_program_runner_with_default_setup(mpr: MainProgramRunner) -> unittest.TestSuite:
+    return exactly_lib_test.just_with_main_program_runner_with_default_setup(mpr)

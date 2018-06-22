@@ -85,7 +85,7 @@ class TestCaseResultReporter(ResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         raise NotImplementedError('abstract method')
 
-    def exe_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
+    def execute_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
         return None
 
     def report_full_execution(self,
@@ -141,12 +141,17 @@ class _FullExecutionHandlerForActPhaseOutput(_FullExecutionHandler):
     def complete(self, result: FullExeResult) -> int:
         return result.action_to_check_outcome.exit_code
 
+    def _default_non_complete_execution(self, result: FullExeResult) -> int:
+        self._err_printer.write_colored_line(self.exit_value.exit_identifier, self.exit_value.color)
+        print_error_message_for_full_result(self._err_printer, result)
+        return self.exit_value.exit_code
+
 
 class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
     def depends_on_result_in_sandbox(self) -> bool:
         return False
 
-    def exe_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
+    def execute_atc_and_skip_assertions(self) -> Optional[StdOutputFiles]:
         return self._std
 
     def report_full_execution(self,
@@ -157,6 +162,13 @@ class _ResultReporterForActPhaseOutput(TestCaseResultReporter):
                                                          self._out_printer,
                                                          self._err_printer)
         return handler.handle(result)
+
+    def _report_unable_to_execute(self,
+                                  exit_value: ExitValue,
+                                  error_info: ErrorInfo) -> int:
+        self._err_printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
+        print_error_info(self._err_printer, error_info)
+        return exit_value.exit_code
 
 
 RESULT_REPORTERS = {
