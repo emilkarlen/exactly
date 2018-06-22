@@ -1,5 +1,4 @@
 import os
-import tempfile
 import unittest
 from typing import Optional
 
@@ -36,6 +35,7 @@ from exactly_lib_test.execution.test_resources.failure_info_check import Expecte
 from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_hard_error_with_message
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_return
+from exactly_lib_test.test_resources.files.capture_out_files import capture_stdout_err
 from exactly_lib_test.test_resources.programs import py_programs
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
@@ -76,41 +76,33 @@ def check(put: unittest.TestCase,
         python3.new_act_source_and_executor_constructor())
     act_phase_handling = ActPhaseHandling(constructor)
 
-    with tempfile.TemporaryFile(mode='r+t') as stdout_file:
-        with tempfile.TemporaryFile(mode='r+t') as stderr_file:
-            std_files = StdOutputFiles(stdout_file, stderr_file)
-            exe_conf = ExecutionConfiguration(dict(os.environ),
-                                              DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                              sandbox_root_name_resolver.for_test(),
-                                              exe_atc_and_skip_assertions=std_files)
-            with home_directory_structure() as hds:
-                conf_phase_values = ConfPhaseValues(act_phase_handling,
-                                                    hds,
-                                                    timeout_in_seconds=arrangement.timeout_in_seconds)
-                partial_result = sut.execute(arrangement.test_case_generator.test_case,
-                                             exe_conf,
-                                             conf_phase_values,
-                                             setup.default_settings(),
-                                             False,
-                                             )
+    def action(std_files: StdOutputFiles):
+        exe_conf = ExecutionConfiguration(dict(os.environ),
+                                          DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                          sandbox_root_name_resolver.for_test(),
+                                          exe_atc_and_skip_assertions=std_files)
+        with home_directory_structure() as hds:
+            conf_phase_values = ConfPhaseValues(act_phase_handling,
+                                                hds,
+                                                timeout_in_seconds=arrangement.timeout_in_seconds)
+            return sut.execute(arrangement.test_case_generator.test_case,
+                               exe_conf,
+                               conf_phase_values,
+                               setup.default_settings(),
+                               False,
+                               )
 
-            stdout_file_contents = _contents_of(stdout_file)
-            stderr_file_contents = _contents_of(stderr_file)
+    out_files, partial_result = capture_stdout_err(action)
 
     expectation.result.apply_with_message(put, partial_result,
                                           'partial result')
     put.assertEqual(expectation.step_recordings,
                     arrangement.test_case_generator.recorder.recorded_elements,
                     'steps')
-    expectation.atc_stdout_output.apply_with_message(put, stdout_file_contents,
+    expectation.atc_stdout_output.apply_with_message(put, out_files.out,
                                                      'stdout')
-    expectation.atc_stderr_output.apply_with_message(put, stderr_file_contents,
+    expectation.atc_stderr_output.apply_with_message(put, out_files.err,
                                                      'stderr')
-
-
-def _contents_of(f) -> str:
-    f.seek(0)
-    return f.read()
 
 
 class TestCaseBase(unittest.TestCase):

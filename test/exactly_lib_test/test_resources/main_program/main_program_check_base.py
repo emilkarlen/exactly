@@ -235,19 +235,13 @@ def tests_for_setup_with_just_main_program_runner(setups: Sequence[SetupWithJust
                                for setup in setups])
 
 
-def tests_for_setup_without_preprocessor(setups: list,
+def tests_for_setup_without_preprocessor(setups: Sequence[SetupWithoutPreprocessor],
                                          main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    """
-    :type setups: [SetupWithoutPreprocessor]
-    """
     return unittest.TestSuite([TestForSetupWithoutPreprocessor(setup, main_program_runner)
                                for setup in setups])
 
 
-def tests_for_setup_with_preprocessor(setups: list,
+def tests_for_setup_with_preprocessor(setups: Sequence[SetupWithPreprocessor],
                                       main_program_runner: MainProgramRunner) -> unittest.TestSuite:
-    """
-    :type setups: [SetupWithPreprocessor]
-    """
     return unittest.TestSuite([TestForSetupWithPreprocessor(setup, main_program_runner)
                                for setup in setups])

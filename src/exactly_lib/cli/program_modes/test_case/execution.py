@@ -2,7 +2,6 @@ import pathlib
 
 from exactly_lib.cli.program_modes.test_case import result_reporting
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
-from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
@@ -28,27 +27,20 @@ def execute(std_output_files: StdOutputFiles,
     except SuiteSyntaxError as ex:
         reporter = result_reporting.TestSuiteSyntaxErrorReporter(std_output_files)
         return reporter.report(ex)
+    configuration = processors.Configuration(test_case_definition,
+                                             handling_setup,
+                                             act_phase_os_process_executor,
+                                             result_reporter.depends_on_result_in_sandbox(),
+                                             settings.sandbox_root_dir_resolver,
+                                             result_reporter.exe_atc_and_skip_assertions())
     result = _process(settings.test_case_file_path,
-                      result_reporter.depends_on_result_in_sandbox(),
-                      test_case_definition,
-                      handling_setup,
-                      act_phase_os_process_executor,
-                      settings.sandbox_root_dir_resolver)
+                      configuration)
     return result_reporter.report(result)
 
 
 def _process(test_case_file_path: pathlib.Path,
-             is_keep_sds: bool,
-             test_case_definition: TestCaseDefinition,
-             handling_setup: TestCaseHandlingSetup,
-             act_phase_os_process_executor: ActPhaseOsProcessExecutor,
-             sandbox_root_dir_resolver: SandboxRootDirNameResolver,
+             configuration: processors.Configuration,
              ) -> test_case_processing.Result:
-    configuration = processors.Configuration(test_case_definition,
-                                             handling_setup,
-                                             act_phase_os_process_executor,
-                                             is_keep_sds,
-                                             sandbox_root_dir_resolver)
     processor = processors.new_processor_that_is_allowed_to_pollute_current_process(configuration)
     return processor.apply(test_case_processing.test_case_setup_of_source_file(test_case_file_path))
 
