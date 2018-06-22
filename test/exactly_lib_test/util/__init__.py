@@ -1,6 +1,5 @@
 import unittest
 
-from exactly_lib_test.util import file_write_distributor
 from exactly_lib_test.util import functional, textformat, tables, \
     cli_syntax, symbol_table, collection
 from exactly_lib_test.util import test_resources_test
@@ -16,7 +15,6 @@ def suite() -> unittest.TestSuite:
         textformat.suite(),
         cli_syntax.suite(),
         collection.suite(),
-        file_write_distributor.suite(),
         process_execution.suite(),
     ])
 
