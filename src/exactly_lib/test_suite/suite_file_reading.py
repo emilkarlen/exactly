@@ -6,6 +6,7 @@ from exactly_lib.definitions.test_suite.section_names import SECTION_NAME__CONF,
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer
 from exactly_lib.section_document import document_parser
+from exactly_lib.section_document import parsing_configuration
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.parse_source import ParseSource
@@ -22,7 +23,7 @@ from exactly_lib.test_suite.test_suite_doc import TestCaseInstructionSetupFromSu
 
 
 def read_suite_document(suite_file_path: pathlib.Path,
-                        configuration_section_parser: document_parser.SectionElementParser,
+                        configuration_section_parser: parsing_configuration.SectionElementParser,
                         test_case_parsing_setup: TestCaseParsingSetup,
                         ) -> test_suite_doc.TestSuiteDocument:
     """
@@ -69,16 +70,17 @@ def _derive_conf_section_environment(test_suite: test_suite_doc.TestSuiteDocumen
 
 class _Parser:
     def __init__(self,
-                 configuration_section_parser: document_parser.SectionElementParser,
+                 configuration_section_parser: parsing_configuration.SectionElementParser,
                  test_case_parsing_setup: TestCaseParsingSetup):
-        parser_configuration = document_parser.SectionsConfiguration(
+        parser_configuration = parsing_configuration.SectionsConfiguration(
             (
-                document_parser.SectionConfiguration(SECTION_NAME__CONF,
-                                                     configuration_section_parser),
-                document_parser.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
-                document_parser.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
-                document_parser.SectionConfiguration(SECTION_NAME__CASE_SETUP,
-                                                     case_instructions.new_setup_phase_parser(test_case_parsing_setup)),
+                parsing_configuration.SectionConfiguration(SECTION_NAME__CONF,
+                                                           configuration_section_parser),
+                parsing_configuration.SectionConfiguration(SECTION_NAME__SUITS, suites.new_parser()),
+                parsing_configuration.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
+                parsing_configuration.SectionConfiguration(SECTION_NAME__CASE_SETUP,
+                                                           case_instructions.new_setup_phase_parser(
+                                                               test_case_parsing_setup)),
             ),
             default_section_name=DEFAULT_SECTION_NAME
         )
@@ -101,7 +103,7 @@ class _Parser:
 
 
 def resolve_handling_setup_from_suite_file(default_handling_setup: TestCaseHandlingSetup,
-                                           configuration_section_parser: document_parser.SectionElementParser,
+                                           configuration_section_parser: parsing_configuration.SectionElementParser,
                                            test_case_parsing_setup: TestCaseParsingSetup,
                                            suite_to_read_config_from: pathlib.Path) -> TestCaseHandlingSetup:
     suite_document = read_suite_document(suite_to_read_config_from,

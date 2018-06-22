@@ -1,9 +1,9 @@
 from typing import Dict
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionNameExtractor
+from exactly_lib.section_document.parsing_configuration import SectionElementParser
 
 
 class InstructionsSetup(tuple):

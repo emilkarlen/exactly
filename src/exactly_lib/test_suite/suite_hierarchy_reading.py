@@ -4,8 +4,8 @@ import pathlib
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.section_document.document_parser import SectionElementParser
 from exactly_lib.section_document.model import SectionContents, ElementType
+from exactly_lib.section_document.parsing_configuration import SectionElementParser
 from exactly_lib.test_suite.instruction_set import parse, instruction
 from . import structure
 from . import suite_file_reading

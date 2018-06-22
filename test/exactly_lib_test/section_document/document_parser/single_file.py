@@ -2,15 +2,15 @@ import pathlib
 import unittest
 from typing import Dict, Sequence
 
-from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document import model
-from exactly_lib.section_document.document_parser import DocumentParser, new_parser_for, SectionConfiguration, \
-    SectionsConfiguration
+from exactly_lib.section_document import parsing_configuration
+from exactly_lib.section_document.document_parser import DocumentParser, new_parser_for
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, ParsedInstruction, \
     new_empty_element, new_comment_element
+from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line, SourceLocation, single_line_sequence
@@ -538,7 +538,8 @@ def is_comment_line(line: str) -> bool:
     return line[:len(_COMMENT_START)] == _COMMENT_START
 
 
-class SectionElementParserForEmptyCommentAndInstructionLines(sut.SectionElementParser):
+class SectionElementParserForEmptyCommentAndInstructionLines(
+    parsing_configuration.SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
 
