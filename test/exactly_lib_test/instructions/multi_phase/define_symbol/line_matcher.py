@@ -2,7 +2,7 @@ import re
 import unittest
 
 from exactly_lib.instructions.multi_phase import define_symbol as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_utils.line_matcher import parse_line_matcher
 from exactly_lib.test_case_utils.line_matcher.line_matchers import LineMatcherConstant, LineMatcherAnd, LineMatcherRegex

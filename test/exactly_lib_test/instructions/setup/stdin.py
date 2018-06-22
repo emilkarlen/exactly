@@ -6,7 +6,7 @@ from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.file_ref import REL_HOME_CASE_OPTION_NAME
 from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
 from exactly_lib.instructions.setup import stdin as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.data import string_resolvers

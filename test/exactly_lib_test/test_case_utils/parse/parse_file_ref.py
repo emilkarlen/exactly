@@ -3,7 +3,7 @@ from pathlib import Path
 
 from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
     REL_HOME_CASE_OPTION_NAME
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_phase import \
+from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream
 from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
