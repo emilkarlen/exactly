@@ -13,6 +13,8 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation, \
     Executor
+from exactly_lib_test.instructions.configuration.test_resources.source_with_assignment import \
+    syntax_for_assignment_of
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
@@ -170,10 +172,10 @@ class TestSuccessfulExecution_change_to_direct_sub_dir(TestCaseForConfigurationB
     def runTest(self):
         directory_name = 'existing-directory'
         self._check(
-            ' = ' + directory_name,
+            syntax_for_assignment_of(directory_name),
             Arrangement(
-                hds_contents=contents_in(self.conf.target_directory, DirContents([
-                    empty_dir(directory_name)]))),
+                hds_contents=contents_in(self.conf.target_directory,
+                                         DirContents([empty_dir(directory_name)]))),
             Expectation(
                 configuration=AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(self.conf,
                                                                                  directory_name))

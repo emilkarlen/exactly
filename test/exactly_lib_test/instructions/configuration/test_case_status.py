@@ -10,6 +10,7 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
+from exactly_lib_test.instructions.configuration.test_resources.source_with_assignment import syntax_for_assignment_of
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check
@@ -57,17 +58,17 @@ class TestChangeStatus(TestCaseBaseForParser):
     def test_PASS(self):
         self._run(expected=tcs.ExecutionMode.PASS,
                   initial=tcs.ExecutionMode.SKIP,
-                  argument='= ' + tcs.NAME_PASS)
+                  argument=syntax_for_assignment_of(tcs.NAME_PASS))
 
     def test_SKIP(self):
         self._run(expected=tcs.ExecutionMode.SKIP,
                   initial=tcs.ExecutionMode.PASS,
-                  argument='= ' + tcs.NAME_SKIP)
+                  argument=syntax_for_assignment_of(tcs.NAME_SKIP))
 
     def test_FAIL(self):
         self._run(expected=tcs.ExecutionMode.FAIL,
                   initial=tcs.ExecutionMode.PASS,
-                  argument='= ' + tcs.NAME_FAIL)
+                  argument=syntax_for_assignment_of(tcs.NAME_FAIL))
 
 
 class AssertExecutionMode(config_check.Assertion):
@@ -81,7 +82,7 @@ class AssertExecutionMode(config_check.Assertion):
               actual_result: ConfigurationBuilder):
         put.assertEqual(self.expected,
                         actual_result.execution_mode,
-                        'Execution Mode')
+                        'Test Case Status')
 
 
 if __name__ == '__main__':
