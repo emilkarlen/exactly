@@ -9,7 +9,8 @@ from exactly_lib.processing import processors as sut
 from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.processors import TestCaseDefinition
-from exactly_lib.processing.test_case_processing import TestCaseSetup, Status, Result, Processor, AccessErrorType
+from exactly_lib.processing.test_case_processing import Status, Result, Processor, AccessErrorType, \
+    test_case_setup_of_source_file
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier, os_services
@@ -70,8 +71,7 @@ class TestFileInclusionResultStatus(unittest.TestCase):
                         recording_output)
                     processor = proc_case.value(configuration)
                     with tmp_dir_as_cwd(cwd_contents):
-                        test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
-                                                        file_reference_relativity_root_dir=pathlib.Path.cwd())
+                        test_case_setup = test_case_setup_of_source_file(pathlib.Path(test_case_file.name))
                         # ACT #
                         result = processor.apply(test_case_setup)
                         # ASSERT #
@@ -106,8 +106,7 @@ class TestFileInclusionResultStatus(unittest.TestCase):
                     processor = proc_case.value
                     assert isinstance(processor, Processor)
                     with tmp_dir_as_cwd(cwd_contents):
-                        test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
-                                                        file_reference_relativity_root_dir=pathlib.Path.cwd())
+                        test_case_setup = test_case_setup_of_source_file(pathlib.Path(test_case_file.name))
                         # ACT #
                         result = processor.apply(test_case_setup)
                         # ASSERT #
@@ -178,8 +177,7 @@ class TestFileInclusionSourceLocationPathsWithMultipleInclusions(unittest.TestCa
                         processor = proc_case.value
                         assert isinstance(processor, Processor)
                         with tmp_dir_as_cwd(cwd_contents):
-                            test_case_setup = TestCaseSetup(pathlib.Path(test_case_file.name),
-                                                            file_reference_relativity_root_dir=pathlib.Path.cwd())
+                            test_case_setup = test_case_setup_of_source_file(pathlib.Path(test_case_file.name))
                             # ACT #
                             result = processor.apply(test_case_setup)
                             # ASSERT #

@@ -2,6 +2,7 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers import instruction_parsers as sut
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -55,7 +56,7 @@ class TestInstructionParserThatConsumesRestOfCurrentLine(unittest.TestCase):
             with self.subTest():
                 source = source_of_lines(source_lines)
                 source.consume_part_of_current_line(num_chars_to_consume_before)
-                instruction = self.parser.parse(source)
+                instruction = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 self.assertIsInstance(instruction, Instruction,
                                       'Expects the Instruction to be returned')
                 assert isinstance(instruction, Instruction)

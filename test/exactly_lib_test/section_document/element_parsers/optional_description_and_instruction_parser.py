@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.section_document import model
@@ -10,6 +9,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -42,7 +42,6 @@ class TestParseWithDescription(unittest.TestCase):
         check(self, expectation, arrangement)
 
     def test_fail_when_there_is_a_description_but_no_following_instruction(self):
-        file_reference_relativity_root_dir = pathlib.Path()
         test_cases = [
             ['\'description\'',
              ],
@@ -63,7 +62,7 @@ class TestParseWithDescription(unittest.TestCase):
             with self.subTest(source_lines=source_lines):
                 source = source_of_lines(source_lines)
                 with self.assertRaises(SourceError):
-                    self.sut.parse(file_reference_relativity_root_dir, source)
+                    self.sut.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_description_and_instruction_on_single_line(self):
         source_and_description_variants = [
@@ -308,7 +307,7 @@ class Arrangement(tuple):
 def check(put: unittest.TestCase,
           expectation: Expectation,
           arrangement: Arrangement):
-    result = arrangement.parser.parse(pathlib.Path(),
+    result = arrangement.parser.parse(ARBITRARY_FS_LOCATION_INFO,
                                       arrangement.source)
     expectation.apply(put, result, arrangement.source)
 

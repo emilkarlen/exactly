@@ -1,4 +1,3 @@
-import pathlib
 from typing import List, Sequence
 
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -9,7 +8,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.model import SectionContentElement, ElementType, SectionContents, \
     Instruction
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import SectionElementParser
+from exactly_lib.section_document.parsing_configuration import SectionElementParser, FileSystemLocationInfo
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteInstruction
@@ -30,10 +29,10 @@ class CaseSetupPhaseInstructionParser(InstructionParser):
         self._case_instruction_parser = case_instruction_parser
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> CaseSetupPhaseInstruction:
         return CaseSetupPhaseInstruction(
-            self._case_instruction_parser.parse(file_reference_relativity_root_dir, source)
+            self._case_instruction_parser.parse(fs_location_info, source)
         )
 
 

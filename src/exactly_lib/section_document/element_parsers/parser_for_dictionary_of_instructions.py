@@ -1,4 +1,3 @@
-import pathlib
 from typing import Callable, Dict
 
 from exactly_lib.section_document import model
@@ -7,6 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     InvalidInstructionArgumentException, ArgumentParsingImplementationException
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import line_sequence_from_line
 
@@ -28,13 +28,13 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         self._instruction_name_extractor_function = instruction_name_extractor_function
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
         first_line = source.current_line
         name = self._extract_name(source)
         parser = self._lookup_parser(first_line, name)
         source.consume_initial_space_on_current_line()
-        return self._parse(file_reference_relativity_root_dir, source, parser, name)
+        return self._parse(fs_location_info, source, parser, name)
 
     def _extract_name(self, source: ParseSource) -> str:
         try:
@@ -56,7 +56,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         return self.__instruction_name__2__single_instruction_parser[name]
 
     @staticmethod
-    def _parse(file_reference_relativity_root_dir: pathlib.Path,
+    def _parse(fs_location_info: FileSystemLocationInfo,
                source: ParseSource,
                parser: InstructionParser,
                name: str) -> model.Instruction:
@@ -65,7 +65,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         """
         first_line = source.current_line
         try:
-            return parser.parse(file_reference_relativity_root_dir, source)
+            return parser.parse(fs_location_info, source)
         except SingleInstructionInvalidArgumentException as ex:
             raise InvalidInstructionArgumentException(line_sequence_from_line(first_line),
                                                       name,

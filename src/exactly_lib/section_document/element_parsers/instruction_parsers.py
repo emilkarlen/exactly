@@ -1,8 +1,7 @@
-import pathlib
-
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 
 
 class InstructionParserThatConsumesCurrentLine(InstructionParser):
@@ -17,7 +16,7 @@ class InstructionParserThatConsumesCurrentLine(InstructionParser):
     """
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:
         rest_of_line = source.remaining_part_of_current_line
         source.consume_current_line()
