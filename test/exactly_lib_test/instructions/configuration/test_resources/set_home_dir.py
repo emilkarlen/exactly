@@ -5,7 +5,6 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
@@ -14,6 +13,7 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
     Executor
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file, empty_dir, Dir
@@ -56,9 +56,6 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
     ])
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class TestCaseForConfigurationBase(TestCaseBaseWithShortDescriptionOfTestClassAndAnObjectType):
     def __init__(self, configuration: Configuration):
         super().__init__(configuration)
@@ -79,21 +76,21 @@ class TestParse_fail_when_there_is_no_arguments(TestCaseForConfigurationBase):
     def runTest(self):
         for source in equivalent_source_variants(self, '   '):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                self.conf.parser().parse(THE_FS_LOCATION_INFO, source)
+                self.conf.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestParse_fail_when_just_eq_argument(TestCaseForConfigurationBase):
     def runTest(self):
         for source in equivalent_source_variants(self, '  = '):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                self.conf.parser().parse(THE_FS_LOCATION_INFO, source)
+                self.conf.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestParse_fail_when_there_is_more_than_one_argument(TestCaseForConfigurationBase):
     def runTest(self):
         for source in equivalent_source_variants(self, ' = argument-1 argument-2'):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                self.conf.parser().parse(THE_FS_LOCATION_INFO, source)
+                self.conf.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestFailingExecution_hard_error_WHEN_path_does_not_exist(TestCaseForConfigurationBase):

@@ -1,9 +1,7 @@
-import pathlib
 import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
@@ -11,6 +9,7 @@ from exactly_lib_test.instructions.multi_phase.instruction_integration_test_reso
     suite_for_cases
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_resources.files.file_utils import tmp_file_containing
 from exactly_lib_test.test_resources.programs import python_program_execution as py_exe
 
@@ -35,9 +34,6 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
     ])
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class TestCaseBase(unittest.TestCase):
     def __init__(self, conf: Configuration):
         super().__init__()
@@ -48,7 +44,7 @@ class TestParseFailsWhenThereAreNoArguments(TestCaseBase):
     def runTest(self):
         for source in equivalent_source_variants(self, '   '):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                self.conf.parser().parse(THE_FS_LOCATION_INFO, source)
+                self.conf.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestInstructionIsSuccessfulWhenExitStatusFromCommandIsZero(TestCaseBase):

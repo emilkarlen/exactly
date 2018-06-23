@@ -1,9 +1,7 @@
-import pathlib
 import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util.logic_types import ExpectationType, Quantifier
 from exactly_lib_test.instructions.assert_.contents_of_file.test_resources import arguments_building
@@ -12,6 +10,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruct
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.line_matches import utils
 from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_check.negation_argument_handling import \
     ExpectationTypeConfig
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.test_case_utils.line_matcher.test_resources.argument_syntax import syntax_for_regex_matcher
@@ -33,9 +32,6 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     ])
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class _TestCaseBase(unittest.TestCase):
     def __init__(self,
                  configuration: InstructionTestConfigurationForContentsOrEquals):
@@ -53,7 +49,7 @@ class _TestCaseBase(unittest.TestCase):
                                                                       quantifier)
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
                         self.configuration.new_parser().parse(
-                            THE_FS_LOCATION_INFO,
+                            ARBITRARY_FS_LOCATION_INFO,
                             self.configuration.source_for(args_variant))
 
 
@@ -102,7 +98,7 @@ class _TestSymbolReferenceForStringTransformerIsReported(_TestCaseBase):
                                                                                         'regex'))
                     ).apply(etc)
                     source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
-                    instruction = parser.parse(THE_FS_LOCATION_INFO, source)
+                    instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                     assert isinstance(instruction, AssertPhaseInstruction)  # Sanity check
                     expected_symbol_usages.apply_without_message(self, instruction.symbol_usages())
 
@@ -132,6 +128,6 @@ class _TestSymbolReferenceForLineMatcherIsReported(_TestCaseBase):
                                                                                     line_matcher_name)
                     ).apply(etc)
                     source = self.configuration.arguments_for(arguments_for_implicit_file).as_remaining_source
-                    instruction = parser.parse(THE_FS_LOCATION_INFO, source)
+                    instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                     assert isinstance(instruction, AssertPhaseInstruction)  # Sanity check
                     expected_symbol_usages.apply_without_message(self, instruction.symbol_usages())

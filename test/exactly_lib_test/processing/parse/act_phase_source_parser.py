@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.processing.parse import act_phase_source_parser as sut
@@ -6,6 +5,7 @@ from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstr
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 
 
@@ -18,7 +18,7 @@ class TestParse(unittest.TestCase):
         # ARRANGE #
         source = source_of_lines(['first line'])
         # ACT #
-        element = sut.ActPhaseParser().parse(pathlib.Path(), source)
+        element = sut.ActPhaseParser().parse(ARBITRARY_FS_LOCATION_INFO, source)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -37,7 +37,7 @@ class TestParse(unittest.TestCase):
                 # ARRANGE #
                 source = source_of_lines(source_line)
                 # ACT #
-                element = sut.ActPhaseParser().parse(pathlib.Path(), source)
+                element = sut.ActPhaseParser().parse(ARBITRARY_FS_LOCATION_INFO, source)
                 # ASSERT #
                 instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
                 self.assertEqual(list(instruction.source_code().lines),
@@ -51,7 +51,7 @@ class TestParse(unittest.TestCase):
                         'third line']
         source = source_of_lines(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(pathlib.Path(), source)
+        element = sut.ActPhaseParser().parse(ARBITRARY_FS_LOCATION_INFO, source)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -67,7 +67,7 @@ class TestParse(unittest.TestCase):
         ]
         source = source_of_lines(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(pathlib.Path(), source)
+        element = sut.ActPhaseParser().parse(ARBITRARY_FS_LOCATION_INFO, source)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -86,7 +86,7 @@ class TestParse(unittest.TestCase):
         ]
         source = source_of_lines(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(pathlib.Path(), source)
+        element = sut.ActPhaseParser().parse(ARBITRARY_FS_LOCATION_INFO, source)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),
@@ -107,7 +107,7 @@ class TestParse(unittest.TestCase):
         ]
         source = source_of_lines(source_lines)
         # ACT #
-        element = sut.ActPhaseParser().parse(pathlib.Path(), source)
+        element = sut.ActPhaseParser().parse(ARBITRARY_FS_LOCATION_INFO, source)
         # ASSERT #
         instruction = self._assert_is_instruction_element_with_correct_type_of_instruction(element)
         self.assertEqual(list(instruction.source_code().lines),

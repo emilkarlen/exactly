@@ -1,11 +1,9 @@
 import os
-import pathlib
 import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.phases import common as i
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -15,6 +13,7 @@ from exactly_lib.test_case.result import pfh, svh
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.util.file_utils import preserved_cwd
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActEnvironment
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import pfh_assertions, svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_utils import write_act_result
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
@@ -78,8 +77,7 @@ class Executor:
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        fs_location_info = FileSystemLocationInfo(pathlib.Path.cwd())
-        instruction = parser.parse(fs_location_info, source)
+        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,

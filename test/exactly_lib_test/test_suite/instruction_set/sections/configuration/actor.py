@@ -1,11 +1,9 @@
-import pathlib
 import unittest
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.configuration.utils.actor_utils import COMMAND_LINE_ACTOR_OPTION
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_suite.instruction_set.sections.configuration import actor as sut
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
@@ -14,6 +12,7 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.configuration.actor.test_resources import shell_command_syntax_for
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
@@ -32,9 +31,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class TestParse(unittest.TestCase):
     def test_fail_when_invalid_syntax(self):
         test_cases = [
@@ -47,14 +43,14 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(THE_FS_LOCATION_INFO, source)
+                        parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_success_when_argument_is_valid(self):
         parser = sut.Parser()
         for source in equivalent_source_variants__with_source_check(self, instruction_arguments.ASSIGNMENT_OPERATOR +
                                                                           ' ' +
                                                                           COMMAND_LINE_ACTOR_OPTION):
-            parser.parse(THE_FS_LOCATION_INFO, source)
+            parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.TestCase):
@@ -69,7 +65,7 @@ class TestSuccessfulParseAndInstructionExecutionForShellCommandActor(unittest.Te
         # ARRANGE #
         os_process_executor = ActPhaseOsProcessExecutorThatRecordsArguments()
         source = remaining_source(' = ' + COMMAND_LINE_ACTOR_OPTION)
-        instruction = sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+        instruction = sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
         assert isinstance(instruction, ConfigurationSectionInstruction)
         environment = configuration_section_environment()
         # ACT #

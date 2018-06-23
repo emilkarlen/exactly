@@ -1,12 +1,10 @@
 import copy
-import pathlib
 import unittest
 from time import strftime, localtime
 
 from exactly_lib import program_info
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
@@ -14,6 +12,7 @@ from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib_test.execution.partial_execution.test_resources.basic import dummy_act_phase_handling
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
@@ -64,8 +63,7 @@ class Executor:
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        fs_location_info = FileSystemLocationInfo(pathlib.Path.cwd())
-        instruction = parser.parse(fs_location_info, source)
+        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         self.put.assertIsNotNone(instruction,
                                  'Result from parser cannot be None')
         self.put.assertIsInstance(instruction,

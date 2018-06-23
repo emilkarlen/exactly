@@ -1,10 +1,8 @@
-import pathlib
 import unittest
 
 from exactly_lib.instructions.setup import copy as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelHomeOptionType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
@@ -12,6 +10,7 @@ from exactly_lib_test.instructions.setup.test_resources.instruction_check import
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators, sds_populator
@@ -38,36 +37,33 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class TestParse(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
         instruction_argument = ''
         for source in equivalent_source_variants(self, instruction_argument):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+                sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_fail_when_there_is_more_than_two_arguments(self):
         instruction_argument = 'argument1 argument2 argument3'
         for source in equivalent_source_variants(self, instruction_argument):
             with self.assertRaises(SingleInstructionInvalidArgumentException):
-                sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+                sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_there_is_exactly_one_argument(self):
         instruction_argument = 'single-argument'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+            sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_there_is_exactly_two_arguments(self):
         instruction_argument = 'argument1 argument2'
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+            sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_argument_shall_be_parsed_using_shell_syntax(self):
         instruction_argument = "'argument 1' 'argument 2'"
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-            sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+            sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestCaseBaseForParser(TestCaseBase):

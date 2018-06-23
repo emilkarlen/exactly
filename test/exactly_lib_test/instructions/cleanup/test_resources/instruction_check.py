@@ -1,11 +1,9 @@
 import os
-import pathlib
 import unittest
 
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
@@ -20,6 +18,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.expectations import ExpectationBase
 from exactly_lib_test.instructions.test_resources.instruction_check_utils import \
     InstructionExecutionBase
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.result.test_resources import sh_assertions, svh_assertions
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
@@ -103,8 +102,7 @@ class Executor(InstructionExecutionBase):
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        fs_location_info = FileSystemLocationInfo(pathlib.Path.cwd())
-        instruction = parser.parse(fs_location_info, source)
+        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         self._check_instruction(CleanupPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, CleanupPhaseInstruction)

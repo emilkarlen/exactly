@@ -3,7 +3,6 @@ import shlex
 import unittest
 
 from exactly_lib.instructions.assert_ import contents_of_dir as sut
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -31,6 +30,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instr_arg_variant_chec
     ExpectationTypeConfig, PassOrFail
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import equals_symbol_references
 from exactly_lib_test.symbol.test_resources.file_matcher import is_file_matcher_reference_to
@@ -63,9 +63,6 @@ def suite() -> unittest.TestSuite:
 
         unittest.makeSuite(TestAssertionVariantThatTransformersMultipleFiles),
     ])
-
-
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestWithAssertionVariantForFileContents(tr.TestWithAssertionVariantBase):
@@ -144,7 +141,7 @@ class TestSymbolReferences(tr.TestCommonSymbolReferencesBase,
 
         # ACT #
 
-        actual_instruction = sut.parser.Parser().parse(THE_FS_LOCATION_INFO, source)
+        actual_instruction = sut.parser.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
         assert isinstance(actual_instruction, AssertPhaseInstruction)
 
