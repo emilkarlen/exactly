@@ -1,8 +1,6 @@
 import copy
 import unittest
-from time import strftime, localtime
 
-from exactly_lib import program_info
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -72,14 +70,12 @@ class Executor:
                                   'The instruction must be an instance of ' + str(ConfigurationPhaseInstruction))
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, ConfigurationPhaseInstruction)
-        prefix = strftime(program_info.PROGRAM_NAME + '-test-%Y-%m-%d-%H-%M-%S', localtime())
-        with home_directory_structure(prefix=prefix + '-home',
-                                      contents=self.arrangement.hds_contents,
-                                      ) as hds:
+        with home_directory_structure(contents=self.arrangement.hds_contents) as hds:
             configuration_builder = ConfigurationBuilder(hds.case_dir,
                                                          hds.act_dir,
                                                          self.arrangement.act_phase_handling,
-                                                         timeout_in_seconds=self.arrangement.timeout_in_seconds)
+                                                         timeout_in_seconds=self.arrangement.timeout_in_seconds,
+                                                         execution_mode=self.arrangement.execution_mode)
             configuration_builder.set_execution_mode(self.arrangement.execution_mode)
             self._execute_main(configuration_builder,
                                instruction)

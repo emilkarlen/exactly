@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
@@ -13,11 +14,12 @@ class ConfigurationBuilder:
                  home_case_dir_path: pathlib.Path,
                  home_act_dir_path: pathlib.Path,
                  act_phase_handling: ActPhaseHandling,
-                 timeout_in_seconds: int = None):
+                 timeout_in_seconds: Optional[int] = None,
+                 execution_mode: ExecutionMode = ExecutionMode.PASS):
         self.__home_case_dir_path = home_case_dir_path
         self.__home_act_dir_path = home_act_dir_path
         self.__act_phase_handling = act_phase_handling
-        self.__execution_mode = ExecutionMode.PASS
+        self.__execution_mode = execution_mode
         self.__timeout_in_seconds = timeout_in_seconds
 
     @property
