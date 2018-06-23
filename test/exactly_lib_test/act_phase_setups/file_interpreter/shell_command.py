@@ -10,9 +10,9 @@ from exactly_lib_test.act_phase_setups.test_resources import \
     test_validation_for_single_file_rel_home_act as single_file_rel_home
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import Configuration
 from exactly_lib_test.act_phase_setups.test_resources.act_source_and_executor import suite_for_execution
-from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
-from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import contents_in
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.programs.python_program_execution import abs_path_to_interpreter_quoted_for_exactly

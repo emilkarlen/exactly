@@ -11,9 +11,9 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsS
 from exactly_lib.test_case.result import sh, svh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError
 from exactly_lib.util.std import StdFiles
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorForConstantExecutor
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorForConstantExecutor
 
 
 class ActSourceAndExecutorWrapperThatRecordsSteps(ActSourceAndExecutor):

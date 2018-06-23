@@ -5,8 +5,8 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutor, \
 from exactly_lib.test_case.phases.act import ActPhaseInstruction
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.result import sh, svh
-from exactly_lib_test.execution.test_resources import test_actions
-from exactly_lib_test.execution.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
     ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.test_resources import actions
 
@@ -60,3 +60,11 @@ class ActSourceAndExecutorConstructorForConstantExecutor(ActSourceAndExecutorCon
               environment: InstructionEnvironmentForPreSdsStep,
               act_phase_instructions: Sequence[ActPhaseInstruction]) -> ActSourceAndExecutor:
         return self.executor
+
+
+class ActSourceAndExecutorConstructorThatRaisesException(ActSourceAndExecutorConstructor):
+    def apply(self,
+              os_process_executor: ActPhaseOsProcessExecutor,
+              environment: InstructionEnvironmentForPreSdsStep,
+              act_phase_instructions: Sequence[ActPhaseInstruction]):
+        raise ValueError('the method should never be called')

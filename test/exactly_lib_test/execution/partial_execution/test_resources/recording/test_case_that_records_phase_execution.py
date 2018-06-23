@@ -8,13 +8,14 @@ from exactly_lib.test_case.result import sh, svh
 from exactly_lib_test.execution.partial_execution.test_resources.recording.test_case_generation_for_sequence_tests import \
     TestCaseGeneratorForExecutionRecording
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_base import PartialExecutionTestCaseBase
-from exactly_lib_test.execution.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording import \
     act_program_executor as step_recording_executors
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import \
     ListRecorder
-from exactly_lib_test.execution.test_resources.test_actions import execute_action_that_returns_exit_code, \
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+    ActSourceAndExecutorThatRunsConstantActions
+from exactly_lib_test.test_case.act_phase_handling.test_resources.test_actions import \
+    execute_action_that_returns_exit_code, \
     prepare_action_that_returns
 from exactly_lib_test.test_resources.actions import do_nothing, do_return
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
