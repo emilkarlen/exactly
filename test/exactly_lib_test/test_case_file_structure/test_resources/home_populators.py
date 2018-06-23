@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
@@ -9,7 +11,7 @@ def empty() -> HomePopulator:
     return multiple([])
 
 
-def multiple(home_populators: list) -> HomePopulator:
+def multiple(home_populators: Sequence[HomePopulator]) -> HomePopulator:
     return _ListOfPopulators(home_populators)
 
 
@@ -24,7 +26,8 @@ def contents_in(relativity: RelHomeOptionType,
 
 
 class _HomePopulatorForRelHomeOptionType(HomePopulator):
-    def __init__(self, relativity: RelHomeOptionType,
+    def __init__(self,
+                 relativity: RelHomeOptionType,
                  dir_contents: DirContents):
         self.relativity = relativity
         self.dir_contents = dir_contents
@@ -35,7 +38,7 @@ class _HomePopulatorForRelHomeOptionType(HomePopulator):
 
 
 class _ListOfPopulators(HomePopulator):
-    def __init__(self, home_populators: list):
+    def __init__(self, home_populators: Sequence[HomePopulator]):
         for populator in home_populators:
             assert isinstance(populator, HomePopulator)
         self.__populator_list = home_populators

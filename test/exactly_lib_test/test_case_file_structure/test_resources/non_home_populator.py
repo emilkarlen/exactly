@@ -1,3 +1,5 @@
+from typing import Sequence
+
 from exactly_lib.test_case_file_structure import relative_path_options
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
@@ -11,7 +13,7 @@ def rel_option(relativity: RelNonHomeOptionType,
                                                 dir_contents)
 
 
-def multiple(non_home_populator_list: list) -> NonHomePopulator:
+def multiple(non_home_populator_list: Sequence[NonHomePopulator]) -> NonHomePopulator:
     return _ListOfPopulators(non_home_populator_list)
 
 
@@ -32,7 +34,7 @@ class _NonHomePopulatorForRelativityOption(NonHomePopulator):
 
 
 class _ListOfPopulators(NonHomePopulator):
-    def __init__(self, non_home_populator_list: list):
+    def __init__(self, non_home_populator_list: Sequence[NonHomePopulator]):
         self.__populator_list = non_home_populator_list
 
     def populate_non_home(self, sds: SandboxDirectoryStructure):
