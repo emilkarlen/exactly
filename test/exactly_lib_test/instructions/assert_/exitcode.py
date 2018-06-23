@@ -1,11 +1,9 @@
-import pathlib
 import unittest
 
 from exactly_lib.instructions.assert_ import exitcode as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.data.restrictions.reference_restrictions import string_made_up_by_just_strings
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.symbol.symbol_usage import SymbolReference
@@ -18,6 +16,7 @@ from exactly_lib_test.instructions.assert_.test_resources.instruction_check impo
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct, ActResultProducerFromActResult
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
@@ -39,9 +38,6 @@ def suite() -> unittest.TestSuite:
     ])
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class TestParse(unittest.TestCase):
     def test_invalid_syntax(self):
         test_cases = [
@@ -54,11 +50,11 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg=instruction_argument):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(THE_FS_LOCATION_INFO, source)
+                        parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_valid_syntax(self):
         parser = sut.Parser()
-        actual_instruction = parser.parse(THE_FS_LOCATION_INFO,
+        actual_instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO,
                                           remaining_source('{op} 1'.format(op=comparators.EQ.name)))
         self.assertIsInstance(actual_instruction,
                               AssertPhaseInstruction)

@@ -1,9 +1,7 @@
-import pathlib
 import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_documentation_instance
 from exactly_lib_test.instructions.multi_phase.define_symbol.common_failing_cases import \
@@ -11,6 +9,7 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.common_failing_case
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import src
 from exactly_lib_test.instructions.multi_phase.instruction_integration_test_resources.configuration import \
     ConfigurationBase
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string_constant_container
@@ -27,9 +26,6 @@ def suite_for(conf: ConfigurationBase) -> unittest.TestSuite:
         suites.append(test_case(conf))
     suites.append(suite_for_documentation_instance(conf.documentation()))
     return unittest.TestSuite(suites)
-
-
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestCaseBase(unittest.TestCase):
@@ -49,7 +45,7 @@ class TestFailWhenInvalidSyntax(TestCaseBase):
             source = remaining_source(source_str)
             with self.subTest(msg=case_name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(THE_FS_LOCATION_INFO, source)
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestSuccessfulDefinition(TestCaseBase):

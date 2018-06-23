@@ -1,10 +1,8 @@
-import pathlib
 import unittest
 
 from exactly_lib.instructions.configuration import timeout as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.execution.test_resources.act_phase_handlings import act_phase_handling_that_runs_constant_actions
@@ -14,6 +12,7 @@ from exactly_lib_test.instructions.configuration.test_resources.instruction_chec
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants, \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 
 
 def suite() -> unittest.TestSuite:
@@ -22,9 +21,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSetTimeout),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction name')),
     ])
-
-
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestFailingParse(unittest.TestCase):
@@ -40,7 +36,7 @@ class TestFailingParse(unittest.TestCase):
             with self.subTest(argument_str):
                 for source in equivalent_source_variants(self, argument_str):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+                        sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestCaseBaseForParser(TestCaseBase):

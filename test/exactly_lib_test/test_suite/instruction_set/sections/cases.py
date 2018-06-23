@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
@@ -6,6 +5,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
 from exactly_lib.test_suite.instruction_set.sections import cases as sut
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 
 
 def suite() -> unittest.TestSuite:
@@ -24,7 +24,7 @@ class TestParse(unittest.TestCase):
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(pathlib.Path(), source)
+                        parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_valid_syntax(self):
         test_cases = [
@@ -36,7 +36,7 @@ class TestParse(unittest.TestCase):
         for instruction_argument in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                    parser.parse(pathlib.Path(), source)
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 if __name__ == '__main__':

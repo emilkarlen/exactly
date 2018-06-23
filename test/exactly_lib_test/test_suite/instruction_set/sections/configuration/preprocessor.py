@@ -1,16 +1,15 @@
-import pathlib
 import unittest
 
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor as sut
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_resources.arguments_building import CustomOptionArgument
 from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import \
     configuration_section_environment
@@ -22,9 +21,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestSuccessfulParseAndInstructionExecution),
         suite_for_instruction_documentation(sut.TheInstructionDocumentation('instruction mame')),
     ])
-
-
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestFailingParse(unittest.TestCase):
@@ -40,7 +36,7 @@ class TestFailingParse(unittest.TestCase):
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                     with self.assertRaises(SingleInstructionInvalidArgumentException):
-                        parser.parse(THE_FS_LOCATION_INFO, source)
+                        parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
@@ -49,7 +45,7 @@ class TestSuccessfulParseAndInstructionExecution(unittest.TestCase):
                expected_command_and_arguments: list):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument_source):
             # ARRANGE #
-            instruction = sut.Parser().parse(THE_FS_LOCATION_INFO, source)
+            instruction = sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
             assert isinstance(instruction, ConfigurationSectionInstruction)
             environment = configuration_section_environment()
             # ACT #

@@ -3,7 +3,7 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers import parser_for_dictionary_of_instructions as sut
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_single_line
 
@@ -17,9 +17,6 @@ def suite() -> unittest.TestSuite:
 
 def name_extractor(s: str) -> str:
     return s[0]
-
-
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class SingleInstructionParserThatRaisesInvalidArgumentError(sut.InstructionParser):
@@ -73,7 +70,7 @@ class TestFailingNameExtractor(unittest.TestCase):
         section_parser = sut.InstructionParserForDictionaryOfInstructions(splitter, {})
         source = source_of_lines(['line'])
         with self.assertRaises(sut.InvalidInstructionSyntaxException) as cm:
-            section_parser.parse(THE_FS_LOCATION_INFO, source)
+            section_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         assert_equals_single_line(self,
                                   source.current_line,
                                   cm.exception.source,
@@ -85,7 +82,7 @@ class TestParse(unittest.TestCase):
         section_parser = sut.InstructionParserForDictionaryOfInstructions(name_extractor, {})
         source = source_of_lines(['Ia'])
         with self.assertRaises(sut.UnknownInstructionException) as cm:
-            section_parser.parse(THE_FS_LOCATION_INFO, source)
+            section_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         self.assertEqual('I',
                          cm.exception.instruction_name,
                          'Instruction name')
@@ -101,7 +98,7 @@ class TestParse(unittest.TestCase):
                                                                           parsers_dict)
         source = source_of_lines(['Fa'])
         with self.assertRaises(sut.InvalidInstructionArgumentException) as cm:
-            section_parser.parse(THE_FS_LOCATION_INFO, source)
+            section_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         self.assertEqual('F',
                          cm.exception.instruction_name,
                          'Instruction name')
@@ -121,7 +118,7 @@ class TestParse(unittest.TestCase):
                                                                           parsers_dict)
         source = source_of_lines(['Fa'])
         with self.assertRaises(sut.ArgumentParsingImplementationException) as cm:
-            section_parser.parse(THE_FS_LOCATION_INFO, source)
+            section_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         self.assertEqual('F',
                          cm.exception.instruction_name,
                          'Instruction name')
@@ -148,7 +145,7 @@ class TestParse(unittest.TestCase):
         for source_lines, expected_argument, expected_remaining_source in test_cases:
             with self.subTest(source_lines=source_lines):
                 source = source_of_lines(source_lines)
-                instruction = section_parser.parse(THE_FS_LOCATION_INFO, source)
+                instruction = section_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 self.assertIsInstance(instruction,
                                       model.Instruction,
                                       'Instruction class')

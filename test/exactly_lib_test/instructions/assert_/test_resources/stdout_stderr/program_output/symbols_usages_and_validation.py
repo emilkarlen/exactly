@@ -1,7 +1,5 @@
-import pathlib
 import unittest
 
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType
 from exactly_lib.type_system.value_type import ValueType
@@ -15,6 +13,7 @@ from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_
     TestCaseBase
 from exactly_lib_test.instructions.assert_.test_resources.stdout_stderr.program_output.utils import matches_reference
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementPostAct
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
     is_any_data_type_reference_restrictions
 from exactly_lib_test.symbol.test_resources.arguments_building import SymbolReferenceArgument
@@ -32,9 +31,6 @@ def suite_for(conf: configuration.ProgramOutputInstructionConfiguration) -> unit
         TestFailingValidationPreSds(conf),
         TestFailingValidationPostSds(conf),
     ])
-
-
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
 
 
 class TestSymbolReferences(TestCaseBase):
@@ -76,7 +72,7 @@ class TestSymbolReferences(TestCaseBase):
 
         # ACT #
 
-        actual = self.configuration.parser().parse(THE_FS_LOCATION_INFO, source)
+        actual = self.configuration.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
         actual_symbol_usages = actual.symbol_usages()
 
         # ASSERT #

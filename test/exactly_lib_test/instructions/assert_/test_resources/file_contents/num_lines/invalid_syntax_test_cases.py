@@ -1,15 +1,14 @@
-import pathlib
 import unittest
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case_utils.condition import comparators
 from exactly_lib.util.logic_types import ExpectationType
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.instruction_test_configuration import \
     InstructionTestConfigurationForContentsOrEquals
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.num_lines.utils import \
     InstructionArgumentsVariantConstructor
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.symbol_syntax import NOT_A_VALID_SYMBOL_NAME
 
 
@@ -26,9 +25,6 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     ])
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class _TestCaseBase(unittest.TestCase):
     def __init__(self,
                  configuration: InstructionTestConfigurationForContentsOrEquals):
@@ -43,7 +39,7 @@ class _TestCaseBase(unittest.TestCase):
                 args_variant = args_variant_constructor.construct(expectation_type)
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     self.configuration.new_parser().parse(
-                        THE_FS_LOCATION_INFO,
+                        ARBITRARY_FS_LOCATION_INFO,
                         self.configuration.source_for(args_variant))
 
 

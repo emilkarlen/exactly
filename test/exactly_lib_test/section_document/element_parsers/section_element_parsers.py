@@ -19,6 +19,7 @@ from exactly_lib_test.section_document.test_resources.document_assertions import
 from exactly_lib_test.section_document.test_resources.element_assertions import matches_instruction_info
 from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatReturnsNone, \
     SectionElementParserThatReturnsConstantAndConsumesCurrentLine, SectionElementParserThatRaisesSourceError
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -65,7 +66,7 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
                 source = ParseSource(source_text)
                 parser = sut.ParserFromSequenceOfParsers(case.value)
                 # ACT #
-                actual = parser.parse(pathlib.Path(), source)
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 # ASSERT #
                 self.assertIsNone(actual, 'return value from parser')
                 expected_source = asrt_source.source_is_not_at_end(remaining_source=asrt.equals(source_text))
@@ -103,7 +104,7 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
                 source = source_of_lines(source_lines)
                 parser = sut.ParserFromSequenceOfParsers(case.value)
                 # ACT #
-                actual = parser.parse(pathlib.Path(), source)
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 # ASSERT #
                 self.assertIs(expected_returned_element,
                               actual, 'return value from parser')
@@ -136,7 +137,7 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
                 parser = sut.ParserFromSequenceOfParsers(case.value)
                 # ACT & ASSERT #
                 with self.assertRaises(SourceError):
-                    parser.parse(pathlib.Path(), source)
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestStandardSyntaxElementParser(unittest.TestCase):
@@ -154,7 +155,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ARRANGE #
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(pathlib.Path(), source)
+                element = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 # ASSERT #
                 element_assertion = equals_empty_element(LineSequence(1, source_lines[:num_empty_lines]))
                 element_assertion.apply_with_message(self, element, 'element')
@@ -176,7 +177,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                 # ARRANGE #
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(pathlib.Path(), source)
+                element = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 # ASSERT #
                 element_assertion = equals_comment_element(LineSequence(1, source_lines[:num_comment_lines]))
                 element_assertion.apply_with_message(self, element, 'element')
@@ -195,7 +196,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
                               remaining_source=remaining_source):
                 source = _source_for_lines(source_lines)
                 # ACT #
-                element = parser.parse(pathlib.Path(), source)
+                element = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 # ASSERT #
                 expected_instruction_source = LineSequence(1, (source_lines[0],))
                 element_assertion = matches_instruction(
@@ -217,7 +218,7 @@ class TestStandardSyntaxElementParser(unittest.TestCase):
         parser = sut.standard_syntax_element_parser(_InstructionParserThatGivesConstant(expected))
         source = _source_for_lines(['ignored', 'source', 'lines'])
         # ACT #
-        element = parser.parse(pathlib.Path(), source)
+        element = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         # ASSERT #
         element_assertion = matches_instruction(
             source=asrt.is_(expected.source),

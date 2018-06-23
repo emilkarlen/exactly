@@ -1,10 +1,8 @@
-import pathlib
 import unittest
 from typing import Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case_utils.string_transformer.resolvers import StringTransformerConstant
 from exactly_lib.type_system.logic.string_transformer import StringTransformer
 from exactly_lib.util.symbol_table import SymbolTable
@@ -17,6 +15,7 @@ from exactly_lib_test.instructions.assert_.test_resources.file_contents.relativi
 from exactly_lib_test.instructions.assert_.test_resources.file_contents.util.transformations import \
     TRANSFORMER_OPTION_ALTERNATIVES
 from exactly_lib_test.instructions.assert_.test_resources.instruction_check import Expectation
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources.string_transformer import is_reference_to_string_transformer
 from exactly_lib_test.symbol.test_resources.symbol_utils import container
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -35,9 +34,6 @@ def suite_for(configuration: InstructionTestConfigurationForContentsOrEquals) ->
     return suite_for__conf__not_argument(configuration, test_cases)
 
 
-THE_FS_LOCATION_INFO = FileSystemLocationInfo(pathlib.Path.cwd())
-
-
 class ParseShouldFailWhenThereAreSuperfluousArguments(TestWithConfigurationAndNegationArgumentBase):
     def runTest(self):
         parser = self.configuration.new_parser()
@@ -49,7 +45,7 @@ class ParseShouldFailWhenThereAreSuperfluousArguments(TestWithConfigurationAndNe
                          maybe_not=self.maybe_not.nothing__if_positive__not_option__if_negative),
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(THE_FS_LOCATION_INFO, source)
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
@@ -65,7 +61,7 @@ class ParseShouldFailWhenThereAreSuperfluousArgumentsInFormOfValidHereDocument(
                     ['single line',
                      'MARKER'])
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(THE_FS_LOCATION_INFO, source)
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class ActualFileIsEmpty(TestWithConfigurationAndNegationArgumentBase):
