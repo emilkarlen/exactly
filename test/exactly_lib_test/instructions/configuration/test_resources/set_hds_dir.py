@@ -40,7 +40,7 @@ def suite_for(configuration: Configuration) -> unittest.TestSuite:
         TestParse_fail_when_there_is_no_arguments,
         TestParse_fail_when_just_eq_argument,
         TestParse_fail_when_there_is_more_than_one_argument,
-        TestFailingExecution_hard_error_WHEN_path_does_not_exist,
+        Test_path_SHOULD_be_relative_file_reference_relativity_root_dir,
         TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file,
         TestSuccessfulExecution_change_to_direct_sub_dir,
         TestSuccessfulExecution_change_to_2_level_sub_dir,
@@ -93,7 +93,7 @@ class TestParse_fail_when_there_is_more_than_one_argument(TestCaseForConfigurati
                 self.conf.parser().parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
-class TestFailingExecution_hard_error_WHEN_path_does_not_exist(TestCaseForConfigurationBase):
+class Test_path_SHOULD_be_relative_file_reference_relativity_root_dir(TestCaseForConfigurationBase):
     def runTest(self):
         self._check(
             '= non-existing-path',

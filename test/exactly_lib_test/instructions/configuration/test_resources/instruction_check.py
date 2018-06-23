@@ -8,6 +8,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
+from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib_test.execution.partial_execution.test_resources.basic import dummy_act_phase_handling
 from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
@@ -33,9 +34,9 @@ class Arrangement(ArrangementBase):
 
 class Expectation:
     def __init__(self,
-                 main_result: asrt.ValueAssertion = sh_assertions.is_success(),
+                 main_result: asrt.ValueAssertion[SuccessOrHardError] = sh_assertions.is_success(),
                  configuration: config_check.Assertion = config_check.AnythingGoes(),
-                 source: asrt.ValueAssertion = asrt.anything_goes(),
+                 source: asrt.ValueAssertion[ParseSource] = asrt.anything_goes(),
                  ):
         self.main_result = main_result
         self.configuration = configuration
