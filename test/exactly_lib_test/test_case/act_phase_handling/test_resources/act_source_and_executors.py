@@ -9,7 +9,7 @@ from exactly_lib.test_case.result import svh, sh
 from exactly_lib.test_case.result.eh import ExitCodeOrHardError, new_eh_exit_code
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.std import StdFiles
-from exactly_lib_test.execution.test_resources import test_actions
+from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
 from exactly_lib_test.test_resources import actions
 from exactly_lib_test.test_resources.actions import do_nothing
 

@@ -10,10 +10,10 @@ from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     assert_phase_instruction_that, before_assert_phase_instruction_that, cleanup_phase_instruction_that
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_case.test_resources.test_case_doc import TestCaseWithOnlyInstructionElementsBuilder, \
     InstructionElementGenerator
 

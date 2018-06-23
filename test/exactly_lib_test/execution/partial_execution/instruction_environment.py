@@ -8,11 +8,12 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import sds_log_phase_dir
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.basic import test, \
-    TestCaseWithCommonDefaultInstructions, Result, dummy_act_phase_handling
+    TestCaseWithCommonDefaultInstructions, Result
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, \
     cleanup_phase_instruction_that, act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import partial_test_case_with_instructions
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
 
 
 def suite() -> unittest.makeSuite:

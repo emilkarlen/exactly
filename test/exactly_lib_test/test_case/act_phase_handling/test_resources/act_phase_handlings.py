@@ -1,8 +1,8 @@
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.result import svh, sh
-from exactly_lib_test.execution.test_resources import test_actions
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
+from exactly_lib_test.test_case.act_phase_handling.test_resources import test_actions
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions, ActSourceAndExecutorConstructorThatRaisesException
 
 
 def act_phase_handling_that_runs_constant_actions(
@@ -17,3 +17,11 @@ def act_phase_handling_that_runs_constant_actions(
             prepare_action=prepare_action,
             execute_action=execute_action)
     )
+
+
+def dummy_act_phase_handling() -> ActPhaseHandling:
+    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions())
+
+
+def act_phase_handling_that_must_not_be_used() -> ActPhaseHandling:
+    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRaisesException())

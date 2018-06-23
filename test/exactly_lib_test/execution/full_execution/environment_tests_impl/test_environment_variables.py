@@ -13,13 +13,13 @@ from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import before_assert_phase_instruction_that, \
     assert_phase_instruction_that, cleanup_phase_instruction_that, \
     configuration_phase_instruction_that
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
 
 
 class Test(FullExecutionTestCaseBase):

@@ -6,7 +6,7 @@ from exactly_lib_test.instructions.configuration.actor.test_resources import Arr
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants_with_assertion
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
-from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
 from exactly_lib_test.test_case_file_structure.test_resources import home_populators
 from exactly_lib_test.test_resources.programs import shell_commands

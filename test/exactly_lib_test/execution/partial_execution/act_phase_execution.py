@@ -28,13 +28,13 @@ from exactly_lib_test.execution.partial_execution.test_resources.act_phase_handl
 from exactly_lib_test.execution.partial_execution.test_resources.arrange_and_expect import execute_and_check, \
     Arrangement, Expectation
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorForConstantExecutor
-from exactly_lib_test.execution.test_resources.act_source_and_executors import \
-    ActSourceAndExecutorThatJustReturnsSuccess, ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.execution_recording.act_program_executor import \
     ActSourceAndExecutorWrapperThatRecordsSteps
 from exactly_lib_test.execution.test_resources.execution_recording.recorder import ListRecorder
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorForConstantExecutor
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
+    ActSourceAndExecutorThatJustReturnsSuccess, ActSourceAndExecutorThatRunsConstantActions
 from exactly_lib_test.test_case_file_structure.test_resources.hds_utils import home_directory_structure
 from exactly_lib_test.test_resources.actions import do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs

@@ -4,9 +4,9 @@ import unittest
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
-from exactly_lib_test.execution.partial_execution.test_resources.basic import dummy_act_phase_handling
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
 from exactly_lib_test.execution.test_resources.test_case_generation import full_test_case_with_instructions
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
 
 
 class Test(FullExecutionTestCaseBase):

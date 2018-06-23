@@ -19,13 +19,12 @@ from exactly_lib.util.functional import Composition
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     before_assert_phase_instruction_that, assert_phase_instruction_that, cleanup_phase_instruction_that, \
     act_phase_instruction_with_source
 from exactly_lib_test.execution.test_resources.test_case_generation import TestCaseGeneratorBase, \
     instruction_line_constructor
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
@@ -136,10 +135,6 @@ class TestCaseWithCommonDefaultInstructions(TestCaseGeneratorForPartialExecution
         :rtype Function that can serve as main to PHASE_phase_instruction_that.
         """
         return []
-
-
-def dummy_act_phase_handling() -> ActPhaseHandling:
-    return ActPhaseHandling(ActSourceAndExecutorConstructorThatRunsConstantActions())
 
 
 class Arrangement:

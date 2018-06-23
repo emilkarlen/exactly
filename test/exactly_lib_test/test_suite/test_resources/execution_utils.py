@@ -13,12 +13,12 @@ from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import structure
 from exactly_lib.util.failure_details import new_failure_details_from_message
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     test_case_definition_with_no_instructions_and_no_preprocessor
-from exactly_lib_test.test_case.test_resources.act_phase_os_process_executor import \
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_os_process_executor import \
     ActPhaseOsProcessExecutorThatRecordsArguments
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
 
 
 def test_case_handling_setup_with_identity_preprocessor() -> TestCaseHandlingSetup:

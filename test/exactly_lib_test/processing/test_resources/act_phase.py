@@ -3,9 +3,9 @@ import pathlib
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.util.std import StdFiles
-from exactly_lib_test.execution.test_resources.act_source_and_executor_constructors import \
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorForConstantExecutor
-from exactly_lib_test.execution.test_resources.act_source_and_executors import \
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executors import \
     ActSourceAndExecutorThatRunsConstantActions
 
 
