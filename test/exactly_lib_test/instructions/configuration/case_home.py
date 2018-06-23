@@ -6,14 +6,14 @@ from exactly_lib.instructions.configuration import home as sut
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
-from exactly_lib_test.instructions.configuration.test_resources import set_home_dir
+from exactly_lib_test.instructions.configuration.test_resources import set_hds_dir
 
 
 def suite() -> unittest.TestSuite:
-    return set_home_dir.suite_for(TheConfiguration())
+    return set_hds_dir.suite_for(TheConfiguration())
 
 
-class TheConfiguration(set_home_dir.Configuration):
+class TheConfiguration(set_hds_dir.Configuration):
     def __init__(self):
         super().__init__(RelHomeOptionType.REL_HOME_CASE)
 
