@@ -9,6 +9,7 @@ from exactly_lib.test_case.os_services import DEFAULT_ACT_PHASE_OS_PROCESS_EXECU
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder, ConfigurationPhaseInstruction
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.act_phase_setups.test_resources import act_phase_execution
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.test_resources.act_phase_instruction import instr
 from exactly_lib_test.test_case.test_resources.act_source_and_executor_constructor import \
     ActSourceAndExecutorConstructorThatRaisesException
@@ -45,8 +46,7 @@ class Expectation:
 def check(put: unittest.TestCase,
           arrangement: Arrangement,
           expectation: Expectation):
-    the_file_ref_rel_root_dir = pathlib.Path.cwd()
-    instruction = sut.Parser().parse(the_file_ref_rel_root_dir, arrangement.source)
+    instruction = sut.Parser().parse(ARBITRARY_FS_LOCATION_INFO, arrangement.source)
     configuration_builder = _configuration_builder_with_exception_throwing_act_phase_setup()
     assert isinstance(instruction, ConfigurationPhaseInstruction)
     instruction.main(configuration_builder)

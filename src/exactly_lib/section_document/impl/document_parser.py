@@ -173,7 +173,6 @@ class _Impl:
                  visited_paths: List[pathlib.Path]):
         self.configuration = configuration
         self._element_builder = element_builder
-        # self._file_reference_relativity_root_dir = file_reference_relativity_root_dir
         self._fs_location_info = FileSystemLocationInfo(file_reference_relativity_root_dir)
         self._document_source = document_source
         self._current_line = self._get_current_line_or_none_if_is_at_eof()

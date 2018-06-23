@@ -1,8 +1,8 @@
-import pathlib
 import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers import parser_for_dictionary_of_instructions as sut
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_single_line
@@ -24,21 +24,21 @@ class SingleInstructionParserThatRaisesInvalidArgumentError(sut.InstructionParse
         self.error_message = error_message
 
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: sut.ParseSource) -> model.Instruction:
         raise sut.SingleInstructionInvalidArgumentException(self.error_message)
 
 
 class SingleInstructionParserThatRaisesImplementationException(sut.InstructionParser):
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: sut.ParseSource) -> model.Instruction:
         raise NotImplementedError()
 
 
 class SingleInstructionParserThatSucceeds(sut.InstructionParser):
     def parse(self,
-              file_reference_relativity_root_dir: pathlib.Path,
+              fs_location_info: FileSystemLocationInfo,
               source: sut.ParseSource) -> model.Instruction:
         ret_val = Instruction(source.remaining_part_of_current_line)
         source.consume_current_line()

@@ -1,5 +1,6 @@
 import argparse
 import pathlib
+from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
@@ -37,7 +38,7 @@ class _Parser:
         self.reporter_names = sorted(list(self.reporter_name_2_factory.keys()))
         self.default_reporter_name = reporters.DEFAULT_REPORTER.singular_name
 
-    def parse(self, argv: list) -> TestSuiteExecutionSettings:
+    def parse(self, argv: List[str]) -> TestSuiteExecutionSettings:
         argument_parser = self._new_argument_parser()
         namespace = argument_parsing_utils.raise_exception_instead_of_exiting_on_error(argument_parser,
                                                                                        argv)
