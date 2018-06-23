@@ -1,5 +1,6 @@
 import pathlib
 import types
+from typing import Sequence
 
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP
@@ -12,7 +13,7 @@ def empty() -> SdsPopulator:
     return multiple([])
 
 
-def multiple(populators: list) -> SdsPopulator:
+def multiple(populators: Sequence[SdsPopulator]) -> SdsPopulator:
     return _ListOfPopulators(populators)
 
 
@@ -125,12 +126,12 @@ class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
 
 
 class _ListOfPopulators(SdsPopulator):
-    def __init__(self, populator_list: list):
+    def __init__(self, populator_list: Sequence[SdsPopulator]):
         self.__populator_list = populator_list
 
     def populate_sds(self, sds: SandboxDirectoryStructure):
         for populator in self.__populator_list:
-            populator.apply(sds)
+            populator.populate_sds(sds)
 
 
 class _FilesInTmpInternalDir(SdsPopulator):
