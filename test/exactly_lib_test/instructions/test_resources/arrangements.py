@@ -35,7 +35,7 @@ class ActResultProducerFromActResult(ActResultProducer):
 class ArrangementBase:
     def __init__(self,
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
-                 process_execution_settings=with_no_timeout(),
+                 process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  ):
         self.hds_contents = hds_contents
         self.process_execution_settings = process_execution_settings

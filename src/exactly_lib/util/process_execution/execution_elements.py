@@ -1,18 +1,21 @@
+from typing import Dict, Optional
+
+
 class ProcessExecutionSettings(tuple):
     def __new__(cls,
-                timeout_in_seconds: int = None,
-                environ: dict = None):
+                timeout_in_seconds: Optional[int] = None,
+                environ: Optional[Dict[str, str]] = None):
         return tuple.__new__(cls, (timeout_in_seconds, environ))
 
     @property
-    def timeout_in_seconds(self) -> int:
+    def timeout_in_seconds(self) -> Optional[int]:
         """
         :return: None if no timeout
         """
         return self[0]
 
     @property
-    def environ(self) -> dict:
+    def environ(self) -> Optional[Dict[str, str]]:
         """
         :return: None if inherit current process' environment
         """
