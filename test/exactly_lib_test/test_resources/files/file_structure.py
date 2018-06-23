@@ -79,7 +79,7 @@ def file_with_lines(name: str, contents: Sequence[str]) -> File:
 class Dir(FileSystemElement):
     def __init__(self,
                  file_name: str,
-                 file_system_element_contents: list):
+                 file_system_element_contents: List[FileSystemElement]):
         self.file_name = file_name
         self.file_system_element_contents = file_system_element_contents
 

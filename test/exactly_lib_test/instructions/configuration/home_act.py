@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.instructions.configuration import home as sut
+from exactly_lib.instructions.configuration import home_act as sut
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
@@ -15,11 +15,16 @@ def suite() -> unittest.TestSuite:
 
 class TheConfiguration(set_hds_dir.Configuration):
     def __init__(self):
-        super().__init__(RelHomeOptionType.REL_HOME_CASE)
+        super().__init__(RelHomeOptionType.REL_HOME_ACT)
 
     def get_property_dir_path(self,
                               configuration_builder: ConfigurationBuilder) -> pathlib.Path:
-        return configuration_builder.home_case_dir_path
+        return configuration_builder.home_act_dir_path
+
+    def set_property_dir_path(self,
+                              configuration_builder: ConfigurationBuilder,
+                              value: pathlib.Path):
+        configuration_builder.set_home_act_dir(value)
 
     def parser(self) -> InstructionParser:
         return sut.Parser()
