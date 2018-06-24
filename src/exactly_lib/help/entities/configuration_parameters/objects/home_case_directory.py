@@ -41,7 +41,7 @@ Instructions and phases may use predefined input in terms of files
 that are supposed to exist before the test case is executed.
 
 
-Many instructions use exiting files. E.g. for installing them into the
+Many instructions use exiting files. E.g. for copying them into the
 sandbox.
 
 
