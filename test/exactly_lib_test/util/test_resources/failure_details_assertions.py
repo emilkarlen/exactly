@@ -27,7 +27,7 @@ def is_exception(exception_class: Type[Exception]) -> asrt.ValueAssertion[Failur
 class _ExpectedFailureDetails(asrt.ValueAssertion[FailureDetails]):
     def __init__(self,
                  error_message_or_none: Optional[asrt.ValueAssertion[str]],
-                 exception_class_or_none: Optional[Type[Exception]]):
+                 exception_class_or_none: Optional[type]):
         if error_message_or_none is not None:
             if isinstance(error_message_or_none, str):
                 raise TypeError(error_message_or_none)
