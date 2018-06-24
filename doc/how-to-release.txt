@@ -8,6 +8,11 @@ https://packaging.python.org/
 
 * Set version number in src/exactly_lib/program_info.py (if not already done)
 
+* Update CHANGELOG.md
+
+  - set version and release date
+  - make sure changes are included (see https://keepachangelog.com/en/1.0.0/)
+
 * Make sure release year is included in COPYRIGHT
 
 * 0. Remove existing distributables
@@ -30,6 +35,8 @@ Distribute source and wheel
 * Tag repo with version
 
 > git tag vVERSION
+
+> git push --tags
 
 * Make release on github
 
