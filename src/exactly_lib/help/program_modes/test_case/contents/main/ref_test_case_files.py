@@ -29,7 +29,7 @@ def generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator
                                  _InstructionsRenderer(
                                      text_parser)))])
              ),
-            ('file-inclusion', hierarchy.leaf('File inclusion', _OtherContentsRenderer(text_parser))),
+            ('file-inclusion', hierarchy.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
             ('com-empty', hierarchy.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
@@ -72,12 +72,12 @@ class _InstructionsRenderer(_ConstructorBase):
 
 class _FileInclusionContentsRenderer(_ConstructorBase):
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(OTHER_DOC))
+        return docs.section_contents(self.parser.fnap(FILE_INCLUSION_DOC))
 
 
 class _OtherContentsRenderer(_ConstructorBase):
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return docs.section_contents(self.parser.fnap(FILE_INCLUSION_DOC))
+        return docs.section_contents(self.parser.fnap(OTHER_DOC))
 
 
 PHASES_DOC = """\
