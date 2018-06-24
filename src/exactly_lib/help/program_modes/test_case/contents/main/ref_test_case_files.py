@@ -3,7 +3,7 @@ from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
-from exactly_lib.section_document.syntax import section_header
+from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor
@@ -26,7 +26,7 @@ def generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator
                 [('description',
                   hierarchy.leaf('Instruction descriptions',
                                  _InstructionsRenderer(
-                                                 text_parser)))])
+                                     text_parser)))])
              ),
             ('com-empty', hierarchy.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
@@ -42,6 +42,7 @@ def _text_parser(setup: Setup) -> TextParser:
         'actor': formatting.concept_(ACTOR_CONCEPT_INFO),
         'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
         'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,
+        'line_comment_char': LINE_COMMENT_MARKER,
     })
 
 
@@ -172,23 +173,23 @@ A description may span several lines.
 """
 
 OTHER_DOC = """\
-Lines beginning with "#" are comments.
+Lines beginning with "{line_comment_char}" are comments.
 
-Comments are not allowed on other lines.
-
-
-Empty lines are ignored.
+Comments may only appear on lines between instructions and phase headers.
 
 
-Note though that instructions themselves, and also the {phase[act]} phase,
-can decide how lines are interpreted.
-As {instruction[stdout]} does here:
+Empty lines that are not part of an instruction are ignored.
+
+
+Empty lines, and lines with comment line syntax, may be part of instruction and
+the {phase[act]} phase, though,
+as in the {instruction[stdout]} instruction here:
 
 
 ```
 stdout {CONTENTS_EQUALS_ARGUMENT} <<EOF
 this assertion expects 4 lines of output
-# this is the second line of the expected output
+{line_comment_char} this is the second line of the expected output
 
 the above empty line is part of the expected output
 EOF
