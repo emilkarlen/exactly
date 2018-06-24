@@ -10,6 +10,7 @@ from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure import environment_variables
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.execution.full_execution.test_resources.test_case_base import FullExecutionTestCaseBase
 from exactly_lib_test.execution.test_resources import python_code_gen as py
 from exactly_lib_test.execution.test_resources import recorder as instr_setup
@@ -174,12 +175,15 @@ class _ActionWithPhaseStepAndRecording:
 
 class _ConfigurationPhaseActionThatSetsHomeCaseDirToParent:
     def __call__(self, configuration_builder: ConfigurationBuilder, *args):
-        configuration_builder.set_home_case_dir(configuration_builder.home_case_dir_path.parent)
+        configuration_builder.set_hds_dir(RelHomeOptionType.REL_HOME_CASE,
+                                          configuration_builder.get_hds_dir(RelHomeOptionType.REL_HOME_CASE).parent)
 
 
 class _ConfigurationPhaseActionThatSetsHomeActDirToParentParent:
     def __call__(self, configuration_builder: ConfigurationBuilder, *args):
-        configuration_builder.set_home_act_dir(configuration_builder.home_act_dir_path.parent.parent)
+        configuration_builder.set_hds_dir(RelHomeOptionType.REL_HOME_ACT,
+                                          configuration_builder.get_hds_dir(
+                                              RelHomeOptionType.REL_HOME_ACT).parent.parent)
 
 
 class _RecordEnvVars(_ActionWithPhaseStepAndRecording):

@@ -17,8 +17,6 @@ class ConfigurationBuilder:
                  act_phase_handling: ActPhaseHandling,
                  timeout_in_seconds: Optional[int] = None,
                  execution_mode: ExecutionMode = ExecutionMode.PASS):
-        self.__home_case_dir_path = home_case_dir_path
-        self.__home_act_dir_path = home_act_dir_path
         self.__act_phase_handling = act_phase_handling
         self.__execution_mode = execution_mode
         self.__timeout_in_seconds = timeout_in_seconds
@@ -35,27 +33,16 @@ class ConfigurationBuilder:
                            x: ExecutionMode):
         self.__execution_mode = x
 
-    @property
-    def home_case_dir_path(self) -> pathlib.Path:
-        return self.__home_case_dir_path
-
-    def set_home_case_dir(self, x: pathlib.Path):
-        self.__home_case_dir_path = x
-
-    @property
-    def home_act_dir_path(self) -> pathlib.Path:
-        return self.__home_act_dir_path
-
-    def set_home_act_dir(self, x: pathlib.Path):
-        self.__home_act_dir_path = x
-
-    def set_dir(self, d: RelHomeOptionType, value: pathlib.Path):
+    def set_hds_dir(self, d: RelHomeOptionType, value: pathlib.Path):
         self.__hds_dirs[d] = value
+
+    def get_hds_dir(self, d: RelHomeOptionType) -> pathlib.Path:
+        return self.__hds_dirs[d]
 
     @property
     def hds(self) -> HomeDirectoryStructure:
-        return HomeDirectoryStructure(case_dir=self.home_case_dir_path,
-                                      act_dir=self.home_act_dir_path)
+        return HomeDirectoryStructure(case_dir=self.__hds_dirs[RelHomeOptionType.REL_HOME_CASE],
+                                      act_dir=self.__hds_dirs[RelHomeOptionType.REL_HOME_ACT])
 
     @property
     def act_phase_handling(self) -> ActPhaseHandling:
