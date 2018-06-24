@@ -19,6 +19,8 @@ from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruc
 from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 
+_RELATIVITY_ROOT = 'location of the current source file - the file that contains the instruction'
+
 
 class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextParserBase):
     def __init__(self,
@@ -41,7 +43,7 @@ class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextP
             SyntaxElementDescription(_DIR_ARG.name,
                                      abs_or_rel_path_of_existing('directory',
                                                                  _DIR_ARG.name,
-                                                                 'current ' + formatting.conf_param_(self.conf_param))),
+                                                                 _RELATIVITY_ROOT)),
         ]
 
     def see_also_targets(self) -> list:
@@ -66,9 +68,9 @@ class Parser(InstructionParser):
         path_argument_str = extract_single_eq_argument_string(rest_of_line)
 
         try:
-            path_argument = pathlib.Path(path_argument_str)
+            path_argument = pathlib.Path(pathlib.PurePosixPath(path_argument_str))
         except ValueError as ex:
-            raise SingleInstructionInvalidArgumentException('Invalid path:\n' + str(ex))
+            raise SingleInstructionInvalidArgumentException('Invalid path syntax:\n' + str(ex))
 
         return _Instruction(self.dir_to_set,
                             fs_location_info.file_reference_relativity_root_dir,
