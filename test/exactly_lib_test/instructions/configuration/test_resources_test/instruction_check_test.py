@@ -3,10 +3,8 @@ Test of test-infrastructure: instruction_check.
 """
 import unittest
 
-from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.execution.test_resources.instruction_test_resources import \
     configuration_phase_instruction_that
-from exactly_lib_test.instructions.configuration.test_resources import configuration_check
 from exactly_lib_test.instructions.configuration.test_resources import instruction_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation
 from exactly_lib_test.instructions.test_resources import test_of_test_framework_utils as test_misc
@@ -41,15 +39,7 @@ class TestCases(instruction_check.TestCaseBase):
                 ParserThatGives(_SUCCESSFUL_INSTRUCTION),
                 single_line_source(),
                 Arrangement(),
-                Expectation(configuration=ConfigurationCheckRaisesTestError()))
-
-
-class ConfigurationCheckRaisesTestError(configuration_check.Assertion):
-    def apply(self,
-              put: unittest.TestCase,
-              initial: ConfigurationBuilder,
-              actual_result: ConfigurationBuilder):
-        raise test_misc.TestError()
+                Expectation(configuration=test_misc.raises_test_error()))
 
 
 _SUCCESSFUL_INSTRUCTION = configuration_phase_instruction_that()
