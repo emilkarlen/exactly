@@ -3,6 +3,7 @@ import pathlib
 import shutil
 import subprocess
 
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.test_case import exception_detection
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.test_case.result import sh
@@ -134,7 +135,7 @@ class ActPhaseSubProcessExecutor(ActPhaseOsProcessExecutor):
 
     @staticmethod
     def _exception(ex: Exception) -> ExitCodeOrHardError:
-        msg = 'Error executing act program in sub process.'
+        msg = 'Error executing {atc} in sub process.'.format(atc=concepts.ACTION_TO_CHECK_CONCEPT_INFO.singular_name)
         return new_eh_hard_error(new_failure_details_from_exception(ex, message=msg))
 
 
