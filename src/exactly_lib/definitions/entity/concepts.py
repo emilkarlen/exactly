@@ -28,8 +28,11 @@ def name_and_ref_target_for_entity_type(names: EntityTypeNames,
 def _format(s: str) -> str:
     return s.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
                     phase=PHASE_NAME_DICTIONARY,
-                    actor=all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular)
+                    actor=formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
+                    action_to_check=formatting.concept(ACTION_TO_CHECK_NAME.singular))
 
+
+ACTION_TO_CHECK_NAME = Name('action to check', "actions to check")
 
 _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION = """\
 A value set in the {0} phase that determine how the remaining phases are executed."""
@@ -92,12 +95,10 @@ SYMBOL_CONCEPT_INFO = name_and_ref_target(
 
 ACTOR_CONCEPT_INFO = name_and_ref_target_for_entity_type(
     all_entity_types.ACTOR_ENTITY_TYPE_NAMES,
-    _format('Interprets the contents of the {phase[act]} phase, and executes it.')
+    _format('Interprets the contents of the {phase[act]} phase, and executes it (as the {action_to_check}).')
 )
 
 ACTION_TO_CHECK_CONCEPT_INFO = name_and_ref_target(
-    Name('action to check', "actions to check"),
-    _format('The program executed as the {phase[act]} phase, by the {actor}.')
+    ACTION_TO_CHECK_NAME,
+    _format('The action that is checked by the test case.')
 )
-
-ACTION_TO_CHECK_ACRONYM = 'ATC'
