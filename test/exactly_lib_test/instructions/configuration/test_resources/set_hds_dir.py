@@ -11,7 +11,6 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
-from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import Arrangement, Expectation, \
     Executor
 from exactly_lib_test.instructions.configuration.test_resources.source_with_assignment import \
@@ -198,54 +197,3 @@ class TestSuccessfulExecution_change_to_parent_dir(TestCaseForConfigurationBase)
                     lambda file_ref_rel_root_dir: file_ref_rel_root_dir.parent)
             )
         )
-
-
-class AssertActualHomeDirIsDirectSubDirOfOriginalHomeDir(config_check.Assertion):
-    def __init__(self,
-                 configuration: Configuration,
-                 name_of_sub_dir: str):
-        self.configuration = configuration
-        self.name_of_sub_dir = name_of_sub_dir
-
-    def apply(self,
-              put: unittest.TestCase,
-              initial: ConfigurationBuilder,
-              actual_result: ConfigurationBuilder):
-        initial_value = self.configuration.get_property_dir_path(initial)
-        actual_value = self.configuration.get_property_dir_path(actual_result)
-        put.assertEqual(initial_value / self.name_of_sub_dir,
-                        actual_value)
-
-
-class AssertActualHomeDirIs2LevelSubDirOfOriginalHomeDir(config_check.Assertion):
-    def __init__(self,
-                 configuration: Configuration,
-                 first_sub_dir: str,
-                 second_sub_dir: str):
-        self.configuration = configuration
-        self.first_sub_dir = first_sub_dir
-        self.second_sub_dir = second_sub_dir
-
-    def apply(self,
-              put: unittest.TestCase,
-              initial: ConfigurationBuilder,
-              actual_result: ConfigurationBuilder):
-        initial_value = self.configuration.get_property_dir_path(initial)
-        actual_value = self.configuration.get_property_dir_path(actual_result)
-        put.assertEqual(initial_value / self.first_sub_dir / self.second_sub_dir,
-                        actual_value)
-
-
-class AssertActualHomeDirIsParentOfOriginalHomeDir(config_check.Assertion):
-    def __init__(self,
-                 configuration: Configuration):
-        self.configuration = configuration
-
-    def apply(self,
-              put: unittest.TestCase,
-              initial: ConfigurationBuilder,
-              actual_result: ConfigurationBuilder):
-        initial_value = self.configuration.get_property_dir_path(initial)
-        actual_value = self.configuration.get_property_dir_path(actual_result)
-        put.assertEqual(initial_value.parent,
-                        actual_value)
