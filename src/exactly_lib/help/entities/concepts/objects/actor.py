@@ -53,6 +53,9 @@ _AFTER_SINGLE_LINE_DESCRIPTION = """\
 The {actor_concept} handles {phase[act]} phase -
 interprets the contents of the {phase[act]} phase in the test case file,
 and executes it as the {action_to_check}.
+
+
+The {action_to_check} is executed in it's own process.
 """
 
 HOW_TO_SPECIFY_ACTOR = """\
