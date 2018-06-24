@@ -1,31 +1,34 @@
+from exactly_lib.definitions import formatting
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 class Documentation(SectionContentsConstructor):
     def __init__(self, setup: Setup):
         self.setup = setup
+        self._tp = TextParser(
+            {
+                'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
+                'phase': setup.phase_names,
+            }
+        )
 
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
-        return test_case_intro_documentation(self.setup)
-
-
-def test_case_intro_documentation(setup: Setup) -> doc.SectionContents:
-    ps = []
-    ps.extend(normalize_and_parse(DESCRIPTION.format(phase=setup.phase_names)))
-    return doc.SectionContents(ps, [])
+        return doc.SectionContents(self._tp.fnap(DESCRIPTION), [])
 
 
 DESCRIPTION = """\
 A test case file contains a sequence of "phases".
 
 
-The {phase[act]} phase contains the action to check/system under test (SUT).
+The {phase[act]} phase contains the {ATC} (or, "system under test").
 
-By default, it must contain a single command line.
+
+By default, it must consist of a single command line.
 
 
 All other phases contain "instructions".

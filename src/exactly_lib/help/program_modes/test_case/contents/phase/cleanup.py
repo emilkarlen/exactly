@@ -28,6 +28,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
             'phase': PHASE_NAME_DICTIONARY,
             'SKIP': NAME_SKIP,
             'execution_mode': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
+            'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
         })
 
     def purpose(self) -> Description:
@@ -68,7 +69,7 @@ Cleans up pollution from earlier phases that exist outside of the sandbox
 
 REST_OF_DESCRIPTION = """\
 Pollution can come from an earlier phase such as {phase[setup]:syntax},
-or the system under test (SUT) of the {phase[act]} phase.
+or the {ATC} of the {phase[act]} phase.
 """
 
 INSTRUCTION_PURPOSE_DESCRIPTION = """\

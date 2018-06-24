@@ -1,5 +1,6 @@
 from typing import List
 
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME, \
@@ -22,7 +23,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
         self._tp = TextParser({
-            'phase': PHASE_NAME_DICTIONARY
+            'phase': PHASE_NAME_DICTIONARY,
+            'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
         })
 
     def purpose(self) -> Description:
@@ -55,7 +57,7 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
 
 
 ONE_LINE_DESCRIPTION = """\
-Sets up the environment that the system under test
+Sets up the environment that the {ATC}
 (the {phase[act]} phase) will be executed in.
 """
 
@@ -71,7 +73,7 @@ E.g.
 
 INSTRUCTION_PURPOSE_DESCRIPTION = """\
 Each instruction should probably have some side effect that affects
-the system under test (the {phase[act]} phase).
+the {ATC}.
 """
 
 SEQUENCE_INFO__PRECEDING_PHASE = """\

@@ -35,6 +35,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'ENV_VAR_RESULT': ENV_VAR_RESULT,
+            'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
         })
 
     def purpose(self) -> Description:
@@ -110,7 +111,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
 
 
 ONE_LINE_DESCRIPTION = """\
-Assertions on the outcome of the system under test (the {phase[act]} phase) that determine
+Assertions on the outcome of the {ATC} (the {phase[act]} phase) that determine
 the outcome of the test case.
 """
 
@@ -136,7 +137,7 @@ it reports this as {HARD_ERROR}.
 In practice, though, some instructions may have more of a purpose of "preparation"
 for an assertion - they are helpers for the assertions.
 
-Such a preparation might be to sort a file that the system under test (SUT) has produced,
+Such a preparation might be to sort a file that the {ATC} has produced,
 so that it's possible to compare it with a constant file containing the expected sorted output, e.g.
 
 
