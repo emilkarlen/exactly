@@ -8,7 +8,7 @@ from exactly_lib.section_document.parsing_configuration import FileSystemLocatio
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result.sh import SuccessOrHardError
-from exactly_lib.test_case.test_case_status import ExecutionMode
+from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementBase
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import dummy_act_phase_handling
 from exactly_lib_test.test_case.result.test_resources import sh_assertions
@@ -24,12 +24,12 @@ class Arrangement(ArrangementBase):
                  hds_contents: home_populators.HomePopulator = home_populators.empty(),
                  file_ref_rel_root_dir: DirContents = empty_dir_contents(),
                  act_phase_handling: ActPhaseHandling = dummy_act_phase_handling(),
-                 execution_mode: ExecutionMode = ExecutionMode.PASS,
+                 test_case_status: TestCaseStatus = TestCaseStatus.PASS,
                  timeout_in_seconds: int = None):
         super().__init__(hds_contents=hds_contents)
         self.file_ref_rel_root_dir = file_ref_rel_root_dir
         self.act_phase_handling = act_phase_handling
-        self.execution_mode = execution_mode
+        self.test_case_status = test_case_status
         self.timeout_in_seconds = timeout_in_seconds
 
 
@@ -87,7 +87,7 @@ class Executor:
                                                              hds.act_dir,
                                                              self.arrangement.act_phase_handling,
                                                              timeout_in_seconds=self.arrangement.timeout_in_seconds,
-                                                             execution_mode=self.arrangement.execution_mode)
+                                                             test_case_status=self.arrangement.test_case_status)
 
                 self._execute_main(configuration_builder, instruction)
 

@@ -43,31 +43,31 @@ class TestParse(unittest.TestCase):
 
 class TestCaseBaseForParser(TestCaseBase):
     def _run(self,
-             expected: tcs.ExecutionMode,
-             initial: tcs.ExecutionMode,
+             expected: tcs.TestCaseStatus,
+             initial: tcs.TestCaseStatus,
              argument: str):
         for source in equivalent_source_variants__with_source_check(self, argument):
             self._check(sut.Parser(),
                         source,
-                        Arrangement(execution_mode=initial,
+                        Arrangement(test_case_status=initial,
                                     act_phase_handling=act_phase_handling_that_runs_constant_actions()),
                         Expectation(configuration=asrt_conf.has(test_case_status=asrt.is_(expected))))
 
 
 class TestChangeStatus(TestCaseBaseForParser):
     def test_PASS(self):
-        self._run(expected=tcs.ExecutionMode.PASS,
-                  initial=tcs.ExecutionMode.SKIP,
+        self._run(expected=tcs.TestCaseStatus.PASS,
+                  initial=tcs.TestCaseStatus.SKIP,
                   argument=syntax_for_assignment_of(tcs.NAME_PASS))
 
     def test_SKIP(self):
-        self._run(expected=tcs.ExecutionMode.SKIP,
-                  initial=tcs.ExecutionMode.PASS,
+        self._run(expected=tcs.TestCaseStatus.SKIP,
+                  initial=tcs.TestCaseStatus.PASS,
                   argument=syntax_for_assignment_of(tcs.NAME_SKIP))
 
     def test_FAIL(self):
-        self._run(expected=tcs.ExecutionMode.FAIL,
-                  initial=tcs.ExecutionMode.PASS,
+        self._run(expected=tcs.TestCaseStatus.FAIL,
+                  initial=tcs.TestCaseStatus.PASS,
                   argument=syntax_for_assignment_of(tcs.NAME_FAIL))
 
 
