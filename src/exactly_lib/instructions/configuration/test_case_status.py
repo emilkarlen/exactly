@@ -12,7 +12,7 @@ from exactly_lib.section_document.element_parsers.instruction_parsers import \
     InstructionParserThatConsumesCurrentLine
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
-from exactly_lib.test_case.test_case_status import ExecutionMode, NAME_2_STATUS
+from exactly_lib.test_case.test_case_status import TestCaseStatus, NAME_2_STATUS
 from exactly_lib.util.cli_syntax.elements import argument as a
 
 
@@ -70,11 +70,11 @@ class Parser(InstructionParserThatConsumesCurrentLine):
 
 class _Instruction(ConfigurationPhaseInstruction):
     def __init__(self,
-                 mode_to_set: ExecutionMode):
+                 mode_to_set: TestCaseStatus):
         self.mode_to_set = mode_to_set
 
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        configuration_builder.set_execution_mode(self.mode_to_set)
+        configuration_builder.set_test_case_status(self.mode_to_set)
         return sh.new_sh_success()
 
 

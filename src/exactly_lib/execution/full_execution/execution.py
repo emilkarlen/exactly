@@ -14,7 +14,7 @@ from exactly_lib.section_document.model import SectionContents
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.phases import setup
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.test_case.test_case_status import ExecutionMode
+from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_case_file_structure import environment_variables
 
 
@@ -30,7 +30,7 @@ def execute(conf: ExecutionConfiguration,
                                                       test_case.configuration_phase)
     if conf_phase_failure is not None:
         return new_configuration_phase_failure_from(conf_phase_failure)
-    if configuration_builder.execution_mode is ExecutionMode.SKIP:
+    if configuration_builder.test_case_status is TestCaseStatus.SKIP:
         return new_skipped()
     _prepare_environment_variables(conf.environ)
     conf_phase_values = ConfPhaseValues(
@@ -48,7 +48,7 @@ def execute(conf: ExecutionConfiguration,
         conf_phase_values,
         setup.default_settings(),
         is_keep_sandbox)
-    return new_from_result_of_partial_execution(configuration_builder.execution_mode,
+    return new_from_result_of_partial_execution(configuration_builder.test_case_status,
                                                 partial_result)
 
 

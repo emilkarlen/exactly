@@ -11,7 +11,7 @@ from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, Previo
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import pfh, sh, svh
-from exactly_lib.test_case.test_case_status import ExecutionMode
+from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.test_resources.actions import do_return, action_of
 
@@ -86,11 +86,11 @@ def cleanup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_succes
 
 class ConfigurationPhaseInstructionThatSetsExecutionMode(ConfigurationPhaseInstruction):
     def __init__(self,
-                 value_to_set: ExecutionMode):
+                 value_to_set: TestCaseStatus):
         self.value_to_set = value_to_set
 
     def main(self, configuration_builder: ConfigurationBuilder) -> sh.SuccessOrHardError:
-        configuration_builder.set_execution_mode(self.value_to_set)
+        configuration_builder.set_test_case_status(self.value_to_set)
         return sh.new_sh_success()
 
 

@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-class ExecutionMode(Enum):
+class TestCaseStatus(Enum):
     PASS = 0
     SKIP = 1
     FAIL = 2
@@ -10,10 +10,11 @@ class ExecutionMode(Enum):
 NAME_PASS = 'PASS'
 NAME_SKIP = 'SKIP'
 NAME_FAIL = 'FAIL'
+
 NAME_2_STATUS = {
-    NAME_PASS: ExecutionMode.PASS,
-    NAME_SKIP: ExecutionMode.SKIP,
-    NAME_FAIL: ExecutionMode.FAIL,
+    NAME_PASS: TestCaseStatus.PASS,
+    NAME_SKIP: TestCaseStatus.SKIP,
+    NAME_FAIL: TestCaseStatus.FAIL,
 }
 
 NAME_DEFAULT = NAME_PASS

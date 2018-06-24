@@ -4,7 +4,7 @@ from typing import Optional
 from exactly_lib.execution.failure_info import FailureInfo
 from exactly_lib.execution.partial_execution.result import PartialExeResult, PartialExeResultStatus
 from exactly_lib.execution.result import ResultBase, ActionToCheckOutcome
-from exactly_lib.test_case.test_case_status import ExecutionMode
+from exactly_lib.test_case.test_case_status import TestCaseStatus
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 
 
@@ -53,7 +53,7 @@ def new_pass(sds: SandboxDirectoryStructure,
                          None)
 
 
-def new_from_result_of_partial_execution(execution_mode: ExecutionMode,
+def new_from_result_of_partial_execution(execution_mode: TestCaseStatus,
                                          partial_result: PartialExeResult) -> FullExeResult:
     return FullExeResult(translate_status(execution_mode, partial_result.status),
                          partial_result.sds,
@@ -61,12 +61,12 @@ def new_from_result_of_partial_execution(execution_mode: ExecutionMode,
                          partial_result.failure_info)
 
 
-def translate_status(execution_mode: ExecutionMode,
+def translate_status(execution_mode: TestCaseStatus,
                      ps: PartialExeResultStatus) -> FullExeResultStatus:
     """
     :param execution_mode: Must not be ExecutionMode.SKIPPED
     """
-    if execution_mode is ExecutionMode.FAIL:
+    if execution_mode is TestCaseStatus.FAIL:
         if ps is PartialExeResultStatus.FAIL:
             return FullExeResultStatus.XFAIL
         elif ps is PartialExeResultStatus.PASS:
