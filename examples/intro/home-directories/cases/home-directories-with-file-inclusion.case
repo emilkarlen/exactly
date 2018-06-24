@@ -1,0 +1,28 @@
+[conf]
+
+
+including ../set-home-dirs.xly
+
+
+[setup]
+
+
+# The "install" instruction looks for referenced files in the "case home" directory.
+
+copy testdata/test-file.txt
+
+
+[act]
+
+
+# The "act" phase looks for referenced files in the "act home" directory.
+
+do-something-good-with test-file.txt
+
+
+[assert]
+
+
+# The "contents" instruction looks for referenced files in the "case home" directory.
+
+contents test-file.txt equals -file expectation/expected.txt
