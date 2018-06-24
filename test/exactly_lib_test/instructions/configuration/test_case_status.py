@@ -5,9 +5,8 @@ from exactly_lib.instructions.configuration import test_case_status as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case import test_case_status as tcs
-from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
-from exactly_lib_test.instructions.configuration.test_resources import configuration_check as config_check
+from exactly_lib_test.instructions.configuration.test_resources import configuration_builder_assertions as asrt_conf
 from exactly_lib_test.instructions.configuration.test_resources.instruction_check import TestCaseBase, \
     Arrangement, Expectation
 from exactly_lib_test.instructions.configuration.test_resources.source_with_assignment import syntax_for_assignment_of
@@ -17,6 +16,7 @@ from exactly_lib_test.instructions.test_resources.single_line_source_instruction
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_phase_handlings import \
     act_phase_handling_that_runs_constant_actions
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
 
 def suite() -> unittest.TestSuite:
@@ -51,7 +51,7 @@ class TestCaseBaseForParser(TestCaseBase):
                         source,
                         Arrangement(execution_mode=initial,
                                     act_phase_handling=act_phase_handling_that_runs_constant_actions()),
-                        Expectation(configuration=AssertExecutionMode(expected)))
+                        Expectation(configuration2=asrt_conf.has(test_case_status=asrt.is_(expected))))
 
 
 class TestChangeStatus(TestCaseBaseForParser):
@@ -69,20 +69,6 @@ class TestChangeStatus(TestCaseBaseForParser):
         self._run(expected=tcs.ExecutionMode.FAIL,
                   initial=tcs.ExecutionMode.PASS,
                   argument=syntax_for_assignment_of(tcs.NAME_FAIL))
-
-
-class AssertExecutionMode(config_check.Assertion):
-    def __init__(self,
-                 expected: tcs.ExecutionMode):
-        self.expected = expected
-
-    def apply(self,
-              put: unittest.TestCase,
-              initial: ConfigurationBuilder,
-              actual_result: ConfigurationBuilder):
-        put.assertEqual(self.expected,
-                        actual_result.execution_mode,
-                        'Test Case Status')
 
 
 if __name__ == '__main__':
