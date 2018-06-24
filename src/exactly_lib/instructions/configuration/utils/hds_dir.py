@@ -17,6 +17,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result import sh
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 
 
 class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextParserBase):
@@ -53,7 +54,10 @@ class DirConfParamInstructionDocumentationBase(InstructionDocumentationWithTextP
 _DIR_ARG = instruction_arguments.DIR_WITHOUT_RELATIVITY_OPTIONS_ARGUMENT
 
 
-class ParserBase(InstructionParser):
+class Parser(InstructionParser):
+    def __init__(self, dir_to_set: RelHomeOptionType):
+        self.dir_to_set = dir_to_set
+
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ConfigurationPhaseInstruction:
@@ -66,19 +70,17 @@ class ParserBase(InstructionParser):
         except ValueError as ex:
             raise SingleInstructionInvalidArgumentException('Invalid path:\n' + str(ex))
 
-        return self._instruction_from(fs_location_info.file_reference_relativity_root_dir,
-                                      path_argument)
-
-    def _instruction_from(self,
-                          relativity_root: pathlib.Path,
-                          path_argument: pathlib.Path) -> ConfigurationPhaseInstruction:
-        raise NotImplementedError('abstract method')
+        return _Instruction(self.dir_to_set,
+                            fs_location_info.file_reference_relativity_root_dir,
+                            path_argument)
 
 
-class InstructionBase(ConfigurationPhaseInstruction):
+class _Instruction(ConfigurationPhaseInstruction):
     def __init__(self,
+                 dir_to_set: RelHomeOptionType,
                  relativity_root: pathlib.Path,
                  argument: pathlib.Path):
+        self.dir_to_set = dir_to_set
         self.relativity_root = relativity_root
         self.argument = argument
 
@@ -88,15 +90,10 @@ class InstructionBase(ConfigurationPhaseInstruction):
             return sh.new_sh_hard_error('Directory does not exist: {}'.format(new_path))
         if not new_path.is_dir():
             return sh.new_sh_hard_error('Not a directory: {}'.format(new_path))
-        self._set_conf_param_dir(configuration_builder, new_path.resolve())
+        configuration_builder.set_hds_dir(self.dir_to_set, new_path.resolve())
         return sh.new_sh_success()
 
     def _new_path(self) -> pathlib.Path:
         if self.argument.is_absolute():
             return self.argument
         return self.relativity_root / self.argument
-
-    def _set_conf_param_dir(self,
-                            configuration_builder: ConfigurationBuilder,
-                            path: pathlib.Path):
-        raise NotImplementedError('abstract method')

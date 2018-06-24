@@ -16,7 +16,7 @@ class TheConfiguration(set_hds_dir.Configuration):
         super().__init__(RelHomeOptionType.REL_HOME_ACT)
 
     def parser(self) -> InstructionParser:
-        return sut.Parser()
+        return sut.parser()
 
     def instruction_documentation(self) -> InstructionDocumentation:
         return sut.TheInstructionDocumentation('instruction mame')
