@@ -1,4 +1,5 @@
 import unittest
+from typing import List
 
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
@@ -38,7 +39,7 @@ def suite() -> unittest.TestSuite:
 
 class Expectation:
     def __init__(self,
-                 fragments: list,
+                 fragments: List[Fragment],
                  token_stream: asrt.ValueAssertion):
         self.fragments = fragments
         self.token_stream = token_stream
@@ -62,7 +63,7 @@ class TestFailWhenNoArgument(unittest.TestCase):
             sut.parse_string_resolver(TokenStream(''))
 
 
-def successful_parse_of_constant() -> list:
+def successful_parse_of_constant() -> List[TC]:
     return [
         TC(_src('plain-word1 plain-word2'),
            Expectation(
@@ -99,7 +100,7 @@ def successful_parse_of_constant() -> list:
     ]
 
 
-def successful_parse_of_single_symbol() -> list:
+def successful_parse_of_single_symbol() -> List[TC]:
     symbol_ref = SymbolWithReferenceSyntax('validSymbol_name_1')
     single_symbol = [symbol(symbol_ref.name)]
     return [
@@ -128,7 +129,7 @@ def successful_parse_of_single_symbol() -> list:
     ]
 
 
-def successful_parse_of_complex_structure() -> list:
+def successful_parse_of_complex_structure() -> List[TC]:
     return [
         TC(_src('  {soft_quote}{sym_ref1}const 1{not_a_symbol_name1}{not_a_symbol_name2}const 2{sym_ref2}{soft_quote}',
                 soft_quote=SOFT_QUOTE_CHAR,
