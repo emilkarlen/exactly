@@ -1,6 +1,7 @@
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
@@ -28,6 +29,7 @@ def generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator
                                  _InstructionsRenderer(
                                      text_parser)))])
              ),
+            ('file-inclusion', hierarchy.leaf('File inclusion', _OtherContentsRenderer(text_parser))),
             ('com-empty', hierarchy.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
@@ -43,6 +45,8 @@ def _text_parser(setup: Setup) -> TextParser:
         'CONTENTS_EQUALS_ARGUMENT': contents_opts.EQUALS_ARGUMENT,
         'CONTENTS_EMPTY_ARGUMENT': contents_opts.EMPTY_ARGUMENT,
         'line_comment_char': LINE_COMMENT_MARKER,
+        'file_inclusion_directive_in_text': formatting.keyword(instruction_names.FILE_INCLUSION_DIRECTIVE_NAME),
+        'file_inclusion_directive': instruction_names.FILE_INCLUSION_DIRECTIVE_NAME,
     })
 
 
@@ -66,9 +70,14 @@ class _InstructionsRenderer(_ConstructorBase):
         return docs.section_contents(self.parser.fnap(INSTRUCTIONS_DESCRIPTION_DOC))
 
 
-class _OtherContentsRenderer(_ConstructorBase):
+class _FileInclusionContentsRenderer(_ConstructorBase):
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return docs.section_contents(self.parser.fnap(OTHER_DOC))
+
+
+class _OtherContentsRenderer(_ConstructorBase):
+    def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
+        return docs.section_contents(self.parser.fnap(FILE_INCLUSION_DOC))
 
 
 PHASES_DOC = """\
@@ -194,4 +203,18 @@ this assertion expects 4 lines of output
 the above empty line is part of the expected output
 EOF
 ```
+"""
+
+FILE_INCLUSION_DOC = """\
+Parts of a test case can be put in an external file,
+using the {file_inclusion_directive_in_text} directive:
+
+
+```
+{file_inclusion_directive} external-part-of-test-case.xly
+```
+
+
+For details, see the description of {file_inclusion_directive_in_text}
+in the description of instructions per phase.
 """
