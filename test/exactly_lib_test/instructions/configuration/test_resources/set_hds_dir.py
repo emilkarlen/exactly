@@ -30,12 +30,12 @@ class Configuration:
         self.target_directory = target_directory
 
     def get_property_dir_path(self, configuration_builder: ConfigurationBuilder) -> pathlib.Path:
-        raise NotImplementedError('abstract method')
+        return configuration_builder.hds.get(self.target_directory)
 
     def set_property_dir_path(self,
                               configuration_builder: ConfigurationBuilder,
                               value: pathlib.Path):
-        raise NotImplementedError('abstract method')
+        configuration_builder.set_dir(self.target_directory, value)
 
     def parser(self) -> InstructionParser:
         raise NotImplementedError('abstract method')

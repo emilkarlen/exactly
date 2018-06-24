@@ -7,6 +7,7 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result.sh import SuccessOrHardError
 from exactly_lib.test_case.test_case_status import ExecutionMode
 from exactly_lib.test_case_file_structure.home_directory_structure import HomeDirectoryStructure
+from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 
 
 class ConfigurationBuilder:
@@ -21,6 +22,10 @@ class ConfigurationBuilder:
         self.__act_phase_handling = act_phase_handling
         self.__execution_mode = execution_mode
         self.__timeout_in_seconds = timeout_in_seconds
+        self.__hds_dirs = {
+            RelHomeOptionType.REL_HOME_CASE: home_case_dir_path,
+            RelHomeOptionType.REL_HOME_ACT: home_act_dir_path,
+        }
 
     @property
     def execution_mode(self) -> ExecutionMode:
@@ -43,6 +48,9 @@ class ConfigurationBuilder:
 
     def set_home_act_dir(self, x: pathlib.Path):
         self.__home_act_dir_path = x
+
+    def set_dir(self, d: RelHomeOptionType, value: pathlib.Path):
+        self.__hds_dirs[d] = value
 
     @property
     def hds(self) -> HomeDirectoryStructure:
