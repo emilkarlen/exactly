@@ -51,7 +51,7 @@ class TestCaseBaseForParser(TestCaseBase):
                             act_phase_handling=act_phase_handling_that_runs_constant_actions(),
                             timeout_in_seconds=None),
                         Expectation(
-                            configuration2=asrt_conf.has(asrt.equals(expected))))
+                            configuration=asrt_conf.has(asrt.equals(expected))))
 
 
 class TestSetTimeout(TestCaseBaseForParser):

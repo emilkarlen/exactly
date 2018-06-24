@@ -51,7 +51,7 @@ class TestCaseBaseForParser(TestCaseBase):
                         source,
                         Arrangement(execution_mode=initial,
                                     act_phase_handling=act_phase_handling_that_runs_constant_actions()),
-                        Expectation(configuration2=asrt_conf.has(test_case_status=asrt.is_(expected))))
+                        Expectation(configuration=asrt_conf.has(test_case_status=asrt.is_(expected))))
 
 
 class TestChangeStatus(TestCaseBaseForParser):
