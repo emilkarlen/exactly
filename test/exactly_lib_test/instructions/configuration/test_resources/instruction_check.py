@@ -40,11 +40,13 @@ class Expectation:
                  main_result: asrt.ValueAssertion[SuccessOrHardError] = sh_assertions.is_success(),
                  configuration: config_check.Assertion = config_check.AnythingGoes(),
                  source: asrt.ValueAssertion[ParseSource] = asrt.anything_goes(),
+                 configuration2: asrt.ValueAssertion[ConfigurationBuilder] = asrt.anything_goes(),
                  file_ref_rel_root_2_conf: Callable[[pathlib.Path], asrt.ValueAssertion[ConfigurationBuilder]] =
                  lambda x: asrt.anything_goes()
                  ):
         self.main_result = main_result
         self.configuration = configuration
+        self.configuration2 = configuration2
         self.file_ref_rel_root_2_conf = file_ref_rel_root_2_conf
         self.source = source
 
@@ -95,14 +97,19 @@ class Executor:
 
                 self._execute_main(configuration_builder, instruction)
 
+                self.expectation.configuration2.apply_with_message(self.put,
+                                                                   configuration_builder,
+                                                                   'ConfigurationBuilder')
+
                 self.expectation.configuration.apply(self.put,
                                                      initial_configuration_builder,
                                                      configuration_builder)
 
-                self.expectation.file_ref_rel_root_2_conf(file_ref_rel_root_dir_path
-                                                          ).apply_with_message(self.put,
-                                                                               configuration_builder,
-                                                                               'ConfigurationBuilder')
+                self.expectation.file_ref_rel_root_2_conf(
+                    file_ref_rel_root_dir_path
+                ).apply_with_message(self.put,
+                                     configuration_builder,
+                                     'ConfigurationBuilder with file-ref-rel-root-dir')
 
     def _execute_main(self,
                       configuration_builder: ConfigurationBuilder,
