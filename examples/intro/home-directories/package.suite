@@ -5,3 +5,5 @@ cases/home-directories.case
 cases/home-directories--with-explicit-relativities.case
 
 cases/home-directories--with-symbols.case
+
+cases/home-directories-with-file-inclusion.case

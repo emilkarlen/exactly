@@ -1,0 +1,6 @@
+# Values are relative the location of the source file
+
+act-home = bin
+
+home     = .
+
