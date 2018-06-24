@@ -77,18 +77,32 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
 
 
 ONE_LINE_DESCRIPTION = """\
-The {action_to_check}/system under test (SUT).
+The {action_to_check} (or "system under test").
 """
 
 REST_OF_DESCRIPTION = """\
-The program specified by the {phase[act]} phase is executed and its result is stored
+Specifies an action that is checked by the test case.
+
+
+There are a number of different kind of actions:
+
+
+ * executable program
+ * source file
+ * source code
+ * shell command
+
+
+Which one is used -
+and the meaning and syntax of the {phase[act]} phase -
+depends on which {actor_concept} is used.
+
+
+The action specified by the {phase[act]} phase is executed and its result is stored
 in the {result_dir} directory of the {sandbox}:
 """
 
 _DESCRIPTION__BEFORE_HOW_TO_SPECIFY_ACTOR = """\
-The meaning and syntax of the {phase[act]} phase depends on which {actor_concept} is used.
-
-
 If a test case does not have an {phase[act]} phase,
 or if the {phase[act]} phase is empty,
 then the {null_actor} {actor_concept} is used.

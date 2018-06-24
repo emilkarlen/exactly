@@ -99,3 +99,5 @@ ACTION_TO_CHECK_CONCEPT_INFO = name_and_ref_target(
     Name('action to check', "actions to check"),
     _format('The program executed as the {phase[act]} phase, by the {actor}.')
 )
+
+ACTION_TO_CHECK_ACRONYM = 'ATC'
