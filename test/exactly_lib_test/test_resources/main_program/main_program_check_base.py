@@ -33,7 +33,7 @@ class SetupBase:
 
 
 class SetupWithJustMainProgramRunner:
-    def arguments(self) -> list:
+    def arguments(self) -> List[str]:
         raise NotImplementedError('abstract method')
 
     def check(self,
@@ -43,7 +43,7 @@ class SetupWithJustMainProgramRunner:
 
 
 class SetupWithTmpCwdDirContents:
-    def arguments(self, tmp_cwd_dir_path: pathlib.Path) -> list:
+    def arguments(self, tmp_cwd_dir_path: pathlib.Path) -> List[str]:
         raise NotImplementedError('abstract method')
 
     def file_structure(self, tmp_cwd_dir_path: pathlib.Path) -> DirContents:
