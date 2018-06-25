@@ -112,6 +112,9 @@ def _get_act_output_to_stdout(sds: sandbox_directory_structure.SandboxDirectoryS
 
 
 MISC_TESTS = [
+    EmptyTestCaseShouldPass(),
+    AllPhasesEmptyShouldPass(),
+
     WhenAPhaseHasInvalidPhaseNameThenExitStatusShouldIndicateThis(),
     EnvironmentVariablesAreSetCorrectly(),
 ]
