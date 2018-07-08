@@ -41,7 +41,7 @@ and is able to find the email of a person::
 
     [assert]
 
-    exitcode == 0
+    exit-code == 0
 
     stdout equals <<EOF
     pablo@gauss.org
@@ -289,7 +289,7 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 
     [assert]
 
-    exitcode == 0
+    exit-code == 0
 
 ::
 
@@ -448,7 +448,7 @@ it just displays some of Exactly's features.)
     [assert]
 
 
-    exitcode != 0
+    exit-code != 0
 
     stdout equals <<EOF
     This is the expected output from the-system-under-test
