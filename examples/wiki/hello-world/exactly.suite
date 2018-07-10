@@ -1,6 +1,7 @@
 stdout-inline.case
 stdout-expected-contents-in-file.case
 stdout-any-line.case
+stdout-any-line-shell.case
 stdout-every-line.case
 
 check-other-files.case
