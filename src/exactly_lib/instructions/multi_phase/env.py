@@ -1,5 +1,5 @@
 import re
-from typing import Sequence
+from typing import Sequence, Dict, List
 
 from exactly_lib.common.help.instruction_documentation_with_text_parser import \
     InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase
@@ -19,11 +19,12 @@ from exactly_lib.section_document.element_parsers.token_stream import TokenStrea
 from exactly_lib.symbol.data.restrictions.reference_restrictions import is_any_data_type
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
-from exactly_lib.symbol.symbol_usage import SymbolUsage
+from exactly_lib.symbol.symbol_usage import SymbolUsage, SymbolReference
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, \
     PhaseLoggingPaths
 from exactly_lib.test_case_utils.parse import parse_string
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import paras
 
 
@@ -35,10 +36,10 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
     def single_line_description(self) -> str:
         return 'Manipulates environment variables'
 
-    def _main_description_rest_body(self) -> list:
+    def _main_description_rest_body(self) -> List[ParagraphItem]:
         return self._paragraphs(_MAIN_DESCRIPTION_REST_BODY)
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> Sequence[InvokationVariant]:
         return [
             InvokationVariant(
                 _format('{NAME} = {VALUE}'),
@@ -78,7 +79,7 @@ or the empty string, if there is no environment variable with that name.
 
 class Executor:
     def execute(self,
-                environ: dict,
+                environ: Dict[str, str],
                 resolving_environment: PathResolvingEnvironmentPreOrPostSds):
         raise NotImplementedError()
 
@@ -86,7 +87,7 @@ class Executor:
 class TheInstructionEmbryo(embryo.InstructionEmbryo):
     def __init__(self,
                  executor: Executor,
-                 symbol_references: list):
+                 symbol_references: Sequence[SymbolReference]):
         self.symbol_references = symbol_references
         self.executor = executor
 
@@ -161,13 +162,14 @@ class _SetExecutor(Executor):
         self.name = name
         self.value_resolver = value
 
-    def execute(self, environ: dict,
+    def execute(self,
+                environ: Dict[str, str],
                 resolving_environment: PathResolvingEnvironmentPreOrPostSds):
         value = self._resolve_value(environ, resolving_environment)
         environ[self.name] = _expand_vars(value, environ)
 
     def _resolve_value(self,
-                       environ: dict,
+                       environ: Dict[str, str],
                        resolving_environment: PathResolvingEnvironmentPreOrPostSds) -> str:
         fragments = []
         for fragment in self.value_resolver.fragments:
@@ -180,11 +182,11 @@ class _SetExecutor(Executor):
 
 
 class _UnsetExecutor(Executor):
-    def __init__(self,
-                 name: str):
+    def __init__(self, name: str):
         self.name = name
 
-    def execute(self, environ: dict,
+    def execute(self,
+                environ: Dict[str, str],
                 resolving_environment: PathResolvingEnvironmentPreOrPostSds):
         try:
             del environ[self.name]
@@ -199,7 +201,7 @@ The manipulation affects all following phases.
 _ENV_VAR_REFERENCE = re.compile('\${[a-zA-Z0-9_]+}')
 
 
-def _expand_vars(value: str, environ: dict) -> str:
+def _expand_vars(value: str, environ: Dict[str, str]) -> str:
     def substitute(reference: str) -> str:
         var_name = reference[2:-1]
         try:
