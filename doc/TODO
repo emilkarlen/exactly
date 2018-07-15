@@ -1,3 +1,8 @@
+-*-org -*-
+
+* env: ability to read multiline string
+<2018-07-08 Sun>
+Currently reads just single line.
 * Ref Man: Concept "symbol"
 Examples of symbol references may now use new lines in instr args
 to improve readability.
