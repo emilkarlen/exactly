@@ -15,6 +15,7 @@ from exactly_lib.help.entities.actors.objects.common import \
     ARGUMENT_SYNTAX_ELEMENT, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.render import doc_utils
+from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element_2
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import document as doc
@@ -85,8 +86,8 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
 
     def syntax_element_descriptions(self) -> list:
         return [
-            SyntaxElementDescription(self.executable.name,
-                                     self._paragraphs(_EXECUTABLE_SYNTAX_ELEMENT)),
+            path_element_2(actor.RELATIVITY_CONFIGURATION,
+                           self._paragraphs(_EXECUTABLE_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.argument.name,
                                      self._paragraphs(ARGUMENT_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.command.name,
@@ -112,12 +113,6 @@ Executes a shell command using the operating system's shell.
 _EXECUTABLE_SYNTAX_ELEMENT = """\
 The path of an existing executable file.
 
-
-If the path is not absolute, then it is searched for in the operating system's path,
-which is dependent on the current operating system.
-
-
-Uses {shell_syntax_concept}.
 """
 
 _COMMAND_SYNTAX_ELEMENT = """\
