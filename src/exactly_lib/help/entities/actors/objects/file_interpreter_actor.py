@@ -1,3 +1,4 @@
+from exactly_lib.act_phase_setups import file_interpreter as actor
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.definitions import instruction_arguments, formatting
@@ -15,6 +16,7 @@ from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEM
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.render import doc_utils
+from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element_2
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
@@ -95,8 +97,8 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
 
     def syntax_element_descriptions(self) -> list:
         return [
-            SyntaxElementDescription(self.file.name,
-                                     self._paragraphs(_SOURCE_FILE_SYNTAX_ELEMENT)),
+            path_element_2(actor.RELATIVITY_CONFIGURATION,
+                           self._paragraphs(_SOURCE_FILE_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.argument.name,
                                      self._paragraphs(ARGUMENT_SYNTAX_ELEMENT)),
         ]
@@ -104,12 +106,6 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
 
 _SOURCE_FILE_SYNTAX_ELEMENT = """\
 The path of an existing source code file.
-
-
-If the path is not absolute, then it is relative the {home_directory_concept}.
-
-
-Uses {shell_syntax_concept}.
 """
 
 _ACT_PHASE_CONTENTS = """\
