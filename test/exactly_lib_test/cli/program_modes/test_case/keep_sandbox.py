@@ -37,7 +37,7 @@ from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import T, MessageBuilder
-from exactly_lib_test.test_suite.execution.test_resources import instruction_name_extractor
+from exactly_lib_test.test_suite.execution.test_resources.list_recording_instructions import instruction_name_extractor
 
 
 def suite() -> unittest.TestSuite:

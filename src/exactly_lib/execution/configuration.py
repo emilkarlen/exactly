@@ -7,7 +7,11 @@ from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or
 
 
 class PredefinedProperties:
-    """Properties that are forwarded to the right place in the execution."""
+    """
+    Properties that are forwarded to the right place in the execution.
+
+    (worst doc ever???)
+    """
 
     def __init__(self,
                  predefined_symbols: Optional[SymbolTable] = None):

@@ -7,7 +7,8 @@ from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import run_test_case, cli_args_for, \
     test_suite_definition_without_instructions
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
-from exactly_lib_test.test_suite.execution.test_resources import instruction_name_extractor, instruction_setup
+from exactly_lib_test.test_suite.execution.test_resources.list_recording_instructions import instruction_name_extractor, \
+    instruction_setup
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 

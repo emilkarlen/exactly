@@ -83,7 +83,7 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(ExecutionConfiguration(dict(os.environ),
+    return _Executor(ExecutionConfiguration(os.environ,
                                             configuration.act_phase_os_process_executor,
                                             configuration.sandbox_root_dir_resolver,
                                             configuration.test_case_definition.predefined_properties.predefined_symbols,
@@ -144,9 +144,17 @@ class _Executor(processing_utils.Executor):
               test_case_file_path: pathlib.Path,
               test_case: test_case_doc.TestCase) -> FullExeResult:
         dir_containing_test_case_file = test_case_file_path.parent.resolve()
-        return execution.execute(self._exe_conf,
+        return execution.execute(self._exe_conf_that_may_be_updated(),
                                  ConfigurationBuilder(dir_containing_test_case_file,
                                                       dir_containing_test_case_file,
                                                       act_phase_handling_for_setup(self.default_act_phase_setup)),
                                  self._is_keep_sandbox,
                                  test_case)
+
+    def _exe_conf_that_may_be_updated(self) -> ExecutionConfiguration:
+        ec = self._exe_conf
+        return ExecutionConfiguration(ec.environ.copy(),
+                                      ec.act_phase_os_process_executor,
+                                      ec.sds_root_dir_resolver,
+                                      ec.predefined_symbols.copy(),
+                                      ec.exe_atc_and_skip_assertions)
