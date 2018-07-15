@@ -37,7 +37,7 @@ def instruction_set_with_no_instructions() -> InstructionsSetup:
 def test_case_definition_with_no_instructions_and_no_preprocessor() -> TestCaseDefinition:
     return TestCaseDefinition(
         parsing_setup_with_no_instructions(),
-        PredefinedProperties(),
+        PredefinedProperties({}),
     )
 
 

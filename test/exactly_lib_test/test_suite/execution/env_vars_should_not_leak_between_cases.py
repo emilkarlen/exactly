@@ -32,14 +32,12 @@ def suite() -> unittest.TestSuite:
 
 INSTR_SET = 'set'
 INSTR_REGISTER_EXISTENCE = 'register_value_of'
-INSTR_ABORT_TEST_IF_VAR_EXISTS = 'abort_test_if_exists'
 
-VAR_NAME = 'SET_IN_FIRST_CASE_34654765423450'
-VAR_VALUE = 'value-from-first-case'
+VAR_NAME = 'SET_IN_FIRST_CASE'
+VAR_VALUE = 'value'
 
 FORMAT_MAP = {
     'set': INSTR_SET,
-    'abort_test_if_exists': INSTR_ABORT_TEST_IF_VAR_EXISTS,
     'register_existence_of': INSTR_REGISTER_EXISTENCE,
     'var_name': VAR_NAME,
     'var_value': VAR_VALUE,
@@ -47,8 +45,6 @@ FORMAT_MAP = {
 
 CASE_THAT_MODIFIES_ENV_VARS = """\
 [setup]
-
-{abort_test_if_exists} {var_name}
 
 {set} {var_name} = {var_value}
 """
@@ -99,9 +95,9 @@ class Test(unittest.TestCase):
             for case_processor_case in case_processors:
                 with self.subTest(case_processor_case.name):
                     registry = tr.Registry()
-                    executor = new_executor(registry,
-                                            case_processor_case.value,
-                                            suite_file_path)
+                    executor = new_executor_with_no_env_vars(registry,
+                                                             case_processor_case.value,
+                                                             suite_file_path)
                     # ACT #
 
                     return_value = executor.execute()
@@ -114,14 +110,14 @@ class Test(unittest.TestCase):
                     self.assertFalse(registry.observation)
 
 
-def new_executor(registry: tr.Registry,
-                 test_case_processor_constructor: TestCaseProcessorConstructor,
-                 suite_root_file_path: pathlib.Path) -> sut.Executor:
+def new_executor_with_no_env_vars(registry: tr.Registry,
+                                  test_case_processor_constructor: TestCaseProcessorConstructor,
+                                  suite_root_file_path: pathlib.Path) -> sut.Executor:
     test_case_definition = TestCaseDefinition(
         TestCaseParsingSetup(instruction_name_extractor,
                              _instruction_set(registry),
                              ActPhaseParser()),
-        PredefinedProperties(empty_symbol_table()))
+        PredefinedProperties({}, empty_symbol_table()))
     default_configuration = processors.Configuration(test_case_definition,
                                                      test_case_handling_setup_with_identity_preprocessor(),
                                                      os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
@@ -147,5 +143,4 @@ def _instruction_set(registry: tr.Registry) -> InstructionsSetup:
     return tr.instruction_setup({
         INSTR_SET: tr.InstructionParserForSet(),
         INSTR_REGISTER_EXISTENCE: tr.InstructionParserForRegistersExistenceOfEnvVar(registry),
-        INSTR_ABORT_TEST_IF_VAR_EXISTS: tr.InstructionParserForAbortsIfEnvVarExists(),
     })

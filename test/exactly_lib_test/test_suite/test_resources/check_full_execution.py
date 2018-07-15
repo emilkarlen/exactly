@@ -81,5 +81,5 @@ _TEST_CASE_PARSING_SETUP = TestCaseParsingSetup(white_space_name_and_argument_sp
                                                 ActPhaseParser())
 
 _DEFAULT_TEST_CASE_DEFINITION = TestCaseDefinition(_TEST_CASE_PARSING_SETUP,
-                                                   PredefinedProperties(),
+                                                   PredefinedProperties({}),
                                                    )

@@ -185,7 +185,7 @@ def new_executor(recorder: List[str],
         TestCaseParsingSetup(instruction_name_extractor,
                              instruction_setup(REGISTER_INSTRUCTION_NAME, recorder),
                              ActPhaseParser()),
-        PredefinedProperties(empty_symbol_table()))
+        PredefinedProperties({}, empty_symbol_table()))
     default_configuration = processors.Configuration(test_case_definition,
                                                      test_case_handling_setup_with_identity_preprocessor(),
                                                      os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,

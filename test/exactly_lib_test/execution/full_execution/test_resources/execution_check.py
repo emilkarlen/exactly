@@ -18,7 +18,7 @@ class Arrangement:
                  test_case: test_case_doc.TestCase,
                  configuration_builder: ConfigurationBuilder,
                  initial_settings_builder: SetupSettingsBuilder = None,
-                 predefined_properties: PredefinedProperties = PredefinedProperties(),
+                 predefined_properties: PredefinedProperties = PredefinedProperties({}),
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor =
                  os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR
                  ):
