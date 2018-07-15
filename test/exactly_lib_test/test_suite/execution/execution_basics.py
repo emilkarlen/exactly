@@ -1,6 +1,7 @@
 import pathlib
 import unittest
 from pathlib import Path
+from typing import List, Tuple
 
 from exactly_lib.execution.full_execution.result import new_skipped
 from exactly_lib.processing import test_case_processing as tcp
@@ -321,10 +322,7 @@ class ReaderThatGivesConstantSuite(SuiteHierarchyReader):
 class ExpectedSuiteReporting(tuple):
     def __new__(cls,
                 test_suite: structure.TestSuite,
-                case_and_result_status_list: list):
-        """
-        :param case_and_result_status_list: [(TestCase, tcp.Status)]
-        """
+                case_and_result_status_list: List[Tuple[TestCaseSetup, tcp.Status]]):
         return tuple.__new__(cls, (test_suite, case_and_result_status_list))
 
     @staticmethod
@@ -345,7 +343,7 @@ class ExpectedSuiteReporting(tuple):
         return self[0]
 
     @property
-    def case_and_result_status_list(self) -> list:
+    def case_and_result_status_list(self) -> List[Tuple[TestCaseSetup, tcp.Status]]:
         return self[1]
 
     def check(self,
