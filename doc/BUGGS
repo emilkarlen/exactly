@@ -11,6 +11,9 @@ Validate that all resolved PathPart:s are relative paths.
 * suite: env instruction modifes env of following test cases
 <2018-07-08 Sun>
 * linux: exactly suite SUITE-FILE (where SUITE-FILE is a dir)
+* suite: env instruction modifes env of following test cases
+<2018-07-08 Sun>
+* linux: exactly suite SUITE-FILE (where SUITE-FILE is a dir)
 <2018-05-12 lör>
 ----------------------------------------
 ~/vcs/filelist/default/tests/packages/file-path$ xly suite non-existing-files/
