@@ -14,8 +14,14 @@ class PredefinedProperties:
     """
 
     def __init__(self,
+                 environ: Dict[str, str],
                  predefined_symbols: Optional[SymbolTable] = None):
+        self.__environ = environ
         self.__predefined_symbols = predefined_symbols
+
+    @property
+    def environ(self) -> Dict[str, str]:
+        return self.__environ
 
     @property
     def predefined_symbols(self) -> SymbolTable:

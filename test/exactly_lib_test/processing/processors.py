@@ -317,7 +317,7 @@ def configuration_for_instruction_set(instruction_set: InstructionsSetup) -> sut
         ActPhaseParser()
     )
     tc_definition = TestCaseDefinition(tc_parsing_setup,
-                                       PredefinedProperties())
+                                       PredefinedProperties({}))
     tc_handling_setup = setup_with_null_act_phase_and_null_preprocessing()
     return sut.Configuration(
         tc_definition,

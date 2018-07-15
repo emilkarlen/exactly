@@ -47,20 +47,6 @@ class SetupPhaseInstructionThatRegistersExistenceOfEnvVar(SetupPhaseInstruction)
         return sh.new_sh_success()
 
 
-class SetupPhaseInstructionThatAbortsIfEnvVarExists(SetupPhaseInstruction):
-    def __init__(self, env_var_to_observe: str):
-        self.env_var_to_observe = env_var_to_observe
-
-    def main(self,
-             environment: InstructionEnvironmentForPostSdsStep,
-             os_services: OsServices,
-             settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        if self.env_var_to_observe in environment.environ:
-            return sh.new_sh_hard_error('Observed env var in environment: change name of it or '
-                                        'somehow get rid of the var from the environment')
-        return sh.new_sh_success()
-
-
 class InstructionParserBase(InstructionParserWithoutFileReferenceRelativityRoot):
     def __init__(self, num_args: int):
         self.num_args = num_args
@@ -94,14 +80,6 @@ class InstructionParserForRegistersExistenceOfEnvVar(InstructionParserBase):
     def _parse(self, args: List[str]) -> SetupPhaseInstruction:
         return SetupPhaseInstructionThatRegistersExistenceOfEnvVar(self.registry,
                                                                    args[0])
-
-
-class InstructionParserForAbortsIfEnvVarExists(InstructionParserBase):
-    def __init__(self):
-        super().__init__(1)
-
-    def _parse(self, args: List[str]) -> SetupPhaseInstruction:
-        return SetupPhaseInstructionThatAbortsIfEnvVarExists(args[0])
 
 
 def instruction_setup(setup_phase_instructions: Dict[str, InstructionParser]) -> InstructionsSetup:

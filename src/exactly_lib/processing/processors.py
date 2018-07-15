@@ -1,4 +1,3 @@
-import os
 import pathlib
 from typing import Optional
 
@@ -83,7 +82,7 @@ def new_executor_that_should_not_pollute_current_processes(configuration: Config
 
 
 def new_executor_that_may_pollute_current_processes(configuration: Configuration) -> processing_utils.Executor:
-    return _Executor(ExecutionConfiguration(os.environ,
+    return _Executor(ExecutionConfiguration(configuration.test_case_definition.predefined_properties.environ,
                                             configuration.act_phase_os_process_executor,
                                             configuration.sandbox_root_dir_resolver,
                                             configuration.test_case_definition.predefined_properties.predefined_symbols,

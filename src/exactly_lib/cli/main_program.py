@@ -116,6 +116,7 @@ class MainProgram:
         self._test_case_definition = TestCaseDefinition(
             test_case_definition.test_case_parsing_setup,
             PredefinedProperties(
+                os.environ,
                 SymbolTable(dict(map(BuiltinSymbol.as_name_and_container_pair.fget,
                                      test_case_definition.builtin_symbols)))
             )

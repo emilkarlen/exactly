@@ -27,7 +27,8 @@ class TestPredefinedSymbols(unittest.TestCase):
     def test_WHEN_no_predefined_symbols_are_specified_THEN_the_set_of_symbols_SHOULD_be_empty(
             self):
         # ARRANGE #
-        predefined_properties = PredefinedProperties(predefined_symbols=None)
+        predefined_properties = PredefinedProperties(environ={},
+                                                     predefined_symbols=None)
         self._check(predefined_properties, assert_symbol_table_keys_equals({}))
 
     def test_WHEN_predefined_symbols_are_specified_THEN_the_set_of_symbols_SHOULD_be_exactly_these_symbols(
@@ -37,7 +38,8 @@ class TestPredefinedSymbols(unittest.TestCase):
             'predefined symbol': string_resolvers.str_constant(
                 'predefined string value (not used by this test)')
         })
-        predefined_properties = PredefinedProperties(predefined_symbols=predefined_symbols_table)
+        predefined_properties = PredefinedProperties(environ={},
+                                                     predefined_symbols=predefined_symbols_table)
         self._check(predefined_properties, assert_symbol_table_keys_equals(predefined_symbols_table.names_set))
 
     def _check(self,
