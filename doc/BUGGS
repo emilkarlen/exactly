@@ -1,6 +1,8 @@
 -*- org -*-
 
-* Bug: linux: exactly suite SUITE-FILE (where SUITE-FILE is a dir)
+* suite: env instruction modifes env of following test cases
+<2018-07-08 Sun>
+* linux: exactly suite SUITE-FILE (where SUITE-FILE is a dir)
 <2018-05-12 lör>
 ----------------------------------------
 ~/vcs/filelist/default/tests/packages/file-path$ xly suite non-existing-files/
@@ -37,7 +39,7 @@ Traceback (most recent call last):
     opener=self._opener)
 IsADirectoryError: [Errno 21] Is a directory: '/home/karlen/vcs/filelist/default/tests/packages/file-path/non-existing-files'
 ----------------------------------------
-* Bug: contents: FAIL when ACTUAL-FILE -rel-act-home does not exist
+* contents: FAIL when ACTUAL-FILE -rel-act-home does not exist
 <2018-05-12 Sat>
 Should be VALIDATE error.
 Apparently, only EXPECTED-FILE is checked for existence pre-sds,
@@ -47,7 +49,7 @@ but not ACTUAL-FILE.
 <2018-05-14 Mon>
 Maybe this behaviour is intentional - it is used to be able to
 refer to non-existing files.
-* Bug Exception: 'ascii' codec can't decode byte
+* Exception: 'ascii' codec can't decode byte
 ----------------------------------------
 $ xly empty-interval.case 
 IMPLEMENTATION_ERROR
@@ -85,3 +87,6 @@ exactly_lib.instructions.assert_.utils.file_contents.parts.equality.EqualityCont
 *** solution might be to call open() with an "encoding" argument
 See "encoding" attribute of open() in Python doc
 *** see codecs module
+* string-transformer replace: includes ending \n in string that is processed
+pre <2018-07-14 Sat>
+I think

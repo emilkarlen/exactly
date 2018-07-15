@@ -1,0 +1,12 @@
+-*- org -*-
+
+<2018-07-14 Sat>
+
+Sometimes the ATC should be run with a user with special privileges
+(usually more restricted than the user that executes the test)
+
+----------------------------------------
+[setup]
+
+act-user = nobody
+----------------------------------------
