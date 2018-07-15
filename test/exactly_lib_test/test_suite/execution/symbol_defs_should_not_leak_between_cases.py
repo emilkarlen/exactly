@@ -9,7 +9,7 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_suite.execution.test_resources import env_vars_should_not_leak as tr
+from exactly_lib_test.test_suite.execution.test_resources import symbol_defs_should_not_leak as tr
 from exactly_lib_test.test_suite.execution.test_resources.executor import new_executor
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter
 
@@ -18,36 +18,34 @@ def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-INSTR_SET = 'set'
+INSTR_DEFINE = 'define'
 INSTR_REGISTER_EXISTENCE = 'register_existence_of'
 
-VAR_NAME = 'SET_IN_FIRST_CASE'
-VAR_VALUE = 'value'
+SYMBOL_NAME = 'DEFINED_IN_FIRST_CASE'
 
 FORMAT_MAP = {
-    'set': INSTR_SET,
+    'define': INSTR_DEFINE,
     'register_existence_of': INSTR_REGISTER_EXISTENCE,
-    'var_name': VAR_NAME,
-    'var_value': VAR_VALUE,
+    'symbol_name': SYMBOL_NAME,
 }
 
-CASE_THAT_MODIFIES_ENV_VARS = """\
+CASE_THAT_DEFINES_SYMBOL = """\
 [setup]
 
-{set} {var_name} = {var_value}
+{define} {symbol_name}
 """
 
-CASE_THAT_REGISTERS_VAR_VALUE = """\
+CASE_THAT_REGISTERS_EXISTENCE_OF_SYMBOL = """\
 [setup]
 
-{register_existence_of} {var_name}
+{register_existence_of} {symbol_name}
 """
 
 CASE_1_FILE = File('1.case',
-                   CASE_THAT_MODIFIES_ENV_VARS.format_map(FORMAT_MAP))
+                   CASE_THAT_DEFINES_SYMBOL.format_map(FORMAT_MAP))
 
 CASE_2_FILE = File('2.case',
-                   CASE_THAT_REGISTERS_VAR_VALUE.format_map(FORMAT_MAP))
+                   CASE_THAT_REGISTERS_EXISTENCE_OF_SYMBOL.format_map(FORMAT_MAP))
 
 SUITE_WITH_CASES = """\
 [cases]
@@ -83,9 +81,9 @@ class Test(unittest.TestCase):
             for case_processor_case in case_processors:
                 with self.subTest(case_processor_case.name):
                     registry = tr.Registry()
-                    executor = new_executor_with_no_env_vars(registry,
-                                                             case_processor_case.value,
-                                                             suite_file_path)
+                    executor = new_executor_with_no_symbols(registry,
+                                                            case_processor_case.value,
+                                                            suite_file_path)
                     # ACT #
 
                     return_value = executor.execute()
@@ -98,13 +96,13 @@ class Test(unittest.TestCase):
                     self.assertFalse(registry.observation)
 
 
-def new_executor_with_no_env_vars(registry: tr.Registry,
-                                  test_case_processor_constructor: TestCaseProcessorConstructor,
-                                  suite_root_file_path: pathlib.Path) -> sut.Executor:
+def new_executor_with_no_symbols(registry: tr.Registry,
+                                 test_case_processor_constructor: TestCaseProcessorConstructor,
+                                 suite_root_file_path: pathlib.Path) -> sut.Executor:
     return new_executor(
         {
-            INSTR_SET: tr.InstructionParserForSet(),
-            INSTR_REGISTER_EXISTENCE: tr.InstructionParserForRegistersExistenceOfEnvVar(registry),
+            INSTR_DEFINE: tr.InstructionParserForDefine(),
+            INSTR_REGISTER_EXISTENCE: tr.InstructionParserForRegistersExistenceOfSymbol(registry),
         }
         ,
         test_case_processor_constructor,

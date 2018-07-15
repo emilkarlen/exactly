@@ -1,12 +1,14 @@
+from typing import Sequence
+
 from exactly_lib.symbol import resolver_structure
-from exactly_lib.symbol.data import string_resolvers 
+from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
     SymbolValueResolver
-from exactly_lib.symbol.symbol_usage import SymbolReference
+from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 
@@ -35,10 +37,15 @@ def entry_with_arbitrary_element(name: str,
                                        single_line_sequence(line_num, source_line)))
 
 
-def symbol_table_from_symbol_definitions(definitions: iter) -> SymbolTable:
-    """
-    :param definitions: [`NamedElementDefinition`]
-    """
-    elements = [(ned.name, ned.resolver_container)
-                for ned in definitions]
+def definition_with_arbitrary_element(name: str,
+                                      value_resolver: DataValueResolver = string_resolvers.str_constant('string value'),
+                                      line_num: int = 1,
+                                      source_line: str = 'value def line') -> SymbolDefinition:
+    return SymbolDefinition(name, SymbolContainer(value_resolver,
+                                                  single_line_sequence(line_num, source_line)))
+
+
+def symbol_table_from_symbol_definitions(definitions: Sequence[SymbolDefinition]) -> SymbolTable:
+    elements = [(sym_def.name, sym_def.resolver_container)
+                for sym_def in definitions]
     return SymbolTable(dict(elements))

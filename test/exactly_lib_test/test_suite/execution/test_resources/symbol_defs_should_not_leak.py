@@ -1,9 +1,11 @@
-from typing import List
+from typing import List, Sequence
 
+from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
+from exactly_lib_test.symbol.test_resources.symbol_utils import definition_with_arbitrary_element
 from exactly_lib_test.test_suite.execution.test_resources.instruction_utils import InstructionParserBase
 
 
@@ -12,50 +14,48 @@ class Registry:
         self.observation = None
 
 
-class SetupPhaseInstructionThatSetsEnvVar(SetupPhaseInstruction):
-    def __init__(self,
-                 var_name: str,
-                 var_value: str):
-        self.var_name = var_name
-        self.var_value = var_value
+class SetupPhaseInstructionThatDefinesSymbol(SetupPhaseInstruction):
+    def __init__(self, name: str):
+        self.name = name
+
+    def symbol_usages(self) -> Sequence[SymbolUsage]:
+        return [definition_with_arbitrary_element(self.name)]
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        environment.environ[self.var_name] = self.var_value
         return sh.new_sh_success()
 
 
-class SetupPhaseInstructionThatRegistersExistenceOfEnvVar(SetupPhaseInstruction):
+class SetupPhaseInstructionThatRegistersExistenceOfSymbol(SetupPhaseInstruction):
     def __init__(self,
                  registry: Registry,
-                 env_var_to_observe: str):
+                 symbol_to_observe: str):
         self.registry = registry
-        self.env_var_to_observe = env_var_to_observe
+        self.env_var_to_observe = symbol_to_observe
 
     def main(self,
              environment: InstructionEnvironmentForPostSdsStep,
              os_services: OsServices,
              settings_builder: SetupSettingsBuilder) -> sh.SuccessOrHardError:
-        self.registry.observation = self.env_var_to_observe in environment.environ
+        self.registry.observation = environment.symbols.contains(self.env_var_to_observe)
         return sh.new_sh_success()
 
 
-class InstructionParserForSet(InstructionParserBase):
+class InstructionParserForDefine(InstructionParserBase):
     def __init__(self):
-        super().__init__(3)
+        super().__init__(1)
 
     def _parse(self, args: List[str]) -> SetupPhaseInstruction:
-        return SetupPhaseInstructionThatSetsEnvVar(var_name=args[0],
-                                                   var_value=args[2])
+        return SetupPhaseInstructionThatDefinesSymbol(args[0])
 
 
-class InstructionParserForRegistersExistenceOfEnvVar(InstructionParserBase):
+class InstructionParserForRegistersExistenceOfSymbol(InstructionParserBase):
     def __init__(self, registry: Registry):
         super().__init__(1)
         self.registry = registry
 
     def _parse(self, args: List[str]) -> SetupPhaseInstruction:
-        return SetupPhaseInstructionThatRegistersExistenceOfEnvVar(self.registry,
+        return SetupPhaseInstructionThatRegistersExistenceOfSymbol(self.registry,
                                                                    args[0])

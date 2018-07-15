@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib_test.test_suite.execution import execution_basics, propagation_of_case_instructions, \
-    env_vars_should_not_leak_between_cases
+    env_vars_should_not_leak_between_cases, symbol_defs_should_not_leak_between_cases
 
 
 def suite() -> unittest.TestSuite:
@@ -9,6 +9,7 @@ def suite() -> unittest.TestSuite:
         execution_basics.suite(),
         propagation_of_case_instructions.suite(),
         env_vars_should_not_leak_between_cases.suite(),
+        symbol_defs_should_not_leak_between_cases.suite(),
     ])
 
 
