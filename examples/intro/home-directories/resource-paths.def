@@ -1,0 +1,3 @@
+def path EXPECTATION_DIR = -rel-here expectation
+
+def path TEST_DATA_DIR   = -rel-here testdata

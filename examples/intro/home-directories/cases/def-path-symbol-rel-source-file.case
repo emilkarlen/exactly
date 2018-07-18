@@ -1,0 +1,33 @@
+#
+# A path symbol may be defined with the option -rel-here,
+#
+# This makes the path be relative the location of the source file that
+# contains the definition.
+#
+
+[conf]
+
+
+act-home = ../bin
+
+
+[setup]
+
+
+including ../resource-paths.def
+
+copy @[TEST_DATA_DIR]@/test-file.txt
+
+
+[act]
+
+
+do-something-good-with test-file.txt
+
+
+[assert]
+
+
+contents test-file.txt
+         equals
+         -file @[EXPECTATION_DIR]@/expected.txt

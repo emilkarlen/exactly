@@ -7,3 +7,5 @@ cases/home-directories--with-explicit-relativities.case
 cases/home-directories--with-symbols.case
 
 cases/home-directories-with-file-inclusion.case
+
+cases/def-path-symbol-rel-source-file.case
