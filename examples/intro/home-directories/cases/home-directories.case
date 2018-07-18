@@ -4,7 +4,7 @@
 # This is directories that exist before the test case is executed,
 # and who's contents should not be modified.
 #
-# The system under test (SUT) is (probably) located here, as well as
+# The action to check (ATC) is (probably) located here, as well as
 # resources used by the test case.
 #
 # There are two home directories:
@@ -18,6 +18,9 @@
 
 # Both these directories are initially set to the directory containing the
 # test case file.
+#
+# If they are changed, the given value is relative the location of the
+# source file that contains the change.
 #
 
 [conf]
@@ -49,4 +52,6 @@ do-something-good-with test-file.txt
 
 # The "contents" instruction looks for referenced files in the "case home" directory.
 
-contents test-file.txt equals -file expectation/expected.txt
+contents test-file.txt
+         equals
+         -file expectation/expected.txt
