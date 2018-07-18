@@ -1,5 +1,6 @@
 import unittest
 from pathlib import Path
+from typing import Optional
 
 from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
     REL_HOME_CASE_OPTION_NAME
@@ -82,9 +83,11 @@ def suite() -> unittest.TestSuite:
 class Arrangement:
     def __init__(self,
                  source: str,
-                 rel_option_argument_configuration: RelOptionArgumentConfiguration):
+                 rel_option_argument_configuration: RelOptionArgumentConfiguration,
+                 source_file_path: Optional[Path] = None):
         self.source = source
         self.rel_option_argument_configuration = rel_option_argument_configuration
+        self.source_file_path = source_file_path
 
 
 class Expectation:
@@ -137,13 +140,16 @@ ARBITRARY_REL_OPT_ARG_CONF = RelOptionArgumentConfigurationWoSuffixRequirement(
 class ArrangementWoSuffixRequirement:
     def __init__(self,
                  source: str,
-                 rel_option_argument_configuration: RelOptionArgumentConfigurationWoSuffixRequirement):
+                 rel_option_argument_configuration: RelOptionArgumentConfigurationWoSuffixRequirement,
+                 source_file_path: Optional[Path] = None):
         self.source = source
         self.rel_option_argument_configuration = rel_option_argument_configuration
+        self.source_file_path = source_file_path
 
     def for_path_suffix_required(self, value: bool) -> Arrangement:
         return Arrangement(self.source,
-                           self.rel_option_argument_configuration.config_for(value))
+                           self.rel_option_argument_configuration.config_for(value),
+                           self.source_file_path)
 
 
 class TestParsesBase(unittest.TestCase):
@@ -154,7 +160,8 @@ class TestParsesBase(unittest.TestCase):
         ts = TokenStream(arrangement.source)
         # ACT #
         actual = sut.parse_file_ref(ts,
-                                    arrangement.rel_option_argument_configuration)
+                                    arrangement.rel_option_argument_configuration,
+                                    arrangement.source_file_path)
         # ASSERT #
         equals_file_ref_resolver(expectation.file_ref_resolver).apply_with_message(self, actual,
                                                                                    'file-ref-resolver')
@@ -167,7 +174,8 @@ class TestParsesBase(unittest.TestCase):
         ts = TokenStream(arrangement.source)
         # ACT #
         actual = sut.parse_file_ref(ts,
-                                    arrangement.rel_option_argument_configuration)
+                                    arrangement.rel_option_argument_configuration,
+                                    arrangement.source_file_path)
         # ASSERT #
         self.__assertions_on_reference_restrictions(actual,
                                                     expectation.symbol_table_in_with_all_ref_restrictions_are_satisfied)

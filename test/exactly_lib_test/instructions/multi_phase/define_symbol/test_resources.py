@@ -33,6 +33,7 @@ _STD_FORMAT_MAP = {
     'rel_home': file_ref.REL_HOME_CASE_OPTION,
     'rel_act_home': file_ref.REL_HOME_ACT_OPTION,
     'rel_symbol': file_ref.REL_symbol_OPTION,
+    'rel_source_file': file_ref.REL_source_file_dir_OPTION,
 }
 
 

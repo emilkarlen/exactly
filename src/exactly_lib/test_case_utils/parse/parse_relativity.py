@@ -1,6 +1,9 @@
+import pathlib
+from typing import Union, Optional
+
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME
+from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME, REL_SOURCE_FILE_DIR_OPTION_NAME
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import is_option_argument
@@ -25,11 +28,11 @@ def reference_restrictions_for_path_symbol(accepted_relativity_variants: PathRel
 
 
 def parse_explicit_relativity_info(options: RelOptionsConfiguration,
-                                   source: TokenStream):
+                                   source_file_location: Optional[pathlib.Path],
+                                   source: TokenStream) -> Optional[
+    Union[RelOptionType, SymbolReference, pathlib.Path]]:
     """
     :return None if relativity is not given explicitly
-    
-    :rtype: None|`RelOptionType`|`SymbolReference`
     """
     if source.is_null:
         return None
@@ -40,6 +43,10 @@ def parse_explicit_relativity_info(options: RelOptionsConfiguration,
     info = _try_parse_rel_symbol_option(options, source)
     if info is not None:
         return info
+    if source_file_location is not None:
+        if _parse_rel_source_file(source):
+            return source_file_location
+
     return _parse_rel_option_type(options, source)
 
 
@@ -59,7 +66,7 @@ def _raise_invalid_argument_exception_if_symbol_does_not_have_valid_syntax(symbo
 
 
 def _try_parse_rel_symbol_option(options: RelOptionsConfiguration,
-                                 source: TokenStream) -> SymbolReference:
+                                 source: TokenStream) -> Optional[SymbolReference]:
     option_str = source.head.string
     if not option_parsing.matches(REL_SYMBOL_OPTION_NAME, option_str):
         return None
@@ -81,6 +88,14 @@ def _parse_rel_option_type(options: RelOptionsConfiguration,
         return _raise_invalid_option(option_str, options)
     source.consume()
     return rel_option_type
+
+
+def _parse_rel_source_file(source: TokenStream) -> bool:
+    option_str = source.head.string
+    if option_parsing.matches(REL_SOURCE_FILE_DIR_OPTION_NAME, option_str):
+        source.consume()
+        return True
+    return False
 
 
 def _raise_invalid_option(actual: str, options: RelOptionsConfiguration):
