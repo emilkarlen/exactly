@@ -9,8 +9,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Changed
 
- - command line actor: Accepts additional relativities HOME/case, SANDBOX/act, SANDBOX/tmp
- - file interpreter actor: Accepts additional relativities HOME/case, SANDBOX/act, SANDBOX/tmp
+ - command line     actor: Accepts additional relativities: `-rel-home`, `-rel-act`, `-rel-tmp`
+ - file interpreter actor: Accepts additional relativities: `-rel-home`, `-rel-act`, `-rel-tmp`
  - string-transformer "replace": Do not include trailing newline in processed string
 
 
