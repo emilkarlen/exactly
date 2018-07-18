@@ -1,0 +1,29 @@
+-*- org -*-
+
+<2018-07-14 Sat>
+
+New phase for specifying prerequisites for executing the
+test case
+
+New phase [prerequisite]
+executed after [conf]
+
+Contains assertion-like instructions with result
+PASS
+VALIDATION_ERROR
+HARD_ERROR
+PREREQUISITE
+
+Could include assert instructions, e.g.
+ - exists
+ - contents
+ - dir-contents
+ - run
+ - $
+
+(These instructions could be converted to boolean expressions,
+to fit in both phases.)
+
+Special instructions
+ - check contents of env
+ - check OS (Unix, Mac, Windows)
