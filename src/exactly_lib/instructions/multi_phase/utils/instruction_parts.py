@@ -3,6 +3,7 @@ Utilities to help constructing an instruction for a specific phase, from phase-i
 """
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.pre_or_post_validation import PreOrPostSdsValidator
@@ -66,5 +67,7 @@ class InstructionPartsParser:
     Parser of `InstructionParts` - used by instructions that may be used in multiple phases. 
     """
 
-    def parse(self, source: ParseSource) -> InstructionParts:
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> InstructionParts:
         raise NotImplementedError()

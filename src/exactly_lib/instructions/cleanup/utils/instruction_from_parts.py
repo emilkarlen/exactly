@@ -3,8 +3,9 @@ from typing import Sequence
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import InstructionParts, \
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
-    InstructionParserWithoutFileReferenceRelativityRoot
+    InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction, PreviousPhase
@@ -47,10 +48,12 @@ class CleanupPhaseInstructionFromParts(CleanupPhaseInstruction):
         return validator.validate_post_sds_if_applicable(environment.path_resolving_environment_pre_or_post_sds)
 
 
-class Parser(InstructionParserWithoutFileReferenceRelativityRoot):
+class Parser(InstructionParser):
     def __init__(self, instruction_parts_parser: InstructionPartsParser):
         self.instruction_parts_parser = instruction_parts_parser
 
-    def parse_from_source(self, source: ParseSource) -> CleanupPhaseInstruction:
-        instruction_parts = self.instruction_parts_parser.parse(source)
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> CleanupPhaseInstruction:
+        instruction_parts = self.instruction_parts_parser.parse(fs_location_info, source)
         return CleanupPhaseInstructionFromParts(instruction_parts)

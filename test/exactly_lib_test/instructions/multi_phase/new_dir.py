@@ -7,6 +7,7 @@ from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironme
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.test_case_file_structure.test_resources import sds_populator
 from exactly_lib_test.test_case_file_structure.test_resources.sds_check.sds_contents_check import \
@@ -36,7 +37,7 @@ def suite() -> unittest.TestSuite:
 
 class TestParse(unittest.TestCase):
     def _parse_arguments(self, arguments: str) -> sut.TheInstructionEmbryo:
-        return sut.EmbryoParser().parse(remaining_source(arguments))
+        return sut.EmbryoParser().parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
 
     def test_fail_when_there_is_no_arguments(self):
         arguments = ''
@@ -88,7 +89,7 @@ class ParseAndMkDirAction(SdsAction):
         self.arguments = arguments
 
     def apply(self, environment: PathResolvingEnvironmentPostSds):
-        instruction_embryo = self.parser.parse(remaining_source(self.arguments))
+        instruction_embryo = self.parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(self.arguments))
         assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         return instruction_embryo.custom_main(environment)
 

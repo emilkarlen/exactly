@@ -20,6 +20,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.program.string_or_file import SourceType
@@ -154,7 +155,9 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
 
 
 class EmbryoParser(embryo.InstructionEmbryoParser):
-    def parse(self, source: ParseSource) -> TheInstructionEmbryo:
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> TheInstructionEmbryo:
         first_line_number = source.current_line_number
         instruction_name_prefix = source.current_line_text[:source.column_index]
         remaining_source_before = source.remaining_source

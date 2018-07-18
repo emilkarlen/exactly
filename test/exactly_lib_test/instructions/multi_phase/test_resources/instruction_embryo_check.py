@@ -8,6 +8,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
     InstructionEnvironmentForPreSdsStep
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_resources.test_case_file_struct_and_symbols.home_and_sds_utils import \
     home_and_sds_with_act_as_curr_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -79,7 +80,7 @@ class Executor:
     def execute(self,
                 parser: InstructionEmbryoParser,
                 source: ParseSource):
-        instruction = parser.parse(source)
+        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         asrt.is_instance(InstructionEmbryo).apply_with_message(self.put, instruction,
                                                                'Instruction class')
         self.expectation.source.apply_with_message(self.put, source, 'source')

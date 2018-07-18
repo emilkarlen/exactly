@@ -13,6 +13,7 @@ from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.test_resources import symbol_usage_assertions as asrt_sym_usage
 from exactly_lib_test.symbol.test_resources.line_matcher import is_line_matcher_reference_to
 from exactly_lib_test.symbol.test_resources.resolver_structure_assertions import matches_container
@@ -160,7 +161,7 @@ class TestUnsuccessfulScenarios(TestCaseBase):
                 )
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     # ACT & ASSERT #
-                    parser.parse(source)
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 if __name__ == '__main__':
