@@ -254,7 +254,10 @@ def _parse_not_whole_line(parser: Callable[[FileSystemLocationInfo, TokenParser]
 
 def _parse_path(fs_location_info: FileSystemLocationInfo,
                 token_parser: TokenParser) -> DataValueResolver:
-    return parse_file_ref.parse_file_ref_from_token_parser(REL_OPTION_ARGUMENT_CONFIGURATION, token_parser)
+    return parse_file_ref.parse_file_ref_from_token_parser(
+        REL_OPTION_ARGUMENT_CONFIGURATION,
+        token_parser,
+        fs_location_info.file_reference_relativity_root_dir)
 
 
 def _parse_list(fs_location_info: FileSystemLocationInfo,

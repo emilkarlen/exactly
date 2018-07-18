@@ -23,6 +23,7 @@ REL_CWD_OPTION_NAME = argument.OptionName(long_name='rel-cd')
 REL_HOME_CASE_OPTION_NAME = argument.OptionName(long_name='rel-home')
 REL_HOME_ACT_OPTION_NAME = argument.OptionName(long_name='rel-act-home')
 REL_SYMBOL_OPTION_NAME = argument.OptionName(long_name='rel')
+REL_SOURCE_FILE_DIR_OPTION_NAME = argument.OptionName('rel-here')
 
 REL_TMP_OPTION = long_option_syntax(REL_TMP_OPTION_NAME.long)
 REL_ACT_OPTION = long_option_syntax(REL_ACT_OPTION_NAME.long)
@@ -31,6 +32,7 @@ REL_CWD_OPTION = long_option_syntax(REL_CWD_OPTION_NAME.long)
 REL_HOME_CASE_OPTION = long_option_syntax(REL_HOME_CASE_OPTION_NAME.long)
 REL_HOME_ACT_OPTION = long_option_syntax(REL_HOME_ACT_OPTION_NAME.long)
 REL_symbol_OPTION = long_option_syntax(REL_SYMBOL_OPTION_NAME.long)
+REL_source_file_dir_OPTION = long_option_syntax(REL_SOURCE_FILE_DIR_OPTION_NAME.long)
 
 HDS_DIR_DISPLAY_ORDER = (
     RelHomeOptionType.REL_HOME_CASE,

@@ -5,6 +5,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.instructions.multi_phase.define_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -24,6 +25,7 @@ from exactly_lib_test.symbol.data.test_resources import symbol_structure_asserti
 from exactly_lib_test.symbol.data.test_resources.symbol_structure_assertions import equals_container
 from exactly_lib_test.symbol.data.test_resources.symbol_usage_assertions import \
     assert_symbol_usages_is_singleton_list
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.symbol_table_assertions import assert_symbol_table_is_singleton
 
@@ -34,6 +36,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestAssignmentRelativeSingleValidOption),
         unittest.makeSuite(TestAssignmentRelativeSingleDefaultOption),
         unittest.makeSuite(TestAssignmentRelativeSymbolDefinition),
+        unittest.makeSuite(TestAssignmentRelativeSourceFileLocation),
     ])
 
 
@@ -120,3 +123,26 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
                                 'ASSIGNED_NAME',
                                 equals_container(expected_container)))
                         )
+
+
+class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
+    def test(self):
+        with tmp_dir() as file_reference_relativity_root_dir:
+            fs_location_info = FileSystemLocationInfo(file_reference_relativity_root_dir)
+            instruction_argument = src('{path_type} name = {rel_source_file} component')
+            for source in equivalent_source_variants__with_source_check(self, instruction_argument):
+                expected_file_ref_resolver = file_ref_resolvers.constant(
+                    file_refs.rel_abs_path(file_reference_relativity_root_dir,
+                                           file_refs.constant_path_part('component')))
+                expected_container = resolver_container(expected_file_ref_resolver)
+                self._check(source,
+                            ArrangementWithSds(fs_location_info=fs_location_info),
+                            Expectation(
+                                symbol_usages=assert_symbol_usages_is_singleton_list(
+                                    vs_asrt.equals_symbol(
+                                        SymbolDefinition('name', expected_container))),
+                                symbols_after_main=assert_symbol_table_is_singleton(
+                                    'name',
+                                    equals_container(expected_container))
+                            )
+                            )

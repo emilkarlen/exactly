@@ -1,7 +1,7 @@
 import functools
 import pathlib
 import types
-from typing import Sequence
+from typing import Sequence, Optional, Callable, Union
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
@@ -94,23 +94,43 @@ def parse_file_ref_from_parse_source(source: ParseSource,
 
 
 def parse_file_ref_from_token_parser(conf: RelOptionArgumentConfiguration,
-                                     token_parser: TokenParser
+                                     token_parser: TokenParser,
+                                     source_file_location: Optional[pathlib.Path] = None
                                      ) -> FileRefResolver:
     """
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
-    return parse_file_ref(token_parser.token_stream, conf)
+    return parse_file_ref(token_parser.token_stream, conf, source_file_location)
 
 
 def parse_file_ref(tokens: TokenStream,
-                   conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+                   conf: RelOptionArgumentConfiguration,
+                   source_file_location: Optional[pathlib.Path] = None) -> FileRefResolver:
+    """
+    :param tokens: Argument list
+    :raises SingleInstructionInvalidArgumentException: Invalid arguments
+    """
+    return _parse_file_ref(tokens, _Conf(source_file_location, conf))
+
+
+class _Conf:
+    def __init__(self,
+                 source_file_location: Optional[pathlib.Path],
+                 rel_opt_conf: RelOptionArgumentConfiguration
+                 ):
+        self.source_file_location = source_file_location
+        self.rel_opt_conf = rel_opt_conf
+
+
+def _parse_file_ref(tokens: TokenStream,
+                    conf: _Conf) -> FileRefResolver:
     """
     :param tokens: Argument list
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
 
     try:
-        if conf.path_suffix_is_required:
+        if conf.rel_opt_conf.path_suffix_is_required:
             return _parse_with_required_suffix(tokens, conf)
         else:
             return _parse_with_optional_suffix(tokens, conf)
@@ -120,7 +140,7 @@ def parse_file_ref(tokens: TokenStream,
 
 
 def _parse_with_required_suffix(tokens: TokenStream,
-                                conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+                                conf: _Conf) -> FileRefResolver:
     """
     :param tokens: Argument list
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
@@ -132,32 +152,34 @@ def _parse_with_required_suffix(tokens: TokenStream,
 
 
 def _parse_with_optional_suffix(tokens: TokenStream,
-                                conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+                                conf: _Conf) -> FileRefResolver:
     """
     :param tokens: Argument list
     :raises SingleInstructionInvalidArgumentException: Invalid arguments
     """
 
     if tokens.is_null or tokens.remaining_part_of_current_line_is_empty:
-        return _result_from_no_arguments(conf)
+        return _result_from_no_arguments(conf.rel_opt_conf)
     return _parse_with_non_empty_token_stream(tokens, conf)
 
 
 def _parse_with_non_empty_token_stream(tokens: TokenStream,
-                                       conf: RelOptionArgumentConfiguration) -> FileRefResolver:
+                                       conf: _Conf) -> FileRefResolver:
     initial_argument_string = tokens.remaining_part_of_current_line
-    relativity_info = parse_explicit_relativity_info(conf.options, tokens)
+    relativity_info = parse_explicit_relativity_info(conf.rel_opt_conf.options,
+                                                     conf.source_file_location,
+                                                     tokens)
 
-    if not conf.path_suffix_is_required and tokens.remaining_part_of_current_line_is_empty:
+    if not conf.rel_opt_conf.path_suffix_is_required and tokens.remaining_part_of_current_line_is_empty:
         if relativity_info is None:
-            return _result_from_no_arguments(conf)
+            return _result_from_no_arguments(conf.rel_opt_conf)
         else:
             path_part_resolver2_file_ref_resolver = _file_ref_constructor(relativity_info)
             return path_part_resolver2_file_ref_resolver(path_part_resolvers.empty())
 
     if tokens.look_ahead_state is LookAheadState.NULL:
         raise SingleInstructionInvalidArgumentException(
-            'Missing {} argument: {}'.format(conf.argument_syntax_name,
+            'Missing {} argument: {}'.format(conf.rel_opt_conf.argument_syntax_name,
                                              initial_argument_string))
     elif tokens.look_ahead_state is LookAheadState.SYNTAX_ERROR:
         SingleInstructionInvalidArgumentException(
@@ -167,7 +189,7 @@ def _parse_with_non_empty_token_stream(tokens: TokenStream,
     if token.type is TokenType.PLAIN:
         ensure_is_not_option_argument(token.string)
     if relativity_info is None:
-        return _without_explicit_relativity(token, conf)
+        return _without_explicit_relativity(token, conf.rel_opt_conf)
     else:
         path_part_2_file_ref_resolver = _file_ref_constructor(relativity_info)
         return _with_explicit_relativity(token, path_part_2_file_ref_resolver)
@@ -228,20 +250,22 @@ def _result_from_no_arguments(conf: RelOptionArgumentConfiguration) -> FileRefRe
                                                                file_refs.empty_path_part()))
 
 
-def _raise_missing_arguments_exception(conf: RelOptionArgumentConfiguration):
-    msg = 'Missing %s argument' % conf.argument_syntax_name
+def _raise_missing_arguments_exception(conf: _Conf):
+    msg = 'Missing %s argument' % conf.rel_opt_conf.argument_syntax_name
     raise SingleInstructionInvalidArgumentException(msg)
 
 
-def _file_ref_constructor(relativity_info) -> types.FunctionType:
-    """
-    :rtype PathPartResolver -> FileRefResolver: 
-    """
+def _file_ref_constructor(relativity_info: Union[RelOptionType, SymbolReference, pathlib.Path]
+                          ) -> Callable[[PathPartResolver], FileRefResolver]:
     if isinstance(relativity_info, RelOptionType):
         return lambda path_suffix_resolver: _FileRefResolverOfRelativityOptionAndSuffixResolver(relativity_info,
                                                                                                 path_suffix_resolver)
     elif isinstance(relativity_info, SymbolReference):
         return functools.partial(file_ref_resolvers.rel_symbol, relativity_info)
+    elif isinstance(relativity_info, pathlib.Path):
+        return lambda path_suffix_resolver: _FileRefResolverOfAbsPathAndSuffixResolver(relativity_info,
+                                                                                       path_suffix_resolver)
+
     else:
         raise TypeError("You promised you shouldn't give me a  " + str(relativity_info))
 
@@ -284,6 +308,23 @@ class _FileRefResolverOfRelativityOptionAndSuffixResolver(FileRefResolver):
     def resolve(self, symbols: SymbolTable) -> FileRef:
         return file_refs.of_rel_option(self.relativity,
                                        self.path_suffix_resolver.resolve(symbols))
+
+    @property
+    def references(self) -> Sequence[SymbolReference]:
+        return self.path_suffix_resolver.references
+
+
+class _FileRefResolverOfAbsPathAndSuffixResolver(FileRefResolver):
+    def __init__(self,
+                 abs_path_root: pathlib.Path,
+                 path_suffix_resolver: PathPartResolver):
+        self.abs_path_root = abs_path_root
+        self.path_suffix_resolver = path_suffix_resolver
+        if not self.abs_path_root.is_absolute():
+            raise ValueError('abs_path_root is not absolute: ' + str(abs_path_root))
+
+    def resolve(self, symbols: SymbolTable) -> FileRef:
+        return file_refs.rel_abs_path(self.abs_path_root, self.path_suffix_resolver.resolve(symbols))
 
     @property
     def references(self) -> Sequence[SymbolReference]:
