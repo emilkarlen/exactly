@@ -1,5 +1,11 @@
 # ChangeLog
 
+## NEXT
+
+### Changed
+
+ - string-transformer "replace": Do not include trailing newline in processed string
+
 ## [0.8.9.2] - 2018-06-24
 
 ### Changed
