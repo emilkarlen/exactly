@@ -1,5 +1,5 @@
 import unittest
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Optional
 
 from exactly_lib.definitions.file_ref import REL_SYMBOL_OPTION_NAME, REL_TMP_OPTION, REL_CWD_OPTION, \
@@ -50,6 +50,7 @@ from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResol
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
     string_made_up_of_just_strings_reference_restrictions, is_reference_to_string_made_up_of_just_plain_strings
+from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -76,6 +77,8 @@ def suite() -> unittest.TestSuite:
     ret_val.addTest(unittest.makeSuite(TestParsesCorrectValueFromParseSource))
 
     ret_val.addTest(unittest.makeSuite(TestTypeMustBeEitherPathOrStringErrMsgGenerator))
+
+    ret_val.addTest(unittest.makeSuite(TestRelativityOfSourceFileLocation))
 
     return ret_val
 
@@ -189,12 +192,16 @@ class TestParsesBase(unittest.TestCase):
                                                   source_string: str,
                                                   test_name: str = ''):
         for path_suffix_is_required in [False, True]:
-            with self.subTest(test_name=test_name,
-                              path_suffix_is_required=path_suffix_is_required):
-                token_stream = TokenStream(source_string)
-                with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    rel_opt_arg_conf = ARBITRARY_REL_OPT_ARG_CONF.config_for(path_suffix_is_required)
-                    sut.parse_file_ref(token_stream, rel_opt_arg_conf)
+            for source_file_location in [None, Path('/source/file/location')]:
+                with self.subTest(test_name=test_name,
+                                  path_suffix_is_required=path_suffix_is_required,
+                                  source_file_location=source_file_location):
+                    token_stream = TokenStream(source_string)
+                    with self.assertRaises(SingleInstructionInvalidArgumentException):
+                        rel_opt_arg_conf = ARBITRARY_REL_OPT_ARG_CONF.config_for(path_suffix_is_required)
+                        sut.parse_file_ref(token_stream,
+                                           rel_opt_arg_conf,
+                                           source_file_location=source_file_location)
 
     def __assertions_on_reference_restrictions(self,
                                                actual: FileRefResolver,
@@ -641,6 +648,124 @@ class TestParseWithRelSymbolRelativity(TestParsesBase):
                             Expectation(expected_file_ref_resolver,
                                         token_stream_assertion)
                         )
+
+
+class TestRelativityOfSourceFileLocation(TestParsesBase):
+    def test_successful_parse_with_source_file_location(self):
+        source_file_location_path = Path(PurePosixPath('/source/file/location'))
+        constant_path_part = 'constant-path-part'
+        symbol = NameAndValue('PATH_SUFFIX_SYMBOL', 'symbol-string-value')
+        fm = dict(format_rel_option.FORMAT_MAP,
+                  symbol_reference=symbol_reference_syntax_for_name(symbol.name),
+                  constant_path_part=constant_path_part,
+                  )
+        accepted_relativities = _arg_config_with_all_accepted_and_default(RelOptionType.REL_ACT)
+        test_cases = [
+            ('Constant after src-file relativity '
+             'SHOULD '
+             'become a abs path with constant path suffix',
+             ArrangementWoSuffixRequirement(
+                 source='{rel_source_file} {constant_path_part}'.format_map(fm),
+                 rel_option_argument_configuration=accepted_relativities,
+                 source_file_path=source_file_location_path
+             ),
+             expect(
+                 resolved_file_ref=
+                 file_refs.rel_abs_path(source_file_location_path,
+                                        file_refs.constant_path_part(constant_path_part)),
+                 expected_symbol_references=
+                 asrt.is_empty_sequence,
+                 symbol_table=
+                 empty_symbol_table(),
+                 token_stream=
+                 assert_token_stream(is_null=asrt.is_true),
+             )
+             ),
+            ('Symbol reference after src-file relativity '
+             'SHOULD '
+             'become a abs path with symbol reference path suffix that must be a string',
+             ArrangementWoSuffixRequirement(
+                 source='{rel_source_file} {symbol_reference}'.format_map(fm),
+                 rel_option_argument_configuration=accepted_relativities,
+                 source_file_path=source_file_location_path
+             ),
+             expect(
+                 resolved_file_ref=
+                 file_refs.rel_abs_path(source_file_location_path,
+                                        file_refs.constant_path_part(symbol.value)),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol.name),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_string_value(symbol.name,
+                                                       symbol.value),
+                 token_stream=
+                 assert_token_stream(is_null=asrt.is_true),
+             )
+             ),
+            ('Other accepted explicit relativity should be available',
+             ArrangementWoSuffixRequirement(
+                 source='{rel_case_home} {symbol_reference}'.format_map(fm),
+                 rel_option_argument_configuration=accepted_relativities,
+                 source_file_path=source_file_location_path
+             ),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_HOME_CASE,
+                                         file_refs.constant_path_part(
+                                             symbol.value)),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     is_reference_to_string_made_up_of_just_plain_strings(symbol.name),
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_string_value(symbol.name,
+                                                       symbol.value),
+                 token_stream=
+                 assert_token_stream(is_null=asrt.is_true),
+             )
+             ),
+            ('Default relativity should be available',
+             ArrangementWoSuffixRequirement(
+                 source='{symbol_reference}'.format_map(fm),
+                 rel_option_argument_configuration=accepted_relativities,
+                 source_file_path=source_file_location_path
+             ),
+             expect(
+                 resolved_file_ref=
+                 file_refs.of_rel_option(RelOptionType.REL_ACT,
+                                         file_refs.constant_path_part(
+                                             symbol.value)),
+                 expected_symbol_references=
+                 asrt.matches_sequence([
+                     equals_symbol_reference(
+                         SymbolReference(symbol.name,
+                                         file_ref_or_string_reference_restrictions(
+                                             accepted_relativities.options.accepted_relativity_variants))
+                     )
+                 ]),
+                 symbol_table=
+                 symbol_table_with_single_string_value(symbol.name,
+                                                       symbol.value),
+                 token_stream=
+                 assert_token_stream(is_null=asrt.is_true),
+             )
+             ),
+        ]
+        for test_name, arrangement, expectation in test_cases:
+            for path_suffix_is_required in [False, True]:
+                with self.subTest(msg=test_name + ' / path_suffix_is_required = ' + str(path_suffix_is_required)):
+                    self._check2(arrangement.for_path_suffix_required(path_suffix_is_required),
+                                 expectation)
+
+    def test_rel_source_file_should_not_be_available_when_no_source_file_is_given(self):
+        token_stream = TokenStream('{rel_source_file} suffix'.format_map(format_rel_option.FORMAT_MAP))
+        with self.assertRaises(SingleInstructionInvalidArgumentException):
+            rel_opt_arg_conf = ARBITRARY_REL_OPT_ARG_CONF.config_for(False)
+            sut.parse_file_ref(token_stream,
+                               rel_opt_arg_conf,
+                               source_file_location=None)
 
 
 class TestParseWithSymbolReferenceEmbeddedInPathArgument(TestParsesBase):
