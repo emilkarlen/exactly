@@ -11,6 +11,7 @@ from exactly_lib.test_case_file_structure.sandbox_directory_structure import San
 from exactly_lib.type_system.data import file_refs
 from exactly_lib.type_system.data.file_ref import FileRef
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import matches_file_ref_resolver
 from exactly_lib_test.test_case_file_structure.test_resources.format_rel_option import format_rel_options
@@ -46,7 +47,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = format_rel_options('{rel_act}')
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = parser.parse(remaining_source(arguments))
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_ACT)
                 assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
@@ -58,7 +59,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = 'single-argument'
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = parser.parse(remaining_source(arguments))
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
                                                             file_refs.constant_path_part(arguments))
@@ -71,7 +72,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = ''
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = parser.parse(remaining_source(arguments))
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_CWD)
                 assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
@@ -84,7 +85,7 @@ class TestParseSet(unittest.TestCase):
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT & ASSERT #
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(remaining_source(arguments))
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
 
     def test_strip_trailing_space(self):
         for is_after_act_phase in [False, True]:
@@ -92,7 +93,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = '  expected-argument  '
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = parser.parse(remaining_source(arguments))
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
                                                             file_refs.constant_path_part(arguments.strip()))
@@ -105,7 +106,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = '"expected argument"'
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = parser.parse(remaining_source(arguments))
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_CWD,
                                                             file_refs.constant_path_part('expected argument'))
@@ -118,7 +119,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = file_ref_syntax.REL_TMP_OPTION
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = parser.parse(remaining_source(arguments))
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = _file_ref_of(RelOptionType.REL_TMP)
                 assertion = matches_file_ref_resolver(expected_file_ref, asrt.is_empty)
@@ -130,7 +131,7 @@ class TestParseSet(unittest.TestCase):
                 arguments = format_rel_options('{rel_tmp} subdir')
                 parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                 # ACT #
-                actual = parser.parse(remaining_source(arguments))
+                actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
                 # ASSERT #
                 expected_file_ref = file_refs.of_rel_option(RelOptionType.REL_TMP,
                                                             file_refs.constant_path_part('subdir'))
@@ -144,14 +145,14 @@ class TestParseSet(unittest.TestCase):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
                     parser = sut.EmbryoParser(is_after_act_phase=is_after_act_phase)
                     # ACT #
-                    parser.parse(remaining_source(arguments))
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
 
     def test_rel_result_should_not_be_available_pre_act_phase(self):
         arguments = file_ref_syntax.REL_RESULT_OPTION
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             parser = sut.EmbryoParser(is_after_act_phase=False)
             # ACT #
-            parser.parse(remaining_source(arguments))
+            parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(arguments))
 
 
 class ParseAndChangeDirAction(sds_env_utils.SdsAction):
@@ -163,7 +164,7 @@ class ParseAndChangeDirAction(sds_env_utils.SdsAction):
 
     def apply(self, environment: PathResolvingEnvironmentPostSds):
         parser = sut.EmbryoParser(self.is_after_act_phase)
-        instruction_embryo = parser.parse(remaining_source(self.arguments))
+        instruction_embryo = parser.parse(ARBITRARY_FS_LOCATION_INFO, remaining_source(self.arguments))
         return instruction_embryo.custom_main(environment)
 
 

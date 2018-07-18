@@ -6,6 +6,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import Instruc
     InstructionPartsParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
 from exactly_lib.symbol.data.restrictions.value_restrictions import StringRestriction
@@ -282,5 +283,7 @@ class PartsParserThatGives(InstructionPartsParser):
     def __init__(self, parts: instruction_parts.InstructionParts):
         self.parts = parts
 
-    def parse(self, source: ParseSource) -> InstructionParts:
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> InstructionParts:
         return self.parts

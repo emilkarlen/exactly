@@ -6,6 +6,7 @@ import unittest
 
 from exactly_lib.instructions.multi_phase.utils import instruction_embryo as embryo
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -376,7 +377,9 @@ class ParserThatGives(embryo.InstructionEmbryoParser):
                  instruction: embryo.InstructionEmbryo):
         self.instruction = instruction
 
-    def parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> embryo.InstructionEmbryo:
         return self.instruction
 
 

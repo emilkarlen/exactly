@@ -1,6 +1,7 @@
 from typing import Sequence
 
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
@@ -44,8 +45,20 @@ class InstructionEmbryo(MainStepExecutorEmbryo):
 
 
 class InstructionEmbryoParser:
-    def parse(self, source: ParseSource) -> InstructionEmbryo:
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> InstructionEmbryo:
         raise NotImplementedError()
+
+
+class InstructionEmbryoParserWoFileSystemLocationInfo(InstructionEmbryoParser):
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> InstructionEmbryo:
+        return self._parse(source)
+
+    def _parse(self, source: ParseSource) -> InstructionEmbryo:
+        raise NotImplementedError('abstract method')
 
 
 class InstructionEmbryoParserThatConsumesCurrentLine(InstructionEmbryoParser):
@@ -59,7 +72,9 @@ class InstructionEmbryoParserThatConsumesCurrentLine(InstructionEmbryoParser):
     Precondition: The source must have a current line.
     """
 
-    def parse(self, source: ParseSource) -> InstructionEmbryo:
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> InstructionEmbryo:
         rest_of_line = source.remaining_part_of_current_line
         source.consume_current_line()
         return self._parse(rest_of_line)

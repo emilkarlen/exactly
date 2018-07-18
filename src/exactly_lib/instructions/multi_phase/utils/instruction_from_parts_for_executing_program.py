@@ -55,14 +55,14 @@ class ResultAndStderrTranslator(MainStepResultTranslator):
         return result_to_pfh(main_result)
 
 
-class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParser):
+class InstructionEmbryoParser(instruction_embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
     def __init__(self,
                  instruction_name: str,
                  program_parser: Parser[ProgramResolver]):
         self.instruction_name = instruction_name
         self.program_parser = program_parser
 
-    def parse(self, source: ParseSource) -> TheInstructionEmbryo:
+    def _parse(self, source: ParseSource) -> TheInstructionEmbryo:
         source_info = InstructionSourceInfo(source.current_line_number,
                                             self.instruction_name)
         program = self.program_parser.parse(source)

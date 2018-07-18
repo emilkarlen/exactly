@@ -6,6 +6,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_embryo import MainSt
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import MainStepExecutor, \
     InstructionParts, InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh
@@ -81,8 +82,10 @@ class PartsParserFromEmbryoParser(InstructionPartsParser):
         self.embryo_parser = embryo_parser
         self.main_step_result_translator = main_step_result_translator
 
-    def parse(self, source: ParseSource) -> InstructionParts:
-        instruction_embryo = self.embryo_parser.parse(source)
+    def parse(self,
+              fs_location_info: FileSystemLocationInfo,
+              source: ParseSource) -> InstructionParts:
+        instruction_embryo = self.embryo_parser.parse(fs_location_info, source)
         assert isinstance(instruction_embryo, InstructionEmbryo)
         return instruction_parts_from_embryo(instruction_embryo,
                                              self.main_step_result_translator)

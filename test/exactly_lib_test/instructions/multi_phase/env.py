@@ -11,6 +11,7 @@ from exactly_lib_test.common.help.test_resources.check_documentation import suit
 from exactly_lib_test.instructions.multi_phase.test_resources import \
     instruction_embryo_check as embryo_check
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, source4
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
@@ -40,26 +41,26 @@ class TestParseSet(unittest.TestCase):
     def test_fail_when_there_is_no_arguments(self):
         source = source4('')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_fail_when_there_is_more_than_three_argument(self):
         source = source4('argument1 = argument3 argument4')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_there_is_exactly_one_assignment(self):
         source = source4('name = value')
-        self.parser.parse(source)
+        self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_variable_name_must_not_be_quoted(self):
         source = source4("'long name' = 'long value'")
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_raise_invalid_argument_if_invalid_quoting(self):
         source = source4("name = 'long value")
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestParseUnset(unittest.TestCase):
@@ -68,32 +69,32 @@ class TestParseUnset(unittest.TestCase):
     def test_raise_invalid_argument_if_invalid_quoting(self):
         source = source4("unset 'invalid_name")
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_fail_when_there_is_no_arguments(self):
         source = source4('unset')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_fail_when_there_is_more_than_one_argument(self):
         source = source4('unset name superfluous')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_succeed_when_there_is_exactly_one_argument(self):
         source = source4('unset name')
-        self.parser.parse(source)
+        self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_unset_identifier_must_not_be_quoted(self):
         with self.assertRaises(SingleInstructionInvalidArgumentException):
             source = source4("'unset' 'long name'")
-            self.parser.parse(source)
+            self.parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestSet(unittest.TestCase):
     def test_set(self):
         parser = sut.EmbryoParser()
-        instruction_embryo = parser.parse(source4('name = value'))
+        instruction_embryo = parser.parse(ARBITRARY_FS_LOCATION_INFO, source4('name = value'))
         assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         environ = {}
         instruction_embryo.executor.execute(environ, dummy_resolving_env())
@@ -197,7 +198,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
     def test_set_value_that_references_an_env_var(self):
         parser = sut.EmbryoParser()
         environ = {'MY_VAR': 'MY_VAL'}
-        instruction_embryo = parser.parse(source4('name = ${MY_VAR}'))
+        instruction_embryo = parser.parse(ARBITRARY_FS_LOCATION_INFO, source4('name = ${MY_VAR}'))
         assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         instruction_embryo.executor.execute(environ, dummy_resolving_env())
         self.assertEqual(environ,
@@ -208,7 +209,8 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
         parser = sut.EmbryoParser()
         environ = {'MY_VAR': 'MY_VAL',
                    'YOUR_VAR': 'YOUR_VAL'}
-        instruction_embryo = parser.parse(source4('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
+        instruction_embryo = parser.parse(ARBITRARY_FS_LOCATION_INFO,
+                                          source4('name = "pre ${MY_VAR} ${YOUR_VAR} post"'))
         assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         instruction_embryo.executor.execute(environ, dummy_resolving_env())
         self.assertEqual(environ,
@@ -218,7 +220,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
 
     def test_a_references_to_a_non_existing_env_var_SHOULD_be_replaced_with_empty_string(self):
         parser = sut.EmbryoParser()
-        instruction_embryo = parser.parse(source4('name = ${NON_EXISTING_VAR}'))
+        instruction_embryo = parser.parse(ARBITRARY_FS_LOCATION_INFO, source4('name = ${NON_EXISTING_VAR}'))
         assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         environ = {}
         instruction_embryo.executor.execute(environ, dummy_resolving_env())
@@ -229,7 +231,7 @@ class TestSetWithReferencesToExistingEnvVars(unittest.TestCase):
 class TestUnset(unittest.TestCase):
     def test_unset(self):
         parser = sut.EmbryoParser()
-        instruction_embryo = parser.parse(source4('unset a'))
+        instruction_embryo = parser.parse(ARBITRARY_FS_LOCATION_INFO, source4('unset a'))
         assert isinstance(instruction_embryo, sut.TheInstructionEmbryo)
         environ = {'a': 'A', 'b': 'B'}
         instruction_embryo.executor.execute(environ, dummy_resolving_env())

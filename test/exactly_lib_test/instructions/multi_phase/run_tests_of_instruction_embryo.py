@@ -20,6 +20,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restriction_assertion import \
@@ -61,7 +62,7 @@ class TestInvalidSyntax(unittest.TestCase):
         parser = sut.embryo_parser('instruction-name')
         source = remaining_source('"abc xyz')
         with self.assertRaises(SingleInstructionInvalidArgumentException):
-            parser.parse(source)
+            parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestCaseBase(home_and_sds_test.TestCaseBase):

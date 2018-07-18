@@ -10,6 +10,7 @@ from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources impo
 from exactly_lib_test.instructions.multi_phase.test_resources.instruction_embryo_check import Expectation
 from exactly_lib_test.instructions.test_resources.arrangements import ArrangementWithSds
 from exactly_lib_test.section_document.test_resources import parse_source_assertions as asrt_source
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as vs_asrt
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import string_constant_container, \
     container
@@ -46,7 +47,7 @@ class TestFailingParseDueToInvalidSyntax(unittest.TestCase):
             source = remaining_source(source_str)
             with self.subTest(msg=case_name):
                 with self.assertRaises(SingleInstructionInvalidArgumentException):
-                    parser.parse(source)
+                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 
 class TestSuccessfulDefinition(TestCaseBaseForParser):

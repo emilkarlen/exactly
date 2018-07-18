@@ -112,14 +112,14 @@ class TheInstructionEmbryo(embryo.InstructionEmbryo):
         return self._file_maker.make(environment, os_services, path_to_create)
 
 
-class EmbryoParser(embryo.InstructionEmbryoParser):
+class EmbryoParser(embryo.InstructionEmbryoParserWoFileSystemLocationInfo):
     def __init__(self,
                  instruction_name: str,
                  phase_is_after_act: bool):
         self._phase_is_after_act = phase_is_after_act
         self._instruction_name = instruction_name
 
-    def parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
+    def _parse(self, source: ParseSource) -> embryo.InstructionEmbryo:
         first_line_number = source.current_line_number
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True) as parser:

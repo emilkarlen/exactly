@@ -19,6 +19,7 @@ from exactly_lib_test.instructions.test_resources.arrangements import Arrangemen
 from exactly_lib_test.instructions.test_resources.assertion_utils import sub_process_result_check as spr_check
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import single_line_source
 from exactly_lib_test.test_case_file_structure.test_resources.home_populators import case_home_dir_contents
 from exactly_lib_test.test_case_file_structure.test_resources.sds_populator import contents_in
@@ -79,7 +80,7 @@ class TestCaseBase(home_and_sds_test.TestCaseBase):
                                                           expectation: home_and_sds_test.Expectation):
         for source in equivalent_source_variants__with_source_check(self, instruction_argument):
             embryo_parser = sut.embryo_parser('instruction-name')
-            instruction_embryo = embryo_parser.parse(source)
+            instruction_embryo = embryo_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
             action = ExecuteAction(instruction_embryo)
             self._check(action, arrangement, expectation)
 

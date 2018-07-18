@@ -4,6 +4,7 @@ from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, RelNonHomeOptionType, \
     PathRelativityVariants
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_utils.test_resources.relativity_options import conf_rel_non_home, \
     default_conf_rel_non_home
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -40,4 +41,4 @@ IS_SUCCESS = asrt.is_none
 
 def just_parse(source: ParseSource,
                phase_is_after_act: bool = True):
-    sut.EmbryoParser('the-instruction-name', phase_is_after_act).parse(source)
+    sut.EmbryoParser('the-instruction-name', phase_is_after_act).parse(ARBITRARY_FS_LOCATION_INFO, source)
