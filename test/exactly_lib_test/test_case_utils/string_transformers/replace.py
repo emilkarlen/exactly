@@ -89,18 +89,18 @@ class Test(unittest.TestCase):
         self.assertEqual(expected_lines,
                          actual_lines)
 
-    def test_newline_ends_SHOULD_be_included_in_the_transformation(self):
+    def test_newline_ends_SHOULD_not_be_included_in_the_transformation(self):
         # ARRANGE #
         lines = [
-            '\n',
-            '',
+            ' 1 2 \n',
+            ' 3 4 ',
         ]
         expected_lines = [
-            '',
-            '',
+            '12\n',
+            '34',
         ]
         input_lines_iter = iter(lines)
-        transformer = sut.ReplaceStringTransformer(re.compile('\n'),
+        transformer = sut.ReplaceStringTransformer(re.compile('\s'),
                                                    '')
         # ACT #
 
