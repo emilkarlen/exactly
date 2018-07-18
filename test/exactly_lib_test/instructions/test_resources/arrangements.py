@@ -1,7 +1,9 @@
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
 from exactly_lib.util.process_execution.execution_elements import with_no_timeout, ProcessExecutionSettings
 from exactly_lib.util.symbol_table import SymbolTable, symbol_table_from_none_or_value
+from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.test_case_file_structure.test_resources import non_home_populator, home_populators, \
     home_and_sds_populators, sds_populator
 from exactly_lib_test.test_resources.process import SubProcessResult
@@ -52,6 +54,7 @@ class ArrangementWithSds(ArrangementBase):
                  process_execution_settings=with_no_timeout(),
                  post_sds_population_action: HomeAndSdsAction = HomeAndSdsAction(),
                  symbols: SymbolTable = None,
+                 fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):
         super().__init__(hds_contents=hds_contents,
                          process_execution_settings=process_execution_settings)
@@ -63,6 +66,7 @@ class ArrangementWithSds(ArrangementBase):
         self.os_services = os_services
         self.process_execution_settings = process_execution_settings
         self.symbols = symbol_table_from_none_or_value(symbols)
+        self.fs_location_info = fs_location_info
 
 
 class ArrangementPostAct(ArrangementWithSds):
@@ -77,6 +81,7 @@ class ArrangementPostAct(ArrangementWithSds):
                  os_services: OsServices = new_default(),
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  symbols: SymbolTable = None,
+                 fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          sds_contents=sds_contents,
@@ -86,5 +91,6 @@ class ArrangementPostAct(ArrangementWithSds):
                          post_sds_population_action=post_sds_population_action,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
-                         symbols=symbols)
+                         symbols=symbols,
+                         fs_location_info=fs_location_info)
         self.act_result_producer = act_result_producer
