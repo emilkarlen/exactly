@@ -1,5 +1,13 @@
 -*- org -*-
 
+* When PathPart is absolute THEN FileRef will be absolute
+<2018-07-18 wed>
+even if the FileRefResolver, and maybe also the FileRef,
+say it is relative.
+
+Solution:
+Validate that all resolved PathPart:s are relative paths.
+* Bug: linux: exactly suite SUITE-FILE (where SUITE-FILE is a dir)
 * suite: env instruction modifes env of following test cases
 <2018-07-08 Sun>
 * linux: exactly suite SUITE-FILE (where SUITE-FILE is a dir)
@@ -87,6 +95,3 @@ exactly_lib.instructions.assert_.utils.file_contents.parts.equality.EqualityCont
 *** solution might be to call open() with an "encoding" argument
 See "encoding" attribute of open() in Python doc
 *** see codecs module
-* string-transformer replace: includes ending \n in string that is processed
-pre <2018-07-14 Sat>
-I think
