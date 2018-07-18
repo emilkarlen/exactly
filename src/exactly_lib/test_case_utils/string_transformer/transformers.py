@@ -20,9 +20,15 @@ class ReplaceStringTransformer(StringTransformer):
 
     def transform(self, lines: Iterable[str]) -> Iterable[str]:
         return (
-            self._compiled_regular_expression.sub(self._replacement, line)
+            self._process_line(line)
             for line in lines
         )
+
+    def _process_line(self, line: str) -> str:
+        if line and line[-1] == '\n':
+            return self._compiled_regular_expression.sub(self._replacement, line[:-1]) + '\n'
+        else:
+            return self._compiled_regular_expression.sub(self._replacement, line)
 
     def __str__(self):
         return '{}({})'.format(type(self).__name__,
