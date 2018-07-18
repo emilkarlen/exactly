@@ -165,7 +165,7 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         with from_parse_source(source,
                                consume_last_line_if_is_at_eol_after_parse=True,
                                consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
-            symbol_name, value_resolver = _parse(token_parser)
+            symbol_name, value_resolver = _parse(fs_location_info, token_parser)
 
         remaining_source_after = source.remaining_source
         num_chars_consumed = len(remaining_source_before) - len(remaining_source_after)
@@ -184,7 +184,8 @@ PARTS_PARSER = PartsParserFromEmbryoParser(EmbryoParser(),
                                            MainStepResultTranslatorForErrorMessageStringResultAsHardError())
 
 
-def _parse(parser: TokenParser) -> Tuple[str, SymbolValueResolver]:
+def _parse(fs_location_info: FileSystemLocationInfo,
+           parser: TokenParser) -> Tuple[str, SymbolValueResolver]:
     type_str = parser.consume_mandatory_unquoted_string('SYMBOL-TYPE', True)
 
     if type_str not in _TYPE_SETUPS:
@@ -201,7 +202,7 @@ def _parse(parser: TokenParser) -> Tuple[str, SymbolValueResolver]:
 
     parser.consume_mandatory_constant_unquoted_string(syntax.ASSIGNMENT_ARGUMENT, True)
 
-    consumes_whole_line, value_resolver = value_parser(parser)
+    consumes_whole_line, value_resolver = value_parser(fs_location_info, parser)
 
     if not consumes_whole_line and not parser.is_at_eol:
         msg = 'Superfluous arguments: ' + parser.remaining_part_of_current_line
@@ -236,44 +237,56 @@ not when it is defined!
 """
 
 
-def _parse_string(token_parser: TokenParser) -> Tuple[bool, DataValueResolver]:
+def _parse_string(fs_location_info: FileSystemLocationInfo,
+                  token_parser: TokenParser) -> Tuple[bool, DataValueResolver]:
     source_type, resolver = parse_string_or_here_doc_from_token_parser(token_parser)
     return source_type == SourceType.HERE_DOC, resolver
 
 
-def _parse_not_whole_line(parser: Callable[[TokenParser], SymbolValueResolver]
-                          ) -> Callable[[TokenParser], Tuple[bool, SymbolValueResolver]]:
-    def f(tp: TokenParser) -> Tuple[bool, SymbolValueResolver]:
-        return False, parser(tp)
+def _parse_not_whole_line(parser: Callable[[FileSystemLocationInfo, TokenParser], SymbolValueResolver]
+                          ) -> Callable[[FileSystemLocationInfo, TokenParser], Tuple[bool, SymbolValueResolver]]:
+    def f(fs_location_info: FileSystemLocationInfo,
+          tp: TokenParser) -> Tuple[bool, SymbolValueResolver]:
+        return False, parser(fs_location_info, tp)
 
     return f
 
 
-def _parse_path(token_parser: TokenParser) -> DataValueResolver:
+def _parse_path(fs_location_info: FileSystemLocationInfo,
+                token_parser: TokenParser) -> DataValueResolver:
     return parse_file_ref.parse_file_ref_from_token_parser(REL_OPTION_ARGUMENT_CONFIGURATION, token_parser)
 
 
-def _parse_line_matcher(token_parser: TokenParser) -> LineMatcherResolver:
+def _parse_list(fs_location_info: FileSystemLocationInfo,
+                token_parser: TokenParser) -> DataValueResolver:
+    return parse_list.parse_list_from_token_parser(token_parser)
+
+
+def _parse_line_matcher(fs_location_info: FileSystemLocationInfo,
+                        token_parser: TokenParser) -> LineMatcherResolver:
     if token_parser.is_at_eol:
         return parse_line_matcher.CONSTANT_TRUE_MATCHER_RESOLVER
     else:
         return parse_line_matcher.parse_line_matcher_from_token_parser(token_parser)
 
 
-def _parse_file_matcher(token_parser: TokenParser) -> FileMatcherResolver:
+def _parse_file_matcher(fs_location_info: FileSystemLocationInfo,
+                        token_parser: TokenParser) -> FileMatcherResolver:
     if token_parser.is_at_eol:
         return parse_file_matcher.SELECTION_OF_ALL_FILES
     else:
         return parse_file_matcher.parse_resolver(token_parser)
 
 
-def _parse_string_transformer(token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
+def _parse_string_transformer(fs_location_info: FileSystemLocationInfo,
+                              token_parser: TokenParser) -> line_transformer_resolvers.StringTransformerResolver:
     if token_parser.is_at_eol:
         return line_transformer_resolvers.StringTransformerConstant(IdentityStringTransformer())
     return parse_string_transformer.parse_string_transformer_from_token_parser(token_parser)
 
 
-def _parse_program(token_parser: TokenParser) -> Tuple[bool, ProgramResolver]:
+def _parse_program(fs_location_info: FileSystemLocationInfo,
+                   token_parser: TokenParser) -> Tuple[bool, ProgramResolver]:
     ret_val = parse_program.parse_program(token_parser)
     return True, ret_val
 
@@ -281,7 +294,7 @@ def _parse_program(token_parser: TokenParser) -> Tuple[bool, ProgramResolver]:
 _TYPE_SETUPS = {
     types.PATH_TYPE_INFO.identifier: _parse_not_whole_line(_parse_path),
     types.STRING_TYPE_INFO.identifier: _parse_string,
-    types.LIST_TYPE_INFO.identifier: _parse_not_whole_line(parse_list.parse_list_from_token_parser),
+    types.LIST_TYPE_INFO.identifier: _parse_not_whole_line(_parse_list),
     types.LINE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_line_matcher),
     types.FILE_MATCHER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_file_matcher),
     types.STRING_TRANSFORMER_TYPE_INFO.identifier: _parse_not_whole_line(_parse_string_transformer),
