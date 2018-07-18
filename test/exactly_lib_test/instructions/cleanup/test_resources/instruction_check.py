@@ -4,6 +4,7 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import OsServices, new_default
 from exactly_lib.test_case.phases import common as i
@@ -39,6 +40,7 @@ class Arrangement(ArrangementWithSds):
                  process_execution_settings: ProcessExecutionSettings = with_no_timeout(),
                  previous_phase: PreviousPhase = PreviousPhase.ASSERT,
                  symbols: SymbolTable = None,
+                 fs_location_info: FileSystemLocationInfo = ARBITRARY_FS_LOCATION_INFO,
                  ):
         super().__init__(pre_contents_population_action=pre_contents_population_action,
                          hds_contents=hds_contents,
@@ -47,7 +49,8 @@ class Arrangement(ArrangementWithSds):
                          home_or_sds_contents=home_or_sds_contents,
                          os_services=os_services,
                          process_execution_settings=process_execution_settings,
-                         symbols=symbols)
+                         symbols=symbols,
+                         fs_location_info=fs_location_info)
         self.previous_phase = previous_phase
 
 
@@ -102,7 +105,7 @@ class Executor(InstructionExecutionBase):
     def execute(self,
                 parser: InstructionParser,
                 source: ParseSource):
-        instruction = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+        instruction = parser.parse(self.arrangement.fs_location_info, source)
         self._check_instruction(CleanupPhaseInstruction, instruction)
         self.expectation.source.apply_with_message(self.put, source, 'source')
         assert isinstance(instruction, CleanupPhaseInstruction)
