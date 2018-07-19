@@ -1,0 +1,46 @@
+-*- org -*-
+
+File inclusion done by the section document parser.
+
+
+* Definition of path constants, for more flexible location of files
+<2018-07-19 tor>
+Similair to
+----------------------------------------
+def path P ...
+----------------------------------------
+in test cases.
+
+E.g.
+----------------------------------------
+include-dir D = PATH-REL-SOURCE-FILE
+
+including [D]/my-file.xly
+----------------------------------------
+
+But symbols cannot be used while parsing, so new functionality, in the
+parser, is needed.
+
+Perhaps a special syntax, as of CPP, would make code more readable.
+
+----------------------------------------
+*include-dir D = PATH-REL-SOURCE-FILE
+
+*including [D]/my-file.xly
+----------------------------------------
+
+
+* Definition of global inclusion PATH, for more flexible location of files
+<2018-07-19 tor>
+Many languages and system have a concept of global inclusion PATH.
+This PATH would be searched for file references if the included file name
+is a name without directory components, and the file does not exit using
+the normal resolving.
+
+E.g.
+
+----------------------------------------
+inclusion-path = DIR-REL-SOURCE-FILE...
+
+inclusion-path += DIR-REL-SOURCE-FILE...
+----------------------------------------
