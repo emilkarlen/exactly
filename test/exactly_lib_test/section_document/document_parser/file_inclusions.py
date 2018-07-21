@@ -5,7 +5,8 @@ from typing import List, Dict, Sequence
 from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.model import SectionContentElement, ElementType
-from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
+from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration, \
+    FileSystemLocationInfo
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.arrangement_and_expectation import Expectation, \
@@ -936,18 +937,32 @@ class TestFileReferenceRelativityRootIsGivenToElementParser(unittest.TestCase):
                 SectionConfiguration(SECTION_1_NAME,
                                      SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(
                                          SECTION_1_NAME,
-                                         do_raise_ex_if_included_file_is_not_existing_file_rel_file_incl_path=True)
+                                         extra_inclusion_action=self.do_raise_ex_if_any_file_not_exists)
                                      ),
             ]))
 
-        arrangement = Arrangement(
-            section_conf_with_parser_that_raises_ex_if_included_file_is_not_existing_file_rel_file_incl_rel_path,
-            setup.dir_contents,
-            setup.root_file_path,
-        )
-        expectation = Expectation(asrt.anything_goes())
-        # ACT & ASSERT #
-        check(self, arrangement, expectation)
+        for dir_containing_root_file_rel_cwd in ['.', 'sub-dir']:
+            cwd_dir_contents = setup.dir_contents if dir_containing_root_file_rel_cwd == '.' \
+                else DirContents([Dir(dir_containing_root_file_rel_cwd,
+                                      setup.dir_contents.file_system_elements)])
+            arrangement = Arrangement(
+                section_conf_with_parser_that_raises_ex_if_included_file_is_not_existing_file_rel_file_incl_rel_path,
+                cwd_dir_contents=cwd_dir_contents,
+                root_file=Path(dir_containing_root_file_rel_cwd) / setup.root_file_path,
+            )
+            expectation = Expectation(asrt.anything_goes())
+            with self.subTest(dir_containing_root_file_rel_cwd=dir_containing_root_file_rel_cwd):
+                # ACT & ASSERT #
+                check(self, arrangement, expectation)
+
+    @staticmethod
+    def do_raise_ex_if_any_file_not_exists(fs_location_info: FileSystemLocationInfo,
+                                           paths_to_include: Sequence[Path]):
+        file_reference_relativity_root_dir = fs_location_info.file_reference_relativity_root_dir
+        for included_file_path in paths_to_include:
+            p = file_reference_relativity_root_dir / included_file_path
+            if not p.exists():
+                raise ValueError('Path of included file does not exist rel CWD: ' + str(p))
 
 
 class TestAbsPathOfDirContainingFile(unittest.TestCase):

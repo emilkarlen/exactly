@@ -1,5 +1,6 @@
 import pathlib
-from typing import Sequence, Optional
+from pathlib import Path
+from typing import Sequence, Optional, Callable
 
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.model import InstructionInfo
@@ -52,11 +53,10 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
 
     def __init__(self,
                  section_name_to_register_in_instructions: str,
-                 do_raise_ex_if_included_file_is_not_existing_file_rel_file_incl_path: bool = False
+                 extra_inclusion_action: Optional[Callable[[FileSystemLocationInfo, Sequence[Path]], None]] = None
                  ):
         self._section_name_to_register_in_instructions = section_name_to_register_in_instructions
-        self._do_raise_ex_if_included_file_is_not_existing_file = \
-            do_raise_ex_if_included_file_is_not_existing_file_rel_file_incl_path
+        self.extra_inclusion_action = extra_inclusion_action
 
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
@@ -73,9 +73,8 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
                 pathlib.Path(file_name)
                 for file_name in current_line_parts[1:]
             ]
-            if self._do_raise_ex_if_included_file_is_not_existing_file:
-                self._do_raise_ex_if_any_file_not_exists(fs_location_info.file_reference_relativity_root_dir,
-                                                         paths_to_include)
+            if self.extra_inclusion_action is not None:
+                self.extra_inclusion_action(fs_location_info, paths_to_include)
             return ParsedFileInclusionDirective(consumed_source, paths_to_include)
         elif current_line_parts[0] == SYNTAX_ERROR_INSTRUCTION_NAME:
             raise SourceError(consumed_source, current_line_parts[1])
@@ -85,14 +84,6 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
                                          self._section_name_to_register_in_instructions)))
         else:
             raise ValueError('Unknown source: ' + current_line)
-
-    @staticmethod
-    def _do_raise_ex_if_any_file_not_exists(file_reference_relativity_root_dir: pathlib.Path,
-                                            paths_to_include: Sequence[pathlib.Path]):
-        for included_file_path in paths_to_include:
-            p = file_reference_relativity_root_dir / included_file_path
-            if not p.exists():
-                raise ValueError('Path of included file does not exist: ' + str(p))
 
 
 SECTIONS_CONFIGURATION = SectionsConfiguration([
