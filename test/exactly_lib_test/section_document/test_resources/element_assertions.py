@@ -23,7 +23,7 @@ def matches_section_contents_element(
         element_type: ElementType,
         source: asrt.ValueAssertion[line_source.LineSequence] = asrt.anything_goes(),
         instruction_info: asrt.ValueAssertion[model.InstructionInfo] = asrt.anything_goes(),
-        file_path: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+        file_path_rel_referrer: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
         file_inclusion_chain: asrt.ValueAssertion[Sequence[line_source.SourceLocation]] = asrt.anything_goes(),
         abs_path_of_dir_containing_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[model.SectionContentElement]:
@@ -34,9 +34,9 @@ def matches_section_contents_element(
         asrt.sub_component('source',
                            model.SectionContentElement.source.fget,
                            source),
-        asrt.sub_component('file_path',
-                           model.SectionContentElement.file_path.fget,
-                           file_path),
+        asrt.sub_component('file_path_rel_referrer',
+                           model.SectionContentElement.file_path_rel_referrer.fget,
+                           file_path_rel_referrer),
         asrt.sub_component('file_inclusion_chain',
                            model.SectionContentElement.file_inclusion_chain.fget,
                            file_inclusion_chain),
@@ -86,14 +86,14 @@ def equals_file_inclusion_chain(expected: List[line_source.SourceLocation]
 def equals_instruction_without_description(line_number: int,
                                            line_text: str,
                                            section_name: str,
-                                           file_path: pathlib.Path,
+                                           file_path_rel_referrer: pathlib.Path,
                                            file_inclusion_chain: List[line_source.SourceLocation],
                                            ) -> asrt.ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,
         equals_line_sequence(single_line_sequence(line_number, line_text)),
         matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name))),
-        asrt.equals(file_path),
+        asrt.equals(file_path_rel_referrer),
         equals_file_inclusion_chain(file_inclusion_chain),
     )
 

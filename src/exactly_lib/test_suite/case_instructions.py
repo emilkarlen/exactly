@@ -46,7 +46,7 @@ class TestCaseSectionContentElementFactory:
         self._instruction_factory = instruction_factory
 
     def make(self) -> SectionContentElement:
-        element_builder = SectionContentElementBuilder(self._source_location.file_path)
+        element_builder = SectionContentElementBuilder(self._source_location.file_path_rel_referrer)
         return element_builder.new_instruction(self._source_location.source,
                                                self._instruction_factory.make_case_instruction(),
                                                self._description)

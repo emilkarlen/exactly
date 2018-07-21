@@ -49,13 +49,13 @@ class SectionContentElement:
                  element_type: ElementType,
                  source: line_source.LineSequence,
                  instruction_info: InstructionInfo,
-                 file_path: pathlib.Path = None,
+                 file_path_rel_referrer: pathlib.Path = None,
                  file_inclusion_chain: Sequence[SourceLocation] = (),
                  abs_path_of_dir_containing_file: pathlib.Path = None):
         self._element_type = element_type
         self._source = source
         self._instruction_info = instruction_info
-        self._location = SourceLocation(source, file_path)
+        self._location = SourceLocation(source, file_path_rel_referrer)
         self._file_inclusion_chain = file_inclusion_chain
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
@@ -88,11 +88,11 @@ class SectionContentElement:
                                   self.file_inclusion_chain)
 
     @property
-    def file_path(self) -> pathlib.Path:
+    def file_path_rel_referrer(self) -> pathlib.Path:
         """
         :return: The file component of `location`
         """
-        return self._location.file_path
+        return self._location.file_path_rel_referrer
 
     @property
     def abs_path_of_dir_containing_file(self) -> pathlib.Path:
