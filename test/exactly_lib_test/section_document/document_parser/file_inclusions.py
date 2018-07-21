@@ -249,8 +249,8 @@ class TestSectionSwitching(unittest.TestCase):
                                 1,
                                 instruction_1_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(1, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ])
@@ -274,8 +274,8 @@ class TestSectionSwitching(unittest.TestCase):
                                 1,
                                 instruction_1_in_included_file,
                                 SECTION_2_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ])
@@ -326,8 +326,8 @@ class TestSectionSwitching(unittest.TestCase):
                         2,
                         instruction_1_in_included_file,
                         SECTION_2_NAME,
-                        included_file_path,
-                        [
+                        file_path_rel_referrer=included_file_path,
+                        file_inclusion_chain=[
                             SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                            root_file_path)
                         ])
@@ -369,8 +369,8 @@ class TestCombinationOfDocuments(unittest.TestCase):
                                 1,
                                 instruction_1_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ])
@@ -423,8 +423,8 @@ class TestCombinationOfDocuments(unittest.TestCase):
                                 1,
                                 instruction_1_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(3, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -449,8 +449,8 @@ class TestCombinationOfDocuments(unittest.TestCase):
                                 1,
                                 instruction_1_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -488,8 +488,8 @@ class TestCombinationOfDocuments(unittest.TestCase):
                                 1,
                                 instruction_1_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(3, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -529,8 +529,8 @@ class TestCombinationOfDocuments(unittest.TestCase):
                                 2,
                                 instruction_1_in_included_file,
                                 SECTION_2_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(3, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -699,8 +699,8 @@ class TestMultipleInclusionsOfSameFile(unittest.TestCase):
                                 1,
                                 instruction_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -708,8 +708,8 @@ class TestMultipleInclusionsOfSameFile(unittest.TestCase):
                                 1,
                                 instruction_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(3, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -733,8 +733,8 @@ class TestMultipleInclusionsOfSameFile(unittest.TestCase):
                                 1,
                                 instruction_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(
                                         single_line_sequence(2, inclusion_of_list_of_files([included_file_name,
                                                                                             included_file_name])),
@@ -744,8 +744,8 @@ class TestMultipleInclusionsOfSameFile(unittest.TestCase):
                                 1,
                                 instruction_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(
                                         single_line_sequence(2, inclusion_of_list_of_files([included_file_name,
                                                                                             included_file_name])),
@@ -773,8 +773,8 @@ class TestMultipleInclusionsOfSameFile(unittest.TestCase):
                                 1,
                                 instruction_in_included_file,
                                 SECTION_1_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(2, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -784,8 +784,8 @@ class TestMultipleInclusionsOfSameFile(unittest.TestCase):
                                 1,
                                 instruction_in_included_file,
                                 SECTION_2_NAME,
-                                included_file_path,
-                                [
+                                file_path_rel_referrer=included_file_path,
+                                file_inclusion_chain=[
                                     SourceLocation(single_line_sequence(4, inclusion_of_file(included_file_name)),
                                                    root_file_path)
                                 ]),
@@ -869,8 +869,8 @@ class TestInclusionFromInclusion(unittest.TestCase):
                     1,
                     setup.source_line_in_included_file_2,
                     SECTION_1_NAME,
-                    Path(setup.included_file_2.name),
-                    [
+                    file_path_rel_referrer=Path(setup.included_file_2.name),
+                    file_inclusion_chain=[
                         setup.source_location_of_inclusion_of_file_1_from_root_file,
                         setup.source_location_of_inclusion_of_file_2_from_included_file_1,
                     ]
@@ -879,8 +879,8 @@ class TestInclusionFromInclusion(unittest.TestCase):
                     2,
                     setup.instruction_in_included_file_1,
                     SECTION_1_NAME,
-                    Path(setup.sub_dir_of_included_files) / setup.included_file_1.name,
-                    [
+                    file_path_rel_referrer=Path(setup.sub_dir_of_included_files) / setup.included_file_1.name,
+                    file_inclusion_chain=[
                         setup.source_location_of_inclusion_of_file_1_from_root_file,
                     ]
                 ),
@@ -888,8 +888,8 @@ class TestInclusionFromInclusion(unittest.TestCase):
                     3,
                     setup.instruction_in_root_file,
                     SECTION_1_NAME,
-                    setup.root_file_path,
-                    NO_FILE_INCLUSIONS,
+                    file_path_rel_referrer=setup.root_file_path,
+                    file_inclusion_chain=NO_FILE_INCLUSIONS,
                 ),
             ],
         }
