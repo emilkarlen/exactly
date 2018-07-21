@@ -69,12 +69,12 @@ class SourceLocation(tuple):
 
     def __new__(cls,
                 source: LineSequence,
-                file_path: pathlib.Path):
+                file_path_rel_referrer: pathlib.Path):
         """
-        :param source: None iff source if not relevant
-        :param file_path: None iff source does not originate from a file
+        :param source: See corresponding getter
+        :param file_path_rel_referrer: See corresponding getter
         """
-        return tuple.__new__(cls, (source, file_path))
+        return tuple.__new__(cls, (source, file_path_rel_referrer))
 
     @property
     def source(self) -> LineSequence:
@@ -84,9 +84,12 @@ class SourceLocation(tuple):
         return self[0]
 
     @property
-    def file_path(self) -> pathlib.Path:
+    def file_path_rel_referrer(self) -> pathlib.Path:
         """
         :return: None iff source does not originate from a file
+        The path is relative the directory that contains the referring file - the file
+        that includes this file (in case of file inclusion), or the PWD, e.g. for a
+        CLI argument case file.
         """
         return self[1]
 

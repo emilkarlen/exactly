@@ -98,15 +98,15 @@ def matches_source_location(source: asrt.ValueAssertion[LineSequence] = asrt.any
                                      asrt.sub_component('source',
                                                         SourceLocation.source.fget,
                                                         source),
-                                     asrt.sub_component('file_path',
-                                                        SourceLocation.file_path.fget,
+                                     asrt.sub_component('file_path_rel_referrer',
+                                                        SourceLocation.file_path_rel_referrer.fget,
                                                         file_path),
                                  ]))
 
 
 def equals_source_location(expected: SourceLocation) -> asrt.ValueAssertion[SourceLocation]:
     return matches_source_location(source=equals_line_sequence(expected.source),
-                                   file_path=asrt.equals(expected.file_path))
+                                   file_path=asrt.equals(expected.file_path_rel_referrer))
 
 
 def equals_source_location_sequence(expected: Sequence[SourceLocation]

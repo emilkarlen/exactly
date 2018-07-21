@@ -164,7 +164,7 @@ class TestOutputLocation(unittest.TestCase):
 def file_inclusion_chain_location(location: SourceLocation) -> List[str]:
     return (
             [
-                str(location.file_path) + ', line ' + str(location.source.first_line_number),
+                str(location.file_path_rel_referrer) + ', line ' + str(location.source.first_line_number),
             ] +
             [
                 '  ' + line_text

@@ -59,11 +59,11 @@ def _output_location(printer: FilePrinter,
                      section_name: str,
                      description: str) -> bool:
     has_output_header = False
-    if source_location and source_location.file_path:
+    if source_location and source_location.file_path_rel_referrer:
         if source_location.source:
             printer.write_line(line_in_file(source_location))
         else:
-            printer.write_line(_file_str(source_location.file_path))
+            printer.write_line(_file_str(source_location.file_path_rel_referrer))
         has_output_header = True
     if source_location and source_location.source:
         if has_output_header:
@@ -158,4 +158,4 @@ def print_file_inclusion_location(printer: FilePrinter,
 
 
 def line_in_file(location: SourceLocation) -> str:
-    return str(location.file_path) + ', line ' + str(location.source.first_line_number)
+    return str(location.file_path_rel_referrer) + ', line ' + str(location.source.first_line_number)
