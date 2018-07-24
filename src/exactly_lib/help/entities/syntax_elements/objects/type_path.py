@@ -187,7 +187,7 @@ If {PATH_STRING} is a relative path, then if {RELATIVITY_OPTION} is ...
 
 
 The default relativity depends on the instruction,
-and also on the argument position of the instruction. 
+and also on the argument's role in the instruction. 
 """
 
 _STRING_DESCRIPTION_REST = """\
@@ -202,7 +202,7 @@ An option that specifies the directory that {PATH_STRING} is relative to.
 
 
 The available relativities depends on the instruction,
-and also on the argument position of the instruction. 
+and also on the argument's role in the instruction. 
 
 
 Summary of options:
