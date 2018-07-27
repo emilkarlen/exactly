@@ -1,0 +1,53 @@
+#!/bin/bash
+
+HERE=$(dirname $0)
+EXE_NAME=$(basename $0)
+
+function abs_path_of_repo_root
+(
+  cd ${HERE}/../..
+  pwd
+)
+
+REPO_ROOT_DIR=$(abs_path_of_repo_root)
+
+DOCKER_IMAGE='linux-py3:latest'
+
+SHARE_DIR=/tmp/responsys-test-docker-share
+
+REPO_ROOT_IN_CONTAINER=/app/ibe
+SHARE_DIR_IN_CONTAINER=/share
+
+HELP="${EXE_NAME} [-h]
+
+Starts the docker container (${DOCKER_IMAGE})
+
+with the IBE repo (that contains this file) mounted inside the container (read-only) at
+
+  ${REPO_ROOT_IN_CONTAINER}
+
+and a shared dir (${SHARE_DIR}) mounted (read-write) at
+
+  ${SHARE_DIR_IN_CONTAINER}
+
+${SHARE_DIR} is created if it does not exist."
+
+if [ "${1}" == '-h' ]; then
+  echo "${HELP}"
+  exit 0
+fi
+
+
+if [ -e ${SHARE_DIR} ]; then
+  if [ ! -d ${SHARE_DIR} ]; then
+    echo "Not a directory: ${SHARE_DIR}" >&2
+    exit 1
+  fi
+else
+  mkdir ${SHARE_DIR}
+fi
+
+docker run --interactive --tty \
+           --mount readonly,type=bind,source=${REPO_ROOT_DIR},target=${REPO_ROOT_IN_CONTAINER} \
+           --mount type=bind,source=${SHARE_DIR},target=${SHARE_DIR_IN_CONTAINER} \
+           ${DOCKER_IMAGE}
