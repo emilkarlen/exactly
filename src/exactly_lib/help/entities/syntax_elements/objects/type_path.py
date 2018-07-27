@@ -8,8 +8,9 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
     cross_reference_id_list
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
-from exactly_lib.definitions.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER
+from exactly_lib.definitions.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
 from exactly_lib.definitions.instruction_arguments import REL_SYMBOL_OPTION
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP, \
     REL_SDS_OPTIONS_MAP, RelOptionInfo, REL_CWD_INFO
@@ -39,6 +40,8 @@ class _Documentation(SyntaxElementDocumentation):
             'cd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'symbol': formatting.concept_(concepts.SYMBOL_CONCEPT_INFO),
             'SYMBOL_NAME': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
+            'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+            'current_directory': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
         })
 
     def invokation_variants(self) -> list:
@@ -110,6 +113,10 @@ class _Documentation(SyntaxElementDocumentation):
                 self._parser.format('Option for a path denoted by a {symbol}'),
                 self._options_for_symbol(),
             ),
+            docs.list_item(
+                self._parser.format('Option for the location of the current source file'),
+                self._options_for_rel_source_file(),
+            ),
         ],
             docs.lists.ListType.ITEMIZED_LIST,
         )
@@ -119,7 +126,7 @@ class _Documentation(SyntaxElementDocumentation):
         return 'Options for directories in the ' + formatting.concept_(directory_structure)
 
     @staticmethod
-    def _options_for_directories_in_the_hds() -> list:
+    def _options_for_directories_in_the_hds() -> List[ParagraphItem]:
         return _options_for_directories_in_the_(REL_HOME_OPTIONS_MAP,
                                                 HDS_DIR_DISPLAY_ORDER)
 
@@ -148,6 +155,18 @@ class _Documentation(SyntaxElementDocumentation):
                 ]
                 +
                 self._parser.fnap(_REL_SYMBOL_DESCRIPTION)
+                )
+
+    def _options_for_rel_source_file(self) -> List[ParagraphItem]:
+        return ([
+                    docs.first_column_is_header_table([
+                        [
+                            docs.text_cell(syntax_text(REL_source_file_dir_OPTION)),
+                        ]
+                    ])
+                ]
+                +
+                self._parser.fnap(_REL_SOURCE_FILE_DESCRIPTION)
                 )
 
 
@@ -188,6 +207,14 @@ If {PATH_STRING} is a relative path, then if {RELATIVITY_OPTION} is ...
 
 The default relativity depends on the instruction,
 and also on the argument's role in the instruction. 
+
+
+All paths - except those that are relative the {current_directory} - are rendered as
+absolute paths.
+
+This can be done since all other relativity options refer to a fixed directory.
+
+This means that paths may be used without consideration of the {current_directory}.
 """
 
 _STRING_DESCRIPTION_REST = """\
@@ -215,6 +242,10 @@ have a default relativity other than the {cd}.
 
 _REL_SYMBOL_DESCRIPTION = """\
 This option is always available.
+"""
+
+_REL_SOURCE_FILE_DESCRIPTION = """\
+This option is only available when defining a path {symbol} using the {define_symbol} instruction.
 """
 
 _SYMBOL_NAME_DESCRIPTION = """\
