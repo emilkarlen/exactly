@@ -7,6 +7,7 @@ from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionItem, Section
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -51,6 +52,18 @@ def cd_instruction_section_on_def_instruction() -> List[ParagraphItem]:
     return tp.fnap(_CD_INSTRUCTION_SECTION_ON_DEF_INSTRUCTION)
 
 
+def path_type_path_rendering() -> SectionItem:
+    tp = TextParser({
+        'current_directory_concept': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+        'def_instruction': InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+        'symbol_concept': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
+        'rel_cd_option': formatting.cli_option(file_ref.REL_CWD_OPTION),
+        'path_type': formatting.keyword(types.PATH_TYPE_INFO.name.singular),
+    })
+    return Section(tp.text(_PATH_TYPE_PATH_RENDERING_DESCRIPTION_HEADER),
+                   tp.section_contents(_PATH_TYPE_PATH_RENDERING_DESCRIPTION))
+
+
 _CD_INSTRUCTION_SECTION_ON_DEF_INSTRUCTION = """\
 The {def_instruction} is special because {symbol_concept} definitions are
 evaluated before the test case execution step.
@@ -78,4 +91,25 @@ But since definitions of {symbols_concept} happens before test case execution
 ({symbols_concept} are constants),
 the {current_directory_concept} is not applicable in the context of
 {symbol_concept} definition.
+"""
+
+_PATH_TYPE_PATH_RENDERING_DESCRIPTION_HEADER = 'Rendering of {path_type} values'
+
+_PATH_TYPE_PATH_RENDERING_DESCRIPTION = """\
+All {path_type} values are rendered as absolute paths.
+
+
+This means, e.g., that values can be passed to external programs,
+which may use them without consideration of the current directory of the program process.
+
+
+Note though, that a {path_type} value that is defined using the {def_instruction} instruction
+with relativity of {current_directory_concept}
+({rel_cd_option}) is evaluated when it is REFERENCED,
+
+not when it is defined.
+
+
+This means that the rendered value is different if it is referenced in
+different locations with different {current_directory_concept}.
 """

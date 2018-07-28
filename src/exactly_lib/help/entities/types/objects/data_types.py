@@ -1,10 +1,11 @@
 from exactly_lib.common.help.documentation_text import POSIX_SYNTAX
+from exactly_lib.definitions.current_directory_and_path_type import path_type_path_rendering
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.type_system.value_type import TypeCategory
-from exactly_lib.util.textformat.structure.document import empty_section_contents
+from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _LIST_MAIN_DESCRIPTION_REST = """\
@@ -40,4 +41,7 @@ LIST_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
 PATH_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                        types.PATH_TYPE_INFO,
                                        syntax_elements.PATH_SYNTAX_ELEMENT,
-                                       empty_section_contents())
+                                       SectionContents([],
+                                                       [
+                                                           path_type_path_rendering()
+                                                       ]))
