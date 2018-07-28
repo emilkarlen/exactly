@@ -24,10 +24,6 @@ def section(header_str_or_text,
                                    _empty_list_if_none(sub_sections)))
 
 
-def empty_section() -> Section:
-    return document.empty_section()
-
-
 def section_contents(initial_paragraphs: list,
                      sub_sections: list = None) -> SectionContents:
     return SectionContents(initial_paragraphs,

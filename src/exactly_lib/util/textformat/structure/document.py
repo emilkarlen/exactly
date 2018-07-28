@@ -1,66 +1,6 @@
+from typing import List
+
 from . import core
-
-
-class SectionContents(tuple):
-    def __new__(cls,
-                initial_paragraphs: list,
-                sections: list = None):
-        """
-        :type initial_paragraphs: [core.ParagraphItem]
-        :type sections: [SectionItem]
-        """
-        return tuple.__new__(cls, (initial_paragraphs,
-                                   [] if sections is None else sections))
-
-    @property
-    def initial_paragraphs(self) -> list:
-        """
-        :return: [core.ParagraphItem]
-        """
-        return self[0]
-
-    @property
-    def sections(self) -> list:
-        """
-        :return: [SectionItem]
-        """
-        return self[1]
-
-    @property
-    def is_empty(self) -> bool:
-        return not self.initial_paragraphs and not self.sections
-
-
-class ArticleContents(tuple):
-    def __new__(cls,
-                abstract_paragraphs: list,
-                section_contents: SectionContents):
-        """
-        :type abstract_paragraphs: [core.ParagraphItem]
-        """
-        return tuple.__new__(cls, (abstract_paragraphs,
-                                   section_contents))
-
-    @property
-    def abstract_paragraphs(self) -> list:
-        """
-        :return: [core.ParagraphItem]
-        """
-        return self[0]
-
-    @property
-    def section_contents(self) -> SectionContents:
-        return self[1]
-
-    @property
-    def combined_as_section_contents(self) -> SectionContents:
-        initial_paragraphs = self.abstract_paragraphs + self.section_contents.initial_paragraphs
-        return SectionContents(initial_paragraphs,
-                               self.section_contents.sections)
-
-    @property
-    def is_empty(self) -> bool:
-        return not self.abstract_paragraphs and self.section_contents.is_empty
 
 
 class SectionItem(core.TaggedItem):
@@ -86,6 +26,52 @@ class SectionItem(core.TaggedItem):
     @property
     def tags(self) -> set:
         return self._tags
+
+
+class SectionContents(tuple):
+    def __new__(cls,
+                initial_paragraphs: List[core.ParagraphItem],
+                sections: List[SectionItem] = None):
+        return tuple.__new__(cls, (initial_paragraphs,
+                                   [] if sections is None else sections))
+
+    @property
+    def initial_paragraphs(self) -> List[core.ParagraphItem]:
+        return self[0]
+
+    @property
+    def sections(self) -> List[SectionItem]:
+        return self[1]
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.initial_paragraphs and not self.sections
+
+
+class ArticleContents(tuple):
+    def __new__(cls,
+                abstract_paragraphs: List[core.ParagraphItem],
+                section_contents: SectionContents):
+        return tuple.__new__(cls, (abstract_paragraphs,
+                                   section_contents))
+
+    @property
+    def abstract_paragraphs(self) -> List[core.ParagraphItem]:
+        return self[0]
+
+    @property
+    def section_contents(self) -> SectionContents:
+        return self[1]
+
+    @property
+    def combined_as_section_contents(self) -> SectionContents:
+        initial_paragraphs = self.abstract_paragraphs + self.section_contents.initial_paragraphs
+        return SectionContents(initial_paragraphs,
+                               self.section_contents.sections)
+
+    @property
+    def is_empty(self) -> bool:
+        return not self.abstract_paragraphs and self.section_contents.is_empty
 
 
 class Section(SectionItem):
