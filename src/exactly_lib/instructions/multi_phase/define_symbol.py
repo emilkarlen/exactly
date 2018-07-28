@@ -7,6 +7,7 @@ from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
+from exactly_lib.definitions.current_directory_texts import def_instruction_rel_cd_description
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import types, syntax_elements, concepts
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
@@ -86,7 +87,7 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
             rel_path_doc.path_element_with_all_relativities(
                 _PATH_ARGUMENT.name,
                 REL_OPTION_ARGUMENT_CONFIGURATION.options.default_option,
-                self._tp.fnap(_REL_CD_DESCRIPTION)),
+                def_instruction_rel_cd_description(_PATH_ARGUMENT.name)),
 
             SyntaxElementDescription(self.string_value.name,
                                      self._paragraphs(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
@@ -229,23 +230,6 @@ Defines the symbol {NAME} to be a value of the given type.
 
 
 {NAME} must not have been defined earlier.
-"""
-
-_REL_CD_DESCRIPTION = """\
-NOTE: When a {PATH_ARG} is defined to be relative the {current_directory_concept},
-
-it means that it is relative the directory that is current when the symbol is REFERENCED,
-
-not when it is defined.
-
-
-The {current_directory_concept} refers to the current directory during
-test case execution.
-
-But since definitions of {SYMBOLS_CONCEPT} happens before test case execution
-({SYMBOLS_CONCEPT} are constants),
-the {current_directory_concept} is not applicable in the context of
-{SYMBOL_CONCEPT} definition.
 """
 
 
