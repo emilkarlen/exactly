@@ -59,6 +59,8 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                              'current_directory_concept': formatting.concept_(
                                  concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
                              'PATH_ARG': _PATH_ARGUMENT.name,
+                             'SYMBOL_CONCEPT': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.singular_name),
+                             'SYMBOLS_CONCEPT': formatting.concept(concepts.SYMBOL_CONCEPT_INFO.plural_name),
                          },
                          is_in_assert_phase)
 
@@ -77,20 +79,21 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
 
     def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return ([
-                    SyntaxElementDescription(', '.join([syntax.TYPE_SYNTAX_ELEMENT,
-                                                        syntax.VALUE_SYNTAX_ELEMENT]),
-                                             [self._types_table()]),
-                ]
-                + rel_path_doc.path_elements(_PATH_ARGUMENT.name,
-                                             REL_OPTION_ARGUMENT_CONFIGURATION.options,
-                                             self._tp.fnap(_REL_CD_DESCRIPTION))
-                +
-                [
-                    SyntaxElementDescription(self.string_value.name,
-                                             self._paragraphs(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
-                    SyntaxElementDescription(self.name.name,
-                                             self._paragraphs(syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
-                ])
+            SyntaxElementDescription(', '.join([syntax.TYPE_SYNTAX_ELEMENT,
+                                                syntax.VALUE_SYNTAX_ELEMENT]),
+                                     [self._types_table()]),
+
+            rel_path_doc.path_element_with_all_relativities(
+                _PATH_ARGUMENT.name,
+                REL_OPTION_ARGUMENT_CONFIGURATION.options.default_option,
+                self._tp.fnap(_REL_CD_DESCRIPTION)),
+
+            SyntaxElementDescription(self.string_value.name,
+                                     self._paragraphs(syntax_descriptions.STRING_SYNTAX_ELEMENT_DESCRIPTION)),
+
+            SyntaxElementDescription(self.name.name,
+                                     self._paragraphs(syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
+        ])
 
     def see_also_targets(self) -> list:
         name_and_cross_refs = [concepts.SYMBOL_CONCEPT_INFO,
@@ -231,9 +234,18 @@ Defines the symbol {NAME} to be a value of the given type.
 _REL_CD_DESCRIPTION = """\
 NOTE: When a {PATH_ARG} is defined to be relative the {current_directory_concept},
 
-it means that it is relative the directory that is current when the symbol is USED,
+it means that it is relative the directory that is current when the symbol is REFERENCED,
 
-not when it is defined!
+not when it is defined.
+
+
+The {current_directory_concept} refers to the current directory during
+test case execution.
+
+But since definitions of {SYMBOLS_CONCEPT} happens before test case execution
+({SYMBOLS_CONCEPT} are constants),
+the {current_directory_concept} is not applicable in the context of
+{SYMBOL_CONCEPT} definition.
 """
 
 

@@ -2,12 +2,10 @@ from typing import Sequence, List
 
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, SyntaxElementDescriptionTreeFromSed
-from exactly_lib.definitions import formatting
-from exactly_lib.definitions import test_case_file_structure as tc_fs
+from exactly_lib.definitions import file_ref
+from exactly_lib.definitions import formatting, instruction_arguments
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import concepts as ci, syntax_elements
-from exactly_lib.definitions.entity import conf_params
-from exactly_lib.definitions.entity.types import PATH_TYPE_INFO
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
     RelSdsOptionType, RelHomeOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP, REL_HOME_OPTIONS_MAP, \
@@ -16,11 +14,10 @@ from exactly_lib.test_case_utils.parse.rel_opts_configuration import RelOptionsC
     RelOptionArgumentConfiguration
 from exactly_lib.util.cli_syntax import option_syntax
 from exactly_lib.util.cli_syntax.elements import argument as a
-from exactly_lib.util.cli_syntax.render.cli_program_syntax import ArgumentInArgumentDescriptionRenderer
+from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.textformat_parser import TextParser
 from exactly_lib.util.textformat.utils import transform_list_to_table
 
 
@@ -31,16 +28,39 @@ class PathElementDoc:
 
 def path_element(path_arg_name: str,
                  rel_options_conf: RelOptionsConfiguration,
-                 custom_paragraphs: Sequence[ParagraphItem] = ()) -> SyntaxElementDescription:
+                 custom_paragraphs_before: Sequence[ParagraphItem] = (),
+                 custom_paragraphs_after: Sequence[ParagraphItem] = ()) -> SyntaxElementDescription:
+    return _path_element_description(path_arg_name,
+                                     rel_options_conf.default_option,
+                                     RelOptionRenderer().sparse_list_for(rel_options_conf.accepted_relativity_variants),
+                                     custom_paragraphs_before,
+                                     custom_paragraphs_after)
+
+
+def path_element_with_all_relativities(path_arg_name: str,
+                                       default_relativity: RelOptionType,
+                                       custom_paragraphs_after: Sequence[ParagraphItem]) -> SyntaxElementDescription:
+    return _path_element_description(path_arg_name,
+                                     default_relativity,
+                                     RelOptionRenderer().all_options_list(),
+                                     [],
+                                     custom_paragraphs_after)
+
+
+def _path_element_description(path_arg_name: str,
+                              default_relativity: RelOptionType,
+                              options_list: lists.HeaderContentList,
+                              custom_paragraphs_before: Sequence[ParagraphItem],
+                              custom_paragraphs_after: Sequence[ParagraphItem]) -> SyntaxElementDescription:
     description_rest = []
-    description_rest += custom_paragraphs
+    description_rest += custom_paragraphs_before
     description_rest += [
         docs.para('Accepted relativities (default is "{}"):'.format(
-            REL_OPTIONS_MAP[rel_options_conf.default_option].informative_name
+            REL_OPTIONS_MAP[default_relativity].informative_name
         )),
-        sparse_relativity_options_paragraph(path_arg_name,
-                                            rel_options_conf.accepted_relativity_variants),
+        transform_list_to_table(options_list),
     ]
+    description_rest += custom_paragraphs_after
     return SyntaxElementDescription(path_arg_name,
                                     description_rest)
 
@@ -66,9 +86,8 @@ def path_elements(path_arg_name: str,
     ]
 
 
-def sparse_relativity_options_paragraph(path_that_may_be_relative: str,
-                                        variants: PathRelativityVariants) -> ParagraphItem:
-    renderer = RelOptionRenderer(path_that_may_be_relative)
+def sparse_relativity_options_paragraph(variants: PathRelativityVariants) -> ParagraphItem:
+    renderer = RelOptionRenderer()
     return transform_list_to_table(renderer.sparse_list_for(variants))
 
 
@@ -137,37 +156,44 @@ class _RelOptionTypeInfo(tuple):
 
 
 class RelOptionRenderer:
-    def __init__(self,
-                 path_name_in_description: str,
-                 argument_name: str = None):
-        self.argument_name = argument_name
-        self.parser = TextParser({
-            'PATH': path_name_in_description,
-            'DIR_TMP': formatting.concept(tc_fs.SDS_TMP_INFO.informative_name),
-            'DIR_ACT': formatting.concept(tc_fs.SDS_ACT_INFO.informative_name),
-            'DIR_RESULT': formatting.concept(tc_fs.SDS_RESULT_INFO.informative_name),
-            'SYMBOL_NAME': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
-            'PATH_SYMBOL_TYPE': PATH_TYPE_INFO.identifier,
-            'cwd': formatting.concept_(ci.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
-            'home_case_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
-            'home_act_directory': formatting.conf_param_(conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO),
-            'sandbox_concept': formatting.concept_(ci.SANDBOX_CONCEPT_INFO),
-        })
-        self.arg_renderer = ArgumentInArgumentDescriptionRenderer()
+    def all_options_list(self) -> lists.HeaderContentList:
+        items = []
+        for rel_option_type in _DISPLAY_ORDER:
+            items.append(self.sparse_item_for(rel_option_type))
+        items += self.special_symbols()
+        return self.list_for_items(items)
 
     def sparse_list_for(self, variants: PathRelativityVariants) -> lists.HeaderContentList:
         items = []
         for rel_option_type in _DISPLAY_ORDER:
             if rel_option_type in variants.rel_option_types:
                 items.append(self.sparse_item_for(rel_option_type))
-        return lists.HeaderContentList(items,
-                                       lists.Format(lists.ListType.VARIABLE_LIST,
-                                                    custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
+        return self.list_for_items(items)
 
     def sparse_item_for(self, rel_option_type: RelOptionType) -> lists.HeaderContentListItem:
         opt_info = REL_OPTIONS_MAP[rel_option_type]
-        return docs.list_item(syntax_text(option_syntax.option_syntax(opt_info.option_name)),
-                              docs.paras(opt_info.informative_name))
+        return self.item_for(option_syntax.option_syntax(opt_info.option_name),
+                             opt_info.informative_name)
+
+    def special_symbols(self) -> List[lists.HeaderContentListItem]:
+        return [
+            self.item_for(render_argument(instruction_arguments.REL_SYMBOL_OPTION),
+                          file_ref.RELATIVITY_DESCRIPTION_SYMBOL),
+
+            self.item_for(file_ref.REL_source_file_dir_OPTION,
+                          file_ref.RELATIVITY_DESCRIPTION_SOURCE_FILE),
+        ]
+
+    @staticmethod
+    def item_for(syntax: str, description: str) -> lists.HeaderContentListItem:
+        return docs.list_item(syntax_text(syntax),
+                              docs.paras(description))
+
+    @staticmethod
+    def list_for_items(items):
+        return lists.HeaderContentList(items,
+                                       lists.Format(lists.ListType.VARIABLE_LIST,
+                                                    custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS))
 
 
 _REL_TMP_DESCRIPTION = """\
