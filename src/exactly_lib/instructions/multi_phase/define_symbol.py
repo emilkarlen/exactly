@@ -7,7 +7,7 @@ from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
-from exactly_lib.definitions.current_directory_texts import def_instruction_rel_cd_description
+from exactly_lib.definitions.current_directory_and_path_type import def_instruction_rel_cd_description
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import types, syntax_elements, concepts
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId

@@ -7,7 +7,7 @@ from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTIT
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
 from exactly_lib.type_system.value_type import TypeCategory
 from exactly_lib.util.textformat.structure.core import ParagraphItem
-from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.structure.document import SectionContents, SectionItem
 
 
 class SyntaxElementDocumentation(EntityDocumentation):
@@ -23,10 +23,13 @@ class SyntaxElementDocumentation(EntityDocumentation):
 
     def main_description_rest(self) -> SectionContents:
         return SectionContents(self.main_description_rest_paragraphs(),
-                               [])
+                               self.main_description_rest_sub_sections())
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
         raise NotImplementedError('abstract method')
+
+    def main_description_rest_sub_sections(self) -> List[SectionItem]:
+        return []
 
     def invokation_variants(self) -> List[InvokationVariant]:
         raise NotImplementedError('abstract method')

@@ -6,6 +6,7 @@ from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, \
     cross_reference_id_list
+from exactly_lib.definitions.current_directory_and_path_type import path_type_path_rendering
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
@@ -19,6 +20,7 @@ from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.document import SectionItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
@@ -60,6 +62,11 @@ class _Documentation(SyntaxElementDocumentation):
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
         return self._parser.fnap(_MAIN_DESCRIPTION_REST)
+
+    def main_description_rest_sub_sections(self) -> List[SectionItem]:
+        return [
+            path_type_path_rendering()
+        ]
 
     def see_also_targets(self) -> list:
         return cross_reference_id_list([
@@ -207,14 +214,6 @@ If {PATH_STRING} is a relative path, then if {RELATIVITY_OPTION} is ...
 
 The default relativity depends on the instruction,
 and also on the argument's role in the instruction. 
-
-
-All paths - except those that are relative the {current_directory} - are rendered as
-absolute paths.
-
-This can be done since all other relativity options refer to a fixed directory.
-
-This means that paths may be used without consideration of the {current_directory}.
 """
 
 _STRING_DESCRIPTION_REST = """\
