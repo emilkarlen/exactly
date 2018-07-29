@@ -1,9 +1,12 @@
+from pathlib import PurePosixPath
 from typing import List
 
 from exactly_lib.common.help import documentation_text
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, \
     cross_reference_id_list
 from exactly_lib.definitions.current_directory_and_path_type import path_type_path_rendering
@@ -11,11 +14,14 @@ from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
 from exactly_lib.definitions.instruction_arguments import REL_SYMBOL_OPTION
+from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
+from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP, \
     REL_SDS_OPTIONS_MAP, RelOptionInfo, REL_CWD_INFO
-from exactly_lib.type_system.value_type import TypeCategory
+from exactly_lib.type_system.value_type import TypeCategory, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import render_argument
 from exactly_lib.util.textformat.structure import structures as docs
@@ -32,6 +38,8 @@ class _Documentation(SyntaxElementDocumentation):
         self._string_name = a.Named(syntax_elements.STRING_SYNTAX_ELEMENT.singular_name)
         self._relativity_name = instruction_arguments.RELATIVITY_ARGUMENT
 
+        path_type_symbol = 'MY_PATH_SYMBOL'
+
         self._parser = TextParser({
             'RELATIVITY_OPTION': self._relativity_name.name,
             'PATH_STRING': self._string_name.name,
@@ -44,6 +52,11 @@ class _Documentation(SyntaxElementDocumentation):
             'SYMBOL_NAME': syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.argument.name,
             'define_symbol': formatting.InstructionName(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
             'current_directory': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
+            'REFERENCED_SYMBOL': path_type_symbol,
+            'SYMBOL_REFERENCE': symbol_reference_syntax_for_name(path_type_symbol),
+            'def_of_path_symbol': define_symbol.def_syntax_string(ValueType.PATH, path_type_symbol, '...'),
+            'ref_of_path_symbol': '... ' + str(PurePosixPath(symbol_reference_syntax_for_name(path_type_symbol)) /
+                                               'a' / 'path' / 'relative' / 'to' / path_type_symbol),
         })
 
     def invokation_variants(self) -> list:
@@ -61,14 +74,18 @@ class _Documentation(SyntaxElementDocumentation):
         ]
 
     def main_description_rest_paragraphs(self) -> List[ParagraphItem]:
-        return self._parser.fnap(_MAIN_DESCRIPTION_REST)
+        return []
 
     def main_description_rest_sub_sections(self) -> List[SectionItem]:
         return [
+            docs.section('Relativity',
+                         self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY),
+                         [docs.section('NOTE',
+                                       self._parser.fnap(_MAIN_DESCRIPTION_RELATIVITY_NOTE))]),
             path_type_path_rendering()
         ]
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return cross_reference_id_list([
             concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO,
             concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
@@ -76,7 +93,10 @@ class _Documentation(SyntaxElementDocumentation):
             syntax_elements.STRING_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
             types.PATH_TYPE_INFO,
-        ])
+        ]) + [
+                   TestCasePhaseInstructionCrossReference(phase_names.SETUP_PHASE_NAME.plain,
+                                                          instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME)
+               ]
 
     def _relativity_sed(self) -> SyntaxElementDescription:
         description_rest = self._parser.fnap(_RELATIVITY_DESCRIPTION_REST)
@@ -93,7 +113,7 @@ class _Documentation(SyntaxElementDocumentation):
         return SyntaxElementDescription(syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT.singular_name,
                                         self._parser.fnap(_SYMBOL_NAME_DESCRIPTION))
 
-    def _cl_arguments(self) -> list:
+    def _cl_arguments(self) -> List[a.ArgumentUsage]:
         return [
             a.Single(a.Multiplicity.OPTIONAL,
                      self._relativity_name),
@@ -196,7 +216,7 @@ def _mk_dir_info_row(dir_info: RelOptionInfo) -> list:
     ]
 
 
-_MAIN_DESCRIPTION_REST = """\
+_MAIN_DESCRIPTION_RELATIVITY = """\
 If {PATH_STRING} is an absolute path, then {RELATIVITY_OPTION} must not be given.
 
 
@@ -213,7 +233,22 @@ If {PATH_STRING} is a relative path, then if {RELATIVITY_OPTION} is ...
 
 
 The default relativity depends on the instruction,
-and also on the argument's role in the instruction. 
+and also on the argument's role in the instruction.
+"""
+
+_MAIN_DESCRIPTION_RELATIVITY_NOTE = """\
+If {PATH_STRING} begins with a reference to a {path_type} {symbol},
+then it is an absolute path.
+
+
+For example:
+
+
+```
+{def_of_path_symbol}
+
+{ref_of_path_symbol}
+```
 """
 
 _STRING_DESCRIPTION_REST = """\
