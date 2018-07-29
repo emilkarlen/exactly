@@ -62,7 +62,8 @@ from which the file is included.
 
 
 The included file may contain contents of
-different phases, by switching phase.
+different phases,
+by declaring different phases just as in a main test case file.
 
 But the phase of the including file is
 not changed.
