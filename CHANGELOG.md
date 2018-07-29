@@ -7,11 +7,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+ - def instruction: New path relativity: rel source file: `-rel-here`
+
 ### Changed
 
  - command line     actor: Accepts additional relativities: `-rel-home`, `-rel-act`, `-rel-tmp`
  - file interpreter actor: Accepts additional relativities: `-rel-home`, `-rel-act`, `-rel-tmp`
  - string-transformer "replace": Do not include trailing newline in processed string
+
+### Fixed
+
+ - test suites: Changes to environment variables leaked between test cases
 
 
 ## [0.8.9.2] - 2018-06-24
