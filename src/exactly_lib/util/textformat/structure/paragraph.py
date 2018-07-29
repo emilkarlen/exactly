@@ -1,11 +1,11 @@
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from typing import List
+
+from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
 
 
 class Paragraph(ParagraphItem):
-    def __init__(self,
-                 start_on_new_line_blocks: list):
+    def __init__(self, start_on_new_line_blocks: List[Text]):
         """
-        :type start_on_new_line_blocks: [Text]
         :param start_on_new_line_blocks: Each element is a text that should start
         on a new line.
         """

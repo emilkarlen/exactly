@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Union
 
 from exactly_lib.util.textformat import parse
 from exactly_lib.util.textformat.structure import document
@@ -6,7 +6,7 @@ from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import table
 from exactly_lib.util.textformat.structure.core import ParagraphItem, ConcreteText, StringText, CrossReferenceTarget, \
     CrossReferenceText, Text, AnchorText
-from exactly_lib.util.textformat.structure.document import Section, SectionContents
+from exactly_lib.util.textformat.structure.document import Section, SectionContents, SectionItem
 from exactly_lib.util.textformat.structure.literal_layout import LiteralLayout
 from exactly_lib.util.textformat.structure.paragraph import Paragraph
 from exactly_lib.util.textformat.structure.table import TableCell, Table, TableFormat
@@ -15,10 +15,12 @@ SEPARATION_OF_HEADER_AND_CONTENTS = lists.Separations(1, 1)
 
 COLON_TABLE_COLUMN_SEPARATOR = ' : '
 
+StrOrText = Union[str, Text]
 
-def section(header_str_or_text,
-            paragraphs: list,
-            sub_sections: list = None) -> Section:
+
+def section(header_str_or_text: StrOrText,
+            paragraphs: List[ParagraphItem],
+            sub_sections: List[SectionItem] = None) -> Section:
     return Section(text_from_unknown(header_str_or_text),
                    SectionContents(paragraphs,
                                    _empty_list_if_none(sub_sections)))
@@ -135,7 +137,7 @@ def plain_table(rows_iterable,
                        rows_iterable)
 
 
-def text_from_unknown(str_or_text) -> Text:
+def text_from_unknown(str_or_text: StrOrText) -> Text:
     if isinstance(str_or_text, Text):
         return str_or_text
     else:
