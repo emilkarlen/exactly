@@ -1,6 +1,7 @@
 import io
+import os
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
@@ -47,23 +48,28 @@ def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
 
 
 def _output_file_inclusion_chain(printer: FilePrinter,
-                                 chain: Sequence[SourceLocation]):
-    [
-        print_file_inclusion_location(printer, location)
-        for location in chain
-    ]
+                                 referrer_location: pathlib.Path,
+                                 chain: Sequence[SourceLocation]) -> pathlib.Path:
+    for link in chain:
+        print_file_inclusion_location(printer, referrer_location, link)
+        referrer_location = (referrer_location / link.file_path_rel_referrer).parent
+
+    return referrer_location
 
 
 def _output_location(printer: FilePrinter,
-                     source_location: SourceLocation,
+                     referrer_location: pathlib.Path,
+                     source_location: Optional[SourceLocation],
                      section_name: str,
                      description: str) -> bool:
     has_output_header = False
     if source_location and source_location.file_path_rel_referrer:
+        source_file_path = referrer_location / source_location.file_path_rel_referrer
         if source_location.source:
-            printer.write_line(line_in_file(source_location))
+            printer.write_line(line_in_file(source_file_path,
+                                            source_location.source.first_line_number))
         else:
-            printer.write_line(_file_str(source_location.file_path_rel_referrer))
+            printer.write_line(_file_str(source_file_path))
         has_output_header = True
     if source_location and source_location.source:
         if has_output_header:
@@ -77,19 +83,24 @@ def _output_location(printer: FilePrinter,
 
 
 def output_location(printer: FilePrinter,
-                    source_location: SourceLocationPath,
+                    source_location: Optional[SourceLocationPath],
                     section_name: str,
                     description: str):
     if section_name:
         printer.write_line('In ' + SectionName(section_name).syntax)
     if source_location is None:
         has_output = _output_location(printer,
+                                      pathlib.Path('.'),
                                       None,
                                       section_name,
                                       description)
     else:
-        _output_file_inclusion_chain(printer, source_location.file_inclusion_chain)
+        referrer_location = pathlib.Path('.')
+        referrer_location = _output_file_inclusion_chain(printer,
+                                                         referrer_location,
+                                                         source_location.file_inclusion_chain)
         _output_location(printer,
+                         referrer_location,
                          source_location.location,
                          section_name,
                          description)
@@ -148,8 +159,10 @@ def _file_str(path: pathlib.Path) -> str:
 
 
 def print_file_inclusion_location(printer: FilePrinter,
+                                  referrer_location: pathlib.Path,
                                   location: SourceLocation):
-    printer.write_line(line_in_file(location))
+    printer.write_line(line_in_file(referrer_location / location.file_path_rel_referrer,
+                                    location.source.first_line_number))
     [
         printer.write_line('  ' + line_source)
         for line_source in location.source.lines
@@ -157,5 +170,9 @@ def print_file_inclusion_location(printer: FilePrinter,
     printer.write_empty_line()
 
 
-def line_in_file(location: SourceLocation) -> str:
-    return str(location.file_path_rel_referrer) + ', line ' + str(location.source.first_line_number)
+def line_in_file(source_file: pathlib.Path,
+                 first_line_number: int) -> str:
+    path_str = os.path.normpath(str(source_file))
+    return path_str + ', line ' + str(first_line_number)
+
+    # return str(location.file_path_rel_referrer) + ', line ' + str(location.source.first_line_number)
