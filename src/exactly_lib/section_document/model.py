@@ -1,6 +1,6 @@
 import enum
 import pathlib
-from typing import Dict, Sequence
+from typing import Dict, Sequence, Optional
 
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation, SourceLocationPath
@@ -49,7 +49,7 @@ class SectionContentElement:
                  element_type: ElementType,
                  source: line_source.LineSequence,
                  instruction_info: InstructionInfo,
-                 file_path_rel_referrer: pathlib.Path = None,
+                 file_path_rel_referrer: Optional[pathlib.Path] = None,
                  file_inclusion_chain: Sequence[SourceLocation] = (),
                  abs_path_of_dir_containing_file: pathlib.Path = None):
         self._element_type = element_type
@@ -88,24 +88,24 @@ class SectionContentElement:
                                   self.file_inclusion_chain)
 
     @property
-    def file_path_rel_referrer(self) -> pathlib.Path:
+    def file_path_rel_referrer(self) -> Optional[pathlib.Path]:
         """
         :return: The file component of `location`
         """
         return self._location.file_path_rel_referrer
 
     @property
-    def abs_path_of_dir_containing_file(self) -> pathlib.Path:
+    def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
         """
         :return: The absolute path of the dir that contains
-        the final component of `file_path`,
-        or, if `file_path` is None, a path that
+        the final component of `file_path_rel_referrer`,
+        or, if `file_path_rel_referrer` is None, a path that
         serves the same purpose for specifying paths
-        relative to (the base name of) `file_path`.
+        relative to (the base name of) `file_path_rel_referrer`.
 
-        I.e., the absolute path of `file_path` is
+        I.e., the absolute path of `file_path_rel_referrer` is
 
-          self.abs_path_of_dir_containing_file / self.file_path.name
+          self.abs_path_of_dir_containing_file / self.file_path_rel_referrer.name
         """
         return self._abs_path_of_dir_containing_file
 

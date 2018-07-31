@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 from exactly_lib.section_document.model import SectionContentElement, ElementType, Instruction, InstructionInfo
 from exactly_lib.util import line_source
@@ -9,9 +9,9 @@ class SectionContentElementBuilder:
     """Build SectionContentElement:s"""
 
     def __init__(self,
-                 file_path: pathlib.Path = None,
+                 file_path: Optional[pathlib.Path] = None,
                  file_inclusion_chain: Sequence[line_source.SourceLocation] = (),
-                 abs_path_of_dir_containing_file: pathlib.Path = None,
+                 abs_path_of_dir_containing_file: Optional[pathlib.Path] = None,
                  ):
         self._file_path = file_path
         self._file_inclusion_chain = file_inclusion_chain
@@ -44,7 +44,7 @@ class SectionContentElementBuilder:
     def _new(self,
              element_type: ElementType,
              source: line_source.LineSequence,
-             instruction_info: InstructionInfo) -> SectionContentElement:
+             instruction_info: Optional[InstructionInfo]) -> SectionContentElement:
         return SectionContentElement(element_type,
                                      source,
                                      instruction_info,
@@ -53,7 +53,7 @@ class SectionContentElementBuilder:
                                      self._abs_path_of_dir_containing_file)
 
     @property
-    def file_path(self) -> pathlib.Path:
+    def file_path(self) -> Optional[pathlib.Path]:
         return self._file_path
 
     @property
