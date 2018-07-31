@@ -91,7 +91,7 @@ def assert_equals_single_line(test_case: unittest.TestCase,
 
 
 def matches_source_location(source: asrt.ValueAssertion[LineSequence] = asrt.anything_goes(),
-                            file_path: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+                            file_path_rel_referrer: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
                             ) -> asrt.ValueAssertion[SourceLocation]:
     return asrt.is_instance_with(SourceLocation,
                                  asrt.and_([
@@ -100,13 +100,13 @@ def matches_source_location(source: asrt.ValueAssertion[LineSequence] = asrt.any
                                                         source),
                                      asrt.sub_component('file_path_rel_referrer',
                                                         SourceLocation.file_path_rel_referrer.fget,
-                                                        file_path),
+                                                        file_path_rel_referrer),
                                  ]))
 
 
 def equals_source_location(expected: SourceLocation) -> asrt.ValueAssertion[SourceLocation]:
     return matches_source_location(source=equals_line_sequence(expected.source),
-                                   file_path=asrt.equals(expected.file_path_rel_referrer))
+                                   file_path_rel_referrer=asrt.equals(expected.file_path_rel_referrer))
 
 
 def equals_source_location_sequence(expected: Sequence[SourceLocation]
@@ -142,5 +142,5 @@ def equals_single_line_source_location_path(expected: Line) -> asrt.ValueAsserti
             source=matches_line_sequence(
                 first_line_number=asrt.equals(expected.line_number),
                 lines=asrt.matches_sequence([asrt.equals(expected.text)])),
-            file_path=asrt.is_none),
+            file_path_rel_referrer=asrt.is_none),
         file_inclusion_chain=equals_source_location_sequence([]))

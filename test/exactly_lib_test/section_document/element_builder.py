@@ -3,6 +3,7 @@ import unittest
 from typing import Sequence
 
 from exactly_lib.section_document import element_builder as sut
+from exactly_lib.section_document.element_builder import SourceLocationBuilder
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.util.line_source import SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.test_resources.element_assertions import matches_section_contents_element, \
@@ -22,36 +23,39 @@ INSTRUCTION = InstructionInSection('section name')
 class TestBuild(unittest.TestCase):
     def test_default_constructor_arguments(self):
         # ARRANGE #
-        self._test_all_element_types(sut.SectionContentElementBuilder(),
+        self._test_all_element_types(sut.SectionContentElementBuilder(SourceLocationBuilder()),
                                      assertion_on_file_path=asrt.is_none,
                                      assertion_on_file_inclusion_chain=asrt.matches_sequence([]))
 
     def test_single_file_path_argument(self):
         # ARRANGE #
         file_path = pathlib.Path('a path')
-        self._test_all_element_types(sut.SectionContentElementBuilder(file_path=file_path),
-                                     assertion_on_file_path=asrt.equals(file_path),
-                                     assertion_on_file_inclusion_chain=asrt.matches_sequence([]))
+        self._test_all_element_types(sut.SectionContentElementBuilder(
+            SourceLocationBuilder(file_path_rel_referrer=file_path)),
+            assertion_on_file_path=asrt.equals(file_path),
+            assertion_on_file_inclusion_chain=asrt.matches_sequence([]))
 
     def test_single_file_inclusion_chain_argument(self):
         # ARRANGE #
         file_inclusion_chain = [SourceLocation(single_line_sequence(2, 'inclusion line'),
                                                pathlib.Path('inclusion file path'))]
-        self._test_all_element_types(sut.SectionContentElementBuilder(file_inclusion_chain=file_inclusion_chain),
-                                     assertion_on_file_path=asrt.is_none,
-                                     assertion_on_file_inclusion_chain=equals_file_inclusion_chain(
-                                         file_inclusion_chain))
+        self._test_all_element_types(
+            sut.SectionContentElementBuilder(SourceLocationBuilder(file_inclusion_chain=file_inclusion_chain)),
+            assertion_on_file_path=asrt.is_none,
+            assertion_on_file_inclusion_chain=equals_file_inclusion_chain(
+                file_inclusion_chain))
 
     def test_file_path_and__file_inclusion_chain_arguments(self):
         # ARRANGE #
         file_path = pathlib.Path('a path')
         file_inclusion_chain = [SourceLocation(single_line_sequence(2, 'inclusion line'),
                                                pathlib.Path('inclusion file path'))]
-        self._test_all_element_types(sut.SectionContentElementBuilder(file_path=file_path,
-                                                                      file_inclusion_chain=file_inclusion_chain),
-                                     assertion_on_file_path=asrt.equals(file_path),
-                                     assertion_on_file_inclusion_chain=equals_file_inclusion_chain(
-                                         file_inclusion_chain))
+        self._test_all_element_types(
+            sut.SectionContentElementBuilder(SourceLocationBuilder(file_path_rel_referrer=file_path,
+                                                                   file_inclusion_chain=file_inclusion_chain)),
+            assertion_on_file_path=asrt.equals(file_path),
+            assertion_on_file_inclusion_chain=equals_file_inclusion_chain(
+                file_inclusion_chain))
 
     def _test_all_element_types(self,
                                 builder: sut.SectionContentElementBuilder,

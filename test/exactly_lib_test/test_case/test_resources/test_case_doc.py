@@ -1,5 +1,5 @@
 from exactly_lib.section_document import model as doc
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationBuilder
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.util import line_source
 
@@ -37,7 +37,7 @@ class TestCaseWithOnlyInstructionElementsBuilder:
 class InstructionElementGenerator:
     def __init__(self):
         self._current_line = 1
-        self._element_builder = SectionContentElementBuilder()
+        self._element_builder = SectionContentElementBuilder(SourceLocationBuilder())
 
     def instruction_element(self, instruction) -> doc.SectionContentElement:
         line_no = self._current_line

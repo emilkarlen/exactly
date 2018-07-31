@@ -47,16 +47,12 @@ class SectionContentElement:
 
     def __init__(self,
                  element_type: ElementType,
-                 source: line_source.LineSequence,
                  instruction_info: InstructionInfo,
-                 file_path_rel_referrer: Optional[pathlib.Path] = None,
-                 file_inclusion_chain: Sequence[SourceLocation] = (),
+                 source_location_path: SourceLocationPath,
                  abs_path_of_dir_containing_file: pathlib.Path = None):
         self._element_type = element_type
-        self._source = source
         self._instruction_info = instruction_info
-        self._location = SourceLocation(source, file_path_rel_referrer)
-        self._file_inclusion_chain = file_inclusion_chain
+        self._source_location_path = source_location_path
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
     @property
@@ -68,7 +64,7 @@ class SectionContentElement:
            file path is relative the location of the last element in file_inclusion_chain
            If there is no file_inclusion_chain element, then it is the (relative) path of the root file
         """
-        return self._location
+        return self._source_location_path.location
 
     @property
     def file_inclusion_chain(self) -> Sequence[SourceLocation]:
@@ -80,19 +76,18 @@ class SectionContentElement:
 
         :return: The sequence of file inclusions that leads to the file specified by `location`.
         """
-        return self._file_inclusion_chain
+        return self._source_location_path.file_inclusion_chain
 
     @property
     def source_location_path(self) -> SourceLocationPath:
-        return SourceLocationPath(self.location,
-                                  self.file_inclusion_chain)
+        return self._source_location_path
 
     @property
     def file_path_rel_referrer(self) -> Optional[pathlib.Path]:
         """
         :return: The file component of `location`
         """
-        return self._location.file_path_rel_referrer
+        return self.location.file_path_rel_referrer
 
     @property
     def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
@@ -114,7 +109,7 @@ class SectionContentElement:
         """
         :return: The source component of `location`
         """
-        return self._source
+        return self.location.source
 
     @property
     def element_type(self) -> ElementType:
