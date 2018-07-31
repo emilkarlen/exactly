@@ -1,6 +1,6 @@
 import os
 import pathlib
-from typing import Sequence
+from typing import Sequence, Optional
 
 
 class Line(tuple):
@@ -69,7 +69,7 @@ class SourceLocation(tuple):
 
     def __new__(cls,
                 source: LineSequence,
-                file_path_rel_referrer: pathlib.Path):
+                file_path_rel_referrer: Optional[pathlib.Path]):
         """
         :param source: See corresponding getter
         :param file_path_rel_referrer: See corresponding getter
@@ -84,7 +84,7 @@ class SourceLocation(tuple):
         return self[0]
 
     @property
-    def file_path_rel_referrer(self) -> pathlib.Path:
+    def file_path_rel_referrer(self) -> Optional[pathlib.Path]:
         """
         :return: None iff source does not originate from a file
         The path is relative the directory that contains the referring file - the file
