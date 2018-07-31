@@ -6,7 +6,8 @@ from exactly_lib.section_document.model import ElementType
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence, equals_source_location
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence, equals_source_location, \
+    matches_source_location, matches_source_location_path
 
 
 class InstructionInSection(model.Instruction):
@@ -31,18 +32,13 @@ def matches_section_contents_element(
         asrt.sub_component('element type',
                            model.SectionContentElement.element_type.fget,
                            asrt.equals(element_type)),
-        asrt.sub_component('source',
-                           model.SectionContentElement.source.fget,
-                           source),
-        asrt.sub_component('file_path_rel_referrer',
-                           model.SectionContentElement.file_path_rel_referrer.fget,
-                           file_path_rel_referrer),
-        asrt.sub_component('file_inclusion_chain',
-                           model.SectionContentElement.file_inclusion_chain.fget,
-                           file_inclusion_chain),
         asrt.sub_component('instruction_info',
                            model.SectionContentElement.instruction_info.fget,
                            instruction_info),
+        asrt.sub_component('source_location_path',
+                           model.SectionContentElement.source_location_path.fget,
+                           matches_source_location_path(matches_source_location(source, file_path_rel_referrer),
+                                                        file_inclusion_chain)),
         asrt.sub_component('abs_path_of_dir_containing_file',
                            model.SectionContentElement.abs_path_of_dir_containing_file.fget,
                            abs_path_of_dir_containing_file),
