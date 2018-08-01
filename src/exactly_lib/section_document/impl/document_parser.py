@@ -1,5 +1,5 @@
 import pathlib
-from typing import Sequence, Dict, List, Optional
+from typing import Sequence, Dict, List, Optional, Union
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
@@ -146,7 +146,10 @@ def _add_raw_doc(added_to: RawDoc,
             added_to[key] = elements
 
 
-class _SectionContentsElementConstructor(ParsedSectionElementVisitor):
+_ParseResultHandlingResult = Union[model.SectionContentElement, ParsedFileInclusionDirective]
+
+
+class _SectionElementParseResultHandler(ParsedSectionElementVisitor[_ParseResultHandlingResult]):
     def __init__(self, element_builder: SectionContentElementBuilder):
         self._element_builder = element_builder
 
@@ -173,7 +176,7 @@ class _Impl:
                  document_source: ParseSource,
                  visited_paths: List[pathlib.Path]):
         self.configuration = configuration
-        self._element_builder = SectionContentElementBuilder(source_location_builder)
+        self._source_location_builder = source_location_builder
         self._fs_location_info = FileSystemLocationInfo(file_reference_relativity_root_dir)
         self._document_source = document_source
         self._current_line = self._get_current_line_or_none_if_is_at_eof()
@@ -181,7 +184,8 @@ class _Impl:
         self._name_of_current_section = None
         self._elements_for_current_section = []
         self._section_name_2_element_list = {}
-        self._element_constructor = _SectionContentsElementConstructor(self._element_builder)
+        self._element_constructor = _SectionElementParseResultHandler(
+            SectionContentElementBuilder(source_location_builder))
         self.visited_paths = visited_paths
 
     @property
@@ -249,7 +253,7 @@ class _Impl:
                 parsed_element = self.parse_element_at_current_line_using_current_section_element_parser()
             except SourceError as ex:
                 raise FileSourceError(ex, self._name_of_current_section,
-                                      self._element_builder.location_path_of(ex.source))
+                                      self._source_location_builder.location_path_of(ex.source))
             if isinstance(parsed_element, model.SectionContentElement):
                 self.add_element_to_current_section(parsed_element)
             else:
@@ -316,7 +320,7 @@ class _Impl:
     def _location_path_of_current_line(self) -> Sequence[line_source.SourceLocation]:
         source = line_source.single_line_sequence(self._document_source.current_line_number,
                                                   self._document_source.current_line_text)
-        return self._element_builder.location_path_of(source)
+        return self._source_location_builder.location_path_of(source)
 
     def current_line_is_comment_or_empty(self):
         return syntax.EMPTY_LINE_RE.match(self._current_line.text) or \
@@ -329,7 +333,7 @@ class _Impl:
         for file_to_include in inclusion_directive.files_to_include:
             included_doc = parse_file(conf,
                                       file_to_include,
-                                      self._element_builder.location_path_of(inclusion_directive.source),
+                                      self._source_location_builder.location_path_of(inclusion_directive.source),
                                       self._fs_location_info.file_reference_relativity_root_dir,
                                       self.visited_paths)
             _add_raw_doc(self._section_name_2_element_list, included_doc)
