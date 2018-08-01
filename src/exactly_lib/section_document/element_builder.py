@@ -3,7 +3,7 @@ from typing import Sequence, Optional
 
 from exactly_lib.section_document.model import SectionContentElement, ElementType, Instruction, InstructionInfo
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocationPath, SourceLocation
+from exactly_lib.util.line_source import SourceLocationPath, SourceLocation, LineSequence
 
 
 class SourceLocationBuilder:
@@ -16,12 +16,15 @@ class SourceLocationBuilder:
         self._file_inclusion_chain = file_inclusion_chain
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
-    def source_location_path(self, source: line_source.LineSequence) -> SourceLocationPath:
-        return SourceLocationPath(SourceLocation(source, self._file_path_rel_referrer),
+    def source_location_of(self, source: LineSequence) -> SourceLocation:
+        return SourceLocation(source, self._file_path_rel_referrer)
+
+    def source_location_path(self, source: LineSequence) -> SourceLocationPath:
+        return SourceLocationPath(self.source_location_of(source),
                                   self._file_inclusion_chain)
 
-    def location_path_of(self, source: line_source.LineSequence) -> Sequence[line_source.SourceLocation]:
-        return list(self._file_inclusion_chain) + [line_source.SourceLocation(source, self._file_path_rel_referrer)]
+    def location_path_of(self, source: LineSequence) -> Sequence[SourceLocation]:
+        return list(self._file_inclusion_chain) + [self.source_location_of(source)]
 
     @property
     def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
@@ -34,23 +37,23 @@ class SectionContentElementBuilder:
     def __init__(self, source_location_builder: SourceLocationBuilder):
         self._loc_builder = source_location_builder
 
-    def new_empty(self, source: line_source.LineSequence) -> SectionContentElement:
+    def new_empty(self, source: LineSequence) -> SectionContentElement:
         return self.new_non_instruction(source,
                                         ElementType.EMPTY)
 
-    def new_comment(self, source: line_source.LineSequence) -> SectionContentElement:
+    def new_comment(self, source: LineSequence) -> SectionContentElement:
         return self.new_non_instruction(source,
                                         ElementType.COMMENT)
 
     def new_non_instruction(self,
-                            source: line_source.LineSequence,
+                            source: LineSequence,
                             element_type: ElementType) -> SectionContentElement:
         return self._new(element_type,
                          source,
                          None)
 
     def new_instruction(self,
-                        source: line_source.LineSequence,
+                        source: LineSequence,
                         instruction: Instruction,
                         description: str = None) -> SectionContentElement:
         return self._new(ElementType.INSTRUCTION,
@@ -60,12 +63,12 @@ class SectionContentElementBuilder:
 
     def _new(self,
              element_type: ElementType,
-             source: line_source.LineSequence,
+             source: LineSequence,
              instruction_info: Optional[InstructionInfo]) -> SectionContentElement:
         return SectionContentElement(element_type,
                                      instruction_info,
                                      self._loc_builder.source_location_path(source),
                                      self._loc_builder.abs_path_of_dir_containing_file)
 
-    def location_path_of(self, source: line_source.LineSequence) -> Sequence[line_source.SourceLocation]:
+    def location_path_of(self, source: LineSequence) -> Sequence[line_source.SourceLocation]:
         return self._loc_builder.location_path_of(source)
