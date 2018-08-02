@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_parts import Instruc
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol.symbol_usage import SymbolUsage
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPreSdsStep, \

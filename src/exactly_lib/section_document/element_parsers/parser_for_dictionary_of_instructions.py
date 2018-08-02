@@ -6,7 +6,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     InvalidInstructionArgumentException, ArgumentParsingImplementationException
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import line_sequence_from_line
 

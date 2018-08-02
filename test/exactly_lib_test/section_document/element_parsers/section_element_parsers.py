@@ -9,7 +9,8 @@ from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedNonInstructionElement
-from exactly_lib.section_document.parsing_configuration import SectionElementParser, FileSystemLocationInfo
+from exactly_lib.section_document.parsing_configuration import SectionElementParser
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib.util.line_source import single_line_sequence

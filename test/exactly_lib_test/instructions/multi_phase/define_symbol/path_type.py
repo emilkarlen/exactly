@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.instructions.multi_phase.define_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, FileLocationInfo
+from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
 from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect

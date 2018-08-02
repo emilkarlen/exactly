@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers import parser_for_dictionary_of_instructions as sut
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_single_line

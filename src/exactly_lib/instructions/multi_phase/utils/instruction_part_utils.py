@@ -6,7 +6,7 @@ from exactly_lib.instructions.multi_phase.utils.instruction_embryo import MainSt
 from exactly_lib.instructions.multi_phase.utils.instruction_parts import MainStepExecutor, \
     InstructionParts, InstructionPartsParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case.os_services import OsServices
 from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSdsStep, PhaseLoggingPaths
 from exactly_lib.test_case.result import pfh, sh

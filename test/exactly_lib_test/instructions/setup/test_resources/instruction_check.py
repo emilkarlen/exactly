@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.execution import phase_step
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case.os_services import new_default, OsServices
 from exactly_lib.test_case.phases import common

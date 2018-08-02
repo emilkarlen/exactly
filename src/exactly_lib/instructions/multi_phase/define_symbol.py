@@ -21,7 +21,7 @@ from exactly_lib.section_document.element_parsers.instruction_parser_for_single_
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser, from_parse_source
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.symbol import symbol_syntax
 from exactly_lib.symbol.program.program_resolver import ProgramResolver
 from exactly_lib.symbol.program.string_or_file import SourceType

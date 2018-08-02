@@ -8,7 +8,7 @@ from exactly_lib.execution.impl.single_instruction_executor import execute_eleme
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import SectionContentElement
-from exactly_lib.section_document.parsing_configuration import FileLocationInfo
+from exactly_lib.section_document.source_location import FileLocationInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
 from exactly_lib.util.failure_details import FailureDetails, new_failure_details_from_exception, \

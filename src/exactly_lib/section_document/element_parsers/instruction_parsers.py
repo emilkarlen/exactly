@@ -1,7 +1,7 @@
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 
 
 class InstructionParserThatConsumesCurrentLine(InstructionParser):
