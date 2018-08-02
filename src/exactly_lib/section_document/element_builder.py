@@ -1,7 +1,7 @@
 from typing import Sequence, Optional
 
 from exactly_lib.section_document.model import SectionContentElement, ElementType, Instruction, InstructionInfo
-from exactly_lib.section_document.parsing_configuration import SourceLocationInfo
+from exactly_lib.section_document.parsing_configuration import FileLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
 
@@ -9,8 +9,8 @@ from exactly_lib.util.line_source import LineSequence
 class SectionContentElementBuilder:
     """Build SectionContentElement:s"""
 
-    def __init__(self, source_location_info: SourceLocationInfo):
-        self._loc_info = source_location_info
+    def __init__(self, file_location_info: FileLocationInfo):
+        self._loc_info = file_location_info
 
     def new_empty(self, source: LineSequence) -> SectionContentElement:
         return self.new_non_instruction(source,

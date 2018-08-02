@@ -5,7 +5,7 @@ from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import SectionContentElement
-from exactly_lib.section_document.parsing_configuration import SourceLocationInfo
+from exactly_lib.section_document.parsing_configuration import FileLocationInfo
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util.line_source import LineSequence
 from exactly_lib_test.execution.partial_execution.test_resources.test_case_generator import \
@@ -34,7 +34,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
             PartialPhase.ASSERT: self._new_assert_instruction,
             PartialPhase.CLEANUP: self._new_cleanup_instruction
         }
-        self._element_builder = SectionContentElementBuilder(SourceLocationInfo(pathlib.Path.cwd()))
+        self._element_builder = SectionContentElementBuilder(FileLocationInfo(pathlib.Path.cwd()))
         self.__extra = {}
         for ph in PartialPhase:
             self.__extra[ph] = []

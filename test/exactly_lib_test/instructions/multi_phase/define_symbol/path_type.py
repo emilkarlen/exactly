@@ -5,7 +5,7 @@ from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.instructions.multi_phase.define_symbol import REL_OPTIONS_CONFIGURATION
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, SourceLocationInfo
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, FileLocationInfo
 from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
@@ -129,7 +129,7 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
     def test(self):
         with tmp_dir() as abs_path_of_dir_containing_file:
             fs_location_info = FileSystemLocationInfo(
-                SourceLocationInfo(
+                FileLocationInfo(
                     abs_path_of_dir_containing_file,
                     abs_path_of_dir_containing_file=abs_path_of_dir_containing_file))
             instruction_argument = src('{path_type} name = {rel_source_file} component')
