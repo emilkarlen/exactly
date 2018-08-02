@@ -44,10 +44,12 @@ class _Parser:
                                                                                        argv)
         act_phase_setup = resolve_act_phase_setup_from_argparse_argument(self.default.act_phase_setup,
                                                                          namespace.actor)
+        suite_file_path = pathlib.Path(namespace.file)
+        argument_parsing_utils.resolve_existing_path(suite_file_path),
         return TestSuiteExecutionSettings(self._resolve_reporter_factory(vars(namespace)),
                                           TestCaseHandlingSetup(act_phase_setup,
                                                                 self.default.preprocessor),
-                                          argument_parsing_utils.resolve_existing_path(pathlib.Path(namespace.file)),
+                                          suite_file_path,
                                           )
 
     def _resolve_reporter_factory(self,
