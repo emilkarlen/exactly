@@ -11,8 +11,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration, \
-    DocumentParser, FileSystemLocationInfo, FileLocationInfo
-from exactly_lib.section_document.source_location import SourceLocation
+    DocumentParser
+from exactly_lib.section_document.source_location import SourceLocation, FileLocationInfo, FileSystemLocationInfo
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 

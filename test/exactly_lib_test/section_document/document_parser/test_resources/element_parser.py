@@ -7,7 +7,8 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     ParsedFileInclusionDirective, ParsedInstruction
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionConfiguration, \
-    SectionsConfiguration, FileSystemLocationInfo
+    SectionsConfiguration
+from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSectionWithParseSourceInfo
 

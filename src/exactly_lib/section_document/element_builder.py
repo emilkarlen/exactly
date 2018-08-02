@@ -1,8 +1,7 @@
 from typing import Sequence, Optional
 
 from exactly_lib.section_document.model import SectionContentElement, ElementType, Instruction, InstructionInfo
-from exactly_lib.section_document.parsing_configuration import FileLocationInfo
-from exactly_lib.section_document.source_location import SourceLocation
+from exactly_lib.section_document.source_location import SourceLocation, FileLocationInfo
 from exactly_lib.util.line_source import LineSequence
 
 

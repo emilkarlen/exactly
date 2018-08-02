@@ -1,6 +1,6 @@
 import pathlib
 
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, FileLocationInfo
+from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo
 
 ARBITRARY_FS_LOCATION_INFO = FileSystemLocationInfo(FileLocationInfo(
     pathlib.Path.cwd(),

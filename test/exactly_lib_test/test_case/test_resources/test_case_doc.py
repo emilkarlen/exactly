@@ -2,7 +2,7 @@ import pathlib
 
 from exactly_lib.section_document import model as doc
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
-from exactly_lib.section_document.parsing_configuration import FileLocationInfo
+from exactly_lib.section_document.source_location import FileLocationInfo
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.util import line_source
 
