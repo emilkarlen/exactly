@@ -22,7 +22,8 @@ from exactly_lib_test.section_document.document_parser.test_resources.exception_
     matches_file_source_error, is_file_access_error, matches_file_access_error
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.element_assertions import \
-    equals_instruction_without_description, matches_section_contents_element
+    equals_instruction_without_description, matches_section_contents_element, \
+    matches_instruction_info_without_description, matches_instruction_with_parse_source_info
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
@@ -969,7 +970,7 @@ class TestAbsPathOfDirContainingFile(unittest.TestCase):
     def test(self):
         # ARRANGE #
         sub_dir_name = 'sub-dir'
-        sub_dir_path = PurePosixPath('sub-dir')
+        sub_dir_path = PurePosixPath(sub_dir_name)
         file_0_in_sub_dir_name = '0.src'
         file_1_in_root_dir_name = '1.src'
         file_2_in_sub_dir_name = '2.src'
@@ -997,7 +998,6 @@ class TestAbsPathOfDirContainingFile(unittest.TestCase):
             # ACT #
             actual_doc = sut.parse(SECTION_1_WITH_SECTION_1_AS_DEFAULT,
                                    root_file_path)
-            # ASSERT #
             # EXPECTATION #
             abs_cwd_path = cwd_path.resolve()
             expected_doc = {

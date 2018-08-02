@@ -2,10 +2,9 @@ import pathlib
 import unittest
 from typing import Callable
 
-from exactly_lib.section_document.element_builder import SourceLocationInfo
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, SourceLocationInfo
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result.sh import SuccessOrHardError

@@ -2,9 +2,10 @@ import pathlib
 from typing import Sequence, Dict, Optional
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.element_builder import SourceLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
+from exactly_lib.util import line_source
+from exactly_lib.util.line_source import LineSequence, SourceLocation, SourceLocationPath
 
 
 class DocumentParser:
@@ -24,6 +25,31 @@ class DocumentParser:
         :raises ParseError The test case cannot be parsed.
         """
         raise NotImplementedError('abstract method')
+
+
+class SourceLocationInfo:
+    def __init__(self,
+                 file_path_rel_referrer: Optional[pathlib.Path] = None,
+                 file_inclusion_chain: Sequence[line_source.SourceLocation] = (),
+                 abs_path_of_dir_containing_file: Optional[pathlib.Path] = None,
+                 ):
+        self._file_path_rel_referrer = file_path_rel_referrer
+        self._file_inclusion_chain = file_inclusion_chain
+        self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
+
+    def source_location_of(self, source: LineSequence) -> SourceLocation:
+        return SourceLocation(source, self._file_path_rel_referrer)
+
+    def source_location_path(self, source: LineSequence) -> SourceLocationPath:
+        return SourceLocationPath(self.source_location_of(source),
+                                  self._file_inclusion_chain)
+
+    def location_path_of(self, source: LineSequence) -> Sequence[SourceLocation]:
+        return list(self._file_inclusion_chain) + [self.source_location_of(source)]
+
+    @property
+    def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
+        return self._abs_path_of_dir_containing_file
 
 
 class FileSystemLocationInfo(tuple):

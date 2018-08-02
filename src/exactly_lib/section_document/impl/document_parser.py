@@ -3,7 +3,7 @@ from typing import Sequence, Dict, List, Optional, Union
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationInfo
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, \
     new_source_error_of_single_line
 from exactly_lib.section_document.model import SectionContentElement
@@ -11,7 +11,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration, \
-    DocumentParser, FileSystemLocationInfo
+    DocumentParser, FileSystemLocationInfo, SourceLocationInfo
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation
