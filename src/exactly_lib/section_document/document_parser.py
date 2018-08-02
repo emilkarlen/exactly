@@ -1,4 +1,4 @@
-import pathlib
+from pathlib import Path
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parsing_configuration import SectionsConfiguration, DocumentParser
@@ -10,5 +10,5 @@ def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
 
 
 def parse(configuration: SectionsConfiguration,
-          source_file_path: pathlib.Path) -> model.Document:
+          source_file_path: Path) -> model.Document:
     return _impl.parse(configuration, source_file_path)

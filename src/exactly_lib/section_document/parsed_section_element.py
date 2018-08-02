@@ -1,4 +1,4 @@
-import pathlib
+from pathlib import Path
 from typing import Sequence, Generic, TypeVar
 
 from exactly_lib.section_document.model import InstructionInfo, ElementType
@@ -51,12 +51,12 @@ def new_comment_element(source: line_source.LineSequence) -> ParsedNonInstructio
 class ParsedFileInclusionDirective(ParsedSectionElement):
     def __init__(self,
                  source: line_source.LineSequence,
-                 files_to_include: Sequence[pathlib.Path]):
+                 files_to_include: Sequence[Path]):
         super().__init__(source)
         self._files_to_include = files_to_include
 
     @property
-    def files_to_include(self) -> Sequence[pathlib.Path]:
+    def files_to_include(self) -> Sequence[Path]:
         return self._files_to_include
 
 

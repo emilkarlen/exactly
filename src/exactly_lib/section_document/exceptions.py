@@ -1,4 +1,4 @@
-import pathlib
+from pathlib import Path
 from typing import Sequence, Optional
 
 from exactly_lib.util import line_source
@@ -82,12 +82,12 @@ class FileSourceError(ParseError):
 
 class FileAccessError(ParseError):
     def __init__(self,
-                 erroneous_path: pathlib.Path,
+                 erroneous_path: Path,
                  message: str,
                  location_path: Sequence[SourceLocation]):
         super().__init__(message, location_path)
         self._erroneous_path = erroneous_path
 
     @property
-    def erroneous_path(self) -> pathlib.Path:
+    def erroneous_path(self) -> Path:
         return self._erroneous_path

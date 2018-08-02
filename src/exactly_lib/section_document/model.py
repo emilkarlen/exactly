@@ -1,5 +1,5 @@
 import enum
-import pathlib
+from pathlib import Path
 from typing import Dict, Sequence, Optional
 
 from exactly_lib.util import line_source
@@ -48,9 +48,9 @@ class SectionContentElement:
     def __init__(self,
                  element_type: ElementType,
                  instruction_info: InstructionInfo,
-                 abs_path_of_dir_containing_root_file: pathlib.Path,
+                 abs_path_of_dir_containing_root_file: Path,
                  source_location_path: SourceLocationPath,
-                 abs_path_of_dir_containing_file: pathlib.Path = None):
+                 abs_path_of_dir_containing_file: Path = None):
         self._element_type = element_type
         self._instruction_info = instruction_info
         self._abs_path_of_dir_containing_root_file = abs_path_of_dir_containing_root_file
@@ -58,7 +58,7 @@ class SectionContentElement:
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
     @property
-    def abs_path_of_dir_containing_root_file(self) -> pathlib.Path:
+    def abs_path_of_dir_containing_root_file(self) -> Path:
         return self._abs_path_of_dir_containing_root_file
 
     @property
@@ -66,7 +66,7 @@ class SectionContentElement:
         return self._source_location_path
 
     @property
-    def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
+    def abs_path_of_dir_containing_file(self) -> Optional[Path]:
         """
         :return: The absolute path of the dir that contains
         the final component of `file_path_rel_referrer`,
