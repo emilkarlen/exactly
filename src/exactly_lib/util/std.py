@@ -1,7 +1,7 @@
 import os
 import subprocess
 import sys
-from typing import Optional
+from typing import Optional, Sequence
 
 from exactly_lib.util import ansi_terminal_color as ansi
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
@@ -74,8 +74,8 @@ class FilePrinter:
         if flush:
             self.file.flush()
 
-    def write_line(self, line: str):
-        self.file.write(line)
+    def write_line(self, line: str, indent: str = ''):
+        self.file.write(indent + line)
         self.file.write(os.linesep)
 
     def write_colored_line(self, line: str, color: Optional[ForegroundColor]):
@@ -89,9 +89,9 @@ class FilePrinter:
         if line:
             self.write_line(line)
 
-    def write_lines(self, lines: iter):
+    def write_lines(self, lines: Sequence[str], indent: str = ''):
         for line in lines:
-            self.write_line(line)
+            self.write_line(indent + line)
 
 
 class FilePrinterWithAnsiColor(FilePrinter):

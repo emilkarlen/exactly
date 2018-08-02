@@ -13,6 +13,8 @@ from exactly_lib.test_case import error_description
 from exactly_lib.util.error_message_format import source_line_sequence
 from exactly_lib.util.std import FilePrinter
 
+SOURCE_LINE_INDENT = '  '
+
 
 def error_message_for_full_result(the_full_result: FullExeResult) -> str:
     output_file = io.StringIO()
@@ -74,7 +76,8 @@ def _output_location(printer: FilePrinter,
     if source_location and source_location.source:
         if has_output_header:
             printer.write_empty_line()
-        printer.write_lines(source_line_sequence(source_location.source))
+        printer.write_lines(source_line_sequence(source_location.source),
+                            SOURCE_LINE_INDENT)
         has_output_header = True
     if description:
         printer.write_line('\nDescribed as "{}"'.format(description))
@@ -164,7 +167,7 @@ def print_file_inclusion_location(printer: FilePrinter,
     printer.write_line(line_in_file(referrer_location / location.file_path_rel_referrer,
                                     location.source.first_line_number))
     [
-        printer.write_line('  ' + line_source)
+        printer.write_line(line_source, SOURCE_LINE_INDENT)
         for line_source in location.source.lines
     ]
     printer.write_empty_line()
