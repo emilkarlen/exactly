@@ -12,12 +12,12 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_processing import Status, Result, Processor, AccessErrorType, \
     test_case_setup_of_source_file
 from exactly_lib.section_document.model import Instruction
+from exactly_lib.section_document.source_location import SourceLocationPath, source_location_path_of, SourceLocation
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.test_case import phase_identifier, os_services
 from exactly_lib.test_case.phase_identifier import Phase
 from exactly_lib.test_case.result import pfh, svh
-from exactly_lib.util.line_source import Line, source_location_path_of, SourceLocationPath, SourceLocation, \
-    single_line_sequence
+from exactly_lib.util.line_source import Line, single_line_sequence
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources import instruction_test_resources as instr
 from exactly_lib_test.processing.test_resources.instruction_set import directive_for_inclusion_of_file
@@ -26,12 +26,12 @@ from exactly_lib_test.processing.test_resources.result_assertions import result_
 from exactly_lib_test.processing.test_resources.test_case_setup import \
     setup_with_null_act_phase_and_null_preprocessing, configuration_with_no_instructions_and_no_preprocessor
 from exactly_lib_test.section_document.test_resources.instruction_parser import ParserThatGives
+from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_path
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files import file_structure as fs
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_path
 
 
 def suite() -> unittest.TestSuite:

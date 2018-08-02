@@ -3,8 +3,8 @@ from typing import Optional
 
 from exactly_lib.execution.impl.result import Failure
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
+from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.util.failure_details import FailureDetails
-from exactly_lib.util.line_source import SourceLocationPath
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import MessageBuilder
 

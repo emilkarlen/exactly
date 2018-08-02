@@ -11,10 +11,10 @@ from exactly_lib.section_document.model import SectionContentElement, ElementTyp
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, FileSystemLocationInfo, \
     FileLocationInfo
+from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteInstruction
-from exactly_lib.util.line_source import SourceLocation
 
 
 class CaseSetupPhaseInstruction(TestSuiteInstruction):

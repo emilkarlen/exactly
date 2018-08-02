@@ -17,11 +17,11 @@ from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError,
     AccessErrorType
 from exactly_lib.section_document import exceptions
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.source_location import source_location_path_of_non_empty_location_path
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling, ActPhaseOsProcessExecutor
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder
-from exactly_lib.util.line_source import source_location_path_of_non_empty_location_path
 from exactly_lib.util.std import StdOutputFiles
 
 

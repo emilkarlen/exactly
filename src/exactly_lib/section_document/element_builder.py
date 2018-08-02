@@ -2,7 +2,7 @@ from typing import Sequence, Optional
 
 from exactly_lib.section_document.model import SectionContentElement, ElementType, Instruction, InstructionInfo
 from exactly_lib.section_document.parsing_configuration import FileLocationInfo
-from exactly_lib.util import line_source
+from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.util.line_source import LineSequence
 
 
@@ -46,5 +46,5 @@ class SectionContentElementBuilder:
                                      self._loc_info.source_location_path(source),
                                      self._loc_info.abs_path_of_dir_containing_file)
 
-    def location_path_of(self, source: LineSequence) -> Sequence[line_source.SourceLocation]:
+    def location_path_of(self, source: LineSequence) -> Sequence[SourceLocation]:
         return self._loc_info.location_path_of(source)

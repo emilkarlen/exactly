@@ -4,11 +4,13 @@ from typing import List, Sequence, Optional
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, FileLocationInfo
+from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import single_line_sequence
+from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_source_location, \
+    equals_source_location, matches_source_location_path
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence, equals_source_location, \
-    matches_source_location, matches_source_location_path
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
 class InstructionInSection(model.Instruction):
@@ -38,7 +40,7 @@ def matches_section_contents_element(
         source: asrt.ValueAssertion[line_source.LineSequence] = asrt.anything_goes(),
         instruction_info: asrt.ValueAssertion[model.InstructionInfo] = asrt.anything_goes(),
         file_path_rel_referrer: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
-        file_inclusion_chain: asrt.ValueAssertion[Sequence[line_source.SourceLocation]] = asrt.anything_goes(),
+        file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
         abs_path_of_dir_containing_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[model.SectionContentElement]:
     return asrt.and_([
@@ -83,7 +85,7 @@ def matches_instruction_with_parse_source_info(
 def matches_file_location_info(
         abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path],
         file_path_rel_referrer: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
-        file_inclusion_chain: asrt.ValueAssertion[Sequence[line_source.SourceLocation]] = asrt.anything_goes(),
+        file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
         abs_path_of_dir_containing_file: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[FileLocationInfo]:
     return asrt.is_instance_with_many(FileLocationInfo,
@@ -122,8 +124,8 @@ def matches_instruction_info_without_description(assertion_on_instruction: asrt.
                                     assertion_on_instruction=assertion_on_instruction)
 
 
-def equals_file_inclusion_chain(expected: List[line_source.SourceLocation]
-                                ) -> asrt.ValueAssertion[Sequence[line_source.SourceLocation]]:
+def equals_file_inclusion_chain(expected: List[SourceLocation]
+                                ) -> asrt.ValueAssertion[Sequence[SourceLocation]]:
     return asrt.matches_sequence([
         equals_source_location(sl)
         for sl in expected
@@ -134,7 +136,7 @@ def equals_instruction_without_description(line_number: int,
                                            line_text: str,
                                            section_name: str,
                                            file_path_rel_referrer: pathlib.Path,
-                                           file_inclusion_chain: List[line_source.SourceLocation],
+                                           file_inclusion_chain: List[SourceLocation],
                                            ) -> asrt.ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,
@@ -149,7 +151,7 @@ def equals_multi_line_instruction_without_description(line_number: int,
                                                       lines: list,
                                                       section_name: str,
                                                       file_path: pathlib.Path,
-                                                      file_inclusion_chain: List[line_source.SourceLocation],
+                                                      file_inclusion_chain: List[SourceLocation],
                                                       ) -> asrt.ValueAssertion[model.SectionContentElement]:
     return matches_section_contents_element(
         ElementType.INSTRUCTION,

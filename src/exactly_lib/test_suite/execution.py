@@ -4,6 +4,7 @@ from typing import Callable, List
 
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
+from exactly_lib.section_document.source_location import source_location_path_of
 from exactly_lib.test_case import error_description
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
@@ -13,7 +14,6 @@ from exactly_lib.test_suite.error_reporting import report_suite_read_error
 from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
 from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
-from exactly_lib.util.line_source import source_location_path_of
 from exactly_lib.util.std import StdOutputFiles, file_printer_with_color_if_terminal
 
 TestCaseProcessorConstructor = Callable[[case_processing.Configuration], test_case_processing.Processor]

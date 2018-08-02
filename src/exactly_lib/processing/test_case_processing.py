@@ -2,10 +2,9 @@ import pathlib
 from enum import Enum
 
 from exactly_lib.execution.full_execution.result import FullExeResult
+from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.error_description import ErrorDescription
-from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocationPath
 
 
 class TestCaseSetup:
@@ -32,14 +31,14 @@ def test_case_setup_of_source_file(source_file: pathlib.Path) -> TestCaseSetup:
 class ErrorInfo(tuple):
     def __new__(cls,
                 description: ErrorDescription,
-                source_location_path: line_source.SourceLocationPath = None,
+                source_location_path: SourceLocationPath = None,
                 section_name: str = None):
         if description is not None:
             assert isinstance(description, ErrorDescription)
         return tuple.__new__(cls, (source_location_path, description, section_name))
 
     @property
-    def source_location_path(self) -> line_source.SourceLocationPath:
+    def source_location_path(self) -> SourceLocationPath:
         """
         :return: May be None
         """
