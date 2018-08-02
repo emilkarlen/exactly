@@ -2,8 +2,3 @@
 
 
 dir-contents /usr empty
-
-
-[act]
-
-$ echo 0

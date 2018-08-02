@@ -1,7 +1,7 @@
 [setup]
 
 
-file a-file.txt <<EOF
+file a-file.txt = <<EOF
 first
 second
 third

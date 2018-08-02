@@ -1,7 +1,7 @@
 [setup]
 
 
-file checked-file <<EOF
+file checked-file = <<EOF
 actual contents
 EOF
 

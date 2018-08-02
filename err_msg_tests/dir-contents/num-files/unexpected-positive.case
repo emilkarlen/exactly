@@ -8,9 +8,3 @@ dir checked-dir
 
 
 dir-contents checked-dir num-files == 1
-
-
-[act]
-
-
-$ exit 0

@@ -1,7 +1,7 @@
 [setup]
 
 
-stdin 'actual contents'
+stdin = 'actual contents'
 
 
 [assert]

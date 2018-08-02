@@ -12,9 +12,3 @@ cd ..
 
 
 dir-contents checked-dir -selection name '*.good' && type file  num-files == 2
-
-
-[act]
-
-
-$ exit 0
