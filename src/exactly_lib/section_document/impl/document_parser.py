@@ -26,7 +26,8 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
               file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> model.Document:
         raw_doc = _parse_source(self._configuration,
-                                SourceLocationInfo(source_file_path, []),
+                                SourceLocationInfo(source_file_path, [],
+                                                   abs_path_of_dir_containing_file=file_reference_relativity_root_dir),
                                 file_reference_relativity_root_dir,
                                 source,
                                 [])
@@ -57,9 +58,12 @@ class _SectionsConfigurationInternal:
 
 def parse(configuration: SectionsConfiguration,
           source_file_path: pathlib.Path) -> model.Document:
+    file_reference_relativity_root_dir = pathlib.Path('/') \
+        if source_file_path.is_absolute() \
+        else resolve_file_reference_relativity_root_dir(pathlib.Path.cwd(), [])
     raw_doc = parse_file(internal_conf_of(configuration),
                          source_file_path,
-                         resolve_file_reference_relativity_root_dir(pathlib.Path.cwd(), []),
+                         file_reference_relativity_root_dir,
                          [],
                          [])
     return build_document(raw_doc)
@@ -110,19 +114,6 @@ def parse_file(conf: _SectionsConfigurationInternal,
                          file_reference_relativity_root_dir,
                          source,
                          visited_paths)
-
-
-def parse_source(conf: _SectionsConfigurationInternal,
-                 source_location_builder: SourceLocationInfo,
-                 file_reference_relativity_root_dir: pathlib.Path,
-                 source: ParseSource,
-                 ) -> model.Document:
-    raw_doc = _parse_source(conf,
-                            source_location_builder,
-                            file_reference_relativity_root_dir,
-                            source,
-                            [])
-    return build_document(raw_doc)
 
 
 def _parse_source(conf: _SectionsConfigurationInternal,
@@ -266,8 +257,7 @@ class _Impl:
 
     def parse_element_at_current_line_using_current_section_element_parser(self):
         parsed_element = self.parser_for_current_section.parse(
-            FileSystemLocationInfo(self._file_reference_relativity_root_dir,
-                                   self._current_file_location),
+            FileSystemLocationInfo(self._current_file_location),
             self._document_source)
         if parsed_element is None:
             raise FileSourceError(new_source_error_of_single_line(self._document_source.current_line,

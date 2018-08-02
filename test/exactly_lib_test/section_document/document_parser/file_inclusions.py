@@ -958,9 +958,9 @@ class TestFileReferenceRelativityRootIsGivenToElementParser(unittest.TestCase):
     @staticmethod
     def do_raise_ex_if_any_file_not_exists(fs_location_info: FileSystemLocationInfo,
                                            paths_to_include: Sequence[Path]):
-        file_reference_relativity_root_dir = fs_location_info.file_reference_relativity_root_dir
+        abs_path_of_dir_containing_file = fs_location_info.current_source_file.abs_path_of_dir_containing_file
         for included_file_path in paths_to_include:
-            p = file_reference_relativity_root_dir / included_file_path
+            p = abs_path_of_dir_containing_file / included_file_path
             if not p.exists():
                 raise ValueError('Path of included file does not exist rel CWD: ' + str(p))
 

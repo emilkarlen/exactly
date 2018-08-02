@@ -70,8 +70,8 @@ class Executor:
                 parser: InstructionParser,
                 source: ParseSource):
         with tmp_dir(self.arrangement.file_ref_rel_root_dir) as file_ref_rel_root_dir_path:
-            fs_location_info = FileSystemLocationInfo(file_ref_rel_root_dir_path,
-                                                      SourceLocationInfo())
+            fs_location_info = FileSystemLocationInfo(SourceLocationInfo(
+                abs_path_of_dir_containing_file=file_ref_rel_root_dir_path))
 
             instruction = parser.parse(fs_location_info, source)
 
