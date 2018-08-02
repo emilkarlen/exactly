@@ -13,9 +13,3 @@ def path CHECKED_FILE = -rel-act-home empty-file.txt
 
 
 contents @[CHECKED_FILE]@ ! empty
-
-
-[act]
-
-
-$ exit 0

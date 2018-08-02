@@ -10,9 +10,3 @@ file @[CHECKED_FILE]@
 
 
 contents @[CHECKED_FILE]@ ! empty
-
-
-[act]
-
-
-$ exit 0

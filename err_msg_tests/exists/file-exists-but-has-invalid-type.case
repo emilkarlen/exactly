@@ -8,9 +8,3 @@ file existing-regular-file
 
 
 exists -dir existing-regular-file
-
-
-[act]
-
-
-$ exit 0

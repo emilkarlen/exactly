@@ -16,9 +16,3 @@ file file-1
 
 
 dir-contents -rel-act checked-dir empty
-
-
-[act]
-
-
-$ exit 0
