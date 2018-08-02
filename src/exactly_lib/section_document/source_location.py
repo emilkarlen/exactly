@@ -76,54 +76,19 @@ def source_location_path_of_non_empty_location_path(location_path: Sequence[Sour
                               location_path[:-1])
 
 
-class SourceLocationInfo(tuple):
-    """Information about the location and inclusion chain of source lines in file."""
+class WithFileLocationInfo:
+    """Has information about a file location, with file inclusions."""
 
-    def __new__(cls,
-                abs_path_of_dir_containing_root_file: Path,
-                source_location_path: SourceLocationPath):
-        return tuple.__new__(cls, (abs_path_of_dir_containing_root_file,
-                                   source_location_path))
-
-    @property
-    def abs_path_of_dir_containing_root_file(self) -> Path:
-        return self[0]
-
-    @property
-    def source_location_path(self) -> SourceLocationPath:
-        return self[1]
-
-    @property
-    def abs_path_of_dir_containing_file(self) -> Path:
-        return _abs_path_of_dir_containing_file(self.abs_path_of_dir_containing_root_file,
-                                                self.source_location_path.location.file_path_rel_referrer,
-                                                self.source_location_path.file_inclusion_chain)
-
-
-class FileLocationInfo(tuple):
-    """Information about the location and inclusion chain of a file."""
-
-    def __new__(cls,
-                abs_path_of_dir_containing_root_file: Path,
-                file_path_rel_referrer: Optional[Path] = None,
-                file_inclusion_chain: Sequence[SourceLocation] = ()):
-        return tuple.__new__(cls, (abs_path_of_dir_containing_root_file,
-                                   file_path_rel_referrer,
-                                   file_inclusion_chain))
+    def __init__(self, abs_path_of_dir_containing_root_file: Path):
+        self._abs_path_of_dir_containing_root_file = abs_path_of_dir_containing_root_file
 
     @property
     def file_path_rel_referrer(self) -> Optional[Path]:
-        return self[1]
+        raise NotImplementedError('abstract method')
 
     @property
     def file_inclusion_chain(self) -> Sequence[SourceLocation]:
-        return self[2]
-
-    @property
-    def abs_path_of_dir_containing_file(self) -> Path:
-        return _abs_path_of_dir_containing_file(self.abs_path_of_dir_containing_root_file,
-                                                self.file_path_rel_referrer,
-                                                self.file_inclusion_chain)
+        raise NotImplementedError('abstract method')
 
     @property
     def abs_path_of_dir_containing_root_file(self) -> Path:
@@ -131,7 +96,61 @@ class FileLocationInfo(tuple):
         or the dir that is regarded to have this property, if there is no root file
         (i.e. the root is stdin or equivalent).
         """
-        return self[0]
+        return self._abs_path_of_dir_containing_root_file
+
+    @property
+    def abs_path_of_dir_containing_file(self) -> Path:
+        ret_val = self.abs_path_of_dir_containing_root_file
+        file_path_rel_referrer_list = ([source_location.file_path_rel_referrer
+                                        for source_location in self.file_inclusion_chain
+                                        ] +
+                                       [self.file_path_rel_referrer])
+        for file_path_rel_referrer in file_path_rel_referrer_list:
+            if file_path_rel_referrer is not None:
+                ret_val = ret_val / file_path_rel_referrer.parent
+        return ret_val
+
+
+class SourceLocationInfo(WithFileLocationInfo):
+    """Information about the location and inclusion chain of source lines in file."""
+
+    def __init__(self,
+                 abs_path_of_dir_containing_root_file: Path,
+                 source_location_path: SourceLocationPath):
+        super().__init__(abs_path_of_dir_containing_root_file)
+        self._source_location_path = source_location_path
+
+    @property
+    def file_path_rel_referrer(self) -> Optional[Path]:
+        return self.source_location_path.location.file_path_rel_referrer
+
+    @property
+    def file_inclusion_chain(self) -> Sequence[SourceLocation]:
+        return self.source_location_path.file_inclusion_chain
+
+    @property
+    def source_location_path(self) -> SourceLocationPath:
+        return self._source_location_path
+
+
+class FileLocationInfo(WithFileLocationInfo):
+    """Information about the location and inclusion chain of a file."""
+
+    def __init__(self,
+                 abs_path_of_dir_containing_root_file: Path,
+                 file_path_rel_referrer: Optional[Path] = None,
+                 file_inclusion_chain: Sequence[SourceLocation] = ()):
+        super().__init__(abs_path_of_dir_containing_root_file)
+        self._file_path_rel_referrer = file_path_rel_referrer
+        self._file_inclusion_chain = file_inclusion_chain
+
+    @property
+    def file_path_rel_referrer(self) -> Optional[Path]:
+        return self._file_path_rel_referrer
+
+    @property
+    def file_inclusion_chain(self) -> Sequence[SourceLocation]:
+        return self._file_inclusion_chain
 
     def source_location_of(self, source: LineSequence) -> SourceLocation:
         return SourceLocation(source, self.file_path_rel_referrer)
