@@ -113,6 +113,37 @@ def equals_instruction_without_description(line_number: int,
     )
 
 
+def equals_instruction_without_description2(line_number: int,
+                                            line_text: str,
+                                            section_name: str,
+                                            file_path_rel_referrer: pathlib.Path,
+                                            file_inclusion_chain: List[SourceLocation],
+                                            ) -> asrt.ValueAssertion[model.SectionContentElement]:
+    return matches_section_contents_element(
+        ElementType.INSTRUCTION,
+        instruction_info=
+        matches_instruction_info_without_description(equals_instruction_in_section(InstructionInSection(section_name))),
+        source_location_info=
+        matches_source_location_info2(
+            source=equals_line_sequence(single_line_sequence(line_number, line_text)),
+            file_path_rel_referrer=asrt.equals(file_path_rel_referrer),
+            file_inclusion_chain=equals_file_inclusion_chain(file_inclusion_chain),
+        )
+    )
+
+
+def matches_single_line_source_location_info(line_number: int,
+                                             line_text: str,
+                                             file_path_rel_referrer: pathlib.Path,
+                                             file_inclusion_chain: List[SourceLocation],
+                                             ) -> asrt.ValueAssertion[SourceLocationInfo]:
+    return matches_source_location_info2(
+        source=equals_line_sequence(single_line_sequence(line_number, line_text)),
+        file_path_rel_referrer=asrt.equals(file_path_rel_referrer),
+        file_inclusion_chain=equals_file_inclusion_chain(file_inclusion_chain),
+    )
+
+
 def equals_multi_line_instruction_without_description(line_number: int,
                                                       lines: list,
                                                       section_name: str,

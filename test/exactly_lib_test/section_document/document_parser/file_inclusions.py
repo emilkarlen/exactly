@@ -995,7 +995,9 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                                 current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_1_rel_file_0),
-                                    abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path),
+                                    abs_path_of_dir_containing_file=asrt.equals(
+                                        abs_cwd_path / sub_dir_name / Path('..')
+                                    ),
                                     file_inclusion_chain=equals_source_location_sequence([
                                         inclusion_of_file_1_from_file_0,
                                     ]),
@@ -1010,7 +1012,9 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                                 current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_2_rel_file_1),
-                                    abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
+                                    abs_path_of_dir_containing_file=asrt.equals(
+                                        abs_cwd_path / sub_dir_name / Path('..') / sub_dir_name
+                                    ),
                                     file_inclusion_chain=equals_source_location_sequence([
                                         inclusion_of_file_1_from_file_0,
                                         inclusion_of_file_2_from_file_1,
@@ -1074,14 +1078,18 @@ class TestAbsPathOfDirContainingFile(unittest.TestCase):
                         ElementType.INSTRUCTION,
                         source_location_info=
                         matches_source_location_info2(
-                            abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path),
+                            abs_path_of_dir_containing_file=asrt.equals(
+                                abs_cwd_path / sub_dir_name / PurePosixPath('..')
+                            ),
                         )
                     ),
                     matches_section_contents_element(
                         ElementType.INSTRUCTION,
                         source_location_info=
                         matches_source_location_info2(
-                            abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
+                            abs_path_of_dir_containing_file=asrt.equals(
+                                abs_cwd_path / sub_dir_name / PurePosixPath('..') / sub_dir_name
+                            ),
                         )
                     ),
                 ],

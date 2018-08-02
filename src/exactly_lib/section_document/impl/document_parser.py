@@ -29,8 +29,7 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
         raw_doc = _parse_source(self._configuration,
                                 FileLocationInfo(file_reference_relativity_root_dir,
                                                  source_file_path,
-                                                 [],
-                                                 abs_path_of_dir_containing_file=file_reference_relativity_root_dir),
+                                                 []),
                                 file_reference_relativity_root_dir,
                                 source,
                                 [])
@@ -107,8 +106,7 @@ def parse_file(conf: _SectionsConfigurationInternal,
     resolved_path_of_current_file = path_to_file.resolve()
     file_location_info = FileLocationInfo(abs_path_of_dir_containing_root_file,
                                           file_path_rel_referrer,
-                                          file_inclusion_chain,
-                                          resolved_path_of_current_file.parent)
+                                          file_inclusion_chain)
     if resolved_path_of_current_file in previously_visited_paths:
         raise FileAccessError(file_path_rel_referrer,
                               'Cyclic inclusion of file',

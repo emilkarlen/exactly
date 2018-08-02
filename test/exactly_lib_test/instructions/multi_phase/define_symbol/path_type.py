@@ -129,9 +129,7 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
     def test(self):
         with tmp_dir() as abs_path_of_dir_containing_file:
             fs_location_info = FileSystemLocationInfo(
-                FileLocationInfo(
-                    abs_path_of_dir_containing_file,
-                    abs_path_of_dir_containing_file=abs_path_of_dir_containing_file))
+                FileLocationInfo(abs_path_of_dir_containing_file))
             instruction_argument = src('{path_type} name = {rel_source_file} component')
             for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                 expected_file_ref_resolver = file_ref_resolvers.constant(

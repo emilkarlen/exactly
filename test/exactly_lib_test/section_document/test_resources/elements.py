@@ -44,13 +44,11 @@ def new_instruction(line_number: int,
                     line_text: str,
                     section_name: str,
                     file_path: pathlib.Path = None,
-                    abs_path_of_dir_containing_file: pathlib.Path = None,
                     file_inclusion_chain: List[SourceLocation] = ()) -> model.SectionContentElement:
     builder = SectionContentElementBuilder(
         FileLocationInfo(pathlib.Path('/'),
                          file_path,
                          file_inclusion_chain,
-                         _root_path_if_non(abs_path_of_dir_containing_file),
                          ))
     return builder.new_instruction(line_source.LineSequence(line_number,
                                                             (line_text,)),
