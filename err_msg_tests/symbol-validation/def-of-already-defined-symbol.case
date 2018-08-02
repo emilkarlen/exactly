@@ -8,8 +8,3 @@ def lines-transformer x = select line-num == 1 |
 # Cause of error: x has already been defined
 
 def string x = 'second definition'
-
-
-[act]
-
-$ echo 'behaviour of act phase is irrelevant'

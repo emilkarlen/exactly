@@ -5,12 +5,7 @@
 
 def path rel_act_path = -rel-act file-name-rel-act
 
-# Cause of error: "install" only accept paths that are relative
+# Cause of error: "copy" only accept paths that are relative
 # the home directory
 
-install @[rel_act_path]@
-
-
-[act]
-
-$ echo 'behaviour of act phase is irrelevant'
+copy @[rel_act_path]@

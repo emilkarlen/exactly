@@ -9,9 +9,4 @@
 
 def list list_symbol  = element1 element2
 
-install @[list_symbol]@
-
-
-[act]
-
-$ echo 'behaviour of act phase is irrelevant'
+copy @[list_symbol]@
