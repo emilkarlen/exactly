@@ -2,8 +2,9 @@ import pathlib
 from typing import List
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationInfo
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.model import SectionContentElement, Instruction
+from exactly_lib.section_document.parsing_configuration import SourceLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line, LineSequence
 from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSection
