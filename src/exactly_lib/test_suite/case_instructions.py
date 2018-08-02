@@ -1,3 +1,4 @@
+import pathlib
 from typing import List, Sequence
 
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -39,16 +40,19 @@ class CaseSetupPhaseInstructionParser(InstructionParser):
 
 class TestCaseSectionContentElementFactory:
     def __init__(self,
+                 abs_path_of_dir_containing_root_file: pathlib.Path,
                  source_location: SourceLocation,
                  instruction_factory: CaseSetupPhaseInstruction,
                  description: str = None):
+        self._abs_path_of_dir_containing_root_file = abs_path_of_dir_containing_root_file
         self._source_location = source_location
         self._description = description
         self._instruction_factory = instruction_factory
 
     def make(self) -> SectionContentElement:
         element_builder = SectionContentElementBuilder(
-            SourceLocationInfo(self._source_location.file_path_rel_referrer)
+            SourceLocationInfo(self._abs_path_of_dir_containing_root_file,
+                               self._source_location.file_path_rel_referrer)
         )
         return element_builder.new_instruction(self._source_location.source,
                                                self._instruction_factory.make_case_instruction(),
@@ -67,7 +71,8 @@ class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
             inst_factory = instruction_element.instruction_info.instruction
             assert isinstance(inst_factory, CaseSetupPhaseInstruction)
 
-            return TestCaseSectionContentElementFactory(instruction_element.source_location_path.location,
+            return TestCaseSectionContentElementFactory(instruction_element.abs_path_of_dir_containing_root_file,
+                                                        instruction_element.source_location_path.location,
                                                         inst_factory,
                                                         instruction_element.instruction_info.description)
 

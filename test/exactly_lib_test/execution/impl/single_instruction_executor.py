@@ -1,3 +1,4 @@
+import pathlib
 import types
 import unittest
 
@@ -154,7 +155,7 @@ def assert_equal_lines(unit_tc: unittest.TestCase,
 
 
 def new_dummy_instruction_element() -> SectionContentElement:
-    return SectionContentElementBuilder(SourceLocationInfo()) \
+    return SectionContentElementBuilder(SourceLocationInfo(pathlib.Path('/'))) \
         .new_instruction(new_ls_from_line(line_source.Line(100, '100')),
                          TestCaseInstruction())
 

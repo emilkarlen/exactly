@@ -979,6 +979,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                         instruction_info=matches_instruction_info_without_description(
                             matches_instruction_with_parse_source_info(
                                 current_source_file=matches_source_location_info(
+                                    abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(root_file_path),
                                     abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
                                     file_inclusion_chain=asrt.is_empty_sequence,
@@ -991,6 +992,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                         instruction_info=matches_instruction_info_without_description(
                             matches_instruction_with_parse_source_info(
                                 current_source_file=matches_source_location_info(
+                                    abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_1_rel_file_0),
                                     abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path),
                                     file_inclusion_chain=equals_source_location_sequence([
@@ -1005,6 +1007,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                         instruction_info=matches_instruction_info_without_description(
                             matches_instruction_with_parse_source_info(
                                 current_source_file=matches_source_location_info(
+                                    abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_2_rel_file_1),
                                     abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
                                     file_inclusion_chain=equals_source_location_sequence([

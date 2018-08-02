@@ -120,7 +120,7 @@ class TestSuccessfulExecution_path_SHOULD_be_relative_file_reference_relativity_
         self._check(
             syntax_for_assignment_of(path_argument_str),
             Arrangement(
-                file_ref_rel_root_dir=DirContents([empty_dir(path_argument_str)])
+                root_dir_contents=DirContents([empty_dir(path_argument_str)])
             ),
             Expectation(
                 main_result=
@@ -147,7 +147,7 @@ class TestFailingExecution_hard_error_WHEN_path_exists_but_is_a_file(TestCaseFor
         self._check(
             syntax_for_assignment_of(file_name),
             Arrangement(
-                file_ref_rel_root_dir=DirContents([empty_file(file_name)])),
+                root_dir_contents=DirContents([empty_file(file_name)])),
             Expectation(
                 main_result=sh_assertions.is_hard_error())
         )
@@ -159,7 +159,7 @@ class TestSuccessfulExecution_change_to_direct_sub_dir(TestCaseForConfigurationB
         self._check(
             syntax_for_assignment_of(directory_name),
             Arrangement(
-                file_ref_rel_root_dir=DirContents([empty_dir(directory_name)])),
+                root_dir_contents=DirContents([empty_dir(directory_name)])),
             Expectation(
                 file_ref_rel_root_2_conf=
                 self.conf_prop_equals(
@@ -175,7 +175,7 @@ class TestSuccessfulExecution_change_to_2_level_sub_dir(TestCaseForConfiguration
         self._check(
             syntax_for_assignment_of('{}/{}'.format(first_dir, second_dir)),
             Arrangement(
-                file_ref_rel_root_dir=
+                root_dir_contents=
                 DirContents([Dir(first_dir,
                                  [empty_dir(second_dir)])])),
             Expectation(

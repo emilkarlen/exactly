@@ -1,3 +1,4 @@
+import pathlib
 from typing import List
 
 from exactly_lib.execution import phase_step_simple as phase_step
@@ -33,7 +34,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
             PartialPhase.ASSERT: self._new_assert_instruction,
             PartialPhase.CLEANUP: self._new_cleanup_instruction
         }
-        self._element_builder = SectionContentElementBuilder(SourceLocationInfo())
+        self._element_builder = SectionContentElementBuilder(SourceLocationInfo(pathlib.Path.cwd()))
         self.__extra = {}
         for ph in PartialPhase:
             self.__extra[ph] = []

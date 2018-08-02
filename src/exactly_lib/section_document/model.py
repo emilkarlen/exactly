@@ -48,12 +48,18 @@ class SectionContentElement:
     def __init__(self,
                  element_type: ElementType,
                  instruction_info: InstructionInfo,
+                 abs_path_of_dir_containing_root_file: pathlib.Path,
                  source_location_path: SourceLocationPath,
                  abs_path_of_dir_containing_file: pathlib.Path = None):
         self._element_type = element_type
         self._instruction_info = instruction_info
+        self._abs_path_of_dir_containing_root_file = abs_path_of_dir_containing_root_file
         self._source_location_path = source_location_path
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
+
+    @property
+    def abs_path_of_dir_containing_root_file(self) -> pathlib.Path:
+        return self._abs_path_of_dir_containing_root_file
 
     @property
     def source_location_path(self) -> SourceLocationPath:

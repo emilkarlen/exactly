@@ -23,7 +23,7 @@ INSTRUCTION = InstructionInSection('section name')
 class TestBuild(unittest.TestCase):
     def test_default_constructor_arguments(self):
         # ARRANGE #
-        self._test_all_element_types(sut.SectionContentElementBuilder(SourceLocationInfo()),
+        self._test_all_element_types(sut.SectionContentElementBuilder(SourceLocationInfo(pathlib.Path.cwd())),
                                      assertion_on_file_path=asrt.is_none,
                                      assertion_on_file_inclusion_chain=asrt.matches_sequence([]))
 
@@ -31,7 +31,8 @@ class TestBuild(unittest.TestCase):
         # ARRANGE #
         file_path = pathlib.Path('a path')
         self._test_all_element_types(sut.SectionContentElementBuilder(
-            SourceLocationInfo(file_path_rel_referrer=file_path)),
+            SourceLocationInfo(pathlib.Path.cwd(),
+                               file_path_rel_referrer=file_path)),
             assertion_on_file_path=asrt.equals(file_path),
             assertion_on_file_inclusion_chain=asrt.matches_sequence([]))
 
@@ -40,7 +41,8 @@ class TestBuild(unittest.TestCase):
         file_inclusion_chain = [SourceLocation(single_line_sequence(2, 'inclusion line'),
                                                pathlib.Path('inclusion file path'))]
         self._test_all_element_types(
-            sut.SectionContentElementBuilder(SourceLocationInfo(file_inclusion_chain=file_inclusion_chain)),
+            sut.SectionContentElementBuilder(SourceLocationInfo(pathlib.Path.cwd(),
+                                                                file_inclusion_chain=file_inclusion_chain)),
             assertion_on_file_path=asrt.is_none,
             assertion_on_file_inclusion_chain=equals_file_inclusion_chain(
                 file_inclusion_chain))
@@ -51,7 +53,8 @@ class TestBuild(unittest.TestCase):
         file_inclusion_chain = [SourceLocation(single_line_sequence(2, 'inclusion line'),
                                                pathlib.Path('inclusion file path'))]
         self._test_all_element_types(
-            sut.SectionContentElementBuilder(SourceLocationInfo(file_path_rel_referrer=file_path,
+            sut.SectionContentElementBuilder(SourceLocationInfo(pathlib.Path.cwd(),
+                                                                file_path_rel_referrer=file_path,
                                                                 file_inclusion_chain=file_inclusion_chain)),
             assertion_on_file_path=asrt.equals(file_path),
             assertion_on_file_inclusion_chain=equals_file_inclusion_chain(

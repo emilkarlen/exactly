@@ -1,3 +1,5 @@
+import pathlib
+
 from exactly_lib.section_document import model as doc
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.parsing_configuration import SourceLocationInfo
@@ -38,7 +40,7 @@ class TestCaseWithOnlyInstructionElementsBuilder:
 class InstructionElementGenerator:
     def __init__(self):
         self._current_line = 1
-        self._element_builder = SectionContentElementBuilder(SourceLocationInfo())
+        self._element_builder = SectionContentElementBuilder(SourceLocationInfo(pathlib.Path.cwd()))
 
     def instruction_element(self, instruction) -> doc.SectionContentElement:
         line_no = self._current_line
