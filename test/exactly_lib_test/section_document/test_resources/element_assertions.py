@@ -1,5 +1,5 @@
 import pathlib
-from typing import List, Sequence
+from typing import List, Sequence, Optional
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import ElementType
@@ -63,6 +63,40 @@ def equals_instruction_in_section(expected: InstructionInSection) -> asrt.ValueA
                                  asrt.sub_component('section_name',
                                                     InstructionInSection.section_name.fget,
                                                     asrt.equals(expected.section_name)))
+
+
+def matches_instruction_with_parse_source_info(
+        section_name: asrt.ValueAssertion[str] = asrt.anything_goes(),
+        current_source_file: asrt.ValueAssertion[SourceLocationInfo] = asrt.anything_goes(),
+) -> asrt.ValueAssertion[model.Instruction]:
+    return asrt.is_instance_with_many(InstructionInSectionWithParseSourceInfo,
+                                      [
+                                          asrt.sub_component('section_name',
+                                                             InstructionInSectionWithParseSourceInfo.section_name.fget,
+                                                             section_name),
+                                          asrt.sub_component('current_source_file',
+                                                             lambda instr: instr.fs_location_info.current_source_file,
+                                                             current_source_file),
+                                      ])
+
+
+def matches_source_location_info(
+        file_path_rel_referrer: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
+        file_inclusion_chain: asrt.ValueAssertion[Sequence[line_source.SourceLocation]] = asrt.anything_goes(),
+        abs_path_of_dir_containing_file: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
+) -> asrt.ValueAssertion[SourceLocationInfo]:
+    return asrt.is_instance_with_many(SourceLocationInfo,
+                                      [
+                                          asrt.sub_component('file_path_rel_referrer',
+                                                             SourceLocationInfo.file_path_rel_referrer.fget,
+                                                             file_path_rel_referrer),
+                                          asrt.sub_component('file_inclusion_chain',
+                                                             SourceLocationInfo.file_inclusion_chain.fget,
+                                                             file_inclusion_chain),
+                                          asrt.sub_component('abs_path_of_dir_containing_file',
+                                                             SourceLocationInfo.abs_path_of_dir_containing_file.fget,
+                                                             abs_path_of_dir_containing_file),
+                                      ])
 
 
 def matches_instruction_info(assertion_on_description: asrt.ValueAssertion[str],
