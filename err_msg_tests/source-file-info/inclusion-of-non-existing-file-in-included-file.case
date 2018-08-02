@@ -1,0 +1,3 @@
+[setup]
+
+including sub-dir/included-file-with-inclusion-of-non-existing-file.xly

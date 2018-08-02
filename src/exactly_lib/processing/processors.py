@@ -120,7 +120,7 @@ class _Parser(processing_utils.Parser):
             raise ProcessError(error_info)
 
         except exceptions.FileAccessError as ex:
-            error_info = ErrorInfo(error_description.syntax_error_of_message(ex.message),
+            error_info = ErrorInfo(error_description.file_access_error_of_message(ex.message),
                                    source_location_path_of_non_empty_location_path(ex.location_path))
             raise AccessorError(AccessErrorType.FILE_ACCESS_ERROR,
                                 error_info)
