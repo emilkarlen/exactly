@@ -27,7 +27,9 @@ class DocumentParser:
         raise NotImplementedError('abstract method')
 
 
-class SourceLocationInfo:
+class FileLocationInfo:
+    """Information about the location and inclusion chain of a file."""
+
     def __init__(self,
                  abs_path_of_dir_containing_root_file: pathlib.Path,
                  file_path_rel_referrer: Optional[pathlib.Path] = None,
@@ -71,11 +73,11 @@ class SourceLocationInfo:
 
 
 class FileSystemLocationInfo(tuple):
-    def __new__(cls, current_source_file: SourceLocationInfo):
+    def __new__(cls, current_source_file: FileLocationInfo):
         return tuple.__new__(cls, (current_source_file,))
 
     @property
-    def current_source_file(self) -> SourceLocationInfo:
+    def current_source_file(self) -> FileLocationInfo:
         """Information about the source file that contains the instruction being parsed"""
         return self[0]
 

@@ -4,7 +4,7 @@ from typing import Callable
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, SourceLocationInfo
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo, FileLocationInfo
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction, ConfigurationBuilder
 from exactly_lib.test_case.result.sh import SuccessOrHardError
@@ -69,7 +69,7 @@ class Executor:
                 parser: InstructionParser,
                 source: ParseSource):
         with tmp_dir(self.arrangement.root_dir_contents) as abs_path_of_dir_containing_root_file:
-            fs_location_info = FileSystemLocationInfo(SourceLocationInfo(
+            fs_location_info = FileSystemLocationInfo(FileLocationInfo(
                 abs_path_of_dir_containing_root_file,
                 abs_path_of_dir_containing_file=abs_path_of_dir_containing_root_file))
 

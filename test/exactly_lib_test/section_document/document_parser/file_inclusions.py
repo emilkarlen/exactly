@@ -23,7 +23,7 @@ from exactly_lib_test.section_document.test_resources.document_assertions import
 from exactly_lib_test.section_document.test_resources.element_assertions import \
     equals_instruction_without_description, matches_section_contents_element, \
     matches_instruction_info_without_description, matches_instruction_with_parse_source_info, \
-    matches_source_location_info
+    matches_file_location_info
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
@@ -978,7 +978,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                         ElementType.INSTRUCTION,
                         instruction_info=matches_instruction_info_without_description(
                             matches_instruction_with_parse_source_info(
-                                current_source_file=matches_source_location_info(
+                                current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(root_file_path),
                                     abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
@@ -991,7 +991,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                         ElementType.INSTRUCTION,
                         instruction_info=matches_instruction_info_without_description(
                             matches_instruction_with_parse_source_info(
-                                current_source_file=matches_source_location_info(
+                                current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_1_rel_file_0),
                                     abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path),
@@ -1006,7 +1006,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                         ElementType.INSTRUCTION,
                         instruction_info=matches_instruction_info_without_description(
                             matches_instruction_with_parse_source_info(
-                                current_source_file=matches_source_location_info(
+                                current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_2_rel_file_1),
                                     abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),

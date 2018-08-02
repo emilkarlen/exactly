@@ -10,7 +10,7 @@ from exactly_lib.section_document.model import SectionContentElement, ElementTyp
     Instruction
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, FileSystemLocationInfo, \
-    SourceLocationInfo
+    FileLocationInfo
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteInstruction
@@ -51,8 +51,8 @@ class TestCaseSectionContentElementFactory:
 
     def make(self) -> SectionContentElement:
         element_builder = SectionContentElementBuilder(
-            SourceLocationInfo(self._abs_path_of_dir_containing_root_file,
-                               self._source_location.file_path_rel_referrer)
+            FileLocationInfo(self._abs_path_of_dir_containing_root_file,
+                             self._source_location.file_path_rel_referrer)
         )
         return element_builder.new_instruction(self._source_location.source,
                                                self._instruction_factory.make_case_instruction(),

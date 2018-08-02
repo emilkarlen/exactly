@@ -11,7 +11,7 @@ from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration, \
-    DocumentParser, FileSystemLocationInfo, SourceLocationInfo
+    DocumentParser, FileSystemLocationInfo, FileLocationInfo
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocation
@@ -26,10 +26,10 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
               file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> model.Document:
         raw_doc = _parse_source(self._configuration,
-                                SourceLocationInfo(file_reference_relativity_root_dir,
-                                                   source_file_path,
-                                                   [],
-                                                   abs_path_of_dir_containing_file=file_reference_relativity_root_dir),
+                                FileLocationInfo(file_reference_relativity_root_dir,
+                                                 source_file_path,
+                                                 [],
+                                                 abs_path_of_dir_containing_file=file_reference_relativity_root_dir),
                                 file_reference_relativity_root_dir,
                                 source,
                                 [])
@@ -110,25 +110,25 @@ def parse_file(conf: _SectionsConfigurationInternal,
                               file_inclusion_chain)
     visited_paths = previously_visited_paths + [resolved_path_of_current_file]
     file_reference_relativity_root_dir = path_to_file.parent
-    source_location_info = SourceLocationInfo(abs_path_of_dir_containing_root_file,
-                                              file_path_rel_referrer,
-                                              file_inclusion_chain,
-                                              resolved_path_of_current_file.parent)
+    file_location_info = FileLocationInfo(abs_path_of_dir_containing_root_file,
+                                          file_path_rel_referrer,
+                                          file_inclusion_chain,
+                                          resolved_path_of_current_file.parent)
     return _parse_source(conf,
-                         source_location_info,
+                         file_location_info,
                          file_reference_relativity_root_dir,
                          source,
                          visited_paths)
 
 
 def _parse_source(conf: _SectionsConfigurationInternal,
-                  source_location_info: SourceLocationInfo,
+                  file_location_info: FileLocationInfo,
                   file_reference_relativity_root_dir: pathlib.Path,
                   source: ParseSource,
                   visited_paths: List[pathlib.Path],
                   ) -> RawDoc:
     impl = _Impl(conf,
-                 source_location_info,
+                 file_location_info,
                  file_reference_relativity_root_dir,
                  source,
                  visited_paths)
@@ -169,7 +169,7 @@ class _SectionElementParseResultHandler(ParsedSectionElementVisitor[_ParseResult
 class _Impl:
     def __init__(self,
                  configuration: _SectionsConfigurationInternal,
-                 current_file_location: SourceLocationInfo,
+                 current_file_location: FileLocationInfo,
                  file_reference_relativity_root_dir: pathlib.Path,
                  document_source: ParseSource,
                  visited_paths: List[pathlib.Path]):
