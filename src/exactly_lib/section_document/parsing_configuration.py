@@ -27,21 +27,13 @@ class DocumentParser:
 
 
 class FileSystemLocationInfo(tuple):
-    def __new__(cls,
-                file_reference_relativity_root_dir: pathlib.Path,
-                current_source_file: SourceLocationInfo):
-        return tuple.__new__(cls, (file_reference_relativity_root_dir,
-                                   current_source_file))
-
-    @property
-    def file_reference_relativity_root_dir(self) -> pathlib.Path:
-        """A directory that file reference paths are relative to"""
-        return self[0]
+    def __new__(cls, current_source_file: SourceLocationInfo):
+        return tuple.__new__(cls, (current_source_file,))
 
     @property
     def current_source_file(self) -> SourceLocationInfo:
-        """Information about the source file that contains the instruction beeing parsed"""
-        return self[1]
+        """Information about the source file that contains the instruction being parsed"""
+        return self[0]
 
 
 class SectionElementParser:
@@ -58,6 +50,7 @@ class SectionElementParser:
         being the name of an instruction), but that there is some syntax error related to
         the recognized element (e.g. instruction).
 
+        :param fs_location_info: Information about the location of the source file being parsed
         :param source: Remaining source to parse
 
         :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
