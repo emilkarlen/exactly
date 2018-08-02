@@ -3,7 +3,7 @@ import pathlib
 from typing import Dict, Sequence, Optional
 
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocation, SourceLocationPath
+from exactly_lib.util.line_source import SourceLocationPath
 
 
 class Instruction:
@@ -56,38 +56,8 @@ class SectionContentElement:
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
     @property
-    def location(self) -> SourceLocation:
-        """
-        Gives the
-         - source code of the element
-         - file path that contains the element (or None iff the element is not from a file (but from stdin, i.e.)
-           file path is relative the location of the last element in file_inclusion_chain
-           If there is no file_inclusion_chain element, then it is the (relative) path of the root file
-        """
-        return self._source_location_path.location
-
-    @property
-    def file_inclusion_chain(self) -> Sequence[SourceLocation]:
-        """
-        Each element holds
-         - the source code that "represents" the inclusion directive
-         - the file that contains the above source code.
-           the file path is relative the location of the file of the previous inclusion chain element
-
-        :return: The sequence of file inclusions that leads to the file specified by `location`.
-        """
-        return self._source_location_path.file_inclusion_chain
-
-    @property
     def source_location_path(self) -> SourceLocationPath:
         return self._source_location_path
-
-    @property
-    def file_path_rel_referrer(self) -> Optional[pathlib.Path]:
-        """
-        :return: The file component of `location`
-        """
-        return self.location.file_path_rel_referrer
 
     @property
     def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
@@ -107,9 +77,9 @@ class SectionContentElement:
     @property
     def source(self) -> line_source.LineSequence:
         """
-        :return: The source component of `location`
+        :return: Short cut to the source component of `source_location_path.location`
         """
-        return self.location.source
+        return self.source_location_path.location.source
 
     @property
     def element_type(self) -> ElementType:

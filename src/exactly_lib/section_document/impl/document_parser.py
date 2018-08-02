@@ -3,7 +3,7 @@ from typing import Sequence, Dict, List, Optional, Union
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationInfo
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, \
     new_source_error_of_single_line
 from exactly_lib.section_document.model import SectionContentElement
@@ -26,7 +26,7 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
               file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> model.Document:
         raw_doc = _parse_source(self._configuration,
-                                SourceLocationBuilder(source_file_path, []),
+                                SourceLocationInfo(source_file_path, []),
                                 file_reference_relativity_root_dir,
                                 source,
                                 [])
@@ -102,9 +102,9 @@ def parse_file(conf: _SectionsConfigurationInternal,
                               file_inclusion_chain)
     visited_paths = previously_visited_paths + [resolved_path_of_current_file]
     file_reference_relativity_root_dir = path_to_file.parent
-    source_location_builder = SourceLocationBuilder(file_path_rel_referrer,
-                                                    file_inclusion_chain,
-                                                    resolved_path_of_current_file.parent)
+    source_location_builder = SourceLocationInfo(file_path_rel_referrer,
+                                                 file_inclusion_chain,
+                                                 resolved_path_of_current_file.parent)
     return _parse_source(conf,
                          source_location_builder,
                          file_reference_relativity_root_dir,
@@ -113,7 +113,7 @@ def parse_file(conf: _SectionsConfigurationInternal,
 
 
 def parse_source(conf: _SectionsConfigurationInternal,
-                 source_location_builder: SourceLocationBuilder,
+                 source_location_builder: SourceLocationInfo,
                  file_reference_relativity_root_dir: pathlib.Path,
                  source: ParseSource,
                  ) -> model.Document:
@@ -126,7 +126,7 @@ def parse_source(conf: _SectionsConfigurationInternal,
 
 
 def _parse_source(conf: _SectionsConfigurationInternal,
-                  source_location_builder: SourceLocationBuilder,
+                  source_location_builder: SourceLocationInfo,
                   file_reference_relativity_root_dir: pathlib.Path,
                   source: ParseSource,
                   visited_paths: List[pathlib.Path],
@@ -173,7 +173,7 @@ class _SectionElementParseResultHandler(ParsedSectionElementVisitor[_ParseResult
 class _Impl:
     def __init__(self,
                  configuration: _SectionsConfigurationInternal,
-                 current_file_location: SourceLocationBuilder,
+                 current_file_location: SourceLocationInfo,
                  file_reference_relativity_root_dir: pathlib.Path,
                  document_source: ParseSource,
                  visited_paths: List[pathlib.Path]):
@@ -266,7 +266,8 @@ class _Impl:
 
     def parse_element_at_current_line_using_current_section_element_parser(self):
         parsed_element = self.parser_for_current_section.parse(
-            FileSystemLocationInfo(self._file_reference_relativity_root_dir),
+            FileSystemLocationInfo(self._file_reference_relativity_root_dir,
+                                   self._current_file_location),
             self._document_source)
         if parsed_element is None:
             raise FileSourceError(new_source_error_of_single_line(self._document_source.current_line,

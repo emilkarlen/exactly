@@ -6,7 +6,7 @@ from exactly_lib.util import line_source
 from exactly_lib.util.line_source import SourceLocationPath, SourceLocation, LineSequence
 
 
-class SourceLocationBuilder:
+class SourceLocationInfo:
     def __init__(self,
                  file_path_rel_referrer: Optional[pathlib.Path] = None,
                  file_inclusion_chain: Sequence[line_source.SourceLocation] = (),
@@ -34,7 +34,7 @@ class SourceLocationBuilder:
 class SectionContentElementBuilder:
     """Build SectionContentElement:s"""
 
-    def __init__(self, source_location_builder: SourceLocationBuilder):
+    def __init__(self, source_location_builder: SourceLocationInfo):
         self._loc_builder = source_location_builder
 
     def new_empty(self, source: LineSequence) -> SectionContentElement:

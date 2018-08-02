@@ -2,13 +2,13 @@ import pathlib
 from typing import List
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationInfo
 from exactly_lib.section_document.model import SectionContentElement, Instruction
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import Line, LineSequence
 from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSection
 
-_ELEMENT_BUILDER_WITHOUT_FILE_PATH = SectionContentElementBuilder(SourceLocationBuilder())
+_ELEMENT_BUILDER_WITHOUT_FILE_PATH = SectionContentElementBuilder(SourceLocationInfo())
 
 
 def new_comment_element(source_line: line_source.Line) -> SectionContentElement:
@@ -46,10 +46,10 @@ def new_instruction(line_number: int,
                     abs_path_of_dir_containing_file: pathlib.Path = None,
                     file_inclusion_chain: List[line_source.SourceLocation] = ()) -> model.SectionContentElement:
     builder = SectionContentElementBuilder(
-        SourceLocationBuilder(file_path,
-                              file_inclusion_chain,
-                              _root_path_if_non(abs_path_of_dir_containing_file),
-                              ))
+        SourceLocationInfo(file_path,
+                           file_inclusion_chain,
+                           _root_path_if_non(abs_path_of_dir_containing_file),
+                           ))
     return builder.new_instruction(line_source.LineSequence(line_number,
                                                             (line_text,)),
                                    InstructionInSection(section_name))
@@ -62,10 +62,10 @@ def new_instruction__multi_line(line_number: int,
                                 abs_path_of_dir_containing_file: pathlib.Path = None,
                                 file_inclusion_chain: List[line_source.SourceLocation] = ()
                                 ) -> model.SectionContentElement:
-    builder = SectionContentElementBuilder(SourceLocationBuilder(file_path,
-                                                                 file_inclusion_chain,
-                                                                 _root_path_if_non(abs_path_of_dir_containing_file),
-                                                                 ))
+    builder = SectionContentElementBuilder(SourceLocationInfo(file_path,
+                                                              file_inclusion_chain,
+                                                              _root_path_if_non(abs_path_of_dir_containing_file),
+                                                              ))
     return builder.new_instruction(line_source.LineSequence(line_number,
                                                             tuple(lines)),
                                    InstructionInSection(section_name))

@@ -5,7 +5,7 @@ from exactly_lib.execution.impl.single_instruction_executor import execute_eleme
     ControlledInstructionExecutor, \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum, SingleInstructionExecutionFailure
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationInfo
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import line_source
@@ -153,7 +153,7 @@ def assert_equal_lines(unit_tc: unittest.TestCase,
 
 
 def new_dummy_instruction_element() -> SectionContentElement:
-    return SectionContentElementBuilder(SourceLocationBuilder()) \
+    return SectionContentElementBuilder(SourceLocationInfo()) \
         .new_instruction(new_ls_from_line(line_source.Line(100, '100')),
                          TestCaseInstruction())
 

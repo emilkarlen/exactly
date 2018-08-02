@@ -10,7 +10,7 @@ from exactly_lib.section_document.parsed_section_element import ParsedSectionEle
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionConfiguration, \
     SectionsConfiguration, FileSystemLocationInfo
 from exactly_lib.util import line_source
-from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSection
+from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSectionWithParseSourceInfo
 
 INCLUDE_DIRECTIVE_NAME = 'include'
 OK_INSTRUCTION_NAME = 'ok'
@@ -48,7 +48,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
      - line with only space -> EMPTY element
      - line beginning with SYNTAX_ERROR_INSTRUCTION_NAME -> ParseError
      - line beginning with UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE -> return None
-     - OK_INSTRUCTION_NAME -> INSTRUCTION element
+     - OK_INSTRUCTION_NAME -> INSTRUCTION element with `InstructionInSectionWithParseSourceInfo` instruction
     """
 
     def __init__(self,
@@ -80,8 +80,10 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
             raise SourceError(consumed_source, current_line_parts[1])
         elif current_line_parts[0] == OK_INSTRUCTION_NAME:
             return ParsedInstruction(consumed_source,
-                                     InstructionInfo(InstructionInSection(
-                                         self._section_name_to_register_in_instructions)))
+                                     InstructionInfo(
+                                         InstructionInSectionWithParseSourceInfo(
+                                             self._section_name_to_register_in_instructions,
+                                             fs_location_info)))
         else:
             raise ValueError('Unknown source: ' + current_line)
 

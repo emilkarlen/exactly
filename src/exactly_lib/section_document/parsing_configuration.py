@@ -2,6 +2,7 @@ import pathlib
 from typing import Sequence, Dict, Optional
 
 from exactly_lib.section_document import model
+from exactly_lib.section_document.element_builder import SourceLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
 
@@ -26,13 +27,21 @@ class DocumentParser:
 
 
 class FileSystemLocationInfo(tuple):
-    def __new__(cls, file_reference_relativity_root_dir: pathlib.Path):
-        return tuple.__new__(cls, (file_reference_relativity_root_dir,))
+    def __new__(cls,
+                file_reference_relativity_root_dir: pathlib.Path,
+                current_source_file: SourceLocationInfo):
+        return tuple.__new__(cls, (file_reference_relativity_root_dir,
+                                   current_source_file))
 
     @property
     def file_reference_relativity_root_dir(self) -> pathlib.Path:
         """A directory that file reference paths are relative to"""
         return self[0]
+
+    @property
+    def current_source_file(self) -> SourceLocationInfo:
+        """Information about the source file that contains the instruction beeing parsed"""
+        return self[1]
 
 
 class SectionElementParser:

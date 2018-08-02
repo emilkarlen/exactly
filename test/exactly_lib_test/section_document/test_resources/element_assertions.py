@@ -3,6 +3,7 @@ from typing import List, Sequence
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.model import ElementType
+from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -18,6 +19,18 @@ class InstructionInSection(model.Instruction):
     @property
     def section_name(self) -> str:
         return self._section_name
+
+
+class InstructionInSectionWithParseSourceInfo(InstructionInSection):
+    def __init__(self,
+                 section_name: str,
+                 fs_location_info: FileSystemLocationInfo):
+        super().__init__(section_name)
+        self._fs_location_info = fs_location_info
+
+    @property
+    def fs_location_info(self) -> FileSystemLocationInfo:
+        return self._fs_location_info
 
 
 def matches_section_contents_element(

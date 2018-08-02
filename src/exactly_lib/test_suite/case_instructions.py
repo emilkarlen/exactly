@@ -3,7 +3,7 @@ from typing import List, Sequence
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import instruction_section_element_parser as isep
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationInfo
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.model import SectionContentElement, ElementType, SectionContents, \
     Instruction
@@ -47,7 +47,7 @@ class TestCaseSectionContentElementFactory:
 
     def make(self) -> SectionContentElement:
         element_builder = SectionContentElementBuilder(
-            SourceLocationBuilder(self._source_location.file_path_rel_referrer)
+            SourceLocationInfo(self._source_location.file_path_rel_referrer)
         )
         return element_builder.new_instruction(self._source_location.source,
                                                self._instruction_factory.make_case_instruction(),
@@ -66,7 +66,7 @@ class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
             inst_factory = instruction_element.instruction_info.instruction
             assert isinstance(inst_factory, CaseSetupPhaseInstruction)
 
-            return TestCaseSectionContentElementFactory(instruction_element.location,
+            return TestCaseSectionContentElementFactory(instruction_element.source_location_path.location,
                                                         inst_factory,
                                                         instruction_element.instruction_info.description)
 
