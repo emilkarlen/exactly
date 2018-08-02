@@ -5,6 +5,7 @@ import unittest
 from typing import List
 
 from exactly_lib.common import result_reporting as sut
+from exactly_lib.common.result_reporting import SOURCE_LINE_INDENT
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import single_line_sequence, LineSequence
@@ -178,7 +179,8 @@ def file_inclusion_chain_location(location: SourceLocation) -> List[str]:
 
 
 def source_lines(line_sequence: LineSequence) -> List[str]:
-    return list(line_sequence.lines)
+    return [SOURCE_LINE_INDENT + line
+            for line in line_sequence.lines]
 
 
 def section_line(section_name: str) -> str:
