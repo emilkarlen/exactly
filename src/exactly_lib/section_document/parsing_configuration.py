@@ -29,10 +29,12 @@ class DocumentParser:
 
 class SourceLocationInfo:
     def __init__(self,
+                 abs_path_of_dir_containing_root_file: pathlib.Path,
                  file_path_rel_referrer: Optional[pathlib.Path] = None,
                  file_inclusion_chain: Sequence[line_source.SourceLocation] = (),
                  abs_path_of_dir_containing_file: Optional[pathlib.Path] = None,
                  ):
+        self._abs_path_of_dir_containing_root_file = abs_path_of_dir_containing_root_file
         self._file_path_rel_referrer = file_path_rel_referrer
         self._file_inclusion_chain = file_inclusion_chain
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
@@ -48,6 +50,14 @@ class SourceLocationInfo:
     @property
     def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
         return self._abs_path_of_dir_containing_file
+
+    @property
+    def abs_path_of_dir_containing_root_file(self) -> pathlib.Path:
+        """Absolute path of the dir containing the first file in the inclusion chain;
+        or the dir that is regarded to have this property, if there is no root file
+        (i.e. the root is stdin or equivalent).
+        """
+        return self._abs_path_of_dir_containing_root_file
 
     def source_location_of(self, source: LineSequence) -> SourceLocation:
         return SourceLocation(source, self._file_path_rel_referrer)

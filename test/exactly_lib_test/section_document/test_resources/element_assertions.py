@@ -81,12 +81,16 @@ def matches_instruction_with_parse_source_info(
 
 
 def matches_source_location_info(
+        abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path],
         file_path_rel_referrer: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
         file_inclusion_chain: asrt.ValueAssertion[Sequence[line_source.SourceLocation]] = asrt.anything_goes(),
         abs_path_of_dir_containing_file: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[SourceLocationInfo]:
     return asrt.is_instance_with_many(SourceLocationInfo,
                                       [
+                                          asrt.sub_component('abs_path_of_dir_containing_root_file',
+                                                             SourceLocationInfo.abs_path_of_dir_containing_root_file.fget,
+                                                             abs_path_of_dir_containing_root_file),
                                           asrt.sub_component('file_path_rel_referrer',
                                                              SourceLocationInfo.file_path_rel_referrer.fget,
                                                              file_path_rel_referrer),

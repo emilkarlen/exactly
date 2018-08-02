@@ -9,8 +9,8 @@ from exactly_lib.util.line_source import LineSequence
 class SectionContentElementBuilder:
     """Build SectionContentElement:s"""
 
-    def __init__(self, source_location_builder: SourceLocationInfo):
-        self._loc_builder = source_location_builder
+    def __init__(self, source_location_info: SourceLocationInfo):
+        self._loc_info = source_location_info
 
     def new_empty(self, source: LineSequence) -> SectionContentElement:
         return self.new_non_instruction(source,
@@ -42,8 +42,9 @@ class SectionContentElementBuilder:
              instruction_info: Optional[InstructionInfo]) -> SectionContentElement:
         return SectionContentElement(element_type,
                                      instruction_info,
-                                     self._loc_builder.source_location_path(source),
-                                     self._loc_builder.abs_path_of_dir_containing_file)
+                                     self._loc_info.abs_path_of_dir_containing_root_file,
+                                     self._loc_info.source_location_path(source),
+                                     self._loc_info.abs_path_of_dir_containing_file)
 
     def location_path_of(self, source: LineSequence) -> Sequence[line_source.SourceLocation]:
-        return self._loc_builder.location_path_of(source)
+        return self._loc_info.location_path_of(source)

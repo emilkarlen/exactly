@@ -26,7 +26,9 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
               file_reference_relativity_root_dir: pathlib.Path,
               source: ParseSource) -> model.Document:
         raw_doc = _parse_source(self._configuration,
-                                SourceLocationInfo(source_file_path, [],
+                                SourceLocationInfo(file_reference_relativity_root_dir,
+                                                   source_file_path,
+                                                   [],
                                                    abs_path_of_dir_containing_file=file_reference_relativity_root_dir),
                                 file_reference_relativity_root_dir,
                                 source,
@@ -62,6 +64,7 @@ def parse(configuration: SectionsConfiguration,
         if source_file_path.is_absolute() \
         else resolve_file_reference_relativity_root_dir(pathlib.Path.cwd(), [])
     raw_doc = parse_file(internal_conf_of(configuration),
+                         file_reference_relativity_root_dir,
                          source_file_path,
                          file_reference_relativity_root_dir,
                          [],
@@ -90,6 +93,7 @@ RawDoc = Dict[str, List[SectionContentElement]]
 
 
 def parse_file(conf: _SectionsConfigurationInternal,
+               abs_path_of_dir_containing_root_file: pathlib.Path,
                file_path_rel_referrer: pathlib.Path,
                file_reference_relativity_root_dir: pathlib.Path,
                file_inclusion_chain: Sequence[line_source.SourceLocation],
@@ -106,24 +110,25 @@ def parse_file(conf: _SectionsConfigurationInternal,
                               file_inclusion_chain)
     visited_paths = previously_visited_paths + [resolved_path_of_current_file]
     file_reference_relativity_root_dir = path_to_file.parent
-    source_location_builder = SourceLocationInfo(file_path_rel_referrer,
-                                                 file_inclusion_chain,
-                                                 resolved_path_of_current_file.parent)
+    source_location_info = SourceLocationInfo(abs_path_of_dir_containing_root_file,
+                                              file_path_rel_referrer,
+                                              file_inclusion_chain,
+                                              resolved_path_of_current_file.parent)
     return _parse_source(conf,
-                         source_location_builder,
+                         source_location_info,
                          file_reference_relativity_root_dir,
                          source,
                          visited_paths)
 
 
 def _parse_source(conf: _SectionsConfigurationInternal,
-                  source_location_builder: SourceLocationInfo,
+                  source_location_info: SourceLocationInfo,
                   file_reference_relativity_root_dir: pathlib.Path,
                   source: ParseSource,
                   visited_paths: List[pathlib.Path],
                   ) -> RawDoc:
     impl = _Impl(conf,
-                 source_location_builder,
+                 source_location_info,
                  file_reference_relativity_root_dir,
                  source,
                  visited_paths)
@@ -326,6 +331,7 @@ class _Impl:
                                               self.configuration.section_element_name_for_error_messages)
         for file_to_include in inclusion_directive.files_to_include:
             included_doc = parse_file(conf,
+                                      self._current_file_location.abs_path_of_dir_containing_root_file,
                                       file_to_include,
                                       self._file_reference_relativity_root_dir,
                                       self._current_file_location.location_path_of(inclusion_directive.source),

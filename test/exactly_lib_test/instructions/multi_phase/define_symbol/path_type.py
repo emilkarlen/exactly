@@ -130,6 +130,7 @@ class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
         with tmp_dir() as abs_path_of_dir_containing_file:
             fs_location_info = FileSystemLocationInfo(
                 SourceLocationInfo(
+                    abs_path_of_dir_containing_file,
                     abs_path_of_dir_containing_file=abs_path_of_dir_containing_file))
             instruction_argument = src('{path_type} name = {rel_source_file} component')
             for source in equivalent_source_variants__with_source_check(self, instruction_argument):
