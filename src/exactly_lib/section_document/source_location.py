@@ -76,6 +76,30 @@ def source_location_path_of_non_empty_location_path(location_path: Sequence[Sour
                               location_path[:-1])
 
 
+class SourceLocationInfo(tuple):
+    """Information about the location and inclusion chain of source lines in file."""
+
+    def __new__(cls,
+                abs_path_of_dir_containing_root_file: Path,
+                source_location_path: SourceLocationPath,
+                abs_path_of_dir_containing_file: Optional[Path] = None):
+        return tuple.__new__(cls, (abs_path_of_dir_containing_root_file,
+                                   source_location_path,
+                                   abs_path_of_dir_containing_file))
+
+    @property
+    def abs_path_of_dir_containing_root_file(self) -> Path:
+        return self[0]
+
+    @property
+    def source_location_path(self) -> SourceLocationPath:
+        return self[1]
+
+    @property
+    def abs_path_of_dir_containing_file(self) -> Optional[Path]:
+        return self[2]
+
+
 class FileLocationInfo(tuple):
     """Information about the location and inclusion chain of a file."""
 
@@ -119,6 +143,11 @@ class FileLocationInfo(tuple):
     def location_path_of(self, source: LineSequence) -> Sequence[SourceLocation]:
         return list(self.file_inclusion_chain) + [self.source_location_of(source)]
 
+    def source_location_info_for(self, source: LineSequence) -> SourceLocationInfo:
+        return SourceLocationInfo(self.abs_path_of_dir_containing_root_file,
+                                  self.source_location_path(source),
+                                  self.abs_path_of_dir_containing_file)
+
 
 class FileSystemLocationInfo(tuple):
     def __new__(cls, current_source_file: FileLocationInfo):
@@ -128,27 +157,3 @@ class FileSystemLocationInfo(tuple):
     def current_source_file(self) -> FileLocationInfo:
         """Information about the source file that contains the instruction being parsed"""
         return self[0]
-
-
-class SourceLocationInfo(tuple):
-    """Information about the location and inclusion chain of source lines in file."""
-
-    def __new__(cls,
-                abs_path_of_dir_containing_root_file: Path,
-                source_location_path: SourceLocationPath,
-                abs_path_of_dir_containing_file: Optional[Path] = None):
-        return tuple.__new__(cls, (abs_path_of_dir_containing_root_file,
-                                   source_location_path,
-                                   abs_path_of_dir_containing_file))
-
-    @property
-    def abs_path_of_dir_containing_root_file(self) -> Path:
-        return self[0]
-
-    @property
-    def source_location_path(self) -> SourceLocationPath:
-        return self[1]
-
-    @property
-    def abs_path_of_dir_containing_file(self) -> Optional[Path]:
-        return self[2]

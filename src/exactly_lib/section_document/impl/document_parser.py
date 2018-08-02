@@ -12,7 +12,8 @@ from exactly_lib.section_document.parsed_section_element import ParsedSectionEle
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration, \
     DocumentParser
-from exactly_lib.section_document.source_location import SourceLocation, FileLocationInfo, FileSystemLocationInfo
+from exactly_lib.section_document.source_location import SourceLocation, FileLocationInfo, FileSystemLocationInfo, \
+    SourceLocationInfo
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 
@@ -104,16 +105,16 @@ def parse_file(conf: _SectionsConfigurationInternal,
                                file_path_rel_referrer,
                                file_inclusion_chain)
     resolved_path_of_current_file = path_to_file.resolve()
+    file_location_info = FileLocationInfo(abs_path_of_dir_containing_root_file,
+                                          file_path_rel_referrer,
+                                          file_inclusion_chain,
+                                          resolved_path_of_current_file.parent)
     if resolved_path_of_current_file in previously_visited_paths:
         raise FileAccessError(file_path_rel_referrer,
                               'Cyclic inclusion of file',
                               file_inclusion_chain)
     visited_paths = previously_visited_paths + [resolved_path_of_current_file]
     file_reference_relativity_root_dir = path_to_file.parent
-    file_location_info = FileLocationInfo(abs_path_of_dir_containing_root_file,
-                                          file_path_rel_referrer,
-                                          file_inclusion_chain,
-                                          resolved_path_of_current_file.parent)
     return _parse_source(conf,
                          file_location_info,
                          file_reference_relativity_root_dir,
@@ -212,7 +213,7 @@ class _Impl:
                         raise FileSourceError(new_source_error_of_single_line(self._current_line,
                                                                               msg),
                                               None,
-                                              self._location_path_of_current_line())
+                                              self._source_location_info_of_current_line())
         return self._section_name_2_element_list
 
     def switch_section_according_to_last_section_line_and_consume_section_lines(self):
@@ -232,7 +233,7 @@ class _Impl:
                 raise FileSourceError(new_source_error_of_single_line(section_line,
                                                                       msg),
                                       None,
-                                      self._location_path_of_current_line())
+                                      self._source_location_info_of_current_line())
             self.set_current_section(section_name)
 
     def read_rest_of_document_from_inside_section_or_at_eof(self):
@@ -250,8 +251,9 @@ class _Impl:
             try:
                 parsed_element = self.parse_element_at_current_line_using_current_section_element_parser()
             except SourceError as ex:
-                raise FileSourceError(ex, self._name_of_current_section,
-                                      self._current_file_location.location_path_of(ex.source))
+                raise FileSourceError(ex,
+                                      self._name_of_current_section,
+                                      self._current_file_location.source_location_info_for(ex.source))
             if isinstance(parsed_element, model.SectionContentElement):
                 self.add_element_to_current_section(parsed_element)
             else:
@@ -268,7 +270,7 @@ class _Impl:
             raise FileSourceError(new_source_error_of_single_line(self._document_source.current_line,
                                                                   'Syntax error'),
                                   self._name_of_current_section,
-                                  self._location_path_of_current_line())
+                                  self._source_location_info_of_current_line())
         return self._element_constructor.visit(parsed_element)
 
     def add_element_to_current_section(self, element: model.SectionContentElement):
@@ -281,7 +283,7 @@ class _Impl:
             raise FileSourceError(new_source_error_of_single_line(self._current_line,
                                                                   str(ex)),
                                   None,
-                                  self._location_path_of_current_line())
+                                  self._source_location_info_of_current_line())
         self.move_one_line_forward()
         return section_name
 
@@ -316,10 +318,10 @@ class _Impl:
             if self._document_source.is_at_eof \
             else self._document_source.current_line
 
-    def _location_path_of_current_line(self) -> Sequence[SourceLocation]:
+    def _source_location_info_of_current_line(self) -> SourceLocationInfo:
         source = line_source.single_line_sequence(self._document_source.current_line_number,
                                                   self._document_source.current_line_text)
-        return self._current_file_location.location_path_of(source)
+        return self._current_file_location.source_location_info_for(source)
 
     def current_line_is_comment_or_empty(self):
         return syntax.EMPTY_LINE_RE.match(self._current_line.text) or \
