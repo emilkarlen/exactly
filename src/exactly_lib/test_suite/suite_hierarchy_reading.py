@@ -1,5 +1,6 @@
 import functools
 import pathlib
+from typing import List
 
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -55,14 +56,14 @@ class _SingleFileReader:
                  environment: Environment,
                  root_suite_file_path: pathlib.Path):
         self.environment = environment
-        self._root_suite_file_path = root_suite_file_path.resolve()
-        self._visited = {self._root_suite_file_path: None}
+        self._root_suite_file_path = root_suite_file_path
+        self._visited = {self._root_suite_file_path.resolve(): None}
 
     def apply(self) -> structure.TestSuite:
         return self.__call__([], self._root_suite_file_path)
 
     def __call__(self,
-                 inclusions: list,
+                 inclusions: List[pathlib.Path],
                  suite_file_path: pathlib.Path) -> structure.TestSuite:
         test_suite = suite_file_reading.read_suite_document(suite_file_path,
                                                             self.environment.configuration_section_parser,
@@ -71,9 +72,10 @@ class _SingleFileReader:
             test_suite,
             self.environment.default_test_case_handling_setup)
 
+        resolved_suite_file_path = suite_file_path.resolve()
         suite_file_path_list, case_file_path_list = self._resolve_paths(test_suite,
-                                                                        suite_file_path)
-        sub_inclusions = inclusions + [suite_file_path]
+                                                                        resolved_suite_file_path)
+        sub_inclusions = inclusions + [resolved_suite_file_path]
         sub_suites_reader = functools.partial(self, sub_inclusions)
         suite_list = list(map(sub_suites_reader, suite_file_path_list))
         case_list = list(map(test_case_processing.test_case_setup_of_source_file, case_file_path_list))
