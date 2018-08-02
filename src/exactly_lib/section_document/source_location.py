@@ -76,31 +76,30 @@ def source_location_path_of_non_empty_location_path(location_path: Sequence[Sour
                               location_path[:-1])
 
 
-class FileLocationInfo:
+class FileLocationInfo(tuple):
     """Information about the location and inclusion chain of a file."""
 
-    def __init__(self,
-                 abs_path_of_dir_containing_root_file: Path,
-                 file_path_rel_referrer: Optional[Path] = None,
-                 file_inclusion_chain: Sequence[SourceLocation] = (),
-                 abs_path_of_dir_containing_file: Optional[Path] = None,
-                 ):
-        self._abs_path_of_dir_containing_root_file = abs_path_of_dir_containing_root_file
-        self._file_path_rel_referrer = file_path_rel_referrer
-        self._file_inclusion_chain = file_inclusion_chain
-        self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
+    def __new__(cls,
+                abs_path_of_dir_containing_root_file: Path,
+                file_path_rel_referrer: Optional[Path] = None,
+                file_inclusion_chain: Sequence[SourceLocation] = (),
+                abs_path_of_dir_containing_file: Optional[Path] = None):
+        return tuple.__new__(cls, (abs_path_of_dir_containing_root_file,
+                                   file_path_rel_referrer,
+                                   file_inclusion_chain,
+                                   abs_path_of_dir_containing_file))
 
     @property
     def file_path_rel_referrer(self) -> Optional[Path]:
-        return self._file_path_rel_referrer
+        return self[1]
 
     @property
     def file_inclusion_chain(self) -> Sequence[SourceLocation]:
-        return self._file_inclusion_chain
+        return self[2]
 
     @property
     def abs_path_of_dir_containing_file(self) -> Optional[Path]:
-        return self._abs_path_of_dir_containing_file
+        return self[3]
 
     @property
     def abs_path_of_dir_containing_root_file(self) -> Path:
@@ -108,17 +107,17 @@ class FileLocationInfo:
         or the dir that is regarded to have this property, if there is no root file
         (i.e. the root is stdin or equivalent).
         """
-        return self._abs_path_of_dir_containing_root_file
+        return self[0]
 
     def source_location_of(self, source: LineSequence) -> SourceLocation:
-        return SourceLocation(source, self._file_path_rel_referrer)
+        return SourceLocation(source, self.file_path_rel_referrer)
 
     def source_location_path(self, source: LineSequence) -> SourceLocationPath:
         return SourceLocationPath(self.source_location_of(source),
-                                  self._file_inclusion_chain)
+                                  self.file_inclusion_chain)
 
     def location_path_of(self, source: LineSequence) -> Sequence[SourceLocation]:
-        return list(self._file_inclusion_chain) + [self.source_location_of(source)]
+        return list(self.file_inclusion_chain) + [self.source_location_of(source)]
 
 
 class FileSystemLocationInfo(tuple):
