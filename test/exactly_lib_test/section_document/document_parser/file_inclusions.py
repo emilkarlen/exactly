@@ -5,8 +5,7 @@ from typing import List, Dict, Sequence
 from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.model import SectionContentElement, ElementType
-from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration, \
-    FileSystemLocationInfo
+from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import SourceLocation, single_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.arrangement_and_expectation import Expectation, \
@@ -23,13 +22,15 @@ from exactly_lib_test.section_document.document_parser.test_resources.exception_
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.element_assertions import \
     equals_instruction_without_description, matches_section_contents_element, \
-    matches_instruction_info_without_description, matches_instruction_with_parse_source_info
+    matches_instruction_info_without_description, matches_instruction_with_parse_source_info, \
+    matches_source_location_info
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_sequence
 
 
 def suite() -> unittest.TestSuite:
@@ -40,7 +41,7 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestCombinationOfDocuments),
         unittest.makeSuite(TestMultipleInclusionsOfSameFile),
         unittest.makeSuite(TestInclusionFromInclusion),
-        unittest.makeSuite(TestFileReferenceRelativityRootIsGivenToElementParser),
+        unittest.makeSuite(TestSourceLocationInfoGivenToElementParser),
         unittest.makeSuite(TestDetectionOfInclusionCycles),
         unittest.makeSuite(TestAbsPathOfDirContainingFile),
     ])
@@ -187,7 +188,8 @@ class TestDetectionOfSyntaxError(unittest.TestCase):
     def test_source_locations_of_file_source_error_when_element_parser_reports_error_by_returning_none(self):
         # ARRANGE #
         setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
-            source_line_in_included_file_2_or_none_if_file_should_not_exist=UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE
+            source_line_in_included_file_2_or_none_if_file_should_not_exist=
+            UNRECOGNIZED_ELEMENT_THAT_CAUSES_RETURN_VALUE_OF_NONE
         )
 
         arrangement = Arrangement(SECTION_1_AND_2_WITHOUT_DEFAULT,
@@ -926,44 +928,98 @@ class TestInclusionFromInclusion(unittest.TestCase):
                                    is_file_access_error(expected_file_access_error))
 
 
-class TestFileReferenceRelativityRootIsGivenToElementParser(unittest.TestCase):
+class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
     def test(self):
         # ARRANGE #
-        setup = SetupWithDoubleInclusionAndIncludedFilesInSubDir(
-            source_line_in_included_file_2_or_none_if_file_should_not_exist=ok_instruction(
-                'instruction in included file 2'))
+        sub_dir_name = 'sub-dir'
+        sub_dir_path = Path(sub_dir_name)
 
-        section_conf_with_parser_that_raises_ex_if_included_file_is_not_existing_file_rel_file_incl_rel_path = (
-            SectionsConfiguration([
-                SectionConfiguration(SECTION_1_NAME,
-                                     SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(
-                                         SECTION_1_NAME,
-                                         extra_inclusion_action=self.do_raise_ex_if_any_file_not_exists)
-                                     ),
-            ]))
+        file_2_in_sub_dir = file_with_lines('2.src', [
+            ok_instruction('2'),
+        ])
 
-        for dir_containing_root_file_rel_cwd in ['.', 'sub-dir']:
-            cwd_dir_contents = setup.dir_contents if dir_containing_root_file_rel_cwd == '.' \
-                else DirContents([Dir(dir_containing_root_file_rel_cwd,
-                                      setup.dir_contents.file_system_elements)])
-            arrangement = Arrangement(
-                section_conf_with_parser_that_raises_ex_if_included_file_is_not_existing_file_rel_file_incl_rel_path,
-                cwd_dir_contents=cwd_dir_contents,
-                root_file=Path(dir_containing_root_file_rel_cwd) / setup.root_file_path,
-            )
-            expectation = Expectation(asrt.anything_goes())
-            with self.subTest(dir_containing_root_file_rel_cwd=dir_containing_root_file_rel_cwd):
-                # ACT & ASSERT #
-                check(self, arrangement, expectation)
+        file_2_rel_file_1 = sub_dir_path / file_2_in_sub_dir.name
+        file_1_in_root_dir = file_with_lines('1.src', [
+            ok_instruction('1'),
+            inclusion_of_file(file_2_rel_file_1),
+        ])
 
-    @staticmethod
-    def do_raise_ex_if_any_file_not_exists(fs_location_info: FileSystemLocationInfo,
-                                           paths_to_include: Sequence[Path]):
-        abs_path_of_dir_containing_file = fs_location_info.current_source_file.abs_path_of_dir_containing_file
-        for included_file_path in paths_to_include:
-            p = abs_path_of_dir_containing_file / included_file_path
-            if not p.exists():
-                raise ValueError('Path of included file does not exist rel CWD: ' + str(p))
+        file_1_rel_file_0 = Path('..') / file_1_in_root_dir.name
+        file_0_in_sub_dir = file_with_lines('0.src', [
+            ok_instruction('0'),
+            inclusion_of_file(file_1_rel_file_0),
+        ])
+
+        cwd_dir_contents = DirContents([
+            file_1_in_root_dir,
+            Dir(sub_dir_name, [
+                file_0_in_sub_dir,
+                file_2_in_sub_dir,
+            ])
+        ])
+        root_file_path = sub_dir_path / file_0_in_sub_dir.name
+        with tmp_dir_as_cwd(cwd_dir_contents) as cwd_path:
+            # ACT #
+            actual_doc = sut.parse(SECTION_1_WITH_SECTION_1_AS_DEFAULT,
+                                   root_file_path)
+            # EXPECTATION #
+            inclusion_of_file_1_from_file_0 = SourceLocation(
+                single_line_sequence(2, inclusion_of_file(file_1_rel_file_0)),
+                root_file_path)
+
+            inclusion_of_file_2_from_file_1 = SourceLocation(
+                single_line_sequence(2, inclusion_of_file(file_2_rel_file_1)),
+                file_1_rel_file_0)
+
+            abs_cwd_path = cwd_path.resolve()
+            expected_doc = {
+                SECTION_1_NAME: [
+                    matches_section_contents_element(
+                        ElementType.INSTRUCTION,
+                        instruction_info=matches_instruction_info_without_description(
+                            matches_instruction_with_parse_source_info(
+                                current_source_file=matches_source_location_info(
+                                    file_path_rel_referrer=asrt.equals(root_file_path),
+                                    abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
+                                    file_inclusion_chain=asrt.is_empty_sequence,
+                                )
+                            )
+                        ),
+                    ),
+                    matches_section_contents_element(
+                        ElementType.INSTRUCTION,
+                        instruction_info=matches_instruction_info_without_description(
+                            matches_instruction_with_parse_source_info(
+                                current_source_file=matches_source_location_info(
+                                    file_path_rel_referrer=asrt.equals(file_1_rel_file_0),
+                                    abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path),
+                                    file_inclusion_chain=equals_source_location_sequence([
+                                        inclusion_of_file_1_from_file_0,
+                                    ]),
+                                )
+                            )
+                        ),
+                    ),
+                    matches_section_contents_element(
+                        ElementType.INSTRUCTION,
+                        instruction_info=matches_instruction_info_without_description(
+                            matches_instruction_with_parse_source_info(
+                                current_source_file=matches_source_location_info(
+                                    file_path_rel_referrer=asrt.equals(file_2_rel_file_1),
+                                    abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
+                                    file_inclusion_chain=equals_source_location_sequence([
+                                        inclusion_of_file_1_from_file_0,
+                                        inclusion_of_file_2_from_file_1,
+                                    ]),
+                                )
+                            )
+                        ),
+                    ),
+                ],
+            }
+            assertion_on_doc = matches_document(expected_doc)
+            # ASSERT #
+            assertion_on_doc.apply_without_message(self, actual_doc)
 
 
 class TestAbsPathOfDirContainingFile(unittest.TestCase):

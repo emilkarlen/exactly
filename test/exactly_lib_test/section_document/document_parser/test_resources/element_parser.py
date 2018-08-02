@@ -1,6 +1,5 @@
 import pathlib
-from pathlib import Path
-from typing import Sequence, Optional, Callable
+from typing import Optional
 
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.model import InstructionInfo
@@ -51,12 +50,8 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
      - OK_INSTRUCTION_NAME -> INSTRUCTION element with `InstructionInSectionWithParseSourceInfo` instruction
     """
 
-    def __init__(self,
-                 section_name_to_register_in_instructions: str,
-                 extra_inclusion_action: Optional[Callable[[FileSystemLocationInfo, Sequence[Path]], None]] = None
-                 ):
+    def __init__(self, section_name_to_register_in_instructions: str):
         self._section_name_to_register_in_instructions = section_name_to_register_in_instructions
-        self.extra_inclusion_action = extra_inclusion_action
 
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
@@ -73,8 +68,6 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
                 pathlib.Path(file_name)
                 for file_name in current_line_parts[1:]
             ]
-            if self.extra_inclusion_action is not None:
-                self.extra_inclusion_action(fs_location_info, paths_to_include)
             return ParsedFileInclusionDirective(consumed_source, paths_to_include)
         elif current_line_parts[0] == SYNTAX_ERROR_INSTRUCTION_NAME:
             raise SourceError(consumed_source, current_line_parts[1])

@@ -37,6 +37,18 @@ class SourceLocationInfo:
         self._file_inclusion_chain = file_inclusion_chain
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
+    @property
+    def file_path_rel_referrer(self) -> Optional[pathlib.Path]:
+        return self._file_path_rel_referrer
+
+    @property
+    def file_inclusion_chain(self) -> Sequence[line_source.SourceLocation]:
+        return self._file_inclusion_chain
+
+    @property
+    def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
+        return self._abs_path_of_dir_containing_file
+
     def source_location_of(self, source: LineSequence) -> SourceLocation:
         return SourceLocation(source, self._file_path_rel_referrer)
 
@@ -46,10 +58,6 @@ class SourceLocationInfo:
 
     def location_path_of(self, source: LineSequence) -> Sequence[SourceLocation]:
         return list(self._file_inclusion_chain) + [self.source_location_of(source)]
-
-    @property
-    def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
-        return self._abs_path_of_dir_containing_file
 
 
 class FileSystemLocationInfo(tuple):
