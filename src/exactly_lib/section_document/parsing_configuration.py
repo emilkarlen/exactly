@@ -1,10 +1,9 @@
-import pathlib
+from pathlib import Path
 from typing import Sequence, Dict, Optional
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
-from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence, SourceLocation, SourceLocationPath
 
 
@@ -15,8 +14,8 @@ class DocumentParser:
     """
 
     def parse(self,
-              source_file_path: Optional[pathlib.Path],
-              file_reference_relativity_root_dir: pathlib.Path,
+              source_file_path: Optional[Path],
+              file_reference_relativity_root_dir: Path,
               source: ParseSource) -> model.Document:
         """
         :param source_file_path: None if the source is not a file.
@@ -31,10 +30,10 @@ class FileLocationInfo:
     """Information about the location and inclusion chain of a file."""
 
     def __init__(self,
-                 abs_path_of_dir_containing_root_file: pathlib.Path,
-                 file_path_rel_referrer: Optional[pathlib.Path] = None,
-                 file_inclusion_chain: Sequence[line_source.SourceLocation] = (),
-                 abs_path_of_dir_containing_file: Optional[pathlib.Path] = None,
+                 abs_path_of_dir_containing_root_file: Path,
+                 file_path_rel_referrer: Optional[Path] = None,
+                 file_inclusion_chain: Sequence[SourceLocation] = (),
+                 abs_path_of_dir_containing_file: Optional[Path] = None,
                  ):
         self._abs_path_of_dir_containing_root_file = abs_path_of_dir_containing_root_file
         self._file_path_rel_referrer = file_path_rel_referrer
@@ -42,19 +41,19 @@ class FileLocationInfo:
         self._abs_path_of_dir_containing_file = abs_path_of_dir_containing_file
 
     @property
-    def file_path_rel_referrer(self) -> Optional[pathlib.Path]:
+    def file_path_rel_referrer(self) -> Optional[Path]:
         return self._file_path_rel_referrer
 
     @property
-    def file_inclusion_chain(self) -> Sequence[line_source.SourceLocation]:
+    def file_inclusion_chain(self) -> Sequence[SourceLocation]:
         return self._file_inclusion_chain
 
     @property
-    def abs_path_of_dir_containing_file(self) -> Optional[pathlib.Path]:
+    def abs_path_of_dir_containing_file(self) -> Optional[Path]:
         return self._abs_path_of_dir_containing_file
 
     @property
-    def abs_path_of_dir_containing_root_file(self) -> pathlib.Path:
+    def abs_path_of_dir_containing_root_file(self) -> Path:
         """Absolute path of the dir containing the first file in the inclusion chain;
         or the dir that is regarded to have this property, if there is no root file
         (i.e. the root is stdin or equivalent).
