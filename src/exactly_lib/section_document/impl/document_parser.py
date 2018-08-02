@@ -62,7 +62,7 @@ def parse(configuration: SectionsConfiguration,
           source_file_path: Path) -> model.Document:
     file_reference_relativity_root_dir = Path('/') \
         if source_file_path.is_absolute() \
-        else resolve_file_reference_relativity_root_dir(Path.cwd(), [])
+        else resolve_file_reference_relativity_root_dir(Path.cwd(), source_file_path, [])
     raw_doc = parse_file(internal_conf_of(configuration),
                          file_reference_relativity_root_dir,
                          source_file_path,
@@ -100,13 +100,13 @@ def parse_file(conf: _SectionsConfigurationInternal,
                previously_visited_paths: List[Path],
                ) -> RawDoc:
     path_to_file = file_reference_relativity_root_dir / file_path_rel_referrer
+    file_location_info = FileLocationInfo(abs_path_of_dir_containing_root_file,
+                                          file_path_rel_referrer,
+                                          file_inclusion_chain)
     source = _read_source_file(path_to_file,
                                file_path_rel_referrer,
                                file_inclusion_chain)
     resolved_path_of_current_file = path_to_file.resolve()
-    file_location_info = FileLocationInfo(abs_path_of_dir_containing_root_file,
-                                          file_path_rel_referrer,
-                                          file_inclusion_chain)
     if resolved_path_of_current_file in previously_visited_paths:
         raise FileAccessError(file_path_rel_referrer,
                               'Cyclic inclusion of file',
@@ -339,13 +339,14 @@ class _Impl:
             _add_raw_doc(self._section_name_2_element_list, included_doc)
 
 
-def resolve_file_reference_relativity_root_dir(relativity_root: Path,
+def resolve_file_reference_relativity_root_dir(path_of_dir_containing_root_file: Path,
+                                               file_ref_rel_root: Path,
                                                file_inclusion_chain: Sequence[SourceLocation]
                                                ) -> Path:
     try:
-        return relativity_root.resolve()
+        return path_of_dir_containing_root_file.resolve()
     except RuntimeError as ex:
-        raise FileAccessError(relativity_root,
+        raise FileAccessError(path_of_dir_containing_root_file,
                               str(ex),
                               file_inclusion_chain)
 
