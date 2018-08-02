@@ -19,8 +19,3 @@ def string base = @[ba]@@[se]@
 def string sfx  = txt
 
 def path full = @[bp]@/dir2/@[base]@.@[sfx]@
-
-
-[act]
-
-$ echo 'behaviour of act phase is irrelevant'

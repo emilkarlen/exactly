@@ -18,8 +18,3 @@ def string base = @[EXACTLY_TMP]@@[se]@
 def string sfx  = txt
 
 install @[bp]@/dir2/@[base]@.@[sfx]@
-
-
-[act]
-
-$ echo 'behaviour of act phase is irrelevant'
