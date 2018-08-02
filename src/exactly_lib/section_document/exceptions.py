@@ -1,8 +1,9 @@
 from pathlib import Path
 from typing import Sequence, Optional
 
+from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocation, line_sequence_from_line
+from exactly_lib.util.line_source import line_sequence_from_line
 
 
 class SourceError(Exception):

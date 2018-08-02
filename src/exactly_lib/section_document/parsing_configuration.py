@@ -4,7 +4,8 @@ from typing import Sequence, Dict, Optional
 from exactly_lib.section_document import model
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
-from exactly_lib.util.line_source import LineSequence, SourceLocation, SourceLocationPath
+from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
+from exactly_lib.util.line_source import LineSequence
 
 
 class DocumentParser:

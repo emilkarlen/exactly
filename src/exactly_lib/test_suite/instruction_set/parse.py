@@ -1,8 +1,8 @@
 import pathlib
 
+from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.test_case import error_description
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocationPath, SourceLocation
 
 
 class SuiteReadError(Exception):

@@ -6,8 +6,9 @@ from exactly_lib.section_document import document_parser as sut
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.model import SectionContentElement, ElementType
 from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
+from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.section_document.syntax import section_header
-from exactly_lib.util.line_source import SourceLocation, single_line_sequence
+from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.arrangement_and_expectation import Expectation, \
     check, \
     std_conf_arrangement, check_and_expect_exception, \
@@ -24,13 +25,13 @@ from exactly_lib_test.section_document.test_resources.element_assertions import 
     equals_instruction_without_description, matches_section_contents_element, \
     matches_instruction_info_without_description, matches_instruction_with_parse_source_info, \
     matches_file_location_info
+from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_sequence
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_sequence
 
 
 def suite() -> unittest.TestSuite:

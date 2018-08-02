@@ -2,10 +2,11 @@ from pathlib import Path
 from typing import Sequence
 
 from exactly_lib.section_document.exceptions import FileSourceError, FileAccessError
-from exactly_lib.util.line_source import SourceLocation, Line, line_sequence_from_line
+from exactly_lib.section_document.source_location import SourceLocation
+from exactly_lib.util.line_source import Line, line_sequence_from_line
+from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_sequence
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.test_resources.line_source_assertions import equals_source_location_sequence, \
-    equals_line_sequence
+from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
 
 
 def is_file_source_error(expected: asrt.ValueAssertion[FileSourceError]) -> asrt.ValueAssertion[Exception]:

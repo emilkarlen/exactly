@@ -1,0 +1,76 @@
+from pathlib import Path
+from typing import Sequence, Optional
+
+from exactly_lib.util.line_source import Line, line_sequence_from_line, LineSequence
+
+
+class SourceLocation(tuple):
+    """A location in a file."""
+
+    def __new__(cls,
+                source: LineSequence,
+                file_path_rel_referrer: Optional[Path]):
+        """
+        :param source: See corresponding getter
+        :param file_path_rel_referrer: See corresponding getter
+        """
+        return tuple.__new__(cls, (source, file_path_rel_referrer))
+
+    @property
+    def source(self) -> LineSequence:
+        """
+        :return: None iff source if not relevant
+        """
+        return self[0]
+
+    @property
+    def file_path_rel_referrer(self) -> Optional[Path]:
+        """
+        :return: None iff source does not originate from a file
+        The path is relative the directory that contains the referring file - the file
+        that includes this file (in case of file inclusion), or the PWD, e.g. for a
+        CLI argument case file.
+        """
+        return self[1]
+
+
+class SourceLocationPath(tuple):
+    """A location in a file, with file inclusion chain info."""
+
+    def __new__(cls,
+                location: SourceLocation,
+                file_inclusion_chain: Sequence[SourceLocation]):
+        return tuple.__new__(cls, (location, file_inclusion_chain))
+
+    @property
+    def location(self) -> SourceLocation:
+        return self[0]
+
+    @property
+    def file_inclusion_chain(self) -> Sequence[SourceLocation]:
+        return self[1]
+
+
+def source_location_path_of(file_path: Path,
+                            line: Line) -> SourceLocationPath:
+    """
+    :return: None iff file_path and line is None
+    """
+    if file_path is None and line is None:
+        return None
+    line_sequence = None
+    if line:
+        line_sequence = line_sequence_from_line(line)
+    return source_location_path_without_inclusions(
+        SourceLocation(line_sequence,
+                       file_path)
+    )
+
+
+def source_location_path_without_inclusions(location: SourceLocation) -> SourceLocationPath:
+    return SourceLocationPath(location, ())
+
+
+def source_location_path_of_non_empty_location_path(location_path: Sequence[SourceLocation]) -> SourceLocationPath:
+    return SourceLocationPath(location_path[-1],
+                              location_path[:-1])

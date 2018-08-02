@@ -4,8 +4,8 @@ import tempfile
 
 from exactly_lib import program_info
 from exactly_lib.processing.test_case_processing import Preprocessor, ProcessError, ErrorInfo
+from exactly_lib.section_document.source_location import source_location_path_of
 from exactly_lib.test_case import error_description
-from exactly_lib.util.line_source import source_location_path_of
 
 
 class IdentityPreprocessor(Preprocessor):

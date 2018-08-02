@@ -2,9 +2,9 @@ from enum import Enum
 
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.section_document.model import SectionContentElement, InstructionInfo
+from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util import failure_details
-from exactly_lib.util import line_source
 
 
 class PartialControlledFailureEnum(Enum):
@@ -69,7 +69,7 @@ class SingleInstructionExecutionFailure(tuple):
 
     def __new__(cls,
                 status: PartialExeResultStatus,
-                source_location: line_source.SourceLocationPath,
+                source_location: SourceLocationPath,
                 details: failure_details.FailureDetails):
         return tuple.__new__(cls, (status,
                                    source_location,
@@ -83,7 +83,7 @@ class SingleInstructionExecutionFailure(tuple):
         return self[0]
 
     @property
-    def source_location_path(self) -> line_source.SourceLocationPath:
+    def source_location_path(self) -> SourceLocationPath:
         return self[1]
 
     @property

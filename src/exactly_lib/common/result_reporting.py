@@ -8,9 +8,9 @@ from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo, FailureInfoVisitor
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
+from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.test_case import error_description
 from exactly_lib.util.error_message_format import source_line_sequence
-from exactly_lib.util.line_source import SourceLocationPath, SourceLocation
 from exactly_lib.util.std import FilePrinter
 
 

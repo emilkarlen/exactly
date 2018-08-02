@@ -12,9 +12,10 @@ from exactly_lib.section_document.parsed_section_element import ParsedSectionEle
     new_empty_element, new_comment_element
 from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration, \
     DocumentParser, FileSystemLocationInfo
+from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import Line, SourceLocation, single_line_sequence
+from exactly_lib.util.line_source import Line, single_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import \
     consume_current_line_and_return_it_as_line_sequence
 from exactly_lib_test.section_document.document_parser.test_resources.exception_assertions import \

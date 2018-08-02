@@ -2,8 +2,8 @@ import enum
 from pathlib import Path
 from typing import Dict, Sequence, Optional
 
+from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocationPath
 
 
 class Instruction:

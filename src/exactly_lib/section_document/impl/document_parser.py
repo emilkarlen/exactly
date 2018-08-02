@@ -12,9 +12,9 @@ from exactly_lib.section_document.parsed_section_element import ParsedSectionEle
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
 from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration, \
     DocumentParser, FileSystemLocationInfo, FileLocationInfo
+from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
-from exactly_lib.util.line_source import SourceLocation
 
 
 class DocumentParserForSectionsConfiguration(DocumentParser):
@@ -96,7 +96,7 @@ def parse_file(conf: _SectionsConfigurationInternal,
                abs_path_of_dir_containing_root_file: Path,
                file_path_rel_referrer: Path,
                file_reference_relativity_root_dir: Path,
-               file_inclusion_chain: Sequence[line_source.SourceLocation],
+               file_inclusion_chain: Sequence[SourceLocation],
                previously_visited_paths: List[Path],
                ) -> RawDoc:
     path_to_file = file_reference_relativity_root_dir / file_path_rel_referrer
@@ -316,7 +316,7 @@ class _Impl:
             if self._document_source.is_at_eof \
             else self._document_source.current_line
 
-    def _location_path_of_current_line(self) -> Sequence[line_source.SourceLocation]:
+    def _location_path_of_current_line(self) -> Sequence[SourceLocation]:
         source = line_source.single_line_sequence(self._document_source.current_line_number,
                                                   self._document_source.current_line_text)
         return self._current_file_location.location_path_of(source)
@@ -340,7 +340,7 @@ class _Impl:
 
 
 def resolve_file_reference_relativity_root_dir(relativity_root: Path,
-                                               file_inclusion_chain: Sequence[line_source.SourceLocation]
+                                               file_inclusion_chain: Sequence[SourceLocation]
                                                ) -> Path:
     try:
         return relativity_root.resolve()
