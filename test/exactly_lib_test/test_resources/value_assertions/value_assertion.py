@@ -309,7 +309,7 @@ class _LenEquals(ValueAssertion[Sized]):
               message_builder: MessageBuilder = MessageBuilder()):
         put.assertEqual(self.expected,
                         len(value),
-                        message_builder.apply(self.message))
+                        message_builder.for_sub_component('length').apply(self.message))
 
 
 class OnTransformed(ValueAssertion[T]):
