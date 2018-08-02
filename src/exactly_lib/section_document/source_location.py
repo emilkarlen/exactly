@@ -81,11 +81,9 @@ class SourceLocationInfo(tuple):
 
     def __new__(cls,
                 abs_path_of_dir_containing_root_file: Path,
-                source_location_path: SourceLocationPath,
-                abs_path_of_dir_containing_file: Optional[Path] = None):
+                source_location_path: SourceLocationPath):
         return tuple.__new__(cls, (abs_path_of_dir_containing_root_file,
-                                   source_location_path,
-                                   abs_path_of_dir_containing_file))
+                                   source_location_path))
 
     @property
     def abs_path_of_dir_containing_root_file(self) -> Path:
@@ -96,8 +94,10 @@ class SourceLocationInfo(tuple):
         return self[1]
 
     @property
-    def abs_path_of_dir_containing_file(self) -> Optional[Path]:
-        return self[2]
+    def abs_path_of_dir_containing_file(self) -> Path:
+        return _abs_path_of_dir_containing_file(self.abs_path_of_dir_containing_root_file,
+                                                self.source_location_path.location.file_path_rel_referrer,
+                                                self.source_location_path.file_inclusion_chain)
 
 
 class FileLocationInfo(tuple):
@@ -106,12 +106,10 @@ class FileLocationInfo(tuple):
     def __new__(cls,
                 abs_path_of_dir_containing_root_file: Path,
                 file_path_rel_referrer: Optional[Path] = None,
-                file_inclusion_chain: Sequence[SourceLocation] = (),
-                abs_path_of_dir_containing_file: Optional[Path] = None):
+                file_inclusion_chain: Sequence[SourceLocation] = ()):
         return tuple.__new__(cls, (abs_path_of_dir_containing_root_file,
                                    file_path_rel_referrer,
-                                   file_inclusion_chain,
-                                   abs_path_of_dir_containing_file))
+                                   file_inclusion_chain))
 
     @property
     def file_path_rel_referrer(self) -> Optional[Path]:
@@ -122,8 +120,10 @@ class FileLocationInfo(tuple):
         return self[2]
 
     @property
-    def abs_path_of_dir_containing_file(self) -> Optional[Path]:
-        return self[3]
+    def abs_path_of_dir_containing_file(self) -> Path:
+        return _abs_path_of_dir_containing_file(self.abs_path_of_dir_containing_root_file,
+                                                self.file_path_rel_referrer,
+                                                self.file_inclusion_chain)
 
     @property
     def abs_path_of_dir_containing_root_file(self) -> Path:
@@ -145,8 +145,7 @@ class FileLocationInfo(tuple):
 
     def source_location_info_for(self, source: LineSequence) -> SourceLocationInfo:
         return SourceLocationInfo(self.abs_path_of_dir_containing_root_file,
-                                  self.source_location_path(source),
-                                  self.abs_path_of_dir_containing_file)
+                                  self.source_location_path(source))
 
 
 class FileSystemLocationInfo(tuple):
@@ -157,3 +156,18 @@ class FileSystemLocationInfo(tuple):
     def current_source_file(self) -> FileLocationInfo:
         """Information about the source file that contains the instruction being parsed"""
         return self[0]
+
+
+def _abs_path_of_dir_containing_file(abs_path_of_dir_containing_root_file: Path,
+                                     final_file: Optional[Path],
+                                     file_inclusion_chain: Sequence[SourceLocation],
+                                     ) -> Path:
+    ret_val = abs_path_of_dir_containing_root_file
+    file_path_rel_referrer_list = ([source_location.file_path_rel_referrer
+                                    for source_location in file_inclusion_chain
+                                    ] +
+                                   [final_file])
+    for file_path_rel_referrer in file_path_rel_referrer_list:
+        if file_path_rel_referrer is not None:
+            ret_val = ret_val / file_path_rel_referrer.parent
+    return ret_val

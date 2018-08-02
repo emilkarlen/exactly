@@ -70,8 +70,7 @@ class Executor:
                 source: ParseSource):
         with tmp_dir(self.arrangement.root_dir_contents) as abs_path_of_dir_containing_root_file:
             fs_location_info = FileSystemLocationInfo(FileLocationInfo(
-                abs_path_of_dir_containing_root_file,
-                abs_path_of_dir_containing_file=abs_path_of_dir_containing_root_file))
+                abs_path_of_dir_containing_root_file))
 
             instruction = parser.parse(fs_location_info, source)
 
