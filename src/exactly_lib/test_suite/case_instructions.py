@@ -70,10 +70,11 @@ class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
             inst_factory = instruction_element.instruction_info.instruction
             assert isinstance(inst_factory, CaseSetupPhaseInstruction)
 
-            return TestCaseSectionContentElementFactory(instruction_element.abs_path_of_dir_containing_root_file,
-                                                        instruction_element.source_location_path.location,
-                                                        inst_factory,
-                                                        instruction_element.instruction_info.description)
+            return TestCaseSectionContentElementFactory(
+                instruction_element.source_location_info.abs_path_of_dir_containing_root_file,
+                instruction_element.source_location_info.source_location_path.location,
+                inst_factory,
+                instruction_element.instruction_info.description)
 
         return [factory(instruction_element)
                 for instruction_element in setup_section_instruction_elements

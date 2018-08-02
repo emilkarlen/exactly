@@ -107,13 +107,13 @@ def execute_element(executor: ControlledInstructionExecutor,
             return None
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus(fail_info.status.value),
-            element.source_location_path,
+            element.source_location_info.source_location_path,
             failure_details.new_failure_details_from_message(
                 fail_info.error_message))
     except Exception as ex:
         return SingleInstructionExecutionFailure(
             PartialExeResultStatus.IMPLEMENTATION_ERROR,
-            element.source_location_path,
+            element.source_location_info.source_location_path,
             failure_details.new_failure_details_from_exception(ex))
 
 

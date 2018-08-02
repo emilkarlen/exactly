@@ -1,7 +1,8 @@
 import pathlib
 from typing import Sequence, Optional, List
 
-from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath, FileLocationInfo
+from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath, FileLocationInfo, \
+    SourceLocationInfo
 from exactly_lib.util.line_source import LineSequence, Line
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence, matches_line_sequence
@@ -84,6 +85,41 @@ def matches_file_location_info(
                                                              FileLocationInfo.abs_path_of_dir_containing_file.fget,
                                                              abs_path_of_dir_containing_file),
                                       ])
+
+
+def matches_source_location_info(
+        abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+        source_location_path: asrt.ValueAssertion[SourceLocationPath] = asrt.anything_goes(),
+        abs_path_of_dir_containing_file: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
+) -> asrt.ValueAssertion[SourceLocationInfo]:
+    return asrt.is_instance_with_many(
+        SourceLocationInfo,
+        [
+            asrt.sub_component('abs_path_of_dir_containing_root_file',
+                               SourceLocationInfo.abs_path_of_dir_containing_root_file.fget,
+                               abs_path_of_dir_containing_root_file),
+            asrt.sub_component('source_location_path',
+                               SourceLocationInfo.source_location_path.fget,
+                               source_location_path),
+            asrt.sub_component('abs_path_of_dir_containing_file',
+                               SourceLocationInfo.abs_path_of_dir_containing_file.fget,
+                               abs_path_of_dir_containing_file),
+        ])
+
+
+def matches_source_location_info2(
+        source: asrt.ValueAssertion[LineSequence] = asrt.anything_goes(),
+        file_path_rel_referrer: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+        file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
+        abs_path_of_dir_containing_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+        abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+) -> asrt.ValueAssertion[SourceLocationInfo]:
+    return matches_source_location_info(
+        abs_path_of_dir_containing_root_file=abs_path_of_dir_containing_root_file,
+        abs_path_of_dir_containing_file=abs_path_of_dir_containing_file,
+        source_location_path=matches_source_location_path(
+            matches_source_location(source, file_path_rel_referrer),
+            file_inclusion_chain))
 
 
 def equals_file_inclusion_chain(expected: List[SourceLocation]

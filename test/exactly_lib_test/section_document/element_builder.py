@@ -8,7 +8,8 @@ from exactly_lib.section_document.source_location import SourceLocation, FileLoc
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.section_document.test_resources.element_assertions import matches_section_contents_element, \
     InstructionInSection, equals_instruction_in_section, matches_instruction_info
-from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_file_inclusion_chain
+from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_file_inclusion_chain, \
+    matches_source_location_info2
 from exactly_lib_test.test_resources.test_utils import NEA
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.util.test_resources.line_source_assertions import equals_line_sequence
@@ -72,35 +73,50 @@ class TestBuild(unittest.TestCase):
         cases = [
             NEA('empty',
                 expected=matches_section_contents_element(ElementType.EMPTY,
-                                                          equals_line_sequence(line_sequence),
-                                                          asrt.is_none,
-                                                          assertion_on_file_path,
-                                                          assertion_on_file_inclusion_chain),
+                                                          instruction_info=asrt.is_none,
+                                                          source_location_info=
+                                                          matches_source_location_info2(
+                                                              source=equals_line_sequence(line_sequence),
+                                                              file_path_rel_referrer=assertion_on_file_path,
+                                                              file_inclusion_chain=assertion_on_file_inclusion_chain,
+                                                          )),
                 actual=builder.new_empty(line_sequence)),
             NEA('comment',
                 expected=matches_section_contents_element(ElementType.COMMENT,
-                                                          equals_line_sequence(line_sequence),
-                                                          asrt.is_none,
-                                                          assertion_on_file_path,
-                                                          assertion_on_file_inclusion_chain),
+                                                          instruction_info=asrt.is_none,
+                                                          source_location_info=
+                                                          matches_source_location_info2(
+                                                              source=equals_line_sequence(line_sequence),
+                                                              file_path_rel_referrer=assertion_on_file_path,
+                                                              file_inclusion_chain=assertion_on_file_inclusion_chain,
+                                                          )
+                                                          ),
                 actual=builder.new_comment(line_sequence)),
             NEA('instruction without description',
                 expected=matches_section_contents_element(ElementType.INSTRUCTION,
-                                                          equals_line_sequence(line_sequence),
-                                                          matches_instruction_info(
+                                                          instruction_info=matches_instruction_info(
                                                               asrt.is_none,
                                                               equals_instruction_in_section(INSTRUCTION)),
-                                                          assertion_on_file_path,
-                                                          assertion_on_file_inclusion_chain),
+                                                          source_location_info=
+                                                          matches_source_location_info2(
+                                                              source=equals_line_sequence(line_sequence),
+                                                              file_path_rel_referrer=assertion_on_file_path,
+                                                              file_inclusion_chain=assertion_on_file_inclusion_chain,
+                                                          )
+                                                          ),
                 actual=builder.new_instruction(line_sequence, INSTRUCTION, None)),
             NEA('instruction with description',
                 expected=matches_section_contents_element(ElementType.INSTRUCTION,
-                                                          equals_line_sequence(line_sequence),
-                                                          matches_instruction_info(
+                                                          instruction_info=matches_instruction_info(
                                                               asrt.equals(description),
                                                               equals_instruction_in_section(INSTRUCTION)),
-                                                          assertion_on_file_path,
-                                                          assertion_on_file_inclusion_chain),
+                                                          source_location_info=
+                                                          matches_source_location_info2(
+                                                              source=equals_line_sequence(line_sequence),
+                                                              file_path_rel_referrer=assertion_on_file_path,
+                                                              file_inclusion_chain=assertion_on_file_inclusion_chain,
+                                                          )
+                                                          ),
                 actual=builder.new_instruction(line_sequence, INSTRUCTION, description)),
         ]
         for nea in cases:
