@@ -1,4 +1,5 @@
 from exactly_lib.definitions import misc_texts
+from exactly_lib.util.name import Name
 
 
 class ErrorDescription:
@@ -15,14 +16,25 @@ def of_message(message: str) -> ErrorDescription:
     return ErrorDescriptionOfMessage(message)
 
 
+def formatted_error_message_str(category: Name, message: str) -> str:
+    return category.singular.capitalize() + ': ' + message
+
+
 def syntax_error_message(message: str) -> str:
-    return (misc_texts.SYNTAX_ERROR_NAME.singular.capitalize() +
-            ': ' +
-            message)
+    return formatted_error_message_str(misc_texts.SYNTAX_ERROR_NAME, message)
+
+
+def file_access_error_message(message: str) -> str:
+    return formatted_error_message_str(misc_texts.FILE_ACCESS_ERROR_NAME,
+                                       message)
 
 
 def syntax_error_of_message(message: str) -> ErrorDescription:
     return ErrorDescriptionOfMessage(syntax_error_message(message))
+
+
+def file_access_error_of_message(message: str) -> ErrorDescription:
+    return ErrorDescriptionOfMessage(file_access_error_message(message))
 
 
 def of_exception(exception: Exception,

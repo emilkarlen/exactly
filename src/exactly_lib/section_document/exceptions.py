@@ -70,16 +70,25 @@ class FileSourceError(ParseError):
         super().__init__(source_error.message,
                          list(source_location_info.source_location_path.file_inclusion_chain) +
                          [source_location_info.source_location_path.location])
-        self._source_error = source_error
         self._maybe_section_name = maybe_section_name
+        self._source_error = source_error
+        self._source_location_info = source_location_info
+
+    @property
+    def maybe_section_name(self) -> Optional[str]:
+        return self._maybe_section_name
 
     @property
     def source_error(self) -> SourceError:
         return self._source_error
 
     @property
-    def maybe_section_name(self) -> Optional[str]:
-        return self._maybe_section_name
+    def error_message(self) -> str:
+        return self._source_error.message
+
+    @property
+    def source_location_info(self) -> SourceLocationInfo:
+        return self._source_location_info
 
 
 class FileAccessError(ParseError):
