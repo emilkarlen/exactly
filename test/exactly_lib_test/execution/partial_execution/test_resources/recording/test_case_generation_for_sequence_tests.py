@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib.execution import phase_step_simple as phase_step
 from exactly_lib.section_document import model
-from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationBuilder
+from exactly_lib.section_document.element_builder import SectionContentElementBuilder, SourceLocationInfo
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.util.line_source import LineSequence
@@ -32,7 +32,7 @@ class TestCaseGeneratorForExecutionRecording(TestCaseGeneratorForPartialExecutio
             PartialPhase.ASSERT: self._new_assert_instruction,
             PartialPhase.CLEANUP: self._new_cleanup_instruction
         }
-        self._element_builder = SectionContentElementBuilder(SourceLocationBuilder())
+        self._element_builder = SectionContentElementBuilder(SourceLocationInfo())
         self.__extra = {}
         for ph in PartialPhase:
             self.__extra[ph] = []

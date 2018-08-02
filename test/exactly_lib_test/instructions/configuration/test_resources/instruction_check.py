@@ -2,6 +2,7 @@ import pathlib
 import unittest
 from typing import Callable
 
+from exactly_lib.section_document.element_builder import SourceLocationInfo
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
@@ -69,7 +70,8 @@ class Executor:
                 parser: InstructionParser,
                 source: ParseSource):
         with tmp_dir(self.arrangement.file_ref_rel_root_dir) as file_ref_rel_root_dir_path:
-            fs_location_info = FileSystemLocationInfo(file_ref_rel_root_dir_path)
+            fs_location_info = FileSystemLocationInfo(file_ref_rel_root_dir_path,
+                                                      SourceLocationInfo())
 
             instruction = parser.parse(fs_location_info, source)
 

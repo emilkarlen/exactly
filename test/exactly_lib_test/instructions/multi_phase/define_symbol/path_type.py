@@ -3,6 +3,7 @@ import unittest
 from exactly_lib.definitions.file_ref import REL_ACT_OPTION
 from exactly_lib.instructions.multi_phase import define_symbol as sut
 from exactly_lib.instructions.multi_phase.define_symbol import REL_OPTIONS_CONFIGURATION
+from exactly_lib.section_document.element_builder import SourceLocationInfo
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.parsing_configuration import FileSystemLocationInfo
@@ -128,7 +129,8 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
 class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
     def test(self):
         with tmp_dir() as file_reference_relativity_root_dir:
-            fs_location_info = FileSystemLocationInfo(file_reference_relativity_root_dir)
+            fs_location_info = FileSystemLocationInfo(file_reference_relativity_root_dir,
+                                                      SourceLocationInfo())
             instruction_argument = src('{path_type} name = {rel_source_file} component')
             for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                 expected_file_ref_resolver = file_ref_resolvers.constant(
