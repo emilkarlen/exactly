@@ -172,6 +172,10 @@ class SymbolContainer(SymbolTableValue):
         self._source_location = source_location
 
     @property
+    def source_location(self) -> Optional[SourceLocationInfo]:
+        return self._source_location
+
+    @property
     def definition_source(self) -> LineSequence:
         """
         The source code of the definition of the value.
