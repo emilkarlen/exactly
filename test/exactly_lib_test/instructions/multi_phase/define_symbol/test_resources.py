@@ -2,9 +2,9 @@ from exactly_lib.definitions import file_ref
 from exactly_lib.definitions.entity import types
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver
-from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.parse.token import SOFT_QUOTE_CHAR, HARD_QUOTE_CHAR
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source, ParseSourceBuilder
+from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 
 
 def src(s: str,

@@ -13,10 +13,10 @@ from exactly_lib.type_system.data import file_ref as _file_ref
 from exactly_lib.type_system.data.list_value import ListValue
 from exactly_lib.type_system.data.string_value import StringValue
 from exactly_lib.type_system.value_type import DataValueType
-from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.data.test_resources.value_resolvers import ConstantValueResolver
+from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 

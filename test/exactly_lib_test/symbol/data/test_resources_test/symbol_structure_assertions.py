@@ -4,8 +4,8 @@ from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolDefinition
-from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.symbol.data.test_resources import symbol_structure_assertions as sut
+from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 from exactly_lib_test.test_resources.test_of_test_resources_util import assert_that_assertion_fails
 

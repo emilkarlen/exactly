@@ -177,9 +177,10 @@ class EmbryoParser(embryo.InstructionEmbryoParser):
         source_lines = LineSequence(first_line_number,
                                     (instruction_name_prefix + parsed_str).splitlines())
 
+        source_info = fs_location_info.current_source_file.source_location_info_for(source_lines)
         sym_def = SymbolDefinition(symbol_name,
                                    SymbolContainer(value_resolver,
-                                                   source_lines))
+                                                   source_info))
 
         return TheInstructionEmbryo(sym_def)
 
