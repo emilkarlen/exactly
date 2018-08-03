@@ -1,0 +1,7 @@
+# Error: Try to define a symbol that has already been defined
+
+[setup]
+
+including definition-of-symbol-S.xly
+
+def list S = element

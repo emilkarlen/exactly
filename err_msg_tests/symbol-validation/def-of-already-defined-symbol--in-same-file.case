@@ -1,0 +1,5 @@
+[setup]
+
+def list S = element
+
+def string S = 'definition in root file'
