@@ -12,8 +12,8 @@ from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueReso
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants
 from exactly_lib.test_case_file_structure.relativity_root import RelOptionType
-from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable
+from exactly_lib_test.symbol.test_resources.symbol_utils import single_line_sequence
 from exactly_lib_test.test_case_file_structure.test_resources.simple_file_ref import file_ref_test_impl
 
 

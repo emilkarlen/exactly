@@ -1,5 +1,6 @@
-from typing import Sequence
+from typing import Sequence, Optional
 
+from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol.object_with_symbol_references import ObjectWithSymbolReferences
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.test_case_file_structure.dir_dependent_value import DirDependentValue
@@ -166,9 +167,9 @@ class SymbolContainer(SymbolTableValue):
 
     def __init__(self,
                  value_resolver: SymbolValueResolver,
-                 source: LineSequence):
+                 source_location: Optional[SourceLocationInfo]):
         self._resolver = value_resolver
-        self._source = source
+        self._source_location = source_location
 
     @property
     def definition_source(self) -> LineSequence:
@@ -177,7 +178,9 @@ class SymbolContainer(SymbolTableValue):
 
         :rtype None iff the symbol is built in.
         """
-        return self._source
+        return None \
+            if self._source_location is None else \
+            self._source_location.source_location_path.location.source
 
     @property
     def resolver(self) -> SymbolValueResolver:

@@ -1,8 +1,10 @@
+import pathlib
 import unittest
 
 from exactly_lib.execution.impl import symbol_validation as sut
 from exactly_lib.execution.impl.single_instruction_executor import PartialControlledFailureEnum
-from exactly_lib.symbol import resolver_structure as vs, symbol_usage as su
+from exactly_lib.section_document.source_location import FileLocationInfo, SourceLocationInfo
+from exactly_lib.symbol import resolver_structure as rs, symbol_usage as su
 from exactly_lib.symbol.data import file_ref_resolvers, path_part_resolvers
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -10,7 +12,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.test_case_file_structure.path_relativity import PathRelativityVariants, RelOptionType
 from exactly_lib.type_system.data.file_ref import FileRef
-from exactly_lib.util.line_source import single_line_sequence
+from exactly_lib.util import line_source
 from exactly_lib.util.symbol_table import singleton_symbol_table, empty_symbol_table, Entry
 from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
     unconditionally_unsatisfied_reference_restrictions, unconditionally_satisfied_reference_restrictions
@@ -91,7 +93,7 @@ class TestSymbolDefinition(unittest.TestCase):
             file_ref_resolver_container(
                 file_ref_resolvers.rel_symbol(su.SymbolReference('REFERENCED',
                                                                  ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      RestrictionThatIsAlwaysSatisfied())),
+                                                                     RestrictionThatIsAlwaysSatisfied())),
                                               path_part_resolvers.from_constant_str('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage, symbol_table)
@@ -123,7 +125,7 @@ class TestSymbolDefinition(unittest.TestCase):
             file_ref_resolver_container(
                 file_ref_resolvers.rel_symbol(su.SymbolReference('REFERENCED',
                                                                  ReferenceRestrictionsOnDirectAndIndirect(
-                                                                      RestrictionThatIsAlwaysSatisfied())),
+                                                                     RestrictionThatIsAlwaysSatisfied())),
                                               path_part_resolvers.from_constant_str('file-name'))))
         # ACT #
         actual = sut.validate_symbol_usage(symbol_usage_to_check, symbol_table)
@@ -175,7 +177,7 @@ class TestValidationOfList(unittest.TestCase):
 
 def symbol_of(name: str) -> su.SymbolDefinition:
     return su.SymbolDefinition(name,
-                               vs.SymbolContainer(string_resolvers.str_constant('string value'),
+                               rs.SymbolContainer(string_resolvers.str_constant('string value'),
                                                   single_line_sequence(1, 'source code')))
 
 
@@ -185,7 +187,7 @@ def file_ref_entry(name: str, file_ref_value: FileRef) -> Entry:
 
 def string_entry(name: str, constant: str = 'string value') -> Entry:
     return Entry(name,
-                 vs.SymbolContainer(string_resolvers.str_constant(constant),
+                 rs.SymbolContainer(string_resolvers.str_constant(constant),
                                     single_line_sequence(1, 'source code')))
 
 
@@ -195,10 +197,17 @@ def _path_relativity_variants_with_accepted(accepted: RelOptionType) -> PathRela
 
 class RestrictionThatIsAlwaysSatisfied(ValueRestriction):
     def is_satisfied_by(self,
-                        symbol_table: vs.SymbolTable,
+                        symbol_table: rs.SymbolTable,
                         symbol_name: str,
-                        container: vs.SymbolContainer) -> str:
+                        container: rs.SymbolContainer) -> str:
         return None
+
+
+_FL = FileLocationInfo(pathlib.Path('/'))
+
+
+def single_line_sequence(line_number: int, line: str) -> SourceLocationInfo:
+    return _FL.source_location_info_for(line_source.single_line_sequence(line_number, line))
 
 
 if __name__ == '__main__':

@@ -1,5 +1,7 @@
+import pathlib
 from typing import Sequence
 
+from exactly_lib.section_document.source_location import FileLocationInfo, SourceLocationInfo
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
@@ -9,6 +11,7 @@ from exactly_lib.symbol.data.value_restriction import ValueRestriction
 from exactly_lib.symbol.resolver_structure import SymbolContainer, DataValueResolver, \
     SymbolValueResolver
 from exactly_lib.symbol.symbol_usage import SymbolReference, SymbolDefinition
+from exactly_lib.util import line_source
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.symbol_table import SymbolTable, Entry
 
@@ -49,3 +52,14 @@ def symbol_table_from_symbol_definitions(definitions: Sequence[SymbolDefinition]
     elements = [(sym_def.name, sym_def.resolver_container)
                 for sym_def in definitions]
     return SymbolTable(dict(elements))
+
+
+_FL = FileLocationInfo(pathlib.Path('/'))
+
+
+def single_line_sequence(line_number: int, line: str) -> SourceLocationInfo:
+    return source_info_for_line_sequence(line_source.single_line_sequence(line_number, line))
+
+
+def source_info_for_line_sequence(source: line_source.LineSequence) -> SourceLocationInfo:
+    return _FL.source_location_info_for(source)
