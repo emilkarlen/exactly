@@ -1,0 +1,5 @@
+[setup]
+
+def list MY_LIST  = element1 element2
+
+file @[MY_LIST]@
