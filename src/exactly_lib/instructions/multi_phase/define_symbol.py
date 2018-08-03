@@ -194,7 +194,7 @@ def _parse(fs_location_info: FileSystemLocationInfo,
     type_str = parser.consume_mandatory_unquoted_string('SYMBOL-TYPE', True)
 
     if type_str not in _TYPE_SETUPS:
-        err_msg = 'Invalid type :{}\nExpecting one of {}'.format(type_str, _TYPES_LIST_IN_ERR_MSG)
+        err_msg = 'Invalid type: {}\nExpecting one of {}'.format(type_str, _TYPES_LIST_IN_ERR_MSG)
         raise SingleInstructionInvalidArgumentException(err_msg)
 
     value_parser = _TYPE_SETUPS[type_str]

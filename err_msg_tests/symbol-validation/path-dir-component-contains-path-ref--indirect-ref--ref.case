@@ -18,4 +18,4 @@ def string base = @[ba]@@[se]@
 
 def string sfx  = txt
 
-install @[bp]@/dir2/@[base]@.@[sfx]@
+copy @[bp]@/dir2/@[base]@.@[sfx]@

@@ -10,11 +10,11 @@
 
 def path bp = -rel-home dir1
 
-# cause of error: ba is defined as a path - it must be a string
+# cause of error: bp is defined as a path - it must be a string
 
 def string se   = le
 def string base = @[EXACTLY_TMP]@@[se]@
 
 def string sfx  = txt
 
-install @[bp]@/dir2/@[base]@.@[sfx]@
+copy @[bp]@/dir2/@[base]@.@[sfx]@

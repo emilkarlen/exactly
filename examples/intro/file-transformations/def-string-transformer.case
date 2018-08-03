@@ -1,5 +1,5 @@
 #
-# A "lines-transformer" can be defined by the "def" instruction,
+# A "string-transformer" can be defined by the "def" instruction,
 #
 # with may improve readability, and also makes the transformer reusable.
 #
