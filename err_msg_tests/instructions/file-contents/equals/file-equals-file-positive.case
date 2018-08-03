@@ -10,9 +10,3 @@ EOF
 
 
 contents checked-file equals -file expected-contents.txt
-
-
-[act]
-
-
-$ exit 0

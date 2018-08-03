@@ -12,9 +12,3 @@ EOF
 contents checked-file ! equals <<EOF
 expected contents
 EOF
-
-
-[act]
-
-
-$ exit 0
