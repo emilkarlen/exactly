@@ -8,9 +8,3 @@ file checked-file
 
 
 contents checked-file ! empty
-
-
-[act]
-
-
-$ exit 0

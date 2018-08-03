@@ -1,12 +1,7 @@
 [setup]
 
-def string s = not-an-integer
+def string S = not-an-integer
 
 [assert]
 
-exitcode === @[s]@
-
-
-[act]
-
-$ exit 0
+exit-code == @[S]@

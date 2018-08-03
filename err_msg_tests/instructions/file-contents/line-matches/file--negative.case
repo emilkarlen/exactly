@@ -10,9 +10,3 @@ EOF
 
 
 contents checked-file ! any line : matches regex 'expected line'
-
-
-[act]
-
-
-$ exit 0
