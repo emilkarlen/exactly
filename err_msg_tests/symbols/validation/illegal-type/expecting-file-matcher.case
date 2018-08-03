@@ -1,0 +1,7 @@
+[setup]
+
+def string MY_STRING = 'not a file matcher'
+
+[assert]
+
+dir-contents my-dir -selection MY_STRING empty
