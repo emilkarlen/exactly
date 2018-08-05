@@ -3,6 +3,7 @@ import os
 import pathlib
 from typing import Sequence, Optional
 
+from exactly_lib.common.err_msg.formats import SOURCE_LINE_INDENT
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo, FailureInfoVisitor
@@ -12,8 +13,6 @@ from exactly_lib.section_document.source_location import SourceLocationPath, Sou
 from exactly_lib.test_case import error_description
 from exactly_lib.util.error_message_format import source_line_sequence
 from exactly_lib.util.std import FilePrinter
-
-SOURCE_LINE_INDENT = '  '
 
 
 def error_message_for_full_result(the_full_result: FullExeResult) -> str:
@@ -177,5 +176,3 @@ def line_in_file(source_file: pathlib.Path,
                  first_line_number: int) -> str:
     path_str = os.path.normpath(str(source_file))
     return path_str + ', line ' + str(first_line_number)
-
-    # return str(location.file_path_rel_referrer) + ', line ' + str(location.source.first_line_number)

@@ -1,13 +1,11 @@
 import unittest
 
-from exactly_lib_test.common import help, err_msg, result_reporting
+from exactly_lib_test.common.err_msg import source_location
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        err_msg.suite(),
-        result_reporting.suite(),
-        help.suite(),
+        source_location.suite(),
     ])
 
 
