@@ -33,6 +33,12 @@ class SourceLocation(tuple):
         """
         return self[1]
 
+    def __str__(self):
+        return """\
+file_path_rel_referrer={}
+source={}""".format(self.file_path_rel_referrer,
+                    self.source)
+
 
 class SourceLocationPath(tuple):
     """A location in a file, with file inclusion chain info."""

@@ -54,6 +54,10 @@ class LineSequence:
         """
         return os.linesep.join(self._lines)
 
+    def __str__(self):
+        return 'LineSequence({}, {})'.format(self.first_line_number,
+                                             self.lines)
+
 
 def single_line_sequence(line_number: int, line: str) -> LineSequence:
     return LineSequence(line_number, (line,))
