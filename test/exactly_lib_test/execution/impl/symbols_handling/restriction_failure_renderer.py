@@ -4,7 +4,7 @@ from exactly_lib.symbol.data import string_resolvers
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
-from exactly_lib.symbol.err_msg import restriction_failure_renderer as sut
+from exactly_lib.symbol.err_msg import restriction_failures as sut
 from exactly_lib.util.symbol_table import empty_symbol_table, SymbolTable
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import symbol_table_from_names

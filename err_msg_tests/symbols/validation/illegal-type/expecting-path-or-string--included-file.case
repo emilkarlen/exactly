@@ -1,0 +1,5 @@
+[setup]
+
+including my-list.def
+
+file @[MY_LIST]@

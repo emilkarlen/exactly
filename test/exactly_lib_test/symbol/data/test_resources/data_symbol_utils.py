@@ -1,3 +1,5 @@
+from typing import Iterable
+
 from exactly_lib.symbol import resolver_structure
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.data import string_resolvers
@@ -141,14 +143,14 @@ def entry(name: str,
                                        single_line_sequence(line_num, source_line)))
 
 
-def symbol_table_from_names(names: iter) -> SymbolTable:
+def symbol_table_from_names(names: Iterable[str]) -> SymbolTable:
     elements = [(name, string_constant_container(name,
                                                  source_line='source line for {}'.format(name)))
                 for name in names]
     return SymbolTable(dict(elements))
 
 
-def symbol_table_from_symbol_definitions(symbols: iter) -> SymbolTable:
+def symbol_table_from_symbol_definitions(symbols: Iterable[SymbolDefinition]) -> SymbolTable:
     """
     :param symbols: [`SymbolDefinition`]
     """

@@ -2,12 +2,12 @@ from typing import Callable
 
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
+from exactly_lib.symbol.err_msg.error_messages import defined_at_line__err_msg_lines
 from exactly_lib.symbol.resolver_structure import SymbolContainer, SymbolValueResolver, \
     DataValueResolver
 from exactly_lib.symbol.restriction import FailureInfo, \
     DataTypeReferenceRestrictions
 from exactly_lib.type_system.value_type import DataValueType, TypeCategory
-from exactly_lib.util.error_message_format import defined_at_line__err_msg_lines
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -193,7 +193,7 @@ class OrReferenceRestrictions(DataTypeReferenceRestrictions):
         lines = ([
                      'Invalid type, of symbol "{}"'.format(symbol_name)
                  ] +
-                 defined_at_line__err_msg_lines(container.definition_source) +
+                 defined_at_line__err_msg_lines(container.source_location) +
                  [
                      '',
                      'Accepted : ' + accepted_value_types,

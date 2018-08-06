@@ -1,10 +1,13 @@
-from exactly_lib.definitions import type_system
+from typing import List, Sequence
+
 from exactly_lib.symbol.data.restrictions.reference_restrictions import FailureOfDirectReference, \
     FailureOfIndirectReference
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure
+from exactly_lib.symbol.err_msg import error_messages
+from exactly_lib.symbol.lookups import lookup_container
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.restriction import FailureInfo, InvalidTypeCategoryFailure, InvalidValueTypeFailure
-from exactly_lib.util import error_message_format
+from exactly_lib.type_system.value_type import TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -26,31 +29,40 @@ def error_message(failing_symbol: str, symbols: SymbolTable, failure: FailureInf
     return _concat_parts(blank_line_separated_parts)
 
 
-def _of_invalid_type_category(failing_symbol: str, symbols: SymbolTable, failure: InvalidTypeCategoryFailure) -> list:
-    msg = _expected_actual(failing_symbol,
-                           type_system.TYPE_CATEGORY_NAME[failure.expected],
-                           type_system.TYPE_CATEGORY_NAME[failure.actual],
-                           )
-    blank_line_separated_parts = [msg]
-    return blank_line_separated_parts
+def _of_invalid_type_category(failing_symbol: str,
+                              symbols: SymbolTable,
+                              failure: InvalidTypeCategoryFailure) -> List[str]:
+    value_restriction_failure = error_messages.invalid_type_msg(TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE[failure.expected],
+                                                                failing_symbol,
+                                                                lookup_container(symbols, failing_symbol))
+    return _as_lines(value_restriction_failure)
 
 
-def _of_invalid_value_type(failing_symbol: str, symbols: SymbolTable, failure: InvalidValueTypeFailure) -> list:
-    msg = _expected_actual(failing_symbol,
-                           type_system.TYPE_INFO_DICT[failure.expected].identifier,
-                           type_system.TYPE_INFO_DICT[failure.actual].identifier,
-                           )
-    blank_line_separated_parts = [msg]
-    return blank_line_separated_parts
+def _as_lines(x: ValueRestrictionFailure) -> List[str]:
+    parts = [x.message]
+    if x.how_to_fix:
+        parts.append(x.how_to_fix)
+    return ['\n\n'.join(parts)]
 
 
-def error_message_for_direct_reference(error: ValueRestrictionFailure) -> list:
+def _of_invalid_value_type(failing_symbol: str,
+                           symbols: SymbolTable,
+                           failure: InvalidValueTypeFailure) -> List[str]:
+    value_restriction_failure = error_messages.invalid_type_msg([failure.expected],
+                                                                failing_symbol,
+                                                                lookup_container(symbols, failing_symbol))
+    return _as_lines(value_restriction_failure)
+
+
+def error_message_for_direct_reference(error: ValueRestrictionFailure) -> List[str]:
     blank_line_separated_parts = [error.message]
     blank_line_separated_parts.extend(_final_how_to_fix(error))
     return blank_line_separated_parts
 
 
-def _of_indirect(failing_symbol: str, symbols: SymbolTable, failure: FailureOfIndirectReference) -> list:
+def _of_indirect(failing_symbol: str,
+                 symbols: SymbolTable,
+                 failure: FailureOfIndirectReference) -> List[str]:
     blank_line_separated_parts = []
     if failure.meaning_of_failure:
         blank_line_separated_parts.append(failure.meaning_of_failure)
@@ -63,11 +75,13 @@ def _of_indirect(failing_symbol: str, symbols: SymbolTable, failure: FailureOfIn
     return blank_line_separated_parts
 
 
-def _path_to_failing_symbol(failing_symbol: str, path_to_failing_symbol: list, symbols: SymbolTable) -> list:
+def _path_to_failing_symbol(failing_symbol: str,
+                            path_to_failing_symbol: list,
+                            symbols: SymbolTable) -> List[str]:
     def line_ref_of_symbol(symbol_name: str) -> str:
         container = symbols.lookup(symbol_name)
         assert isinstance(container, SymbolContainer), 'Only known type of SymbolTableValue'
-        return error_message_format.source_line_of_symbol(container.definition_source)
+        return error_messages.source_line_of_symbol(container.definition_source)
 
     ret_val = []
     path_to_failing_symbol = [failing_symbol] + path_to_failing_symbol
@@ -82,17 +96,7 @@ def _final_how_to_fix(error: ValueRestrictionFailure) -> list:
     return []
 
 
-def _concat_parts(blank_line_separated_parts: list) -> str:
+def _concat_parts(blank_line_separated_parts: Sequence[str]) -> str:
     parts = [part + '\n' for part in blank_line_separated_parts[:-1]]
     parts.append(blank_line_separated_parts[-1])
     return '\n'.join(parts)
-
-
-def _expected_actual(failing_symbol: str, expected: str, actual: str) -> str:
-    # TODO: replace with other utilities for expected/actual
-    return '\n'.join([
-        'Invalid type of symbol {}'.format(failing_symbol),
-        '',
-        'Expected : ' + expected,
-        'Found    : ' + actual,
-    ])

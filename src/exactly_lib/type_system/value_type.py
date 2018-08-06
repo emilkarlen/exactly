@@ -40,3 +40,16 @@ VALUE_TYPE_2_TYPE_CATEGORY = {
     ValueType.STRING_TRANSFORMER: TypeCategory.LOGIC,
     ValueType.PROGRAM: TypeCategory.LOGIC,
 }
+
+TYPE_CATEGORY_2_VALUE_TYPE_SEQUENCE = {
+    TypeCategory.DATA: [
+        vt
+        for vt in VALUE_TYPE_2_TYPE_CATEGORY.keys()
+        if VALUE_TYPE_2_TYPE_CATEGORY[vt] is TypeCategory.DATA
+    ],
+    TypeCategory.LOGIC: [
+        vt
+        for vt in VALUE_TYPE_2_TYPE_CATEGORY.keys()
+        if VALUE_TYPE_2_TYPE_CATEGORY[vt] is TypeCategory.LOGIC
+    ],
+}

@@ -3,9 +3,9 @@ from typing import Sequence, Optional
 from exactly_lib.execution.impl.single_instruction_executor import \
     PartialInstructionControlledFailureInfo, PartialControlledFailureEnum
 from exactly_lib.symbol import symbol_usage as su
-from exactly_lib.symbol.err_msg import restriction_failure_renderer
+from exactly_lib.symbol.err_msg import error_messages
+from exactly_lib.symbol.err_msg import restriction_failures
 from exactly_lib.symbol.resolver_structure import SymbolContainer
-from exactly_lib.util import error_message_format
 from exactly_lib.util.symbol_table import SymbolTable
 
 
@@ -38,10 +38,8 @@ def _validate_symbol_definition(symbol_table: SymbolTable,
             'Value in SymTbl must be ResolverContainer'
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
-            'Symbol `{}\' has already been defined:\n\n{}'.format(
-                definition.name,
-                error_message_format.source_lines(
-                    already_defined_resolver_container.definition_source)))
+            error_messages.duplicate_symbol_definition(already_defined_resolver_container.source_location,
+                                                       definition.name))
     else:
         for referenced_value in definition.references:
             failure_info = validate_symbol_usage(referenced_value, symbol_table)
@@ -56,7 +54,7 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
                                ) -> Optional[PartialInstructionControlledFailureInfo]:
     assert isinstance(reference, su.SymbolReference)
     if not symbol_table.contains(reference.name):
-        error_message = _undefined_symbol_error_message(reference)
+        error_message = error_messages.undefined_symbol(reference)
         return PartialInstructionControlledFailureInfo(
             PartialControlledFailureEnum.VALIDATION_ERROR,
             error_message)
@@ -65,18 +63,6 @@ def _validate_symbol_reference(symbol_table: SymbolTable,
         if err_msg is not None:
             return PartialInstructionControlledFailureInfo(PartialControlledFailureEnum.VALIDATION_ERROR, err_msg)
     return None
-
-
-def _undefined_symbol_error_message(reference: su.SymbolReference) -> str:
-    from exactly_lib.definitions.formatting import InstructionName
-    from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-    def_name_emphasised = InstructionName(SYMBOL_DEFINITION_INSTRUCTION_NAME).emphasis
-    lines = [
-        'Symbol `{}\' is undefined.'.format(reference.name),
-        '',
-        'Define a symbol using the {} instruction.'.format(def_name_emphasised),
-    ]
-    return '\n'.join(lines)
 
 
 def _validate_reference(symbol_reference: su.SymbolReference,
@@ -88,4 +74,4 @@ def _validate_reference(symbol_reference: su.SymbolReference,
                                                            referenced_resolver_container)
     if result is None:
         return None
-    return restriction_failure_renderer.error_message(symbol_reference.name, symbols, result)
+    return restriction_failures.error_message(symbol_reference.name, symbols, result)

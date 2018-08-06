@@ -2,8 +2,9 @@ import unittest
 from pathlib import Path
 from typing import Optional, Sequence, List
 
+import exactly_lib.common.err_msg.definitions
 from exactly_lib.common.err_msg import source_location as sut
-from exactly_lib.common.err_msg.source_location import Block
+from exactly_lib.common.err_msg.definitions import Block
 from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib_test.test_resources.test_utils import NIE
@@ -38,7 +39,7 @@ class TestSourceLines(unittest.TestCase):
                 ),
         ]
 
-        formatter = sut.formatter()
+        formatter = sut.default_formatter()
 
         for case in cases:
             with self.subTest(case.name):
@@ -67,7 +68,7 @@ class TestFileInclusionChain(unittest.TestCase):
                 ),
         ]
 
-        formatter = sut.formatter()
+        formatter = sut.default_formatter()
 
         for case in cases:
             with self.subTest(case.name):
@@ -196,7 +197,7 @@ class TestFileInclusionChain(unittest.TestCase):
                 ),
         ]
 
-        formatter = sut.formatter()
+        formatter = sut.default_formatter()
 
         for case in cases:
             with self.subTest(case.name):
@@ -226,9 +227,9 @@ class Arrangement:
 class TestSourceLocationPath(unittest.TestCase):
     def _check(self,
                arrangement: Arrangement,
-               expected: sut.Blocks,
+               expected: exactly_lib.common.err_msg.definitions.Blocks,
                ):
-        formatter = sut.formatter()
+        formatter = sut.default_formatter()
         actual = formatter.source_location_path(arrangement.referrer_location,
                                                 arrangement.source_location_path)
         self.assertEqual(expected, actual)
@@ -384,7 +385,7 @@ class TestSourceLocationPath(unittest.TestCase):
                 ),
         ]
 
-        formatter = sut.formatter()
+        formatter = sut.default_formatter()
 
         for case in cases:
             with self.subTest(case.name):
