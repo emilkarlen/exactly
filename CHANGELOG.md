@@ -16,10 +16,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - command line     actor: Accepts additional relativities: `-rel-home`, `-rel-act`, `-rel-tmp`
  - file interpreter actor: Accepts additional relativities: `-rel-home`, `-rel-act`, `-rel-tmp`
  - string-transformer "replace": Do not include trailing newline in processed string
+ - improves error messages for def instruction - includes source loc of referenced symbols
 
 ### Fixed
 
- - test suites: Changes to environment variables leaked between test cases
+ - test suites: Environment variables do not leak between test cases
 
 
 ## [0.8.9.2] - 2018-06-24
