@@ -25,7 +25,7 @@ from exactly_lib_test.section_document.test_resources.element_assertions import 
     equals_instruction_without_description, matches_section_contents_element, \
     matches_instruction_info_without_description, matches_instruction_with_parse_source_info
 from exactly_lib_test.section_document.test_resources.source_location_assertions import equals_source_location_sequence, \
-    matches_file_location_info, matches_source_location_info2
+    matches_file_location_info
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_dir, sym_link, file_with_lines, \
     empty_dir_contents, add_dir_contents, Dir
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
@@ -44,7 +44,6 @@ def suite() -> unittest.TestSuite:
         unittest.makeSuite(TestInclusionFromInclusion),
         unittest.makeSuite(TestSourceLocationInfoGivenToElementParser),
         unittest.makeSuite(TestDetectionOfInclusionCycles),
-        unittest.makeSuite(TestAbsPathOfDirContainingFile),
     ])
 
 
@@ -982,7 +981,6 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                                 current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(root_file_path),
-                                    abs_path_of_dir_containing_file=asrt.equals(abs_cwd_path / sub_dir_name),
                                     file_inclusion_chain=asrt.is_empty_sequence,
                                 )
                             )
@@ -995,9 +993,6 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                                 current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_1_rel_file_0),
-                                    abs_path_of_dir_containing_file=asrt.equals(
-                                        abs_cwd_path / sub_dir_name / Path('..')
-                                    ),
                                     file_inclusion_chain=equals_source_location_sequence([
                                         inclusion_of_file_1_from_file_0,
                                     ]),
@@ -1012,9 +1007,6 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
                                 current_source_file=matches_file_location_info(
                                     abs_path_of_dir_containing_root_file=asrt.equals(cwd_path),
                                     file_path_rel_referrer=asrt.equals(file_2_rel_file_1),
-                                    abs_path_of_dir_containing_file=asrt.equals(
-                                        abs_cwd_path / sub_dir_name / Path('..') / sub_dir_name
-                                    ),
                                     file_inclusion_chain=equals_source_location_sequence([
                                         inclusion_of_file_1_from_file_0,
                                         inclusion_of_file_2_from_file_1,
@@ -1027,75 +1019,6 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
             }
             assertion_on_doc = matches_document(expected_doc)
             # ASSERT #
-            assertion_on_doc.apply_without_message(self, actual_doc)
-
-
-class TestAbsPathOfDirContainingFile(unittest.TestCase):
-    def test(self):
-        # ARRANGE #
-        sub_dir_name = 'sub-dir'
-        sub_dir_path = PurePosixPath(sub_dir_name)
-        file_0_in_sub_dir_name = '0.src'
-        file_1_in_root_dir_name = '1.src'
-        file_2_in_sub_dir_name = '2.src'
-
-        file_2_in_sub_dir = file_with_lines(file_2_in_sub_dir_name, [
-            ok_instruction('2'),
-        ])
-        file_1_in_root_dir = file_with_lines(file_1_in_root_dir_name, [
-            ok_instruction('1'),
-            inclusion_of_file(sub_dir_path / file_2_in_sub_dir.name),
-        ])
-        file_0_in_sub_dir = file_with_lines(file_0_in_sub_dir_name, [
-            ok_instruction('0'),
-            inclusion_of_file(PurePosixPath('..') / file_1_in_root_dir.name),
-        ])
-        cwd_dir_contents = DirContents([
-            file_1_in_root_dir,
-            Dir(sub_dir_name, [
-                file_0_in_sub_dir,
-                file_2_in_sub_dir,
-            ])
-        ])
-        root_file_path = Path(sub_dir_name) / file_0_in_sub_dir.name
-        with tmp_dir_as_cwd(cwd_dir_contents) as cwd_path:
-            # ACT #
-            actual_doc = sut.parse(SECTION_1_WITH_SECTION_1_AS_DEFAULT,
-                                   root_file_path)
-            # EXPECTATION #
-            abs_cwd_path = cwd_path.resolve()
-            expected_doc = {
-                SECTION_1_NAME: [
-                    matches_section_contents_element(
-                        ElementType.INSTRUCTION,
-                        source_location_info=
-                        matches_source_location_info2(
-                            abs_path_of_dir_containing_file=
-                            asrt.equals(abs_cwd_path / sub_dir_name),
-                        )
-                    ),
-                    matches_section_contents_element(
-                        ElementType.INSTRUCTION,
-                        source_location_info=
-                        matches_source_location_info2(
-                            abs_path_of_dir_containing_file=asrt.equals(
-                                abs_cwd_path / sub_dir_name / PurePosixPath('..')
-                            ),
-                        )
-                    ),
-                    matches_section_contents_element(
-                        ElementType.INSTRUCTION,
-                        source_location_info=
-                        matches_source_location_info2(
-                            abs_path_of_dir_containing_file=asrt.equals(
-                                abs_cwd_path / sub_dir_name / PurePosixPath('..') / sub_dir_name
-                            ),
-                        )
-                    ),
-                ],
-            }
-            # ASSERT #
-            assertion_on_doc = matches_document(expected_doc)
             assertion_on_doc.apply_without_message(self, actual_doc)
 
 
