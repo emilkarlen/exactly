@@ -1,12 +1,9 @@
 import os
 from pathlib import Path
-from typing import Sequence, Tuple, List, Optional
+from typing import Sequence, Tuple, Optional
 
-from exactly_lib.common.err_msg.formats import SOURCE_LINE_INDENT
+from exactly_lib.common.err_msg.definitions import SOURCE_LINE_INDENT, Block, Blocks
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
-
-Block = List[str]
-Blocks = List[Block]
 
 
 class Formatter:
