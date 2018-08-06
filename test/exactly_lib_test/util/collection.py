@@ -4,7 +4,47 @@ from exactly_lib.util import collection as sut
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestFrozenSetBasedOnEquality)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestIntersperseList),
+        unittest.makeSuite(TestFrozenSetBasedOnEquality),
+
+    ])
+
+
+class TestIntersperseList(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+
+        e = 'between'
+
+        cases = [
+            (
+                [],
+                [],
+            ),
+            (
+                [1],
+                [1],
+            ),
+            (
+                [1, 2],
+                [1, e, 2],
+            ),
+            (
+                [1, 2, 3],
+                [1, e, 2, e, 3],
+            ),
+
+        ]
+        for case in cases:
+            with self.subTest(input=case[0],
+                              expected=case[1]):
+                # ACT #
+                actual = sut.intersperse_list(e, case[0])
+
+                # ASSERT #
+
+                self.assertEqual(case[1], actual)
 
 
 class TestFrozenSetBasedOnEquality(unittest.TestCase):

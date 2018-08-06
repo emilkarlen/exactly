@@ -23,3 +23,10 @@ def _unique(elements: Sequence) -> list:
         if x not in ret_val:
             ret_val.append(x)
     return ret_val
+
+
+def intersperse_list(element_between, l: list) -> list:
+    if len(l) <= 1:
+        return l
+    else:
+        return [l[0]] + [element_between] + intersperse_list(element_between, l[1:])
