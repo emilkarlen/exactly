@@ -3,16 +3,7 @@
 # This test case must be SKIPed, since it doesn't make sense.
 # It just displays some instructions and how they might could be used.
 
-mode SKIP
-
-
-act-home ../..
-# "act home" is one of the directories in the home directory structure
-# it tells where the program run by [act] is located.
-
-home ..
-# "case home" is one of the directories in the home directory structure
-# it is the default location for predefined resources referenced from a test
+status = SKIP
 
 
 [setup]

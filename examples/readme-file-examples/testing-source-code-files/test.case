@@ -1,0 +1,16 @@
+[conf]
+
+actor = -file python
+
+[act]
+
+my-python-program.py 'an argument' second third
+
+[assert]
+
+stdout equals
+<<EOF
+Argument: an argument
+Argument: second
+Argument: third
+EOF

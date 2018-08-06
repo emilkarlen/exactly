@@ -131,9 +131,17 @@ A "lines transformer" is used to extract all timing lines
 and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
 
+    [setup]
+
+    def line-matcher     IS_TIMING_LINE     = regex ^timing
+
+    def string-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
+
+    def string-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
+
     [act]
 
-    my-system-under-test-that-writes-log-file
+    $ python "@[EXACTLY_HOME]@/my-system-under-test.py"
 
     [assert]
 
@@ -144,14 +152,6 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
     timing TIMESTAMP execution
     timing TIMESTAMP end
     EOF
-
-    [setup]
-
-    def line-matcher      IS_TIMING_LINE     = regex ^timing
-
-    def string-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
-
-    def string-transformer GET_TIMING_LINES   = select IS_TIMING_LINE | REPLACE_TIMESTAMPS
 
 
 The ``-transformed-by`` option does not modify the tested file,
@@ -193,12 +193,15 @@ The ``actor`` instruction can specify an interpreter to test a source code file:
 
     [act]
 
-    my-python-program.py 'an argument'
+    my-python-program.py 'an argument' second third
 
     [assert]
 
-    stdout equals <<EOF
-    Arguments: an argument
+    stdout equals
+    <<EOF
+    Argument: an argument
+    Argument: second
+    Argument: third
     EOF
 
 
@@ -257,7 +260,7 @@ stdout, stderr and exit code.
 
     [assert]
 
-    stdout contains Hello
+    stdout any line : matches regex Hello
 
 ::
 
