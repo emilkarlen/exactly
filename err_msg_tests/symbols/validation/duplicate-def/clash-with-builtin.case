@@ -1,0 +1,3 @@
+[setup]
+
+def string EXACTLY_ACT = 'clash with builtin symbol'
