@@ -13,6 +13,19 @@ https://packaging.python.org/
   - set version and release date
   - make sure changes are included (see https://keepachangelog.com/en/1.0.0/)
 
+**  Template
+
+## [VERSION] - YYYY-MM-DD
+## Unreleased
+
+### Added
+### Changed
+### Deprecated
+### Removed
+### Fixed
+### Security
+
+
 * Make sure release year is included in COPYRIGHT
 
 * 0. Remove existing distributables
