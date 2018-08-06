@@ -368,4 +368,4 @@ def type_must_be_either_path_or_string__err_msg_generator(name_of_failing_symbol
     value_restriction_failure = invalid_type_msg([ValueType.PATH, ValueType.STRING],
                                                  name_of_failing_symbol,
                                                  container_of_illegal_symbol)
-    return '\n'.join(error_message_for_direct_reference(value_restriction_failure))
+    return error_message_for_direct_reference(value_restriction_failure)

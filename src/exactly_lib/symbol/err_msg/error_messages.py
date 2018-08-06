@@ -3,7 +3,7 @@ from typing import Optional, List
 
 from exactly_lib.common.err_msg import rendering
 from exactly_lib.common.err_msg import source_location
-from exactly_lib.common.err_msg.definitions import Blocks
+from exactly_lib.common.err_msg.definitions import Blocks, single_str_block
 from exactly_lib.definitions import type_system
 from exactly_lib.section_document.source_location import SourceLocationInfo
 from exactly_lib.symbol import symbol_usage as su
@@ -124,6 +124,17 @@ def _definition_source_blocks(definition_source: SourceLocationInfo) -> Blocks:
     formatter = source_location.default_formatter()
     return formatter.source_location_path(Path('.'),
                                           definition_source.source_location_path)
+
+
+def _builtin_or_user_defined_source_blocks(definition_source: Optional[SourceLocationInfo]) -> Blocks:
+    if definition_source is None:
+        return [
+            single_str_block(_WHICH_IS_A_BUILTIN_SYMBOL)
+        ]
+    else:
+        formatter = source_location.default_formatter()
+        return formatter.source_location_path(Path('.'),
+                                              definition_source.source_location_path)
 
 
 def source_line_of_symbol(definition_source: LineSequence) -> str:

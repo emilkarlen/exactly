@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, List
 
 from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
@@ -23,7 +23,7 @@ class FailureOfDirectReference(FailureInfo):
 class FailureOfIndirectReference(FailureInfo):
     def __init__(self,
                  failing_symbol: str,
-                 path_to_failing_symbol: list,
+                 path_to_failing_symbol: List[str],
                  error: ValueRestrictionFailure,
                  meaning_of_failure: str = ''):
         self._failing_symbol = failing_symbol
@@ -39,9 +39,9 @@ class FailureOfIndirectReference(FailureInfo):
         return self._failing_symbol
 
     @property
-    def path_to_failing_symbol(self) -> list:
+    def path_to_failing_symbol(self) -> List[str]:
         """
-        The references (from top to bottom) that leads to the failing symbol
+        The symbol-name references (from top to bottom) that leads to the failing symbol
         """
         return self._path_to_failing_symbol
 
