@@ -39,7 +39,7 @@ class Formatter:
         :param chain: Sequence of location links (file inclusions)
 
         :return: (textual representation, referrer location of last link in chain)
-        If the inclusion chain is empty, the the textual representation will also
+        If the inclusion chain is empty, then the textual representation will also
         be empty.
         """
 
