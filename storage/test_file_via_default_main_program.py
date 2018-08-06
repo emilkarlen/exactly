@@ -2,9 +2,9 @@ import unittest
 
 from exactly_lib.default.default_main_program_setup import default_main_program
 
-SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/source-file-info/'
+SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
 
-TEST_CASE_FILE = SRC_DIR + 'syntax-error-in-stand-alone-case.case'
+TEST_CASE_FILE = SRC_DIR + 'expecting-file-matcher.case'
 
 # TEST_CASE_FILE = SRC_DIR + 'instruction-error-in-stand-alone-case.case'
 
@@ -14,9 +14,7 @@ SUITE_FILE = SRC_DIR + 'instruction-error-of-case-instruction-in-suite.suite'
 
 EMPTY_CASE = SRC_DIR + 'empty.case'
 
-ARGS = ['--suite',
-        SUITE_FILE,
-        EMPTY_CASE
+ARGS = [TEST_CASE_FILE
         ]
 
 

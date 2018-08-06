@@ -23,7 +23,7 @@ from exactly_lib.symbol.data.restrictions.reference_restrictions import \
 from exactly_lib.symbol.data.restrictions.value_restrictions import FileRefRelativityRestriction
 from exactly_lib.symbol.data.string_resolver import StringResolver
 from exactly_lib.symbol.err_msg.error_messages import invalid_type_msg
-from exactly_lib.symbol.err_msg.restriction_failure_renderer import error_message_for_direct_reference
+from exactly_lib.symbol.err_msg.restriction_failures import error_message_for_direct_reference
 from exactly_lib.symbol.resolver_structure import SymbolContainer
 from exactly_lib.symbol.symbol_usage import SymbolReference
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants

@@ -110,7 +110,7 @@ def line_in_file(source_file: Path,
     return path_str + ', line ' + str(first_line_number)
 
 
-def formatter() -> Formatter:
+def default_formatter() -> Formatter:
     return Formatter(SOURCE_LINE_INDENT)
 
 
