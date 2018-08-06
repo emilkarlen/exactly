@@ -1,0 +1,5 @@
+$ echo Hello World
+
+[assert]
+
+stdout any line : matches regex Hello

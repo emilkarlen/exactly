@@ -1,0 +1,14 @@
+[conf]
+
+actor = -source bash
+
+[act]
+
+var='hello world'
+echo ${var:5}
+
+[assert]
+
+stdout equals <<EOF
+world
+EOF

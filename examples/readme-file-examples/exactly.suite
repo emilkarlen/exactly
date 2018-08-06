@@ -1,3 +1,6 @@
 contacts/test.case
 classify/test.case
 transform/test.case
+output-from-tested-program.case
+testing-source-code-files/test.case
+experimenting-with-source-code.case
