@@ -1,4 +1,5 @@
 import types
+from typing import List
 
 from exactly_lib.util import tables
 from exactly_lib.util.tables import extend_each_sub_list_to_max_sub_list_length
@@ -33,7 +34,7 @@ class TableFormatter:
         self.available_width_for_column_contents = (available_width -
                                                     self.num_column_separators * len(table.format.column_separator))
 
-    def apply(self) -> list:
+    def apply(self) -> List[str]:
         if not self.normalised_rows:
             return []
         if len(self.normalised_rows[0]) == 0:
@@ -62,7 +63,9 @@ class TableFormatter:
             ret_val.append(ret_val_row)
         return ret_val
 
-    def _combine_cell_contents_into_lines(self, row_cell_lines: list, column_widths: list) -> list:
+    def _combine_cell_contents_into_lines(self,
+                                          row_cell_lines: list,
+                                          column_widths: List[int]) -> List[str]:
         def fill_string_to_function(width: int):
             format = '%-' + str(width) + 's'
             return lambda s: format % s
@@ -82,7 +85,7 @@ class TableFormatter:
                 ret_val.append(column_separator.join(output_line_cell_contents))
         return ret_val
 
-    def _header_row_underline(self, column_widths: list) -> str:
+    def _header_row_underline(self, column_widths: List[int]) -> str:
         width_of_col_separators = self.num_column_separators * len(self.table.format.column_separator)
         width_of_col_contents = sum(column_widths)
         line_width = width_of_col_separators + width_of_col_contents
