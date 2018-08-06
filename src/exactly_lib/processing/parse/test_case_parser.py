@@ -1,9 +1,12 @@
+from typing import Dict
+
 from exactly_lib.definitions.test_case import phase_names_plain
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.instruction_section_element_parser import section_element_parser
 from exactly_lib.processing.test_case_processing import TestCaseSetup
 from exactly_lib.section_document import document_parser
 from exactly_lib.section_document import parsing_configuration
+from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case import test_case_doc, phase_identifier
 
@@ -30,7 +33,7 @@ class Parser:
 
 
 def new_parser(parsing_setup: TestCaseParsingSetup) -> Parser:
-    def dict_parser(instruction_set: dict) -> parsing_configuration.SectionElementParser:
+    def dict_parser(instruction_set: Dict[str, InstructionParser]) -> parsing_configuration.SectionElementParser:
         return section_element_parser(parsing_setup.instruction_name_extractor_function, instruction_set)
 
     configuration = parsing_configuration.SectionsConfiguration(
