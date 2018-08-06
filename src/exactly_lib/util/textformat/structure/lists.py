@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Iterable
 
 from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
 
@@ -74,19 +75,13 @@ class Format(tuple):
 
 class HeaderContentList(ParagraphItem):
     def __init__(self,
-                 items: iter,
+                 items: Iterable[HeaderContentListItem],
                  list_format: Format):
-        """
-        :param items: [`HeaderContentListItem`]
-        """
         self._items = items
         self._format = list_format
 
     @property
-    def items(self) -> iter:
-        """
-        :rtype: [`HeaderContentListItem`]
-        """
+    def items(self) -> Iterable[HeaderContentListItem]:
         return self._items
 
     @property

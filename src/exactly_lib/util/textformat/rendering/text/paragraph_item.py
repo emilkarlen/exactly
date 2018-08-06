@@ -1,3 +1,5 @@
+from typing import List, Iterable
+
 from exactly_lib.util.textformat.rendering.text.lists import ListFormats, ListFormat, list_format_with_indent_str, \
     list_format_with_separations
 from exactly_lib.util.textformat.rendering.text.table.formatter import TableFormatter
@@ -24,7 +26,7 @@ class Formatter:
         self.separator_lines = self.wrapper.blank_lines(num_item_separator_lines)
         self.text_item_formatter = _ParagraphItemFormatter(self)
 
-    def format_paragraph_items(self, items: iter) -> list:
+    def format_paragraph_items(self, items: iter) -> List[str]:
         ret_val = []
         for item in items:
             if ret_val:
@@ -32,38 +34,34 @@ class Formatter:
             ret_val.extend(self.format_paragraph_item(item))
         return ret_val
 
-    def format_paragraph_item(self, item: ParagraphItem) -> list:
+    def format_paragraph_item(self, item: ParagraphItem) -> List[str]:
         return self.text_item_formatter.visit(item)
 
-    def format_paragraph(self, paragraph: Paragraph) -> list:
+    def format_paragraph(self, paragraph: Paragraph) -> List[str]:
         ret_val = []
         for start_on_new_line_block in paragraph.start_on_new_line_blocks:
             assert isinstance(start_on_new_line_block, Text)
             ret_val.extend(self.format_text(start_on_new_line_block))
         return ret_val
 
-    def format_text(self, text: Text) -> list:
+    def format_text(self, text: Text) -> List[str]:
         return self.wrapper.wrap(self.text_formatter.apply(text))
 
-    def format_str(self, s: str) -> list:
+    def format_str(self, s: str) -> List[str]:
         return self.wrapper.wrap(s)
 
-    def format_literal_layout(self, literal_layout: LiteralLayout) -> list:
+    def format_literal_layout(self, literal_layout: LiteralLayout) -> List[str]:
         lines = literal_layout.literal_text.splitlines()
         return self.wrapper.no_word_wrap(lines)
 
-    def format_header_content_list(self, the_list: HeaderContentList) -> list:
+    def format_header_content_list(self, the_list: HeaderContentList) -> List[str]:
         list_format = self.resolve_list_format(the_list.list_format)
         return self.format_header_value_list_according_to_format(the_list.items,
                                                                  list_format)
 
     def format_header_value_list_according_to_format(self,
-                                                     items: iter,
-                                                     list_format: ListFormat) -> list:
-        """
-        :param list_format:
-        :type items: [HeaderValueListItem]
-        """
+                                                     items: Iterable[HeaderContentListItem],
+                                                     list_format: ListFormat) -> List[str]:
         return _ListFormatter(self, list_format, items).apply()
 
     def resolve_list_format(self, format_on_list: Format) -> ListFormat:
@@ -75,7 +73,7 @@ class Formatter:
             list_format = list_format_with_separations(list_format, format_on_list.custom_separations)
         return list_format
 
-    def format_table(self, table: Table) -> list:
+    def format_table(self, table: Table) -> List[str]:
         first_line_indent = self.wrapper.current_indent.first_line
         available_width = self.wrapper.page_width - len(first_line_indent)
         if available_width <= 0:
@@ -111,13 +109,13 @@ class _ListFormatter:
             separations.num_blank_lines_between_header_and_contents)
         self.ret_val = []
 
-    def apply(self) -> list:
+    def apply(self) -> List[str]:
         ret_val = self.ret_val
         with self.wrapper.indent_increase(identical_indent(self.list_format.indent_str)):
             for (item_number, item) in enumerate(self.items_list, start=1):
                 assert isinstance(item, HeaderContentListItem), (
-                    'The list item is not a %s: %s' % (str(HeaderContentListItem),
-                                                       str(item)))
+                        'The list item is not a %s: %s' % (str(HeaderContentListItem),
+                                                           str(item)))
                 if item_number > 1:
                     ret_val.extend(self.blank_lines_between_elements)
                 self._format_header(item, item_number)
@@ -153,14 +151,14 @@ class _ParagraphItemFormatter(ParagraphItemVisitor):
     def __init__(self, formatter: Formatter):
         self.formatter = formatter
 
-    def visit_paragraph(self, paragraph: Paragraph):
+    def visit_paragraph(self, paragraph: Paragraph) -> List[str]:
         return self.formatter.format_paragraph(paragraph)
 
-    def visit_header_value_list(self, header_value_list: HeaderContentList):
+    def visit_header_value_list(self, header_value_list: HeaderContentList) -> List[str]:
         return self.formatter.format_header_content_list(header_value_list)
 
-    def visit_literal_layout(self, literal_layout: LiteralLayout):
+    def visit_literal_layout(self, literal_layout: LiteralLayout) -> List[str]:
         return self.formatter.format_literal_layout(literal_layout)
 
-    def visit_table(self, table: Table):
+    def visit_table(self, table: Table) -> List[str]:
         return self.formatter.format_table(table)

@@ -1,5 +1,6 @@
 from contextlib import contextmanager
 from textwrap import TextWrapper
+from typing import List
 
 
 class Indent(tuple):
@@ -34,9 +35,9 @@ class Wrapper:
     def wrap(self, text: str) -> list:
         return self.text_wrapper.wrap(text)
 
-    def no_word_wrap(self, lines: list) -> list:
+    def no_word_wrap(self, lines: list) -> List[str]:
         """
-        Outputs lines with without wrapping.
+        Outputs lines without wrapping.
         Each line will begin on a new line.
         :param lines: List of text that does not contain
         new-line characters.
@@ -74,7 +75,7 @@ class Wrapper:
             return ret_val
 
     @staticmethod
-    def blank_lines(num_lines=1) -> list:
+    def blank_lines(num_lines=1) -> List[str]:
         return num_lines * ['']
 
     @property
@@ -87,7 +88,7 @@ class Wrapper:
                       self.text_wrapper.subsequent_indent)
 
     @property
-    def saved_indents_stack(self) -> list:
+    def saved_indents_stack(self) -> List[Indent]:
         return self._saved_indents_stack
 
     def push_indent(self, indent: Indent):
