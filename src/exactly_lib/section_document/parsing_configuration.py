@@ -18,7 +18,7 @@ class DocumentParser:
               file_reference_relativity_root_dir: Path,
               source: ParseSource) -> model.Document:
         """
-        :param source_file_path: None if the source is not a file.
+        :param source_file_path: None iff the source is not a file - e.g. stdin.
         :param file_reference_relativity_root_dir: A directory that file reference paths are relative to.
         :param source: The source to parse - the contents of source_file_path, if the source is from a file.
         :raises ParseError The test case cannot be parsed.
