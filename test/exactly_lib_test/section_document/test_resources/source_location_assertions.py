@@ -68,7 +68,6 @@ def matches_file_location_info(
         abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path],
         file_path_rel_referrer: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
         file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
-        abs_path_of_dir_containing_file: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[FileLocationInfo]:
     return asrt.is_instance_with_many(FileLocationInfo,
                                       [
@@ -81,16 +80,12 @@ def matches_file_location_info(
                                           asrt.sub_component('file_inclusion_chain',
                                                              FileLocationInfo.file_inclusion_chain.fget,
                                                              file_inclusion_chain),
-                                          asrt.sub_component('abs_path_of_dir_containing_file',
-                                                             FileLocationInfo.abs_path_of_dir_containing_file.fget,
-                                                             abs_path_of_dir_containing_file),
                                       ])
 
 
 def matches_source_location_info(
         abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
         source_location_path: asrt.ValueAssertion[SourceLocationPath] = asrt.anything_goes(),
-        abs_path_of_dir_containing_file: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[SourceLocationInfo]:
     return asrt.is_instance_with_many(
         SourceLocationInfo,
@@ -101,9 +96,6 @@ def matches_source_location_info(
             asrt.sub_component('source_location_path',
                                SourceLocationInfo.source_location_path.fget,
                                source_location_path),
-            asrt.sub_component('abs_path_of_dir_containing_file',
-                               SourceLocationInfo.abs_path_of_dir_containing_file.fget,
-                               abs_path_of_dir_containing_file),
         ])
 
 
@@ -111,12 +103,10 @@ def matches_source_location_info2(
         source: asrt.ValueAssertion[LineSequence] = asrt.anything_goes(),
         file_path_rel_referrer: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
         file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
-        abs_path_of_dir_containing_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
         abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[SourceLocationInfo]:
     return matches_source_location_info(
         abs_path_of_dir_containing_root_file=abs_path_of_dir_containing_root_file,
-        abs_path_of_dir_containing_file=abs_path_of_dir_containing_file,
         source_location_path=matches_source_location_path(
             matches_source_location(source, file_path_rel_referrer),
             file_inclusion_chain))
