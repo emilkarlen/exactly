@@ -46,7 +46,7 @@ and the contents of the {phase[act]} phase.
 
 
 The {actor_concept} is responsible for interpreting the contents
-of the the {phase[act]}, and executing it.
+of the {phase[act]}, and executing it.
 
 
 It is executed in it's own process.

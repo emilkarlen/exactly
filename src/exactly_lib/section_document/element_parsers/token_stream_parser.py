@@ -271,7 +271,7 @@ class TokenParser:
         Looks at the current argument and checks if it is any of a given set of options,
         and returns a value that corresponds to that option.
 
-        A default value is returned if the the current argument is not any of the given options,
+        A default value is returned if the current argument is not any of the given options,
         or if there are no arguments.
 
         :param key_and_option_name_list: [(key, `OptionName`)]
@@ -297,7 +297,7 @@ class TokenParser:
         Looks at the current argument and checks if it is the given option,
         and, if it is, returns the value from the given parser.
 
-        A default value is returned if the the current token is not the given option,
+        A default value is returned if the current token is not the given option,
         or if there are no tokens.
 
         :param option_name: Option to match
