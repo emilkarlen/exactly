@@ -1,16 +1,17 @@
 import io
-import os
 import pathlib
-from typing import Sequence, Optional
+from typing import Optional
 
-from exactly_lib.common.err_msg.definitions import SOURCE_LINE_INDENT
+from exactly_lib.common.err_msg import rendering
+from exactly_lib.common.err_msg.definitions import Blocks, Block
+from exactly_lib.common.err_msg.source_location import default_formatter
+from exactly_lib.common.err_msg.utils import prefix_first_block
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution.failure_info import InstructionFailureInfo, PhaseFailureInfo, FailureInfoVisitor
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing.test_case_processing import ErrorInfo
-from exactly_lib.section_document.source_location import SourceLocationPath, SourceLocation
-from exactly_lib.symbol.err_msg.error_message_format import source_line_sequence
+from exactly_lib.section_document.source_location import SourceLocationPath
 from exactly_lib.test_case import error_description
 from exactly_lib.util.std import FilePrinter
 
@@ -48,66 +49,27 @@ def print_error_info(printer: FilePrinter, error_info: ErrorInfo):
     _ErrorDescriptionDisplayer(printer).visit(error_info.description)
 
 
-def _output_file_inclusion_chain(printer: FilePrinter,
-                                 referrer_location: pathlib.Path,
-                                 chain: Sequence[SourceLocation]) -> pathlib.Path:
-    for link in chain:
-        print_file_inclusion_location(printer, referrer_location, link)
-        referrer_location = (referrer_location / link.file_path_rel_referrer).parent
-
-    return referrer_location
-
-
-def _output_location(printer: FilePrinter,
-                     referrer_location: pathlib.Path,
-                     source_location: Optional[SourceLocation],
-                     section_name: str,
-                     description: str) -> bool:
-    has_output_header = False
-    if source_location and source_location.file_path_rel_referrer:
-        source_file_path = referrer_location / source_location.file_path_rel_referrer
-        if source_location.source:
-            printer.write_line(line_in_file(source_file_path,
-                                            source_location.source.first_line_number))
-        else:
-            printer.write_line(_file_str(source_file_path))
-        has_output_header = True
-    if source_location and source_location.source:
-        if has_output_header:
-            printer.write_empty_line()
-        printer.write_lines(source_line_sequence(source_location.source),
-                            SOURCE_LINE_INDENT)
-        has_output_header = True
-    if description:
-        printer.write_line('\nDescribed as "{}"'.format(description))
-        has_output_header = True
-    return has_output_header
-
-
 def output_location(printer: FilePrinter,
                     source_location: Optional[SourceLocationPath],
                     section_name: str,
                     description: str):
+    referrer_location = pathlib.Path('.')
+    formatter = default_formatter()
+
+    section_name_block = []
     if section_name:
-        printer.write_line('In ' + SectionName(section_name).syntax)
-    if source_location is None:
-        has_output = _output_location(printer,
-                                      pathlib.Path('.'),
-                                      None,
-                                      section_name,
-                                      description)
-    else:
-        referrer_location = pathlib.Path('.')
-        referrer_location = _output_file_inclusion_chain(printer,
-                                                         referrer_location,
-                                                         source_location.file_inclusion_chain)
-        _output_location(printer,
-                         referrer_location,
-                         source_location.location,
-                         section_name,
-                         description)
-        has_output = True
-    if has_output or section_name:
+        section_name_block = _section_name_block(section_name)
+
+    blocks = []
+    if source_location is not None:
+        blocks = formatter.source_location_path(referrer_location,
+                                                source_location)
+    blocks += _description_blocks(description)
+
+    blocks = prefix_first_block(section_name_block, blocks)
+
+    if blocks:
+        printer.write_line(rendering.blocks_as_str(blocks))
         printer.write_empty_line()
 
 
@@ -150,29 +112,14 @@ class _SourceDisplayer(FailureInfoVisitor):
                         failure_info.element_description)
 
 
-def _file_str(path: pathlib.Path) -> str:
-    if not path.is_absolute():
-        return str(path)
-    cwd = pathlib.Path.cwd().resolve()
-    try:
-        return str(path.relative_to(cwd))
-    except ValueError:
-        return str(path)
+def _section_name_block(section_name: str) -> Block:
+    return ['In ' + SectionName(section_name).syntax]
 
 
-def print_file_inclusion_location(printer: FilePrinter,
-                                  referrer_location: pathlib.Path,
-                                  location: SourceLocation):
-    printer.write_line(line_in_file(referrer_location / location.file_path_rel_referrer,
-                                    location.source.first_line_number))
-    [
-        printer.write_line(line_source, SOURCE_LINE_INDENT)
-        for line_source in location.source.lines
-    ]
-    printer.write_empty_line()
-
-
-def line_in_file(source_file: pathlib.Path,
-                 first_line_number: int) -> str:
-    path_str = os.path.normpath(str(source_file))
-    return path_str + ', line ' + str(first_line_number)
+def _description_blocks(description: str) -> Blocks:
+    if description:
+        return [
+            ['Described as "{}"'.format(description)],
+        ]
+    else:
+        return []

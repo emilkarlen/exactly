@@ -1,0 +1,7 @@
+[assert]
+
+'The
+instruction
+description'
+
+exists non-existing-file
