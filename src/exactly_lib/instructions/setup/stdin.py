@@ -9,7 +9,7 @@ from exactly_lib.definitions.argument_rendering.path_syntax import the_path_of
 from exactly_lib.instructions.setup.utils.instruction_utils import InstructionWithFileRefsBase
 from exactly_lib.instructions.utils.documentation.string_or_here_doc_or_file import StringOrHereDocOrFile
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
-    InstructionParserWithoutFileReferenceRelativityRoot
+    InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.element_parsers.token_stream_parser import from_parse_source, \
     TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
@@ -69,7 +69,7 @@ class TheInstructionDocumentation(InstructionDocumentationWithCommandLineRenderi
         return self.string_or_here_doc_or_file_arg.see_also_targets()
 
 
-class Parser(InstructionParserWithoutFileReferenceRelativityRoot):
+class Parser(InstructionParserWithoutSourceFileLocationInfo):
     def parse_from_source(self, source: ParseSource) -> SetupPhaseInstruction:
         with from_parse_source(source, consume_last_line_if_is_at_eof_after_parse=True) as token_parser:
             assert isinstance(token_parser, TokenParser), 'Must have a TokenParser'  # Type info for IDE
