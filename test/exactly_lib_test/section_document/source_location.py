@@ -84,7 +84,7 @@ class TestSourceLocationInfo(unittest.TestCase):
             with self.subTest(case.name):
                 # ACT #
 
-                actual = case.actual.abs_path_of_dir_containing_file
+                actual = case.actual.abs_path_of_dir_containing_last_file_base_name
 
                 # ASSERT #
 
@@ -155,7 +155,7 @@ class TestFileLocationInfo(unittest.TestCase):
             with self.subTest(case.name):
                 # ACT #
 
-                actual = case.actual.abs_path_of_dir_containing_file
+                actual = case.actual.abs_path_of_dir_containing_last_file_base_name
 
                 # ASSERT #
 

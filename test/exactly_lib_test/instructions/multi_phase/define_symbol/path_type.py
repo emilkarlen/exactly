@@ -127,13 +127,13 @@ class TestAssignmentRelativeSymbolDefinition(TestCaseBaseForParser):
 
 class TestAssignmentRelativeSourceFileLocation(TestCaseBaseForParser):
     def test(self):
-        with tmp_dir() as abs_path_of_dir_containing_file:
+        with tmp_dir() as abs_path_of_dir_containing_last_file_base_name:
             fs_location_info = FileSystemLocationInfo(
-                FileLocationInfo(abs_path_of_dir_containing_file))
+                FileLocationInfo(abs_path_of_dir_containing_last_file_base_name))
             instruction_argument = src('{path_type} name = {rel_source_file} component')
             for source in equivalent_source_variants__with_source_check(self, instruction_argument):
                 expected_file_ref_resolver = file_ref_resolvers.constant(
-                    file_refs.rel_abs_path(abs_path_of_dir_containing_file,
+                    file_refs.rel_abs_path(abs_path_of_dir_containing_last_file_base_name,
                                            file_refs.constant_path_part('component')))
                 expected_container = resolver_container(expected_file_ref_resolver)
                 self._check(source,

@@ -72,7 +72,7 @@ def matches_file_location_info(
     return asrt.is_instance_with_many(FileLocationInfo,
                                       [
                                           asrt.sub_component('abs_path_of_dir_containing_root_file',
-                                                             FileLocationInfo.abs_path_of_dir_containing_root_file.fget,
+                                                             FileLocationInfo.abs_path_of_dir_containing_first_file_path.fget,
                                                              abs_path_of_dir_containing_root_file),
                                           asrt.sub_component('file_path_rel_referrer',
                                                              FileLocationInfo.file_path_rel_referrer.fget,
@@ -91,7 +91,7 @@ def matches_source_location_info(
         SourceLocationInfo,
         [
             asrt.sub_component('abs_path_of_dir_containing_root_file',
-                               SourceLocationInfo.abs_path_of_dir_containing_root_file.fget,
+                               SourceLocationInfo.abs_path_of_dir_containing_first_file_path.fget,
                                abs_path_of_dir_containing_root_file),
             asrt.sub_component('source_location_path',
                                SourceLocationInfo.source_location_path.fget,

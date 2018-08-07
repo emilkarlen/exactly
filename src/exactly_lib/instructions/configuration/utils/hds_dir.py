@@ -73,7 +73,7 @@ class Parser(InstructionParser):
             raise SingleInstructionInvalidArgumentException('Invalid path syntax:\n' + str(ex))
 
         return _Instruction(self.dir_to_set,
-                            fs_location_info.current_source_file.abs_path_of_dir_containing_file,
+                            fs_location_info.current_source_file.abs_path_of_dir_containing_last_file_base_name,
                             path_argument)
 
 

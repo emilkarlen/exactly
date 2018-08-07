@@ -254,7 +254,7 @@ def _parse_path(fs_location_info: FileSystemLocationInfo,
     return parse_file_ref.parse_file_ref_from_token_parser(
         REL_OPTION_ARGUMENT_CONFIGURATION,
         token_parser,
-        fs_location_info.current_source_file.abs_path_of_dir_containing_file)
+        fs_location_info.current_source_file.abs_path_of_dir_containing_last_file_base_name)
 
 
 def _parse_list(fs_location_info: FileSystemLocationInfo,
