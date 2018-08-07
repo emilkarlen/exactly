@@ -13,8 +13,7 @@ from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolv
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.exit_values import EXECUTION__IMPLEMENTATION_ERROR, EXECUTION__HARD_ERROR, EXECUTION__FAIL, \
     EXECUTION__VALIDATION_ERROR, EXECUTION__PASS, NO_EXECUTION__SYNTAX_ERROR
-from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
-from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
+from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.syntax import section_header
@@ -27,11 +26,11 @@ from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import run_test_case, \
     test_suite_definition_without_instructions
+from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     assert_phase_instruction_that, before_assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.processing.test_resources.instruction_set import instruction_set
-from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return, do_raise
@@ -498,14 +497,6 @@ def _check(put: unittest.TestCase,
                                                     'dir and stdout')
 
         first_line_should_be_exit_identifier(put, actual_result.stderr, expectation.exit_vale)
-
-
-def test_case_definition_for(instructions_set: InstructionsSetup) -> TestCaseDefinitionForMainProgram:
-    return TestCaseDefinitionForMainProgram(
-        TestCaseParsingSetup(space_separator_instruction_name_extractor,
-                             instructions_set,
-                             ActPhaseParser()),
-        [])
 
 
 def first_line_should_be_exit_identifier(put: unittest.TestCase,
