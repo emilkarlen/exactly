@@ -65,34 +65,35 @@ def equals_single_line_source_location_path(expected: Line) -> asrt.ValueAsserti
 
 
 def matches_file_location_info(
-        abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path],
+        abs_path_of_dir_containing_first_file_path: asrt.ValueAssertion[pathlib.Path],
         file_path_rel_referrer: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
         file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[FileLocationInfo]:
-    return asrt.is_instance_with_many(FileLocationInfo,
-                                      [
-                                          asrt.sub_component('abs_path_of_dir_containing_root_file',
-                                                             FileLocationInfo.abs_path_of_dir_containing_first_file_path.fget,
-                                                             abs_path_of_dir_containing_root_file),
-                                          asrt.sub_component('file_path_rel_referrer',
-                                                             FileLocationInfo.file_path_rel_referrer.fget,
-                                                             file_path_rel_referrer),
-                                          asrt.sub_component('file_inclusion_chain',
-                                                             FileLocationInfo.file_inclusion_chain.fget,
-                                                             file_inclusion_chain),
-                                      ])
+    return asrt.is_instance_with_many(
+        FileLocationInfo,
+        [
+            asrt.sub_component('abs_path_of_dir_containing_first_file_path',
+                               FileLocationInfo.abs_path_of_dir_containing_first_file_path.fget,
+                               abs_path_of_dir_containing_first_file_path),
+            asrt.sub_component('file_path_rel_referrer',
+                               FileLocationInfo.file_path_rel_referrer.fget,
+                               file_path_rel_referrer),
+            asrt.sub_component('file_inclusion_chain',
+                               FileLocationInfo.file_inclusion_chain.fget,
+                               file_inclusion_chain),
+        ])
 
 
 def matches_source_location_info(
-        abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
+        abs_path_of_dir_containing_first_file_path: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
         source_location_path: asrt.ValueAssertion[SourceLocationPath] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[SourceLocationInfo]:
     return asrt.is_instance_with_many(
         SourceLocationInfo,
         [
-            asrt.sub_component('abs_path_of_dir_containing_root_file',
+            asrt.sub_component('abs_path_of_dir_containing_first_file_path',
                                SourceLocationInfo.abs_path_of_dir_containing_first_file_path.fget,
-                               abs_path_of_dir_containing_root_file),
+                               abs_path_of_dir_containing_first_file_path),
             asrt.sub_component('source_location_path',
                                SourceLocationInfo.source_location_path.fget,
                                source_location_path),
@@ -106,7 +107,7 @@ def matches_source_location_info2(
         abs_path_of_dir_containing_root_file: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[SourceLocationInfo]:
     return matches_source_location_info(
-        abs_path_of_dir_containing_root_file=abs_path_of_dir_containing_root_file,
+        abs_path_of_dir_containing_first_file_path=abs_path_of_dir_containing_root_file,
         source_location_path=matches_source_location_path(
             matches_source_location(source, file_path_rel_referrer),
             file_inclusion_chain))
