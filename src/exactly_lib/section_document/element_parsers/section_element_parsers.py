@@ -43,7 +43,7 @@ class InstructionParser:
         raise NotImplementedError()
 
 
-class InstructionParserWithoutFileReferenceRelativityRoot(InstructionParser):
+class InstructionParserWithoutSourceFileLocationInfo(InstructionParser):
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> model.Instruction:

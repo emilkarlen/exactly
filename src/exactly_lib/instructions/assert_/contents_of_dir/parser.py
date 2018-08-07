@@ -5,7 +5,7 @@ from exactly_lib.instructions.assert_.contents_of_dir.config import PATH_ARGUMEN
 from exactly_lib.instructions.assert_.utils import assertion_part
 from exactly_lib.section_document.element_parsers import token_stream_parser
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
-    InstructionParserWithoutFileReferenceRelativityRoot
+    InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.element_parsers.token_stream_parser import TokenParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
@@ -17,7 +17,7 @@ from exactly_lib.util.messages import grammar_options_syntax
 from . import config
 
 
-class Parser(InstructionParserWithoutFileReferenceRelativityRoot):
+class Parser(InstructionParserWithoutSourceFileLocationInfo):
     def __init__(self):
         self.format_map = {
             'PATH': PATH_ARGUMENT.name,

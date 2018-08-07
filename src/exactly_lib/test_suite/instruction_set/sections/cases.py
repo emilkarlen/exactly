@@ -3,7 +3,7 @@ from typing import List
 
 from exactly_lib.section_document.element_parsers.section_element_parsers import \
     InstructionWithoutDescriptionParser, standard_syntax_element_parser, \
-    InstructionParserWithoutFileReferenceRelativityRoot
+    InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsing_configuration import SectionElementParser
 from exactly_lib.test_suite.instruction_set import utils
@@ -25,7 +25,7 @@ class TestCaseSectionInstruction(TestSuiteInstruction):
         return self._resolver.resolve(environment)
 
 
-class _CasesSectionParser(InstructionParserWithoutFileReferenceRelativityRoot):
+class _CasesSectionParser(InstructionParserWithoutSourceFileLocationInfo):
     def parse_from_source(self, source: ParseSource) -> TestCaseSectionInstruction:
         resolver = utils.parse_file_names_resolver(source)
         return TestCaseSectionInstruction(resolver)
