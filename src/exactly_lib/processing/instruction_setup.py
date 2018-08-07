@@ -1,4 +1,4 @@
-from typing import Dict
+from typing import Dict, Optional
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
@@ -8,20 +8,22 @@ from exactly_lib.section_document.parsing_configuration import SectionElementPar
 
 class InstructionsSetup(tuple):
     def __new__(cls,
-                config_instruction_set: Dict[str, SingleInstructionSetup],
-                setup_instruction_set: Dict[str, SingleInstructionSetup],
-                before_assert_instruction_set: Dict[str, SingleInstructionSetup],
-                assert_instruction_set: Dict[str, SingleInstructionSetup],
-                cleanup_instruction_set: Dict[str, SingleInstructionSetup]):
+                config_instruction_set: Optional[Dict[str, SingleInstructionSetup]] = None,
+                setup_instruction_set: Optional[Dict[str, SingleInstructionSetup]] = None,
+                before_assert_instruction_set: Optional[Dict[str, SingleInstructionSetup]] = None,
+                assert_instruction_set: Optional[Dict[str, SingleInstructionSetup]] = None,
+                cleanup_instruction_set: Optional[Dict[str, SingleInstructionSetup]] = None,
+                ):
         """
         Each SingleInstructionSetup should parse and construct an instruction for
         the correct phase (of course). I.e., sub classes of Instruction.
         """
-        return tuple.__new__(cls, (config_instruction_set,
-                                   setup_instruction_set,
-                                   before_assert_instruction_set,
-                                   assert_instruction_set,
-                                   cleanup_instruction_set))
+        return tuple.__new__(cls, (_of(config_instruction_set),
+                                   _of(setup_instruction_set),
+                                   _of(before_assert_instruction_set),
+                                   _of(assert_instruction_set),
+                                   _of(cleanup_instruction_set),
+                                   ))
 
     @property
     def config_instruction_set(self) -> Dict[str, SingleInstructionSetup]:
@@ -52,3 +54,7 @@ class TestCaseParsingSetup:
         self.instruction_setup = instruction_setup
         self.instruction_name_extractor_function = instruction_name_extractor_function
         self.act_phase_parser = act_phase_parser
+
+
+def _of(x: Optional[Dict[str, SingleInstructionSetup]]) -> Dict[str, SingleInstructionSetup]:
+    return {} if x is None else x
