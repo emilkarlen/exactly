@@ -1209,3 +1209,6 @@ SECTION_1_WITH_SECTION_1_AS_DEFAULT = SectionsConfiguration([
                          ),
 ],
     default_section_name=SECTION_1_NAME)
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
