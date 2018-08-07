@@ -1,10 +1,11 @@
-from exactly_lib.section_document import parsing_configuration
-from exactly_lib.section_document.document_parser import new_parser_for
+from exactly_lib.section_document import section_parsing
+from exactly_lib.section_document.document_parser import DocumentParser
+from exactly_lib.section_document.document_parsers import new_parser_for
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     new_comment_element, ParsedInstruction
-from exactly_lib.section_document.parsing_configuration import DocumentParser, SectionsConfiguration, \
+from exactly_lib.section_document.section_parsing import SectionsConfiguration, \
     SectionConfiguration
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
@@ -26,7 +27,7 @@ def is_comment_line(line: str) -> bool:
 
 
 class SectionElementParserForEmptyCommentAndInstructionLines(
-    parsing_configuration.SectionElementParser):
+    section_parsing.SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
 

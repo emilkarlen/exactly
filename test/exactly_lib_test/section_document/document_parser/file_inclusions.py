@@ -2,10 +2,10 @@ import unittest
 from pathlib import Path, PosixPath, PurePosixPath
 from typing import List, Dict, Sequence
 
-from exactly_lib.section_document import document_parser as sut
+from exactly_lib.section_document import document_parsers as sut
 from exactly_lib.section_document.exceptions import FileAccessError
 from exactly_lib.section_document.model import SectionContentElement, ElementType
-from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
+from exactly_lib.section_document.section_parsing import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util.line_source import single_line_sequence

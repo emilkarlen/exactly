@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
+from exactly_lib.section_document.section_parsing import SectionConfiguration, SectionsConfiguration
 from exactly_lib_test.section_document.document_parser.test_resources.misc import \
     SectionElementParserForEmptyCommentAndInstructionLines
 
