@@ -43,10 +43,6 @@ def recording_instruction_setup(recorder: List[str]) -> SingleInstructionSetup:
                                   instruction_documentation('name-of-instruction'))
 
 
-def instruction_name_extractor(line: str) -> str:
-    return line.split(maxsplit=1)[0]
-
-
 def instruction_setup(name_of_registering_instruction: str,
                       recorder: List[str]) -> InstructionsSetup:
     return InstructionsSetup({},

@@ -31,13 +31,13 @@ from exactly_lib_test.common.test_resources.instruction_setup import single_inst
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
     assert_phase_instruction_that, before_assert_phase_instruction_that, cleanup_phase_instruction_that
 from exactly_lib_test.processing.test_resources.instruction_set import instruction_set
+from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import T, MessageBuilder
-from exactly_lib_test.test_suite.execution.test_resources.list_recording_instructions import instruction_name_extractor
 
 
 def suite() -> unittest.TestSuite:
@@ -502,7 +502,7 @@ def _check(put: unittest.TestCase,
 
 def test_case_definition_for(instructions_set: InstructionsSetup) -> TestCaseDefinitionForMainProgram:
     return TestCaseDefinitionForMainProgram(
-        TestCaseParsingSetup(instruction_name_extractor,
+        TestCaseParsingSetup(space_separator_instruction_name_extractor,
                              instructions_set,
                              ActPhaseParser()),
         [])
