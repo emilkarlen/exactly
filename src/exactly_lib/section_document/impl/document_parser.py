@@ -1,20 +1,20 @@
 from pathlib import Path
-from typing import Sequence, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
+from exactly_lib.section_document.document_parser import DocumentParser
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, \
     new_source_error_of_single_line
+from exactly_lib.section_document.impl.file_access import read_source_file, resolve_file_reference_relativity_root_dir
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
-from exactly_lib.section_document.parsing_configuration import SectionElementParser, SectionsConfiguration, \
-    DocumentParser
-from exactly_lib.section_document.source_location import SourceLocation, FileLocationInfo, FileSystemLocationInfo, \
+from exactly_lib.section_document.section_parsing import SectionElementParser, SectionsConfiguration
+from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo, \
     SourceLocationInfo
-from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.util import line_source
 
 
@@ -65,22 +65,11 @@ def parse(configuration: SectionsConfiguration,
         else resolve_file_reference_relativity_root_dir(Path.cwd(), source_file_path, [])
     raw_doc = parse_file(internal_conf_of(configuration),
                          file_reference_relativity_root_dir,
-                         source_file_path,
-                         file_reference_relativity_root_dir,
-                         [],
+                         FileLocationInfo(file_reference_relativity_root_dir,
+                                          source_file_path,
+                                          []),
                          [])
     return build_document(raw_doc)
-
-
-def _read_source_file(file_path: Path,
-                      file_path_for_error_message: Path,
-                      file_inclusion_chain: Sequence[SourceLocation]) -> ParseSource:
-    try:
-        return new_for_file(file_path)
-    except OSError as ex:
-        raise FileAccessError(file_path_for_error_message,
-                              str(ex),
-                              file_inclusion_chain)
 
 
 def internal_conf_of(configuration: SectionsConfiguration) -> _SectionsConfigurationInternal:
@@ -93,25 +82,20 @@ RawDoc = Dict[str, List[SectionContentElement]]
 
 
 def parse_file(conf: _SectionsConfigurationInternal,
-               abs_path_of_dir_containing_root_file: Path,
-               file_path_rel_referrer: Path,
                file_reference_relativity_root_dir: Path,
-               file_inclusion_chain: Sequence[SourceLocation],
+               file_location_info: FileLocationInfo,
                previously_visited_paths: List[Path],
                ) -> RawDoc:
-    path_to_file = file_reference_relativity_root_dir / file_path_rel_referrer
-    file_location_info = FileLocationInfo(abs_path_of_dir_containing_root_file,
-                                          file_path_rel_referrer,
-                                          file_inclusion_chain)
-    source = _read_source_file(path_to_file,
-                               file_path_rel_referrer,
-                               file_inclusion_chain)
-    resolved_path_of_current_file = path_to_file.resolve()
-    if resolved_path_of_current_file in previously_visited_paths:
-        raise FileAccessError(file_path_rel_referrer,
+    path_to_file = file_reference_relativity_root_dir / file_location_info.file_path_rel_referrer
+    source = read_source_file(path_to_file,
+                              file_location_info.file_path_rel_referrer,
+                              file_location_info.file_inclusion_chain)
+    abs_resolved_path_of_current_file = path_to_file.resolve()
+    if abs_resolved_path_of_current_file in previously_visited_paths:
+        raise FileAccessError(file_location_info.file_path_rel_referrer,
                               'Cyclic inclusion of file',
-                              file_inclusion_chain)
-    visited_paths = previously_visited_paths + [resolved_path_of_current_file]
+                              file_location_info.file_inclusion_chain)
+    visited_paths = previously_visited_paths + [abs_resolved_path_of_current_file]
     file_reference_relativity_root_dir = path_to_file.parent
     return _parse_source(conf,
                          file_location_info,
@@ -330,25 +314,15 @@ class _Impl:
                                               self._name_of_current_section,
                                               self.configuration.section_element_name_for_error_messages)
         for file_to_include in inclusion_directive.files_to_include:
-            included_doc = parse_file(conf,
-                                      self._current_file_location.abs_path_of_dir_containing_first_file_path,
-                                      file_to_include,
-                                      self._file_reference_relativity_root_dir,
-                                      self._current_file_location.location_path_of(inclusion_directive.source),
-                                      self.visited_paths)
+            included_doc = parse_file(
+                conf,
+                self._file_reference_relativity_root_dir,
+                FileLocationInfo(self._current_file_location.abs_path_of_dir_containing_first_file_path,
+                                 file_to_include,
+                                 self._current_file_location.location_path_of(
+                                     inclusion_directive.source)),
+                self.visited_paths)
             _add_raw_doc(self._section_name_2_element_list, included_doc)
-
-
-def resolve_file_reference_relativity_root_dir(path_of_dir_containing_root_file: Path,
-                                               file_ref_rel_root: Path,
-                                               file_inclusion_chain: Sequence[SourceLocation]
-                                               ) -> Path:
-    try:
-        return path_of_dir_containing_root_file.resolve()
-    except RuntimeError as ex:
-        raise FileAccessError(path_of_dir_containing_root_file,
-                              str(ex),
-                              file_inclusion_chain)
 
 
 def build_document(raw_doc: RawDoc) -> model.Document:

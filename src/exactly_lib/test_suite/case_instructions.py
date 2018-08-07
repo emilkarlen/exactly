@@ -9,7 +9,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
 from exactly_lib.section_document.model import SectionContentElement, ElementType, SectionContents, \
     Instruction
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsing_configuration import SectionElementParser
+from exactly_lib.section_document.section_parsing import SectionElementParser
 from exactly_lib.section_document.source_location import SourceLocation, FileLocationInfo, FileSystemLocationInfo
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_case.test_case_doc import TestCase

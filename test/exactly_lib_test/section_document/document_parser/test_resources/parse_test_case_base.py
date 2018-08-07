@@ -3,7 +3,7 @@ import unittest
 from typing import Sequence, Dict
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.parsing_configuration import DocumentParser
+from exactly_lib.section_document.document_parser import DocumentParser
 from exactly_lib_test.section_document.test_resources.document_assertions import matches_document
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt

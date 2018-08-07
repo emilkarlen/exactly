@@ -8,7 +8,7 @@ from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.processing.instruction_setup import InstructionsSetup, TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.section_document import parsing_configuration
+from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.element_parsers import section_element_parsers
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
@@ -34,7 +34,7 @@ def test_suite_definition() -> TestSuiteDefinition:
                                sandbox_root_name_resolver.prefix_for_suite)
 
 
-def _new_parser() -> parsing_configuration.SectionElementParser:
+def _new_parser() -> section_parsing.SectionElementParser:
     return section_element_parsers.standard_syntax_element_parser(
         InstructionWithOptionalDescriptionParser(
             InstructionParserForDictionaryOfInstructions(

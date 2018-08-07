@@ -1,8 +1,8 @@
 import unittest
 
-from exactly_lib.section_document.document_parser import new_parser_for
+from exactly_lib.section_document.document_parsers import new_parser_for
 from exactly_lib.section_document.exceptions import FileSourceError
-from exactly_lib.section_document.parsing_configuration import SectionConfiguration, SectionsConfiguration
+from exactly_lib.section_document.section_parsing import SectionConfiguration, SectionsConfiguration
 from exactly_lib.section_document.source_location import SourceLocation
 from exactly_lib.section_document.syntax import section_header
 from exactly_lib.util import line_source
