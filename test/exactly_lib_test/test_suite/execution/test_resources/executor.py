@@ -14,9 +14,9 @@ from exactly_lib.test_suite import execution as sut
 from exactly_lib.test_suite import suite_hierarchy_reading
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
 from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatRaisesSourceError
+from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_suite.execution.test_resources.instruction_utils import instruction_setup
-from exactly_lib_test.test_suite.execution.test_resources.list_recording_instructions import instruction_name_extractor
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory
@@ -27,7 +27,7 @@ def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
                  suite_root_file_path: pathlib.Path,
                  predefined_properties: PredefinedProperties) -> sut.Executor:
     test_case_definition = TestCaseDefinition(
-        TestCaseParsingSetup(instruction_name_extractor,
+        TestCaseParsingSetup(space_separator_instruction_name_extractor,
                              instruction_setup(setup_phase_instructions),
                              ActPhaseParser()),
         predefined_properties)
