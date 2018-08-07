@@ -71,7 +71,7 @@ class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
             assert isinstance(inst_factory, CaseSetupPhaseInstruction)
 
             return TestCaseSectionContentElementFactory(
-                instruction_element.source_location_info.abs_path_of_dir_containing_root_file,
+                instruction_element.source_location_info.abs_path_of_dir_containing_first_file_path,
                 instruction_element.source_location_info.source_location_path.location,
                 inst_factory,
                 instruction_element.instruction_info.description)

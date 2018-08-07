@@ -331,7 +331,7 @@ class _Impl:
                                               self.configuration.section_element_name_for_error_messages)
         for file_to_include in inclusion_directive.files_to_include:
             included_doc = parse_file(conf,
-                                      self._current_file_location.abs_path_of_dir_containing_root_file,
+                                      self._current_file_location.abs_path_of_dir_containing_first_file_path,
                                       file_to_include,
                                       self._file_reference_relativity_root_dir,
                                       self._current_file_location.location_path_of(inclusion_directive.source),

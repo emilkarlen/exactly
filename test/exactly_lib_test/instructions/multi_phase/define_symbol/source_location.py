@@ -51,7 +51,7 @@ class TestSuccessfulDefinition(unittest.TestCase):
 
         assertion = matches_source_location_info(
             abs_path_of_dir_containing_root_file=asrt.equals(
-                the_file_location_info.abs_path_of_dir_containing_root_file),
+                the_file_location_info.abs_path_of_dir_containing_first_file_path),
             source_location_path=equals_source_location_path(expected_source_location_path)
         )
 
