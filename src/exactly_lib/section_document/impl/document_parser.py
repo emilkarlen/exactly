@@ -7,7 +7,7 @@ from exactly_lib.section_document.document_parser import DocumentParser
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
 from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, \
     new_source_error_of_single_line
-from exactly_lib.section_document.impl.file_access import read_source_file, resolve_file_reference_relativity_root_dir
+from exactly_lib.section_document.impl.file_access import read_source_file
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
@@ -25,12 +25,13 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
     def _parse(self,
                file_reference_relativity_root_dir: Path,
                file_location_info: FileLocationInfo,
+               visited_paths: List[Path],
                source: ParseSource) -> model.Document:
         raw_doc = _parse_source(self._configuration,
                                 file_location_info,
                                 file_reference_relativity_root_dir,
                                 source,
-                                [])
+                                visited_paths)
         return build_document(raw_doc)
 
 
@@ -54,21 +55,6 @@ class _SectionsConfigurationInternal:
 
     def has_section(self, section_name: str) -> bool:
         return section_name in self.section2parser
-
-
-def parse(configuration: SectionsConfiguration,
-          source_file_path: Path) -> model.Document:
-    file_reference_relativity_root_dir = Path('/') \
-        if source_file_path.is_absolute() \
-        else resolve_file_reference_relativity_root_dir(Path.cwd(), source_file_path, [])
-    file_location_info = FileLocationInfo(file_reference_relativity_root_dir,
-                                          source_file_path,
-                                          [])
-    raw_doc = parse_file(internal_conf_of(configuration),
-                         file_reference_relativity_root_dir,
-                         file_location_info,
-                         [])
-    return build_document(raw_doc)
 
 
 def internal_conf_of(configuration: SectionsConfiguration) -> _SectionsConfigurationInternal:

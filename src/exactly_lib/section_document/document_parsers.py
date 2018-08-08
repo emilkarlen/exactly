@@ -12,4 +12,4 @@ def new_parser_for(configuration: SectionsConfiguration) -> DocumentParser:
 
 def parse(configuration: SectionsConfiguration,
           source_file_path: Path) -> model.Document:
-    return _impl.parse(configuration, source_file_path)
+    return new_parser_for(configuration).parse_file(source_file_path)

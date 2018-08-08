@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import List
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document.impl import file_access as _file_access
@@ -23,11 +24,13 @@ class DocumentParser:
         file_location_info = self._resolve_initial_file_location_info(source_file_path)
         return self._parse(file_location_info.abs_path_of_dir_containing_first_file_path,
                            file_location_info,
+                           [],
                            source)
 
     def _parse(self,
                file_reference_relativity_root_dir: Path,
                file_location_info: FileLocationInfo,
+               visited_paths: List[Path],
                source: ParseSource) -> model.Document:
         """
         :param file_reference_relativity_root_dir: A directory that file reference paths are relative to.
@@ -44,17 +47,16 @@ class DocumentParser:
         source = _file_access.read_source_file(source_file_path,
                                                file_location_info.file_path_rel_referrer,
                                                file_location_info.file_inclusion_chain)
-        return self._parse(file_location_info.abs_path_of_dir_containing_first_file_path,
+        return self._parse(file_location_info.abs_path_of_dir_containing_last_file_base_name,
                            file_location_info,
+                           [source_file_path.resolve()],
                            source)
 
     @staticmethod
     def _resolve_initial_file_location_info(source_file_path: Path) -> FileLocationInfo:
         abs_path_of_dir_containing_first_file_path = Path('/') \
             if source_file_path.is_absolute() \
-            else _file_access.resolve_file_reference_relativity_root_dir(Path.cwd(),
-                                                                         source_file_path,
-                                                                         [])
+            else _file_access.resolve_path(Path.cwd(), [])
         return FileLocationInfo(abs_path_of_dir_containing_first_file_path,
                                 source_file_path,
                                 [])
