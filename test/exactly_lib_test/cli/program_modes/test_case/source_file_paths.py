@@ -86,7 +86,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
 
             instruction_parser_file_loc_assertion = matches_file_location_info(
                 abs_path_of_dir_containing_first_file_path=asrt.equals(Path('/')),
-                file_path_rel_referrer=asrt.equals(abs_file_arg_to_parser.relative_to(Path('/'))),
+                file_path_rel_referrer=asrt.equals(abs_file_arg_to_parser),
                 file_inclusion_chain=asrt.is_empty_sequence,
             )
 
@@ -117,9 +117,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
 
         with tmp_dir_as_cwd(cwd_dir_contents) as abs_cwd_dir_path:
             instruction_parser_file_loc_assertion = matches_file_location_info(
-                abs_path_of_dir_containing_first_file_path=asrt.equals(
-                    (abs_cwd_dir_path / file_arg_to_parser_rel_cwd).parent
-                ),
+                abs_path_of_dir_containing_first_file_path=asrt.equals(abs_cwd_dir_path),
                 file_path_rel_referrer=asrt.equals(file_arg_to_parser_rel_cwd),
                 file_inclusion_chain=asrt.is_empty_sequence,
             )
