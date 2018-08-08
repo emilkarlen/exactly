@@ -16,7 +16,7 @@ https://packaging.python.org/
 **  Template
 
 ## [VERSION] - YYYY-MM-DD
-## Unreleased
+## [Unreleased]
 
 ### Added
 ### Changed
