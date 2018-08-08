@@ -87,8 +87,8 @@ class _Parser:
     def apply(self,
               suite_file_path: pathlib.Path,
               suite_file_source: ParseSource) -> test_suite_doc.TestSuiteDocument:
-        document = self.__section_doc_parser.parse(suite_file_path,
-                                                   suite_file_source)
+        document = self.__section_doc_parser.parse_source(suite_file_path,
+                                                          suite_file_source)
         return test_suite_doc.TestSuiteDocument(
             document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CONF),
             document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__SUITS),

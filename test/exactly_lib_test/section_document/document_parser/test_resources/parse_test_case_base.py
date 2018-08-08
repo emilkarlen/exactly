@@ -16,8 +16,8 @@ class ParseTestBase(unittest.TestCase):
                      parser: DocumentParser,
                      lines: Sequence[str]) -> model.Document:
         ptc_source = source_of_lines(lines)
-        return parser.parse(EXPECTED_SOURCE_FILE_PATH,
-                            ptc_source)
+        return parser.parse_source(EXPECTED_SOURCE_FILE_PATH,
+                                   ptc_source)
 
     def _parse_and_check(self,
                          parser: DocumentParser,
