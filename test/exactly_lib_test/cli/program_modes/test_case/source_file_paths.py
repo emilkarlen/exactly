@@ -3,24 +3,16 @@ from pathlib import Path
 
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME
-from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import InstructionsSetup
-from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
-from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo
-from exactly_lib.test_case import os_services
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import \
-    test_suite_definition_without_instructions
-from exactly_lib_test.cli.program_modes.test_resources import main_program_execution as tr
+from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import fail_if_test_case_does_not_pass
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup_for_parser
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
 from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_file_location_info
-from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
-    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.file_structure import file_with_lines, \
     Dir
@@ -63,9 +55,11 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
 
             # ACT & ASSERT #
 
-            fail_if_test_case_does_not_pass(self,
-                                            file_arg_to_parser_rel_cwd,
-                                            instruction_parser_file_loc_assertion)
+            fail_if_test_case_does_not_pass(
+                self,
+                file_arg_to_parser_rel_cwd,
+                test_case_definition_with_config_phase_assertion_instruction(self,
+                                                                             instruction_parser_file_loc_assertion))
 
     def test_abs_path_to_root_file_in_cwd(self):
         # ARRANGE #
@@ -92,9 +86,11 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
 
             # ACT & ASSERT #
 
-            fail_if_test_case_does_not_pass(self,
-                                            abs_file_arg_to_parser,
-                                            instruction_parser_file_loc_assertion)
+            fail_if_test_case_does_not_pass(
+                self,
+                abs_file_arg_to_parser,
+                test_case_definition_with_config_phase_assertion_instruction(self,
+                                                                             instruction_parser_file_loc_assertion))
 
     def test_relative_path_to_root_file_in_sub_dir_of_cwd(self):
         # ARRANGE #
@@ -124,9 +120,11 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
 
             # ACT & ASSERT #
 
-            fail_if_test_case_does_not_pass(self,
-                                            file_arg_to_parser_rel_cwd,
-                                            instruction_parser_file_loc_assertion)
+            fail_if_test_case_does_not_pass(
+                self,
+                file_arg_to_parser_rel_cwd,
+                test_case_definition_with_config_phase_assertion_instruction(self,
+                                                                             instruction_parser_file_loc_assertion))
 
 
 class ConfigPhaseInstructionParserThatAssertsSourceFileLocationInfo(InstructionParser):
@@ -148,30 +146,6 @@ class ConfigPhaseInstructionParserThatAssertsSourceFileLocationInfo(InstructionP
                                              fs_location_info.current_source_file)
 
 
-def fail_if_test_case_does_not_pass(put: unittest.TestCase,
-                                    root_file_path_argument: Path,
-                                    instruction_parser_file_loc_assertion: asrt.ValueAssertion[FileLocationInfo],
-                                    ):
-    # SETUP #
-
-    tc_definition = test_case_definition_with_config_phase_assertion_instruction(put,
-                                                                                 instruction_parser_file_loc_assertion)
-
-    command_line_arguments = [
-        str(root_file_path_argument),
-    ]
-
-    # ACT & ASSERT #
-
-    sub_process_result = tr.run_main_program_and_collect_process_result(
-        command_line_arguments,
-        main_program_config(tc_definition)
-    )
-
-    if sub_process_result.exitcode != 0:
-        put.fail('Exit code is non zero. Error message: ' + sub_process_result.stderr)
-
-
 def test_case_definition_with_config_phase_assertion_instruction(
         put: unittest.TestCase,
         instruction_parser_file_loc_assertion: asrt.ValueAssertion[FileLocationInfo],
@@ -185,16 +159,6 @@ def test_case_definition_with_config_phase_assertion_instruction(
                         put,
                         instruction_parser_file_loc_assertion))
             })
-    )
-
-
-def main_program_config(tc_definition: TestCaseDefinitionForMainProgram) -> tr.MainProgramConfig:
-    return tr.MainProgramConfig(TestCaseHandlingSetup(
-        ActPhaseSetup(ActSourceAndExecutorConstructorThatRunsConstantActions()),
-        IDENTITY_PREPROCESSOR),
-        os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-        tc_definition,
-        test_suite_definition_without_instructions(),
     )
 
 
