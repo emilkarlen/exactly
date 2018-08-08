@@ -13,6 +13,19 @@ class DocumentParser:
     (i.e., a file that do not need pre-processing).
     """
 
+    def parse_file(self, source_file_path: Path) -> model.Document:
+        """
+        :raises ParseError The test case cannot be parsed.
+        """
+        file_location_info = self._resolve_initial_file_location_info(source_file_path)
+        source = _file_access.read_source_file(source_file_path,
+                                               source_file_path,
+                                               [])
+        return self._parse(file_location_info.abs_path_of_dir_containing_last_file_base_name,
+                           file_location_info,
+                           [source_file_path.resolve()],
+                           source)
+
     def parse(self,
               source_file_path: Path,
               source: ParseSource) -> model.Document:
@@ -24,7 +37,7 @@ class DocumentParser:
         file_location_info = self._resolve_initial_file_location_info(source_file_path)
         return self._parse(file_location_info.abs_path_of_dir_containing_first_file_path,
                            file_location_info,
-                           [],
+                           [source_file_path.resolve()],
                            source)
 
     def _parse(self,
@@ -38,19 +51,6 @@ class DocumentParser:
         :raises ParseError The test case cannot be parsed.
         """
         raise NotImplementedError('abstract method')
-
-    def parse_file(self, source_file_path: Path) -> model.Document:
-        """
-        :raises ParseError The test case cannot be parsed.
-        """
-        file_location_info = self._resolve_initial_file_location_info(source_file_path)
-        source = _file_access.read_source_file(source_file_path,
-                                               file_location_info.file_path_rel_referrer,
-                                               file_location_info.file_inclusion_chain)
-        return self._parse(file_location_info.abs_path_of_dir_containing_last_file_base_name,
-                           file_location_info,
-                           [source_file_path.resolve()],
-                           source)
 
     @staticmethod
     def _resolve_initial_file_location_info(source_file_path: Path) -> FileLocationInfo:
