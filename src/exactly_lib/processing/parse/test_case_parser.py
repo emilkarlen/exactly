@@ -20,8 +20,8 @@ class Parser:
     def apply(self,
               test_case: TestCaseSetup,
               test_case_source: ParseSource) -> test_case_doc.TestCase:
-        document = self.__section_document_parser.parse(test_case.file_path,
-                                                        test_case_source)
+        document = self.__section_document_parser.parse_source(test_case.file_path,
+                                                               test_case_source)
         return test_case_doc.TestCase(
             document.elements_for_section_or_empty_if_phase_not_present(phase_identifier.CONFIGURATION.section_name),
             document.elements_for_section_or_empty_if_phase_not_present(phase_identifier.SETUP.section_name),
