@@ -133,7 +133,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [setup]
 
-    def line-matcher     IS_TIMING_LINE     = regex ^timing
+    def line-matcher       IS_TIMING_LINE     = regex ^timing
 
     def string-transformer REPLACE_TIMESTAMPS = replace [0-9]{2}:[0-9]{2} TIMESTAMP
 
@@ -141,7 +141,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [act]
 
-    $ python "@[EXACTLY_HOME]@/my-system-under-test.py"
+    $ python @[EXACTLY_HOME]@/my-system-under-test.py
 
     [assert]
 
