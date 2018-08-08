@@ -17,7 +17,7 @@ from exactly_lib.test_case.result import sh
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import \
     test_suite_definition_without_instructions
-from exactly_lib_test.cli.program_modes.test_resources import source_file_paths as tr
+from exactly_lib_test.cli.program_modes.test_resources import main_program_execution as tr
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup_for_parser
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
