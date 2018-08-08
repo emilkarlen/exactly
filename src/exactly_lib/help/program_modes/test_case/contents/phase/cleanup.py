@@ -9,7 +9,8 @@ from exactly_lib.definitions.test_case.phase_names import ASSERT_PHASE_NAME, \
     CONFIGURATION_PHASE_NAME, PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
-    cwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip
+    cwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip, \
+    env_vars_prologue_for_inherited_from_previous_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case.test_case_status import NAME_SKIP
@@ -47,8 +48,10 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
         return self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_non_first_phases(),
-                                        EXISTS_AT_BEFORE_ASSERT_MAIN)
+        return ExecutionEnvironmentInfo(
+            cwd_at_start_of_phase_for_non_first_phases(),
+            EXISTS_AT_BEFORE_ASSERT_MAIN,
+            environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
 
     @property
     def see_also_targets(self) -> list:

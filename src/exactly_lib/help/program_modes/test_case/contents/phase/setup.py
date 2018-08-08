@@ -44,7 +44,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         return ExecutionEnvironmentInfo(cwd_at_start_of_phase_first_phase_executed_in_the_sandbox(),
-                                        EXISTS_AT_SETUP_MAIN)
+                                        EXISTS_AT_SETUP_MAIN,
+                                        environment_variables_prologue=self._tp.fnap(ENV_VARS_PROLOGUE))
 
     @property
     def see_also_targets(self) -> list:
@@ -79,4 +80,8 @@ the {ATC}.
 SEQUENCE_INFO__PRECEDING_PHASE = """\
 This phase follows the {phase[conf]} phase,
 and is the first phase that is executed in the sandbox.
+"""
+
+ENV_VARS_PROLOGUE = """\
+Environment variables are inherited from the parent process.
 """

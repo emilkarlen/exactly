@@ -56,6 +56,7 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
         paragraphs = []
         if eei.cwd_at_start_of_phase:
             paragraphs.extend(eei.cwd_at_start_of_phase)
+        paragraphs += eei.environment_variables_prologue
         if eei.environment_variables:
             paragraphs.extend([docs.para('The following environment variables are set:'),
                                self._environment_variables_list(eei.environment_variables)])

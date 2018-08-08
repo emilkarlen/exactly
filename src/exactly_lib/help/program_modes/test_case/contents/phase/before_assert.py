@@ -10,7 +10,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     sequence_info__preceding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase, \
-    cwd_at_start_of_phase_is_same_as_at_end_of_the
+    cwd_at_start_of_phase_is_same_as_at_end_of_the, env_vars_prologue_for_inherited_from_previous_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_BEFORE_ASSERT_MAIN
@@ -46,9 +46,11 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         previous = '{setup} phase'.format(setup=SETUP_PHASE_NAME.emphasis)
-        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_is_same_as_at_end_of_the(previous),
-                                        EXISTS_AT_BEFORE_ASSERT_MAIN,
-                                        prologue=execution_environment_prologue_for_post_act_phase())
+        return ExecutionEnvironmentInfo(
+            cwd_at_start_of_phase_is_same_as_at_end_of_the(previous),
+            EXISTS_AT_BEFORE_ASSERT_MAIN,
+            prologue=execution_environment_prologue_for_post_act_phase(),
+            environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
 
     @property
     def see_also_targets(self) -> list:

@@ -38,19 +38,23 @@ def cwd_at_start_of_phase_is_same_as_at_end_of_the(previous: str) -> List[Paragr
     )
 
 
-def cwd_at_start_of_phase_for_non_first_phases() -> list:
+def cwd_at_start_of_phase_for_non_first_phases() -> List[ParagraphItem]:
     return cwd_at_start_of_phase_is_same_as_at_end_of_the('previous phase')
 
 
-def env_vars_for_configuration_phase() -> list:
+def env_vars_prologue_for_inherited_from_previous_phase() -> List[ParagraphItem]:
+    return _TEXT_PARSER.fnap(ENV_VARS_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE)
+
+
+def env_vars_for_configuration_phase() -> List[str]:
     return []
 
 
-def env_vars_up_to_act() -> list:
+def env_vars_up_to_act() -> List[str]:
     return environment_variables.SET_AT_SETUP__ENV_VARS + environment_variables.SET_AT_SDS__ENV_VARS
 
 
-def env_vars_after_act() -> list:
+def env_vars_after_act() -> List[str]:
     return env_vars_up_to_act() + environment_variables.SET_AT_BEFORE_ASSERT__ENV_VARS
 
 
@@ -87,9 +91,9 @@ def result_sub_dir_files_table() -> docs.ParagraphItem:
 
 def execution_environment_prologue_for_post_act_phase() -> List[ParagraphItem]:
     return (
-        _TEXT_PARSER.fnap(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR) +
-        [result_sub_dir_files_table()] +
-        _TEXT_PARSER.fnap(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE)
+            _TEXT_PARSER.fnap(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR) +
+            [result_sub_dir_files_table()] +
+            _TEXT_PARSER.fnap(_ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE)
     )
 
 
@@ -129,4 +133,8 @@ the files in the {result_subdir}/ sub directory of the {sandbox}:
 _ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_ENV_VARIABLE = """\
 The value of the {ENV_VAR_RESULT} environment variable is the absolute path of
 the {result_subdir}/ directory.
+"""
+
+ENV_VARS_PROLOGUE_FOR_INHERITED_FROM_PREVIOUS_PHASE = """\
+Environment variables are inherited from the previous phase.
 """

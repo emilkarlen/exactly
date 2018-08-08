@@ -31,10 +31,12 @@ class ExecutionEnvironmentInfo(tuple):
     def __new__(cls,
                 cwd_at_start_of_phase: List[ParagraphItem],
                 environment_variables: List[str],
-                prologue: Sequence[ParagraphItem] = ()):
+                prologue: Sequence[ParagraphItem] = (),
+                environment_variables_prologue: Sequence[ParagraphItem] = ()):
         return tuple.__new__(cls, (cwd_at_start_of_phase,
                                    environment_variables,
-                                   list(prologue)))
+                                   list(prologue),
+                                   list(environment_variables_prologue)))
 
     @property
     def cwd_at_start_of_phase(self) -> List[ParagraphItem]:
@@ -42,6 +44,10 @@ class ExecutionEnvironmentInfo(tuple):
         Description of the Present Working Directory, at the start of the phase.
         """
         return self[0]
+
+    @property
+    def environment_variables_prologue(self) -> List[ParagraphItem]:
+        return self[3]
 
     @property
     def environment_variables(self) -> List[str]:
