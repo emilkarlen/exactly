@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import Dict, List, Optional, Union
+from typing import Dict, List, Union
 
 from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
@@ -22,14 +22,12 @@ class DocumentParserForSectionsConfiguration(DocumentParser):
     def __init__(self, configuration: SectionsConfiguration):
         self._configuration = internal_conf_of(configuration)
 
-    def parse(self,
-              source_file_path: Optional[Path],
-              file_reference_relativity_root_dir: Path,
-              source: ParseSource) -> model.Document:
+    def _parse(self,
+               file_reference_relativity_root_dir: Path,
+               file_location_info: FileLocationInfo,
+               source: ParseSource) -> model.Document:
         raw_doc = _parse_source(self._configuration,
-                                FileLocationInfo(file_reference_relativity_root_dir,
-                                                 source_file_path,
-                                                 []),
+                                file_location_info,
                                 file_reference_relativity_root_dir,
                                 source,
                                 [])
@@ -63,11 +61,12 @@ def parse(configuration: SectionsConfiguration,
     file_reference_relativity_root_dir = Path('/') \
         if source_file_path.is_absolute() \
         else resolve_file_reference_relativity_root_dir(Path.cwd(), source_file_path, [])
+    file_location_info = FileLocationInfo(file_reference_relativity_root_dir,
+                                          source_file_path,
+                                          [])
     raw_doc = parse_file(internal_conf_of(configuration),
                          file_reference_relativity_root_dir,
-                         FileLocationInfo(file_reference_relativity_root_dir,
-                                          source_file_path,
-                                          []),
+                         file_location_info,
                          [])
     return build_document(raw_doc)
 
