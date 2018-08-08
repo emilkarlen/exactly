@@ -18,13 +18,12 @@ def read_source_file(file_path: Path,
                               file_inclusion_chain)
 
 
-def resolve_file_reference_relativity_root_dir(path_of_dir_containing_root_file: Path,
-                                               file_ref_rel_root: Path,
-                                               file_inclusion_chain: Sequence[SourceLocation]
-                                               ) -> Path:
+def resolve_path(path: Path,
+                 file_inclusion_chain: Sequence[SourceLocation]
+                 ) -> Path:
     try:
-        return path_of_dir_containing_root_file.resolve()
+        return path.resolve()
     except RuntimeError as ex:
-        raise FileAccessError(path_of_dir_containing_root_file,
+        raise FileAccessError(path,
                               str(ex),
                               file_inclusion_chain)
