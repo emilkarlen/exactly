@@ -44,3 +44,66 @@ inclusion-path = DIR-REL-SOURCE-FILE...
 
 inclusion-path += DIR-REL-SOURCE-FILE...
 ----------------------------------------
+
+* Import file iff it has not already been included
+<2018-08-08 Wed>
+** Problem
+It may be difficult to make sure that common utility files are included exactly once.
+And using the current functionality, this forces the top level files - that
+may not be the direct user of these utilities - to handle the import of the utilities.
+
+Example:
+F1 depends on U1, U2
+F2 depends on U2, U3
+F3 depends on U1
+
+Case C1 uses F1: Must make sure that U2 is included once
+
+Case C2 uses F1, F2, F3: Must make sure that U1, U2 are included once
+** Solution 1: include-if-not-yet-included functionality
+
+A variant of inclusion that includes a file only if it has not yet been
+included (like module imports in Python, e.g.)
+
+*** Variants of the inclusion directive
+**** The include directive includes iff not yet included
+**** Additional inclusion variant that includes iff not yet included
+----------------------------------------
+include -once FILE
+----------------------------------------
+----------------------------------------
+import FILE
+----------------------------------------
+----------------------------------------
+uses FILE
+----------------------------------------
+** Solution 2: Tag a file as include-only-once
+For some files it is meaningless to include them more than once.
+Such files are files with definitions and files doing one-time
+setup in terms of creating files and running programs.
+Other files - files containing assertions depending e.g. on current dir -
+may be included more than once.
+
+From this perspective it is the file itself that knows if it can be included
+more than once or not.  This means that it would be most natural to specify
+this property in the file itself - instead of the user have to know it.
+
+But this requires more complicated structure
+*** Special file names. E.g. ".def" files are only included once
+(-) Special file names can be difficult to remember and keep track of
+for users that just use exactly occasionally.
+*** Recognition of file contents: files with "def" are only included once
+*** Special keyword: "definitions", "module"
+This would be the most complicated, since it introduces a
+keyword/instruction that does not fit in any of the current
+categories (empty, comment, instruction, directive).
+** Inclusion cycles
+Forming an inclusion cycle, regardless of using include-only-once
+(which would prevent the cycle) or not is a symptom of an error
+that include-only-once should probably not prevent, since
+preventing it hides the error that should be fixed.
+
+Need to decide how to handle this.
+What is probably wanted is that the include-only-once
+should skip including a file only if it the additional
+inclusion does not form a cycle with the first.
