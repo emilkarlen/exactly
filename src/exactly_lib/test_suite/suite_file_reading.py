@@ -9,8 +9,6 @@ from exactly_lib.section_document import document_parsers
 from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import ElementType
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.utils import new_for_file
 from exactly_lib.test_suite import case_instructions
 from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.case_instructions import TestSuiteInstructionsForCaseSetup
@@ -29,12 +27,10 @@ def read_suite_document(suite_file_path: pathlib.Path,
     """
     :raises parse.SuiteSyntaxError: The suite file has syntax errors
     """
-    source = new_for_file(suite_file_path)
     parser = _Parser(configuration_section_parser,
                      test_case_parsing_setup)
     try:
-        return parser.apply(suite_file_path,
-                            source)
+        return parser.apply(suite_file_path)
     except FileSourceError as ex:
         raise parse.SuiteSyntaxError(suite_file_path,
                                      ex.source_error.source,
@@ -78,17 +74,14 @@ class _Parser:
                 section_parsing.SectionConfiguration(SECTION_NAME__CASES, cases.new_parser()),
                 section_parsing.SectionConfiguration(SECTION_NAME__CASE_SETUP,
                                                      case_instructions.new_setup_phase_parser(
-                                                               test_case_parsing_setup)),
+                                                         test_case_parsing_setup)),
             ),
             default_section_name=DEFAULT_SECTION_NAME
         )
         self.__section_doc_parser = document_parsers.new_parser_for(parser_configuration)
 
-    def apply(self,
-              suite_file_path: pathlib.Path,
-              suite_file_source: ParseSource) -> test_suite_doc.TestSuiteDocument:
-        document = self.__section_doc_parser.parse_source(suite_file_path,
-                                                          suite_file_source)
+    def apply(self, suite_file_path: pathlib.Path) -> test_suite_doc.TestSuiteDocument:
+        document = self.__section_doc_parser.parse_file(suite_file_path)
         return test_suite_doc.TestSuiteDocument(
             document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CONF),
             document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__SUITS),
