@@ -8,7 +8,7 @@ from exactly_lib_test.section_document.test_resources.document_assertions import
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 
-EXPECTED_SOURCE_FILE_PATH = pathlib.Path('dummy source file path')
+EXPECTED_SOURCE_FILE_PATH = pathlib.Path.cwd()
 
 
 class ParseTestBase(unittest.TestCase):
