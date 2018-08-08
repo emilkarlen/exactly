@@ -10,7 +10,8 @@ from exactly_lib.help.entities.concepts.objects.actor import HOW_TO_SPECIFY_ACTO
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, env_vars_up_to_act, \
-    sequence_info__not_executed_if_execution_mode_is_skip, result_sub_dir_files_table
+    sequence_info__not_executed_if_execution_mode_is_skip, result_sub_dir_files_table, \
+    env_vars_prologue_for_inherited_from_previous_phase
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
     PhaseSequenceInfo, ExecutionEnvironmentInfo, \
     TestCasePhaseDocumentationForPhaseWithoutInstructions
@@ -59,8 +60,10 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
         return docs.section_contents(initial_paragraphs)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        return ExecutionEnvironmentInfo(cwd_at_start_of_phase_for_non_first_phases(),
-                                        env_vars_up_to_act())
+        return ExecutionEnvironmentInfo(
+            cwd_at_start_of_phase_for_non_first_phases(),
+            env_vars_up_to_act(),
+            environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
 
     @property
     def see_also_targets(self) -> list:
