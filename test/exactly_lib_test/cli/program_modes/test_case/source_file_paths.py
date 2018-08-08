@@ -14,7 +14,7 @@ from exactly_lib.section_document.source_location import FileSystemLocationInfo,
 from exactly_lib.test_case import os_services
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import \
     test_suite_definition_without_instructions
-from exactly_lib_test.cli.program_modes.test_resources import source_file_paths as tr
+from exactly_lib_test.cli.program_modes.test_resources import main_program_execution as tr
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup_for_parser
 from exactly_lib_test.execution.test_resources.instruction_test_resources import configuration_phase_instruction_that
