@@ -22,8 +22,9 @@ from exactly_lib.test_case.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for, run_test_case, \
+from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for, \
     test_suite_definition_without_instructions, test_suite_definition_with_instructions
+from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import run_test_case
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
 from exactly_lib_test.processing.processing_utils import PreprocessorThat

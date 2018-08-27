@@ -4,8 +4,9 @@ from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import run_test_case, cli_args_for, \
+from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for, \
     test_suite_definition_without_instructions
+from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import run_test_case
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_suite.execution.test_resources.list_recording_instructions import instruction_setup

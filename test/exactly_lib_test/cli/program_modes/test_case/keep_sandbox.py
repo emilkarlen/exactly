@@ -24,8 +24,9 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import run_test_case, \
+from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import \
     test_suite_definition_without_instructions
+from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import run_test_case
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \

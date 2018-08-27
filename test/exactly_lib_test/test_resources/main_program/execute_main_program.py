@@ -50,8 +50,7 @@ def execute_main_program(arguments: List[str],
                          test_suite_definition: TestSuiteDefinition = test_suite_definition()
                          ) -> SubProcessResult:
     def action_with_stdout_files(stdout_files: StdOutputFiles) -> int:
-        program = main_program.MainProgram(stdout_files,
-                                           the_test_case_handling_setup,
+        program = main_program.MainProgram(the_test_case_handling_setup,
                                            sandbox_root_name_resolver.for_test(),
                                            os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                            TestCaseDefinitionForMainProgram(
@@ -61,7 +60,7 @@ def execute_main_program(arguments: List[str],
                                                list(builtin_symbols),
                                            ),
                                            test_suite_definition)
-        return program.execute(arguments)
+        return program.execute(arguments, stdout_files)
 
     std_out_files, exit_code = capture_stdout_err(action_with_stdout_files)
     return SubProcessResult(exit_code,

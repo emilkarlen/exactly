@@ -15,9 +15,7 @@ from exactly_lib.util.std import StdOutputFiles
 
 
 def default_main_program() -> main_program.MainProgram:
-    return main_program.MainProgram(StdOutputFiles(sys.stdout,
-                                                   sys.stderr),
-                                    test_case_handling_setup.setup(),
+    return main_program.MainProgram(test_case_handling_setup.setup(),
                                     sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
                                     os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
                                     TestCaseDefinitionForMainProgram(
@@ -29,5 +27,10 @@ def default_main_program() -> main_program.MainProgram:
                                     test_suite.test_suite_definition())
 
 
+def default_output() -> StdOutputFiles:
+    return StdOutputFiles(sys.stdout,
+                          sys.stderr)
+
+
 def main() -> int:
-    return default_main_program().execute(sys.argv[1:])
+    return default_main_program().execute(sys.argv[1:], default_output())

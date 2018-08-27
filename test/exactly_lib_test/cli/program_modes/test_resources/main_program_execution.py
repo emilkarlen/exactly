@@ -18,6 +18,8 @@ from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resourc
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
 from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
     ActSourceAndExecutorConstructorThatRunsConstantActions
+from exactly_lib_test.test_resources.files.file_structure import DirContents
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.process import SubProcessResult
 
 
@@ -55,7 +57,6 @@ def run_main_program_and_collect_process_result(command_line_arguments: List[str
                                       stderr_file=stderr_file)
 
     main_pgm = main_program.MainProgram(
-        std_output_files,
         config.default_test_case_handling_setup,
         config.sandbox_root_dir_name_resolver,
         config.act_phase_os_process_executor,
@@ -65,7 +66,7 @@ def run_main_program_and_collect_process_result(command_line_arguments: List[str
 
     # ACT #
 
-    actual_exit_code = main_pgm.execute(command_line_arguments)
+    actual_exit_code = main_pgm.execute(command_line_arguments, std_output_files)
 
     ret_val = SubProcessResult(actual_exit_code,
                                stdout=stdout_file.getvalue(),
@@ -94,3 +95,42 @@ def fail_if_test_case_does_not_pass(put: unittest.TestCase,
 
     if sub_process_result.exitcode != 0:
         put.fail('Exit code is non zero. Error message: ' + sub_process_result.stderr)
+
+
+def run_test_case(command_line_arguments: List[str],
+                  cwd_contents: DirContents,
+                  test_case_definition: TestCaseDefinitionForMainProgram,
+                  test_suite_definition: TestSuiteDefinition,
+                  default_test_case_handling_setup: TestCaseHandlingSetup,
+                  sandbox_root_dir_name_resolver: SandboxRootDirNameResolver =
+                  sandbox_root_name_resolver.for_test()
+                  ) -> SubProcessResult:
+    main_pgm = main_program.MainProgram(
+        default_test_case_handling_setup,
+        sandbox_root_dir_name_resolver,
+        os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+        test_case_definition,
+        test_suite_definition,
+    )
+    return run_test_case2(command_line_arguments, cwd_contents, main_pgm)
+
+
+def run_test_case2(command_line_arguments: List[str],
+                   cwd_contents: DirContents,
+                   main_pgm: main_program.MainProgram,
+                   ) -> SubProcessResult:
+    stdout_file = io.StringIO()
+    stderr_file = io.StringIO()
+    std_output_files = StdOutputFiles(stdout_file=stdout_file,
+                                      stderr_file=stderr_file)
+
+    with tmp_dir_as_cwd(cwd_contents):
+        # ACT #
+        actual_exit_code = main_pgm.execute(command_line_arguments, std_output_files)
+
+    ret_val = SubProcessResult(actual_exit_code,
+                               stdout=stdout_file.getvalue(),
+                               stderr=stderr_file.getvalue())
+    stdout_file.close()
+    stderr_file.close()
+    return ret_val
