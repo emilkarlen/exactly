@@ -1,6 +1,6 @@
 import unittest
 
-import exactly_lib_test
+import exactly_lib_test.z_package_suite as exactly_lib_test
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
 
