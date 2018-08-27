@@ -24,7 +24,8 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for, \
     test_suite_definition_without_instructions, test_suite_definition_with_instructions
-from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import run_test_case
+from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_of, \
+    run_test_case
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import assert_phase_instruction_that
 from exactly_lib_test.processing.processing_utils import PreprocessorThat
@@ -50,8 +51,6 @@ SUCCESS_INDICATOR_STRING = 'output from actor set in suite'
 
 class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
     def runTest(self):
-        default_test_case_handling = setup_with_null_act_phase_and_null_preprocessing()
-
         test_suite_definition = test_suite_definition_with_single_conf_instruction(
             name=SUITE_CONF_INSTRUCTION_THAT_SETS_PREPROCESSOR_AND_ACTOR__NAME,
             instruction=
@@ -94,12 +93,14 @@ class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
                      ASSERT_PHASE_INSTRUCTION_THAT_FAILS_UNCONDITIONALLY__NAME)),
         ])
 
+        main_pgm = main_program_of(test_case_definition,
+                                   test_suite_definition,
+                                   setup_with_null_act_phase_and_null_preprocessing())
+
         # ACT #
         actual_result = run_test_case(command_line_arguments,
                                       suite_and_case_files,
-                                      test_case_definition,
-                                      test_suite_definition,
-                                      default_test_case_handling)
+                                      main_pgm)
         # ASSERT #
         if actual_result.exitcode != exit_values.EXECUTION__PASS.exit_code:
             self.fail(_error_message(actual_result))
@@ -131,12 +132,13 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
                  test_case_source_with_single_act_phase_instruction('act-phase-content-that-should-be-ignored')),
         ])
 
+        main_pgm = main_program_of(test_case_definition,
+                                   test_suite_definition,
+                                   default_test_case_handling)
         # ACT #
         actual_result = run_test_case(command_line_arguments,
                                       suite_and_case_files,
-                                      test_case_definition,
-                                      test_suite_definition,
-                                      default_test_case_handling)
+                                      main_pgm)
         # ASSERT #
         expectation = is_result_for_exit_value(exit_values.NO_EXECUTION__SYNTAX_ERROR)
         expectation.apply_without_message(self, actual_result)

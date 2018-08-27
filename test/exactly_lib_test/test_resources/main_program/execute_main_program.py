@@ -47,19 +47,20 @@ def execute_main_program(arguments: List[str],
                          instructions_setup: InstructionsSetup = EMPTY_INSTRUCTIONS_SETUP,
                          name_and_argument_splitter=first_char_is_name_and_rest_is_argument__splitter,
                          builtin_symbols: Sequence[BuiltinSymbol] = (),
-                         test_suite_definition: TestSuiteDefinition = test_suite_definition()
+                         test_suite_def: TestSuiteDefinition = test_suite_definition()
                          ) -> SubProcessResult:
+    program = main_program.MainProgram(the_test_case_handling_setup,
+                                       sandbox_root_name_resolver.for_test(),
+                                       os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+                                       TestCaseDefinitionForMainProgram(
+                                           TestCaseParsingSetup(name_and_argument_splitter,
+                                                                instructions_setup,
+                                                                ActPhaseParser()),
+                                           list(builtin_symbols),
+                                       ),
+                                       test_suite_def)
+
     def action_with_stdout_files(stdout_files: StdOutputFiles) -> int:
-        program = main_program.MainProgram(the_test_case_handling_setup,
-                                           sandbox_root_name_resolver.for_test(),
-                                           os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                           TestCaseDefinitionForMainProgram(
-                                               TestCaseParsingSetup(name_and_argument_splitter,
-                                                                    instructions_setup,
-                                                                    ActPhaseParser()),
-                                               list(builtin_symbols),
-                                           ),
-                                           test_suite_definition)
         return program.execute(arguments, stdout_files)
 
     std_out_files, exit_code = capture_stdout_err(action_with_stdout_files)

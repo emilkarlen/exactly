@@ -97,28 +97,24 @@ def fail_if_test_case_does_not_pass(put: unittest.TestCase,
         put.fail('Exit code is non zero. Error message: ' + sub_process_result.stderr)
 
 
-def run_test_case(command_line_arguments: List[str],
-                  cwd_contents: DirContents,
-                  test_case_definition: TestCaseDefinitionForMainProgram,
-                  test_suite_definition: TestSuiteDefinition,
-                  default_test_case_handling_setup: TestCaseHandlingSetup,
-                  sandbox_root_dir_name_resolver: SandboxRootDirNameResolver =
-                  sandbox_root_name_resolver.for_test()
-                  ) -> SubProcessResult:
-    main_pgm = main_program.MainProgram(
+def main_program_of(test_case_definition: TestCaseDefinitionForMainProgram,
+                    test_suite_definition: TestSuiteDefinition,
+                    default_test_case_handling_setup: TestCaseHandlingSetup,
+                    sandbox_root_dir_name_resolver: SandboxRootDirNameResolver =
+                    sandbox_root_name_resolver.for_test()) -> main_program.MainProgram:
+    return main_program.MainProgram(
         default_test_case_handling_setup,
         sandbox_root_dir_name_resolver,
         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
         test_case_definition,
         test_suite_definition,
     )
-    return run_test_case2(command_line_arguments, cwd_contents, main_pgm)
 
 
-def run_test_case2(command_line_arguments: List[str],
-                   cwd_contents: DirContents,
-                   main_pgm: main_program.MainProgram,
-                   ) -> SubProcessResult:
+def run_test_case(command_line_arguments: List[str],
+                  cwd_contents: DirContents,
+                  main_pgm: main_program.MainProgram,
+                  ) -> SubProcessResult:
     stdout_file = io.StringIO()
     stderr_file = io.StringIO()
     std_output_files = StdOutputFiles(stdout_file=stdout_file,
