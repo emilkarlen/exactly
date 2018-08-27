@@ -104,7 +104,6 @@ class TestSuiteDefinition(tuple):
 
 class MainProgram:
     def __init__(self,
-                 output: StdOutputFiles,
                  default_test_case_handling_setup: TestCaseHandlingSetup,
                  default_case_sandbox_root_dir_name_resolver: SandboxRootDirNameResolver,
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor,
@@ -121,69 +120,87 @@ class MainProgram:
                                      test_case_definition.builtin_symbols)))
             )
         )
-        self._output = output
         self._act_phase_os_process_executor = act_phase_os_process_executor
         self._default_test_case_handling_setup = default_test_case_handling_setup
         self._test_case_def_for_m_p = test_case_definition
         self._default_case_sandbox_root_dir_name_resolver = default_case_sandbox_root_dir_name_resolver
 
-    def execute(self, command_line_arguments: List[str]) -> int:
+    def execute(self,
+                command_line_arguments: List[str],
+                output: StdOutputFiles) -> int:
         if len(command_line_arguments) > 0:
             if command_line_arguments[0] == HELP_COMMAND:
                 return self._parse_and_exit_on_error(self._parse_and_execute_help,
-                                                     command_line_arguments[1:])
+                                                     command_line_arguments[1:],
+                                                     output)
             if command_line_arguments[0] == SUITE_COMMAND:
                 return self._parse_and_exit_on_error(self._parse_and_execute_test_suite,
-                                                     command_line_arguments[1:])
+                                                     command_line_arguments[1:],
+                                                     output)
         return self._parse_and_exit_on_error(self._parse_and_execute_test_case,
-                                             command_line_arguments)
+                                             command_line_arguments,
+                                             output)
 
-    def execute_test_case(self, settings: TestCaseExecutionSettings) -> int:
-        return test_case_execution.execute(self._output,
+    def execute_test_case(self,
+                          settings: TestCaseExecutionSettings,
+                          output: StdOutputFiles,
+                          ) -> int:
+        return test_case_execution.execute(output,
                                            self._test_case_definition,
                                            self._test_suite_definition.configuration_section_parser,
                                            settings,
                                            self._act_phase_os_process_executor)
 
     def execute_test_suite(self,
-                           test_suite_execution_settings: TestSuiteExecutionSettings) -> int:
+                           settings: TestSuiteExecutionSettings,
+                           output: StdOutputFiles,
+                           ) -> int:
         from exactly_lib.processing import processors
         from exactly_lib.test_suite import enumeration
         from exactly_lib.test_suite import suite_hierarchy_reading
         from exactly_lib.test_suite import execution
         default_configuration = processors.Configuration(self._test_case_definition,
-                                                         test_suite_execution_settings.handling_setup,
+                                                         settings.handling_setup,
                                                          self._act_phase_os_process_executor,
                                                          False,
                                                          self._test_suite_definition.sandbox_root_dir_resolver)
         executor = execution.Executor(default_configuration,
-                                      self._output,
+                                      output,
                                       suite_hierarchy_reading.Reader(
                                           suite_hierarchy_reading.Environment(
                                               self._test_suite_definition.configuration_section_parser,
                                               self._test_case_definition.parsing_setup,
                                               default_configuration.default_handling_setup)
                                       ),
-                                      test_suite_execution_settings.reporter_factory,
+                                      settings.reporter_factory,
                                       enumeration.DepthFirstEnumerator(),
                                       processors.new_processor_that_should_not_pollute_current_process,
-                                      test_suite_execution_settings.suite_root_file_path)
+                                      settings.suite_root_file_path)
         return executor.execute()
 
-    def _parse_and_execute_test_case(self, command_line_arguments: List[str]) -> int:
+    def _parse_and_execute_test_case(self,
+                                     command_line_arguments: List[str],
+                                     output: StdOutputFiles,
+                                     ) -> int:
         settings = case_argument_parsing.parse(self._default_test_case_handling_setup,
                                                self._default_case_sandbox_root_dir_name_resolver,
                                                command_line_arguments,
                                                COMMAND_DESCRIPTIONS)
-        return self.execute_test_case(settings)
+        return self.execute_test_case(settings, output)
 
-    def _parse_and_execute_test_suite(self, command_line_arguments: List[str]) -> int:
+    def _parse_and_execute_test_suite(self,
+                                      command_line_arguments: List[str],
+                                      output: StdOutputFiles,
+                                      ) -> int:
         from exactly_lib.cli.program_modes.test_suite import argument_parsing
         settings = argument_parsing.parse(self._default_test_case_handling_setup,
                                           command_line_arguments)
-        return self.execute_test_suite(settings)
+        return self.execute_test_suite(settings, output)
 
-    def _parse_and_execute_help(self, help_command_arguments: List[str]) -> int:
+    def _parse_and_execute_help(self,
+                                help_command_arguments: List[str],
+                                output: StdOutputFiles,
+                                ) -> int:
         from exactly_lib.cli.program_modes.help import argument_parsing
         from exactly_lib.cli.program_modes.help.request_handling.resolving_and_handling import handle_help_request
         from exactly_lib.help.the_application_help import new_application_help
@@ -202,17 +219,19 @@ class MainProgram:
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
         except HelpError as ex:
-            self._output.err.write(ex.msg + os.linesep)
+            output.err.write(ex.msg + os.linesep)
             return exit_codes.EXIT_INVALID_USAGE
-        handle_help_request(self._output, application_help, help_request)
+        handle_help_request(output, application_help, help_request)
         return 0
 
-    def _parse_and_exit_on_error(self,
-                                 parse_arguments_and_execute_callable: Callable[[List[str]], int],
-                                 arguments: List[str]) -> int:
+    @staticmethod
+    def _parse_and_exit_on_error(parse_arguments_and_execute_callable: Callable[[List[str], StdOutputFiles], int],
+                                 arguments: List[str],
+                                 output: StdOutputFiles,
+                                 ) -> int:
         try:
-            return parse_arguments_and_execute_callable(arguments)
+            return parse_arguments_and_execute_callable(arguments, output)
         except argument_parsing_utils.ArgumentParsingError as ex:
-            self._output.err.write(ex.error_message)
-            self._output.err.write(os.linesep)
+            output.err.write(ex.error_message)
+            output.err.write(os.linesep)
             return exit_codes.EXIT_INVALID_USAGE

@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from exactly_lib.default.default_main_program_setup import default_main_program
+from exactly_lib.default.default_main_program_setup import default_main_program, default_output
 
 CWD = '/Users/emil/vcs/exactly/0/examples/intro/home-directories'
 SRC_DIR = '/Users/emil/vcs/exactly/0/err_msg_tests/symbols/validation/illegal-type/'
@@ -26,5 +26,5 @@ class TC(unittest.TestCase):
             os.chdir(CWD)
 
         main_program = default_main_program()
-        exit_code = main_program.execute(ARGS)
+        exit_code = main_program.execute(ARGS, default_output())
         print(str(exit_code))
