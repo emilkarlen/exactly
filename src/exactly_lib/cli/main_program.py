@@ -173,9 +173,8 @@ class MainProgram:
                                       ),
                                       settings.reporter_factory,
                                       enumeration.DepthFirstEnumerator(),
-                                      processors.new_processor_that_should_not_pollute_current_process,
-                                      settings.suite_root_file_path)
-        return executor.execute(output)
+                                      processors.new_processor_that_should_not_pollute_current_process)
+        return executor.execute(settings.suite_root_file_path, output)
 
     def _parse_and_execute_test_case(self,
                                      command_line_arguments: List[str],

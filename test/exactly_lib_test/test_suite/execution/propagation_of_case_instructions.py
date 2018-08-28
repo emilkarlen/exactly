@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 from typing import List
 
@@ -109,11 +108,10 @@ class Test(unittest.TestCase):
                 with self.subTest(case_processor_case.name):
                     recorder = []
                     executor = new_executor(recorder,
-                                            case_processor_case.value,
-                                            suite_file_path)
+                                            case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.execute(StringStdOutFiles().stdout_files)
+                    return_value = executor.execute(suite_file_path, StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 
@@ -163,11 +161,10 @@ class Test(unittest.TestCase):
                 with self.subTest(case_processor_case.name):
                     recorder = []
                     executor = new_executor(recorder,
-                                            case_processor_case.value,
-                                            suite_file_path)
+                                            case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.execute(StringStdOutFiles().stdout_files)
+                    return_value = executor.execute(suite_file_path, StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 
@@ -179,8 +176,7 @@ class Test(unittest.TestCase):
 
 
 def new_executor(recorder: List[str],
-                 test_case_processor_constructor: TestCaseProcessorConstructor,
-                 suite_root_file_path: pathlib.Path) -> sut.Executor:
+                 test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Executor:
     test_case_definition = TestCaseDefinition(
         TestCaseParsingSetup(space_separator_instruction_name_extractor,
                              instruction_setup(REGISTER_INSTRUCTION_NAME, recorder),
@@ -202,5 +198,4 @@ def new_executor(recorder: List[str],
                         ExecutionTracingReporterFactory(),
                         enumeration.DepthFirstEnumerator(),
                         test_case_processor_constructor,
-                        suite_root_file_path,
                         )

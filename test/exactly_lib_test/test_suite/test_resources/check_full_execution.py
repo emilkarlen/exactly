@@ -54,9 +54,8 @@ def check(setup: Setup,
                             hierarchy_reader,
                             reporter_factory,
                             DepthFirstEnumerator(),
-                            case_processing.new_processor_that_is_allowed_to_pollute_current_process,
-                            setup.root_suite_based_at(tmp_dir_path))
-        exit_code = executor.execute(null_output_files())
+                            case_processing.new_processor_that_is_allowed_to_pollute_current_process)
+        exit_code = executor.execute(setup.root_suite_based_at(tmp_dir_path), null_output_files())
         setup.assertions(put,
                          reporter_factory.complete_suite_reporter,
                          exit_code)

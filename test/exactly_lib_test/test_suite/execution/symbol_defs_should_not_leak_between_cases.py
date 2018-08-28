@@ -1,4 +1,3 @@
-import pathlib
 import unittest
 
 from exactly_lib.execution.configuration import PredefinedProperties
@@ -83,11 +82,10 @@ class Test(unittest.TestCase):
                 with self.subTest(case_processor_case.name):
                     registry = tr.Registry()
                     executor = new_executor_with_no_symbols(registry,
-                                                            case_processor_case.value,
-                                                            suite_file_path)
+                                                            case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.execute(StringStdOutFiles().stdout_files)
+                    return_value = executor.execute(suite_file_path, StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 
@@ -98,8 +96,7 @@ class Test(unittest.TestCase):
 
 
 def new_executor_with_no_symbols(registry: tr.Registry,
-                                 test_case_processor_constructor: TestCaseProcessorConstructor,
-                                 suite_root_file_path: pathlib.Path) -> sut.Executor:
+                                 test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Executor:
     return new_executor(
         {
             INSTR_DEFINE: tr.InstructionParserForDefine(),
@@ -107,6 +104,5 @@ def new_executor_with_no_symbols(registry: tr.Registry,
         }
         ,
         test_case_processor_constructor,
-        suite_root_file_path,
         PredefinedProperties({}, empty_symbol_table())
     )

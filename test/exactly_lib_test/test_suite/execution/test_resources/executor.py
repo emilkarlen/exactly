@@ -1,4 +1,3 @@
-import pathlib
 from typing import Dict
 
 from exactly_lib.execution import sandbox_dir_resolving
@@ -23,7 +22,6 @@ from exactly_lib_test.test_suite.test_resources.suite_reporting import Execution
 
 def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
                  test_case_processor_constructor: TestCaseProcessorConstructor,
-                 suite_root_file_path: pathlib.Path,
                  predefined_properties: PredefinedProperties) -> sut.Executor:
     test_case_definition = TestCaseDefinition(
         TestCaseParsingSetup(space_separator_instruction_name_extractor,
@@ -46,5 +44,4 @@ def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
                         ExecutionTracingReporterFactory(),
                         enumeration.DepthFirstEnumerator(),
                         test_case_processor_constructor,
-                        suite_root_file_path,
                         )
