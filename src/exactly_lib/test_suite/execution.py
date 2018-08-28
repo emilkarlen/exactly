@@ -29,18 +29,16 @@ class Executor:
                  suite_hierarchy_reader: SuiteHierarchyReader,
                  reporter_factory: reporting.RootSuiteReporterFactory,
                  suite_enumerator: SuiteEnumerator,
-                 test_case_processor_constructor: TestCaseProcessorConstructor,
-                 suite_root_file_path: pathlib.Path):
+                 test_case_processor_constructor: TestCaseProcessorConstructor):
         self._default_case_configuration = default_case_configuration
         self._suite_hierarchy_reader = suite_hierarchy_reader
         self._suite_enumerator = suite_enumerator
         self._reporter_factory = reporter_factory
         self._test_case_processor_constructor = test_case_processor_constructor
-        self._suite_root_file_path = suite_root_file_path
 
-    def execute(self, output: StdOutputFiles) -> int:
+    def execute(self, suite_root_file_path: pathlib.Path, output: StdOutputFiles) -> int:
         try:
-            root_suite = self._read_structure(self._suite_root_file_path)
+            root_suite = self._read_structure(suite_root_file_path)
         except SuiteReadError as ex:
             return report_suite_read_error(
                 ex,
@@ -52,7 +50,7 @@ class Executor:
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
         executor = SuitesExecutor(self._reporter_factory.new_reporter(root_suite,
                                                                       output,
-                                                                      self._suite_root_file_path),
+                                                                      suite_root_file_path),
                                   self._default_case_configuration,
                                   self._test_case_processor_constructor)
         return executor.execute_and_report(suits_in_processing_order)
