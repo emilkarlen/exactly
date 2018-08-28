@@ -1,11 +1,11 @@
 import unittest
 
-from exactly_lib_test.test_suite.case_instructions import propagation_of_case_instructions
+from exactly_lib_test.test_suite.case_instructions import setup
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        propagation_of_case_instructions.suite(),
+        setup.suite(),
     ])
 
 

@@ -12,7 +12,8 @@ from exactly_lib_test.section_document.test_resources.misc import space_separato
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
-from exactly_lib_test.test_suite.test_resources.list_recording_instructions import instruction_setup
+from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
+    instruction_setup_with_setup_instructions
 
 
 def suite() -> unittest.TestSuite:
@@ -69,7 +70,7 @@ class Test(unittest.TestCase):
 
         test_case_definition = TestCaseDefinitionForMainProgram(
             TestCaseParsingSetup(space_separator_instruction_name_extractor,
-                                 instruction_setup(REGISTER_INSTRUCTION_NAME, recorder),
+                                 instruction_setup_with_setup_instructions(REGISTER_INSTRUCTION_NAME, recorder),
                                  ActPhaseParser()),
             [])
 

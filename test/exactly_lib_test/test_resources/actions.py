@@ -1,3 +1,6 @@
+from typing import Callable
+
+
 def do_nothing(*args, **kwargs):
     pass
 
@@ -16,7 +19,7 @@ def do_raise(ex: Exception):
     return ret_val
 
 
-def action_of(initial_action, action_that_returns):
+def action_of(initial_action: Callable, action_that_returns: Callable):
     if initial_action:
         def complete_action(*args, **kwargs):
             initial_action(*args, **kwargs)
