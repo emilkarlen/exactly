@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Callable, Optional
 
 from exactly_lib.processing.parse.act_phase_source_parser import SourceCodeInstruction
 from exactly_lib.symbol.symbol_usage import SymbolUsage
@@ -30,7 +30,7 @@ def setup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success(
                                  validate_post_setup=do_return(svh.new_svh_success()),
                                  validate_post_setup_initial_action=None,
                                  main=do_return(sh.new_sh_success()),
-                                 main_initial_action=None,
+                                 main_initial_action: Optional[Callable] = None,
                                  symbol_usages_initial_action=None,
                                  symbol_usages=do_return([])) -> SetupPhaseInstruction:
     return _SetupPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
