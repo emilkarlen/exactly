@@ -7,6 +7,7 @@ from exactly_lib.test_suite import execution as sut
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_suite.execution.test_resources import env_vars_should_not_leak as tr
@@ -88,7 +89,7 @@ class Test(unittest.TestCase):
                                                              suite_file_path)
                     # ACT #
 
-                    return_value = executor.execute()
+                    return_value = executor.execute(StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 

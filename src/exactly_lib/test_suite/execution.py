@@ -26,37 +26,32 @@ class Executor:
 
     def __init__(self,
                  default_case_configuration: case_processing.Configuration,
-                 output: StdOutputFiles,
                  suite_hierarchy_reader: SuiteHierarchyReader,
                  reporter_factory: reporting.RootSuiteReporterFactory,
                  suite_enumerator: SuiteEnumerator,
                  test_case_processor_constructor: TestCaseProcessorConstructor,
                  suite_root_file_path: pathlib.Path):
         self._default_case_configuration = default_case_configuration
-        self._std = output
         self._suite_hierarchy_reader = suite_hierarchy_reader
         self._suite_enumerator = suite_enumerator
         self._reporter_factory = reporter_factory
         self._test_case_processor_constructor = test_case_processor_constructor
         self._suite_root_file_path = suite_root_file_path
 
-    def execute(self) -> int:
-        return self._execute_and_let_reporter_report_final_result()
-
-    def _execute_and_let_reporter_report_final_result(self) -> int:
+    def execute(self, output: StdOutputFiles) -> int:
         try:
             root_suite = self._read_structure(self._suite_root_file_path)
         except SuiteReadError as ex:
             return report_suite_read_error(
                 ex,
-                file_printer_with_color_if_terminal(self._std.out),
-                file_printer_with_color_if_terminal(self._std.err),
+                file_printer_with_color_if_terminal(output.out),
+                file_printer_with_color_if_terminal(output.err),
                 exit_values.INVALID_SUITE
             )
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
         executor = SuitesExecutor(self._reporter_factory.new_reporter(root_suite,
-                                                                      self._std,
+                                                                      output,
                                                                       self._suite_root_file_path),
                                   self._default_case_configuration,
                                   self._test_case_processor_constructor)

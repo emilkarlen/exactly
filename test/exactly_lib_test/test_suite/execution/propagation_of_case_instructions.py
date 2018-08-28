@@ -113,7 +113,7 @@ class Test(unittest.TestCase):
                                             suite_file_path)
                     # ACT #
 
-                    return_value = executor.execute()
+                    return_value = executor.execute(StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 
@@ -167,7 +167,7 @@ class Test(unittest.TestCase):
                                             suite_file_path)
                     # ACT #
 
-                    return_value = executor.execute()
+                    return_value = executor.execute(StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 
@@ -193,7 +193,6 @@ def new_executor(recorder: List[str],
                                                      sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-'))
 
     return sut.Executor(default_configuration,
-                        StringStdOutFiles().stdout_files,
                         suite_hierarchy_reading.Reader(
                             suite_hierarchy_reading.Environment(
                                 SectionElementParserThatRaisesSourceError(),

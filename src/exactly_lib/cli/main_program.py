@@ -165,7 +165,6 @@ class MainProgram:
                                                          False,
                                                          self._test_suite_definition.sandbox_root_dir_resolver)
         executor = execution.Executor(default_configuration,
-                                      output,
                                       suite_hierarchy_reading.Reader(
                                           suite_hierarchy_reading.Environment(
                                               self._test_suite_definition.configuration_section_parser,
@@ -176,7 +175,7 @@ class MainProgram:
                                       enumeration.DepthFirstEnumerator(),
                                       processors.new_processor_that_should_not_pollute_current_process,
                                       settings.suite_root_file_path)
-        return executor.execute()
+        return executor.execute(output)
 
     def _parse_and_execute_test_case(self,
                                      command_line_arguments: List[str],

@@ -36,4 +36,4 @@ class RunViaMainProgramInternally(MainProgramRunner):
                                                          self.instructions_setup,
                                                          builtin_symbols=self.builtin_symbols,
                                                          name_and_argument_splitter=self.name_and_argument_splitter,
-                                                         test_suite_definition=self.test_suite_definition)
+                                                         test_suite_def=self.test_suite_definition)
