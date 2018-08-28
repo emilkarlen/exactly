@@ -10,9 +10,9 @@ from exactly_lib_test.cli.program_modes.test_resources.main_program_execution im
     run_test_case
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
-from exactly_lib_test.test_suite.execution.test_resources.list_recording_instructions import instruction_setup
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
+from exactly_lib_test.test_suite.test_resources.list_recording_instructions import instruction_setup
 
 
 def suite() -> unittest.TestSuite:

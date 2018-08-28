@@ -19,9 +19,9 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
-from exactly_lib_test.test_suite.execution.test_resources.list_recording_instructions import instruction_setup
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
+from exactly_lib_test.test_suite.test_resources.list_recording_instructions import instruction_setup
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory, \
     ExecutionTracingRootSuiteReporter
 
