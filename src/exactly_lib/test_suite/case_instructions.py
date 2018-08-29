@@ -13,7 +13,7 @@ class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
             configuration_phase=test_case.configuration_phase,
             setup_phase=self._append(self._test_suite.case_setup, test_case.setup_phase),
             act_phase=test_case.act_phase,
-            before_assert_phase=test_case.before_assert_phase,
+            before_assert_phase=self._append(self._test_suite.case_before_assert, test_case.before_assert_phase),
             assert_phase=test_case.assert_phase,
             cleanup_phase=test_case.cleanup_phase,
         )
