@@ -21,7 +21,7 @@ def _test_cases_for_all_suite_sections() -> list:
         ProcessTestCase("""help for "suite/section '%s'" SHOULD be successful""" % section_name,
                         HelpInvokation(arguments_for.suite_section_for_name(section_name)),
                         RESULT_IS_SUCCESSFUL)
-        for section_name in section_names.ALL_SECTION_NAMES
+        for section_name in section_names.ALL_SUITE_SPECIFIC_SECTION_NAMES
         ]
 
 
