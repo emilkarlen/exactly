@@ -1,8 +1,10 @@
+from exactly_lib.definitions.test_case import phase_names_plain
+
 SECTION_NAME__CONF = 'conf'
 SECTION_NAME__SUITS = 'suites'
 SECTION_NAME__CASES = 'cases'
 
-SECTION_NAME__CASE_SETUP = 'setup'
+SECTION_NAME__CASE_SETUP = phase_names_plain.SETUP_PHASE_NAME
 
 ALL_SECTION_NAMES = (SECTION_NAME__CONF,
                      SECTION_NAME__SUITS,
