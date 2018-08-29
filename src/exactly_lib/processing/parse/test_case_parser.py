@@ -1,7 +1,7 @@
-from typing import Dict
+from typing import Dict, Callable
 
 from exactly_lib.definitions.test_case import phase_names_plain
-from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.instruction_section_element_parser import section_element_parser
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.section_document import document_parsers
@@ -9,6 +9,7 @@ from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.document_parser import DocumentParser
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource
+from exactly_lib.section_document.section_parsing import SectionElementParser
 from exactly_lib.test_case import test_case_doc, phase_identifier
 
 
@@ -32,29 +33,38 @@ class Parser:
         )
 
 
+class SectionParserConstructorForParsingSetup:
+    def __init__(self, parsing_setup: TestCaseParsingSetup):
+        self.parsing_setup = parsing_setup
+
+    def of(self,
+           phase_instructions: Callable[[InstructionsSetup], Dict[str, InstructionParser]]) -> SectionElementParser:
+        return section_element_parser(self.parsing_setup.instruction_name_extractor_function,
+                                      phase_instructions(self.parsing_setup.instruction_setup))
+
+
 def new_parser(parsing_setup: TestCaseParsingSetup) -> Parser:
-    def dict_parser(instruction_set: Dict[str, InstructionParser]) -> section_parsing.SectionElementParser:
-        return section_element_parser(parsing_setup.instruction_name_extractor_function, instruction_set)
+    parser_con = SectionParserConstructorForParsingSetup(parsing_setup)
 
     configuration = section_parsing.SectionsConfiguration(
         (
-            section_parsing.SectionConfiguration(
-                phase_identifier.CONFIGURATION.section_name,
-                dict_parser(parsing_setup.instruction_setup.config_instruction_set)),
+            section_parsing.SectionConfiguration(phase_identifier.CONFIGURATION.section_name,
+                                                 parser_con.of(InstructionsSetup.config_instruction_set.fget)),
+
             section_parsing.SectionConfiguration(phase_identifier.SETUP.section_name,
-                                                 dict_parser(
-                                                           parsing_setup.instruction_setup.setup_instruction_set)),
+                                                 parser_con.of(InstructionsSetup.setup_instruction_set.fget)),
+
             section_parsing.SectionConfiguration(phase_identifier.ACT.section_name,
                                                  parsing_setup.act_phase_parser),
-            section_parsing.SectionConfiguration(
-                phase_identifier.BEFORE_ASSERT.section_name,
-                dict_parser(parsing_setup.instruction_setup.before_assert_instruction_set)),
+
+            section_parsing.SectionConfiguration(phase_identifier.BEFORE_ASSERT.section_name,
+                                                 parser_con.of(InstructionsSetup.before_assert_instruction_set.fget)),
+
             section_parsing.SectionConfiguration(phase_identifier.ASSERT.section_name,
-                                                 dict_parser(
-                                                           parsing_setup.instruction_setup.assert_instruction_set)),
+                                                 parser_con.of(InstructionsSetup.assert_instruction_set.fget)),
+
             section_parsing.SectionConfiguration(phase_identifier.CLEANUP.section_name,
-                                                 dict_parser(
-                                                           parsing_setup.instruction_setup.cleanup_instruction_set)),
+                                                 parser_con.of(InstructionsSetup.cleanup_instruction_set.fget)),
         ),
         default_section_name=phase_identifier.DEFAULT_PHASE.section_name,
         section_element_name_for_error_messages=phase_names_plain.SECTION_CONCEPT_NAME,
