@@ -4,6 +4,7 @@ from exactly_lib.test_suite.instruction_set.sections.cases import CaseSectionIns
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
+from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
@@ -25,6 +26,7 @@ class TestSuiteDocument(tuple):
                 case_setup: SectionContents,
                 case_before_assert: SectionContents,
                 case_assert: SectionContents,
+                case_cleanup: SectionContents,
                 ):
         _assert_instruction_class(configuration_section,
                                   ConfigurationSectionInstruction)
@@ -39,13 +41,16 @@ class TestSuiteDocument(tuple):
                                   BeforeAssertPhaseInstruction)
         _assert_instruction_class(case_assert,
                                   AssertPhaseInstruction)
+        _assert_instruction_class(case_cleanup,
+                                  CleanupPhaseInstruction)
 
         return tuple.__new__(cls, (configuration_section,
                                    suites_section,
                                    cases_section,
                                    case_setup,
                                    case_before_assert,
-                                   case_assert))
+                                   case_assert,
+                                   case_cleanup))
 
     @property
     def configuration_section(self) -> SectionContents:
@@ -70,3 +75,7 @@ class TestSuiteDocument(tuple):
     @property
     def case_assert(self) -> SectionContents:
         return self[5]
+
+    @property
+    def case_cleanup(self) -> SectionContents:
+        return self[6]
