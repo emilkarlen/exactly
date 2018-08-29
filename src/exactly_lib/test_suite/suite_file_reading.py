@@ -9,7 +9,7 @@ from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import ElementType
 from exactly_lib.test_suite import test_suite_doc
-from exactly_lib.test_suite.case_instructions import TestSuiteInstructionsForCaseSetup
+from exactly_lib.test_suite.case_instructions import TestCaseInstructionsFromTestSuiteAdder
 from exactly_lib.test_suite.instruction_set import parse
 from exactly_lib.test_suite.instruction_set.sections import cases
 from exactly_lib.test_suite.instruction_set.sections import suites
@@ -39,7 +39,7 @@ def resolve_test_case_handling_setup(
         test_suite: test_suite_doc.TestSuiteDocument,
         default_handling_setup: TestCaseHandlingSetup) -> TestCaseHandlingSetup:
     instruction_environment = _derive_conf_section_environment(test_suite, default_handling_setup)
-    transformer_that_adds_instr_from_suite = TestSuiteInstructionsForCaseSetup(test_suite)
+    transformer_that_adds_instr_from_suite = TestCaseInstructionsFromTestSuiteAdder(test_suite)
     return TestCaseHandlingSetup(instruction_environment.act_phase_setup,
                                  instruction_environment.preprocessor,
                                  ComposedTestCaseTransformer(default_handling_setup.transformer,

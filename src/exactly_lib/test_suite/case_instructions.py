@@ -4,7 +4,7 @@ from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite import test_suite_doc
 
 
-class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
+class TestCaseInstructionsFromTestSuiteAdder(TestCaseTransformer):
     def __init__(self, test_suite: test_suite_doc.TestSuiteDocument):
         self._test_suite = test_suite
 
