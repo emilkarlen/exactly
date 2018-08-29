@@ -1,11 +1,12 @@
 import unittest
 
-from exactly_lib_test.test_suite.case_instructions import setup
+from exactly_lib_test.test_suite.case_instructions import setup, before_assert
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         setup.suite(),
+        before_assert.suite(),
     ])
 
 

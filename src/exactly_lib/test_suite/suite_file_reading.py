@@ -1,8 +1,6 @@
 import pathlib
 
-from exactly_lib.definitions.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, \
-    SECTION_NAME__CASES, \
-    DEFAULT_SECTION_NAME, SECTION_NAME__CASE_SETUP
+from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.test_case_parser import SectionParserConstructorForParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer
@@ -69,32 +67,37 @@ class _Parser:
         parser_configuration = section_parsing.SectionsConfiguration(
             (
                 section_parsing.SectionConfiguration(
-                    SECTION_NAME__CONF,
+                    section_names.SECTION_NAME__CONF,
                     configuration_section_parser),
 
                 section_parsing.SectionConfiguration(
-                    SECTION_NAME__SUITS,
+                    section_names.SECTION_NAME__SUITS,
                     suites.new_parser()),
 
                 section_parsing.SectionConfiguration(
-                    SECTION_NAME__CASES,
+                    section_names.SECTION_NAME__CASES,
                     cases.new_parser()),
 
                 section_parsing.SectionConfiguration(
-                    SECTION_NAME__CASE_SETUP,
+                    section_names.SECTION_NAME__CASE_SETUP,
                     phase_parser_constructor.of(InstructionsSetup.setup_instruction_set.fget)),
+
+                section_parsing.SectionConfiguration(
+                    section_names.SECTION_NAME__CASE_BEFORE_ASSERT,
+                    phase_parser_constructor.of(InstructionsSetup.before_assert_instruction_set.fget)),
             ),
-            default_section_name=DEFAULT_SECTION_NAME
+            default_section_name=section_names.DEFAULT_SECTION_NAME
         )
         self.__section_doc_parser = document_parsers.new_parser_for(parser_configuration)
 
     def apply(self, suite_file_path: pathlib.Path) -> test_suite_doc.TestSuiteDocument:
         document = self.__section_doc_parser.parse_file(suite_file_path)
         return test_suite_doc.TestSuiteDocument(
-            document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CONF),
-            document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__SUITS),
-            document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CASES),
-            document.elements_for_section_or_empty_if_phase_not_present(SECTION_NAME__CASE_SETUP),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CONF),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__SUITS),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASES),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_SETUP),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_BEFORE_ASSERT),
         )
 
 
