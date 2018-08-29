@@ -85,6 +85,10 @@ class _Parser:
                 section_parsing.SectionConfiguration(
                     section_names.SECTION_NAME__CASE_BEFORE_ASSERT,
                     phase_parser_constructor.of(InstructionsSetup.before_assert_instruction_set.fget)),
+
+                section_parsing.SectionConfiguration(
+                    section_names.SECTION_NAME__CASE_ASSERT,
+                    phase_parser_constructor.of(InstructionsSetup.assert_instruction_set.fget)),
             ),
             default_section_name=section_names.DEFAULT_SECTION_NAME
         )
@@ -98,6 +102,7 @@ class _Parser:
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASES),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_SETUP),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_BEFORE_ASSERT),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_ASSERT),
         )
 
 

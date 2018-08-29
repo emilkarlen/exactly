@@ -2,6 +2,7 @@ from exactly_lib.section_document.model import SectionContents, ElementType, new
 from exactly_lib.test_suite.case_instructions import CaseSetupPhaseInstruction
 from exactly_lib.test_suite.instruction_set.sections.cases import CaseSectionInstruction
 from exactly_lib.section_document.model import SectionContents, ElementType
+from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
@@ -23,6 +24,7 @@ class TestSuiteDocument(tuple):
                 cases_section: SectionContents,
                 case_setup: SectionContents,
                 case_before_assert: SectionContents,
+                case_assert: SectionContents,
                 ):
         _assert_instruction_class(configuration_section,
                                   ConfigurationSectionInstruction)
@@ -30,15 +32,20 @@ class TestSuiteDocument(tuple):
                                   SuitesSectionInstruction)
         _assert_instruction_class(cases_section,
                                   CaseSectionInstruction)
+
         _assert_instruction_class(case_setup,
                                   SetupPhaseInstruction)
         _assert_instruction_class(case_before_assert,
                                   BeforeAssertPhaseInstruction)
+        _assert_instruction_class(case_assert,
+                                  AssertPhaseInstruction)
+
         return tuple.__new__(cls, (configuration_section,
                                    suites_section,
                                    cases_section,
                                    case_setup,
-                                   case_before_assert))
+                                   case_before_assert,
+                                   case_assert))
 
     @property
     def configuration_section(self) -> SectionContents:
@@ -59,3 +66,7 @@ class TestSuiteDocument(tuple):
     @property
     def case_before_assert(self) -> SectionContents:
         return self[4]
+
+    @property
+    def case_assert(self) -> SectionContents:
+        return self[5]
