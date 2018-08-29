@@ -15,7 +15,7 @@ class TestSuiteInstructionsForCaseSetup(TestCaseTransformer):
             act_phase=test_case.act_phase,
             before_assert_phase=self._append(self._test_suite.case_before_assert, test_case.before_assert_phase),
             assert_phase=self._append(self._test_suite.case_assert, test_case.assert_phase),
-            cleanup_phase=test_case.cleanup_phase,
+            cleanup_phase=self._append(test_case.cleanup_phase, self._test_suite.case_cleanup),
         )
 
     @staticmethod

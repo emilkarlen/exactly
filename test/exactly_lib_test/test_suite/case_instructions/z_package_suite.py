@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.test_suite.case_instructions import setup, assert_, before_assert
+from exactly_lib_test.test_suite.case_instructions import setup, assert_, before_assert, cleanup
 
 
 def suite() -> unittest.TestSuite:
@@ -8,6 +8,7 @@ def suite() -> unittest.TestSuite:
         setup.suite(),
         before_assert.suite(),
         assert_.suite(),
+        cleanup.suite(),
     ])
 
 
