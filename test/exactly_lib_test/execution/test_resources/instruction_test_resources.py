@@ -20,19 +20,20 @@ class ImplementationErrorTestException(Exception):
     pass
 
 
-def configuration_phase_instruction_that(main=do_return(sh.new_sh_success()),
-                                         main_initial_action=None) -> ConfigurationPhaseInstruction:
+def configuration_phase_instruction_that(main: Callable = do_return(sh.new_sh_success()),
+                                         main_initial_action: Optional[
+                                             Callable] = None) -> ConfigurationPhaseInstruction:
     return _ConfigurationPhaseInstructionThat(main=action_of(main_initial_action, main))
 
 
-def setup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
-                                 validate_pre_sds_initial_action=None,
-                                 validate_post_setup=do_return(svh.new_svh_success()),
-                                 validate_post_setup_initial_action=None,
-                                 main=do_return(sh.new_sh_success()),
+def setup_phase_instruction_that(validate_pre_sds: Callable = do_return(svh.new_svh_success()),
+                                 validate_pre_sds_initial_action: Optional[Callable] = None,
+                                 validate_post_setup: Callable = do_return(svh.new_svh_success()),
+                                 validate_post_setup_initial_action: Optional[Callable] = None,
+                                 main: Callable = do_return(sh.new_sh_success()),
                                  main_initial_action: Optional[Callable] = None,
-                                 symbol_usages_initial_action=None,
-                                 symbol_usages=do_return([])) -> SetupPhaseInstruction:
+                                 symbol_usages_initial_action: Optional[Callable] = None,
+                                 symbol_usages: Callable = do_return([])) -> SetupPhaseInstruction:
     return _SetupPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                       action_of(validate_post_setup_initial_action, validate_post_setup),
                                       action_of(main_initial_action, main),
@@ -45,40 +46,40 @@ def act_phase_instruction_with_source(source_code: LineSequence =
     return SourceCodeInstruction(source_code)
 
 
-def before_assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
-                                         validate_pre_sds_initial_action=None,
-                                         validate_post_setup=do_return(svh.new_svh_success()),
-                                         validate_post_setup_initial_action=None,
-                                         main=do_return(sh.new_sh_success()),
-                                         main_initial_action=None,
-                                         symbol_usages_initial_action=None,
-                                         symbol_usages=do_return([])) -> BeforeAssertPhaseInstruction:
+def before_assert_phase_instruction_that(validate_pre_sds: Callable = do_return(svh.new_svh_success()),
+                                         validate_pre_sds_initial_action: Optional[Callable] = None,
+                                         validate_post_setup: Callable = do_return(svh.new_svh_success()),
+                                         validate_post_setup_initial_action: Optional[Callable] = None,
+                                         main: Callable = do_return(sh.new_sh_success()),
+                                         main_initial_action: Optional[Callable] = None,
+                                         symbol_usages_initial_action: Optional[Callable] = None,
+                                         symbol_usages: Callable = do_return([])) -> BeforeAssertPhaseInstruction:
     return _BeforeAssertPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                              action_of(validate_post_setup_initial_action, validate_post_setup),
                                              action_of(main_initial_action, main),
                                              action_of(symbol_usages_initial_action, symbol_usages))
 
 
-def assert_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
-                                  validate_pre_sds_initial_action=None,
-                                  validate_post_setup=do_return(svh.new_svh_success()),
-                                  validate_post_setup_initial_action=None,
-                                  main=do_return(pfh.new_pfh_pass()),
-                                  main_initial_action=None,
-                                  symbol_usages_initial_action=None,
-                                  symbol_usages=do_return([])) -> AssertPhaseInstruction:
+def assert_phase_instruction_that(validate_pre_sds: Callable = do_return(svh.new_svh_success()),
+                                  validate_pre_sds_initial_action: Optional[Callable] = None,
+                                  validate_post_setup: Callable = do_return(svh.new_svh_success()),
+                                  validate_post_setup_initial_action: Optional[Callable] = None,
+                                  main: Callable = do_return(pfh.new_pfh_pass()),
+                                  main_initial_action: Optional[Callable] = None,
+                                  symbol_usages_initial_action: Optional[Callable] = None,
+                                  symbol_usages: Callable = do_return([])) -> AssertPhaseInstruction:
     return _AssertPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                        action_of(validate_post_setup_initial_action, validate_post_setup),
                                        action_of(main_initial_action, main),
                                        action_of(symbol_usages_initial_action, symbol_usages))
 
 
-def cleanup_phase_instruction_that(validate_pre_sds=do_return(svh.new_svh_success()),
-                                   validate_pre_sds_initial_action=None,
-                                   main=do_return(sh.new_sh_success()),
-                                   main_initial_action=None,
-                                   symbol_usages_initial_action=None,
-                                   symbol_usages=do_return([])) -> CleanupPhaseInstruction:
+def cleanup_phase_instruction_that(validate_pre_sds: Callable = do_return(svh.new_svh_success()),
+                                   validate_pre_sds_initial_action: Optional[Callable] = None,
+                                   main: Callable = do_return(sh.new_sh_success()),
+                                   main_initial_action: Optional[Callable] = None,
+                                   symbol_usages_initial_action: Optional[Callable] = None,
+                                   symbol_usages: Callable = do_return([])) -> CleanupPhaseInstruction:
     return _CleanupPhaseInstructionThat(action_of(validate_pre_sds_initial_action, validate_pre_sds),
                                         action_of(main_initial_action, main),
                                         action_of(symbol_usages_initial_action, symbol_usages))
