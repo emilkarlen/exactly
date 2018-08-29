@@ -49,3 +49,7 @@ class Test(registering_instructions.TestBase):
 
     def test_instructions_in_non_containing_suite_SHOULD_not_be_executed_in_any_case(self):
         self._phase_instructions_in_suite_not_containing_cases()
+
+
+if __name__ == '__main__':
+    unittest.TextTestRunner().run(suite())
