@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.element_parsers import misc_utils as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 
 

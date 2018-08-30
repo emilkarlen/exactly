@@ -3,7 +3,7 @@ from typing import Optional
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedFileInclusionDirective
-from exactly_lib.section_document.section_element_parsing import SectionElementParser, SourceError
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util.line_source import line_sequence_from_line
 
@@ -39,12 +39,12 @@ class FileInclusionDirectiveParser(SectionElementParser):
         directive_source = line_sequence_from_line(source.current_line)
         source.consume_current_line()
         if len(parts) == 1:
-            raise SourceError(directive_source,
-                              'Missing FILE argument')
+            raise SectionElementError(directive_source,
+                                      'Missing FILE argument')
 
         if len(parts) != 2:
-            raise SourceError(directive_source,
-                              'Superfluous arguments: ' + ' '.join(parts[2:]))
+            raise SectionElementError(directive_source,
+                                      'Superfluous arguments: ' + ' '.join(parts[2:]))
 
         path = pathlib.Path(pathlib.PurePosixPath(parts[1]))
         return ParsedFileInclusionDirective(directive_source,

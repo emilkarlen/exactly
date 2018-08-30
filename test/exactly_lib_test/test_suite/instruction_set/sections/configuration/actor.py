@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.instructions.configuration.utils.actor_utils import COMMAND_LINE_ACTOR_OPTION
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections.configuration import actor as sut
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \

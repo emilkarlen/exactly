@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase import define_symbol as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.instructions.multi_phase.define_symbol.test_resources import *
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO

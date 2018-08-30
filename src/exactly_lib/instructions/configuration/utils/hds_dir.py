@@ -10,7 +10,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.instructions.configuration.utils.single_arg_utils import single_eq_invokation_variants, \
     extract_single_eq_argument_string
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.section_document.parse_source import ParseSource

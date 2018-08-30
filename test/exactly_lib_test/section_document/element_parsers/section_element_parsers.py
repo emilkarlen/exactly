@@ -8,7 +8,7 @@ from exactly_lib.section_document.model import ElementType
 from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedNonInstructionElement
-from exactly_lib.section_document.section_element_parsing import SectionElementParser, SourceError
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
 from exactly_lib.util.line_source import LineSequence
@@ -18,7 +18,8 @@ from exactly_lib_test.section_document.test_resources.document_assertions import
     equals_comment_element, matches_instruction
 from exactly_lib_test.section_document.test_resources.element_assertions import matches_instruction_info
 from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatReturnsNone, \
-    SectionElementParserThatReturnsConstantAndConsumesCurrentLine, SectionElementParserThatRaisesSourceError
+    SectionElementParserThatReturnsConstantAndConsumesCurrentLine, \
+    SectionElementParserThatRaisesRecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
@@ -120,13 +121,13 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
         cases = [
             NameAndValue('single failing parser',
                          [
-                             SectionElementParserThatRaisesSourceError(),
+                             SectionElementParserThatRaisesRecognizedSectionElementSourceError(),
                          ])
             ,
             NameAndValue('failing parser followed by successful parser',
                          [
                              SectionElementParserThatReturnsNone(),
-                             SectionElementParserThatRaisesSourceError(),
+                             SectionElementParserThatRaisesRecognizedSectionElementSourceError(),
                              SectionElementParserThatReturnsConstantAndConsumesCurrentLine(returned_element),
                          ]
                          ),
@@ -136,7 +137,7 @@ class TestParserFromSequenceOfParsers(unittest.TestCase):
                 source = source_of_lines(source_lines)
                 parser = sut.ParserFromSequenceOfParsers(case.value)
                 # ACT & ASSERT #
-                with self.assertRaises(SourceError):
+                with self.assertRaises(SectionElementError):
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
 

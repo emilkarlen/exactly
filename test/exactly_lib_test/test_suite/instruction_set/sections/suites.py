@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections import suites as sut
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \

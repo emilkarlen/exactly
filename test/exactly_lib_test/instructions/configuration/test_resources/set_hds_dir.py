@@ -5,7 +5,7 @@ from typing import Callable
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.definitions.instruction_arguments import ASSIGNMENT_OPERATOR
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case.phases.configuration import ConfigurationBuilder

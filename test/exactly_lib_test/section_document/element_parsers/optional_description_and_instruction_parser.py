@@ -8,7 +8,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
-from exactly_lib.section_document.section_element_parsing import SourceError
+from exactly_lib.section_document.section_element_parsing import SectionElementError
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source, source_is_at_end
@@ -61,7 +61,7 @@ class TestParseWithDescription(unittest.TestCase):
         for source_lines in test_cases:
             with self.subTest(source_lines=source_lines):
                 source = source_of_lines(source_lines)
-                with self.assertRaises(SourceError):
+                with self.assertRaises(SectionElementError):
                     self.sut.parse(ARBITRARY_FS_LOCATION_INFO, source)
 
     def test_description_and_instruction_on_single_line(self):

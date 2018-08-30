@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.section_document.element_parsers import token_parse as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib_test.section_document.element_parsers.test_resources.token_stream_assertions import \
     assert_quoted, assert_plain

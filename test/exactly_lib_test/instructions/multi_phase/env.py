@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.instructions.multi_phase import env as sut
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.path_resolving_environment import PathResolvingEnvironmentPreOrPostSds
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name

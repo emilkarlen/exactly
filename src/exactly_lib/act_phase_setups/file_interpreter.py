@@ -12,7 +12,7 @@ from exactly_lib.act_phase_setups.util.executor_made_of_parts.sub_process_execut
     SubProcessExecutor
 from exactly_lib.definitions.test_case.actors import file_interpreter as texts
 from exactly_lib.processing.act_phase import ActPhaseSetup
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import \
     std_error_message_text_for_token_syntax_error_from_exception

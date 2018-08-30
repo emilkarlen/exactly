@@ -1,7 +1,7 @@
 from typing import Callable, Dict
 
 from exactly_lib.section_document import model
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     InvalidInstructionSyntaxException, UnknownInstructionException, SingleInstructionInvalidArgumentException, \
     InvalidInstructionArgumentException, ArgumentParsingImplementationException
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser

@@ -3,7 +3,7 @@ from typing import Sequence, Callable
 
 from exactly_lib.instructions.multi_phase import new_file as sut
 from exactly_lib.instructions.utils.parse import parse_file_maker
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.symbol.data import file_ref_resolvers
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
