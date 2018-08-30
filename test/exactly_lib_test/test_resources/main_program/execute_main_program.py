@@ -1,6 +1,5 @@
 from typing import List, Sequence
 
-import exactly_lib.section_document.section_element_parsing
 from exactly_lib.cli import main_program
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, BuiltinSymbol
 from exactly_lib.cli.main_program import TestSuiteDefinition
@@ -14,6 +13,7 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import os_services
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib_test.execution.test_resources import sandbox_root_name_resolver
@@ -34,7 +34,7 @@ def test_suite_definition() -> TestSuiteDefinition:
                                sandbox_root_name_resolver.prefix_for_suite)
 
 
-def _new_parser() -> exactly_lib.section_document.section_element_parsing.SectionElementParser:
+def _new_parser() -> SectionElementParser:
     return section_element_parsers.standard_syntax_element_parser(
         InstructionWithOptionalDescriptionParser(
             InstructionParserForDictionaryOfInstructions(
