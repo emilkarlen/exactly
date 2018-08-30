@@ -1,4 +1,5 @@
 import pathlib
+from typing import Tuple
 
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
@@ -6,8 +7,9 @@ from exactly_lib.processing.parse.test_case_parser import SectionParserConstruct
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer
 from exactly_lib.section_document import document_parsers
 from exactly_lib.section_document import section_parsing
+from exactly_lib.section_document.element_parsers.section_element_parsers import ParserFromSequenceOfParsers
 from exactly_lib.section_document.exceptions import FileSourceError
-from exactly_lib.section_document.model import ElementType
+from exactly_lib.section_document.model import ElementType, SectionContents
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.case_instructions import TestCaseInstructionsFromTestSuiteAdder
@@ -69,7 +71,12 @@ class _Parser:
             (
                 section_parsing.SectionConfiguration(
                     section_names.SECTION_NAME__CONF,
-                    configuration_section_parser),
+                    ParserFromSequenceOfParsers(
+                        (
+                            configuration_section_parser,
+                            phase_parser_constructor.of(InstructionsSetup.config_instruction_set.fget)
+                        ),
+                    )),
 
                 section_parsing.SectionConfiguration(
                     section_names.SECTION_NAME__SUITS,
@@ -101,10 +108,16 @@ class _Parser:
 
     def apply(self, suite_file_path: pathlib.Path) -> test_suite_doc.TestSuiteDocument:
         document = self.__section_doc_parser.parse_file(suite_file_path)
+
+        suite_conf, case_conf = _separate_configuration_elements(
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CONF)
+        )
+
         return test_suite_doc.TestSuiteDocument(
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CONF),
+            suite_conf,
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__SUITS),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASES),
+            case_conf,
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_SETUP),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_BEFORE_ASSERT),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_ASSERT),
@@ -121,3 +134,20 @@ def resolve_handling_setup_from_suite_file(default_handling_setup: TestCaseHandl
                                          test_case_parsing_setup)
     return resolve_test_case_handling_setup(suite_document,
                                             default_handling_setup)
+
+
+def _separate_configuration_elements(section_contents: SectionContents
+                                     ) -> Tuple[SectionContents, SectionContents]:
+    suite_elements = []
+    case_elements = []
+
+    for element in section_contents.elements:
+        if element.element_type is ElementType.INSTRUCTION:
+            if isinstance(element.instruction_info.instruction, ConfigurationSectionInstruction):
+                suite_elements.append(element)
+            else:
+                case_elements.append(element)
+        else:
+            suite_elements.append(element)
+
+    return SectionContents(tuple(suite_elements)), SectionContents(tuple(case_elements))

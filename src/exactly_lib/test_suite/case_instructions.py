@@ -10,14 +10,14 @@ class TestCaseInstructionsFromTestSuiteAdder(TestCaseTransformer):
 
     def transform(self, test_case: TestCase) -> TestCase:
         return TestCase(
-            configuration_phase=test_case.configuration_phase,
-            setup_phase=self._append(self._test_suite.case_setup_phase, test_case.setup_phase),
+            configuration_phase=_append(self._test_suite.case_configuration_phase, test_case.configuration_phase),
+            setup_phase=_append(self._test_suite.case_setup_phase, test_case.setup_phase),
             act_phase=test_case.act_phase,
-            before_assert_phase=self._append(self._test_suite.case_before_assert_phase, test_case.before_assert_phase),
-            assert_phase=self._append(self._test_suite.case_assert_phase, test_case.assert_phase),
-            cleanup_phase=self._append(test_case.cleanup_phase, self._test_suite.case_cleanup_phase),
+            before_assert_phase=_append(self._test_suite.case_before_assert_phase, test_case.before_assert_phase),
+            assert_phase=_append(self._test_suite.case_assert_phase, test_case.assert_phase),
+            cleanup_phase=_append(test_case.cleanup_phase, self._test_suite.case_cleanup_phase),
         )
 
-    @staticmethod
-    def _append(fst: SectionContents, snd: SectionContents) -> SectionContents:
-        return SectionContents(tuple(list(fst.elements) + list(snd.elements)))
+
+def _append(fst: SectionContents, snd: SectionContents) -> SectionContents:
+    return SectionContents(tuple(list(fst.elements) + list(snd.elements)))

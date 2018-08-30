@@ -7,3 +7,5 @@ file-contents/exactly.suite
 program/exactly.suite
 
 string-transformer/exactly.suite
+
+case-instructions-in-suite/exactly.suite
