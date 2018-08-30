@@ -11,12 +11,12 @@ from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
-from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError, \
-    new_source_error_of_single_line
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError
 from exactly_lib.section_document.section_parsing import SectionsConfiguration
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo, \
     SourceLocationInfo
 from exactly_lib.util import line_source
+from exactly_lib.util.line_source import line_sequence_from_line
 
 
 class DocumentParserForSectionsConfiguration(DocumentParser):
@@ -178,8 +178,8 @@ class _Impl:
                     else:
                         msg = 'Instruction outside of {section}'.format(
                             section=self.configuration.section_element_name_for_error_messages)
-                        raise FileSourceError(new_source_error_of_single_line(self._current_line,
-                                                                              msg),
+                        raise FileSourceError(_new_source_error_of_single_line(self._current_line,
+                                                                               msg),
                                               None,
                                               self._source_location_info_of_current_line())
         return self._section_name_2_element_list
@@ -198,8 +198,8 @@ class _Impl:
                 msg = 'There is no {section} named "{name}"'.format(
                     section=self.configuration.section_element_name_for_error_messages,
                     name=section_name)
-                raise FileSourceError(new_source_error_of_single_line(section_line,
-                                                                      msg),
+                raise FileSourceError(_new_source_error_of_single_line(section_line,
+                                                                       msg),
                                       None,
                                       self._source_location_info_of_current_line())
             self.set_current_section(section_name)
@@ -235,8 +235,8 @@ class _Impl:
             FileSystemLocationInfo(self._current_file_location),
             self._document_source)
         if parsed_element is None:
-            raise FileSourceError(new_source_error_of_single_line(self._document_source.current_line,
-                                                                  'Syntax error'),
+            raise FileSourceError(_new_source_error_of_single_line(self._document_source.current_line,
+                                                                   'Syntax error'),
                                   self._name_of_current_section,
                                   self._source_location_info_of_current_line())
         return self._element_constructor.visit(parsed_element)
@@ -248,8 +248,8 @@ class _Impl:
         try:
             section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
         except ValueError as ex:
-            raise FileSourceError(new_source_error_of_single_line(self._current_line,
-                                                                  str(ex)),
+            raise FileSourceError(_new_source_error_of_single_line(self._current_line,
+                                                                   str(ex)),
                                   None,
                                   self._source_location_info_of_current_line())
         self.move_one_line_forward()
@@ -316,3 +316,9 @@ def build_document(raw_doc: RawDoc) -> model.Document:
         section_name: model.SectionContents(tuple(elements))
         for section_name, elements in raw_doc.items()
     })
+
+
+def _new_source_error_of_single_line(line: line_source.Line,
+                                     message: str) -> SectionElementError:
+    return SectionElementError(line_sequence_from_line(line),
+                               message)

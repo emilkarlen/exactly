@@ -2,7 +2,8 @@ import pathlib
 import unittest
 
 from exactly_lib.processing.parse import file_inclusion_directive_parser as sut
-from exactly_lib.section_document.section_element_parsing import SectionElementError
+from exactly_lib.section_document.section_element_parsing import SectionElementError, \
+    RecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line
@@ -54,7 +55,7 @@ class TestParse(unittest.TestCase):
                     'second line',
                 ])
                 # ACT #
-                with self.assertRaises(SectionElementError) as cm:
+                with self.assertRaises(RecognizedSectionElementSourceError) as cm:
                     # ACT & ASSERT #
                     parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
                 actual_exception = cm.exception

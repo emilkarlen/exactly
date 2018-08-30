@@ -59,10 +59,16 @@ class RecognizedSectionElementSourceError(SectionElementError):
     pass
 
 
-def new_source_error_of_single_line(line: line_source.Line,
-                                    message: str) -> SectionElementError:
-    return SectionElementError(line_sequence_from_line(line),
-                               message)
+def new_unrecognized_section_element_error_of_single_line(line: line_source.Line,
+                                                          message: str) -> SectionElementError:
+    return UnrecognizedSectionElementSourceError(line_sequence_from_line(line),
+                                                 message)
+
+
+def new_recognized_section_element_error_of_single_line(line: line_source.Line,
+                                                        message: str) -> SectionElementError:
+    return RecognizedSectionElementSourceError(line_sequence_from_line(line),
+                                               message)
 
 
 class SectionElementParser:
