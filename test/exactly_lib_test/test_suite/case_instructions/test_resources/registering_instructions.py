@@ -1,4 +1,5 @@
 import unittest
+from enum import Enum
 from typing import List, Dict, Callable
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -21,6 +22,7 @@ from exactly_lib_test.test_resources.files.file_structure import File, DirConten
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
@@ -59,6 +61,11 @@ SUITE_WITH_PHASE_INSTRUCTION_BUT_WITH_JUST_A_SUITE = """\
 
 register {marker}
 """
+
+
+class InstructionsSequencing(Enum):
+    SUITE_BEFORE_CASE = 1
+    CASE_BEFORE_SUITE = 2
 
 
 class Files:
@@ -105,8 +112,32 @@ class TestBase(unittest.TestCase):
     def _phase_config(self) -> PhaseConfig:
         raise NotImplementedError('abstract method')
 
-    def _expected_instruction_recording(self) -> List[str]:
+    def _expected_instruction_sequencing(self) -> InstructionsSequencing:
         raise NotImplementedError('abstract method')
+
+    def __expected_instruction_recording(self) -> asrt.ValueAssertion[List[str]]:
+        if self._expected_instruction_sequencing() is InstructionsSequencing.SUITE_BEFORE_CASE:
+            return asrt.equals([
+                # First test case
+                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+                INSTRUCTION_MARKER_IN_CASE_1,
+
+                # Second test case
+                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+                INSTRUCTION_MARKER_IN_CASE_2,
+            ])
+        elif self._expected_instruction_sequencing() is InstructionsSequencing.CASE_BEFORE_SUITE:
+            return asrt.equals([
+                # First test case
+                INSTRUCTION_MARKER_IN_CASE_1,
+                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+
+                # Second test case
+                INSTRUCTION_MARKER_IN_CASE_2,
+                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+            ])
+        else:
+            raise ValueError('implementation error')
 
     def _phase_instructions_in_suite_containing_cases(self):
         # ARRANGE #
@@ -123,7 +154,7 @@ class TestBase(unittest.TestCase):
         # ACT & ASSERT #
         self._check(containing_suite_file,
                     suite_and_case_files,
-                    self._expected_instruction_recording())
+                    self.__expected_instruction_recording())
 
     def _phase_instructions_in_suite_not_containing_cases(self):
         # ARRANGE #
@@ -146,12 +177,12 @@ class TestBase(unittest.TestCase):
         # ACT & ASSERT #
         self._check(containing_suite_file,
                     suite_and_case_files,
-                    self._expected_instruction_recording())
+                    self.__expected_instruction_recording())
 
     def _check(self,
                containing_suite_file: File,
                suite_and_case_files: DirContents,
-               expected_instruction_recording: List[str],
+               expected_instruction_recording: asrt.ValueAssertion[List[str]],
                ):
         case_processors = [
             NameAndValue('processor_that_should_not_pollute_current_process',
@@ -164,8 +195,8 @@ class TestBase(unittest.TestCase):
 
             for case_processor_case in case_processors:
                 with self.subTest(case_processor_case.name):
-                    recorder = []
-                    executor = self._new_executor(recorder,
+                    recording_media = []
+                    executor = self._new_executor(recording_media,
                                                   case_processor_case.value)
                     # ACT #
 
@@ -176,8 +207,7 @@ class TestBase(unittest.TestCase):
                     self.assertEqual(ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
                                      return_value,
                                      'Sanity check of result indicator')
-                    self.assertEqual(expected_instruction_recording,
-                                     recorder)
+                    expected_instruction_recording.apply_with_message(self, recording_media, 'recordings'),
 
     def _new_executor(self,
                       recorder: List[str],

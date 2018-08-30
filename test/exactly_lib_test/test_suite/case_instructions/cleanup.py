@@ -1,5 +1,5 @@
 import unittest
-from typing import List, Dict, Callable
+from typing import Dict, Callable
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.formatting import SectionName
@@ -9,7 +9,8 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that
 from exactly_lib_test.test_suite.case_instructions.test_resources import registering_instructions
 from exactly_lib_test.test_suite.case_instructions.test_resources.registering_instructions import \
-    INSTRUCTION_MARKER_IN_CONTAINING_SUITE, INSTRUCTION_MARKER_IN_CASE_1, INSTRUCTION_MARKER_IN_CASE_2, PhaseConfig
+    PhaseConfig, \
+    InstructionsSequencing
 
 
 def suite() -> unittest.TestSuite:
@@ -33,16 +34,8 @@ class Test(registering_instructions.TestBase):
     def _phase_config(self) -> PhaseConfig:
         return self.PHASE_CONFIG
 
-    def _expected_instruction_recording(self) -> List[str]:
-        return [
-            # First test case
-            INSTRUCTION_MARKER_IN_CASE_1,
-            INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
-
-            # Second test case
-            INSTRUCTION_MARKER_IN_CASE_2,
-            INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
-        ]
+    def _expected_instruction_sequencing(self) -> InstructionsSequencing:
+        return InstructionsSequencing.CASE_BEFORE_SUITE
 
     def test_instructions_in_containing_suite_SHOULD_be_executed_last_in_each_case(self):
         self._phase_instructions_in_suite_containing_cases()
