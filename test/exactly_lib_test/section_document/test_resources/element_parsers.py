@@ -1,6 +1,5 @@
 from typing import Optional
 
-from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
@@ -17,7 +16,7 @@ class SectionElementParserThatReturnsNone(SectionElementParser):
         return None
 
 
-class SectionElementParserThatRaisesSourceError(section_parsing.SectionElementParser):
+class SectionElementParserThatRaisesSourceError(SectionElementParser):
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ParsedSectionElement:
@@ -25,8 +24,7 @@ class SectionElementParserThatRaisesSourceError(section_parsing.SectionElementPa
                           'Unconditional failure')
 
 
-class SectionElementParserThatReturnsConstantAndConsumesCurrentLine(
-    section_parsing.SectionElementParser):
+class SectionElementParserThatReturnsConstantAndConsumesCurrentLine(SectionElementParser):
     def __init__(self, return_value: ParsedSectionElement):
         self.return_value = return_value
 

@@ -23,10 +23,10 @@ class TestSuiteDocument(tuple):
                 configuration_section: SectionContents,
                 suites_section: SectionContents,
                 cases_section: SectionContents,
-                case_setup: SectionContents,
-                case_before_assert: SectionContents,
-                case_assert: SectionContents,
-                case_cleanup: SectionContents,
+                case_setup_phase: SectionContents,
+                case_before_assert_phase: SectionContents,
+                case_assert_phase: SectionContents,
+                case_cleanup_phase: SectionContents,
                 ):
         _assert_instruction_class(configuration_section,
                                   ConfigurationSectionInstruction)
@@ -35,22 +35,22 @@ class TestSuiteDocument(tuple):
         _assert_instruction_class(cases_section,
                                   CaseSectionInstruction)
 
-        _assert_instruction_class(case_setup,
+        _assert_instruction_class(case_setup_phase,
                                   SetupPhaseInstruction)
-        _assert_instruction_class(case_before_assert,
+        _assert_instruction_class(case_before_assert_phase,
                                   BeforeAssertPhaseInstruction)
-        _assert_instruction_class(case_assert,
+        _assert_instruction_class(case_assert_phase,
                                   AssertPhaseInstruction)
-        _assert_instruction_class(case_cleanup,
+        _assert_instruction_class(case_cleanup_phase,
                                   CleanupPhaseInstruction)
 
         return tuple.__new__(cls, (configuration_section,
                                    suites_section,
                                    cases_section,
-                                   case_setup,
-                                   case_before_assert,
-                                   case_assert,
-                                   case_cleanup))
+                                   case_setup_phase,
+                                   case_before_assert_phase,
+                                   case_assert_phase,
+                                   case_cleanup_phase))
 
     @property
     def configuration_section(self) -> SectionContents:
@@ -65,17 +65,17 @@ class TestSuiteDocument(tuple):
         return self[2]
 
     @property
-    def case_setup(self) -> SectionContents:
+    def case_setup_phase(self) -> SectionContents:
         return self[3]
 
     @property
-    def case_before_assert(self) -> SectionContents:
+    def case_before_assert_phase(self) -> SectionContents:
         return self[4]
 
     @property
-    def case_assert(self) -> SectionContents:
+    def case_assert_phase(self) -> SectionContents:
         return self[5]
 
     @property
-    def case_cleanup(self) -> SectionContents:
+    def case_cleanup_phase(self) -> SectionContents:
         return self[6]

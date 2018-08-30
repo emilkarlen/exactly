@@ -31,12 +31,16 @@ class TestCaseDefinition:
     def __init__(self,
                  test_case_parsing_setup: TestCaseParsingSetup,
                  predefined_properties: PredefinedProperties):
-        self.test_case_parsing_setup = test_case_parsing_setup
-        self.predefined_properties = predefined_properties
+        self._test_case_parsing_setup = test_case_parsing_setup
+        self._predefined_properties = predefined_properties
 
     @property
     def parsing_setup(self) -> TestCaseParsingSetup:
-        return self.test_case_parsing_setup
+        return self._test_case_parsing_setup
+
+    @property
+    def predefined_properties(self) -> PredefinedProperties:
+        return self._predefined_properties
 
 
 class Configuration:
