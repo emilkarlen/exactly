@@ -1,4 +1,4 @@
-from exactly_lib.section_document import section_parsing
+import exactly_lib.section_document.section_element_parsing
 from exactly_lib.section_document.document_parser import DocumentParser
 from exactly_lib.section_document.document_parsers import new_parser_for
 from exactly_lib.section_document.model import InstructionInfo
@@ -27,7 +27,7 @@ def is_comment_line(line: str) -> bool:
 
 
 class SectionElementParserForEmptyCommentAndInstructionLines(
-    section_parsing.SectionElementParser):
+    exactly_lib.section_document.section_element_parsing.SectionElementParser):
     def __init__(self, section_name: str):
         self._section_name = section_name
 

@@ -1,32 +1,6 @@
-from typing import Sequence, Dict, Optional
+from typing import Sequence, Dict
 
-from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
-from exactly_lib.section_document.source_location import FileSystemLocationInfo
-
-
-class SectionElementParser:
-    def parse(self,
-              fs_location_info: FileSystemLocationInfo,
-              source: ParseSource) -> Optional[ParsedSectionElement]:
-        """
-        May return None if source is not recognized.
-        Unrecognized source may also be reported by raising SourceError.
-
-        The possibility to return None exists to help constructing parsers from parts -
-        a return value of None means that some other parser may try to parse the same source,
-        while a raised SourceError means that this parser recognizes the source (e.g. by
-        being the name of an instruction), but that there is some syntax error related to
-        the recognized element (e.g. instruction).
-
-        :param fs_location_info: Information about the location of the source file being parsed
-        :param source: Remaining source to parse
-
-        :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
-        have been consumed.
-        :raises SourceError: The element cannot be parsed.
-        """
-        raise NotImplementedError('abstract method')
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 
 
 class SectionConfiguration(tuple):

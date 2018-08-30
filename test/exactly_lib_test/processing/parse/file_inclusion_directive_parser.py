@@ -2,7 +2,7 @@ import pathlib
 import unittest
 
 from exactly_lib.processing.parse import file_inclusion_directive_parser as sut
-from exactly_lib.section_document.exceptions import SourceError
+from exactly_lib.section_document.section_element_parsing import SourceError
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
 from exactly_lib_test.section_document.test_resources.parse_source import source_of_lines
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import is_at_beginning_of_line

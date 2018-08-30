@@ -5,14 +5,15 @@ from exactly_lib.section_document import model
 from exactly_lib.section_document import syntax
 from exactly_lib.section_document.document_parser import DocumentParser
 from exactly_lib.section_document.element_builder import SectionContentElementBuilder
-from exactly_lib.section_document.exceptions import SourceError, FileSourceError, FileAccessError, \
-    new_source_error_of_single_line
+from exactly_lib.section_document.exceptions import FileSourceError, FileAccessError
 from exactly_lib.section_document.impl.file_access import read_source_file
 from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
-from exactly_lib.section_document.section_parsing import SectionElementParser, SectionsConfiguration
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SourceError, \
+    new_source_error_of_single_line
+from exactly_lib.section_document.section_parsing import SectionsConfiguration
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo, \
     SourceLocationInfo
 from exactly_lib.util import line_source

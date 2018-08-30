@@ -1,11 +1,11 @@
 import datetime
 
+import exactly_lib.section_document.section_element_parsing
 from exactly_lib import program_info
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.common import instruction_setup
 from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.definitions.test_suite import instruction_names
-from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.element_parsers import section_element_parsers
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser
@@ -21,7 +21,7 @@ CONFIGURATION_SECTION_INSTRUCTIONS = instruction_setup.instruction_set_from_name
 )
 
 
-def new_parser() -> section_parsing.SectionElementParser:
+def new_parser() -> exactly_lib.section_document.section_element_parsing.SectionElementParser:
     return section_element_parsers.standard_syntax_element_parser(
         InstructionWithOptionalDescriptionParser(
             InstructionParserForDictionaryOfInstructions(
