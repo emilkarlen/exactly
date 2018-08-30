@@ -1,6 +1,5 @@
 import pathlib
 
-import exactly_lib.section_document.section_element_parsing
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.test_case_parser import SectionParserConstructorForParsingSetup
@@ -9,6 +8,7 @@ from exactly_lib.section_document import document_parsers
 from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import ElementType
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_suite import test_suite_doc
 from exactly_lib.test_suite.case_instructions import TestCaseInstructionsFromTestSuiteAdder
 from exactly_lib.test_suite.instruction_set import parse
@@ -19,7 +19,7 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
 
 
 def read_suite_document(suite_file_path: pathlib.Path,
-                        configuration_section_parser: exactly_lib.section_document.section_element_parsing.SectionElementParser,
+                        configuration_section_parser: SectionElementParser,
                         test_case_parsing_setup: TestCaseParsingSetup,
                         ) -> test_suite_doc.TestSuiteDocument:
     """
@@ -62,7 +62,7 @@ def _derive_conf_section_environment(test_suite: test_suite_doc.TestSuiteDocumen
 
 class _Parser:
     def __init__(self,
-                 configuration_section_parser: exactly_lib.section_document.section_element_parsing.SectionElementParser,
+                 configuration_section_parser: SectionElementParser,
                  test_case_parsing_setup: TestCaseParsingSetup):
         phase_parser_constructor = SectionParserConstructorForParsingSetup(test_case_parsing_setup)
         parser_configuration = section_parsing.SectionsConfiguration(
@@ -113,7 +113,7 @@ class _Parser:
 
 
 def resolve_handling_setup_from_suite_file(default_handling_setup: TestCaseHandlingSetup,
-                                           configuration_section_parser: exactly_lib.section_document.section_element_parsing.SectionElementParser,
+                                           configuration_section_parser: SectionElementParser,
                                            test_case_parsing_setup: TestCaseParsingSetup,
                                            suite_to_read_config_from: pathlib.Path) -> TestCaseHandlingSetup:
     suite_document = read_suite_document(suite_to_read_config_from,

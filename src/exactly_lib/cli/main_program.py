@@ -1,7 +1,6 @@
 import os
 from typing import List, Dict, Callable
 
-import exactly_lib.section_document.section_element_parsing
 from exactly_lib.cli.cli_environment import exit_codes
 from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
@@ -16,6 +15,7 @@ from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDo
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.util import argument_parsing_utils
@@ -76,7 +76,7 @@ class TestCaseDefinitionForMainProgram:
 class TestSuiteDefinition(tuple):
     def __new__(cls,
                 configuration_section_instructions: Dict[str, SingleInstructionSetup],
-                configuration_section_parser: exactly_lib.section_document.section_element_parsing.SectionElementParser,
+                configuration_section_parser: SectionElementParser,
                 get_sds_root_name_prefix: Callable[[], str] = lambda: ''):
         return tuple.__new__(cls, (configuration_section_instructions,
                                    configuration_section_parser,
@@ -87,7 +87,7 @@ class TestSuiteDefinition(tuple):
         return self[0]
 
     @property
-    def configuration_section_parser(self) -> exactly_lib.section_document.section_element_parsing.SectionElementParser:
+    def configuration_section_parser(self) -> SectionElementParser:
         return self[1]
 
     @property
