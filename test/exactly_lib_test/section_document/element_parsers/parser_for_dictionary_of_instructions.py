@@ -69,8 +69,12 @@ class TestFailingNameExtractor(unittest.TestCase):
     def _check(self, splitter):
         section_parser = sut.InstructionParserForDictionaryOfInstructions(splitter, {})
         source = source_of_lines(['line'])
+        remaining_source_before = source.remaining_source
         with self.assertRaises(sut.InvalidInstructionSyntaxException) as cm:
             section_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+        self.assertEqual(remaining_source_before,
+                         source.remaining_source,
+                         'source should not be consumed')
         assert_equals_single_line(self,
                                   source.current_line,
                                   cm.exception.source,
