@@ -6,7 +6,8 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParser, InstructionAndDescriptionParser, parse_and_compute_source
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedInstruction
-from exactly_lib.section_document.section_element_parsing import new_source_error_of_single_line
+from exactly_lib.section_document.section_element_parsing import new_unrecognized_section_element_error_of_single_line, \
+    new_recognized_section_element_error_of_single_line
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util.line_source import Line
 
@@ -19,18 +20,21 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ParsedInstruction:
         first_line = source.current_line
-        description = _DescriptionExtractor(source).apply()
-        self._consume_space_and_comment_lines(source, first_line)
-        return parse_and_compute_source(self.instruction_parser,
-                                        fs_location_info,
-                                        source,
-                                        description)
+        source_copy = source.copy
+        description = _DescriptionExtractor(source_copy).apply()
+        self._consume_space_and_comment_lines(source_copy, first_line)
+        ret_val = parse_and_compute_source(self.instruction_parser,
+                                           fs_location_info,
+                                           source_copy,
+                                           description)
+        source.catch_up_with(source_copy)
+        return ret_val
 
     @staticmethod
     def _consume_space_and_comment_lines(source: ParseSource, first_line: Line):
         error_message = 'End-of-file reached without finding an instruction (following a description)'
         if source.is_at_eof:
-            raise new_source_error_of_single_line(first_line, error_message)
+            raise new_unrecognized_section_element_error_of_single_line(first_line, error_message)
         line_in_error_message = first_line
         source.consume_initial_space_on_current_line()
         if not source.is_at_eol:
@@ -43,7 +47,7 @@ class InstructionWithOptionalDescriptionParser(InstructionAndDescriptionParser):
             else:
                 source.consume_initial_space_on_current_line()
                 return
-        raise new_source_error_of_single_line(line_in_error_message, error_message)
+        raise new_unrecognized_section_element_error_of_single_line(line_in_error_message, error_message)
 
 
 class _DescriptionExtractor:
@@ -63,8 +67,8 @@ class _DescriptionExtractor:
         try:
             string_token = self.lexer.get_token()
         except ValueError as ex:
-            raise new_source_error_of_single_line(self.source.current_line,
-                                                  'Invalid description: ' + str(ex))
+            raise new_recognized_section_element_error_of_single_line(self.source.current_line,
+                                                                      'Syntax error in description: ' + str(ex))
         num_chars_consumed = self.source_io.tell()
         if len(self.source.remaining_source) > num_chars_consumed:
             num_chars_consumed -= 1
