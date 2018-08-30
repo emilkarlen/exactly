@@ -1,0 +1,4 @@
+[suites]
+
+all-conf-in-suite.suite
+conf-in-suite-and-case.suite
