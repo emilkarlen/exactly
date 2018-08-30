@@ -2,9 +2,9 @@ from pathlib import Path
 from typing import Sequence
 
 from exactly_lib.section_document.exceptions import FileAccessError
+from exactly_lib.section_document.impl.utils import new_for_file
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.source_location import SourceLocation
-from exactly_lib.section_document.utils import new_for_file
 
 
 def read_source_file(file_path: Path,
