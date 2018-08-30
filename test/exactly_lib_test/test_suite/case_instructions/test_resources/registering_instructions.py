@@ -1,6 +1,6 @@
 import unittest
 from enum import Enum
-from typing import List, Dict, Callable
+from typing import List, Dict, Callable, Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.formatting import SectionName
@@ -26,7 +26,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
-    instruction_setup_with_single_phase_with_single_recording_instruction
+    instruction_setup_with_single_phase_with_single_recording_instruction, Recording, matches_recording
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter, \
     ExecutionTracingReporterFactory
 
@@ -115,26 +115,30 @@ class TestBase(unittest.TestCase):
     def _expected_instruction_sequencing(self) -> InstructionsSequencing:
         raise NotImplementedError('abstract method')
 
-    def __expected_instruction_recording(self) -> asrt.ValueAssertion[List[str]]:
+    def __expected_instruction_recording(self) -> asrt.ValueAssertion[Sequence[Recording]]:
+        matches_instruction_in_containing_suite = matches_recording(INSTRUCTION_MARKER_IN_CONTAINING_SUITE)
+        matches_instruction_in_case_1 = matches_recording(INSTRUCTION_MARKER_IN_CASE_1)
+        matches_instruction_in_case_2 = matches_recording(INSTRUCTION_MARKER_IN_CASE_2)
+
         if self._expected_instruction_sequencing() is InstructionsSequencing.SUITE_BEFORE_CASE:
-            return asrt.equals([
+            return asrt.matches_sequence([
                 # First test case
-                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
-                INSTRUCTION_MARKER_IN_CASE_1,
+                matches_instruction_in_containing_suite,
+                matches_instruction_in_case_1,
 
                 # Second test case
-                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
-                INSTRUCTION_MARKER_IN_CASE_2,
+                matches_instruction_in_containing_suite,
+                matches_instruction_in_case_2,
             ])
         elif self._expected_instruction_sequencing() is InstructionsSequencing.CASE_BEFORE_SUITE:
-            return asrt.equals([
+            return asrt.matches_sequence([
                 # First test case
-                INSTRUCTION_MARKER_IN_CASE_1,
-                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+                matches_instruction_in_case_1,
+                matches_instruction_in_containing_suite,
 
                 # Second test case
-                INSTRUCTION_MARKER_IN_CASE_2,
-                INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+                matches_instruction_in_case_2,
+                matches_instruction_in_containing_suite,
             ])
         else:
             raise ValueError('implementation error')
@@ -182,7 +186,7 @@ class TestBase(unittest.TestCase):
     def _check(self,
                containing_suite_file: File,
                suite_and_case_files: DirContents,
-               expected_instruction_recording: asrt.ValueAssertion[List[str]],
+               expected_instruction_recording: asrt.ValueAssertion[List[Recording]],
                ):
         case_processors = [
             NameAndValue('processor_that_should_not_pollute_current_process',
@@ -210,7 +214,7 @@ class TestBase(unittest.TestCase):
                     expected_instruction_recording.apply_with_message(self, recording_media, 'recordings'),
 
     def _new_executor(self,
-                      recorder: List[str],
+                      recorder: List[Recording],
                       test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Executor:
         instructions_setup = instruction_setup_with_single_phase_with_single_recording_instruction(
             REGISTER_INSTRUCTION_NAME,
