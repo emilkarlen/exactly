@@ -229,7 +229,7 @@ class TestInvalidSyntax(ParseTestBase):
         # ASSERT #
         assert_equals_line_sequence(self,
                                     line_source.single_line_sequence(1, 'instruction default'),
-                                    cm.exception.source_error.source)
+                                    cm.exception.source)
         self.assertIsNone(cm.exception.maybe_section_name,
                           'Section name')
 

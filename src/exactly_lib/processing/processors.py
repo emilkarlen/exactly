@@ -118,7 +118,7 @@ class _Parser(processing_utils.Parser):
         try:
             return file_parser.apply(test_case, source)
         except exceptions.FileSourceError as ex:
-            error_info = ErrorInfo(error_description.syntax_error_of_message(ex.source_error.message),
+            error_info = ErrorInfo(error_description.syntax_error_of_message(ex.error_message),
                                    source_location_path_of_non_empty_location_path(ex.location_path),
                                    section_name=ex.maybe_section_name)
             raise ProcessError(error_info)
