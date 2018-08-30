@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from exactly_lib.definitions.entity.types import STRING_TYPE_INFO
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import new_token_stream
 from exactly_lib.section_document.element_parsers.token_stream import TokenStream

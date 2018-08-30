@@ -7,10 +7,13 @@ from exactly_lib.util import line_source
 from exactly_lib.util.line_source import line_sequence_from_line
 
 
-class SourceError(Exception):
+class SectionElementError(Exception):
     """
-    An exceptions related to a line in the test case,
-    raised by a parser that is unaware of current file and section.
+    An exceptions related to a line in the test case that is
+    expected to be parsed as a :class:SectionElement
+
+    Does not need to be aware of current file and section,
+    since this is taken care of by the document parsing framework.
 
     I.e., this exception is used within the parsing of a document,
     as communication between the parsing framework and element parsers.
@@ -33,10 +36,33 @@ class SourceError(Exception):
         return self._message
 
 
+class UnrecognizedSectionElementSourceError(SectionElementError):
+    """
+    The source is not recognized by the parser,
+    but may be recognized by another parser.
+
+    The parser must not have consumed any source.
+    """
+    pass
+
+
+class RecognizedSectionElementSourceError(SectionElementError):
+    """
+    The source is recognized, in the meaning that the element
+    should be parsed by the parser raising this exception.
+
+    But the element source contains an unrecoverable error,
+    e.g. a syntax error in the arguments to a recognized instruction.
+
+    The parser may have consumed source.
+    """
+    pass
+
+
 def new_source_error_of_single_line(line: line_source.Line,
-                                    message: str) -> SourceError:
-    return SourceError(line_sequence_from_line(line),
-                       message)
+                                    message: str) -> SectionElementError:
+    return SectionElementError(line_sequence_from_line(line),
+                               message)
 
 
 class SectionElementParser:
@@ -44,8 +70,7 @@ class SectionElementParser:
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         """
-        May return None if source is not recognized.
-        Unrecognized source may also be reported by raising SourceError.
+        Parser of a section element, represented by a :class:ParsedSectionElement
 
         The possibility to return None exists to help constructing parsers from parts -
         a return value of None means that some other parser may try to parse the same source,
@@ -58,6 +83,6 @@ class SectionElementParser:
 
         :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
         have been consumed.
-        :raises SourceError: The element cannot be parsed.
+        :raises SectionElementError: The element cannot be parsed.
         """
         raise NotImplementedError('abstract method')

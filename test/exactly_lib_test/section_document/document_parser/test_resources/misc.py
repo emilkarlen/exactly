@@ -12,7 +12,8 @@ from exactly_lib.util import line_source
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import \
     consume_current_line_and_return_it_as_line_sequence
 from exactly_lib_test.section_document.test_resources.element_assertions import InstructionInSection
-from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatRaisesSourceError
+from exactly_lib_test.section_document.test_resources.element_parsers import \
+    SectionElementParserThatRaisesRecognizedSectionElementSourceError
 
 _COMMENT_START = 'COMMENT'
 _MULTI_LINE_INSTRUCTION_LINE_START = 'MULTI-LINE-INSTRUCTION'
@@ -77,7 +78,7 @@ def parser_with_successful_and_failing_section_parsers(successful_section: str,
                               SectionElementParserForEmptyCommentAndInstructionLines(
                                   successful_section)),
          SectionConfiguration(failing_section,
-                              SectionElementParserThatRaisesSourceError())),
+                              SectionElementParserThatRaisesRecognizedSectionElementSourceError())),
         default_section_name=default_section)
 
     return new_parser_for(configuration)

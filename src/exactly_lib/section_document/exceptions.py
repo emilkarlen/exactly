@@ -1,7 +1,7 @@
 from pathlib import Path
 from typing import Sequence, Optional
 
-from exactly_lib.section_document.section_element_parsing import SourceError
+from exactly_lib.section_document.section_element_parsing import SectionElementError
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationInfo
 
 
@@ -31,7 +31,7 @@ class FileSourceError(ParseError):
     """
 
     def __init__(self,
-                 source_error: SourceError,
+                 source_error: SectionElementError,
                  maybe_section_name: Optional[str],
                  source_location_info: SourceLocationInfo):
         super().__init__(source_error.message,
@@ -46,7 +46,7 @@ class FileSourceError(ParseError):
         return self._maybe_section_name
 
     @property
-    def source_error(self) -> SourceError:
+    def source_error(self) -> SectionElementError:
         return self._source_error
 
     @property

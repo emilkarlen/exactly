@@ -5,7 +5,7 @@ from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     ParsedFileInclusionDirective, ParsedInstruction
-from exactly_lib.section_document.section_element_parsing import SectionElementParser, SourceError
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError
 from exactly_lib.section_document.section_parsing import SectionConfiguration, \
     SectionsConfiguration
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
@@ -71,7 +71,7 @@ class SectionElementParserForInclusionDirectiveAndOkAndInvalidInstructions(Secti
             ]
             return ParsedFileInclusionDirective(consumed_source, paths_to_include)
         elif current_line_parts[0] == SYNTAX_ERROR_INSTRUCTION_NAME:
-            raise SourceError(consumed_source, current_line_parts[1])
+            raise SectionElementError(consumed_source, current_line_parts[1])
         elif current_line_parts[0] == OK_INSTRUCTION_NAME:
             return ParsedInstruction(consumed_source,
                                      InstructionInfo(

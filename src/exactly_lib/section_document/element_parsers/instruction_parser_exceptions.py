@@ -1,41 +1,31 @@
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
-from exactly_lib.section_document.section_element_parsing import SourceError
+from exactly_lib.section_document.section_element_parsing import UnrecognizedSectionElementSourceError, \
+    RecognizedSectionElementSourceError
 from exactly_lib.util import line_source
 
 
 class SingleInstructionInvalidArgumentException(Exception):
     """
-    Indicates invalid arguments to an instruction.
+    Indicates invalid arguments to an instruction,
+    without the need to specify source code, since it
+    can be handled by the code catching the exception.
     """
 
-    def __init__(self,
-                 error_message: str):
+    def __init__(self, error_message: str):
         self.error_message = error_message
 
 
-class InvalidInstructionException(SourceError):
-    """
-    Indicates some kind of invalid instruction.
-    """
-
-    def __init__(self,
-                 source: line_source.LineSequence,
-                 message: str):
-        super().__init__(source, message)
-
-
-class InvalidInstructionSyntaxException(InvalidInstructionException):
+class InvalidInstructionSyntaxException(UnrecognizedSectionElementSourceError):
     """
     The source line is not valid for an instruction.
     """
 
-    def __init__(self,
-                 source: line_source.LineSequence):
+    def __init__(self, source: line_source.LineSequence):
         super().__init__(source,
                          'Invalid instruction syntax')
 
 
-class UnknownInstructionException(InvalidInstructionException):
+class UnknownInstructionException(UnrecognizedSectionElementSourceError):
     """
     Indicates that an unknown instruction has been encountered.
     """
@@ -52,7 +42,7 @@ class UnknownInstructionException(InvalidInstructionException):
         return self._instruction_name
 
 
-class InvalidInstructionArgumentException(InvalidInstructionException):
+class InvalidInstructionArgumentException(RecognizedSectionElementSourceError):
     """
     Indicates that an unknown instruction argument has been encountered.
     """
@@ -67,7 +57,7 @@ class InvalidInstructionArgumentException(InvalidInstructionException):
         self.error_message = error_message
 
 
-class ArgumentParsingImplementationException(SourceError):
+class ArgumentParsingImplementationException(RecognizedSectionElementSourceError):
     """
     An implementation error was encountered during parsing of the argument
     of an instruction.

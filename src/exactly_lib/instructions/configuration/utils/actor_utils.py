@@ -14,7 +14,7 @@ from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME
 from exactly_lib.help.entities.actors.objects import command_line as command_line_actor_help
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case.act_phase_handling import ActPhaseHandling
 from exactly_lib.test_case_utils.parse.shell_syntax import SHELL_KEYWORD

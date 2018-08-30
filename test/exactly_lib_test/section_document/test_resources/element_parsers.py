@@ -2,7 +2,8 @@ from typing import Optional
 
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement
-from exactly_lib.section_document.section_element_parsing import SectionElementParser, SourceError
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, \
+    RecognizedSectionElementSourceError
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib_test.section_document.document_parser.test_resources.element_parser import \
     consume_current_line_and_return_it_as_line_sequence
@@ -15,12 +16,12 @@ class SectionElementParserThatReturnsNone(SectionElementParser):
         return None
 
 
-class SectionElementParserThatRaisesSourceError(SectionElementParser):
+class SectionElementParserThatRaisesRecognizedSectionElementSourceError(SectionElementParser):
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> ParsedSectionElement:
-        raise SourceError(consume_current_line_and_return_it_as_line_sequence(source),
-                          'Unconditional failure')
+        raise RecognizedSectionElementSourceError(consume_current_line_and_return_it_as_line_sequence(source),
+                                                  'Unconditional failure')
 
 
 class SectionElementParserThatReturnsConstantAndConsumesCurrentLine(SectionElementParser):

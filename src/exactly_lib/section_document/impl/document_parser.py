@@ -11,7 +11,7 @@ from exactly_lib.section_document.model import SectionContentElement
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElementVisitor, \
     ParsedInstruction, ParsedNonInstructionElement, ParsedFileInclusionDirective
-from exactly_lib.section_document.section_element_parsing import SectionElementParser, SourceError, \
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SectionElementError, \
     new_source_error_of_single_line
 from exactly_lib.section_document.section_parsing import SectionsConfiguration
 from exactly_lib.section_document.source_location import FileLocationInfo, FileSystemLocationInfo, \
@@ -218,7 +218,7 @@ class _Impl:
         while not self.is_at_eof() and not self.current_line_is_section_line():
             try:
                 parsed_element = self.parse_element_at_current_line_using_current_section_element_parser()
-            except SourceError as ex:
+            except SectionElementError as ex:
                 raise FileSourceError(ex,
                                       self._name_of_current_section,
                                       self._current_file_location.source_location_info_for(ex.source))

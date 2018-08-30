@@ -12,7 +12,8 @@ from exactly_lib.test_suite import enumeration
 from exactly_lib.test_suite import execution as sut
 from exactly_lib.test_suite import suite_hierarchy_reading
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
-from exactly_lib_test.section_document.test_resources.element_parsers import SectionElementParserThatRaisesSourceError
+from exactly_lib_test.section_document.test_resources.element_parsers import \
+    SectionElementParserThatRaisesRecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_suite.execution.test_resources.instruction_utils import instruction_setup
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
@@ -37,7 +38,7 @@ def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
     return sut.Executor(default_configuration,
                         suite_hierarchy_reading.Reader(
                             suite_hierarchy_reading.Environment(
-                                SectionElementParserThatRaisesSourceError(),
+                                SectionElementParserThatRaisesRecognizedSectionElementSourceError(),
                                 test_case_definition.parsing_setup,
                                 default_configuration.default_handling_setup)
                         ),

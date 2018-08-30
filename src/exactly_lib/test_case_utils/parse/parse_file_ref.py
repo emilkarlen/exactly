@@ -5,7 +5,7 @@ from typing import Sequence, Optional, Callable, Union
 
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.test_case.instructions import define_symbol as help_texts
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
+from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.misc_utils import ensure_is_not_option_argument, \
     std_error_message_text_for_token_syntax_error_from_exception, std_error_message_text_for_token_syntax_error
