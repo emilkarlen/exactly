@@ -7,7 +7,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     InstructionParser
 from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.source_location import FileSystemLocationInfo
+from exactly_lib.section_document.source_location import FileSystemLocationInfo, FileLocationInfo
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that
@@ -15,18 +15,28 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 
 
 class Recording:
-    def __init__(self, string: str):
+    def __init__(self,
+                 file_location_info: FileLocationInfo,
+                 string: str,
+                 ):
         self._string = string
+        self._file_location_info = file_location_info
 
     @property
     def string(self) -> str:
         return self._string
 
+    @property
+    def file_location_info(self) -> FileLocationInfo:
+        return self._file_location_info
+
 
 def matches_recording(string: str) -> asrt.ValueAssertion[Recording]:
-    return asrt.sub_component('string',
-                              Recording.string.fget,
-                              asrt.equals(string))
+    return asrt.and_([
+        asrt.sub_component('string',
+                           Recording.string.fget,
+                           asrt.equals(string))
+    ])
 
 
 class StringRecorder:
@@ -39,7 +49,8 @@ class StringRecorder:
         self.string_to_record = string_to_record
 
     def __call__(self, *args, **kwargs):
-        self.recording_media.append(Recording(self.string_to_record))
+        self.recording_media.append(Recording(self.fs_location_info_to_record.current_source_file,
+                                              self.string_to_record))
 
 
 def mk_setup_phase_recording_instruction(main_action: Callable) -> SetupPhaseInstruction:
