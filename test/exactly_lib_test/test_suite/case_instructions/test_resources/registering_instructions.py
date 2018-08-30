@@ -15,7 +15,7 @@ from exactly_lib.test_suite import execution as sut, suite_hierarchy_reading, en
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources.element_parsers import \
-    SectionElementParserThatRaisesRecognizedSectionElementSourceError
+    SectionElementParserThatRaisesUnrecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
@@ -203,7 +203,7 @@ class TestBase(unittest.TestCase):
         return sut.Executor(default_configuration,
                             suite_hierarchy_reading.Reader(
                                 suite_hierarchy_reading.Environment(
-                                    SectionElementParserThatRaisesRecognizedSectionElementSourceError(),
+                                    SectionElementParserThatRaisesUnrecognizedSectionElementSourceError(),
                                     test_case_definition.parsing_setup,
                                     default_configuration.default_handling_setup)
                             ),

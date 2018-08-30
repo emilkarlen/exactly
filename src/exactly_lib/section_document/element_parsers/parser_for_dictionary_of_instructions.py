@@ -50,7 +50,7 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
                        original_source_line: line_source.Line,
                        name: str) -> InstructionParser:
         """
-        :raises: InvalidInstructionException
+        :raises: UnknownInstructionException
         """
         if name not in self.__instruction_name__2__single_instruction_parser:
             raise UnknownInstructionException(line_sequence_from_line(original_source_line),
