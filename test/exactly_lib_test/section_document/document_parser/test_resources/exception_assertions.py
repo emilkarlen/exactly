@@ -55,6 +55,6 @@ def file_source_error_equals_line(line: Line,
                            FileSourceError.maybe_section_name.fget,
                            maybe_section_name),
         asrt.sub_component('source',
-                           lambda fse: fse.source_error.source,
+                           FileSourceError.source.fget,
                            equals_line_sequence(line_sequence_from_line(line))),
     ])

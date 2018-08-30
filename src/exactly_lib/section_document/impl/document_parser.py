@@ -178,8 +178,8 @@ class _Impl:
                     else:
                         msg = 'Instruction outside of {section}'.format(
                             section=self.configuration.section_element_name_for_error_messages)
-                        raise FileSourceError(_new_source_error_of_single_line(self._current_line,
-                                                                               msg),
+                        raise FileSourceError(line_sequence_from_line(self._current_line),
+                                              msg,
                                               None,
                                               self._source_location_info_of_current_line())
         return self._section_name_2_element_list
@@ -198,8 +198,8 @@ class _Impl:
                 msg = 'There is no {section} named "{name}"'.format(
                     section=self.configuration.section_element_name_for_error_messages,
                     name=section_name)
-                raise FileSourceError(_new_source_error_of_single_line(section_line,
-                                                                       msg),
+                raise FileSourceError(line_sequence_from_line(section_line),
+                                      msg,
                                       None,
                                       self._source_location_info_of_current_line())
             self.set_current_section(section_name)
@@ -219,7 +219,8 @@ class _Impl:
             try:
                 parsed_element = self.parse_element_at_current_line_using_current_section_element_parser()
             except SectionElementError as ex:
-                raise FileSourceError(ex,
+                raise FileSourceError(ex.source,
+                                      ex.message,
                                       self._name_of_current_section,
                                       self._current_file_location.source_location_info_for(ex.source))
             if isinstance(parsed_element, model.SectionContentElement):
@@ -235,8 +236,8 @@ class _Impl:
             FileSystemLocationInfo(self._current_file_location),
             self._document_source)
         if parsed_element is None:
-            raise FileSourceError(_new_source_error_of_single_line(self._document_source.current_line,
-                                                                   'Syntax error'),
+            raise FileSourceError(line_sequence_from_line(self._document_source.current_line),
+                                  'Syntax error',
                                   self._name_of_current_section,
                                   self._source_location_info_of_current_line())
         return self._element_constructor.visit(parsed_element)
@@ -248,8 +249,8 @@ class _Impl:
         try:
             section_name = syntax.extract_section_name_from_section_line(self._current_line.text)
         except ValueError as ex:
-            raise FileSourceError(_new_source_error_of_single_line(self._current_line,
-                                                                   str(ex)),
+            raise FileSourceError(line_sequence_from_line(self._current_line),
+                                  str(ex),
                                   None,
                                   self._source_location_info_of_current_line())
         self.move_one_line_forward()
@@ -316,9 +317,3 @@ def build_document(raw_doc: RawDoc) -> model.Document:
         section_name: model.SectionContents(tuple(elements))
         for section_name, elements in raw_doc.items()
     })
-
-
-def _new_source_error_of_single_line(line: line_source.Line,
-                                     message: str) -> SectionElementError:
-    return SectionElementError(line_sequence_from_line(line),
-                               message)

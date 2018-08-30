@@ -1,8 +1,8 @@
 from pathlib import Path
 from typing import Sequence, Optional
 
-from exactly_lib.section_document.section_element_parsing import SectionElementError
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationInfo
+from exactly_lib.util.line_source import LineSequence
 
 
 class ParseError(Exception):
@@ -31,27 +31,29 @@ class FileSourceError(ParseError):
     """
 
     def __init__(self,
-                 source_error: SectionElementError,
+                 source: LineSequence,
+                 message: str,
                  maybe_section_name: Optional[str],
                  source_location_info: SourceLocationInfo):
-        super().__init__(source_error.message,
+        super().__init__(message,
                          list(source_location_info.source_location_path.file_inclusion_chain) +
                          [source_location_info.source_location_path.location])
         self._maybe_section_name = maybe_section_name
-        self._source_error = source_error
         self._source_location_info = source_location_info
+        self._source = source
+        self._message = message
 
     @property
     def maybe_section_name(self) -> Optional[str]:
         return self._maybe_section_name
 
     @property
-    def source_error(self) -> SectionElementError:
-        return self._source_error
+    def source(self) -> LineSequence:
+        return self._source
 
     @property
     def error_message(self) -> str:
-        return self._source_error.message
+        return self._message
 
     @property
     def source_location_info(self) -> SourceLocationInfo:
