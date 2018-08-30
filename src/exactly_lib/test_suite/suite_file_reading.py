@@ -4,15 +4,16 @@ from typing import Tuple
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.test_case_parser import SectionParserConstructorForParsingSetup
-from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer, \
+    TestCaseTransformer
 from exactly_lib.section_document import document_parsers
 from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.element_parsers.section_element_parsers import ParserFromSequenceOfParsers
 from exactly_lib.section_document.exceptions import FileSourceError
 from exactly_lib.section_document.model import ElementType, SectionContents
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
+from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite import test_suite_doc
-from exactly_lib.test_suite.case_instructions import TestCaseInstructionsFromTestSuiteAdder
 from exactly_lib.test_suite.instruction_set import parse
 from exactly_lib.test_suite.instruction_set.sections import cases
 from exactly_lib.test_suite.instruction_set.sections import suites
@@ -42,7 +43,7 @@ def resolve_test_case_handling_setup(
         test_suite: test_suite_doc.TestSuiteDocument,
         default_handling_setup: TestCaseHandlingSetup) -> TestCaseHandlingSetup:
     instruction_environment = _derive_conf_section_environment(test_suite, default_handling_setup)
-    transformer_that_adds_instr_from_suite = TestCaseInstructionsFromTestSuiteAdder(test_suite)
+    transformer_that_adds_instr_from_suite = _TestCaseInstructionsFromTestSuiteAdder(test_suite)
     return TestCaseHandlingSetup(instruction_environment.act_phase_setup,
                                  instruction_environment.preprocessor,
                                  ComposedTestCaseTransformer(default_handling_setup.transformer,
@@ -151,3 +152,21 @@ def _separate_configuration_elements(section_contents: SectionContents
             suite_elements.append(element)
 
     return SectionContents(tuple(suite_elements)), SectionContents(tuple(case_elements))
+
+
+class _TestCaseInstructionsFromTestSuiteAdder(TestCaseTransformer):
+    def __init__(self, test_suite: test_suite_doc.TestSuiteDocument):
+        self._test_suite = test_suite
+
+    def transform(self, test_case: TestCase) -> TestCase:
+        def append(fst: SectionContents, snd: SectionContents) -> SectionContents:
+            return SectionContents(tuple(list(fst.elements) + list(snd.elements)))
+
+        return TestCase(
+            configuration_phase=append(self._test_suite.case_configuration_phase, test_case.configuration_phase),
+            setup_phase=append(self._test_suite.case_setup_phase, test_case.setup_phase),
+            act_phase=test_case.act_phase,
+            before_assert_phase=append(self._test_suite.case_before_assert_phase, test_case.before_assert_phase),
+            assert_phase=append(self._test_suite.case_assert_phase, test_case.assert_phase),
+            cleanup_phase=append(test_case.cleanup_phase, self._test_suite.case_cleanup_phase),
+        )
