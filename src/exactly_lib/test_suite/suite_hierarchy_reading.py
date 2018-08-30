@@ -7,7 +7,7 @@ from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.model import SectionContents, ElementType
-from exactly_lib.section_document.section_parsing import SectionElementParser
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_suite.instruction_set import parse, instruction
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteFileReferencesInstruction
 from . import structure

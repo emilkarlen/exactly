@@ -5,7 +5,7 @@ from exactly_lib.section_document.element_parsers.section_element_parsers import
     standard_syntax_element_parser, InstructionWithoutDescriptionParser, \
     InstructionParserWithoutSourceFileLocationInfo
 from exactly_lib.section_document.parse_source import ParseSource
-from exactly_lib.section_document.section_parsing import SectionElementParser
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_suite.instruction_set import utils
 from exactly_lib.test_suite.instruction_set.instruction import Environment, TestSuiteFileReferencesInstruction
 

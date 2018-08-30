@@ -1,41 +1,8 @@
 from pathlib import Path
 from typing import Sequence, Optional
 
+from exactly_lib.section_document.section_element_parsing import SourceError
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationInfo
-from exactly_lib.util import line_source
-from exactly_lib.util.line_source import line_sequence_from_line
-
-
-class SourceError(Exception):
-    """
-    An exceptions related to a line in the test case,
-    raised by a parser that is unaware of current section.
-
-    I.e., this exception is used within the parsing of a document,
-    as communication between the parsing framework and element parsers.
-
-    This kind of exceptions is never thrown from a document parser.
-    """
-
-    def __init__(self,
-                 source: line_source.LineSequence,
-                 message: str):
-        self._source = source
-        self._message = message
-
-    @property
-    def source(self) -> line_source.LineSequence:
-        return self._source
-
-    @property
-    def message(self) -> str:
-        return self._message
-
-
-def new_source_error_of_single_line(line: line_source.Line,
-                                    message: str) -> SourceError:
-    return SourceError(line_sequence_from_line(line),
-                       message)
 
 
 class ParseError(Exception):

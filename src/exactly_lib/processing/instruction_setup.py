@@ -3,7 +3,7 @@ from typing import Dict, Optional
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionNameExtractor
-from exactly_lib.section_document.section_parsing import SectionElementParser
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 
 
 class InstructionsSetup(tuple):

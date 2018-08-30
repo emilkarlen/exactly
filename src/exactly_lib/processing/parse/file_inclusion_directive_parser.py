@@ -1,10 +1,9 @@
 import pathlib
 from typing import Optional
 
-from exactly_lib.section_document.exceptions import SourceError
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedFileInclusionDirective
-from exactly_lib.section_document.section_parsing import SectionElementParser
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, SourceError
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util.line_source import line_sequence_from_line
 
