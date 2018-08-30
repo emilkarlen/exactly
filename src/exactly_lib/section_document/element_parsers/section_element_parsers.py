@@ -6,7 +6,8 @@ from exactly_lib.section_document.model import InstructionInfo
 from exactly_lib.section_document.parse_source import ParseSource
 from exactly_lib.section_document.parsed_section_element import ParsedSectionElement, new_empty_element, \
     new_comment_element, ParsedInstruction, ParsedNonInstructionElement
-from exactly_lib.section_document.section_element_parsing import SectionElementParser
+from exactly_lib.section_document.section_element_parsing import SectionElementParser, \
+    UnrecognizedSectionElementSourceError
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util import line_source
 
@@ -87,10 +88,20 @@ class ParserFromSequenceOfParsers(SectionElementParser):
     def parse(self,
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedSectionElement]:
+        last_error = None
+
         for parser in self._parsers_to_try:
-            element = parser.parse(fs_location_info, source)
-            if element is not None:
-                return element
+            try:
+                element = parser.parse(fs_location_info, source)
+                if element is not None:
+                    return element
+                else:
+                    last_error = None
+            except UnrecognizedSectionElementSourceError as ex:
+                last_error = ex
+
+        if last_error is not None:
+            raise last_error
         return None
 
 
