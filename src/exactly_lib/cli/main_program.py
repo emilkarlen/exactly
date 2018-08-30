@@ -84,9 +84,6 @@ class TestSuiteDefinition(tuple):
 
     @property
     def configuration_section_instructions(self) -> Dict[str, SingleInstructionSetup]:
-        """
-        :rtype instruction-name -> `SingleInstructionSetup`
-        """
         return self[0]
 
     @property

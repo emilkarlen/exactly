@@ -10,7 +10,7 @@ class SectionElementParser:
               fs_location_info: FileSystemLocationInfo,
               source: ParseSource) -> Optional[ParsedSectionElement]:
         """
-        May return None if source is recognized.
+        May return None if source is not recognized.
         Unrecognized source may also be reported by raising SourceError.
 
         The possibility to return None exists to help constructing parsers from parts -
@@ -23,7 +23,7 @@ class SectionElementParser:
         :param source: Remaining source to parse
 
         :returns: None iff source is invalid / unrecognized. If None is returned, source must _not_
-        have been consumed by this parser.
+        have been consumed.
         :raises SourceError: The element cannot be parsed.
         """
         raise NotImplementedError('abstract method')

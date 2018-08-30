@@ -7,7 +7,8 @@ from exactly_lib.util import line_source
 
 class Instruction:
     """
-    Base class for an element of a phase that is not a comment.
+    Base class for an element of a section that is something to be "executed"
+    - e.g. not empty space or comments.
     """
     pass
 
@@ -111,9 +112,9 @@ class Document:
     def elements_for_section(self, section_name: str) -> SectionContents:
         return self._section2elements[section_name]
 
-    def elements_for_section_or_empty_if_phase_not_present(self, phase_name: str) -> SectionContents:
-        if phase_name in self._section2elements:
-            return self.elements_for_section(phase_name)
+    def elements_for_section_or_empty_if_phase_not_present(self, section_name: str) -> SectionContents:
+        if section_name in self._section2elements:
+            return self.elements_for_section(section_name)
         else:
             return SectionContents(())
 
