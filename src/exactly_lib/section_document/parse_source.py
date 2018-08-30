@@ -157,8 +157,10 @@ class ParseSource:
         :param parse_source_that_is_ahead: Typically a source created as a copy of this source.
         """
         assert isinstance(parse_source_that_is_ahead, ParseSource)
-        delta = len(self.remaining_source) - len(parse_source_that_is_ahead.remaining_source)
-        self.consume(delta)
+        self._column_index = parse_source_that_is_ahead._column_index
+        self.source_string = parse_source_that_is_ahead.source_string
+        self._current_line_number = parse_source_that_is_ahead._current_line_number
+        self._current_line_text = parse_source_that_is_ahead._current_line_text
 
 
 def _index_of_1st_char_on_new_current_line(remaining_source: str, number_of_characters: int) -> int:

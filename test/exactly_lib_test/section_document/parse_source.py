@@ -503,21 +503,34 @@ class TestParseSource(unittest.TestCase):
 
     def test_catch_up_with(self):
         test_cases = [
-            (['abc'],
+            ('consume part of current line',
+             ['abc'],
              lambda parse_source: parse_source.consume(1),
-             lambda parse_source: parse_source.consume(2)),
-            (['abc', 'def'],
+             lambda parse_source: parse_source.consume(2)
+             ),
+            ('copy consumes current line/with existing following line',
+             ['abc', 'def'],
              lambda parse_source: None,
-             lambda parse_source: parse_source.consume_current_line()),
-            (['123', '456'],
+             lambda parse_source: parse_source.consume_current_line()
+             ),
+            ('copy consumes current line/which is the last line',
+             ['abc'],
              lambda parse_source: None,
-             lambda parse_source: parse_source.consume(5)),
-            (['123', '456'],
+             lambda parse_source: parse_source.consume_current_line()
+             ),
+            ('copy consumes num characters that stretches to the following line',
+             ['123', '456'],
              lambda parse_source: None,
-             lambda parse_source: parse_source.consume(7)),
+             lambda parse_source: parse_source.consume(5)
+             ),
+            ('copy consumes all remaining characters',
+             ['123', '456'],
+             lambda parse_source: None,
+             lambda parse_source: parse_source.consume(7)
+             ),
         ]
-        for original_source_lines, original_setup, copy_modifier in test_cases:
-            with self.subTest():
+        for test_name, original_source_lines, original_setup, copy_modifier in test_cases:
+            with self.subTest(test_name):
                 # ARRANGE #
                 original = ParseSource('\n'.join(original_source_lines))
                 original_setup(original)
@@ -526,18 +539,28 @@ class TestParseSource(unittest.TestCase):
                 copy_modifier(copy)
                 original.catch_up_with(copy)
                 # ASSERT #
+                self.assertEqual(copy.is_at_eof,
+                                 original.is_at_eof,
+                                 'is_at_eof')
                 self.assertEqual(copy.remaining_source,
                                  original.remaining_source,
                                  'remaining_source')
-                self.assertEqual(copy.current_line_number,
-                                 original.current_line_number,
-                                 'current_line_number')
-                self.assertEqual(copy.remaining_part_of_current_line,
-                                 original.remaining_part_of_current_line,
-                                 'remaining_part_of_current_line')
-                self.assertEqual(copy.column_index,
-                                 original.column_index,
-                                 'column_index')
+                self.assertEqual(copy.has_current_line,
+                                 original.has_current_line,
+                                 'has_current_line')
+                if original.has_current_line:
+                    self.assertEqual(copy.current_line_number,
+                                     original.current_line_number,
+                                     'current_line_number')
+                    self.assertEqual(copy.remaining_part_of_current_line,
+                                     original.remaining_part_of_current_line,
+                                     'remaining_part_of_current_line')
+                    self.assertEqual(copy.column_index,
+                                     original.column_index,
+                                     'column_index')
+                    self.assertEqual(copy.is_at_eol,
+                                     original.is_at_eol,
+                                     'is_at_eol')
 
 
 class TestSetupForConsume:
