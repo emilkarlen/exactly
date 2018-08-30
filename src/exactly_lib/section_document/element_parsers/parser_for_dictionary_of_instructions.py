@@ -33,13 +33,15 @@ class InstructionParserForDictionaryOfInstructions(InstructionParser):
         first_line = source.current_line
         name = self._extract_name(source)
         parser = self._lookup_parser(first_line, name)
+        source.consume_part_of_current_line(len(name))
         source.consume_initial_space_on_current_line()
         return self._parse(fs_location_info, source, parser, name)
 
     def _extract_name(self, source: ParseSource) -> str:
         try:
             name = self._instruction_name_extractor_function(source.remaining_part_of_current_line)
-            source.consume_part_of_current_line(len(name))
+            if not isinstance(name, str):
+                raise InvalidInstructionSyntaxException(line_sequence_from_line(source.current_line))
         except Exception:
             raise InvalidInstructionSyntaxException(line_sequence_from_line(source.current_line))
         return name

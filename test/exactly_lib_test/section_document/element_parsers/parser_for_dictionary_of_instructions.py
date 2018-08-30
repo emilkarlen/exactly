@@ -81,11 +81,16 @@ class TestParse(unittest.TestCase):
     def test__when__instruction_name_not_in_dict__then__exception_should_be_raised(self):
         section_parser = sut.InstructionParserForDictionaryOfInstructions(name_extractor, {})
         source = source_of_lines(['Ia'])
+        remaining_source_before = source.remaining_source
+
         with self.assertRaises(sut.UnknownInstructionException) as cm:
             section_parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
         self.assertEqual('I',
                          cm.exception.instruction_name,
                          'Instruction name')
+        self.assertEqual(remaining_source_before,
+                         source.remaining_source,
+                         'source should not be consumed')
         assert_equals_single_line(self,
                                   source.current_line,
                                   cm.exception.source,
