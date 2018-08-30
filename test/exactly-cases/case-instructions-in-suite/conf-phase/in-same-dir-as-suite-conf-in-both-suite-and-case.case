@@ -1,0 +1,21 @@
+[conf]
+
+
+act-home = src
+
+
+[act]
+
+
+action-to-check.py
+
+
+[assert]
+
+
+exit-code == 0
+
+stdout equals
+<<-
+Output from ATC
+-

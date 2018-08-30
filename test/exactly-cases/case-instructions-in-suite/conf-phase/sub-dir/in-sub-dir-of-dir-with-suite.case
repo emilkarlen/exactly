@@ -1,0 +1,19 @@
+# Checks that file references in the suite are relative
+# the location of the suite file, and not the case file.
+
+
+[act]
+
+
+action-to-check.py
+
+
+[assert]
+
+
+exit-code == 0
+
+stdout equals
+<<-
+Output from ATC
+-
