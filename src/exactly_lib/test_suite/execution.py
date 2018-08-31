@@ -111,7 +111,7 @@ class SuitesExecutor:
 
 
 def _process_and_time(case_processor: test_case_processing.Processor,
-                      case: test_case_processing.TestCaseSetup) -> TestCaseProcessingInfo:
+                      case: test_case_processing.TestCaseFileReference) -> TestCaseProcessingInfo:
     case_start_time = datetime.datetime.now()
     result = _process_case(case_processor, case)
     case_end_time = datetime.datetime.now()
@@ -120,7 +120,7 @@ def _process_and_time(case_processor: test_case_processing.Processor,
 
 
 def _process_case(case_processor: test_case_processing.Processor,
-                  case: test_case_processing.TestCaseSetup) -> test_case_processing.Result:
+                  case: test_case_processing.TestCaseFileReference) -> test_case_processing.Result:
     try:
         return case_processor.apply(case)
     except Exception as ex:

@@ -4,7 +4,7 @@ from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing import test_case_processing as processing
 from exactly_lib.processing.test_case_handling_setup import TestCaseTransformer
 from exactly_lib.processing.test_case_processing import AccessorError, Accessor, ProcessError, Preprocessor, ErrorInfo, \
-    TestCaseSetup
+    TestCaseFileReference
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
 
@@ -19,7 +19,7 @@ class SourceReader:
 
 class Parser:
     def apply(self,
-              test_case: TestCaseSetup,
+              test_case: TestCaseFileReference,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         """
         :raises ProcessError: Indicates syntax error
@@ -49,7 +49,7 @@ class AccessorFromParts(Accessor):
         self._parser = parser
         self._transformer = transformer
 
-    def apply(self, test_case: TestCaseSetup) -> test_case_doc.TestCase:
+    def apply(self, test_case: TestCaseFileReference) -> test_case_doc.TestCase:
         source = self._apply(self._source_reader.apply,
                              processing.AccessErrorType.FILE_ACCESS_ERROR,
                              test_case.file_path)
@@ -80,7 +80,7 @@ class ProcessorFromAccessorAndExecutor(processing.Processor):
         self._accessor = accessor
         self._executor = executor
 
-    def apply(self, test_case: processing.TestCaseSetup) -> processing.Result:
+    def apply(self, test_case: processing.TestCaseFileReference) -> processing.Result:
         try:
             try:
                 a_test_case_doc = self._accessor.apply(test_case)

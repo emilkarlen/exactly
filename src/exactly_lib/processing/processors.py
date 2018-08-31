@@ -13,7 +13,7 @@ from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse import test_case_parser
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError, TestCaseSetup, AccessorError, \
+from exactly_lib.processing.test_case_processing import ErrorInfo, ProcessError, TestCaseFileReference, AccessorError, \
     AccessErrorType
 from exactly_lib.section_document import exceptions
 from exactly_lib.section_document.parse_source import ParseSource
@@ -107,7 +107,7 @@ class _Parser(processing_utils.Parser):
         self._test_case_parsing_setup = test_case_parsing_setup
 
     def apply(self,
-              test_case: TestCaseSetup,
+              test_case: TestCaseFileReference,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         file_parser = test_case_parser.new_parser(self._test_case_parsing_setup)
         source = ParseSource(test_case_plain_source)

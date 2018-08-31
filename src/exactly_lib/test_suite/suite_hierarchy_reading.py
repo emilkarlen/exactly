@@ -78,7 +78,7 @@ class _SingleFileReader:
         sub_inclusions = inclusions + [resolved_suite_file_path]
         sub_suites_reader = functools.partial(self, sub_inclusions)
         suite_list = list(map(sub_suites_reader, suite_file_path_list))
-        case_list = list(map(test_case_processing.test_case_setup_of_source_file, case_file_path_list))
+        case_list = list(map(test_case_processing.test_case_reference_of_source_file, case_file_path_list))
         return structure.TestSuite(suite_file_path,
                                    inclusions,
                                    test_case_handling_setup,

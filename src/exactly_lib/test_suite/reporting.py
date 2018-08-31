@@ -3,7 +3,7 @@ import pathlib
 from typing import Tuple, List
 
 from exactly_lib.processing import test_case_processing
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.util.std import StdOutputFiles
 from . import structure
 
@@ -42,11 +42,11 @@ class SubSuiteProgressReporter:
         raise NotImplementedError()
 
     def case_begin(self,
-                   case: test_case_processing.TestCaseSetup):
+                   case: test_case_processing.TestCaseFileReference):
         raise NotImplementedError()
 
     def case_end(self,
-                 case: test_case_processing.TestCaseSetup,
+                 case: test_case_processing.TestCaseFileReference,
                  processing_info: TestCaseProcessingInfo):
         raise NotImplementedError()
 
@@ -64,7 +64,7 @@ class SubSuiteReporter:
         return self._listener
 
     def case_end(self,
-                 case: test_case_processing.TestCaseSetup,
+                 case: test_case_processing.TestCaseFileReference,
                  execution_info: TestCaseProcessingInfo):
         self._result.append((case, execution_info))
 
@@ -76,7 +76,7 @@ class SubSuiteReporter:
     def start_time(self) -> datetime.datetime:
         return self._start_time
 
-    def result(self) -> List[Tuple[TestCaseSetup, TestCaseProcessingInfo]]:
+    def result(self) -> List[Tuple[TestCaseFileReference, TestCaseProcessingInfo]]:
         return self._result
 
 

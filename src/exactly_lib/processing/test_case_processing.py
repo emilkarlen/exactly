@@ -7,7 +7,7 @@ from exactly_lib.test_case import test_case_doc
 from exactly_lib.test_case.error_description import ErrorDescription
 
 
-class TestCaseSetup:
+class TestCaseFileReference:
     def __init__(self,
                  file_path: pathlib.Path,
                  file_reference_relativity_root_dir: pathlib.Path):
@@ -23,9 +23,9 @@ class TestCaseSetup:
         return self.__file_reference_relativity_root_dir
 
 
-def test_case_setup_of_source_file(source_file: pathlib.Path) -> TestCaseSetup:
-    return TestCaseSetup(source_file,
-                         source_file.parent)
+def test_case_reference_of_source_file(source_file: pathlib.Path) -> TestCaseFileReference:
+    return TestCaseFileReference(source_file,
+                                 source_file.parent)
 
 
 class ErrorInfo(tuple):
@@ -155,7 +155,7 @@ class Preprocessor:
 
 
 class Accessor:
-    def apply(self, test_case: TestCaseSetup) -> test_case_doc.TestCase:
+    def apply(self, test_case: TestCaseFileReference) -> test_case_doc.TestCase:
         """
         :raises AccessorError
         """
@@ -163,5 +163,5 @@ class Accessor:
 
 
 class Processor:
-    def apply(self, test_case: TestCaseSetup) -> Result:
+    def apply(self, test_case: TestCaseFileReference) -> Result:
         raise NotImplementedError()

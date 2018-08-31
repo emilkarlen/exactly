@@ -2,7 +2,7 @@ import enum
 import pathlib
 
 from exactly_lib.processing import test_case_processing
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite import reporting, structure
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
@@ -49,12 +49,12 @@ class EventType(enum.Enum):
 
 class CaseEndInfo(tuple):
     def __new__(cls,
-                case: TestCaseSetup,
+                case: TestCaseFileReference,
                 result: test_case_processing.Result):
         return tuple.__new__(cls, (case, result))
 
     @property
-    def case(self) -> TestCaseSetup:
+    def case(self) -> TestCaseFileReference:
         return self[0]
 
     @property
@@ -81,7 +81,7 @@ class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporte
         self.case_begin_list.append(case)
 
     def case_end(self,
-                 case: TestCaseSetup,
+                 case: TestCaseFileReference,
                  processing_info: TestCaseProcessingInfo):
         self.event_type_list.append(EventType.CASE_END)
         self.case_end_list.append(CaseEndInfo(case, processing_info.result))

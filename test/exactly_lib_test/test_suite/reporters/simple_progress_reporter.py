@@ -6,7 +6,7 @@ from pathlib import Path
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values as case_ev
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_suite import execution
 from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite import structure
@@ -127,12 +127,12 @@ class TestFinalResultFormatting(unittest.TestCase):
         rel_root = Path.cwd().resolve()
         errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED):
             [
-                TestCaseSetup(Path('case-1'), rel_root / Path('fip-1')),
-                TestCaseSetup(Path('case-2'), rel_root / Path('fip-2')),
+                TestCaseFileReference(Path('case-1'), rel_root / Path('fip-1')),
+                TestCaseFileReference(Path('case-2'), rel_root / Path('fip-2')),
             ],
             ExitValue(12, 'longer_identifier_12', ForegroundColor.RED):
                 [
-                    TestCaseSetup(Path('case-3'), rel_root / Path('fip-3')),
+                    TestCaseFileReference(Path('case-3'), rel_root / Path('fip-3')),
                 ],
         }
         # ACT #
@@ -159,7 +159,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         rel_root = Path.cwd().resolve()
         errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED):
             [
-                TestCaseSetup(Path('case-1'), rel_root.parent / Path('fip-1')),
+                TestCaseFileReference(Path('case-1'), rel_root.parent / Path('fip-1')),
             ],
         }
         # ACT #

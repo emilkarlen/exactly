@@ -3,7 +3,7 @@ from typing import Dict
 from exactly_lib.definitions.test_case import phase_names_plain
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.instruction_section_element_parser import section_element_parser
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.section_document import document_parsers
 from exactly_lib.section_document import section_parsing
 from exactly_lib.section_document.document_parser import DocumentParser
@@ -18,7 +18,7 @@ class Parser:
         self.__section_document_parser = section_document_parser
 
     def apply(self,
-              test_case: TestCaseSetup,
+              test_case: TestCaseFileReference,
               test_case_source: ParseSource) -> test_case_doc.TestCase:
         document = self.__section_document_parser.parse_source(test_case.file_path,
                                                                test_case_source)
