@@ -1,3 +1,6 @@
+from pathlib import Path
+from typing import List
+
 from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_parse import parse_token_on_current_line
@@ -9,7 +12,7 @@ _WILDCARD_CHARACTERS = ('*', '?', '[')
 
 
 class FileNamesResolver:
-    def resolve(self, environment: instruction.Environment) -> list:
+    def resolve(self, environment: instruction.Environment) -> List[Path]:
         raise NotImplementedError()
 
 
@@ -33,7 +36,7 @@ class FileNamesResolverForPlainFileName(FileNamesResolver):
     def __init__(self, file_name: str):
         self.file_name = file_name
 
-    def resolve(self, environment: instruction.Environment) -> list:
+    def resolve(self, environment: instruction.Environment) -> List[Path]:
         path = environment.suite_file_dir_path / self.file_name
         if not path.is_file():
             raise FileNotAccessibleSimpleError(path)
@@ -44,7 +47,7 @@ class FileNamesResolverForGlobPattern(FileNamesResolver):
     def __init__(self, pattern: str):
         self.pattern = pattern
 
-    def resolve(self, environment: instruction.Environment) -> list:
+    def resolve(self, environment: instruction.Environment) -> List[Path]:
         paths = sorted(environment.suite_file_dir_path.glob(self.pattern))
         for path in paths:
             if not path.is_file():
