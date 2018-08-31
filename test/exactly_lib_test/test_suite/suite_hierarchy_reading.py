@@ -10,7 +10,7 @@ from exactly_lib.test_suite.instruction_set.parse import SuiteFileReferenceError
     SuiteDoubleInclusion
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir
+from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.test_suite.test_resources import check_exception, check_structure
 from exactly_lib_test.test_suite.test_resources.check_structure import equals_test_suite
@@ -50,9 +50,9 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
                                                 '1.case',
                                                 'sub/2.case',
                                                 ])),
-                            File('1.case', ''),
+                            empty_file('1.case'),
                             Dir('sub',
-                                [File('2.case', '')])])
+                                [empty_file('2.case')])])
 
 
 class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
@@ -107,9 +107,9 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
                                                 '1.suite',
                                                 'sub/2.suite',
                                                 ])),
-                            File('1.suite', ''),
+                            empty_file('1.suite'),
                             Dir('sub',
-                                [File('2.suite', '')])])
+                                [empty_file('2.suite')])])
 
 
 class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
@@ -139,8 +139,8 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
                                                 '[cases]',
                                                 str(root_path / '1.case'),
                                                 ])),
-                            File('1.suite', ''),
-                            File('1.case', ''),
+                            empty_file('1.suite'),
+                            empty_file('1.case'),
                             ])
 
 
@@ -180,11 +180,11 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
                                                 '[cases]',
                                                 'sub/2.case',
                                                 ])),
-                            File('1.suite', ''),
-                            File('1.case', ''),
+                            empty_file('1.suite'),
+                            empty_file('1.case'),
                             Dir('sub',
-                                [File('2.suite', ''),
-                                 File('2.case', '')])])
+                                [empty_file('2.suite'),
+                                 empty_file('2.case')])])
 
 
 class ComplexStructure(check_structure.Setup):
@@ -230,8 +230,8 @@ class ComplexStructure(check_structure.Setup):
                             File('local.suite',
                                  lines_content(['[cases]',
                                                 'from-local-suite.case'])),
-                            File('from-main-suite.case', ''),
-                            File('from-local-suite.case', ''),
+                            empty_file('from-main-suite.case'),
+                            empty_file('from-local-suite.case'),
                             Dir('sub',
                                 [
                                     File('sub.suite',
@@ -244,8 +244,8 @@ class ComplexStructure(check_structure.Setup):
                                          lines_content(['[cases]',
                                                         'sub-sub.case',
                                                         ])),
-                                    File('sub.case', ''),
-                                    File('sub-sub.case', ''),
+                                    empty_file('sub.case'),
+                                    empty_file('sub-sub.case'),
                                 ])
                             ])
 
@@ -384,7 +384,7 @@ class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
                                                 ])),
                             Dir('subdir',
                                 [
-                                    File('in-subdir.suite', '')
+                                    empty_file('in-subdir.suite')
                                 ])
                             ])
 
