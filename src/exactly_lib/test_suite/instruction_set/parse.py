@@ -1,4 +1,5 @@
 import pathlib
+from typing import List
 
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.test_case import error_description
@@ -65,7 +66,7 @@ class SuiteDoubleInclusion(SuiteReadError):
         """
         return self._first_referenced_from
 
-    def error_message_lines(self) -> list:
+    def error_message_lines(self) -> List[str]:
         return ['The suite has already been included.']
 
 
