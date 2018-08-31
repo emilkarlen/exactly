@@ -1,13 +1,19 @@
 import pathlib
 import tempfile
 import unittest
+from pathlib import Path
+from typing import List, Sequence
 
 from exactly_lib import program_info
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.suite_hierarchy_reading import Reader
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder, \
+    ValueAssertionBase
 from exactly_lib_test.test_suite.test_resources.environment import default_environment
 
 
@@ -18,7 +24,7 @@ class Setup:
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         raise NotImplementedError()
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> structure.TestSuite:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
         raise NotImplementedError()
 
 
@@ -30,41 +36,78 @@ def check(setup: Setup,
         actual = Reader(default_environment()).apply(setup.root_suite_based_at(tmp_dir_path))
         expected = setup.expected_structure_based_at(tmp_dir_path)
 
-        StructureEqualityChecker(put).check_suite(expected,
-                                                  actual)
+        expected.apply_without_message(put, actual)
 
 
-class StructureEqualityChecker:
+def equals_test_suite(expected: structure.TestSuite) -> ValueAssertion[structure.TestSuite]:
+    return matches_test_suite(
+        source_file=asrt.equals(expected.source_file),
+        file_inclusions_leading_to_this_file=asrt.equals(expected.file_inclusions_leading_to_this_file),
+        test_cases=asrt.matches_sequence([
+            equals_test_case_reference(test_case)
+            for test_case in expected.test_cases
+        ]),
+        sub_test_suites=asrt.matches_sequence([
+            equals_test_suite(sub_test_suite)
+            for sub_test_suite in expected.sub_test_suites
+        ]),
+        test_case_handling_setup=asrt.anything_goes(),
+    )
+
+
+def matches_test_suite(source_file: ValueAssertion[Path],
+                       file_inclusions_leading_to_this_file: ValueAssertion[List[Path]],
+                       test_case_handling_setup: ValueAssertion[TestCaseHandlingSetup],
+                       sub_test_suites: ValueAssertion[Sequence[structure.TestSuite]],
+                       test_cases: ValueAssertion[Sequence[TestCaseFileReference]],
+                       ) -> ValueAssertion[structure.TestSuite]:
+    return MatchesTestSuite(source_file,
+                            file_inclusions_leading_to_this_file,
+                            test_case_handling_setup,
+                            sub_test_suites,
+                            test_cases)
+
+
+def equals_test_case_reference(expected: TestCaseFileReference) -> ValueAssertion[TestCaseFileReference]:
+    return asrt.sub_component('file_path',
+                              TestCaseFileReference.file_path.fget,
+                              asrt.equals(expected.file_path)
+                              )
+
+
+class MatchesTestSuite(ValueAssertionBase[structure.TestSuite]):
     def __init__(self,
-                 put: unittest.TestCase):
-        self.put = put
+                 source_file: ValueAssertion[Path],
+                 file_inclusions_leading_to_this_file: ValueAssertion[List[Path]],
+                 test_case_handling_setup: ValueAssertion[TestCaseHandlingSetup],
+                 sub_test_suites: ValueAssertion[Sequence[structure.TestSuite]],
+                 test_cases: ValueAssertion[Sequence[TestCaseFileReference]],
+                 ):
+        self.source_file = source_file
+        self.file_inclusions_leading_to_this_file = file_inclusions_leading_to_this_file
+        self.test_case_handling_setup = test_case_handling_setup
+        self.sub_test_suites = sub_test_suites
+        self.test_cases = test_cases
 
-    def check_suite(self,
-                    expected: structure.TestSuite,
-                    actual: structure.TestSuite):
-        self.put.assertEqual(expected.source_file,
-                             actual.source_file,
-                             'Source file')
-        self.put.assertEqual(expected.file_inclusions_leading_to_this_file,
-                             actual.file_inclusions_leading_to_this_file,
-                             'File inclusions')
-        self.put.assertEqual(len(expected.sub_test_suites),
-                             len(actual.sub_test_suites),
-                             'Number of sub suites')
-
-        self.put.assertEqual(len(expected.test_cases),
-                             len(actual.test_cases),
-                             'Number of cases in the suite')
-
-        for expected_case, actual_case in zip(expected.test_cases, actual.test_cases):
-            self.check_case(expected_case, actual_case)
-
-        for expected_suite, actual_suite in zip(expected.sub_test_suites, actual.sub_test_suites):
-            self.check_suite(expected_suite, actual_suite)
-
-    def check_case(self,
-                   expected: TestCaseFileReference,
-                   actual: TestCaseFileReference):
-        self.put.assertEqual(expected.file_path,
-                             actual.file_path,
-                             'File path of test case')
+    def _apply(self,
+               put: unittest.TestCase,
+               value: structure.TestSuite,
+               message_builder: MessageBuilder):
+        assertion = asrt.and_([
+            asrt.sub_component('source_file',
+                               structure.TestSuite.source_file.fget,
+                               self.source_file),
+            asrt.sub_component('file_inclusions_leading_to_this_file',
+                               structure.TestSuite.file_inclusions_leading_to_this_file.fget,
+                               self.file_inclusions_leading_to_this_file),
+            asrt.sub_component('test_case_handling_setup',
+                               structure.TestSuite.test_case_handling_setup.fget,
+                               self.test_case_handling_setup),
+            asrt.sub_component('sub_test_suites',
+                               structure.TestSuite.sub_test_suites.fget,
+                               self.sub_test_suites),
+            asrt.sub_component('test_cases',
+                               structure.TestSuite.test_cases.fget,
+                               self.test_cases),
+        ])
+        assertion.apply(put, value, message_builder)
