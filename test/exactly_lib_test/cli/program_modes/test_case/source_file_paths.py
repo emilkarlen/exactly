@@ -64,9 +64,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
     def test_abs_path_to_root_file_in_cwd(self):
         # ARRANGE #
 
-        root_file_base_name = 'root-file-base-name.src'
-
-        root_file_in_cwd = file_with_lines(root_file_base_name, [
+        root_file_in_cwd = file_with_lines('root-file-base-name.src', [
             CONFIGURATION_PHASE_NAME.syntax,
             INSTR_THAT_ASSERTS_SOURCE_INFO_MATCHES_LOCATION,
         ])
@@ -76,7 +74,7 @@ class TestSourceLocationInfoGivenToElementParser(unittest.TestCase):
         ])
 
         with tmp_dir_as_cwd(cwd_dir_contents) as abs_cwd_dir_path:
-            abs_file_arg_to_parser = abs_cwd_dir_path / root_file_base_name
+            abs_file_arg_to_parser = abs_cwd_dir_path / root_file_in_cwd.name
 
             instruction_parser_file_loc_assertion = matches_file_location_info(
                 abs_path_of_dir_containing_first_file_path=asrt.equals(Path('/')),
