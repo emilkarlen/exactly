@@ -1,16 +1,14 @@
 import pathlib
-import tempfile
 import unittest
 from pathlib import Path
 from typing import List, Sequence
 
-from exactly_lib import program_info
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.suite_hierarchy_reading import Reader
-from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.test_resources.files.file_structure import DirContents
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion, MessageBuilder, \
     ValueAssertionBase
@@ -30,10 +28,12 @@ class Setup:
 
 def check(setup: Setup,
           put: unittest.TestCase):
-    with tempfile.TemporaryDirectory(prefix=program_info.PROGRAM_NAME + '-test-') as tmp_dir:
-        tmp_dir_path = resolved_path(tmp_dir)
+    # ARRANGE #
+    with tmp_dir_as_cwd() as tmp_dir_path:
         setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
+        # ACT #
         actual = Reader(default_environment()).apply(setup.root_suite_based_at(tmp_dir_path))
+        # ASSERT #
         expected = setup.expected_structure_based_at(tmp_dir_path)
 
         expected.apply_without_message(put, actual)

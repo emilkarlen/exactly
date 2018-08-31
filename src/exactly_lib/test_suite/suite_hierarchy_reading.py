@@ -1,6 +1,7 @@
 import functools
 import pathlib
-from typing import List
+from pathlib import Path
+from typing import List, Tuple
 
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
@@ -8,6 +9,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.section_document.section_parsing import SectionElementParser
 from exactly_lib.test_suite.instruction_set import parse, instruction
+from exactly_lib.test_suite.instruction_set.instruction import TestSuiteFileReferencesInstruction
 from . import structure
 from . import suite_file_reading
 from . import test_suite_doc
@@ -72,10 +74,9 @@ class _SingleFileReader:
             test_suite,
             self.environment.default_test_case_handling_setup)
 
-        resolved_suite_file_path = suite_file_path.resolve()
         suite_file_path_list, case_file_path_list = self._resolve_paths(test_suite,
-                                                                        resolved_suite_file_path)
-        sub_inclusions = inclusions + [resolved_suite_file_path]
+                                                                        suite_file_path)
+        sub_inclusions = inclusions + [suite_file_path]
         sub_suites_reader = functools.partial(self, sub_inclusions)
         suite_list = list(map(sub_suites_reader, suite_file_path_list))
         case_list = list(map(test_case_processing.test_case_reference_of_source_file, case_file_path_list))
@@ -87,24 +88,27 @@ class _SingleFileReader:
 
     def _resolve_paths(self,
                        test_suite: test_suite_doc.TestSuiteDocument,
-                       suite_file_path: pathlib.Path) -> (list, list):
+                       suite_file_path: pathlib.Path) -> Tuple[List[Path], List[Path]]:
         def paths_for_instructions(env: instruction.Environment,
                                    section_contents: SectionContents,
-                                   check_visited: bool) -> list:
+                                   check_visited: bool) -> List[Path]:
             ret_val = []
             for element in section_contents.elements:
                 if element.element_type is ElementType.INSTRUCTION:
                     try:
-                        paths = element.instruction_info.instruction.resolve_paths(env)
+                        file_references_instruction = element.instruction_info.instruction
+                        assert isinstance(file_references_instruction, TestSuiteFileReferencesInstruction)
+                        paths = file_references_instruction.resolve_paths(env)
                         if check_visited:
                             for path in paths:
-                                if path in self._visited:
+                                resolved_path = path.resolve()
+                                if resolved_path in self._visited:
                                     raise parse.SuiteDoubleInclusion(suite_file_path,
                                                                      element.source,
                                                                      path,
-                                                                     self._visited[path])
+                                                                     self._visited[resolved_path])
                                 else:
-                                    self._visited[path] = suite_file_path
+                                    self._visited[resolved_path] = suite_file_path
                         ret_val.extend(paths)
                     except instruction.FileNotAccessibleSimpleError as ex:
                         raise parse.SuiteFileReferenceError(suite_file_path,
