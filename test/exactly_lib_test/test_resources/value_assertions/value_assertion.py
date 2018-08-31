@@ -73,6 +73,20 @@ class ValueAssertion(Generic[T]):
         return self.apply(put, value, MessageBuilder())
 
 
+class ValueAssertionBase(ValueAssertion[T]):
+    def _apply(self,
+               put: unittest.TestCase,
+               value: T,
+               message_builder: MessageBuilder):
+        raise NotImplementedError('abstract method')
+
+    def apply(self,
+              put: unittest.TestCase,
+              value: T,
+              message_builder: MessageBuilder = MessageBuilder()):
+        self._apply(put, value, message_builder)
+
+
 class OfCallable(ValueAssertion[T]):
     def __init__(self, f: Callable[[unittest.TestCase, T, MessageBuilder], None]):
         self.f = f
