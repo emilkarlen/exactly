@@ -69,10 +69,16 @@ def matches_test_suite(source_file: ValueAssertion[Path],
 
 
 def equals_test_case_reference(expected: TestCaseFileReference) -> ValueAssertion[TestCaseFileReference]:
-    return asrt.sub_component('file_path',
-                              TestCaseFileReference.file_path.fget,
-                              asrt.equals(expected.file_path)
-                              )
+    return asrt.and_([
+        asrt.sub_component('file_path',
+                           TestCaseFileReference.file_path.fget,
+                           asrt.equals(expected.file_path)
+                           ),
+        asrt.sub_component('file_reference_relativity_root_dir',
+                           TestCaseFileReference.file_reference_relativity_root_dir.fget,
+                           asrt.equals(expected.file_reference_relativity_root_dir)
+                           ),
+    ])
 
 
 class MatchesTestSuite(ValueAssertionBase[structure.TestSuite]):
