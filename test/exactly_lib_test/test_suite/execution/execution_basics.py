@@ -80,23 +80,23 @@ class TestError(unittest.TestCase):
 class TestReturnValueFromTestCaseProcessor(unittest.TestCase):
     def test_internal_error(self):
         result = new_internal_error(error_info.of_message('message'))
-        self._helper_for_test_of_return_value_from_test_case_processor(result)
+        self._check(result)
 
     def test_reading_error(self):
         result = new_access_error(tcp.AccessErrorType.FILE_ACCESS_ERROR,
                                   error_info.of_message('message'))
-        self._helper_for_test_of_return_value_from_test_case_processor(result)
+        self._check(result)
 
     def test_executed__skipped(self):
         result = new_executed(new_skipped())
-        self._helper_for_test_of_return_value_from_test_case_processor(result)
+        self._check(result)
 
     def test_executed__pass(self):
         result = new_executed(FULL_RESULT_PASS)
-        self._helper_for_test_of_return_value_from_test_case_processor(result)
+        self._check(result)
 
-    def _helper_for_test_of_return_value_from_test_case_processor(self,
-                                                                  result: tcp.Result):
+    def _check(self,
+               result: tcp.Result):
         # ARRANGE #
         str_std_out_files = StringStdOutFiles()
         test_case = test_case_reference_of_source_file(Path('test-case'))
