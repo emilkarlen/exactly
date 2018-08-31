@@ -6,7 +6,7 @@ from typing import Dict, List, Tuple
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.processing import test_case_processing, exit_values as test_case_exit_values
-from exactly_lib.processing.test_case_processing import Status, TestCaseSetup
+from exactly_lib.processing.test_case_processing import Status, TestCaseFileReference
 from exactly_lib.test_suite import reporting, structure, exit_values
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
@@ -33,12 +33,12 @@ class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter)
     def suite_end(self):
         self.output_file.write_line('suite ' + self._file_path_pres(self.suite.source_file) + ': end')
 
-    def case_begin(self, case: test_case_processing.TestCaseSetup):
+    def case_begin(self, case: test_case_processing.TestCaseFileReference):
         self.output_file.write('case  ' + self._file_path_pres(case.file_path) + ': ',
                                flush=True)
 
     def case_end(self,
-                 case: test_case_processing.TestCaseSetup,
+                 case: test_case_processing.TestCaseFileReference,
                  processing_info: TestCaseProcessingInfo):
         exit_value = test_case_exit_values.from_result(processing_info.result)
         self.output_file.write('(%fs) ' % processing_info.duration.total_seconds())
@@ -108,10 +108,11 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         self._output_file.write_colored_line(exit_value.exit_identifier, exit_value.color)
         return exit_value.exit_code
 
-    def _valid_suite_exit_value(self) -> Tuple[int, Dict[ExitValue, List[TestCaseSetup]], exit_values.ExitValue]:
+    def _valid_suite_exit_value(self) -> Tuple[
+        int, Dict[ExitValue, List[TestCaseFileReference]], exit_values.ExitValue]:
         errors = {}
 
-        def add_error(exit_value: exit_values.ExitValue, case: TestCaseSetup):
+        def add_error(exit_value: exit_values.ExitValue, case: TestCaseFileReference):
             current = errors.setdefault(exit_value, [])
             current.append(case)
 
@@ -135,7 +136,7 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
 def format_final_result_for_valid_suite(num_cases: int,
                                         elapsed_time: datetime.timedelta,
                                         relativity_root_abs_path: pathlib.Path,
-                                        errors: Dict[ExitValue, List[TestCaseSetup]]) -> List[str]:
+                                        errors: Dict[ExitValue, List[TestCaseFileReference]]) -> List[str]:
     """
     :return: The list of lines that should be reported.
     """

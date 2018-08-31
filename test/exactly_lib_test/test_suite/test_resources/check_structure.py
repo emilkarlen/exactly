@@ -3,7 +3,7 @@ import tempfile
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.suite_hierarchy_reading import Reader
 from exactly_lib.util.file_utils import resolved_path
@@ -63,8 +63,8 @@ class StructureEqualityChecker:
             self.check_suite(expected_suite, actual_suite)
 
     def check_case(self,
-                   expected: TestCaseSetup,
-                   actual: TestCaseSetup):
+                   expected: TestCaseFileReference,
+                   actual: TestCaseFileReference):
         self.put.assertEqual(expected.file_path,
                              actual.file_path,
                              'File path of test case')

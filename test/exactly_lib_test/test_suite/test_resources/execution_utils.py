@@ -9,7 +9,7 @@ from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib.test_suite import structure
 from exactly_lib.util.failure_details import new_failure_details_from_message
@@ -31,7 +31,7 @@ class TestCaseProcessorThatGivesConstant(tcp.Processor):
                  result: tcp.Result):
         self.result = result
 
-    def apply(self, test_case: tcp.TestCaseSetup) -> tcp.Result:
+    def apply(self, test_case: tcp.TestCaseFileReference) -> tcp.Result:
         return self.result
 
 
@@ -50,7 +50,7 @@ class TestCaseProcessorThatGivesConstantPerCase(tcp.Processor):
         """
         self.test_case_id_2_result = test_case_id_2_result
 
-    def apply(self, test_case: TestCaseSetup) -> tcp.Result:
+    def apply(self, test_case: TestCaseFileReference) -> tcp.Result:
         return self.test_case_id_2_result[id(test_case)]
 
 
@@ -100,6 +100,6 @@ def test_suite(source_file_name: str,
                                test_cases)
 
 
-def test_case(source_file_name: str) -> TestCaseSetup:
-    return TestCaseSetup(pathlib.Path(source_file_name),
-                         pathlib.Path.cwd())
+def test_case(source_file_name: str) -> TestCaseFileReference:
+    return TestCaseFileReference(pathlib.Path(source_file_name),
+                                 pathlib.Path.cwd())

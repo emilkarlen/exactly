@@ -6,7 +6,7 @@ from exactly_lib.processing import processing_utils as sut
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.preprocessor import IdentityPreprocessor
 from exactly_lib.processing.test_case_handling_setup import identity_test_case_transformer, TestCaseTransformer
-from exactly_lib.processing.test_case_processing import TestCaseSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.section_document.model import new_empty_section_contents
 from exactly_lib.test_case import error_description
 from exactly_lib.test_case import test_case_doc
@@ -39,7 +39,7 @@ class TestAccessor(unittest.TestCase):
                                          identity_test_case_transformer())
         # ACT #
         with self.assertRaises(tcp.AccessorError) as cm:
-            accessor.apply(TEST_CASE_SETUP)
+            accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
         self.assertEqual(cm.exception.error,
                          tcp.AccessErrorType.FILE_ACCESS_ERROR)
@@ -52,7 +52,7 @@ class TestAccessor(unittest.TestCase):
                                          identity_test_case_transformer())
         # ACT #
         with self.assertRaises(tcp.AccessorError) as cm:
-            accessor.apply(TEST_CASE_SETUP)
+            accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
         self.assertEqual(cm.exception.error,
                          tcp.AccessErrorType.PRE_PROCESS_ERROR)
@@ -65,7 +65,7 @@ class TestAccessor(unittest.TestCase):
                                          identity_test_case_transformer())
         # ACT #
         with self.assertRaises(tcp.AccessorError) as cm:
-            accessor.apply(TEST_CASE_SETUP)
+            accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
         self.assertEqual(cm.exception.error,
                          tcp.AccessErrorType.SYNTAX_ERROR)
@@ -80,7 +80,7 @@ class TestAccessor(unittest.TestCase):
                                          identity_test_case_transformer())
         # ACT #
         with self.assertRaises(tcp.AccessorError) as cm:
-            accessor.apply(TEST_CASE_SETUP)
+            accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
         self.assertEqual(cm.exception.error,
                          error_type)
@@ -105,7 +105,7 @@ class TestAccessor(unittest.TestCase):
                                          ParserThatReturnsIfSame(p_source, TEST_CASE),
                                          ConstantTransformer())
         # ACT #
-        actual = accessor.apply(TEST_CASE_SETUP)
+        actual = accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
         self.assertIs(expected_tc,
                       actual)
@@ -119,7 +119,7 @@ class TestAccessor(unittest.TestCase):
                                          ParserThatReturnsIfSame(p_source, TEST_CASE),
                                          identity_test_case_transformer())
         # ACT #
-        actual = accessor.apply(TEST_CASE_SETUP)
+        actual = accessor.apply(TEST_CASE_REFERENCE)
         # ASSERT #
         self.assertIs(TEST_CASE,
                       actual)
@@ -138,7 +138,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(tcp.test_case_setup_of_source_file(PATH))
+        result = processor.apply(tcp.test_case_reference_of_source_file(PATH))
         # ASSERT #
         self.assertIs(tcp.Status.ACCESS_ERROR,
                       result.status)
@@ -164,7 +164,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(tcp.test_case_setup_of_source_file(PATH))
+        result = processor.apply(tcp.test_case_reference_of_source_file(PATH))
         # ASSERT #
         self.assertEqual(tcp.Status.INTERNAL_ERROR,
                          result.status)
@@ -179,7 +179,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(tcp.test_case_setup_of_source_file(PATH))
+        result = processor.apply(tcp.test_case_reference_of_source_file(PATH))
         # ASSERT #
         self.assertEqual(tcp.Status.INTERNAL_ERROR,
                          result.status)
@@ -195,7 +195,7 @@ class TestProcessorFromAccessorAndExecutor(unittest.TestCase):
         processor = sut.ProcessorFromAccessorAndExecutor(accessor,
                                                          executor)
         # ACT #
-        result = processor.apply(tcp.test_case_setup_of_source_file(PATH))
+        result = processor.apply(tcp.test_case_reference_of_source_file(PATH))
         # ASSERT #
         self.assertIs(tcp.Status.EXECUTED,
                       result.status)
@@ -249,7 +249,7 @@ class ParserThat(sut.Parser):
         self.f = f
 
     def apply(self,
-              test_case: TestCaseSetup,
+              test_case: TestCaseFileReference,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         return self.f()
 
@@ -260,7 +260,7 @@ class ParserThatReturnsIfSame(sut.Parser):
         self.returns = returns
 
     def apply(self,
-              test_case: TestCaseSetup,
+              test_case: TestCaseFileReference,
               test_case_plain_source: str) -> test_case_doc.TestCase:
         return if_same_then_else_raise(self.expected,
                                        test_case_plain_source,
@@ -322,7 +322,7 @@ PROCESS_ERROR = tcp.ProcessError(ERROR_INFO)
 
 PATH = pathlib.Path('path')
 
-TEST_CASE_SETUP = TestCaseSetup(PATH, pathlib.Path.cwd())
+TEST_CASE_REFERENCE = TestCaseFileReference(PATH, pathlib.Path.cwd())
 
 TEST_CASE = test_case_doc.TestCase(new_empty_section_contents(),
                                    new_empty_section_contents(),

@@ -4,7 +4,7 @@ import unittest
 from exactly_lib.act_phase_setups import command_line
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.processing.test_case_processing import test_case_setup_of_source_file
+from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.structure import TestSuite
 
@@ -24,7 +24,7 @@ class TestDepthFirstEnumerator(unittest.TestCase):
             [],
             T_C_H_S,
             [],
-            [test_case_setup_of_source_file(pathlib.Path('case-file'))])
+            [test_case_reference_of_source_file(pathlib.Path('case-file'))])
         suite_list = DepthFirstEnumerator().apply(root_suite)
         self.assertEqual(1,
                          len(suite_list),

@@ -1,6 +1,9 @@
 import pathlib
+from pathlib import Path
+from typing import List
 
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.processing.test_case_processing import TestCaseFileReference
 
 
 class TestSuite:
@@ -10,10 +13,13 @@ class TestSuite:
 
     def __init__(self,
                  source_file: pathlib.Path,
-                 file_inclusions_leading_to_this_file: list,
+                 file_inclusions_leading_to_this_file: List[Path],
                  test_case_handling_setup: TestCaseHandlingSetup,
                  sub_test_suites: list,
-                 test_cases: list):
+                 test_cases: List[TestCaseFileReference]):
+        """
+        :param sub_test_suites: List[<this-class>]
+        """
         self.__source_file = source_file
         self.__file_inclusions_leading_to_this_file = file_inclusions_leading_to_this_file
         self.__test_case_handling_setup = test_case_handling_setup
@@ -25,7 +31,7 @@ class TestSuite:
         return self.__source_file
 
     @property
-    def file_inclusions_leading_to_this_file(self) -> list:
+    def file_inclusions_leading_to_this_file(self) -> List[Path]:
         return self.__file_inclusions_leading_to_this_file
 
     @property
@@ -35,13 +41,10 @@ class TestSuite:
     @property
     def sub_test_suites(self) -> list:
         """
-        :return: [TestSuite]
+        :return: [<this-class>]
         """
         return self.__sub_test_suites
 
     @property
-    def test_cases(self) -> list:
-        """
-        :return: [TestCaseSetup]
-        """
+    def test_cases(self) -> List[TestCaseFileReference]:
         return self.__test_cases
