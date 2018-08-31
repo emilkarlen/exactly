@@ -1,4 +1,5 @@
 import pathlib
+from typing import List
 
 from exactly_lib.section_document.model import Instruction
 
@@ -15,6 +16,14 @@ class Environment:
     @property
     def suite_file_dir_path(self) -> pathlib.Path:
         return self.__suite_file_dir_path
+
+
+class TestSuiteFileReferencesInstruction(TestSuiteInstruction):
+    def resolve_paths(self, environment: Environment) -> List[pathlib.Path]:
+        """
+        :raises FileNotAccessibleError: A referenced file is not accessible.
+        """
+        raise NotImplementedError('abstract method')
 
 
 class FileNotAccessibleSimpleError(Exception):

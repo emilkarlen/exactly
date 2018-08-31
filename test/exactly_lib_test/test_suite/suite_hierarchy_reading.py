@@ -1,5 +1,6 @@
 import pathlib
 import unittest
+from pathlib import Path
 
 from exactly_lib.act_phase_setups import command_line
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
@@ -18,11 +19,11 @@ from exactly_lib_test.util.test_resources.line_source_assertions import assert_e
 
 
 def suite() -> unittest.TestSuite:
-    ret_val = unittest.TestSuite()
-    ret_val.addTest(unittest.makeSuite(TestInvalidFileSyntax))
-    ret_val.addTest(unittest.makeSuite(TestInvalidFileReferences))
-    ret_val.addTest(unittest.makeSuite(TestStructure))
-    return ret_val
+    return unittest.TestSuite([
+        unittest.makeSuite(TestInvalidFileSyntax),
+        unittest.makeSuite(TestInvalidFileReferences),
+        unittest.makeSuite(TestStructure),
+    ])
 
 
 T_C_H_S = TestCaseHandlingSetup(command_line.act_phase_setup(),
@@ -31,7 +32,7 @@ T_C_H_S = TestCaseHandlingSetup(command_line.act_phase_setup(),
 
 class MainSuiteWithTwoReferencedCases(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
         return equals_test_suite(structure.TestSuite(
@@ -40,8 +41,8 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
             T_C_H_S,
             [],
             [
-                test_case_reference_of_source_file(root_path / '1.case'),
-                test_case_reference_of_source_file(root_path / 'sub' / '2.case')
+                test_case_reference_of_source_file(Path('1.case')),
+                test_case_reference_of_source_file(Path('sub') / '2.case')
             ]))
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
@@ -57,7 +58,7 @@ class MainSuiteWithTwoReferencedCases(check_structure.Setup):
 
 class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
         return equals_test_suite(structure.TestSuite(
@@ -66,7 +67,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
             T_C_H_S,
             [],
             [
-                test_case_reference_of_source_file(root_path / 'case-with-invalid-content.case'),
+                test_case_reference_of_source_file(Path('case-with-invalid-content.case')),
             ]))
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
@@ -81,7 +82,7 @@ class InvalidCaseContentShouldNotCauseParsingToFail(check_structure.Setup):
 
 class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
         return equals_test_suite(structure.TestSuite(
@@ -90,11 +91,11 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
             T_C_H_S,
             [
                 structure.TestSuite(
-                    root_path / '1.suite', [self.root_suite_based_at(root_path)],
+                    Path('1.suite'), [self.root_suite_based_at(root_path)],
                     T_C_H_S,
                     [], []),
                 structure.TestSuite(
-                    root_path / 'sub' / '2.suite', [self.root_suite_based_at(root_path)],
+                    Path('sub') / '2.suite', [self.root_suite_based_at(root_path)],
                     T_C_H_S,
                     [], [])
             ],
@@ -114,7 +115,7 @@ class MainSuiteWithTwoReferencedSuites(check_structure.Setup):
 
 class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
         return equals_test_suite(structure.TestSuite(
@@ -146,7 +147,7 @@ class MainSuiteWithAbsoluteReferencesToSuitesAndCases(check_structure.Setup):
 
 class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
         return equals_test_suite(structure.TestSuite(
@@ -155,17 +156,17 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
             T_C_H_S,
             [
                 structure.TestSuite(
-                    root_path / '1.suite', [self.root_suite_based_at(root_path)],
+                    Path('1.suite'), [self.root_suite_based_at(root_path)],
                     T_C_H_S,
                     [], []),
                 structure.TestSuite(
-                    root_path / 'sub' / '2.suite', [self.root_suite_based_at(root_path)],
+                    Path('sub') / '2.suite', [self.root_suite_based_at(root_path)],
                     T_C_H_S,
                     [], [])
             ],
             [
-                test_case_reference_of_source_file(root_path / '1.case'),
-                test_case_reference_of_source_file(root_path / 'sub' / '2.case')
+                test_case_reference_of_source_file(Path('1.case')),
+                test_case_reference_of_source_file(Path('sub') / '2.case')
             ],
         ))
 
@@ -187,9 +188,9 @@ class MainSuiteWithReferencedSuitesAndCasesAndMixedSections(check_structure.Setu
                                  empty_file('2.case')])])
 
 
-class ComplexStructure(check_structure.Setup):
+class MainSuiteWithSuiteInSubDirWithCases(check_structure.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'complex.suite'
+        return Path('main.suite')
 
     def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
         return equals_test_suite(structure.TestSuite(
@@ -198,25 +199,205 @@ class ComplexStructure(check_structure.Setup):
             T_C_H_S,
             [
                 structure.TestSuite(
-                    root_path / 'local.suite',
+                    Path('sub-dir') / 'sub.suite',
                     [self.root_suite_based_at(root_path)],
                     T_C_H_S,
                     [],
-                    [test_case_reference_of_source_file(root_path / 'from-local-suite.case')]),
+                    [test_case_reference_of_source_file(Path('sub-dir') / 'sub.case')],
+                ),
+            ],
+            [],
+        ))
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([File('main.suite',
+                                 lines_content(['[suites]',
+                                                'sub-dir/sub.suite',
+                                                ])),
+                            Dir('sub-dir',
+                                [File('sub.suite', lines_content([
+                                    'sub.case',
+                                ])),
+                                 empty_file('sub.case')])])
+
+
+class MainSuiteInSubDirWithCasesAndSuiteInSubDirWithCases(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return Path('main-sub-dir') / 'main.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
+        dir_with_sub_suite = Path('main-sub-dir') / 'suite-sub-dir'
+        return equals_test_suite(structure.TestSuite(
+            self.root_suite_based_at(root_path),
+            [],
+            T_C_H_S,
+            [
                 structure.TestSuite(
-                    root_path / 'sub' / 'sub.suite',
+                    dir_with_sub_suite / 'sub.suite',
+                    [self.root_suite_based_at(root_path)],
+                    T_C_H_S,
+                    [],
+                    [test_case_reference_of_source_file(dir_with_sub_suite / 'sub.case')],
+                ),
+            ],
+            [test_case_reference_of_source_file(Path('main-sub-dir') / 'main.case')],
+        ))
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            Dir('main-sub-dir', [
+                File('main.suite',
+                     lines_content([
+                         '[cases]',
+                         'main.case',
+                         '[suites]',
+                         'suite-sub-dir/sub.suite',
+                     ])),
+                empty_file('main.case'),
+                Dir('suite-sub-dir',
+                    [
+                        File('sub.suite', lines_content([
+                            'sub.case',
+                        ])),
+                        empty_file('sub.case')]),
+            ])
+        ])
+
+
+class MainSuiteInSubDirWithCasesInSuperDir(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return Path('main-sub-dir') / 'main.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
+        return equals_test_suite(structure.TestSuite(
+            self.root_suite_based_at(root_path),
+            [],
+            T_C_H_S,
+            [],
+            [test_case_reference_of_source_file(Path('main-sub-dir') / '..' / 'main.case')],
+        ))
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            Dir('main-sub-dir', [
+                File('main.suite',
+                     lines_content([
+                         '[cases]',
+                         '../main.case',
+                     ])),
+            ]),
+            empty_file('main.case'),
+        ])
+
+
+class MainSuiteInSubDirWithSuiteWithCasesInSuperDir(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return Path('main-sub-dir') / 'main.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
+        dir_with_sub_suite = Path('main-sub-dir') / '..'
+        return equals_test_suite(structure.TestSuite(
+            self.root_suite_based_at(root_path),
+            [],
+            T_C_H_S,
+            [
+                structure.TestSuite(
+                    dir_with_sub_suite / 'super.suite',
+                    [self.root_suite_based_at(root_path)],
+                    T_C_H_S,
+                    [],
+                    [test_case_reference_of_source_file(dir_with_sub_suite / 'super.case')],
+                )
+            ],
+            [],
+        ))
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            Dir('main-sub-dir', [
+                File('main.suite',
+                     lines_content([
+                         '[suites]',
+                         '../super.suite',
+                     ])),
+            ]),
+            File('super.suite', lines_content([
+                'super.case',
+            ])),
+            empty_file('super.case'),
+        ])
+
+
+class MainSuiteInSubDirAndSuiteInSubDirWithCasesReferencedViaWildCards(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return Path('main-sub-dir') / 'main.suite'
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
+        dir_with_sub_suite = Path('main-sub-dir') / 'suite-sub-dir'
+        return equals_test_suite(structure.TestSuite(
+            self.root_suite_based_at(root_path),
+            [],
+            T_C_H_S,
+            [
+                structure.TestSuite(
+                    dir_with_sub_suite / 'sub.suite',
+                    [self.root_suite_based_at(root_path)],
+                    T_C_H_S,
+                    [],
+                    [test_case_reference_of_source_file(dir_with_sub_suite / 'sub.case')],
+                ),
+            ],
+            [],
+        ))
+
+    def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
+        return DirContents([
+            Dir('main-sub-dir', [
+                File('main.suite',
+                     lines_content([
+                         '[suites]',
+                         'suite-sub-dir/sub.suite',
+                     ])),
+                Dir('suite-sub-dir',
+                    [
+                        File('sub.suite', lines_content([
+                            '*.case',
+                        ])),
+                        empty_file('sub.case')]),
+            ])
+        ])
+
+
+class ComplexStructure(check_structure.Setup):
+    def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
+        return Path('complex.suite')
+
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
+        return equals_test_suite(structure.TestSuite(
+            self.root_suite_based_at(root_path),
+            [],
+            T_C_H_S,
+            [
+                structure.TestSuite(
+                    Path('local.suite'),
+                    [self.root_suite_based_at(root_path)],
+                    T_C_H_S,
+                    [],
+                    [test_case_reference_of_source_file(Path('from-local-suite.case'))]),
+                structure.TestSuite(
+                    Path('sub') / 'sub.suite',
                     [self.root_suite_based_at(root_path)],
                     T_C_H_S,
                     [structure.TestSuite(
-                        root_path / 'sub' / 'sub-sub.suite',
-                        [self.root_suite_based_at(root_path), root_path / 'sub' / 'sub.suite'],
+                        Path('sub') / 'sub-sub.suite',
+                        [self.root_suite_based_at(root_path), Path('sub') / 'sub.suite'],
                         T_C_H_S,
                         [],
-                        [test_case_reference_of_source_file(root_path / 'sub' / 'sub-sub.case')]
+                        [test_case_reference_of_source_file(Path('sub') / 'sub-sub.case')]
                     )],
-                    [test_case_reference_of_source_file(root_path / 'sub' / 'sub.case')]),
+                    [test_case_reference_of_source_file(Path('sub') / 'sub.case')]),
             ],
-            [test_case_reference_of_source_file(root_path / 'from-main-suite.case')]
+            [test_case_reference_of_source_file(Path('from-main-suite.case'))]
         ))
 
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
@@ -252,7 +433,7 @@ class ComplexStructure(check_structure.Setup):
 
 class ReferencedCaseFileDoesNotExist(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
@@ -279,7 +460,7 @@ class ReferencedCaseFileDoesNotExist(check_exception.Setup):
 
 class SuiteFileSyntaxError(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
@@ -305,7 +486,7 @@ class SuiteFileSyntaxError(check_exception.Setup):
 
 class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
@@ -332,7 +513,7 @@ class ReferencedSuiteFileDoesNotExist(check_exception.Setup):
 
 class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
@@ -365,7 +546,7 @@ class DoubleInclusionOfMainFileFromMainFile(check_exception.Setup):
 
 class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
     def root_suite_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
-        return root_path / 'main.suite'
+        return Path('main.suite')
 
     def file_structure_to_read(self) -> DirContents:
         return DirContents([File('main.suite',
@@ -396,16 +577,16 @@ class DoubleInclusionOfSuiteInSubDir(check_exception.Setup):
                         actual: Exception,
                         put: unittest.TestCase):
         put.assertIsInstance(actual, SuiteDoubleInclusion)
-        put.assertEqual(str(root_path / 'local-2.suite'),
+        put.assertEqual(str(Path('local-2.suite')),
                         str(actual.suite_file),
                         'Source file that contains the error')
         assert_equals_line_sequence(put,
                                     single_line_sequence(3, 'subdir/in-subdir.suite'),
                                     actual.source)
-        put.assertEqual(root_path / 'subdir' / 'in-subdir.suite',
+        put.assertEqual(Path('subdir') / 'in-subdir.suite',
                         actual.included_suite_file,
                         'File that is included twice')
-        put.assertEqual(root_path / 'local-1.suite',
+        put.assertEqual(Path('local-1.suite'),
                         actual.first_referenced_from,
                         'File that first included the suite file')
 
@@ -423,11 +604,26 @@ class TestStructure(unittest.TestCase):
     def test_absolute_references_to_suites_and_cases(self):
         check_structure.check(MainSuiteWithAbsoluteReferencesToSuitesAndCases(), self)
 
+    def test_main_suite_with_suite_in_sub_dir_with_cases(self):
+        check_structure.check(MainSuiteWithSuiteInSubDirWithCases(), self)
+
+    def test_main_suite_in_sub_dir_with_cases_and_suite_in_sub_dir_with_cases(self):
+        check_structure.check(MainSuiteInSubDirWithCasesAndSuiteInSubDirWithCases(), self)
+
     def test_main_suite_with_referenced_suites_and_cases_and_mixed_sections(self):
         check_structure.check(MainSuiteWithReferencedSuitesAndCasesAndMixedSections(), self)
 
+    def test_main_suite_in_sub_dir_with_cases_in_super_dir(self):
+        check_structure.check(MainSuiteInSubDirWithCasesInSuperDir(), self)
+
+    def test_main_suite_in_sub_dir_with_suite_with_cases_in_super_dir(self):
+        check_structure.check(MainSuiteInSubDirWithSuiteWithCasesInSuperDir(), self)
+
     def test_complex_structure(self):
         check_structure.check(ComplexStructure(), self)
+
+    def test_main_suite_in_sub_dir_and_suite_in_sub_dir_with_cases_referenced_via_wild_cards(self):
+        check_structure.check(MainSuiteInSubDirAndSuiteInSubDirWithCasesReferencedViaWildCards(), self)
 
 
 class TestInvalidFileReferences(unittest.TestCase):
