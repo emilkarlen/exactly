@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
-    instruction_setup_with_setup_instructions
+    instruction_setup_with_setup_instructions, Recording
 
 
 def suite() -> unittest.TestSuite:
@@ -66,11 +66,11 @@ class Test(unittest.TestCase):
             case_file=case_file.name,
         )
 
-        recorder = []
+        recording_media = []
 
         test_case_definition = TestCaseDefinitionForMainProgram(
             TestCaseParsingSetup(space_separator_instruction_name_extractor,
-                                 instruction_setup_with_setup_instructions(REGISTER_INSTRUCTION_NAME, recorder),
+                                 instruction_setup_with_setup_instructions(REGISTER_INSTRUCTION_NAME, recording_media),
                                  ActPhaseParser()),
             [])
 
@@ -87,5 +87,6 @@ class Test(unittest.TestCase):
                          actual_result.exitcode,
                          'Sanity check of result indicator')
 
+        recordings = list(map(Recording.string.fget, recording_media))
         self.assertEqual(expected_instruction_recording,
-                         recorder)
+                         recordings)
