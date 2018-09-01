@@ -20,6 +20,16 @@ class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):
         return self.complete_suite_reporter
 
 
+class ReporterFactoryForReporterThatDoesNothing(reporting.RootSuiteReporterFactory):
+    VALID_SUITE_EXIT_CODE = -1
+
+    def new_reporter(self,
+                     root_suite: structure.TestSuite,
+                     std_output_files: std.StdOutputFiles,
+                     root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
+        return RootSuiteReporterThatDoesNothing()
+
+
 class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
     VALID_SUITE_EXIT_CODE = 72
 
@@ -35,6 +45,14 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
     def report_final_results(self) -> int:
         self.num_report_final_result_invocations += 1
         return self.VALID_SUITE_EXIT_CODE
+
+
+class RootSuiteReporterThatDoesNothing(reporting.RootSuiteReporter):
+    def new_sub_suite_reporter(self, sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
+        return reporting.SubSuiteReporter(sub_suite, SubSuiteProgressReporterThatDoesNothing())
+
+    def report_final_results(self) -> int:
+        return ReporterFactoryForReporterThatDoesNothing.VALID_SUITE_EXIT_CODE
 
 
 class EventType(enum.Enum):
@@ -85,3 +103,19 @@ class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporte
                  processing_info: TestCaseProcessingInfo):
         self.event_type_list.append(EventType.CASE_END)
         self.case_end_list.append(CaseEndInfo(case, processing_info.result))
+
+
+class SubSuiteProgressReporterThatDoesNothing(reporting.SubSuiteProgressReporter):
+    def suite_begin(self):
+        pass
+
+    def suite_end(self):
+        pass
+
+    def case_begin(self, case: TestCase):
+        pass
+
+    def case_end(self,
+                 case: TestCaseFileReference,
+                 processing_info: TestCaseProcessingInfo):
+        pass

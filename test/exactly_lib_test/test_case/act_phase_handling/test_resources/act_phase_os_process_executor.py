@@ -17,3 +17,14 @@ class ActPhaseOsProcessExecutorThatRecordsArguments(ActPhaseOsProcessExecutor):
         self.command = command
         self.process_execution_settings = process_execution_settings
         return new_eh_exit_code(0)
+
+
+class ActPhaseOsProcessExecutorThatJustReturnsConstant(ActPhaseOsProcessExecutor):
+    def __init__(self, constant_return_value: ExitCodeOrHardError = new_eh_exit_code(0)):
+        self.constant_return_value = constant_return_value
+
+    def execute(self,
+                command: Command,
+                std_files: StdFiles,
+                process_execution_settings: ProcessExecutionSettings) -> ExitCodeOrHardError:
+        return self.constant_return_value
