@@ -1,7 +1,6 @@
 from pathlib import Path
 from typing import List
 
-from exactly_lib.section_document.element_parsers.instruction_parser_for_single_section import \
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_parse import parse_token_on_current_line
