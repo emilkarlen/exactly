@@ -126,9 +126,9 @@ def _assert_every_test_case_to_pass(put: unittest.TestCase,
 
     for sub_suite_reporter in reporter.sub_suite_reporters:
         assert isinstance(sub_suite_reporter, SubSuiteReporter)
-        listener = sub_suite_reporter.listener()
-        assert isinstance(listener, ExecutionTracingSubSuiteProgressReporter)
-        for case_end_info in listener.case_end_list:
+        progress_reporter = sub_suite_reporter.progress_reporter
+        assert isinstance(progress_reporter, ExecutionTracingSubSuiteProgressReporter)
+        for case_end_info in progress_reporter.case_end_list:
             assert isinstance(case_end_info, CaseEndInfo)
             assert_is_pass(case_end_info)
 

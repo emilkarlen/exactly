@@ -88,14 +88,14 @@ class SuitesExecutor:
         Executes a single suite (i.e. not it's sub suites).
         """
         sub_suite_reporter = self._reporter.new_sub_suite_reporter(suite)
-        sub_suite_reporter.listener().suite_begin()
+        sub_suite_reporter.progress_reporter.suite_begin()
         case_processor = self._case_processor_for(suite)
         for case in suite.test_cases:
-            sub_suite_reporter.listener().case_begin(case)
+            sub_suite_reporter.progress_reporter.case_begin(case)
             processing_info = _process_and_time(case_processor, case)
-            sub_suite_reporter.listener().case_end(case, processing_info)
+            sub_suite_reporter.progress_reporter.case_end(case, processing_info)
             sub_suite_reporter.case_end(case, processing_info)
-        sub_suite_reporter.listener().suite_end()
+        sub_suite_reporter.progress_reporter.suite_end()
 
     def _case_processor_for(self, suite: structure.TestSuite) -> test_case_processing.Processor:
         configuration = self._configuration_for_cases_in_suite(suite)

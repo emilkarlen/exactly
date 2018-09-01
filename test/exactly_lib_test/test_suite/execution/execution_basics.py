@@ -338,15 +338,15 @@ class ExpectedSuiteReporting(tuple):
               put: unittest.TestCase,
               sr: reporting.SubSuiteReporter,
               msg_header=''):
-        listener = sr.listener()
-        assert isinstance(listener, ExecutionTracingSubSuiteProgressReporter)
+        progress_reporter = sr.progress_reporter
+        assert isinstance(progress_reporter, ExecutionTracingSubSuiteProgressReporter)
         put.assertIs(self.suite,
-                     listener.sub_suite,
+                     progress_reporter.sub_suite,
                      msg_header + 'Suite instance')
         put.assertEqual(len(self.case_and_result_status_list),
-                        len(listener.case_begin_list),
+                        len(progress_reporter.case_begin_list),
                         msg_header + 'Number of invocations of case-begin')
-        self._assert_correct_progress_reporter_invocations(listener, msg_header, put)
+        self._assert_correct_progress_reporter_invocations(progress_reporter, msg_header, put)
         self._assert_correct_sub_suite_reporter_invocations(sr, msg_header, put)
 
     def _assert_correct_sub_suite_reporter_invocations(self,

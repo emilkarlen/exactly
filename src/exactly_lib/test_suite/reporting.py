@@ -25,8 +25,7 @@ class TestCaseProcessingInfo(tuple):
 
 class SubSuiteProgressReporter:
     """
-    A listener that may reports the progress of the execution of the test cases
-    in a single suite (TestSuite).
+    An object that receives test case execution events and may report these to the user.
     """
 
     def suite_begin(self):
@@ -60,7 +59,8 @@ class SubSuiteReporter:
         self._result = []
         self._start_time = datetime.datetime.now()
 
-    def listener(self) -> SubSuiteProgressReporter:
+    @property
+    def progress_reporter(self) -> SubSuiteProgressReporter:
         return self._listener
 
     def case_end(self,
