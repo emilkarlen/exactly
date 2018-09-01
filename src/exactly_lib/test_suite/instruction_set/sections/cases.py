@@ -14,7 +14,7 @@ def new_parser() -> SectionElementParser:
     return standard_syntax_element_parser(InstructionWithoutDescriptionParser(_CasesSectionParser()))
 
 
-class TestCaseSectionInstruction(TestSuiteFileReferencesInstruction):
+class CaseSectionInstruction(TestSuiteFileReferencesInstruction):
     def __init__(self, resolver: utils.FileNamesResolver):
         self._resolver = resolver
 
@@ -26,6 +26,6 @@ class TestCaseSectionInstruction(TestSuiteFileReferencesInstruction):
 
 
 class _CasesSectionParser(InstructionParserWithoutSourceFileLocationInfo):
-    def parse_from_source(self, source: ParseSource) -> TestCaseSectionInstruction:
+    def parse_from_source(self, source: ParseSource) -> CaseSectionInstruction:
         resolver = utils.parse_file_names_resolver(source)
-        return TestCaseSectionInstruction(resolver)
+        return CaseSectionInstruction(resolver)

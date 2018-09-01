@@ -1,9 +1,9 @@
 from exactly_lib.section_document.model import SectionContents, ElementType, new_empty_section_contents
 from exactly_lib.test_suite.case_instructions import CaseSetupPhaseInstruction
-from exactly_lib.test_suite.instruction_set.sections.cases import TestCaseSectionInstruction
+from exactly_lib.test_suite.instruction_set.sections.cases import CaseSectionInstruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
-from exactly_lib.test_suite.instruction_set.sections.suites import TestSuiteSectionInstruction
+from exactly_lib.test_suite.instruction_set.sections.suites import SuitesSectionInstruction
 
 
 def _assert_instruction_class(phase_contents: SectionContents,
@@ -38,9 +38,9 @@ class TestSuiteDocument(tuple):
         _assert_instruction_class(configuration_section,
                                   ConfigurationSectionInstruction)
         _assert_instruction_class(suites_section,
-                                  TestSuiteSectionInstruction)
+                                  SuitesSectionInstruction)
         _assert_instruction_class(cases_section,
-                                  TestCaseSectionInstruction)
+                                  CaseSectionInstruction)
         return tuple.__new__(cls, (configuration_section,
                                    suites_section,
                                    cases_section,
