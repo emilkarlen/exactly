@@ -1,12 +1,10 @@
-from exactly_lib.section_document.model import SectionContents, ElementType, new_empty_section_contents
-from exactly_lib.test_suite.case_instructions import CaseSetupPhaseInstruction
-from exactly_lib.test_suite.instruction_set.sections.cases import CaseSectionInstruction
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
 from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
 from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_suite.instruction_set.sections.cases import CaseSectionInstruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
 from exactly_lib.test_suite.instruction_set.sections.suites import SuitesSectionInstruction
