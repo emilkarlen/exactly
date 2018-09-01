@@ -65,7 +65,7 @@ def equals_single_line_source_location_path(expected: Line) -> asrt.ValueAsserti
 
 
 def matches_file_location_info(
-        abs_path_of_dir_containing_first_file_path: asrt.ValueAssertion[pathlib.Path],
+        abs_path_of_dir_containing_first_file_path: asrt.ValueAssertion[pathlib.Path] = asrt.anything_goes(),
         file_path_rel_referrer: asrt.ValueAssertion[Optional[pathlib.Path]] = asrt.anything_goes(),
         file_inclusion_chain: asrt.ValueAssertion[Sequence[SourceLocation]] = asrt.anything_goes(),
 ) -> asrt.ValueAssertion[FileLocationInfo]:
