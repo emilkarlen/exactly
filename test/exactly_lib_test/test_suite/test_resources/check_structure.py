@@ -7,6 +7,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.suite_hierarchy_reading import Reader
+from exactly_lib_test.processing.test_resources.test_case_processing_assertions import equals_test_case_reference
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -66,19 +67,6 @@ def matches_test_suite(source_file: ValueAssertion[Path],
                             test_case_handling_setup,
                             sub_test_suites,
                             test_cases)
-
-
-def equals_test_case_reference(expected: TestCaseFileReference) -> ValueAssertion[TestCaseFileReference]:
-    return asrt.and_([
-        asrt.sub_component('file_path',
-                           TestCaseFileReference.file_path.fget,
-                           asrt.equals(expected.file_path)
-                           ),
-        asrt.sub_component('file_reference_relativity_root_dir',
-                           TestCaseFileReference.file_reference_relativity_root_dir.fget,
-                           asrt.equals(expected.file_reference_relativity_root_dir)
-                           ),
-    ])
 
 
 class MatchesTestSuite(ValueAssertionBase[structure.TestSuite]):
