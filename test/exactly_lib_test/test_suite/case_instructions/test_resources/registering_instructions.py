@@ -1,5 +1,6 @@
 import unittest
 from enum import Enum
+from pathlib import Path
 from typing import List, Dict, Callable, Sequence
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
@@ -18,11 +19,13 @@ from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.section_document.test_resources.element_parsers import \
     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
+from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_file_location_info
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
-from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
@@ -115,10 +118,11 @@ class TestBase(unittest.TestCase):
     def _expected_instruction_sequencing(self) -> InstructionsSequencing:
         raise NotImplementedError('abstract method')
 
-    def __expected_instruction_recording(self) -> asrt.ValueAssertion[Sequence[Recording]]:
-        matches_instruction_in_containing_suite = matches_recording(INSTRUCTION_MARKER_IN_CONTAINING_SUITE)
-        matches_instruction_in_case_1 = matches_recording(INSTRUCTION_MARKER_IN_CASE_1)
-        matches_instruction_in_case_2 = matches_recording(INSTRUCTION_MARKER_IN_CASE_2)
+    def __expected_instruction_recording(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
+        matches_instruction_in_containing_suite = matches_recording_of(cwd_dir_abs_path,
+                                                                       INSTRUCTION_MARKER_IN_CONTAINING_SUITE)
+        matches_instruction_in_case_1 = matches_recording_of(cwd_dir_abs_path, INSTRUCTION_MARKER_IN_CASE_1)
+        matches_instruction_in_case_2 = matches_recording_of(cwd_dir_abs_path, INSTRUCTION_MARKER_IN_CASE_2)
 
         if self._expected_instruction_sequencing() is InstructionsSequencing.SUITE_BEFORE_CASE:
             return asrt.matches_sequence([
@@ -158,7 +162,7 @@ class TestBase(unittest.TestCase):
         # ACT & ASSERT #
         self._check(containing_suite_file,
                     suite_and_case_files,
-                    self.__expected_instruction_recording())
+                    self.__expected_instruction_recording)
 
     def _phase_instructions_in_suite_not_containing_cases(self):
         # ARRANGE #
@@ -181,21 +185,22 @@ class TestBase(unittest.TestCase):
         # ACT & ASSERT #
         self._check(containing_suite_file,
                     suite_and_case_files,
-                    self.__expected_instruction_recording())
+                    self.__expected_instruction_recording)
 
     def _check(self,
-               containing_suite_file: File,
+               root_suite_file: File,
                suite_and_case_files: DirContents,
-               expected_instruction_recording: asrt.ValueAssertion[List[Recording]],
+               expected_recordings_given_suite_root_dir: Callable[[Path], ValueAssertion[Sequence[Recording]]],
                ):
         case_processors = [
             NameAndValue('processor_that_should_not_pollute_current_process',
                          processors.new_processor_that_should_not_pollute_current_process),
-            NameAndValue('processor_that_is_allowed_to_pollute_current_process',
-                         processors.new_processor_that_is_allowed_to_pollute_current_process),
+            # TMP_DEBUG
+            # NameAndValue('processor_that_is_allowed_to_pollute_current_process',
+            #              processors.new_processor_that_is_allowed_to_pollute_current_process),
         ]
-        with tmp_dir(suite_and_case_files) as tmp_dir_path:
-            suite_file_path = tmp_dir_path / containing_suite_file.file_name
+        with tmp_dir_as_cwd(suite_and_case_files) as abs_cwd_dir_path:
+            suite_file_path = Path(root_suite_file.name)
 
             for case_processor_case in case_processors:
                 with self.subTest(case_processor_case.name):
@@ -204,13 +209,16 @@ class TestBase(unittest.TestCase):
                                                   case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.execute(suite_file_path, StringStdOutFiles().stdout_files)
+                    return_value = executor.execute(suite_file_path,
+                                                    StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 
                     self.assertEqual(ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
                                      return_value,
                                      'Sanity check of result indicator')
+
+                    expected_instruction_recording = expected_recordings_given_suite_root_dir(abs_cwd_dir_path)
                     expected_instruction_recording.apply_with_message(self, recording_media, 'recordings'),
 
     def _new_executor(self,
@@ -228,20 +236,33 @@ class TestBase(unittest.TestCase):
                                  ActPhaseParser()),
             PredefinedProperties({}, empty_symbol_table()))
 
-        default_configuration = processors.Configuration(test_case_definition,
-                                                         test_case_handling_setup_with_identity_preprocessor(),
-                                                         os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
-                                                         False,
-                                                         sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-'))
+        default_case_configuration = processors.Configuration(
+            test_case_definition,
+            test_case_handling_setup_with_identity_preprocessor(),
+            os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
+            False,
+            sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-')
+        )
 
-        return sut.Executor(default_configuration,
+        return sut.Executor(default_case_configuration,
                             suite_hierarchy_reading.Reader(
                                 suite_hierarchy_reading.Environment(
                                     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError(),
                                     test_case_definition.parsing_setup,
-                                    default_configuration.default_handling_setup)
+                                    default_case_configuration.default_handling_setup)
                             ),
                             ExecutionTracingReporterFactory(),
                             enumeration.DepthFirstEnumerator(),
                             test_case_processor_constructor,
                             )
+
+
+def matches_recording_of(cwd_dir_abs_path: Path,
+                         string: str) -> ValueAssertion[Recording]:
+    return matches_recording(
+        string=asrt.equals(string),
+        file_location_info=matches_file_location_info(
+            abs_path_of_dir_containing_first_file_path=asrt.equals(cwd_dir_abs_path),
+            file_inclusion_chain=asrt.is_empty_sequence
+        ),
+    )
