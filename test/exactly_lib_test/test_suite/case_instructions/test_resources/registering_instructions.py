@@ -21,7 +21,7 @@ from exactly_lib_test.section_document.test_resources.element_parsers import \
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_file_location_info
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
-from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
@@ -30,8 +30,7 @@ from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
     instruction_setup_with_single_phase_with_single_recording_instruction, Recording, matches_recording
-from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter, \
-    ExecutionTracingReporterFactory
+from exactly_lib_test.test_suite.test_resources.suite_reporting import ReporterFactoryForReporterThatDoesNothing
 
 REGISTER_INSTRUCTION_NAME = 'register'
 INSTRUCTION_MARKER_IN_CONTAINING_SUITE = 'containing suite'
@@ -276,12 +275,11 @@ class TestBase(unittest.TestCase):
                                                   case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.execute(suite_file_path,
-                                                    StringStdOutFiles().stdout_files)
+                    return_value = executor.execute(suite_file_path, null_output_files())
 
                     # ASSERT #
 
-                    self.assertEqual(ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
+                    self.assertEqual(ReporterFactoryForReporterThatDoesNothing.VALID_SUITE_EXIT_CODE,
                                      return_value,
                                      'Sanity check of result indicator')
 
@@ -318,7 +316,7 @@ class TestBase(unittest.TestCase):
                                     test_case_definition.parsing_setup,
                                     default_case_configuration.default_handling_setup)
                             ),
-                            ExecutionTracingReporterFactory(),
+                            ReporterFactoryForReporterThatDoesNothing(),
                             enumeration.DepthFirstEnumerator(),
                             test_case_processor_constructor,
                             )
