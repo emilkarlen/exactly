@@ -100,6 +100,74 @@ class Files:
         )
 
 
+class ExpectedRecordingsAssertionConstructor:
+    def __init__(self,
+                 containing_suite_file_name: str,
+                 case_1_file_name: str,
+                 case_2_file_name: str,
+                 ):
+        self.case_2_file_name = case_2_file_name
+        self.case_1_file_name = case_1_file_name
+        self.containing_suite_file_name = containing_suite_file_name
+
+    def assertion(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
+        raise NotImplementedError('abstract method')
+
+    def _matches_instruction_in_containing_suite(self, cwd_dir_abs_path: Path) -> ValueAssertion[Recording]:
+        return self._matches_recording_of(cwd_dir_abs_path,
+                                          INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+                                          Path(self.containing_suite_file_name))
+
+    def _matches_instruction_in_case_1(self, cwd_dir_abs_path: Path) -> ValueAssertion[Recording]:
+        return self._matches_recording_of(cwd_dir_abs_path,
+                                          INSTRUCTION_MARKER_IN_CASE_1,
+                                          Path(self.case_1_file_name))
+
+    def _matches_instruction_in_case_2(self, cwd_dir_abs_path: Path) -> ValueAssertion[Recording]:
+        return self._matches_recording_of(cwd_dir_abs_path,
+                                          INSTRUCTION_MARKER_IN_CASE_2,
+                                          Path(self.case_2_file_name))
+
+    @staticmethod
+    def _matches_recording_of(cwd_dir_abs_path: Path,
+                              string: str,
+                              file_path_rel_referrer: Path) -> ValueAssertion[Recording]:
+        return matches_recording(
+            string=asrt.equals(string),
+            file_location_info=matches_file_location_info(
+                abs_path_of_dir_containing_first_file_path=asrt.equals(cwd_dir_abs_path),
+                file_path_rel_referrer=asrt.equals(file_path_rel_referrer),
+                file_inclusion_chain=asrt.is_empty_sequence,
+            ),
+        )
+
+
+class ExpectSuiteInstructionsBeforeCaseInstructions(ExpectedRecordingsAssertionConstructor):
+    def assertion(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
+        return asrt.matches_sequence([
+            # First test case
+            self._matches_instruction_in_containing_suite(cwd_dir_abs_path),
+            self._matches_instruction_in_case_1(cwd_dir_abs_path),
+
+            # Second test case
+            self._matches_instruction_in_containing_suite(cwd_dir_abs_path),
+            self._matches_instruction_in_case_2(cwd_dir_abs_path),
+        ])
+
+
+class ExpectCaseInstructionsBeforeSuiteInstructions(ExpectedRecordingsAssertionConstructor):
+    def assertion(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
+        return asrt.matches_sequence([
+            # First test case
+            self._matches_instruction_in_case_1(cwd_dir_abs_path),
+            self._matches_instruction_in_containing_suite(cwd_dir_abs_path),
+
+            # Second test case
+            self._matches_instruction_in_case_2(cwd_dir_abs_path),
+            self._matches_instruction_in_containing_suite(cwd_dir_abs_path),
+        ])
+
+
 class PhaseConfig:
     def phase_name(self) -> SectionName:
         raise NotImplementedError('abstract method')
@@ -118,36 +186,24 @@ class TestBase(unittest.TestCase):
     def _expected_instruction_sequencing(self) -> InstructionsSequencing:
         raise NotImplementedError('abstract method')
 
-    def __expected_instruction_recording(self, cwd_dir_abs_path: Path) -> ValueAssertion[Sequence[Recording]]:
-        matches_instruction_in_containing_suite = matches_recording_of(cwd_dir_abs_path,
-                                                                       INSTRUCTION_MARKER_IN_CONTAINING_SUITE)
-        matches_instruction_in_case_1 = matches_recording_of(cwd_dir_abs_path, INSTRUCTION_MARKER_IN_CASE_1)
-        matches_instruction_in_case_2 = matches_recording_of(cwd_dir_abs_path, INSTRUCTION_MARKER_IN_CASE_2)
-
+    def _expected_recordings_assertion(self,
+                                       containing_suite_file_name: str,
+                                       case_1_file_name: str,
+                                       case_2_file_name: str
+                                       ) -> ExpectedRecordingsAssertionConstructor:
         if self._expected_instruction_sequencing() is InstructionsSequencing.SUITE_BEFORE_CASE:
-            return asrt.matches_sequence([
-                # First test case
-                matches_instruction_in_containing_suite,
-                matches_instruction_in_case_1,
-
-                # Second test case
-                matches_instruction_in_containing_suite,
-                matches_instruction_in_case_2,
-            ])
+            return ExpectSuiteInstructionsBeforeCaseInstructions(containing_suite_file_name,
+                                                                 case_1_file_name,
+                                                                 case_2_file_name)
         elif self._expected_instruction_sequencing() is InstructionsSequencing.CASE_BEFORE_SUITE:
-            return asrt.matches_sequence([
-                # First test case
-                matches_instruction_in_case_1,
-                matches_instruction_in_containing_suite,
 
-                # Second test case
-                matches_instruction_in_case_2,
-                matches_instruction_in_containing_suite,
-            ])
+            return ExpectCaseInstructionsBeforeSuiteInstructions(containing_suite_file_name,
+                                                                 case_1_file_name,
+                                                                 case_2_file_name)
         else:
-            raise ValueError('implementation error')
+            raise ValueError('unknown instruction sequence: ' + str(self._expected_instruction_sequencing()))
 
-    def _phase_instructions_in_suite_containing_cases(self):
+    def _phase_instructions_in_suite_containing_cases(self, ):
         # ARRANGE #
 
         files = Files(self._phase_config().phase_name())
@@ -159,10 +215,16 @@ class TestBase(unittest.TestCase):
             files.file_2_with_registering_instruction,
         ])
 
+        expectation = self._expected_recordings_assertion(
+            containing_suite_file.name,
+            files.file_1_with_registering_instruction.name,
+            files.file_2_with_registering_instruction.name,
+        )
+
         # ACT & ASSERT #
         self._check(containing_suite_file,
                     suite_and_case_files,
-                    self.__expected_instruction_recording)
+                    expectation)
 
     def _phase_instructions_in_suite_not_containing_cases(self):
         # ARRANGE #
@@ -182,22 +244,27 @@ class TestBase(unittest.TestCase):
             files.file_2_with_registering_instruction,
         ])
 
+        expectation = self._expected_recordings_assertion(
+            containing_suite_file.name,
+            files.file_1_with_registering_instruction.name,
+            files.file_2_with_registering_instruction.name,
+        )
+
         # ACT & ASSERT #
         self._check(containing_suite_file,
                     suite_and_case_files,
-                    self.__expected_instruction_recording)
+                    expectation)
 
     def _check(self,
                root_suite_file: File,
                suite_and_case_files: DirContents,
-               expected_recordings_given_suite_root_dir: Callable[[Path], ValueAssertion[Sequence[Recording]]],
+               expectation: ExpectedRecordingsAssertionConstructor,
                ):
         case_processors = [
             NameAndValue('processor_that_should_not_pollute_current_process',
                          processors.new_processor_that_should_not_pollute_current_process),
-            # TMP_DEBUG
-            # NameAndValue('processor_that_is_allowed_to_pollute_current_process',
-            #              processors.new_processor_that_is_allowed_to_pollute_current_process),
+            NameAndValue('processor_that_is_allowed_to_pollute_current_process',
+                         processors.new_processor_that_is_allowed_to_pollute_current_process),
         ]
         with tmp_dir_as_cwd(suite_and_case_files) as abs_cwd_dir_path:
             suite_file_path = Path(root_suite_file.name)
@@ -218,7 +285,7 @@ class TestBase(unittest.TestCase):
                                      return_value,
                                      'Sanity check of result indicator')
 
-                    expected_instruction_recording = expected_recordings_given_suite_root_dir(abs_cwd_dir_path)
+                    expected_instruction_recording = expectation.assertion(abs_cwd_dir_path)
                     expected_instruction_recording.apply_with_message(self, recording_media, 'recordings'),
 
     def _new_executor(self,
@@ -255,14 +322,3 @@ class TestBase(unittest.TestCase):
                             enumeration.DepthFirstEnumerator(),
                             test_case_processor_constructor,
                             )
-
-
-def matches_recording_of(cwd_dir_abs_path: Path,
-                         string: str) -> ValueAssertion[Recording]:
-    return matches_recording(
-        string=asrt.equals(string),
-        file_location_info=matches_file_location_info(
-            abs_path_of_dir_containing_first_file_path=asrt.equals(cwd_dir_abs_path),
-            file_inclusion_chain=asrt.is_empty_sequence
-        ),
-    )
