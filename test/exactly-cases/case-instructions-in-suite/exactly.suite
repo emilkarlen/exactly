@@ -1,3 +1,4 @@
 [suites]
 
 conf-phase/exactly.suite
+act-phase/exactly.suite
