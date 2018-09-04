@@ -8,11 +8,16 @@ from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors
+from exactly_lib.processing.act_phase import ActPhaseSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
+from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.model import Instruction
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import os_services
+from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
 from exactly_lib.test_suite import execution as sut, suite_hierarchy_reading, enumeration
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
@@ -20,14 +25,14 @@ from exactly_lib_test.section_document.test_resources.element_parsers import \
     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.section_document.test_resources.source_location_assertions import matches_file_location_info
+from exactly_lib_test.test_case.act_phase_handling.test_resources.act_source_and_executor_constructors import \
+    ActSourceAndExecutorConstructorThatRunsConstantActions
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.test_suite.test_resources.execution_utils import \
-    test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
     instruction_setup_with_single_phase_with_single_recording_instruction, Recording, matches_recording
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ReporterFactoryForReporterThatDoesNothing
@@ -39,8 +44,7 @@ INSTRUCTION_MARKER_IN_CASE_1 = 'case 1'
 INSTRUCTION_MARKER_IN_CASE_2 = 'case 2'
 CASE_THAT_REGISTERS_MARKER = """\
 {case_phase_header}
-
-register {marker}
+{phase_contents_line_that_records}
 """
 
 SUITE_WITH_PHASE_INSTRUCTION_AND_CASES = """\
@@ -50,8 +54,7 @@ SUITE_WITH_PHASE_INSTRUCTION_AND_CASES = """\
 {case_2_file}
 
 {case_phase_header}
-
-register {marker}
+{phase_contents_line_that_records}
 """
 
 SUITE_WITH_PHASE_INSTRUCTION_BUT_WITH_JUST_A_SUITE = """\
@@ -60,8 +63,7 @@ SUITE_WITH_PHASE_INSTRUCTION_BUT_WITH_JUST_A_SUITE = """\
 {sub_suite_file_name}
 
 {case_phase_header}
-
-register {marker}
+{phase_contents_line_that_records}
 """
 
 
@@ -70,31 +72,83 @@ class InstructionsSequencing(Enum):
     CASE_BEFORE_SUITE = 2
 
 
+class PhaseConfig:
+    def phase_name(self) -> SectionName:
+        raise NotImplementedError('abstract method')
+
+    def instructions_setup(self,
+                           register_instruction_name: str,
+                           recording_media: List[Recording]) -> InstructionsSetup:
+        raise NotImplementedError('abstract method')
+
+    def act_phase_parser(self) -> SectionElementParser:
+        raise NotImplementedError('abstract method')
+
+    def act_source_and_executor_constructor(self, recording_media: List[Recording]) -> ActSourceAndExecutorConstructor:
+        return ActSourceAndExecutorConstructorThatRunsConstantActions()
+
+    def phase_contents_line_that_registers(self,
+                                           marker_to_register: str) -> str:
+        raise NotImplementedError('abstract method')
+
+
+class PhaseConfigForPhaseWithInstructions(PhaseConfig):
+    def phase_contents_line_that_registers(self,
+                                           marker_to_register: str) -> str:
+        return REGISTER_INSTRUCTION_NAME + ' ' + marker_to_register
+
+    def instructions_setup(self,
+                           register_instruction_name: str,
+                           recording_media: List[Recording]) -> InstructionsSetup:
+        return instruction_setup_with_single_phase_with_single_recording_instruction(
+            REGISTER_INSTRUCTION_NAME,
+            recording_media,
+            self.mk_instruction_with_main_action,
+            self.mk_instruction_set_for_phase)
+
+    def mk_instruction_set_for_phase(self, instructions: Dict[str, SingleInstructionSetup]) -> InstructionsSetup:
+        raise NotImplementedError('abstract method')
+
+    def mk_instruction_with_main_action(self, main_action: Callable) -> Instruction:
+        raise NotImplementedError('abstract method')
+
+    def act_phase_parser(self) -> SectionElementParser:
+        return ActPhaseParser()
+
+
 class Files:
-    def __init__(self, case_phase: SectionName):
-        self.case_phase = case_phase
+    def __init__(self, phase_config: PhaseConfig):
+        self.phase_config = phase_config
 
-        self.file_1_with_registering_instruction = File('1.case',
-                                                        CASE_THAT_REGISTERS_MARKER.format(
-                                                            case_phase_header=self.case_phase.syntax,
-                                                            marker=INSTRUCTION_MARKER_IN_CASE_1))
+        self.file_1_with_registering_instruction = File(
+            '1.case',
+            CASE_THAT_REGISTERS_MARKER.format(
+                case_phase_header=self.phase_config.phase_name().syntax,
+                phase_contents_line_that_records=self.phase_config.phase_contents_line_that_registers(
+                    INSTRUCTION_MARKER_IN_CASE_1))
+        )
 
-        self.file_2_with_registering_instruction = File('2.case',
-                                                        CASE_THAT_REGISTERS_MARKER.format(
-                                                            case_phase_header=self.case_phase.syntax,
-                                                            marker=INSTRUCTION_MARKER_IN_CASE_2))
+        self.file_2_with_registering_instruction = File(
+            '2.case',
+            CASE_THAT_REGISTERS_MARKER.format(
+                case_phase_header=self.phase_config.phase_name().syntax,
+                phase_contents_line_that_records=self.phase_config.phase_contents_line_that_registers(
+                    INSTRUCTION_MARKER_IN_CASE_2))
+        )
 
         self.suite_with_phase_instruction_and_cases = SUITE_WITH_PHASE_INSTRUCTION_AND_CASES.format(
-            case_phase_header=self.case_phase.syntax,
-            marker=INSTRUCTION_MARKER_IN_CONTAINING_SUITE,
+            case_phase_header=self.phase_config.phase_name().syntax,
+            phase_contents_line_that_records=self.phase_config.phase_contents_line_that_registers(
+                INSTRUCTION_MARKER_IN_CONTAINING_SUITE),
             case_1_file=self.file_1_with_registering_instruction.file_name,
             case_2_file=self.file_2_with_registering_instruction.file_name,
         )
 
     def suite_with_phase_instruction_but_with_just_a_suite(self, containing_suite_file_name: str) -> str:
         return SUITE_WITH_PHASE_INSTRUCTION_BUT_WITH_JUST_A_SUITE.format(
-            case_phase_header=self.case_phase.syntax,
-            marker=INSTRUCTION_MARKER_IN_NON_CONTAINING_SUITE,
+            case_phase_header=self.phase_config.phase_name().syntax,
+            phase_contents_line_that_records=self.phase_config.phase_contents_line_that_registers(
+                INSTRUCTION_MARKER_IN_NON_CONTAINING_SUITE),
             sub_suite_file_name=containing_suite_file_name,
         )
 
@@ -167,17 +221,6 @@ class ExpectCaseInstructionsBeforeSuiteInstructions(ExpectedRecordingsAssertionC
         ])
 
 
-class PhaseConfig:
-    def phase_name(self) -> SectionName:
-        raise NotImplementedError('abstract method')
-
-    def mk_instruction_set_for_phase(self, instructions: Dict[str, SingleInstructionSetup]) -> InstructionsSetup:
-        raise NotImplementedError('abstract method')
-
-    def mk_instruction_with_main_action(self, main_action: Callable) -> Instruction:
-        raise NotImplementedError('abstract method')
-
-
 class TestBase(unittest.TestCase):
     def _phase_config(self) -> PhaseConfig:
         raise NotImplementedError('abstract method')
@@ -205,7 +248,7 @@ class TestBase(unittest.TestCase):
     def _phase_instructions_in_suite_containing_cases(self, ):
         # ARRANGE #
 
-        files = Files(self._phase_config().phase_name())
+        files = Files(self._phase_config())
 
         containing_suite_file = File('test.suite', files.suite_with_phase_instruction_and_cases)
         suite_and_case_files = DirContents([
@@ -228,7 +271,7 @@ class TestBase(unittest.TestCase):
     def _phase_instructions_in_suite_not_containing_cases(self):
         # ARRANGE #
 
-        files = Files(self._phase_config().phase_name())
+        files = Files(self._phase_config())
 
         containing_suite_file = File('sub.suite', files.suite_with_phase_instruction_and_cases)
         non_containing_suite_file = File(
@@ -287,23 +330,19 @@ class TestBase(unittest.TestCase):
                     expected_instruction_recording.apply_with_message(self, recording_media, 'recordings'),
 
     def _new_executor(self,
-                      recorder: List[Recording],
+                      recording_media: List[Recording],
                       test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Executor:
-        instructions_setup = instruction_setup_with_single_phase_with_single_recording_instruction(
-            REGISTER_INSTRUCTION_NAME,
-            recorder,
-            self._phase_config().mk_instruction_with_main_action,
-            self._phase_config().mk_instruction_set_for_phase)
-
         test_case_definition = TestCaseDefinition(
             TestCaseParsingSetup(space_separator_instruction_name_extractor,
-                                 instructions_setup,
-                                 ActPhaseParser()),
+                                 self._phase_config().instructions_setup(REGISTER_INSTRUCTION_NAME, recording_media),
+                                 self._phase_config().act_phase_parser()),
             PredefinedProperties({}, empty_symbol_table()))
 
         default_case_configuration = processors.Configuration(
             test_case_definition,
-            test_case_handling_setup_with_identity_preprocessor(),
+            TestCaseHandlingSetup(
+                ActPhaseSetup(self._phase_config().act_source_and_executor_constructor(recording_media)),
+                IDENTITY_PREPROCESSOR),
             os_services.DEFAULT_ACT_PHASE_OS_PROCESS_EXECUTOR,
             False,
             sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-')

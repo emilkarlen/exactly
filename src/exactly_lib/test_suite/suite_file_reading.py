@@ -92,6 +92,10 @@ class _Parser:
                     phase_parser_constructor.of(InstructionsSetup.setup_instruction_set.fget)),
 
                 section_parsing.SectionConfiguration(
+                    section_names.SECTION_NAME__CASE_ACT,
+                    test_case_parsing_setup.act_phase_parser),
+
+                section_parsing.SectionConfiguration(
                     section_names.SECTION_NAME__CASE_BEFORE_ASSERT,
                     phase_parser_constructor.of(InstructionsSetup.before_assert_instruction_set.fget)),
 
@@ -123,6 +127,7 @@ class _Parser:
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_BEFORE_ASSERT),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_ASSERT),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_CLEANUP),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_ACT),
         )
 
 
@@ -165,7 +170,7 @@ class _TestCaseInstructionsFromTestSuiteAdder(TestCaseTransformer):
         return TestCase(
             configuration_phase=append(self._test_suite.case_configuration_phase, test_case.configuration_phase),
             setup_phase=append(self._test_suite.case_setup_phase, test_case.setup_phase),
-            act_phase=test_case.act_phase,
+            act_phase=append(self._test_suite.case_act_phase, test_case.act_phase),
             before_assert_phase=append(self._test_suite.case_before_assert_phase, test_case.before_assert_phase),
             assert_phase=append(self._test_suite.case_assert_phase, test_case.assert_phase),
             cleanup_phase=append(test_case.cleanup_phase, self._test_suite.case_cleanup_phase),

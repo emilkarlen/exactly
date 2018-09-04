@@ -10,14 +10,14 @@ from exactly_lib_test.execution.test_resources.instruction_test_resources import
 from exactly_lib_test.test_suite.case_instructions.test_resources import integration_test
 from exactly_lib_test.test_suite.case_instructions.test_resources.integration_test import \
     PhaseConfig, \
-    InstructionsSequencing
+    InstructionsSequencing, PhaseConfigForPhaseWithInstructions
 
 
 def suite() -> unittest.TestSuite:
     return unittest.makeSuite(Test)
 
 
-class BeforeAssertPhaseConfig(PhaseConfig):
+class BeforeAssertPhaseConfig(PhaseConfigForPhaseWithInstructions):
     def phase_name(self) -> SectionName:
         return phase_names.BEFORE_ASSERT_PHASE_NAME
 
