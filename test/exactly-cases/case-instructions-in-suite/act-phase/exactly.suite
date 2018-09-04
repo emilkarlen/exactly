@@ -1,0 +1,16 @@
+[cases]
+
+
+the.case
+
+
+[conf]
+
+
+actor = -file $ python
+
+
+[act]
+
+
+action-to-check.py

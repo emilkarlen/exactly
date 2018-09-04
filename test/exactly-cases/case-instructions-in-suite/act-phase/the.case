@@ -1,0 +1,6 @@
+[assert]
+
+stdout equals
+<<-
+Output from ATC
+-
