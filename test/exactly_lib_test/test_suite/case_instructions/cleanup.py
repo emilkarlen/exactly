@@ -7,8 +7,8 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document.model import Instruction
 from exactly_lib_test.execution.test_resources.instruction_test_resources import cleanup_phase_instruction_that
-from exactly_lib_test.test_suite.case_instructions.test_resources import registering_instructions
-from exactly_lib_test.test_suite.case_instructions.test_resources.registering_instructions import \
+from exactly_lib_test.test_suite.case_instructions.test_resources import integration_test
+from exactly_lib_test.test_suite.case_instructions.test_resources.integration_test import \
     PhaseConfig, \
     InstructionsSequencing
 
@@ -28,7 +28,7 @@ class CleanupPhaseConfig(PhaseConfig):
         return cleanup_phase_instruction_that(main_initial_action=main_action)
 
 
-class Test(registering_instructions.TestBase):
+class Test(integration_test.TestBase):
     PHASE_CONFIG = CleanupPhaseConfig()
 
     def _phase_config(self) -> PhaseConfig:
