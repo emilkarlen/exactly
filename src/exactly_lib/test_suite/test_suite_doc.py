@@ -1,10 +1,5 @@
 from exactly_lib.section_document.model import SectionContents, ElementType
-from exactly_lib.test_case.phases.act import ActPhaseInstruction
-from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
-from exactly_lib.test_case.phases.before_assert import BeforeAssertPhaseInstruction
-from exactly_lib.test_case.phases.cleanup import CleanupPhaseInstruction
-from exactly_lib.test_case.phases.configuration import ConfigurationPhaseInstruction
-from exactly_lib.test_case.phases.setup import SetupPhaseInstruction
+from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite.instruction_set.sections.cases import CaseSectionInstruction
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction
@@ -16,12 +11,7 @@ class TestSuiteDocument(tuple):
                 configuration_section: SectionContents,
                 suites_section: SectionContents,
                 cases_section: SectionContents,
-                case_configuration_phase: SectionContents,
-                case_setup_phase: SectionContents,
-                case_before_assert_phase: SectionContents,
-                case_assert_phase: SectionContents,
-                case_cleanup_phase: SectionContents,
-                case_act_phase: SectionContents,
+                case_phases: TestCase,
                 ):
         _assert_instruction_class(configuration_section,
                                   ConfigurationSectionInstruction)
@@ -30,28 +20,10 @@ class TestSuiteDocument(tuple):
         _assert_instruction_class(cases_section,
                                   CaseSectionInstruction)
 
-        _assert_instruction_class(case_configuration_phase,
-                                  ConfigurationPhaseInstruction)
-        _assert_instruction_class(case_setup_phase,
-                                  SetupPhaseInstruction)
-        _assert_instruction_class(case_before_assert_phase,
-                                  BeforeAssertPhaseInstruction)
-        _assert_instruction_class(case_assert_phase,
-                                  AssertPhaseInstruction)
-        _assert_instruction_class(case_cleanup_phase,
-                                  CleanupPhaseInstruction)
-        _assert_instruction_class(case_act_phase,
-                                  ActPhaseInstruction)
-
         return tuple.__new__(cls, (configuration_section,
                                    suites_section,
                                    cases_section,
-                                   case_configuration_phase,
-                                   case_setup_phase,
-                                   case_before_assert_phase,
-                                   case_assert_phase,
-                                   case_cleanup_phase,
-                                   case_act_phase))
+                                   case_phases))
 
     @property
     def configuration_section(self) -> SectionContents:
@@ -66,28 +38,8 @@ class TestSuiteDocument(tuple):
         return self[2]
 
     @property
-    def case_configuration_phase(self) -> SectionContents:
+    def case_phases(self) -> TestCase:
         return self[3]
-
-    @property
-    def case_setup_phase(self) -> SectionContents:
-        return self[4]
-
-    @property
-    def case_before_assert_phase(self) -> SectionContents:
-        return self[5]
-
-    @property
-    def case_assert_phase(self) -> SectionContents:
-        return self[6]
-
-    @property
-    def case_cleanup_phase(self) -> SectionContents:
-        return self[7]
-
-    @property
-    def case_act_phase(self) -> SectionContents:
-        return self[8]
 
 
 def _assert_instruction_class(phase_contents: SectionContents,

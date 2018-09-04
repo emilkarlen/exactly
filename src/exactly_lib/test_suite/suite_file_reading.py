@@ -117,17 +117,23 @@ class _Parser:
         suite_conf, case_conf = _separate_configuration_elements(
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CONF)
         )
-
         return test_suite_doc.TestSuiteDocument(
             suite_conf,
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__SUITS),
             document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASES),
-            case_conf,
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_SETUP),
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_BEFORE_ASSERT),
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_ASSERT),
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_CLEANUP),
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASE_ACT),
+            TestCase(
+                case_conf,
+                document.elements_for_section_or_empty_if_phase_not_present(
+                    section_names.SECTION_NAME__CASE_SETUP),
+                document.elements_for_section_or_empty_if_phase_not_present(
+                    section_names.SECTION_NAME__CASE_ACT),
+                document.elements_for_section_or_empty_if_phase_not_present(
+                    section_names.SECTION_NAME__CASE_BEFORE_ASSERT),
+                document.elements_for_section_or_empty_if_phase_not_present(
+                    section_names.SECTION_NAME__CASE_ASSERT),
+                document.elements_for_section_or_empty_if_phase_not_present(
+                    section_names.SECTION_NAME__CASE_CLEANUP),
+            ),
         )
 
 
@@ -167,11 +173,13 @@ class _TestCaseInstructionsFromTestSuiteAdder(TestCaseTransformer):
         def append(fst: SectionContents, snd: SectionContents) -> SectionContents:
             return SectionContents(tuple(list(fst.elements) + list(snd.elements)))
 
+        test_suite = self._test_suite.case_phases
+
         return TestCase(
-            configuration_phase=append(self._test_suite.case_configuration_phase, test_case.configuration_phase),
-            setup_phase=append(self._test_suite.case_setup_phase, test_case.setup_phase),
-            act_phase=append(self._test_suite.case_act_phase, test_case.act_phase),
-            before_assert_phase=append(self._test_suite.case_before_assert_phase, test_case.before_assert_phase),
-            assert_phase=append(self._test_suite.case_assert_phase, test_case.assert_phase),
-            cleanup_phase=append(test_case.cleanup_phase, self._test_suite.case_cleanup_phase),
+            configuration_phase=append(test_suite.configuration_phase, test_case.configuration_phase),
+            setup_phase=append(test_suite.setup_phase, test_case.setup_phase),
+            act_phase=append(test_suite.act_phase, test_case.act_phase),
+            before_assert_phase=append(test_suite.before_assert_phase, test_case.before_assert_phase),
+            assert_phase=append(test_suite.assert_phase, test_case.assert_phase),
+            cleanup_phase=append(test_case.cleanup_phase, test_suite.cleanup_phase),
         )
