@@ -61,6 +61,9 @@ class Test(integration_test.TestBase):
     def test_instructions_in_non_containing_suite_SHOULD_not_be_included_in_any_case(self):
         self._phase_instructions_in_suite_not_containing_cases()
 
+    def test_WHEN_syntax_error_THEN_suite_reading_should_raise_exception(self):
+        self._when_syntax_error_in_case_phase_contents_then_suite_reading_should_raise_exception()
+
 
 class ActPhaseParserThatConsumesCurrentLineAndGivesRecordingInstruction(SectionElementParser):
     def parse(self,
