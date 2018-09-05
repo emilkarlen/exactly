@@ -1,5 +1,5 @@
 import pathlib
-from typing import List
+from typing import List, Optional
 
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
@@ -11,7 +11,7 @@ class SuiteReadError(Exception):
     def __init__(self,
                  suite_file: pathlib.Path,
                  source: line_source.LineSequence,
-                 maybe_section_name: str = None):
+                 maybe_section_name: Optional[str] = None):
         self._suite_file = suite_file
         self._source = source
         self._maybe_section_name = maybe_section_name
@@ -31,13 +31,10 @@ class SuiteReadError(Exception):
                                   [])
 
     @property
-    def maybe_section_name(self) -> str:
-        """
-        :return: str?
-        """
+    def maybe_section_name(self) -> Optional[str]:
         return self._maybe_section_name
 
-    def error_message_lines(self) -> list:
+    def error_message_lines(self) -> List[str]:
         """
         Error message text that are specific for the exception class.
         """
@@ -85,7 +82,7 @@ class SuiteFileReferenceError(SuiteReadError):
     def reference(self) -> pathlib.Path:
         return self._reference
 
-    def error_message_lines(self) -> list:
+    def error_message_lines(self) -> List[str]:
         return [
             'Cannot access file:',
             str(self.reference)
@@ -97,11 +94,11 @@ class SuiteSyntaxError(SuiteReadError):
                  suite_file: pathlib.Path,
                  source: line_source.LineSequence,
                  message: str,
-                 maybe_section_name: str = None):
+                 maybe_section_name: Optional[str] = None):
         super().__init__(suite_file,
                          source,
                          maybe_section_name)
         self._message = message
 
-    def error_message_lines(self) -> list:
+    def error_message_lines(self) -> List[str]:
         return [error_description.syntax_error_message(self._message)]
