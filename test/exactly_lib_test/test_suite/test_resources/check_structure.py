@@ -43,7 +43,7 @@ def check(setup: Setup,
 def equals_test_suite(expected: TestSuiteHierarchy) -> ValueAssertion[TestSuiteHierarchy]:
     return matches_test_suite(
         source_file=asrt.equals(expected.source_file),
-        file_inclusions_leading_to_this_file=asrt.equals(expected.file_inclusions_leading_to_this_file),
+        file_inclusions_leading_to_this_file=asrt.equals(expected.suite_file_inclusions_leading_to_this_file),
         test_cases=asrt.matches_sequence([
             equals_test_case_reference(test_case)
             for test_case in expected.test_cases
@@ -72,13 +72,13 @@ def matches_test_suite(source_file: ValueAssertion[Path],
 class MatchesTestSuite(ValueAssertionBase[TestSuiteHierarchy]):
     def __init__(self,
                  source_file: ValueAssertion[Path],
-                 file_inclusions_leading_to_this_file: ValueAssertion[List[Path]],
+                 suite_file_inclusions_leading_to_this_file: ValueAssertion[List[Path]],
                  test_case_handling_setup: ValueAssertion[TestCaseHandlingSetup],
                  sub_test_suites: ValueAssertion[Sequence[TestSuiteHierarchy]],
                  test_cases: ValueAssertion[Sequence[TestCaseFileReference]],
                  ):
         self.source_file = source_file
-        self.file_inclusions_leading_to_this_file = file_inclusions_leading_to_this_file
+        self.suite_file_inclusions_leading_to_this_file = suite_file_inclusions_leading_to_this_file
         self.test_case_handling_setup = test_case_handling_setup
         self.sub_test_suites = sub_test_suites
         self.test_cases = test_cases
@@ -91,9 +91,9 @@ class MatchesTestSuite(ValueAssertionBase[TestSuiteHierarchy]):
             asrt.sub_component('source_file',
                                TestSuiteHierarchy.source_file.fget,
                                self.source_file),
-            asrt.sub_component('file_inclusions_leading_to_this_file',
-                               TestSuiteHierarchy.file_inclusions_leading_to_this_file.fget,
-                               self.file_inclusions_leading_to_this_file),
+            asrt.sub_component('suite_file_inclusions_leading_to_this_file',
+                               TestSuiteHierarchy.suite_file_inclusions_leading_to_this_file.fget,
+                               self.suite_file_inclusions_leading_to_this_file),
             asrt.sub_component('test_case_handling_setup',
                                TestSuiteHierarchy.test_case_handling_setup.fget,
                                self.test_case_handling_setup),
