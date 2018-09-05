@@ -11,7 +11,7 @@ from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
 from exactly_lib.test_suite.error_reporting import report_suite_read_error
-from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
+from exactly_lib.test_suite.file_reading.exception import SuiteReadError
 from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util.std import StdOutputFiles, file_printer_with_color_if_terminal

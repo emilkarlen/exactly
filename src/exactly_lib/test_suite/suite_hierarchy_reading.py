@@ -8,7 +8,8 @@ from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.model import SectionContents, ElementType
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_suite.instruction_set import parse, instruction
+from exactly_lib.test_suite.file_reading import exception
+from exactly_lib.test_suite.instruction_set import instruction
 from exactly_lib.test_suite.instruction_set.instruction import TestSuiteFileReferencesInstruction
 from . import structure
 from . import suite_file_reading
@@ -103,17 +104,17 @@ class _SingleFileReader:
                             for path in paths:
                                 resolved_path = path.resolve()
                                 if resolved_path in self._visited:
-                                    raise parse.SuiteDoubleInclusion(suite_file_path,
-                                                                     element.source,
-                                                                     path,
-                                                                     self._visited[resolved_path])
+                                    raise exception.SuiteDoubleInclusion(suite_file_path,
+                                                                         element.source,
+                                                                         path,
+                                                                         self._visited[resolved_path])
                                 else:
                                     self._visited[resolved_path] = suite_file_path
                         ret_val.extend(paths)
                     except instruction.FileNotAccessibleSimpleError as ex:
-                        raise parse.SuiteFileReferenceError(suite_file_path,
-                                                            element.source,
-                                                            ex.file_path)
+                        raise exception.SuiteFileReferenceError(suite_file_path,
+                                                                element.source,
+                                                                ex.file_path)
             return ret_val
 
         environment = instruction.Environment(suite_file_path.parent)

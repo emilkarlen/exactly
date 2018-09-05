@@ -12,7 +12,7 @@ from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.execution import Executor
-from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
+from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.test_suite.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.util import line_source
 from exactly_lib_test.test_case.test_resources import error_info
