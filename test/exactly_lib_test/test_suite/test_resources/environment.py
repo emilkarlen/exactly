@@ -4,7 +4,7 @@ from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
-from exactly_lib.test_suite.suite_hierarchy_reading import Environment
+from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Environment
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
 
 

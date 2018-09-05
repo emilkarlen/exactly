@@ -154,7 +154,7 @@ class MainProgram:
                            ) -> int:
         from exactly_lib.processing import processors
         from exactly_lib.test_suite import enumeration
-        from exactly_lib.test_suite import suite_hierarchy_reading
+        from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
         from exactly_lib.test_suite import execution
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          settings.handling_setup,

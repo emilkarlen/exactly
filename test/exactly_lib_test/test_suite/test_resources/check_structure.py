@@ -6,7 +6,7 @@ from typing import List, Sequence
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_suite import structure
-from exactly_lib.test_suite.suite_hierarchy_reading import Reader
+from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader
 from exactly_lib_test.processing.test_resources.test_case_processing_assertions import equals_test_case_reference
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
