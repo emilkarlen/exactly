@@ -13,7 +13,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.test_case import os_services
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.execution import Executor
-from exactly_lib.test_suite.suite_hierarchy_reading import Reader, Environment
+from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader, Environment
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
 from exactly_lib_test.test_resources.files.file_structure import DirContents
