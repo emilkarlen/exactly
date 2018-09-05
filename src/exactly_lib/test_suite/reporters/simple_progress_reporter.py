@@ -21,7 +21,7 @@ SUCCESS_STATUSES = {FullExeResultStatus.PASS,
 class SimpleProgressSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
     def __init__(self,
                  output_file: FilePrinter,
-                 suite: structure.TestSuite,
+                 suite: structure.TestSuiteHierarchy,
                  root_suite_dir_abs_path: pathlib.Path):
         self.output_file = output_file
         self.suite = suite
@@ -61,7 +61,7 @@ class _RelPathPresenter:
 
 class SimpleProgressRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
-                     root_suite: structure.TestSuite,
+                     root_suite: structure.TestSuiteHierarchy,
                      std_output_files: StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
@@ -89,7 +89,7 @@ class SimpleProgressRootSuiteReporter(reporting.RootSuiteReporter):
         self._total_time_timedelta = stop_time - self._start_time
 
     def new_sub_suite_reporter(self,
-                               sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
+                               sub_suite: structure.TestSuiteHierarchy) -> reporting.SubSuiteReporter:
         progress_reporter = SimpleProgressSubSuiteProgressReporter(self._output_file,
                                                                    sub_suite,
                                                                    self._root_suite_dir_abs_path)

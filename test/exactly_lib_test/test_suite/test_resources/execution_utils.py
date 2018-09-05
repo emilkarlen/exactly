@@ -92,13 +92,13 @@ T_C_H_S = test_case_handling_setup_with_identity_preprocessor()
 
 
 def test_suite(source_file_name: str,
-               sub_test_suites: List[structure.TestSuite],
-               test_cases: List[TestCaseFileReference]) -> structure.TestSuite:
-    return structure.TestSuite(pathlib.Path(source_file_name),
-                               [],
-                               T_C_H_S,
-                               sub_test_suites,
-                               test_cases)
+               sub_test_suites: List[structure.TestSuiteHierarchy],
+               test_cases: List[TestCaseFileReference]) -> structure.TestSuiteHierarchy:
+    return structure.TestSuiteHierarchy(pathlib.Path(source_file_name),
+                                        [],
+                                        T_C_H_S,
+                                        sub_test_suites,
+                                        test_cases)
 
 
 def test_case(source_file_name: str) -> TestCaseFileReference:

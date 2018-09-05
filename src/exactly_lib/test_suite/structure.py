@@ -6,7 +6,7 @@ from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetu
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 
 
-class TestSuite:
+class TestSuiteHierarchy:
     """
     A root-suite with a hierarchy of sub-suites.
     """

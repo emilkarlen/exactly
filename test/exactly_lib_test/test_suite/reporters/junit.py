@@ -388,7 +388,7 @@ class ExitCodeAndStdOut(tuple):
 
 
 def execute_with_case_processing_with_constant_result(case_result: Result,
-                                                      root_suite: structure.TestSuite,
+                                                      root_suite: structure.TestSuiteHierarchy,
                                                       root_file_path: Path,
                                                       test_suites: list) -> ExitCodeAndStdOut:
     return execute_with_case_processing_with_constant_processor(TestCaseProcessorThatGivesConstant(case_result),
@@ -398,7 +398,7 @@ def execute_with_case_processing_with_constant_result(case_result: Result,
 
 
 def execute_with_case_processing_with_constant_processor(processor: tcp.Processor,
-                                                         root_suite: structure.TestSuite,
+                                                         root_suite: structure.TestSuiteHierarchy,
                                                          root_file_path: Path,
                                                          test_suites: list) -> ExitCodeAndStdOut:
     std_output_files = StringStdOutFiles()
