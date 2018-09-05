@@ -21,7 +21,9 @@ from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstru
 from exactly_lib.test_suite import execution as sut, enumeration
 from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
+from exactly_lib.test_suite.file_reading.exception import SuiteReadError
 from exactly_lib.util.symbol_table import empty_symbol_table
+from exactly_lib_test.processing.test_resources.test_case_setup import setup_with_null_act_phase_and_null_preprocessing
 from exactly_lib_test.section_document.test_resources.element_parsers import \
     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
@@ -43,6 +45,12 @@ INSTRUCTION_MARKER_IN_CONTAINING_SUITE = 'containing suite'
 INSTRUCTION_MARKER_IN_NON_CONTAINING_SUITE = 'non-containing suite'
 INSTRUCTION_MARKER_IN_CASE_1 = 'case 1'
 INSTRUCTION_MARKER_IN_CASE_2 = 'case 2'
+
+SUITE_WITH_SYNTAX_ERROR_IN_CASE_PHASE = """\
+{case_phase_header}
+phase contents causing syntax error
+"""
+
 CASE_THAT_REGISTERS_MARKER = """\
 {case_phase_header}
 {phase_contents_line_that_records}
@@ -297,6 +305,30 @@ class TestBase(unittest.TestCase):
         self._check(containing_suite_file,
                     suite_and_case_files,
                     expectation)
+
+    def _when_syntax_error_in_case_phase_contents_then_suite_reading_should_raise_exception(self):
+        # ARRANGE #
+        suite_file = File(
+            'the.suite',
+            SUITE_WITH_SYNTAX_ERROR_IN_CASE_PHASE.format(case_phase_header=self._phase_config().phase_name().syntax)
+        )
+        cwd_contents = DirContents([
+            suite_file
+        ])
+        tc_parsing_setup = TestCaseParsingSetup(space_separator_instruction_name_extractor,
+                                                InstructionsSetup(),
+                                                SectionElementParserThatRaisesUnrecognizedSectionElementSourceError())
+        tc_handling_setup = setup_with_null_act_phase_and_null_preprocessing()
+        reader = suite_hierarchy_reading.Reader(
+            suite_hierarchy_reading.Environment(
+                SectionElementParserThatRaisesUnrecognizedSectionElementSourceError(),
+                tc_parsing_setup,
+                tc_handling_setup)
+        )
+        with self.assertRaises(SuiteReadError):
+            with tmp_dir_as_cwd(cwd_contents):
+                # ACT & ASSERT #
+                reader.apply(suite_file.name_as_path)
 
     def _check(self,
                root_suite_file: File,

@@ -28,6 +28,10 @@ class File(FileSystemElement):
     def name(self) -> str:
         return self.file_name
 
+    @property
+    def name_as_path(self) -> pathlib.Path:
+        return pathlib.Path(self.file_name)
+
     def write_to(self,
                  parent_dir_path: pathlib.Path):
         write_file(parent_dir_path / self.file_name,
