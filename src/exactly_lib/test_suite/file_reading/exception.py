@@ -1,6 +1,7 @@
 import pathlib
 from typing import List
 
+from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.section_document.source_location import SourceLocation, SourceLocationPath
 from exactly_lib.test_case import error_description
 from exactly_lib.util import line_source
@@ -49,7 +50,7 @@ class SuiteDoubleInclusion(SuiteReadError):
                  source: line_source.LineSequence,
                  included_suite_file: pathlib.Path,
                  first_referenced_from: pathlib.Path):
-        super().__init__(suite_file, source, None)
+        super().__init__(suite_file, source, section_names.SECTION_NAME__SUITS)
         self._included_suite_file = included_suite_file
         self._first_referenced_from = first_referenced_from
 
@@ -77,7 +78,7 @@ class SuiteFileReferenceError(SuiteReadError):
                  reference: pathlib.Path):
         super().__init__(suite_file,
                          source,
-                         None)
+                         section_names.SECTION_NAME__SUITS)
         self._reference = reference
 
     @property
