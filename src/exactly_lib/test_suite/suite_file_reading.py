@@ -14,7 +14,7 @@ from exactly_lib.section_document.model import ElementType, SectionContents
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case.test_case_doc import TestCase
 from exactly_lib.test_suite import test_suite_doc
-from exactly_lib.test_suite.instruction_set import parse
+from exactly_lib.test_suite.file_reading import exception
 from exactly_lib.test_suite.instruction_set.sections import cases
 from exactly_lib.test_suite.instruction_set.sections import suites
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
@@ -33,10 +33,10 @@ def read_suite_document(suite_file_path: pathlib.Path,
     try:
         return parser.apply(suite_file_path)
     except FileSourceError as ex:
-        raise parse.SuiteSyntaxError(suite_file_path,
-                                     ex.source,
-                                     ex.error_message,
-                                     maybe_section_name=ex.maybe_section_name)
+        raise exception.SuiteSyntaxError(suite_file_path,
+                                         ex.source,
+                                         ex.error_message,
+                                         maybe_section_name=ex.maybe_section_name)
 
 
 def resolve_test_case_handling_setup(

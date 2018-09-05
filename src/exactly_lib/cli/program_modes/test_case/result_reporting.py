@@ -6,7 +6,7 @@ from exactly_lib.common.result_reporting import print_error_message_for_full_res
 from exactly_lib.execution.full_execution.result import FullExeResultStatus, FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values
 from exactly_lib.processing.test_case_processing import ErrorInfo
-from exactly_lib.test_suite.instruction_set.parse import SuiteSyntaxError
+from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles, FilePrinter, file_printer_with_color_if_terminal
 
 

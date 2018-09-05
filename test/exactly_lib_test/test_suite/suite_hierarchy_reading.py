@@ -7,7 +7,7 @@ from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
 from exactly_lib.test_suite import structure
-from exactly_lib.test_suite.instruction_set.parse import SuiteFileReferenceError, SuiteSyntaxError, \
+from exactly_lib.test_suite.file_reading.exception import SuiteFileReferenceError, SuiteSyntaxError, \
     SuiteDoubleInclusion
 from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.string import lines_content

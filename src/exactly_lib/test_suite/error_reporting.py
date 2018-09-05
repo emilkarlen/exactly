@@ -1,6 +1,6 @@
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.result_reporting import output_location
-from exactly_lib.test_suite.instruction_set.parse import SuiteReadError
+from exactly_lib.test_suite.file_reading.exception import SuiteReadError
 from exactly_lib.util.std import FilePrinter
 
 
