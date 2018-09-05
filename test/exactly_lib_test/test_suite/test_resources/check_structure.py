@@ -5,8 +5,8 @@ from typing import List, Sequence
 
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
-from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader
+from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib_test.processing.test_resources.test_case_processing_assertions import equals_test_case_reference
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
@@ -23,7 +23,7 @@ class Setup:
     def file_structure_to_read(self, root_path: pathlib.Path) -> DirContents:
         raise NotImplementedError()
 
-    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[structure.TestSuite]:
+    def expected_structure_based_at(self, root_path: pathlib.Path) -> ValueAssertion[TestSuiteHierarchy]:
         raise NotImplementedError()
 
 
@@ -40,7 +40,7 @@ def check(setup: Setup,
         expected.apply_without_message(put, actual)
 
 
-def equals_test_suite(expected: structure.TestSuite) -> ValueAssertion[structure.TestSuite]:
+def equals_test_suite(expected: TestSuiteHierarchy) -> ValueAssertion[TestSuiteHierarchy]:
     return matches_test_suite(
         source_file=asrt.equals(expected.source_file),
         file_inclusions_leading_to_this_file=asrt.equals(expected.file_inclusions_leading_to_this_file),
@@ -59,9 +59,9 @@ def equals_test_suite(expected: structure.TestSuite) -> ValueAssertion[structure
 def matches_test_suite(source_file: ValueAssertion[Path],
                        file_inclusions_leading_to_this_file: ValueAssertion[List[Path]],
                        test_case_handling_setup: ValueAssertion[TestCaseHandlingSetup],
-                       sub_test_suites: ValueAssertion[Sequence[structure.TestSuite]],
+                       sub_test_suites: ValueAssertion[Sequence[TestSuiteHierarchy]],
                        test_cases: ValueAssertion[Sequence[TestCaseFileReference]],
-                       ) -> ValueAssertion[structure.TestSuite]:
+                       ) -> ValueAssertion[TestSuiteHierarchy]:
     return MatchesTestSuite(source_file,
                             file_inclusions_leading_to_this_file,
                             test_case_handling_setup,
@@ -69,12 +69,12 @@ def matches_test_suite(source_file: ValueAssertion[Path],
                             test_cases)
 
 
-class MatchesTestSuite(ValueAssertionBase[structure.TestSuite]):
+class MatchesTestSuite(ValueAssertionBase[TestSuiteHierarchy]):
     def __init__(self,
                  source_file: ValueAssertion[Path],
                  file_inclusions_leading_to_this_file: ValueAssertion[List[Path]],
                  test_case_handling_setup: ValueAssertion[TestCaseHandlingSetup],
-                 sub_test_suites: ValueAssertion[Sequence[structure.TestSuite]],
+                 sub_test_suites: ValueAssertion[Sequence[TestSuiteHierarchy]],
                  test_cases: ValueAssertion[Sequence[TestCaseFileReference]],
                  ):
         self.source_file = source_file
@@ -85,23 +85,23 @@ class MatchesTestSuite(ValueAssertionBase[structure.TestSuite]):
 
     def _apply(self,
                put: unittest.TestCase,
-               value: structure.TestSuite,
+               value: TestSuiteHierarchy,
                message_builder: MessageBuilder):
         assertion = asrt.and_([
             asrt.sub_component('source_file',
-                               structure.TestSuite.source_file.fget,
+                               TestSuiteHierarchy.source_file.fget,
                                self.source_file),
             asrt.sub_component('file_inclusions_leading_to_this_file',
-                               structure.TestSuite.file_inclusions_leading_to_this_file.fget,
+                               TestSuiteHierarchy.file_inclusions_leading_to_this_file.fget,
                                self.file_inclusions_leading_to_this_file),
             asrt.sub_component('test_case_handling_setup',
-                               structure.TestSuite.test_case_handling_setup.fget,
+                               TestSuiteHierarchy.test_case_handling_setup.fget,
                                self.test_case_handling_setup),
             asrt.sub_component('sub_test_suites',
-                               structure.TestSuite.sub_test_suites.fget,
+                               TestSuiteHierarchy.sub_test_suites.fget,
                                self.sub_test_suites),
             asrt.sub_component('test_cases',
-                               structure.TestSuite.test_cases.fget,
+                               TestSuiteHierarchy.test_cases.fget,
                                self.test_cases),
         ])
         assertion.apply(put, value, message_builder)

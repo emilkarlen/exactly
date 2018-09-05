@@ -52,7 +52,7 @@ class SubSuiteProgressReporter:
 
 class SubSuiteReporter:
     def __init__(self,
-                 suite: structure.TestSuite,
+                 suite: structure.TestSuiteHierarchy,
                  listener: SubSuiteProgressReporter):
         self._suite = suite
         self._listener = listener
@@ -69,7 +69,7 @@ class SubSuiteReporter:
         self._result.append((case, execution_info))
 
     @property
-    def suite(self) -> structure.TestSuite:
+    def suite(self) -> structure.TestSuiteHierarchy:
         return self._suite
 
     @property
@@ -92,7 +92,7 @@ class RootSuiteReporter:
         pass
 
     def new_sub_suite_reporter(self,
-                               sub_suite: structure.TestSuite) -> SubSuiteReporter:
+                               sub_suite: structure.TestSuiteHierarchy) -> SubSuiteReporter:
         raise NotImplementedError()
 
     def report_final_results(self) -> int:
@@ -106,7 +106,7 @@ class RootSuiteReporter:
 
 class RootSuiteReporterFactory:
     def new_reporter(self,
-                     root_suite: structure.TestSuite,
+                     root_suite: structure.TestSuiteHierarchy,
                      std_output_files: StdOutputFiles,
                      root_suite_file: pathlib.Path) -> RootSuiteReporter:
         raise NotImplementedError()

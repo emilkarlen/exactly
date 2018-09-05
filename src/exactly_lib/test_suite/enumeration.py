@@ -1,4 +1,4 @@
-from exactly_lib.test_suite.structure import TestSuite
+from exactly_lib.test_suite.structure import TestSuiteHierarchy
 
 
 class SuiteEnumerator:
@@ -7,7 +7,7 @@ class SuiteEnumerator:
     """
 
     def apply(self,
-              suite: TestSuite) -> list:
+              suite: TestSuiteHierarchy) -> list:
         """
         Enumerates all suites contained in the argument.
         :param suite: Root of suites to be enumerated.
@@ -17,7 +17,7 @@ class SuiteEnumerator:
 
 
 class DepthFirstEnumerator(SuiteEnumerator):
-    def apply(self, suite: TestSuite) -> list:
+    def apply(self, suite: TestSuiteHierarchy) -> list:
         ret_val = []
         for sub_suite in suite.sub_test_suites:
             ret_val.extend(self.apply(sub_suite))

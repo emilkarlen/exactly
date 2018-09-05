@@ -4,8 +4,9 @@ import pathlib
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_case.test_case_doc import TestCase
-from exactly_lib.test_suite import reporting, structure
+from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
+from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util import std
 
 
@@ -14,7 +15,7 @@ class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):
         self.complete_suite_reporter = ExecutionTracingRootSuiteReporter()
 
     def new_reporter(self,
-                     root_suite: structure.TestSuite,
+                     root_suite: TestSuiteHierarchy,
                      std_output_files: std.StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return self.complete_suite_reporter
@@ -24,7 +25,7 @@ class ReporterFactoryForReporterThatDoesNothing(reporting.RootSuiteReporterFacto
     VALID_SUITE_EXIT_CODE = -1
 
     def new_reporter(self,
-                     root_suite: structure.TestSuite,
+                     root_suite: TestSuiteHierarchy,
                      std_output_files: std.StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return RootSuiteReporterThatDoesNothing()
@@ -37,7 +38,7 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
         self.sub_suite_reporters = []
         self.num_report_final_result_invocations = 0
 
-    def new_sub_suite_reporter(self, sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
+    def new_sub_suite_reporter(self, sub_suite: TestSuiteHierarchy) -> reporting.SubSuiteReporter:
         reporter = reporting.SubSuiteReporter(sub_suite, ExecutionTracingSubSuiteProgressReporter(sub_suite))
         self.sub_suite_reporters.append(reporter)
         return reporter
@@ -48,7 +49,7 @@ class ExecutionTracingRootSuiteReporter(reporting.RootSuiteReporter):
 
 
 class RootSuiteReporterThatDoesNothing(reporting.RootSuiteReporter):
-    def new_sub_suite_reporter(self, sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
+    def new_sub_suite_reporter(self, sub_suite: TestSuiteHierarchy) -> reporting.SubSuiteReporter:
         return reporting.SubSuiteReporter(sub_suite, SubSuiteProgressReporterThatDoesNothing())
 
     def report_final_results(self) -> int:
@@ -81,8 +82,7 @@ class CaseEndInfo(tuple):
 
 
 class ExecutionTracingSubSuiteProgressReporter(reporting.SubSuiteProgressReporter):
-    def __init__(self,
-                 sub_suite: structure.TestSuite):
+    def __init__(self, sub_suite: TestSuiteHierarchy):
         self.sub_suite = sub_suite
         self.event_type_list = []
         self.case_begin_list = []

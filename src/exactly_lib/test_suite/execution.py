@@ -56,7 +56,7 @@ class Executor:
         return executor.execute_and_report(suits_in_processing_order)
 
     def _read_structure(self,
-                        suite_file_path: pathlib.Path) -> structure.TestSuite:
+                        suite_file_path: pathlib.Path) -> structure.TestSuiteHierarchy:
         return self._suite_hierarchy_reader.apply(suite_file_path)
 
 
@@ -73,7 +73,7 @@ class SuitesExecutor:
         self._default_case_configuration = default_case_configuration
         self._test_case_processor_constructor = test_case_processor_constructor
 
-    def execute_and_report(self, suits_in_processing_order: List[structure.TestSuite]) -> int:
+    def execute_and_report(self, suits_in_processing_order: List[structure.TestSuiteHierarchy]) -> int:
         """
         :return: Exit code for main program.
         """
@@ -83,7 +83,7 @@ class SuitesExecutor:
         self._reporter.root_suite_end()
         return self._reporter.report_final_results()
 
-    def _process_single_sub_suite(self, suite: structure.TestSuite):
+    def _process_single_sub_suite(self, suite: structure.TestSuiteHierarchy):
         """
         Executes a single suite (i.e. not it's sub suites).
         """
@@ -97,11 +97,11 @@ class SuitesExecutor:
             sub_suite_reporter.case_end(case, processing_info)
         sub_suite_reporter.progress_reporter.suite_end()
 
-    def _case_processor_for(self, suite: structure.TestSuite) -> test_case_processing.Processor:
+    def _case_processor_for(self, suite: structure.TestSuiteHierarchy) -> test_case_processing.Processor:
         configuration = self._configuration_for_cases_in_suite(suite)
         return self._test_case_processor_constructor(configuration)
 
-    def _configuration_for_cases_in_suite(self, suite: structure.TestSuite) -> case_processing.Configuration:
+    def _configuration_for_cases_in_suite(self, suite: structure.TestSuiteHierarchy) -> case_processing.Configuration:
         return case_processing.Configuration(
             self._default_case_configuration.test_case_definition,
             suite.test_case_handling_setup,

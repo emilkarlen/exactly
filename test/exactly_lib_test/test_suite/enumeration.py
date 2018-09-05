@@ -6,7 +6,7 @@ from exactly_lib.processing.preprocessor import IDENTITY_PREPROCESSOR
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
-from exactly_lib.test_suite.structure import TestSuite
+from exactly_lib.test_suite.structure import TestSuiteHierarchy
 
 
 def suite() -> unittest.TestSuite:
@@ -19,7 +19,7 @@ T_C_H_S = TestCaseHandlingSetup(command_line.act_phase_setup(),
 
 class TestDepthFirstEnumerator(unittest.TestCase):
     def test_single_suite(self):
-        root_suite = TestSuite(
+        root_suite = TestSuiteHierarchy(
             pathlib.Path('root-file'),
             [],
             T_C_H_S,
@@ -35,12 +35,12 @@ class TestDepthFirstEnumerator(unittest.TestCase):
 
     def test_hierarchy(self):
         # ARRANGE #
-        sub11 = TestSuite(pathlib.Path('11'), [], T_C_H_S, [], [])
-        sub12 = TestSuite(pathlib.Path('12'), [], T_C_H_S, [], [])
-        sub1 = TestSuite(pathlib.Path('1'), [], T_C_H_S, [sub11, sub12], [])
-        sub21 = TestSuite(pathlib.Path('21'), [], T_C_H_S, [], [])
-        sub2 = TestSuite(pathlib.Path('2'), [], T_C_H_S, [sub21], [])
-        root = TestSuite(pathlib.Path('root'), [], T_C_H_S, [sub1, sub2], [])
+        sub11 = TestSuiteHierarchy(pathlib.Path('11'), [], T_C_H_S, [], [])
+        sub12 = TestSuiteHierarchy(pathlib.Path('12'), [], T_C_H_S, [], [])
+        sub1 = TestSuiteHierarchy(pathlib.Path('1'), [], T_C_H_S, [sub11, sub12], [])
+        sub21 = TestSuiteHierarchy(pathlib.Path('21'), [], T_C_H_S, [], [])
+        sub2 = TestSuiteHierarchy(pathlib.Path('2'), [], T_C_H_S, [sub21], [])
+        root = TestSuiteHierarchy(pathlib.Path('root'), [], T_C_H_S, [sub1, sub2], [])
         # ACT #
         actual = DepthFirstEnumerator().apply(root)
         # ASSERT #

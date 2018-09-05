@@ -9,11 +9,11 @@ from exactly_lib.processing.test_case_processing import TestCaseFileReference, n
     new_access_error, test_case_reference_of_source_file
 from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
-from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.execution import Executor
 from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import SuiteHierarchyReader
+from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util import line_source
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
@@ -292,7 +292,7 @@ class TestCaseProcessorThatRaisesUnconditionally(tcp.Processor):
 
 
 class ReaderThatRaisesParseError(SuiteHierarchyReader):
-    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
+    def apply(self, suite_file_path: pathlib.Path) -> TestSuiteHierarchy:
         raise SuiteSyntaxError(suite_file_path,
                                line_source.single_line_sequence(1, 'line'),
                                'message')
@@ -300,18 +300,18 @@ class ReaderThatRaisesParseError(SuiteHierarchyReader):
 
 class ReaderThatGivesConstantSuite(SuiteHierarchyReader):
     def __init__(self,
-                 constant: structure.TestSuite):
+                 constant: TestSuiteHierarchy):
         self.constant = constant
 
-    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
+    def apply(self, suite_file_path: pathlib.Path) -> TestSuiteHierarchy:
         return self.constant
 
 
 class ExpectedSuiteReporting(tuple):
     def __new__(cls,
-                test_suite: structure.TestSuite,
+                suite_hierarchy: TestSuiteHierarchy,
                 case_and_result_status_list: List[Tuple[TestCaseFileReference, tcp.Status]]):
-        return tuple.__new__(cls, (test_suite, case_and_result_status_list))
+        return tuple.__new__(cls, (suite_hierarchy, case_and_result_status_list))
 
     @staticmethod
     def check_list(put: unittest.TestCase,
@@ -327,7 +327,7 @@ class ExpectedSuiteReporting(tuple):
                         'Number of suites')
 
     @property
-    def suite(self) -> structure.TestSuite:
+    def suite(self) -> TestSuiteHierarchy:
         return self[0]
 
     @property

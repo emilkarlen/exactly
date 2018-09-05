@@ -16,7 +16,7 @@ from exactly_lib.test_suite.instruction_set.instruction import TestSuiteFileRefe
 
 
 class SuiteHierarchyReader:
-    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
+    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuiteHierarchy:
         """
         :raises SuiteReadError
         """
@@ -49,7 +49,7 @@ class Reader(SuiteHierarchyReader):
     def __init__(self, environment: Environment):
         self._environment = environment
 
-    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuite:
+    def apply(self, suite_file_path: pathlib.Path) -> structure.TestSuiteHierarchy:
         return _SingleFileReader(self._environment, suite_file_path).apply()
 
 
@@ -61,12 +61,12 @@ class _SingleFileReader:
         self._root_suite_file_path = root_suite_file_path
         self._visited = {self._root_suite_file_path.resolve(): None}
 
-    def apply(self) -> structure.TestSuite:
+    def apply(self) -> structure.TestSuiteHierarchy:
         return self.__call__([], self._root_suite_file_path)
 
     def __call__(self,
                  inclusions: List[pathlib.Path],
-                 suite_file_path: pathlib.Path) -> structure.TestSuite:
+                 suite_file_path: pathlib.Path) -> structure.TestSuiteHierarchy:
         test_suite = suite_file_reading.read_suite_document(suite_file_path,
                                                             self.environment.configuration_section_parser,
                                                             self.environment.test_case_parsing_setup)
@@ -80,11 +80,11 @@ class _SingleFileReader:
         sub_suites_reader = functools.partial(self, sub_inclusions)
         suite_list = list(map(sub_suites_reader, suite_file_path_list))
         case_list = list(map(test_case_processing.test_case_reference_of_source_file, case_file_path_list))
-        return structure.TestSuite(suite_file_path,
-                                   inclusions,
-                                   test_case_handling_setup,
-                                   suite_list,
-                                   case_list)
+        return structure.TestSuiteHierarchy(suite_file_path,
+                                            inclusions,
+                                            test_case_handling_setup,
+                                            suite_list,
+                                            case_list)
 
     def _resolve_paths(self,
                        test_suite: test_suite_doc.TestSuiteDocument,

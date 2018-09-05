@@ -31,7 +31,7 @@ TEST_SUITES_ELEMENT_NAME = 'testsuites'
 
 class JUnitRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
     def new_reporter(self,
-                     root_suite: structure.TestSuite,
+                     root_suite: structure.TestSuiteHierarchy,
                      std_output_files: StdOutputFiles,
                      root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
@@ -40,7 +40,7 @@ class JUnitRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
 
 class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
     def __init__(self,
-                 root_suite: structure.TestSuite,
+                 root_suite: structure.TestSuiteHierarchy,
                  std_output_files: StdOutputFiles,
                  root_suite_dir_abs_path: pathlib.Path):
         self._root_suite = root_suite
@@ -62,7 +62,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         pass
 
     def new_sub_suite_reporter(self,
-                               sub_suite: structure.TestSuite) -> reporting.SubSuiteReporter:
+                               sub_suite: structure.TestSuiteHierarchy) -> reporting.SubSuiteReporter:
         progress_reporter = simple_reporter.SimpleProgressSubSuiteProgressReporter(self._error_file,
                                                                                    sub_suite,
                                                                                    self._root_suite_dir_abs_path)
@@ -84,7 +84,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         self._std_output_files.out.write(os.linesep)
         return UNCONDITIONAL_EXIT_CODE
 
-    def _xml_for_suites(self, root_suite: structure.TestSuite, suite_reporters: list) -> ET.Element:
+    def _xml_for_suites(self, root_suite: structure.TestSuiteHierarchy, suite_reporters: list) -> ET.Element:
         def is_root_suite_and_should_skip_root_suite(reporter: reporting.SubSuiteReporter) -> bool:
             return reporter.suite is root_suite and (not root_suite.test_cases)
 
@@ -155,7 +155,7 @@ class JUnitRootSuiteReporter(reporting.RootSuiteReporter):
         except ValueError:
             return str(file)
 
-    def _package_and_name(self, suite: structure.TestSuite):
+    def _package_and_name(self, suite: structure.TestSuiteHierarchy):
         try:
             relative_path = suite.source_file.relative_to(self._root_suite_dir_abs_path)
             if relative_path.parts:

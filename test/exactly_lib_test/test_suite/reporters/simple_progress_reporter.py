@@ -188,7 +188,7 @@ class TestFinalResultFormatting(unittest.TestCase):
 
 
 def _suite_executor_for_case_processing_that_unconditionally(execution_result: FullExeResult,
-                                                             root_suite: structure.TestSuite,
+                                                             root_suite: structure.TestSuiteHierarchy,
                                                              std_output_files: StringStdOutFiles,
                                                              root_file_path: Path) -> SuitesExecutor:
     factory = sut.SimpleProgressRootSuiteReporterFactory()
