@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment import common_cli_options as common_opts
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
@@ -40,12 +42,12 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                                                _TP.fnap(_DESCRIPTION_PARAGRAPH),
                                                                []))
 
-    def synopsises(self) -> list:
+    def synopsises(self) -> List[cli_syntax.Synopsis]:
         return [
             cli_syntax.Synopsis(self.synopsis.command_line)
         ]
 
-    def argument_descriptions(self) -> list:
+    def argument_descriptions(self) -> List[cli_syntax.DescribedArgument]:
         return [
             self._actor_argument(),
             self._reporter_argument(),

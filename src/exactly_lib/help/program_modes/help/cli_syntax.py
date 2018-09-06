@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
@@ -7,9 +9,11 @@ from exactly_lib.definitions.entity.all_entity_types import ALL_ENTITY_TYPES_IN_
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
+from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import empty_section_contents
 
 
@@ -22,7 +26,7 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return DescriptionWithSubSections(docs.text(text),
                                           empty_section_contents())
 
-    def initial_paragraphs(self) -> list:
+    def initial_paragraphs(self) -> List[ParagraphItem]:
         command_line = arg.CommandLine([
             arg.Single(arg.Multiplicity.MANDATORY,
                        _c(clo.HELP)),
@@ -33,7 +37,7 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         command_line_syntax_text = CommandLineSyntaxRenderer().apply(command_line)
         return docs.paras(command_line_syntax_text)
 
-    def synopsises(self) -> list:
+    def synopsises(self) -> List[cli_syntax.Synopsis]:
         non_entities_help = [
             _synopsis([], 'Gives a brief description of the program.'),
             _synopsis([_c(clo.HELP)], 'Displays this help.'),
@@ -62,12 +66,12 @@ class HelpCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
         return non_entities_help + self._entities_help()
 
-    def argument_descriptions(self) -> list:
+    def argument_descriptions(self) -> List[DescribedArgument]:
         return []
 
     @staticmethod
-    def _entities_help() -> list:
-        def row(names: EntityTypeNames) -> list:
+    def _entities_help() -> List[cli_syntax.Synopsis]:
+        def row(names: EntityTypeNames) -> List[docs.TableCell]:
             return [
                 docs.text_cell(doc_format.syntax_text(names.identifier)),
                 docs.text_cell(names.name.plural.capitalize()),

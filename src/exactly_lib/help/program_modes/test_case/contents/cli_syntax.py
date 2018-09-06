@@ -34,7 +34,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                                                _TP.fnap(_DESCRIPTION_PARAGRAPH),
                                                                []))
 
-    def synopsises(self) -> list:
+    def synopsises(self) -> List[cli_syntax.Synopsis]:
         return [
             cli_syntax.Synopsis(self.synopsis.command_line)
         ]
