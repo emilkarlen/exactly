@@ -1,5 +1,8 @@
+from typing import List, Sequence
+
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, TextSeeAlsoItem, SeeAlsoItemVisitor, \
-    SeeAlsoSet
+    SeeAlsoSet, SeeAlsoItem
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import lists
@@ -11,10 +14,9 @@ SEE_ALSO_TITLE = docs.text('See also')
 SEE_ALSO_TITLE__UPPERCASE = docs.text('SEE ALSO')
 
 
-def see_also_items_paragraph(see_also_items: list,
+def see_also_items_paragraph(see_also_items: List[SeeAlsoItem],
                              environment: ConstructionEnvironment) -> ParagraphItem:
     """
-    :type see_also_items: [`SeeAlsoItem`]
     :return: A ParagraphItem that displays a list of `SeeAlsoItem`s.
     """
     renderer = _Renderer(environment.cross_ref_text_constructor)
@@ -23,22 +25,21 @@ def see_also_items_paragraph(see_also_items: list,
                                         lists.ListType.ITEMIZED_LIST)
 
 
-def see_also_items_paragraphs(see_also_items: list,
-                              environment: ConstructionEnvironment) -> list:
+def see_also_items_paragraphs(see_also_items: List[SeeAlsoItem],
+                              environment: ConstructionEnvironment) -> List[ParagraphItem]:
     """
-    :type see_also_items: [`SeeAlsoItem`]
-    :return: [] if no `SeeAlsoItem`s, else a list of a single `ParagraphItem`
+    :return: [] if no `SeeAlsoItem`s, else a single paragraph
     """
     if not see_also_items:
         return []
     return [see_also_items_paragraph(see_also_items, environment)]
 
 
-def see_also_sections(see_also_targets: list,
+def see_also_sections(see_also_targets: Sequence[SeeAlsoTarget],
                       rendering_environment: ConstructionEnvironment,
-                      uppercase_title: bool = False) -> list:
+                      uppercase_title: bool = False) -> List[docs.SectionItem]:
     """
-    :return: An empty list if no :class:`SeeAlsoTarget`s, otherwise a singleton list.
+    :return: An empty list if no targets, otherwise a singleton list.
     """
     ret_val = []
     title = SEE_ALSO_TITLE__UPPERCASE if uppercase_title else SEE_ALSO_TITLE

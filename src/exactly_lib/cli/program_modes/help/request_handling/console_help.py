@@ -1,5 +1,6 @@
 import os
 import shutil
+from typing import Sequence
 
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
@@ -92,5 +93,5 @@ class _HelpCommandLineGetterVisitor(concrete_cross_refs.CrossReferenceIdVisitor)
                                                                                                    x.instruction_name))
 
 
-def _command_line_display_for_help_arguments(arguments: list) -> str:
+def _command_line_display_for_help_arguments(arguments: Sequence[str]) -> str:
     return '>' + clo.HELP + ' ' + ' '.join(arguments)

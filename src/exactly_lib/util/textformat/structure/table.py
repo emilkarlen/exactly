@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -25,21 +27,18 @@ class TableFormat:
 
 class TableCell(tuple):
     def __new__(cls,
-                paragraph_items: list):
+                paragraph_items: List[ParagraphItem]):
         return tuple.__new__(cls, (paragraph_items,))
 
     @property
-    def paragraph_items(self) -> list:
+    def paragraph_items(self) -> List[ParagraphItem]:
         return self[0]
 
 
 class Table(ParagraphItem):
     def __init__(self,
                  format_: TableFormat,
-                 rows: list):
-        """
-        :param rows: [[TableCell]]
-        """
+                 rows: List[List[TableCell]]):
         self._format = format_
         self._rows = list(rows)
 
@@ -48,7 +47,7 @@ class Table(ParagraphItem):
         return self._format
 
     @property
-    def rows(self) -> list:
+    def rows(self) -> List[List[TableCell]]:
         return self._rows
 
 

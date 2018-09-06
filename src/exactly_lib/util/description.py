@@ -1,14 +1,15 @@
-from exactly_lib.util.textformat.structure.core import Text, StringText
+from typing import List
+
+from exactly_lib.util.textformat.structure.core import Text, StringText, ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents
 
 
 class Description(tuple):
     def __new__(cls,
                 single_line_description: Text,
-                rest_paragraphs: list):
+                rest_paragraphs: List[ParagraphItem]):
         """
-        :type single_line_description: Mandatory short description.
-        :type rest_paragraphs: [ParagraphItem]
+        :param single_line_description: Mandatory short description.
         """
         return tuple.__new__(cls, (single_line_description,
                                    rest_paragraphs))
@@ -18,10 +19,7 @@ class Description(tuple):
         return self[0]
 
     @property
-    def rest(self) -> list:
-        """
-        :rtype: [ParagraphItem]
-        """
+    def rest(self) -> List[ParagraphItem]:
         return self[1]
 
 
