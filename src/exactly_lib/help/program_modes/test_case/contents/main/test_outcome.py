@@ -25,7 +25,7 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator:
     preamble_paragraphs = normalize_and_parse(PREAMBLE)
 
-    def const_contents(header: str, paragraphs: list) -> structures.SectionHierarchyGenerator:
+    def const_contents(header: str, paragraphs: List[ParagraphItem]) -> structures.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
                               ConstantSectionContentsConstructor(section_contents(paragraphs)))
 
@@ -35,7 +35,7 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
         [
             ('reporting',
              const_contents('Reporting',
-                            _TEXT_PARSER.fnap(REPORTING))
+                            TEXT_PARSER.fnap(REPORTING))
 
              ),
             ('complete-execution',
@@ -59,9 +59,8 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
 
              ),
             ('summary-of-exit-codes',
-             const_contents('Summary of exit codes and identifiers',
-                            [_exit_value_table_for(sorted(exit_values.ALL_EXIT_VALUES,
-                                                          key=ExitValue.exit_identifier.fget))]
+             const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
+                            [all_exit_values_summary_table()]
                             )
 
              ),
@@ -69,7 +68,7 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
     )
 
 
-_TEXT_PARSER = TextParser({
+TEXT_PARSER = TextParser({
     'phase': phase_names.PHASE_NAME_DICTIONARY,
     'test_case_status': formatting.conf_param(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.informative_name),
     'default_status': test_case_status.NAME_DEFAULT,
@@ -86,13 +85,13 @@ line on stdout.
 """
 
 
-def _description_of_complete_execution(setup: Setup) -> list:
+def _description_of_complete_execution(setup: Setup) -> List[ParagraphItem]:
     ret_val = []
-    ret_val.extend(_TEXT_PARSER.fnap(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
-    ret_val.append(_what_outcome_depends_on(_TEXT_PARSER))
-    ret_val.extend(_TEXT_PARSER.fnap(TABLE_INTRO))
+    ret_val.extend(TEXT_PARSER.fnap(COMPLETE_EXECUTION_OUTCOME_DEPENDS_ON_TWO_THINGS))
+    ret_val.append(_what_outcome_depends_on(TEXT_PARSER))
+    ret_val.extend(TEXT_PARSER.fnap(TABLE_INTRO))
     ret_val.append(_outcomes_per_status_and_assert(setup))
-    ret_val.extend(_TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
+    ret_val.extend(TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER))
     ret_val.append(_exit_value_table_for_full_execution())
     return ret_val
 
@@ -157,7 +156,7 @@ def _outcomes_per_status_and_assert(setup: Setup) -> ParagraphItem:
 def _interrupted_execution(setup: Setup) -> List[ParagraphItem]:
     ret_val = []
     ret_val += normalize_and_parse(_INTERRUPTED_EXECUTION_PREAMBLE.format(phase=setup.phase_names))
-    ret_val += _TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
+    ret_val += TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
     ret_val.append(para(_INTERRUPTED_EXECUTION_CAUSES))
     ret_val.append(interrupted_execution_list(setup))
     return ret_val
@@ -204,8 +203,8 @@ def interrupted_execution_list(setup: Setup) -> ParagraphItem:
 
 def _error_in_validation_before_execution() -> list:
     ret_val = []
-    ret_val += _TEXT_PARSER.fnap(_ERROR_IN_VALIDATION_BEFORE_EXECUTION_PREAMBLE)
-    ret_val += _TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
+    ret_val += TEXT_PARSER.fnap(_ERROR_IN_VALIDATION_BEFORE_EXECUTION_PREAMBLE)
+    ret_val += TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
     ret_val.append(singe_exit_value_display(exit_values.EXECUTION__VALIDATION_ERROR))
     return ret_val
 
@@ -236,8 +235,8 @@ def _exit_value_table_for(exit_value_list: list) -> ParagraphItem:
         '  ')
 
 
-def _outcome_and_exit_value_table_for(exit_value_list: list) -> ParagraphItem:
-    def _row(exit_value: ExitValue) -> list:
+def _outcome_and_exit_value_table_for(exit_value_list: List[ExitValue]) -> ParagraphItem:
+    def _row(exit_value: ExitValue) -> List[TableCell]:
         return [
             cell(paras(exit_value.exit_identifier)),
             cell(paras(exit_value_text(exit_value))),
@@ -266,6 +265,14 @@ def _exit_value_table_for_full_execution() -> ParagraphItem:
     ])
 
 
+ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER = 'Summary of exit codes and identifiers'
+
+
+def all_exit_values_summary_table() -> ParagraphItem:
+    return _exit_value_table_for(sorted(exit_values.ALL_EXIT_VALUES,
+                                        key=ExitValue.exit_identifier.fget))
+
+
 def _failure_condition_of_post_setup_validation(setup: Setup) -> ParagraphItem:
     return para("""An instruction's """ + post_setup_validation_step_name(setup) + ' fails.')
 
@@ -279,7 +286,7 @@ def _failure_condition_of_implementation_error() -> ParagraphItem:
     return para("""An error in the implementation of %s is detected.""" % _program_name())
 
 
-def _program_name():
+def _program_name() -> str:
     return formatting.program_name(program_info.PROGRAM_NAME)
 
 
@@ -322,13 +329,13 @@ def _other_non_cli_errors() -> ParagraphItem:
         list_item('Preprocessing',
                   step_with_single_exit_value(
                       [],
-                      _TEXT_PARSER.para(FAILURE_CONDITION_OF_PREPROCESSING),
+                      TEXT_PARSER.para(FAILURE_CONDITION_OF_PREPROCESSING),
                       exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
                   ),
         list_item('Syntax checking',
                   step_with_single_exit_value(
                       [],
-                      _TEXT_PARSER.para('Fails if the test case contains {an_error_in_source}.'),
+                      TEXT_PARSER.para('Fails if the test case contains {an_error_in_source}.'),
                       exit_values.NO_EXECUTION__SYNTAX_ERROR)
                   ),
     ]

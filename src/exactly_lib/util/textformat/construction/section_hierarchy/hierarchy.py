@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionConstructor, ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
@@ -8,7 +10,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy.structures impor
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo, \
     TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
 
 def leaf(header: str,
@@ -35,13 +37,12 @@ class Node(tuple):
 
 
 def parent(header: str,
-           initial_paragraphs: list,
+           initial_paragraphs: List[ParagraphItem],
            local_target_name__sub_section__list: list,
            ) -> SectionHierarchyGenerator:
     """
     A section with sub sections that appear in the TOC/target hierarchy.
     :param local_target_name__sub_section__list: [(str, SectionHierarchyGenerator)] or list of `Node`
-    :param initial_paragraphs: [ParagraphItem]
     """
     return _SectionHierarchyGeneratorWithSubSections(StringText(header),
                                                      initial_paragraphs,

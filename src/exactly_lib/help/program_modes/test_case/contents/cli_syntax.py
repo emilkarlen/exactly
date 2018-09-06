@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
@@ -7,6 +7,7 @@ from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_al
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
+from exactly_lib.help.program_modes.test_case.contents.main import test_outcome as case_outcome_help
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.cli_syntax.elements import argument as arg
@@ -29,7 +30,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
-        return DescriptionWithSubSections(self.synopsis.maybe_single_line_description,
+        return DescriptionWithSubSections(_TP.text(_SINGLE_LINE_DESCRIPTION),
                                           docs.SectionContents(self.synopsis.paragraphs +
                                                                _TP.fnap(_DESCRIPTION_PARAGRAPH),
                                                                []))
@@ -47,6 +48,13 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             self._preprocessor_argument(),
             self._suite_argument(),
         ]
+
+    def outcome(self) -> Optional[docs.SectionContents]:
+        paragraphs = case_outcome_help.TEXT_PARSER.fnap(case_outcome_help.REPORTING)
+        paragraphs += _TP.fnap(_OUTCOME_INITIAL_PARAGRAPHS_EXTRA)
+        return docs.section_contents(paragraphs,
+                                     [docs.section(case_outcome_help.ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
+                                                   [case_outcome_help.all_exit_values_summary_table()])])
 
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(
@@ -101,7 +109,13 @@ def synopsis() -> cli_syntax.Synopsis:
                                _TP.text(_DESCRIPTION_PARAGRAPH))
 
 
+_SINGLE_LINE_DESCRIPTION = 'Runs a test case'
+
 _DESCRIPTION_PARAGRAPH = """Runs the test case in file {TEST_CASE_FILE}."""
+
+_OUTCOME_INITIAL_PARAGRAPHS_EXTRA = """\
+See test case specification for details.
+"""
 
 _FILE_ARGUMENT = arg.Named(opt.TEST_CASE_FILE_ARGUMENT)
 
