@@ -25,7 +25,7 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 
 COMMAND_DESCRIPTIONS = {
     HELP_COMMAND: 'Help system (use "help help" for help on help.)',
-    SUITE_COMMAND: 'Executes a test suite: suite SUITE-FILE'
+    SUITE_COMMAND: 'Runs a test suite (use "help suite" for help.)'
 }
 
 

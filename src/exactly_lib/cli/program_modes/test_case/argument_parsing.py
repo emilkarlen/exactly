@@ -13,6 +13,7 @@ from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
+from exactly_lib.help.texts import IS_A_SHELL_CMD
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
@@ -67,7 +68,7 @@ def _new_argument_parser(commands: Dict[str, str]) -> argparse.ArgumentParser:
 
     command_descriptions = '\n'.join(map(command_description, commands.items()))
     ret_val = argparse.ArgumentParser(prog=program_info.PROGRAM_NAME,
-                                      description='Executes an {pgm} test case or test suite.'.format(
+                                      description='Runs an {pgm} test case or test suite.'.format(
                                           pgm=formatting.program_name(program_info.PROGRAM_NAME)))
     ret_val.add_argument('--version', action='version', version='%(prog)s ' + program_info.VERSION)
 
@@ -114,16 +115,15 @@ ACTOR_OPTION_DESCRIPTION = """\
 Specifies the {INTERPRETER_ACTOR_TERM} {ACTOR_CONCEPT}, by giving the program that serves as the interpreter.
 
 
-{interpreter_program} is an absolute path followed by optional arguments (using {shell_syntax_concept}).
+{interpreter_program} {is_a_shell_cmd}
+
 
 Note that an {ACTOR_CONCEPT} specified in the test case has precedence over the
 {ACTOR_CONCEPT} given here.
 """
 
 SUITE_OPTION_DESCRIPTION = """\
-Reads configuration from the given suite.
-
-The test case is executed as if it were part of the suite.
+Runs the test case as if it were part of the given suite.
 """
 
 EXECUTING_ACT_PHASE_OPTION_DESCRIPTION = """\
@@ -142,7 +142,7 @@ If an error occurs, the normal error information is emitted to stderr
 """
 
 KEEPING_SANDBOX_OPTION_DESCRIPTION = """\
-Executes a test case as normal, but the {sandbox} is preserved,
+Runs the test case as normal, but the {sandbox} is preserved,
 and it's root directory is the only output on stdout.
 
 If execution of the test case cannot be started (due to invalid syntax, e.g.),
@@ -153,12 +153,12 @@ PREPROCESSOR_OPTION_DESCRIPTION = """\
 A command that preprocesses the test case before it is parsed.
 
 
+{preprocessor} {is_a_shell_cmd}
+
+
 The name of the test case file is given to the command as the last argument.
 
 The command should output the result of the processing on stdout.
-
-{preprocessor} is parsed according to Unix {shell_syntax_concept}.
-
 
 If the exit code from the preprocessor is non-zero,
 then processing is considered to have failed.
@@ -172,4 +172,5 @@ TEXT_PARSER = TextParser({
     'INTERPRETER_ACTOR_TERM': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,
     'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
+    'is_a_shell_cmd': IS_A_SHELL_CMD,
 })
