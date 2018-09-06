@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.suite_reporters import JUNIT_REPORTER
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.test_suite.reporters import junit
@@ -25,7 +26,7 @@ class JunitSuiteReporterDocumentation(SuiteReporterDocumentation):
     def exit_code_description(self) -> List[ParagraphItem]:
         return self._parser.fnap(_EXIT_CODE_DESCRIPTION)
 
-    def _see_also_targets__specific(self) -> list:
+    def _see_also_targets__specific(self) -> List[SeeAlsoTarget]:
         return [JUNIT_XML_SYNTAX_SEE_ALSO_URL_INFO]
 
 

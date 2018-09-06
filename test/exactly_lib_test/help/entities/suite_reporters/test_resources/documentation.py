@@ -1,7 +1,11 @@
+from typing import List
+
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity.suite_reporters import suite_reporter_cross_ref
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class SuiteReporterDocTestImpl(SuiteReporterDocumentation):
@@ -19,14 +23,14 @@ class SuiteReporterDocTestImpl(SuiteReporterDocumentation):
     def single_line_description_str(self) -> str:
         return 'single_line_description_str'
 
-    def main_description_rest(self) -> list:
+    def main_description_rest(self) -> List[ParagraphItem]:
         return self._main_description_rest
 
-    def syntax_of_output(self) -> list:
+    def syntax_of_output(self) -> List[ParagraphItem]:
         return self._syntax_of_output
 
-    def exit_code_description(self) -> list:
+    def exit_code_description(self) -> List[ParagraphItem]:
         return self._exit_code_description
 
-    def _see_also_targets__specific(self) -> list:
+    def _see_also_targets__specific(self) -> List[SeeAlsoTarget]:
         return [CustomCrossReferenceId('custom-cross-reference-target')]
