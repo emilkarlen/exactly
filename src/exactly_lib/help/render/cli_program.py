@@ -1,7 +1,9 @@
+from typing import List, Optional
+
 from exactly_lib.definitions import doc_format
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.render.doc_utils import synopsis_section, description_section
-from exactly_lib.help.render.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE
+from exactly_lib.help.render.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE, see_also_sections
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \
@@ -32,6 +34,8 @@ class _ProgramDocumentationRenderer:
         sections = [self._synopsis_section(program)]
         sections += self._description_sections(program)
         sections += self._options_sections(program.argument_descriptions())
+        sections += self._outcome_sections(program.outcome())
+        sections += see_also_sections(program.see_also(), self.environment, True)
 
         return docs.SectionContents(initial_paragraphs,
                                     sections)
@@ -41,24 +45,30 @@ class _ProgramDocumentationRenderer:
             docs.SectionContents([self._list(map(self._synopsis_list_item, program.synopsises()))]))
 
     @staticmethod
-    def _description_sections(program: CliProgramSyntaxDocumentation) -> list:
+    def _description_sections(program: CliProgramSyntaxDocumentation) -> List[docs.Section]:
         description = program.description()
         if description.rest.is_empty:
             return []
         return [description_section(description.rest)]
 
-    def _options_sections(self, argument_descriptions: list) -> list:
+    def _options_sections(self, argument_descriptions: List[DescribedArgument]) -> List[docs.Section]:
         if not argument_descriptions:
             return []
-        l = self._list(map(self._arg_description_list_item, argument_descriptions))
+        option_paragraphs = self._list(map(self._arg_description_list_item, argument_descriptions))
 
-        return [docs.section('OPTIONS', [l])]
+        return [docs.section('OPTIONS', [option_paragraphs])]
+
+    @staticmethod
+    def _outcome_sections(outcome: Optional[docs.SectionContents]) -> List[docs.Section]:
+        if not outcome:
+            return []
+        return [docs.Section(docs.text('OUTCOME'), outcome)]
 
     def _arg_description_list_item(self, argument: DescribedArgument) -> lists.HeaderContentListItem:
         header = doc_format.syntax_text(self.arg_in_description_renderer.visit(argument.argument))
         return docs.list_item(header, self._arg_description_list_item_contents(argument))
 
-    def _arg_description_list_item_contents(self, argument: DescribedArgument) -> list:
+    def _arg_description_list_item_contents(self, argument: DescribedArgument) -> List[docs.ParagraphItem]:
         ret_val = []
         ret_val.extend(argument.description)
         if argument.see_also_items:

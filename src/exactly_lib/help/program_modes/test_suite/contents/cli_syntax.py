@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment import common_cli_options as common_opts
@@ -6,6 +6,7 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts
@@ -37,7 +38,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
-        return DescriptionWithSubSections(self.synopsis.maybe_single_line_description,
+        return DescriptionWithSubSections(_TP.text(_SINGLE_LINE_DESCRIPTION),
                                           docs.SectionContents(self.synopsis.paragraphs +
                                                                _TP.fnap(_DESCRIPTION_PARAGRAPH),
                                                                []))
@@ -51,6 +52,14 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
         return [
             self._actor_argument(),
             self._reporter_argument(),
+        ]
+
+    def outcome(self) -> Optional[docs.SectionContents]:
+        return docs.section_contents(_TP.fnap(_OUTCOME))
+
+    def see_also(self) -> List[SeeAlsoTarget]:
+        return [
+            concepts.SUITE_REPORTER_CONCEPT_INFO.cross_reference_target,
         ]
 
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
@@ -92,8 +101,17 @@ def synopsis() -> cli_syntax.Synopsis:
                                _TP.text(_DESCRIPTION_PARAGRAPH))
 
 
+_SINGLE_LINE_DESCRIPTION = 'Runs a test suite'
+
 _DESCRIPTION_PARAGRAPH = """\
 Runs the test suite in file {TEST_SUITE_FILE}.
+"""
+
+_OUTCOME = """\
+Outcome is reported via exit code and stdout.
+
+
+Reporting is done by the selected {suite_reporter}.
 """
 
 _ACTOR_OPTION_DESCRIPTION = """\
@@ -134,6 +152,6 @@ _TP = TextParser({
     'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
     'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
     'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
+    'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
     'is_a_shell_cmd': IS_A_SHELL_CMD,
-
 })
