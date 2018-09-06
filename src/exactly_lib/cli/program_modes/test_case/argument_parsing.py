@@ -67,7 +67,8 @@ def _new_argument_parser(commands: Dict[str, str]) -> argparse.ArgumentParser:
 
     command_descriptions = '\n'.join(map(command_description, commands.items()))
     ret_val = argparse.ArgumentParser(prog=program_info.PROGRAM_NAME,
-                                      description='Execute %s test case or test suite.' % program_info.PROGRAM_NAME)
+                                      description='Executes an {pgm} test case or test suite.'.format(
+                                          pgm=formatting.program_name(program_info.PROGRAM_NAME)))
     ret_val.add_argument('--version', action='version', version='%(prog)s ' + program_info.VERSION)
 
     ret_val.add_argument('file',
