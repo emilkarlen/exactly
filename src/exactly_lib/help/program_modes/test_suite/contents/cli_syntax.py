@@ -14,6 +14,7 @@ from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAM
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
+from exactly_lib.help.texts import IS_A_SHELL_CMD
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -53,7 +54,6 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
             'interpreter_program': _ACTOR_OPTION.argument,
-            'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
                                             _TP.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
@@ -98,8 +98,7 @@ _ACTOR_OPTION_DESCRIPTION = """\
 Specifies a default {interpreter_actor} {actor} to use for every test case in the suite.
 
 
-{interpreter_program} is the absolute path of an executable program,
-followed by optional arguments (using {shell_syntax_concept}).
+{interpreter_program} {is_a_shell_cmd}
 
 
 Note: An {actor} specified in the test suite or individual test cases
@@ -133,5 +132,6 @@ _TP = TextParser({
     'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
     'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
     'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
+    'is_a_shell_cmd': IS_A_SHELL_CMD,
 
 })

@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case import argument_parsing
@@ -37,7 +39,7 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             cli_syntax.Synopsis(self.synopsis.command_line)
         ]
 
-    def argument_descriptions(self) -> list:
+    def argument_descriptions(self) -> List[cli_syntax.DescribedArgument]:
         return [
             self._actor_argument(),
             self._keep_sandbox_argument(),
