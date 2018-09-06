@@ -1,4 +1,8 @@
+from typing import List
+
+from exactly_lib.util.cli_syntax.elements.cli_program_syntax import Synopsis, DescribedArgument
 from exactly_lib.util.description import DescriptionWithSubSections
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class CliProgramSyntaxDocumentation:
@@ -8,20 +12,11 @@ class CliProgramSyntaxDocumentation:
     def description(self) -> DescriptionWithSubSections:
         raise NotImplementedError()
 
-    def initial_paragraphs(self) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def initial_paragraphs(self) -> List[ParagraphItem]:
         return []
 
-    def synopsises(self) -> list:
-        """
-        :rtype: [`Synopsis`]
-        """
+    def synopsises(self) -> List[Synopsis]:
         raise NotImplementedError()
 
-    def argument_descriptions(self) -> list:
-        """
-        :rtype: [`DescribedArgument`]
-        """
+    def argument_descriptions(self) -> List[DescribedArgument]:
         return []
