@@ -8,7 +8,7 @@ class SourceLocation(tuple):
     """A location in a file."""
 
     def __new__(cls,
-                source: LineSequence,
+                source: Optional[LineSequence],
                 file_path_rel_referrer: Optional[Path]):
         """
         :param source: See corresponding getter
@@ -17,7 +17,7 @@ class SourceLocation(tuple):
         return tuple.__new__(cls, (source, file_path_rel_referrer))
 
     @property
-    def source(self) -> LineSequence:
+    def source(self) -> Optional[LineSequence]:
         """
         :return: None iff source if not relevant
         """
@@ -57,8 +57,8 @@ class SourceLocationPath(tuple):
         return self[1]
 
 
-def source_location_path_of(file_path: Path,
-                            line: Line) -> SourceLocationPath:
+def source_location_path_of(file_path: Optional[Path],
+                            line: Optional[Line]) -> Optional[SourceLocationPath]:
     """
     :return: None iff file_path and line is None
     """

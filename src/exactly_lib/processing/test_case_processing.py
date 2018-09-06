@@ -1,5 +1,6 @@
 import pathlib
 from enum import Enum
+from typing import Optional
 
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.section_document.source_location import SourceLocationPath
@@ -30,26 +31,23 @@ def test_case_reference_of_source_file(source_file: pathlib.Path) -> TestCaseFil
 
 class ErrorInfo(tuple):
     def __new__(cls,
-                description: ErrorDescription,
-                source_location_path: SourceLocationPath = None,
-                section_name: str = None):
+                description: Optional[ErrorDescription],
+                source_location_path: Optional[SourceLocationPath] = None,
+                section_name: Optional[str] = None):
         if description is not None:
             assert isinstance(description, ErrorDescription)
         return tuple.__new__(cls, (source_location_path, description, section_name))
 
     @property
-    def source_location_path(self) -> SourceLocationPath:
-        """
-        :return: May be None
-        """
+    def source_location_path(self) -> Optional[SourceLocationPath]:
         return self[0]
 
     @property
-    def description(self) -> ErrorDescription:
+    def description(self) -> Optional[ErrorDescription]:
         return self[1]
 
     @property
-    def maybe_section_name(self) -> str:
+    def maybe_section_name(self) -> Optional[str]:
         return self[2]
 
 
@@ -68,9 +66,9 @@ class AccessErrorType(Enum):
 class Result(tuple):
     def __new__(cls,
                 status: Status,
-                error_info: ErrorInfo = None,
-                error_type: AccessErrorType = None,
-                execution_result: FullExeResult = None):
+                error_info: Optional[ErrorInfo] = None,
+                error_type: Optional[AccessErrorType] = None,
+                execution_result: Optional[FullExeResult] = None):
         """
         :param error_info:
         :param error_type: Given iff status is Status.ACCESS_ERROR
@@ -87,11 +85,11 @@ class Result(tuple):
         return self[1]
 
     @property
-    def access_error_type(self) -> AccessErrorType:
+    def access_error_type(self) -> Optional[AccessErrorType]:
         return self[2]
 
     @property
-    def execution_result(self) -> FullExeResult:
+    def execution_result(self) -> Optional[FullExeResult]:
         return self[3]
 
     @property
