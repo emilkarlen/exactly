@@ -4,6 +4,7 @@ from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescr
 from exactly_lib.common.help.with_see_also_set import SyntaxElementDescriptionTree, SyntaxElementDescriptionTreeFromSed
 from exactly_lib.definitions import file_ref
 from exactly_lib.definitions import formatting, instruction_arguments
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import concepts as ci, syntax_elements
 from exactly_lib.test_case_file_structure.path_relativity import RelOptionType, PathRelativityVariants, \
@@ -91,37 +92,11 @@ def sparse_relativity_options_paragraph(variants: PathRelativityVariants) -> Par
     return transform_list_to_table(renderer.sparse_list_for(variants))
 
 
-def see_also_name_and_cross_refs(rel_options_conf: RelOptionsConfiguration) -> list:
-    """
-    :rtype: [`SingularAndPluralNameAndCrossReferenceId`]
-    """
+def see_also_name_and_cross_refs(rel_options_conf: RelOptionsConfiguration
+                                 ) -> List[SingularNameAndCrossReferenceId]:
     return [
         syntax_elements.PATH_SYNTAX_ELEMENT,
     ]
-
-
-class _RelOptionInfo(tuple):
-    def __new__(cls,
-                name: a.Option,
-                paragraph_items: list,
-                see_also: iter = ()):
-        """
-        :type paragraph_items: [`ParagraphItem`]
-        :type see_also:
-        """
-        return tuple.__new__(cls, (name, paragraph_items, list(see_also)))
-
-    @property
-    def option(self) -> a.Option:
-        return self[0]
-
-    @property
-    def paragraph_items(self) -> list:
-        return self[1]
-
-    @property
-    def see_also(self) -> list:
-        return self[2]
 
 
 class _RelOptionTypeInfo(tuple):
@@ -129,10 +104,7 @@ class _RelOptionTypeInfo(tuple):
                 name: a.OptionName,
                 relativity_root_description: str,
                 paragraph_items_text: str,
-                see_also: list):
-        """
-        :type see_also: [`ConceptDocumentation`]
-        """
+                see_also: List[SingularNameAndCrossReferenceId]):
         return tuple.__new__(cls, (name,
                                    paragraph_items_text,
                                    see_also,
@@ -147,7 +119,7 @@ class _RelOptionTypeInfo(tuple):
         return self[1]
 
     @property
-    def see_also(self) -> list:
+    def see_also(self) -> List[SingularNameAndCrossReferenceId]:
         return self[2]
 
     @property

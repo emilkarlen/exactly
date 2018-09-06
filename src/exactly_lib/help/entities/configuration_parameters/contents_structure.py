@@ -1,3 +1,6 @@
+from typing import List
+
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.all_entity_types import CONF_PARAM_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
@@ -35,9 +38,9 @@ class ConfigurationParameterDocumentation(EntityDocumentation):
         return [para(self.purpose().single_line_description),
                 para('Default value: ' + self.default_value_str())]
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         """
-        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
+        :returns: A new list, which may contain duplicate elements.
         """
         return []
 

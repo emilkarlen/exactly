@@ -1,4 +1,4 @@
-from typing import List, Union
+from typing import List, Union, Optional, Iterable, TypeVar
 
 from exactly_lib.util.textformat import parse
 from exactly_lib.util.textformat.structure import document
@@ -17,6 +17,8 @@ COLON_TABLE_COLUMN_SEPARATOR = ' : '
 
 StrOrText = Union[str, Text]
 
+T = TypeVar('T')
+
 
 def section(header_str_or_text: StrOrText,
             paragraphs: List[ParagraphItem],
@@ -26,8 +28,8 @@ def section(header_str_or_text: StrOrText,
                                    _empty_list_if_none(sub_sections)))
 
 
-def section_contents(initial_paragraphs: list,
-                     sub_sections: list = None) -> SectionContents:
+def section_contents(initial_paragraphs: List[ParagraphItem],
+                     sub_sections: Optional[List[SectionItem]] = None) -> SectionContents:
     return SectionContents(initial_paragraphs,
                            _empty_list_if_none(sub_sections))
 
@@ -36,33 +38,33 @@ def empty_section_contents() -> SectionContents:
     return document.empty_section_contents()
 
 
-def simple_header_only_list(str_or_text_headers: iter,
+def simple_header_only_list(str_or_text_headers: Iterable[StrOrText],
                             list_type: lists.ListType) -> lists.HeaderContentList:
     items = [header_only_item(header) for header in str_or_text_headers]
     return lists.HeaderContentList(items,
                                    lists.Format(list_type))
 
 
-def simple_list(items: iter,
+def simple_list(items: Iterable[lists.HeaderContentListItem],
                 list_type: lists.ListType) -> lists.HeaderContentList:
     return lists.HeaderContentList(items,
                                    lists.Format(list_type))
 
 
-def simple_list_with_space_between_elements_and_content(items: iter,
+def simple_list_with_space_between_elements_and_content(items: Iterable[lists.HeaderContentListItem],
                                                         list_type: lists.ListType) -> lists.HeaderContentList:
     return lists.HeaderContentList(items,
                                    lists.Format(list_type,
                                                 custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS))
 
 
-def list_item(header_str_or_text,
-              content: list = None) -> lists.HeaderContentListItem:
+def list_item(header_str_or_text: StrOrText,
+              content: Optional[List[ParagraphItem]] = None) -> lists.HeaderContentListItem:
     return lists.HeaderContentListItem(text_from_unknown(header_str_or_text),
                                        _empty_list_if_none(content))
 
 
-def header_only_item(header_str_or_text) -> lists.HeaderContentListItem:
+def header_only_item(header_str_or_text: StrOrText) -> lists.HeaderContentListItem:
     return list_item(header_str_or_text, [])
 
 
@@ -144,15 +146,15 @@ def text_from_unknown(str_or_text: StrOrText) -> Text:
         return StringText(str_or_text)
 
 
-def cell(paragraph_items: list) -> TableCell:
+def cell(paragraph_items: List[ParagraphItem]) -> TableCell:
     return TableCell(paragraph_items)
 
 
-def text_cell(str_or_text) -> TableCell:
+def text_cell(str_or_text: StrOrText) -> TableCell:
     return cell(paras(str_or_text))
 
 
-def single_text_cell_table(single_text_cell_rows: list) -> Table:
+def single_text_cell_table(single_text_cell_rows: List[List[StrOrText]]) -> Table:
     return Table(TableFormat(),
                  [
                      [
@@ -163,5 +165,5 @@ def single_text_cell_table(single_text_cell_rows: list) -> Table:
                  ])
 
 
-def _empty_list_if_none(content) -> list:
+def _empty_list_if_none(content: Optional[List[T]]) -> List[T]:
     return [] if content is None else content
