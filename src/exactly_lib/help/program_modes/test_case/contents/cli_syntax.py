@@ -24,15 +24,12 @@ def generator(header: str) -> SectionHierarchyGenerator:
 class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
-        self.parser = TextParser({
-            'TEST_CASE_FILE': _FILE_ARGUMENT.name,
-        })
         self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(self.synopsis.maybe_single_line_description,
                                           docs.SectionContents(self.synopsis.paragraphs +
-                                                               self.parser.fnap(_DESCRIPTION),
+                                                               _TP.fnap(_DESCRIPTION_PARAGRAPH),
                                                                []))
 
     def synopsises(self) -> list:
@@ -99,12 +96,10 @@ def synopsis() -> cli_syntax.Synopsis:
                    _FILE_ARGUMENT)],
         prefix=program_info.PROGRAM_NAME)
     return cli_syntax.Synopsis(command_line,
-                               docs.text('Runs a test case.'))
+                               _TP.text(_DESCRIPTION_PARAGRAPH))
 
 
-_DESCRIPTION = """\
-Runs the test case in file {TEST_CASE_FILE}.
-"""
+_DESCRIPTION_PARAGRAPH = """Runs the test case in file {TEST_CASE_FILE}."""
 
 _FILE_ARGUMENT = arg.Named(opt.TEST_CASE_FILE_ARGUMENT)
 
@@ -123,3 +118,7 @@ _PREPROCESSOR_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_PREPROCESS
 
 _SUITE_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_SUITE__LONG,
                                       argument=opt.SUITE_OPTION_METAVAR)
+
+_TP = TextParser({
+    'TEST_CASE_FILE': _FILE_ARGUMENT.name,
+})
