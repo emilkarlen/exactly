@@ -31,20 +31,12 @@ def generator(header: str) -> SectionHierarchyGenerator:
 class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
-        self.parser = TextParser({
-            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-            'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
-            'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
-            'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
-            'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
-
-        })
         self.synopsis = synopsis()
 
     def description(self) -> DescriptionWithSubSections:
         return DescriptionWithSubSections(self.synopsis.maybe_single_line_description,
                                           docs.SectionContents(self.synopsis.paragraphs +
-                                                               self.parser.fnap(_DESCRIPTION),
+                                                               _TP.fnap(_DESCRIPTION_PARAGRAPH),
                                                                []))
 
     def synopsises(self) -> list:
@@ -64,7 +56,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }
         return cli_syntax.DescribedArgument(_ACTOR_OPTION,
-                                            self.parser.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
+                                            _TP.fnap(_ACTOR_OPTION_DESCRIPTION, extra_format_map),
                                             see_also_items=see_also_items_from_cross_refs([
                                                 concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
                                                 concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
@@ -75,7 +67,7 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def _reporter_argument(self) -> cli_syntax.DescribedArgument:
         return cli_syntax.DescribedArgument(_REPORTER_OPTION,
-                                            self.parser.fnap(_REPORTER_OPTION_DESCRIPTION),
+                                            _TP.fnap(_REPORTER_OPTION_DESCRIPTION),
                                             see_also_items=see_also_items_from_cross_refs(
                                                 [concepts.SUITE_REPORTER_CONCEPT_INFO.cross_reference_target] +
                                                 reporters.all_suite_reporters_cross_refs()
@@ -95,10 +87,10 @@ def synopsis() -> cli_syntax.Synopsis:
     ],
         prefix=program_info.PROGRAM_NAME)
     return cli_syntax.Synopsis(command_line,
-                               docs.text('Runs a test suite.'))
+                               _TP.text(_DESCRIPTION_PARAGRAPH))
 
 
-_DESCRIPTION = """\
+_DESCRIPTION_PARAGRAPH = """\
 Runs the test suite in file {TEST_SUITE_FILE}.
 """
 
@@ -133,3 +125,13 @@ _FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)
 
 def _reporter_name(x: SingularNameAndCrossReferenceId) -> str:
     return formatting.cli_argument_option_string(x.singular_name)
+
+
+_TP = TextParser({
+    'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
+    'interpreter_actor': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
+    'TEST_SUITE_FILE': _FILE_ARGUMENT.name,
+    'reporter_name_list': ','.join(map(_reporter_name, reporters.ALL_SUITE_REPORTERS)),
+    'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
+
+})
