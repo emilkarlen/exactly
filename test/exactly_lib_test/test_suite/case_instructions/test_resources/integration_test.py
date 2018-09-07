@@ -38,7 +38,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
     instruction_setup_with_single_phase_with_single_recording_instruction, Recording, matches_recording
-from exactly_lib_test.test_suite.test_resources.suite_reporting import ReporterFactoryForReporterThatDoesNothing
+from exactly_lib_test.test_suite.test_resources.suite_reporting import ProcessingReporterThatDoesNothing
 
 REGISTER_INSTRUCTION_NAME = 'register'
 INSTRUCTION_MARKER_IN_CONTAINING_SUITE = 'containing suite'
@@ -355,7 +355,7 @@ class TestBase(unittest.TestCase):
 
                     # ASSERT #
 
-                    self.assertEqual(ReporterFactoryForReporterThatDoesNothing.VALID_SUITE_EXIT_CODE,
+                    self.assertEqual(ProcessingReporterThatDoesNothing.VALID_SUITE_EXIT_CODE,
                                      return_value,
                                      'Sanity check of result indicator')
 
@@ -364,7 +364,7 @@ class TestBase(unittest.TestCase):
 
     def _new_executor(self,
                       recording_media: List[Recording],
-                      test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Executor:
+                      test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Processor:
         test_case_definition = TestCaseDefinition(
             TestCaseParsingSetup(space_separator_instruction_name_extractor,
                                  self._phase_config().instructions_setup(REGISTER_INSTRUCTION_NAME, recording_media),
@@ -381,14 +381,14 @@ class TestBase(unittest.TestCase):
             sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-')
         )
 
-        return sut.Executor(default_case_configuration,
-                            suite_hierarchy_reading.Reader(
+        return sut.Processor(default_case_configuration,
+                             suite_hierarchy_reading.Reader(
                                 suite_hierarchy_reading.Environment(
                                     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError(),
                                     test_case_definition.parsing_setup,
                                     default_case_configuration.default_handling_setup)
                             ),
-                            ReporterFactoryForReporterThatDoesNothing(),
-                            enumeration.DepthFirstEnumerator(),
-                            test_case_processor_constructor,
-                            )
+                             ProcessingReporterThatDoesNothing(),
+                             enumeration.DepthFirstEnumerator(),
+                             test_case_processor_constructor,
+                             )

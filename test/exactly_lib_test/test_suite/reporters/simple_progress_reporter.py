@@ -191,10 +191,10 @@ def _suite_executor_for_case_processing_that_unconditionally(execution_result: F
                                                              root_suite: structure.TestSuiteHierarchy,
                                                              std_output_files: StringStdOutFiles,
                                                              root_file_path: Path) -> SuitesExecutor:
-    factory = sut.SimpleProgressRootSuiteReporterFactory()
-    root_suite_reporter = factory.new_reporter(root_suite, std_output_files.stdout_files, root_file_path)
+    factory = sut.SimpleProgressRootSuiteProcessingReporter()
+    execution_reporter = factory.execution_reporter(root_suite, std_output_files.stdout_files, root_file_path)
     case_result = test_case_processing.new_executed(execution_result)
-    return execution.SuitesExecutor(root_suite_reporter, DUMMY_CASE_PROCESSING,
+    return execution.SuitesExecutor(execution_reporter, DUMMY_CASE_PROCESSING,
                                     lambda conf: TestCaseProcessorThatGivesConstant(case_result))
 
 

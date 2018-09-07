@@ -104,9 +104,9 @@ class RootSuiteReporter:
         raise NotImplementedError()
 
 
-class RootSuiteReporterFactory:
-    def new_reporter(self,
-                     root_suite: structure.TestSuiteHierarchy,
-                     std_output_files: StdOutputFiles,
-                     root_suite_file: pathlib.Path) -> RootSuiteReporter:
+class RootSuiteProcessingReporter:
+    def execution_reporter(self,
+                           root_suite: structure.TestSuiteHierarchy,
+                           std_output_files: StdOutputFiles,
+                           root_suite_file: pathlib.Path) -> RootSuiteReporter:
         raise NotImplementedError()

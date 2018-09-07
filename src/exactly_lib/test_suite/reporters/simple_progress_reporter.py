@@ -59,11 +59,11 @@ class _RelPathPresenter:
             return str(file)
 
 
-class SimpleProgressRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
-    def new_reporter(self,
-                     root_suite: structure.TestSuiteHierarchy,
-                     std_output_files: StdOutputFiles,
-                     root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
+class SimpleProgressRootSuiteProcessingReporter(reporting.RootSuiteProcessingReporter):
+    def execution_reporter(self,
+                           root_suite: structure.TestSuiteHierarchy,
+                           std_output_files: StdOutputFiles,
+                           root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
         return SimpleProgressRootSuiteReporter(std_output_files,
                                                root_suite_dir_abs_path)

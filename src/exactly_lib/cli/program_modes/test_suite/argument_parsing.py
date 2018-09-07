@@ -29,13 +29,13 @@ def parse(default: TestCaseHandlingSetup,
 class _Parser:
     def __init__(self, default: TestCaseHandlingSetup):
         self.default = default
-        from exactly_lib.test_suite.reporters.junit import JUnitRootSuiteReporterFactory
-        from exactly_lib.test_suite.reporters.simple_progress_reporter import SimpleProgressRootSuiteReporterFactory
-        self.reporter_name_2_factory = {
-            reporters.JUNIT_REPORTER.singular_name: JUnitRootSuiteReporterFactory,
-            reporters.PROGRESS_REPORTER.singular_name: SimpleProgressRootSuiteReporterFactory,
+        from exactly_lib.test_suite.reporters.junit import JUnitRootSuiteProcessingReporter
+        from exactly_lib.test_suite.reporters.simple_progress_reporter import SimpleProgressRootSuiteProcessingReporter
+        self.reporter_name_2_reporter = {
+            reporters.JUNIT_REPORTER.singular_name: JUnitRootSuiteProcessingReporter,
+            reporters.PROGRESS_REPORTER.singular_name: SimpleProgressRootSuiteProcessingReporter,
         }
-        self.reporter_names = sorted(list(self.reporter_name_2_factory.keys()))
+        self.reporter_names = sorted(list(self.reporter_name_2_reporter.keys()))
         self.default_reporter_name = reporters.DEFAULT_REPORTER.singular_name
 
     def parse(self, argv: List[str]) -> TestSuiteExecutionSettings:
@@ -46,20 +46,19 @@ class _Parser:
                                                                          namespace.actor)
         suite_file_path = pathlib.Path(namespace.file)
         argument_parsing_utils.resolve_existing_path(suite_file_path),
-        return TestSuiteExecutionSettings(self._resolve_reporter_factory(vars(namespace)),
+        return TestSuiteExecutionSettings(self._resolve_reporter(vars(namespace)),
                                           TestCaseHandlingSetup(act_phase_setup,
                                                                 self.default.preprocessor),
                                           suite_file_path,
                                           )
 
-    def _resolve_reporter_factory(self,
-                                  namespace: dict):
+    def _resolve_reporter(self, namespace: dict):
         reporter_name = self.default_reporter_name
         if opts.OPTION_FOR_REPORTER__LONG in namespace:
             reporter_list = namespace[opts.OPTION_FOR_REPORTER__LONG]
             if reporter_list is not None and len(reporter_list) == 1:
                 reporter_name = reporter_list[0]
-        return self.reporter_name_2_factory[reporter_name]()
+        return self.reporter_name_2_reporter[reporter_name]()
 
     def _new_argument_parser(self) -> argparse.ArgumentParser:
         ret_val = argparse.ArgumentParser(description='Runs a test suite',

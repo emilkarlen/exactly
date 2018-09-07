@@ -18,12 +18,12 @@ from exactly_lib_test.section_document.test_resources.misc import space_separato
 from exactly_lib_test.test_suite.execution.test_resources.instruction_utils import instruction_setup
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
-from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingReporterFactory
+from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingProcessingReporter
 
 
 def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
                  test_case_processor_constructor: TestCaseProcessorConstructor,
-                 predefined_properties: PredefinedProperties) -> sut.Executor:
+                 predefined_properties: PredefinedProperties) -> sut.Processor:
     test_case_definition = TestCaseDefinition(
         TestCaseParsingSetup(space_separator_instruction_name_extractor,
                              instruction_setup(setup_phase_instructions),
@@ -35,14 +35,14 @@ def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
                                                      False,
                                                      sandbox_dir_resolving.mk_tmp_dir_with_prefix('test-suite-'))
 
-    return sut.Executor(default_configuration,
-                        suite_hierarchy_reading.Reader(
+    return sut.Processor(default_configuration,
+                         suite_hierarchy_reading.Reader(
                             suite_hierarchy_reading.Environment(
                                 SectionElementParserThatRaisesRecognizedSectionElementSourceError(),
                                 test_case_definition.parsing_setup,
                                 default_configuration.default_handling_setup)
                         ),
-                        ExecutionTracingReporterFactory(),
-                        enumeration.DepthFirstEnumerator(),
-                        test_case_processor_constructor,
-                        )
+                         ExecutionTracingProcessingReporter(),
+                         enumeration.DepthFirstEnumerator(),
+                         test_case_processor_constructor,
+                         )
