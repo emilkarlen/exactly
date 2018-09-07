@@ -96,7 +96,7 @@ class Test(unittest.TestCase):
 
 
 def new_executor_with_no_symbols(registry: tr.Registry,
-                                 test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Executor:
+                                 test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Processor:
     return new_executor(
         {
             INSTR_DEFINE: tr.InstructionParserForDefine(),

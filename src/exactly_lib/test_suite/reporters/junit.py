@@ -29,11 +29,11 @@ TEST_SUITE_ELEMENT_NAME = 'testsuite'
 TEST_SUITES_ELEMENT_NAME = 'testsuites'
 
 
-class JUnitRootSuiteReporterFactory(reporting.RootSuiteReporterFactory):
-    def new_reporter(self,
-                     root_suite: structure.TestSuiteHierarchy,
-                     std_output_files: StdOutputFiles,
-                     root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
+class JUnitRootSuiteProcessingReporter(reporting.RootSuiteProcessingReporter):
+    def execution_reporter(self,
+                           root_suite: structure.TestSuiteHierarchy,
+                           std_output_files: StdOutputFiles,
+                           root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         root_suite_dir_abs_path = root_suite_file.resolve().parent
         return JUnitRootSuiteReporter(root_suite, std_output_files, root_suite_dir_abs_path)
 

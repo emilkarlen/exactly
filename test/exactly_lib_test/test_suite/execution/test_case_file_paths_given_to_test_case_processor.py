@@ -13,7 +13,7 @@ from exactly_lib_test.test_resources.value_assertions import value_assertion as 
 from exactly_lib_test.test_suite.execution.execution_basics import ReaderThatGivesConstantSuite
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING
-from exactly_lib_test.test_suite.test_resources.suite_reporting import ReporterFactoryForReporterThatDoesNothing
+from exactly_lib_test.test_suite.test_resources.suite_reporting import ProcessingReporterThatDoesNothing
 
 
 def suite() -> unittest.TestSuite:
@@ -59,17 +59,17 @@ class Test(unittest.TestCase):
                 with self.subTest(path_case=path_case.name,
                                   suite_case=suite_case.name):
                     suite_hierarchy_reader = ReaderThatGivesConstantSuite(suite_case.value)
-                    reporter_factory = ReporterFactoryForReporterThatDoesNothing()
+                    reporter = ProcessingReporterThatDoesNothing()
                     file_ref_registering_processor = TestCaseProcessorThatJustRegistersTestCaseFileReference()
-                    executor = sut.Executor(DUMMY_CASE_PROCESSING,
-                                            suite_hierarchy_reader,
-                                            reporter_factory,
-                                            DepthFirstEnumerator(),
-                                            lambda config: file_ref_registering_processor)
+                    executor = sut.Processor(DUMMY_CASE_PROCESSING,
+                                             suite_hierarchy_reader,
+                                             reporter,
+                                             DepthFirstEnumerator(),
+                                             lambda config: file_ref_registering_processor)
                     # ACT #
                     return_value = executor.execute(suite_case.value.source_file, null_output_files())
                     # ASSERT #
-                    self.assertEqual(ReporterFactoryForReporterThatDoesNothing.VALID_SUITE_EXIT_CODE,
+                    self.assertEqual(ProcessingReporterThatDoesNothing.VALID_SUITE_EXIT_CODE,
                                      return_value,
                                      'Sanity check of result indicator')
 

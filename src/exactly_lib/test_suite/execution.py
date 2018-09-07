@@ -19,7 +19,7 @@ from exactly_lib.util.std import StdOutputFiles, file_printer_with_color_if_term
 TestCaseProcessorConstructor = Callable[[case_processing.Configuration], test_case_processing.Processor]
 
 
-class Executor:
+class Processor:
     """
     Reads a suite file and executes it.
     """
@@ -27,13 +27,13 @@ class Executor:
     def __init__(self,
                  default_case_configuration: case_processing.Configuration,
                  suite_hierarchy_reader: SuiteHierarchyReader,
-                 reporter_factory: reporting.RootSuiteReporterFactory,
+                 reporter: reporting.RootSuiteProcessingReporter,
                  suite_enumerator: SuiteEnumerator,
                  test_case_processor_constructor: TestCaseProcessorConstructor):
         self._default_case_configuration = default_case_configuration
         self._suite_hierarchy_reader = suite_hierarchy_reader
         self._suite_enumerator = suite_enumerator
-        self._reporter_factory = reporter_factory
+        self._reporter = reporter
         self._test_case_processor_constructor = test_case_processor_constructor
 
     def execute(self, suite_root_file_path: pathlib.Path, output: StdOutputFiles) -> int:
@@ -48,9 +48,9 @@ class Executor:
             )
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
-        executor = SuitesExecutor(self._reporter_factory.new_reporter(root_suite,
-                                                                      output,
-                                                                      suite_root_file_path),
+        executor = SuitesExecutor(self._reporter.execution_reporter(root_suite,
+                                                                    output,
+                                                                    suite_root_file_path),
                                   self._default_case_configuration,
                                   self._test_case_processor_constructor)
         return executor.execute_and_report(suits_in_processing_order)

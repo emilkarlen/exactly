@@ -10,24 +10,24 @@ from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util import std
 
 
-class ExecutionTracingReporterFactory(reporting.RootSuiteReporterFactory):
+class ExecutionTracingProcessingReporter(reporting.RootSuiteProcessingReporter):
     def __init__(self):
         self.complete_suite_reporter = ExecutionTracingRootSuiteReporter()
 
-    def new_reporter(self,
-                     root_suite: TestSuiteHierarchy,
-                     std_output_files: std.StdOutputFiles,
-                     root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
+    def execution_reporter(self,
+                           root_suite: TestSuiteHierarchy,
+                           std_output_files: std.StdOutputFiles,
+                           root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return self.complete_suite_reporter
 
 
-class ReporterFactoryForReporterThatDoesNothing(reporting.RootSuiteReporterFactory):
+class ProcessingReporterThatDoesNothing(reporting.RootSuiteProcessingReporter):
     VALID_SUITE_EXIT_CODE = -1
 
-    def new_reporter(self,
-                     root_suite: TestSuiteHierarchy,
-                     std_output_files: std.StdOutputFiles,
-                     root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
+    def execution_reporter(self,
+                           root_suite: TestSuiteHierarchy,
+                           std_output_files: std.StdOutputFiles,
+                           root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return RootSuiteReporterThatDoesNothing()
 
 
@@ -53,7 +53,7 @@ class RootSuiteReporterThatDoesNothing(reporting.RootSuiteReporter):
         return reporting.SubSuiteReporter(sub_suite, SubSuiteProgressReporterThatDoesNothing())
 
     def report_final_results(self) -> int:
-        return ReporterFactoryForReporterThatDoesNothing.VALID_SUITE_EXIT_CODE
+        return ProcessingReporterThatDoesNothing.VALID_SUITE_EXIT_CODE
 
 
 class EventType(enum.Enum):
