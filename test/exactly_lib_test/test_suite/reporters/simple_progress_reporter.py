@@ -24,6 +24,7 @@ from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseP
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestInvalidSuite),
         unittest.makeSuite(TestExecutionOfSuite),
         unittest.makeSuite(TestFinalResultFormatting)
     ])
@@ -39,6 +40,25 @@ def _suite_end(file_name: str) -> str:
 
 def _case(file_name: str, exit_value: case_ev.ExitValue) -> str:
     return 'case  ' + file_name + ': (__TIME__s) ' + exit_value.exit_identifier
+
+
+class TestInvalidSuite(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+        reporter = sut.SimpleProgressRootSuiteProcessingReporter()
+        str_std_out_files = StringStdOutFiles()
+        exit_value = ExitValue(1, 'IDENTIFIER', ForegroundColor.BLACK)
+        # ACT #
+        reporter.report_invalid_suite(exit_value,
+                                      str_std_out_files.stdout_files)
+        # ASSERT #
+        str_std_out_files.finish()
+        self.assertEqual(exit_value.exit_identifier + '\n',
+                         str_std_out_files.stdout_contents,
+                         'Output to stdout')
+        self.assertEqual('',
+                         str_std_out_files.stderr_contents,
+                         'Output to stderr')
 
 
 class TestExecutionOfSuite(unittest.TestCase):

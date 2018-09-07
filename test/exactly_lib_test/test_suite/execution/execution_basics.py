@@ -17,6 +17,7 @@ from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util import line_source
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING, \
     FULL_RESULT_PASS, test_suite, TestCaseProcessorThatGivesConstantPerCase
@@ -50,6 +51,12 @@ class TestError(unittest.TestCase):
                                          exit_values.INVALID_SUITE.exit_code,
                                          exit_code,
                                          str_std_out_files)
+        expected_invalid_suite_invocations = asrt.matches_sequence([
+            asrt.equals(exit_values.INVALID_SUITE),
+        ])
+        expected_invalid_suite_invocations.apply_with_message(self,
+                                                              reporter.report_invalid_suite_invocations,
+                                                              'report_invalid_suite_invocations')
         ExpectedSuiteReporting.check_list(self, [], reporter.complete_suite_reporter)
 
     def test_internal_error_in_test_case_processor(self):
@@ -278,6 +285,7 @@ def check_exit_code_and_empty_stdout(put: unittest.TestCase,
                                      expected_exit_code: int,
                                      actual_exit_code: int,
                                      str_std_out_files: StringStdOutFiles):
+    str_std_out_files.finish()
     put.assertEqual(expected_exit_code,
                     actual_exit_code,
                     'Exit code')

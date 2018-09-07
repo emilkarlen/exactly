@@ -2,6 +2,7 @@ import datetime
 import pathlib
 from typing import Tuple, List
 
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.util.std import StdOutputFiles
@@ -105,6 +106,12 @@ class RootSuiteReporter:
 
 
 class RootSuiteProcessingReporter:
+    def report_invalid_suite(self,
+                             exit_value: ExitValue,
+                             output: StdOutputFiles,
+                             ):
+        raise NotImplementedError('abstract method')
+
     def execution_reporter(self,
                            root_suite: structure.TestSuiteHierarchy,
                            std_output_files: StdOutputFiles,

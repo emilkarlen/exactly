@@ -2,6 +2,7 @@ import datetime
 import pathlib
 from typing import Callable, List
 
+from exactly_lib.common.result_reporting import output_location
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing import test_case_processing
 from exactly_lib.section_document.source_location import source_location_path_of
@@ -10,7 +11,6 @@ from exactly_lib.test_suite import exit_values
 from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.enumeration import SuiteEnumerator
-from exactly_lib.test_suite.error_reporting import report_suite_read_error
 from exactly_lib.test_suite.file_reading.exception import SuiteReadError
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import SuiteHierarchyReader
 from exactly_lib.test_suite.reporting import RootSuiteReporter, TestCaseProcessingInfo
@@ -38,14 +38,9 @@ class Processor:
 
     def execute(self, suite_root_file_path: pathlib.Path, output: StdOutputFiles) -> int:
         try:
-            root_suite = self._read_structure(suite_root_file_path)
+            root_suite = self._suite_hierarchy_reader.apply(suite_root_file_path)
         except SuiteReadError as ex:
-            return report_suite_read_error(
-                ex,
-                file_printer_with_color_if_terminal(output.out),
-                file_printer_with_color_if_terminal(output.err),
-                exit_values.INVALID_SUITE
-            )
+            return self._report_read_error(ex, output)
 
         suits_in_processing_order = self._suite_enumerator.apply(root_suite)
         executor = SuitesExecutor(self._reporter.execution_reporter(root_suite,
@@ -55,9 +50,26 @@ class Processor:
                                   self._test_case_processor_constructor)
         return executor.execute_and_report(suits_in_processing_order)
 
-    def _read_structure(self,
-                        suite_file_path: pathlib.Path) -> structure.TestSuiteHierarchy:
-        return self._suite_hierarchy_reader.apply(suite_file_path)
+    def _report_read_error(self,
+                           ex: SuiteReadError,
+                           output: StdOutputFiles,
+                           ) -> int:
+        exit_value = exit_values.INVALID_SUITE
+        self._reporter.report_invalid_suite(exit_value, output)
+        output.out.flush()
+        self._print_error_message(ex, output)
+        return exit_value.exit_code
+
+    @staticmethod
+    def _print_error_message(ex: SuiteReadError,
+                             output: StdOutputFiles,
+                             ):
+        printer = file_printer_with_color_if_terminal(output.err)
+        output_location(printer,
+                        ex.source_location,
+                        ex.maybe_section_name,
+                        None)
+        printer.write_lines(ex.error_message_lines())
 
 
 class SuitesExecutor:
