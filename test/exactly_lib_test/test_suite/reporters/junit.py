@@ -6,12 +6,14 @@ import unittest
 from pathlib import Path
 from xml.etree import ElementTree as ET
 
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.result_reporting import error_message_for_full_result, error_message_for_error_info
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.test_case_processing import Result, AccessErrorType
 from exactly_lib.test_suite import execution
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.reporters import junit as sut
+from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib_test.execution.full_execution.test_resources.result_values import FULL_RESULT_HARD_ERROR, \
     FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
@@ -25,11 +27,30 @@ from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseP
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
+        unittest.makeSuite(TestInvalidSuite),
         unittest.makeSuite(TestExecutionOfSingleSuiteWithSingleTestCase),
         unittest.makeSuite(TestExecutionOfSingleSuiteWithMultipleTestCases),
         unittest.makeSuite(TestExecutionOfSuiteWithoutTestCasesButWithSubSuites),
         unittest.makeSuite(TestExecutionOfRootSuiteWithBothTestCasesAndSubSuites),
     ])
+
+
+class TestInvalidSuite(unittest.TestCase):
+    def test(self):
+        # ARRANGE #
+        reporter = sut.JUnitRootSuiteProcessingReporter()
+        str_std_out_files = StringStdOutFiles()
+        # ACT #
+        reporter.report_invalid_suite(ExitValue(1, 'IDENTIFIER', ForegroundColor.BLACK),
+                                      str_std_out_files.stdout_files)
+        # ASSERT #
+        str_std_out_files.finish()
+        self.assertEqual('',
+                         str_std_out_files.stdout_contents,
+                         'Output to stdout')
+        self.assertEqual('',
+                         str_std_out_files.stderr_contents,
+                         'Output to stderr')
 
 
 class TestExecutionOfSingleSuiteWithSingleTestCase(unittest.TestCase):
@@ -402,8 +423,8 @@ def execute_with_case_processing_with_constant_processor(processor: tcp.Processo
                                                          root_file_path: Path,
                                                          test_suites: list) -> ExitCodeAndStdOut:
     std_output_files = StringStdOutFiles()
-    factory = sut.JUnitRootSuiteProcessingReporter()
-    execution_reporter = factory.execution_reporter(root_suite, std_output_files.stdout_files, root_file_path)
+    reporter = sut.JUnitRootSuiteProcessingReporter()
+    execution_reporter = reporter.execution_reporter(root_suite, std_output_files.stdout_files, root_file_path)
     executor = execution.SuitesExecutor(execution_reporter,
                                         DUMMY_CASE_PROCESSING,
                                         lambda conf: processor)

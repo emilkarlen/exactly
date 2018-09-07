@@ -1,6 +1,8 @@
 import enum
 import pathlib
+from typing import List
 
+from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
 from exactly_lib.test_case.test_case_doc import TestCase
@@ -8,11 +10,19 @@ from exactly_lib.test_suite import reporting
 from exactly_lib.test_suite.reporting import TestCaseProcessingInfo
 from exactly_lib.test_suite.structure import TestSuiteHierarchy
 from exactly_lib.util import std
+from exactly_lib.util.std import StdOutputFiles
 
 
 class ExecutionTracingProcessingReporter(reporting.RootSuiteProcessingReporter):
     def __init__(self):
         self.complete_suite_reporter = ExecutionTracingRootSuiteReporter()
+        self._report_invalid_suite_invocations = []
+
+    def report_invalid_suite(self,
+                             exit_value: ExitValue,
+                             output: StdOutputFiles,
+                             ):
+        self._report_invalid_suite_invocations.append(exit_value)
 
     def execution_reporter(self,
                            root_suite: TestSuiteHierarchy,
@@ -20,9 +30,19 @@ class ExecutionTracingProcessingReporter(reporting.RootSuiteProcessingReporter):
                            root_suite_file: pathlib.Path) -> reporting.RootSuiteReporter:
         return self.complete_suite_reporter
 
+    @property
+    def report_invalid_suite_invocations(self) -> List[ExitValue]:
+        return self._report_invalid_suite_invocations
+
 
 class ProcessingReporterThatDoesNothing(reporting.RootSuiteProcessingReporter):
     VALID_SUITE_EXIT_CODE = -1
+
+    def report_invalid_suite(self,
+                             exit_value: ExitValue,
+                             output: StdOutputFiles,
+                             ):
+        pass
 
     def execution_reporter(self,
                            root_suite: TestSuiteHierarchy,

@@ -60,6 +60,13 @@ class _RelPathPresenter:
 
 
 class SimpleProgressRootSuiteProcessingReporter(reporting.RootSuiteProcessingReporter):
+    def report_invalid_suite(self,
+                             exit_value: ExitValue,
+                             output: StdOutputFiles,
+                             ):
+        printer = file_printer_with_color_if_terminal(output.out)
+        printer.write_colored_line(exit_value.exit_identifier, exit_value.color)
+
     def execution_reporter(self,
                            root_suite: structure.TestSuiteHierarchy,
                            std_output_files: StdOutputFiles,
