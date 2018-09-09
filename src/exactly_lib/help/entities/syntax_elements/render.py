@@ -1,4 +1,5 @@
 import functools
+from typing import List, Iterable
 
 from exactly_lib.definitions.entity.all_entity_types import SYNTAX_ELEMENT_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.entity import CliListConstructorGetter, HtmlDocHierarchyGeneratorGetter
@@ -17,7 +18,9 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.utils import append_section_if_contents_is_non_empty
 
 
-def _docs_of_type_category(category: TypeCategory, element_doc_list: list) -> list:
+def _docs_of_type_category(category: TypeCategory,
+                           element_doc_list: Iterable[SyntaxElementDocumentation]
+                           ) -> List[SyntaxElementDocumentation]:
     return list(filter(lambda element_doc: element_doc.type_category is category,
                        element_doc_list))
 
@@ -54,7 +57,7 @@ class IndividualSyntaxElementConstructor(ArticleContentsConstructor):
                                    doc.SectionContents(initial_paragraphs,
                                                        self._sub_sections(environment)))
 
-    def _sub_sections(self, environment: ConstructionEnvironment) -> list:
+    def _sub_sections(self, environment: ConstructionEnvironment) -> List[doc.SectionItem]:
         ret_val = []
         append_section_if_contents_is_non_empty(ret_val,
                                                 'Description',
