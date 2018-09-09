@@ -1,6 +1,7 @@
 import types
-from typing import Sequence
+from typing import Sequence, List, Callable
 
+from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet, \
     InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import instruction_set_list_item
@@ -17,13 +18,13 @@ from exactly_lib.util.textformat.utils import transform_list_to_table
 class InstructionSetSummaryConstructor(ParagraphItemsConstructor):
     def __init__(self,
                  instruction_set: SectionInstructionSet,
-                 name_2_name_text_fun: types.FunctionType,
-                 instruction_group_by: types.FunctionType):
+                 name_2_name_text_fun: Callable[[str], docs.Text],
+                 instruction_group_by: Callable[[Sequence[InstructionDocumentation]], InstructionGroup]):
         self.instruction_set = instruction_set
         self.name_2_name_text_fun = name_2_name_text_fun
         self.instruction_group_by = instruction_group_by
 
-    def apply(self, environment: ConstructionEnvironment) -> list:
+    def apply(self, environment: ConstructionEnvironment) -> List[ParagraphItem]:
         if self.instruction_group_by is None:
             paragraph_item = self.instruction_set_list(self.instruction_set.instruction_documentations,
                                                        environment)
@@ -34,7 +35,6 @@ class InstructionSetSummaryConstructor(ParagraphItemsConstructor):
     def _grouped_instructions(self, environment: ConstructionEnvironment) -> ParagraphItem:
         items = []
         for group in self.instruction_group_by(self.instruction_set.instruction_documentations):
-            assert isinstance(group, InstructionGroup)  # Type info for IDE
             items.append(docs.list_item(group.header,
                                         [
                                             self.instruction_set_list(group.instruction_documentations,
@@ -44,7 +44,7 @@ class InstructionSetSummaryConstructor(ParagraphItemsConstructor):
                                                                         ListType.ITEMIZED_LIST)
 
     def instruction_set_list(self,
-                             instructions: list,
+                             instructions: Sequence[InstructionDocumentation],
                              environment: ConstructionEnvironment) -> ParagraphItem:
         instruction_list_items = [
             instruction_set_list_item(doc, self.name_2_name_text_fun)
@@ -72,7 +72,7 @@ class SectionInstructionSetConstructor(SectionContentsConstructorFromParagraphIt
 def sections_short_list(sections: Sequence[SectionDocumentation],
                         default_section_name: str = '',
                         section_concept_name: str = 'section') -> ParagraphItem:
-    def add_default_info(doc: SectionDocumentation, output: list):
+    def add_default_info(doc: SectionDocumentation, output: List[docs.ParagraphItem]):
         if doc.name.plain == default_section_name:
             output.append(default_section_para(section_concept_name))
 

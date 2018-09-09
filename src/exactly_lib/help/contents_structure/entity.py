@@ -3,11 +3,13 @@ Utilities for generating documentation for "entities" - things with a name and s
 
 Makes it possible to reuse some code for generating documentation.
 """
+from typing import List, Callable, Iterable
 
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, EntityTypeNames
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text, StringText
@@ -51,10 +53,7 @@ class EntityDocumentation:
 class EntityTypeHelp(tuple):
     def __new__(cls,
                 names: EntityTypeNames,
-                entities: iter):
-        """
-        :type entities: [`EntityDocumentation`]
-        """
+                entities: Iterable[EntityDocumentation]):
         return tuple.__new__(cls, (names,
                                    list(entities)))
 
@@ -63,29 +62,26 @@ class EntityTypeHelp(tuple):
         return self[0]
 
     @property
-    def all_entities(self) -> list:
-        """
-        :type: [`EntityDocumentation`]
-        """
+    def all_entities(self) -> List[EntityDocumentation]:
         return self[1]
 
 
 class HtmlDocHierarchyGeneratorGetter:
     def get_hierarchy_generator(self,
                                 header: str,
-                                all_entity_doc_list: list) -> SectionHierarchyGenerator:
+                                all_entity_doc_list: List[EntityDocumentation]) -> SectionHierarchyGenerator:
         raise NotImplementedError('abstract method')
 
 
 class CliListConstructorGetter:
-    def get_constructor(self, all_entity_doc_list: list) -> SectionContentsConstructor:
+    def get_constructor(self, all_entity_doc_list: List[EntityDocumentation]) -> SectionContentsConstructor:
         raise NotImplementedError('abstract method')
 
 
 class EntityTypeConfiguration(tuple):
     def __new__(cls,
                 entities_help: EntityTypeHelp,
-                entity_doc_2_article_contents_renderer,
+                entity_doc_2_article_contents_renderer: Callable[[EntityDocumentation], ArticleContentsConstructor],
                 cli_list_renderer_getter: CliListConstructorGetter,
                 html_doc_generator_getter: HtmlDocHierarchyGeneratorGetter):
         return tuple.__new__(cls, (entities_help,
@@ -98,10 +94,7 @@ class EntityTypeConfiguration(tuple):
         return self[0]
 
     @property
-    def entity_doc_2_article_contents_renderer(self):
-        """
-        :rtype: `EntityDocumentation` -> `ArticleContentsRenderer`
-        """
+    def entity_doc_2_article_contents_renderer(self) -> Callable[[EntityDocumentation], ArticleContentsConstructor]:
         return self[1]
 
     @property

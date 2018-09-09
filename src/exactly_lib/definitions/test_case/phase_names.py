@@ -1,3 +1,5 @@
+from typing import Dict
+
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.test_case import phase_identifier
 
@@ -18,7 +20,7 @@ ALL = (
 )
 
 
-def _phase_name_dictionary() -> dict:
+def _phase_name_dictionary() -> Dict[str, SectionName]:
     phase_names = {}
     for phase in ALL:
         phase_names[phase_name_dict_key_for(phase.plain)] = phase

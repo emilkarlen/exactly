@@ -1,7 +1,8 @@
-from typing import List
+from typing import List, Dict
 
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions.doc_format import exit_value_text
+from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
@@ -25,7 +26,7 @@ class Setup(tuple):
         return self[0]
 
     @property
-    def phase_names(self) -> dict:
+    def phase_names(self) -> Dict[str, SectionName]:
         return self[1]
 
 
