@@ -4,6 +4,7 @@ from exactly_lib.util.textformat.construction.section_contents_constructor impor
     ConstructionEnvironment, \
     ConstantSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, target_info_leaf, \
     CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
@@ -81,10 +82,10 @@ class Test(unittest.TestCase):
         object_to_test = hierarchy.parent(
             'root header',
             expected_root_initial_paras,
-            [('sub-target1', hierarchy.leaf('sub1',
-                                            section_contents(expected_section_contents_object1))),
-             ('sub-target2', hierarchy.leaf('sub2',
-                                            section_contents(expected_section_contents_object2)))
+            [Node('sub-target1', hierarchy.leaf('sub1',
+                                                section_contents(expected_section_contents_object1))),
+             Node('sub-target2', hierarchy.leaf('sub2',
+                                                section_contents(expected_section_contents_object2)))
              ])
         # EXPECTATION #
         expected_root_target_info = target_factory.root(StringText('root header'))

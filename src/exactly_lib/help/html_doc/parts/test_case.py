@@ -9,6 +9,7 @@ from exactly_lib.help.program_modes.test_case.contents.main import specification
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 
 
 def generator(header: str,
@@ -18,17 +19,17 @@ def generator(header: str,
         header,
         [],
         [
-            ('spec',
-             test_case_specification_rendering.generator(
-                 'Specification of test case functionality',
-                 test_case_help)
-             ),
-            ('phases',
-             sections_helper.generator_for_sections('Phases')
-             ),
-            ('instructions',
-             sections_helper.generator_for_instructions_per_section('Instructions per phase')
-             ),
+            Node('spec',
+                 test_case_specification_rendering.generator(
+                     'Specification of test case functionality',
+                     test_case_help)
+                 ),
+            Node('phases',
+                 sections_helper.generator_for_sections('Phases')
+                 ),
+            Node('instructions',
+                 sections_helper.generator_for_instructions_per_section('Instructions per phase')
+                 ),
         ]
     )
 

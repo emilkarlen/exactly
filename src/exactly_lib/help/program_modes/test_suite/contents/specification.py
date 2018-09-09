@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib.definitions import formatting
@@ -9,13 +11,14 @@ from exactly_lib.util.textformat.construction.section_contents_constructor impor
     SectionContentsConstructorForConstantContents
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import leaf, parent
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import leaf, parent, Node
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionItemGeneratorNode, \
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory
-from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def specification_constructor(suite_help: TestSuiteHelp) -> SectionContentsConstructor:
@@ -30,42 +33,39 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                  suite_help: TestSuiteHelp):
         self.header = header
         self._suite_help = suite_help
-        self._format_map = {
+        self._tp = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'executable_name': program_info.PROGRAM_NAME,
             'suite_program_mode': SUITE_COMMAND,
             'reporter_concept': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
-        }
+        })
 
     def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
         generator = parent(self.header,
                            [],
                            [
-                               ('files-and-execution',
-                                leaf('Suite files and execution',
-                                     self._section_of_parsed(_FILES_AND_EXECUTION_TEXT))
-                                ),
-                               ('sections-overview',
-                                leaf('Sections overview',
-                                     self._suite_structure_contents())
-                                ),
-                               ('file-syntax',
-                                leaf('Suite file syntax',
-                                     self._section_of_parsed(_FILE_SYNTAX))
-                                ),
+                               Node('files-and-execution',
+                                    leaf('Suite files and execution',
+                                         self._section_of_parsed(_FILES_AND_EXECUTION_TEXT))
+                                    ),
+                               Node('sections-overview',
+                                    leaf('Sections overview',
+                                         self._suite_structure_contents())
+                                    ),
+                               Node('file-syntax',
+                                    leaf('Suite file syntax',
+                                         self._section_of_parsed(_FILE_SYNTAX))
+                                    ),
                            ])
         return generator.generator_node(target_factory)
 
     def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:
         return SectionContentsConstructorForConstantContents(
-            docs.section_contents(self._parse(contents)))
+            docs.section_contents(self._tp.fnap(contents)))
 
-    def _parse(self, s: str) -> list:
-        return normalize_and_parse(s.format_map(self._format_map))
-
-    def _suite_structure_paragraphs(self) -> list:
+    def _suite_structure_paragraphs(self) -> List[ParagraphItem]:
         ret_val = []
-        ret_val.extend(self._parse(_STRUCTURE_INTRO))
+        ret_val.extend(self._tp.fnap(_STRUCTURE_INTRO))
         ret_val.append(sections_short_list(self._suite_help.section_helps,
                                            default_section_name=DEFAULT_SECTION_NAME,
                                            section_concept_name='section'))

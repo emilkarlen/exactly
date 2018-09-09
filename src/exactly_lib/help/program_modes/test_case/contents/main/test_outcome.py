@@ -17,6 +17,7 @@ from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -33,37 +34,37 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
         header,
         preamble_paragraphs,
         [
-            ('reporting',
-             const_contents('Reporting',
-                            TEXT_PARSER.fnap(REPORTING))
+            Node('reporting',
+                 const_contents('Reporting',
+                                TEXT_PARSER.fnap(REPORTING))
 
-             ),
-            ('complete-execution',
-             const_contents('Complete execution',
-                            _description_of_complete_execution(setup))
+                 ),
+            Node('complete-execution',
+                 const_contents('Complete execution',
+                                _description_of_complete_execution(setup))
 
-             ),
-            ('error-during-validation',
-             const_contents('Error during validation',
-                            _error_in_validation_before_execution())
+                 ),
+            Node('error-during-validation',
+                 const_contents('Error during validation',
+                                _error_in_validation_before_execution())
 
-             ),
-            ('error-during-execution',
-             const_contents('Error during execution',
-                            _interrupted_execution(setup))
+                 ),
+            Node('error-during-execution',
+                 const_contents('Error during execution',
+                                _interrupted_execution(setup))
 
-             ),
-            ('other-errors',
-             const_contents('Other errors',
-                            _other_errors(setup))
+                 ),
+            Node('other-errors',
+                 const_contents('Other errors',
+                                _other_errors(setup))
 
-             ),
-            ('summary-of-exit-codes',
-             const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
-                            [all_exit_values_summary_table()]
-                            )
+                 ),
+            Node('summary-of-exit-codes',
+                 const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
+                                [all_exit_values_summary_table()]
+                                )
 
-             ),
+                 ),
         ]
     )
 
@@ -201,7 +202,7 @@ def interrupted_execution_list(setup: Setup) -> ParagraphItem:
                                    )
 
 
-def _error_in_validation_before_execution() -> list:
+def _error_in_validation_before_execution() -> List[ParagraphItem]:
     ret_val = []
     ret_val += TEXT_PARSER.fnap(_ERROR_IN_VALIDATION_BEFORE_EXECUTION_PREAMBLE)
     ret_val += TEXT_PARSER.fnap(OUTCOME_IS_EXIT_CODE_AND_IDENTIFIER)
@@ -218,8 +219,8 @@ If validation fails, the test case is not executed.
 #     return _outcome_and_exit_value_table_for(exit_values.ALL_EXIT_VALUES)
 
 
-def _exit_value_table_for(exit_value_list: list) -> ParagraphItem:
-    def _row(exit_value: ExitValue) -> list:
+def _exit_value_table_for(exit_value_list: List[ExitValue]) -> ParagraphItem:
+    def _row(exit_value: ExitValue) -> List[TableCell]:
         return [
             cell(paras(exit_value_text(exit_value))),
             cell(paras(str(exit_value.exit_code))),
@@ -296,7 +297,7 @@ line on stdout.
 """
 
 
-def _other_errors(setup: Setup) -> list:
+def _other_errors(setup: Setup) -> List[ParagraphItem]:
     ret_val = []
     ret_val.extend(normalize_and_parse(_CLI_PARSING_ERROR.format(program_name=_program_name(),
                                                                  EXIT_CODE=exit_codes.EXIT_INVALID_USAGE)))

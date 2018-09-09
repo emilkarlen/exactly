@@ -9,6 +9,7 @@ from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
     SectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -19,18 +20,18 @@ def generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator
     return hierarchy.parent(
         header, [],
         [
-            ('phases', hierarchy.leaf('Phases', _PhaseRenderer(text_parser))),
-            ('phase-contents', hierarchy.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            ('instructions', hierarchy.parent(
+            Node('phases', hierarchy.leaf('Phases', _PhaseRenderer(text_parser))),
+            Node('phase-contents', hierarchy.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
+            Node('instructions', hierarchy.parent(
                 'Instructions',
                 text_parser.fnap(INSTRUCTIONS_DOC),
-                [('description',
-                  hierarchy.leaf('Instruction descriptions',
-                                 _InstructionsRenderer(
-                                     text_parser)))])
-             ),
-            ('file-inclusion', hierarchy.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
-            ('com-empty', hierarchy.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
+                [Node('description',
+                      hierarchy.leaf('Instruction descriptions',
+                                     _InstructionsRenderer(
+                                         text_parser)))])
+                 ),
+            Node('file-inclusion', hierarchy.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
+            Node('com-empty', hierarchy.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
 
