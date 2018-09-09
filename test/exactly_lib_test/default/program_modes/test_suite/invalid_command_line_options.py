@@ -53,7 +53,7 @@ class InvalidOptions(SetupWithReplacementOfVariableOutputWithPlaceholders):
 
 
 class TestSuiteFileDoesNotExistShouldExitWithInvalidUsageStatus(SetupWithJustMainProgramRunner):
-    def arguments(self) -> list:
+    def arguments(self) -> List[str]:
         return [SUITE_COMMAND, 'name-of-non-existing-test.suite']
 
     def check(self,

@@ -11,6 +11,7 @@ from exactly_lib.help.program_modes.test_suite.contents.specification import Spe
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 
 
 def generator(header: str,
@@ -22,19 +23,19 @@ def generator(header: str,
         header,
         [],
         [
-            ('spec',
-             SpecificationHierarchyGenerator('Specification of test suite functionality',
-                                             test_suite_help)
-             ),
-            ('sections',
-             sections_helper.generator_for_sections('Sections')
-             ),
-            ('reporters',
-             suite_reporter_conf.get_hierarchy_generator(SUITE_REPORTER_ENTITY_TYPE_NAMES.name.plural.capitalize())
-             ),
-            ('instructions',
-             sections_helper.generator_for_instructions_per_section('Instructions per section')
-             ),
+            Node('spec',
+                 SpecificationHierarchyGenerator('Specification of test suite functionality',
+                                                 test_suite_help)
+                 ),
+            Node('sections',
+                 sections_helper.generator_for_sections('Sections')
+                 ),
+            Node('reporters',
+                 suite_reporter_conf.get_hierarchy_generator(SUITE_REPORTER_ENTITY_TYPE_NAMES.name.plural.capitalize())
+                 ),
+            Node('instructions',
+                 sections_helper.generator_for_instructions_per_section('Instructions per section')
+                 ),
         ]
     )
 

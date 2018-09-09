@@ -38,15 +38,14 @@ class Node(tuple):
 
 def parent(header: str,
            initial_paragraphs: List[ParagraphItem],
-           local_target_name__sub_section__list: list,
+           nodes: List[Node],
            ) -> SectionHierarchyGenerator:
     """
     A section with sub sections that appear in the TOC/target hierarchy.
-    :param local_target_name__sub_section__list: [(str, SectionHierarchyGenerator)] or list of `Node`
     """
     return _SectionHierarchyGeneratorWithSubSections(StringText(header),
                                                      initial_paragraphs,
-                                                     local_target_name__sub_section__list)
+                                                     nodes)
 
 
 class _SectionLeafGenerator(SectionHierarchyGenerator):
@@ -101,22 +100,18 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
 
     def __init__(self,
                  header: StringText,
-                 initial_paragraphs: list,
-                 local_target_name__sub_section__list: list,
+                 initial_paragraphs: List[ParagraphItem],
+                 nodes: List[Node],
                  ):
-        """
-        :param header:
-        :param local_target_name__sub_section__list: [(str, SectionItemGeneratorNode)]
-        :param initial_paragraphs: [ParagraphItem]
-        """
         self._header = header
-        self._local_target_name__sub_section__list = local_target_name__sub_section__list
         self._initial_paragraphs = initial_paragraphs
+        self._nodes = nodes
 
     def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
-        sub_sections = [section_generator.generator_node(target_factory.sub_factory(local_target_name))
-                        for (local_target_name, section_generator)
-                        in self._local_target_name__sub_section__list]
+        sub_sections = [node.generator.generator_node(target_factory.sub_factory(node.local_target_name))
+                        for node
+                        in self._nodes
+                        ]
         return SectionItemGeneratorNodeWithSubSections(target_factory.root(self._header),
                                                        self._initial_paragraphs,
                                                        sub_sections)

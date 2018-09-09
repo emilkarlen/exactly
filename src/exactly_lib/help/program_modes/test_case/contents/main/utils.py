@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions.doc_format import exit_value_text
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
@@ -44,8 +46,8 @@ def post_setup_validation_step_name(setup: Setup) -> str:
     return 'post {phase[setup]:syntax} validation'.format(phase=setup.phase_names)
 
 
-def step_with_single_exit_value(purpose_paragraphs: list,
+def step_with_single_exit_value(purpose_paragraphs: List[ParagraphItem],
                                 failure_condition: ParagraphItem,
-                                exit_value_on_error: ExitValue) -> list:
+                                exit_value_on_error: ExitValue) -> List[ParagraphItem]:
     outcome_on_error = singe_exit_value_display(exit_value_on_error)
     return purpose_paragraphs + [failure_condition, outcome_on_error]

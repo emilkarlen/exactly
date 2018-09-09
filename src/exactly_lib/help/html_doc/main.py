@@ -1,3 +1,5 @@
+from typing import List, Sequence
+
 from exactly_lib.definitions.cross_ref.custom_target_info_factory import root_factory
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
@@ -13,7 +15,7 @@ from exactly_lib.help.program_modes.test_case.contents import cli_syntax as case
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as suite_cli_syntax
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent, Node
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     HierarchyGeneratorEnvironment, \
     SectionItemGeneratorNode, SectionHierarchyGenerator
@@ -69,15 +71,15 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
     )
 
 
-def _case_and_suite_sections(application_help: ApplicationHelp) -> list:
+def _case_and_suite_sections(application_help: ApplicationHelp) -> List[Node]:
     return [
-        (
+        Node(
             'test-case',
             test_case.generator(_TEST_CASES_HEADER,
                                 application_help.test_case_help,
                                 )
         ),
-        (
+        Node(
             'test-suite',
             test_suite.generator(_TEST_SUITES_HEADER,
                                  application_help.test_suite_help,
@@ -88,14 +90,14 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> list:
 
 
 def _entity_sections(application_help: ApplicationHelp,
-                     entity_types_to_exclude: list) -> list:
+                     entity_types_to_exclude: Sequence[EntityTypeNames]) -> List[Node]:
     all_entity_type_names = filter(
         lambda
             etn: etn.identifier not in entity_types_to_exclude,
         ALL_ENTITY_TYPES_IN_DISPLAY_ORDER)
 
-    def _section_setup_for_entity(names: EntityTypeNames) -> tuple:
-        return (
+    def _section_setup_for_entity(names: EntityTypeNames) -> Node:
+        return Node(
             names.identifier,
             application_help.entity_type_conf_for(names.identifier).get_hierarchy_generator(
                 names.name.plural.capitalize()),
@@ -108,22 +110,22 @@ def _entity_sections(application_help: ApplicationHelp,
     ]
 
 
-def _cli_syntax_sections(local_target_name: str) -> list:
+def _cli_syntax_sections(local_target_name: str) -> List[Node]:
     return [
-        (
+        Node(
             local_target_name,
             parent('Command line syntax',
                    [],
                    [
-                       ('test-case',
-                        case_cli_syntax.generator(_TEST_CASES_HEADER)
-                        ),
-                       ('test-suite',
-                        suite_cli_syntax.generator(_TEST_SUITES_HEADER)
-                        ),
-                       ('help',
-                        help.generator('Getting Help')
-                        ),
+                       Node('test-case',
+                            case_cli_syntax.generator(_TEST_CASES_HEADER)
+                            ),
+                       Node('test-suite',
+                            suite_cli_syntax.generator(_TEST_SUITES_HEADER)
+                            ),
+                       Node('help',
+                            help.generator('Getting Help')
+                            ),
                    ]
                    )
         )
