@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Iterable
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
@@ -43,9 +43,6 @@ class SuiteReporterDocumentation(EntityDocumentation):
         return []
 
 
-def suite_reporters_help(suite_reporters: iter) -> EntityTypeHelp:
-    """
-    :param suite_reporters: [SuiteReporterDocumentation]
-    """
+def suite_reporters_help(suite_reporters: Iterable[SuiteReporterDocumentation]) -> EntityTypeHelp:
     return EntityTypeHelp(SUITE_REPORTER_ENTITY_TYPE_NAMES,
                           suite_reporters)
