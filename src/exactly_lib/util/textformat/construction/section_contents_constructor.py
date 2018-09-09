@@ -1,5 +1,7 @@
 import itertools
 
+from typing import List, Optional
+
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.structure import document as doc, structures as docs
 from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
@@ -22,7 +24,7 @@ class ConstructionEnvironment(tuple):
 
 
 class ParagraphItemsConstructor:
-    def apply(self, environment: ConstructionEnvironment) -> list:
+    def apply(self, environment: ConstructionEnvironment) -> List[ParagraphItem]:
         raise NotImplementedError()
 
 
@@ -52,21 +54,21 @@ class ArticleConstructor(SectionItemConstructor):
 
 
 class ParagraphItemsConstructorConstant(ParagraphItemsConstructor):
-    def __init__(self, paragraph_items: list):
+    def __init__(self, paragraph_items: List[ParagraphItem]):
         self._paragraph_items = paragraph_items
 
-    def apply(self, environment: ConstructionEnvironment) -> list:
+    def apply(self, environment: ConstructionEnvironment) -> List[ParagraphItem]:
         return self._paragraph_items
 
 
 class SectionContentsConstructorFromParagraphItemsConstructor(SectionContentsConstructor):
-    def __init__(self, paragraph_item_renderer: list):
-        self._paragraph_item_renderer = paragraph_item_renderer
+    def __init__(self, paragraph_item_constructors: List[ParagraphItemsConstructor]):
+        self._paragraph_item_constructors = paragraph_item_constructors
 
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         initial_paragraphs = list(itertools.chain.from_iterable([
             renderer.apply(environment)
-            for renderer in self._paragraph_item_renderer
+            for renderer in self._paragraph_item_constructors
         ]))
         return doc.SectionContents(initial_paragraphs)
 
@@ -94,20 +96,16 @@ class SectionConstructorFromSectionContentsConstructor(SectionConstructor):
 
 
 def section_contents_constructor_with_sub_sections(
-        section_constructor_list: list,
-        initial_paragraphs: list = None) -> SectionContentsConstructor:
+        section_constructor_list: List[SectionConstructor],
+        initial_paragraphs: Optional[List[ParagraphItem]] = None) -> SectionContentsConstructor:
     return _SectionContentsConstructorWithSubSections(section_constructor_list,
                                                       initial_paragraphs if initial_paragraphs is not None else [])
 
 
 class _SectionContentsConstructorWithSubSections(SectionContentsConstructor):
     def __init__(self,
-                 section_constructor_list: list,
-                 initial_paragraphs: list):
-        """
-        :type section_constructor_list: :class:`SectionConstructor`
-        :type initial_paragraphs: list of :class:`ParagraphItem`
-        """
+                 section_constructor_list: List[SectionConstructor],
+                 initial_paragraphs: List[ParagraphItem]):
         self.section_constructor_list = section_constructor_list
         self.initial_paragraphs = initial_paragraphs
 

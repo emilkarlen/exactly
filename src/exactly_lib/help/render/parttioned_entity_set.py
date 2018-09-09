@@ -1,15 +1,18 @@
-import types
+from typing import List, Callable, Iterable
 
-from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
+from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter, \
+    EntityDocumentation
 from exactly_lib.help.render import entities_list_renderer
 from exactly_lib.help.render.entity_docs import EntitiesListConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionConstructor, \
-    SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections
+    SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections, \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy import structures
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class PartitionNamesSetup:
@@ -24,7 +27,7 @@ class PartitionNamesSetup:
 class PartitionSetup:
     def __init__(self,
                  partition_names_setup: PartitionNamesSetup,
-                 filter_entity_docs: types.FunctionType,
+                 filter_entity_docs: Callable[[Iterable[EntityDocumentation]], List[EntityDocumentation]],
                  ):
         self.partition_names_setup = partition_names_setup
         self.filter_entity_docs = filter_entity_docs
@@ -33,17 +36,14 @@ class PartitionSetup:
 class EntitiesPartition:
     def __init__(self,
                  partition_names_setup: PartitionNamesSetup,
-                 entity_doc_list: list,
+                 entity_doc_list: List[EntityDocumentation],
                  ):
         self.partition_names_setup = partition_names_setup
         self.entity_doc_list = entity_doc_list
 
 
-def partition_entities(partitions_setup: list, entity_doc_list: list) -> list:
-    """
-    :type partitions_setup: list of :class:`PartitionSetup`
-    :rtype: list of :class:`EntitiesPartition`
-    """
+def partition_entities(partitions_setup: Iterable[PartitionSetup],
+                       entity_doc_list: Iterable[EntityDocumentation]) -> List[EntitiesPartition]:
     ret_val = []
     for partition_setup in partitions_setup:
         entity_docs_in_partition = partition_setup.filter_entity_docs(entity_doc_list)
@@ -55,13 +55,13 @@ def partition_entities(partitions_setup: list, entity_doc_list: list) -> list:
 
 class PartitionedCliListConstructorGetter(CliListConstructorGetter):
     def __init__(self,
-                 partition_setup_list: list,
-                 entity_2_summary_paragraphs: types.FunctionType
+                 partition_setup_list: Iterable[PartitionSetup],
+                 entity_2_summary_paragraphs: Callable[[EntityDocumentation], List[ParagraphItem]]
                  ):
         self.partition_setup_list = partition_setup_list
         self.entity_2_summary_paragraphs = entity_2_summary_paragraphs
 
-    def get_constructor(self, all_entity_doc_list: list) -> SectionContentsConstructor:
+    def get_constructor(self, all_entity_doc_list: Iterable[EntityDocumentation]) -> SectionContentsConstructor:
         partitions = partition_entities(self.partition_setup_list, all_entity_doc_list)
 
         def section_constructor(partition: EntitiesPartition) -> SectionConstructor:
@@ -78,8 +78,8 @@ class PartitionedCliListConstructorGetter(CliListConstructorGetter):
 class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
     def __init__(self,
                  entity_type_identifier: str,
-                 partition_setup_list: list,
-                 entity_2_article_contents_renderer: types.FunctionType
+                 partition_setup_list: Iterable[PartitionSetup],
+                 entity_2_article_contents_renderer: Callable[[EntityDocumentation], ArticleContentsConstructor]
                  ):
         self.entity_type_identifier = entity_type_identifier
         self.partition_setup_list = partition_setup_list
@@ -87,7 +87,7 @@ class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
 
     def get_hierarchy_generator(self,
                                 header: str,
-                                all_entity_doc_list: list
+                                all_entity_doc_list: List[EntityDocumentation]
                                 ) -> structures.SectionHierarchyGenerator:
         def section_hierarchy_node(partition: EntitiesPartition) -> Node:
             return Node(partition.partition_names_setup.local_target_name,

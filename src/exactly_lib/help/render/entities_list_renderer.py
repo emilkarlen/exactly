@@ -3,11 +3,12 @@ Utilities for generating documentation for "entities" - things with a name and s
 
 Makes it possible to reuse some code for generating documentation.
 """
-import types
+from typing import List, Callable
 
 from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure.entity import EntityDocumentation, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.render.entity_docs import sorted_entity_list
+from exactly_lib.util.textformat.construction.section_contents_constructor import ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionItemGeneratorNode, \
@@ -24,7 +25,7 @@ class FlatEntityListHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
 
     def get_hierarchy_generator(self,
                                 header: str,
-                                all_entity_doc_list: list) -> SectionHierarchyGenerator:
+                                all_entity_doc_list: List[EntityDocumentation]) -> SectionHierarchyGenerator:
         return HtmlDocHierarchyGeneratorForEntitiesHelp(self._entity_type_identifier,
                                                         header,
                                                         self._entity_doc_2_article_contents_renderer,
@@ -35,12 +36,8 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
     def __init__(self,
                  entity_type_identifier: str,
                  header: str,
-                 entity_2_article_contents_renderer: types.FunctionType,
-                 all_entities: list):
-        """
-        :param entity_2_article_contents_renderer: EntityDocumentation -> ArticleContentsRenderer
-        :param all_entities: [EntityDocumentation]
-        """
+                 entity_2_article_contents_renderer: Callable[[EntityDocumentation], ArticleContentsConstructor],
+                 all_entities: List[EntityDocumentation]):
         self.entity_type_identifier = entity_type_identifier
         self.header = header
         self.entity_2_article_contents_renderer = entity_2_article_contents_renderer

@@ -1,4 +1,4 @@
-import types
+from typing import Callable
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
@@ -43,10 +43,7 @@ class InstructionDocSectionContentsConstructor(SectionContentsConstructorFromArt
 
 
 def instruction_set_list_item(description: InstructionDocumentation,
-                              name_2_name_text_fun: types.FunctionType) -> lists.HeaderContentListItem:
-    """
-    :type name_2_name_text_fun: `str` -> `Text`
-    """
+                              name_2_name_text_fun: Callable[[str], docs.Text]) -> lists.HeaderContentListItem:
     description_para = docs.para(description.single_line_description())
     return docs.list_item(name_2_name_text_fun(description.instruction_name()),
                           [description_para])
