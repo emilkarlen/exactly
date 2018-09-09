@@ -50,12 +50,12 @@ def check(setup: Setup,
                                                 test_case_handling_setup)
         hierarchy_reader = Reader(suite_reading_environment)
         reporter = ExecutionTracingProcessingReporter()
-        executor = Processor(_default_case_configuration(test_case_handling_setup),
-                             hierarchy_reader,
-                             reporter,
-                             DepthFirstEnumerator(),
-                             case_processing.new_processor_that_is_allowed_to_pollute_current_process)
-        exit_code = executor.execute(setup.root_suite_based_at(tmp_dir_path), null_output_files())
+        processor = Processor(_default_case_configuration(test_case_handling_setup),
+                              hierarchy_reader,
+                              reporter,
+                              DepthFirstEnumerator(),
+                              case_processing.new_processor_that_is_allowed_to_pollute_current_process)
+        exit_code = processor.execute(setup.root_suite_based_at(tmp_dir_path), null_output_files())
         setup.assertions(put,
                          reporter.complete_suite_reporter,
                          exit_code)

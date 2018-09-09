@@ -14,7 +14,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.programs.python_program_execution import \
     abs_path_to_interpreter_quoted_for_exactly, \
     abs_path_to_interpreter
-from exactly_lib_test.test_suite.test_resources.check_full_execution import Setup, check
+from exactly_lib_test.test_suite.test_resources.check_full_processing import Setup, check
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter, \
     ExecutionTracingSubSuiteProgressReporter, CaseEndInfo
 
