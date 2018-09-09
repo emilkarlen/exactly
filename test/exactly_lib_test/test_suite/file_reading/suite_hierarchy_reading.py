@@ -13,8 +13,8 @@ from exactly_lib.util.line_source import single_line_sequence
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File, Dir, empty_file
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.test_suite.test_resources import check_exception, check_structure
-from exactly_lib_test.test_suite.test_resources.check_structure import equals_test_suite
+from exactly_lib_test.test_suite.file_reading.test_resources import check_structure, check_exception
+from exactly_lib_test.test_suite.file_reading.test_resources.check_structure import equals_test_suite
 from exactly_lib_test.util.test_resources.line_source_assertions import assert_equals_line_sequence
 
 
