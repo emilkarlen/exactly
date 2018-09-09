@@ -9,7 +9,7 @@ from exactly_lib_test.default.test_resources.internal_main_program_runner import
     main_program_runner_with_default_setup__in_same_process
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.main_program.main_program_check_base import \
-    SetupWithJustMainProgramRunner, tests_for_setup_with_just_main_program_runner
+    SetupWithJustMainProgramRunner, tests_for_setup_with_just_main_program_runner, tests_for_setup_without_preprocessor
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions import process_result_assertions as asrt_process_result
@@ -20,9 +20,9 @@ from exactly_lib_test.test_suite.reporters.test_resources.simple_progress_report
 
 def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    # ret_val.addTest(
-    #     tests_for_setup_without_preprocessor(TESTS_WITHOUT_PREPROCESSOR,
-    #                                          main_program_runner))
+    ret_val.addTest(
+        tests_for_setup_without_preprocessor(TESTS_WITHOUT_PREPROCESSOR,
+                                             main_program_runner))
     ret_val.addTest(
         tests_for_setup_with_just_main_program_runner(TESTS_WITH_JUST_MAIN_PROGRAM_RUNNER, main_program_runner))
     return ret_val
