@@ -10,8 +10,8 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 from exactly_lib.util.textformat.utils import append_section_if_contents_is_non_empty
 
-SEE_ALSO_TITLE = docs.text('See also')
-SEE_ALSO_TITLE__UPPERCASE = docs.text('SEE ALSO')
+SEE_ALSO_TITLE = docs.string_text('See also')
+SEE_ALSO_TITLE__UPPERCASE = docs.string_text(SEE_ALSO_TITLE.value.upper())
 
 
 def see_also_items_paragraph(see_also_items: List[SeeAlsoItem],

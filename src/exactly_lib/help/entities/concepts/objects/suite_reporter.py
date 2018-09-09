@@ -1,6 +1,6 @@
 from exactly_lib.cli.cli_environment.program_modes.test_suite.command_line_options import OPTION_FOR_REPORTER
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.entity import suite_reporters as reporters
+from exactly_lib.definitions.entity import suite_reporters as reporters, concepts
 from exactly_lib.definitions.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 from exactly_lib.definitions.entity.suite_reporters import all_suite_reporters_cross_refs
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
@@ -16,6 +16,7 @@ class _SuiteReporterConcept(ConceptDocumentation):
         tp = TextParser({
             'reporter_option': formatting.cli_option(OPTION_FOR_REPORTER),
             'default_reporter': formatting.entity(reporters.DEFAULT_REPORTER.singular_name),
+            'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
         })
         return from_simple_description(
             Description(self.single_line_description(),
@@ -28,8 +29,14 @@ class _SuiteReporterConcept(ConceptDocumentation):
 SUITE_REPORTER_CONCEPT = _SuiteReporterConcept()
 
 _DESCRIPTION_REST = """\
+Note that some scenarios are not reported by the {suite_reporter},
+such as invalid command line arguments.
+
+See the test suite specification for details.
+
+
 The reporter is specified via the command line using the {reporter_option} option.
 
 
-Default reporter: {default_reporter}.
+Default: {default_reporter}.
 """

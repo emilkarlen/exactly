@@ -6,6 +6,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
+from exactly_lib.help.program_modes.test_suite.contents import suite_outcome
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionContentsConstructorForConstantContents
@@ -56,7 +57,10 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                                     leaf('Suite file syntax',
                                          self._section_of_parsed(_FILE_SYNTAX))
                                     ),
+                               Node('outcome',
+                                    suite_outcome.hierarchy_generator('Suite outcome')),
                            ])
+
         return generator.generator_node(target_factory)
 
     def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:

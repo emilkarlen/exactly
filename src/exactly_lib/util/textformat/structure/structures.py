@@ -93,6 +93,10 @@ def text(s: str) -> ConcreteText:
     return StringText(s)
 
 
+def string_text(s: str) -> StringText:
+    return StringText(s)
+
+
 def cross_reference(title_str_or_string_text,
                     target: CrossReferenceTarget,
                     target_is_id_in_same_document: bool = True,

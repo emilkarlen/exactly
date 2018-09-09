@@ -30,15 +30,15 @@ class Setup(tuple):
         return self[1]
 
 
-def singe_exit_value_display(exit_value_on_error) -> ParagraphItem:
+def singe_exit_value_display(exit_value: ExitValue) -> ParagraphItem:
     return first_column_is_header_table([
         [
             cell([para(texts.EXIT_CODE_TITLE)]),
-            cell([para(str(exit_value_on_error.exit_code))]),
+            cell([para(str(exit_value.exit_code))]),
         ],
         [
             cell([para(texts.EXIT_IDENTIFIER_TITLE)]),
-            cell([para(exit_value_text(exit_value_on_error))]),
+            cell([para(exit_value_text(exit_value))]),
         ],
     ])
 
