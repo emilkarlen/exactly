@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Sequence
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
@@ -10,9 +10,9 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 class SuiteReporterDocTestImpl(SuiteReporterDocumentation):
     def __init__(self, singular_name: str,
-                 main_description_rest: list = (),
-                 syntax_of_output: list = (),
-                 exit_code_description: list = ()):
+                 main_description_rest: Sequence[ParagraphItem] = (),
+                 syntax_of_output: Sequence[ParagraphItem] = (),
+                 exit_code_description: Sequence[ParagraphItem] = ()):
         super().__init__(SingularNameAndCrossReferenceId(singular_name,
                                                          'single line description of suite reporter',
                                                          suite_reporter_cross_ref(singular_name)))
