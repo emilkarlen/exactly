@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import SuiteCliSyntaxDocumentation
+from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import TestSuiteCliSyntaxDocumentation
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
@@ -16,7 +16,7 @@ def suite() -> unittest.TestSuite:
 class TestCase(unittest.TestCase):
     def test(self):
         # ARRANGE #
-        constructor = ProgramDocumentationSectionContentsConstructor(SuiteCliSyntaxDocumentation())
+        constructor = ProgramDocumentationSectionContentsConstructor(TestSuiteCliSyntaxDocumentation())
         cross_ref_text_constructor = CrossReferenceTextConstructorTestImpl()
         # ACT #
         actual = constructor.apply(ConstructionEnvironment(cross_ref_text_constructor))

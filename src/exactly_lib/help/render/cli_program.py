@@ -34,7 +34,7 @@ class _ProgramDocumentationRenderer:
         sections = [self._synopsis_section(program)]
         sections += self._description_sections(program)
         sections += self._options_sections(program.argument_descriptions())
-        sections += self._outcome_sections(program.outcome())
+        sections += self._outcome_sections(program.outcome(self.environment))
         sections += see_also_sections(program.see_also(), self.environment, True)
 
         return docs.SectionContents(initial_paragraphs,

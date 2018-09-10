@@ -6,7 +6,6 @@ from exactly_lib.cli.cli_environment.program_modes.test_case import command_line
 from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts
@@ -15,12 +14,16 @@ from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
+from exactly_lib.help.program_modes.test_suite.contents import suite_outcome
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.help.texts import IS_A_SHELL_CMD
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
+    SectionContentsConstructorFromHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import leaf
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionHierarchyGenerator
@@ -29,10 +32,10 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def generator(header: str) -> SectionHierarchyGenerator:
-    return leaf(header, ProgramDocumentationSectionContentsConstructor(SuiteCliSyntaxDocumentation()))
+    return leaf(header, ProgramDocumentationSectionContentsConstructor(TestSuiteCliSyntaxDocumentation()))
 
 
-class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
+class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
     def __init__(self):
         super().__init__(program_info.PROGRAM_NAME)
         self.synopsis = synopsis()
@@ -54,13 +57,11 @@ class SuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             self._reporter_argument(),
         ]
 
-    def outcome(self) -> Optional[docs.SectionContents]:
-        return docs.section_contents(_TP.fnap(_OUTCOME))
-
-    def see_also(self) -> List[SeeAlsoTarget]:
-        return [
-            concepts.SUITE_REPORTER_CONCEPT_INFO.cross_reference_target,
-        ]
+    def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
+        contents_constructor = SectionContentsConstructorFromHierarchyGenerator(
+            suite_outcome.hierarchy_generator('unused'))
+        ret_val = contents_constructor.apply(environment)
+        return ret_val
 
     def _actor_argument(self) -> cli_syntax.DescribedArgument:
         extra_format_map = {
@@ -105,13 +106,6 @@ _SINGLE_LINE_DESCRIPTION = 'Runs a test suite'
 
 _DESCRIPTION_PARAGRAPH = """\
 Runs the test suite in file {TEST_SUITE_FILE}.
-"""
-
-_OUTCOME = """\
-Outcome is reported via exit code and stdout.
-
-
-Reporting is done by the selected {suite_reporter}.
 """
 
 _ACTOR_OPTION_DESCRIPTION = """\
