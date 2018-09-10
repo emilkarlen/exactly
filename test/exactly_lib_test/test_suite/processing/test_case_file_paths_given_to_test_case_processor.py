@@ -11,7 +11,7 @@ from exactly_lib_test.test_resources.files.str_std_out_files import null_output_
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_suite.processing.basic_scenarios import ReaderThatGivesConstantSuite
-from exactly_lib_test.test_suite.test_resources.execution_utils import \
+from exactly_lib_test.test_suite.test_resources.processing_utils import \
     FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ProcessingReporterThatDoesNothing
 

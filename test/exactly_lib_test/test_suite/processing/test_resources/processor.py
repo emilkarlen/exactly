@@ -16,14 +16,14 @@ from exactly_lib_test.section_document.test_resources.element_parsers import \
     SectionElementParserThatRaisesRecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_suite.processing.test_resources.instruction_utils import instruction_setup
-from exactly_lib_test.test_suite.test_resources.execution_utils import \
+from exactly_lib_test.test_suite.test_resources.processing_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingProcessingReporter
 
 
-def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
-                 test_case_processor_constructor: TestCaseProcessorConstructor,
-                 predefined_properties: PredefinedProperties) -> sut.Processor:
+def new_processor(setup_phase_instructions: Dict[str, InstructionParser],
+                  test_case_processor_constructor: TestCaseProcessorConstructor,
+                  predefined_properties: PredefinedProperties) -> sut.Processor:
     test_case_definition = TestCaseDefinition(
         TestCaseParsingSetup(space_separator_instruction_name_extractor,
                              instruction_setup(setup_phase_instructions),
@@ -37,11 +37,11 @@ def new_executor(setup_phase_instructions: Dict[str, InstructionParser],
 
     return sut.Processor(default_configuration,
                          suite_hierarchy_reading.Reader(
-                            suite_hierarchy_reading.Environment(
-                                SectionElementParserThatRaisesRecognizedSectionElementSourceError(),
-                                test_case_definition.parsing_setup,
-                                default_configuration.default_handling_setup)
-                        ),
+                             suite_hierarchy_reading.Environment(
+                                 SectionElementParserThatRaisesRecognizedSectionElementSourceError(),
+                                 test_case_definition.parsing_setup,
+                                 default_configuration.default_handling_setup)
+                         ),
                          ExecutionTracingProcessingReporter(),
                          enumeration.DepthFirstEnumerator(),
                          test_case_processor_constructor,
