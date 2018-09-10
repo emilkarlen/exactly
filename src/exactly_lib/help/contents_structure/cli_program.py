@@ -4,6 +4,7 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import Synopsis, DescribedArgument
 from exactly_lib.util.description import DescriptionWithSubSections
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
@@ -23,7 +24,7 @@ class CliProgramSyntaxDocumentation:
     def argument_descriptions(self) -> List[DescribedArgument]:
         return []
 
-    def outcome(self) -> Optional[SectionContents]:
+    def outcome(self, environment: ConstructionEnvironment) -> Optional[SectionContents]:
         return None
 
     def see_also(self) -> List[SeeAlsoTarget]:
