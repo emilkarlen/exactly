@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceTarget
@@ -23,10 +25,10 @@ def equals_custom_cross_ref_test_impl(expected: CustomCrossReferenceTargetTestIm
 
 
 class CustomTargetInfoFactoryTestImpl(CustomTargetInfoFactory):
-    def __init__(self, components: list):
+    def __init__(self, components: List[str]):
         self._components = components
 
-    def sub_factory(self, local_name: str):
+    def sub_factory(self, local_name: str) -> CustomTargetInfoFactory:
         return CustomTargetInfoFactoryTestImpl(self._components + [local_name])
 
     def root(self, presentation: StringText) -> TargetInfo:

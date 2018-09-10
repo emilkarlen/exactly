@@ -1,3 +1,4 @@
+from typing import Sequence, Dict
 from xml.etree.ElementTree import Element, SubElement
 
 from exactly_lib.util.textformat.rendering.html import text
@@ -6,6 +7,7 @@ from exactly_lib.util.textformat.rendering.html.paragraph_item.interfaces import
 from exactly_lib.util.textformat.rendering.html.text import Position
 from exactly_lib.util.textformat.rendering.html.utils import set_class_attribute
 from exactly_lib.util.textformat.structure import core
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents, Section, SectionItemVisitor, SectionItem, \
     Article
 
@@ -65,7 +67,7 @@ class SectionItemRenderer:
     def render_paragraph_items(self,
                                environment: Environment,
                                parent: Element,
-                               paragraph_items: list) -> Element:
+                               paragraph_items: Sequence[ParagraphItem]) -> Element:
         """
         :return: The last rendered element, or parent, if no element was rendered.
         """
@@ -129,7 +131,7 @@ class SectionItemRenderer:
                        environment: Environment,
                        parent: Element,
                        header: core.Text,
-                       paragraphs: list) -> Element:
+                       paragraphs: Sequence[ParagraphItem]) -> Element:
         """
         :return: The the header element
         """
@@ -138,7 +140,7 @@ class SectionItemRenderer:
         self.render_paragraph_items(environment, ret_val, paragraphs)
         return ret_val
 
-    def _root_element_attributes(self, section_item: SectionItem) -> dict:
+    def _root_element_attributes(self, section_item: SectionItem) -> Dict[str, str]:
         ret_val = {}
 
         if section_item.target:
