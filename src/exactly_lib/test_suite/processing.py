@@ -36,7 +36,7 @@ class Processor:
         self._reporter = reporter
         self._test_case_processor_constructor = test_case_processor_constructor
 
-    def execute(self, suite_root_file_path: pathlib.Path, output: StdOutputFiles) -> int:
+    def process(self, suite_root_file_path: pathlib.Path, output: StdOutputFiles) -> int:
         try:
             root_suite = self._suite_hierarchy_reader.apply(suite_root_file_path)
         except SuiteReadError as ex:
