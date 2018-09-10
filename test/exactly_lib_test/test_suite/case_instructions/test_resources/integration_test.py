@@ -18,10 +18,10 @@ from exactly_lib.section_document.model import Instruction
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import os_services
 from exactly_lib.test_case.act_phase_handling import ActSourceAndExecutorConstructor
-from exactly_lib.test_suite import execution as sut, enumeration
-from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
+from exactly_lib.test_suite import processing as sut, enumeration
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
 from exactly_lib.test_suite.file_reading.exception import SuiteReadError
+from exactly_lib.test_suite.processing import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.processing.test_resources.test_case_setup import setup_with_null_act_phase_and_null_preprocessing
 from exactly_lib_test.section_document.test_resources.element_parsers import \
@@ -351,7 +351,7 @@ class TestBase(unittest.TestCase):
                                                   case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.execute(suite_file_path, null_output_files())
+                    return_value = executor.process(suite_file_path, null_output_files())
 
                     # ASSERT #
 

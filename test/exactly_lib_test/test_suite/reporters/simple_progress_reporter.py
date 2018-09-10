@@ -7,10 +7,10 @@ from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values as case_ev
 from exactly_lib.processing.test_case_processing import TestCaseFileReference
-from exactly_lib.test_suite import execution
 from exactly_lib.test_suite import exit_values as suite_ev
+from exactly_lib.test_suite import processing
 from exactly_lib.test_suite import structure
-from exactly_lib.test_suite.execution import SuitesExecutor
+from exactly_lib.test_suite.processing import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
 from exactly_lib.util.string import lines_content_with_os_linesep
@@ -214,8 +214,8 @@ def _suite_executor_for_case_processing_that_unconditionally(execution_result: F
     factory = sut.SimpleProgressRootSuiteProcessingReporter()
     execution_reporter = factory.execution_reporter(root_suite, std_output_files.stdout_files, root_file_path)
     case_result = test_case_processing.new_executed(execution_result)
-    return execution.SuitesExecutor(execution_reporter, DUMMY_CASE_PROCESSING,
-                                    lambda conf: TestCaseProcessorThatGivesConstant(case_result))
+    return processing.SuitesExecutor(execution_reporter, DUMMY_CASE_PROCESSING,
+                                     lambda conf: TestCaseProcessorThatGivesConstant(case_result))
 
 
 def _replace_seconds_with_const(string_with_seconds_in_decimal_notation: str) -> str:

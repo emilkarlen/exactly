@@ -2,8 +2,8 @@ import unittest
 
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors
-from exactly_lib.test_suite import execution as sut
-from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
+from exactly_lib.test_suite import processing as sut
+from exactly_lib.test_suite.processing import TestCaseProcessorConstructor
 from exactly_lib.util.symbol_table import empty_symbol_table
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
@@ -85,7 +85,7 @@ class Test(unittest.TestCase):
                                                             case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.execute(suite_file_path, StringStdOutFiles().stdout_files)
+                    return_value = executor.process(suite_file_path, StringStdOutFiles().stdout_files)
 
                     # ASSERT #
 

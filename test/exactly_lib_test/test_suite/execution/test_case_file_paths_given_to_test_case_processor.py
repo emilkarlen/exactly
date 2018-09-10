@@ -4,7 +4,7 @@ from pathlib import Path
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.test_case_processing import new_executed, \
     TestCaseFileReference, Result
-from exactly_lib.test_suite import execution as sut
+from exactly_lib.test_suite import processing as sut
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib_test.processing.test_resources.test_case_processing_assertions import equals_test_case_reference
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
@@ -67,7 +67,7 @@ class Test(unittest.TestCase):
                                              DepthFirstEnumerator(),
                                              lambda config: file_ref_registering_processor)
                     # ACT #
-                    return_value = executor.execute(suite_case.value.source_file, null_output_files())
+                    return_value = executor.process(suite_case.value.source_file, null_output_files())
                     # ASSERT #
                     self.assertEqual(ProcessingReporterThatDoesNothing.VALID_SUITE_EXIT_CODE,
                                      return_value,

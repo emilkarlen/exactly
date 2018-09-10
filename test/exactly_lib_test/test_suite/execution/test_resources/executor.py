@@ -9,9 +9,9 @@ from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
 from exactly_lib.test_case import os_services
 from exactly_lib.test_suite import enumeration
-from exactly_lib.test_suite import execution as sut
-from exactly_lib.test_suite.execution import TestCaseProcessorConstructor
+from exactly_lib.test_suite import processing as sut
 from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
+from exactly_lib.test_suite.processing import TestCaseProcessorConstructor
 from exactly_lib_test.section_document.test_resources.element_parsers import \
     SectionElementParserThatRaisesRecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor

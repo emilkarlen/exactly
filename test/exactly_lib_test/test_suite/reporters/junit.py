@@ -10,7 +10,7 @@ from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.common.result_reporting import error_message_for_full_result, error_message_for_error_info
 from exactly_lib.processing import test_case_processing as tcp
 from exactly_lib.processing.test_case_processing import Result, AccessErrorType
-from exactly_lib.test_suite import execution
+from exactly_lib.test_suite import processing
 from exactly_lib.test_suite import structure
 from exactly_lib.test_suite.reporters import junit as sut
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
@@ -425,9 +425,9 @@ def execute_with_case_processing_with_constant_processor(processor: tcp.Processo
     std_output_files = StringStdOutFiles()
     reporter = sut.JUnitRootSuiteProcessingReporter()
     execution_reporter = reporter.execution_reporter(root_suite, std_output_files.stdout_files, root_file_path)
-    executor = execution.SuitesExecutor(execution_reporter,
-                                        DUMMY_CASE_PROCESSING,
-                                        lambda conf: processor)
+    executor = processing.SuitesExecutor(execution_reporter,
+                                         DUMMY_CASE_PROCESSING,
+                                         lambda conf: processor)
     exit_code = executor.execute_and_report(test_suites)
     std_output_files.finish()
     return ExitCodeAndStdOut(exit_code, std_output_files.stdout_contents)

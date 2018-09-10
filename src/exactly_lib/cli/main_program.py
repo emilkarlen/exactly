@@ -155,23 +155,23 @@ class MainProgram:
         from exactly_lib.processing import processors
         from exactly_lib.test_suite import enumeration
         from exactly_lib.test_suite.file_reading import suite_hierarchy_reading
-        from exactly_lib.test_suite import execution
+        from exactly_lib.test_suite import processing
         default_configuration = processors.Configuration(self._test_case_definition,
                                                          settings.handling_setup,
                                                          self._act_phase_os_process_executor,
                                                          False,
                                                          self._test_suite_definition.sandbox_root_dir_resolver)
-        executor = execution.Processor(default_configuration,
-                                       suite_hierarchy_reading.Reader(
-                                          suite_hierarchy_reading.Environment(
-                                              self._test_suite_definition.configuration_section_parser,
-                                              self._test_case_definition.parsing_setup,
-                                              default_configuration.default_handling_setup)
-                                      ),
-                                       settings.processing_reporter,
-                                       enumeration.DepthFirstEnumerator(),
-                                       processors.new_processor_that_should_not_pollute_current_process)
-        return executor.execute(settings.suite_root_file_path, output)
+        processor = processing.Processor(default_configuration,
+                                         suite_hierarchy_reading.Reader(
+                                             suite_hierarchy_reading.Environment(
+                                                 self._test_suite_definition.configuration_section_parser,
+                                                 self._test_case_definition.parsing_setup,
+                                                 default_configuration.default_handling_setup)
+                                         ),
+                                         settings.processing_reporter,
+                                         enumeration.DepthFirstEnumerator(),
+                                         processors.new_processor_that_should_not_pollute_current_process)
+        return processor.process(settings.suite_root_file_path, output)
 
     def _parse_and_execute_test_case(self,
                                      command_line_arguments: List[str],
