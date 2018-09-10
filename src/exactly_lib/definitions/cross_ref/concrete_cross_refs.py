@@ -139,7 +139,7 @@ class CrossReferenceIdVisitor:
         if isinstance(x, UrlCrossReferenceTarget):
             return self.visit_url(x)
         else:
-            raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceId),
+            raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceTarget),
                                                        str(x)))
 
     def visit_entity(self, x: EntityCrossReferenceId):
