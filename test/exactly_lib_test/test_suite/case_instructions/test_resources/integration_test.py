@@ -347,11 +347,11 @@ class TestBase(unittest.TestCase):
             for case_processor_case in case_processors:
                 with self.subTest(case_processor_case.name):
                     recording_media = []
-                    executor = self._new_executor(recording_media,
-                                                  case_processor_case.value)
+                    processor = self._new_processor(recording_media,
+                                                    case_processor_case.value)
                     # ACT #
 
-                    return_value = executor.process(suite_file_path, null_output_files())
+                    return_value = processor.process(suite_file_path, null_output_files())
 
                     # ASSERT #
 
@@ -362,9 +362,9 @@ class TestBase(unittest.TestCase):
                     expected_instruction_recording = expectation.assertion(abs_cwd_dir_path)
                     expected_instruction_recording.apply_with_message(self, recording_media, 'recordings'),
 
-    def _new_executor(self,
-                      recording_media: List[Recording],
-                      test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Processor:
+    def _new_processor(self,
+                       recording_media: List[Recording],
+                       test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Processor:
         test_case_definition = TestCaseDefinition(
             TestCaseParsingSetup(space_separator_instruction_name_extractor,
                                  self._phase_config().instructions_setup(REGISTER_INSTRUCTION_NAME, recording_media),
@@ -383,11 +383,11 @@ class TestBase(unittest.TestCase):
 
         return sut.Processor(default_case_configuration,
                              suite_hierarchy_reading.Reader(
-                                suite_hierarchy_reading.Environment(
-                                    SectionElementParserThatRaisesUnrecognizedSectionElementSourceError(),
-                                    test_case_definition.parsing_setup,
-                                    default_case_configuration.default_handling_setup)
-                            ),
+                                 suite_hierarchy_reading.Environment(
+                                     SectionElementParserThatRaisesUnrecognizedSectionElementSourceError(),
+                                     test_case_definition.parsing_setup,
+                                     default_case_configuration.default_handling_setup)
+                             ),
                              ProcessingReporterThatDoesNothing(),
                              enumeration.DepthFirstEnumerator(),
                              test_case_processor_constructor,

@@ -39,13 +39,13 @@ class TestError(unittest.TestCase):
         str_std_out_files = StringStdOutFiles()
         suite_hierarchy_reader = ReaderThatRaisesParseError()
         reporter = ExecutionTracingProcessingReporter()
-        executor = Processor(DUMMY_CASE_PROCESSING,
-                             suite_hierarchy_reader,
-                             reporter,
-                             DepthFirstEnumerator(),
-                             lambda x: TestCaseProcessorThatRaisesUnconditionally())
+        processor = Processor(DUMMY_CASE_PROCESSING,
+                              suite_hierarchy_reader,
+                              reporter,
+                              DepthFirstEnumerator(),
+                              lambda x: TestCaseProcessorThatRaisesUnconditionally())
         # ACT #
-        exit_code = executor.process(Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(Path('root-suite-file'), str_std_out_files.stdout_files)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          exit_values.INVALID_SUITE.exit_code,
@@ -66,13 +66,13 @@ class TestError(unittest.TestCase):
         root = test_suite('root', [], [test_case])
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
         reporter = ExecutionTracingProcessingReporter()
-        executor = Processor(DUMMY_CASE_PROCESSING,
-                             suite_hierarchy_reader,
-                             reporter,
-                             DepthFirstEnumerator(),
-                             lambda config: TestCaseProcessorThatRaisesUnconditionally())
+        processor = Processor(DUMMY_CASE_PROCESSING,
+                              suite_hierarchy_reader,
+                              reporter,
+                              DepthFirstEnumerator(),
+                              lambda config: TestCaseProcessorThatRaisesUnconditionally())
         # ACT #
-        exit_code = executor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
@@ -159,13 +159,13 @@ class TestComplexSuite(unittest.TestCase):
                                    ])
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Processor(DUMMY_CASE_PROCESSING,
-                             suite_hierarchy_reader,
-                             reporter,
-                             DepthFirstEnumerator(),
-                             lambda config: test_case_processor)
+        processor = Processor(DUMMY_CASE_PROCESSING,
+                              suite_hierarchy_reader,
+                              reporter,
+                              DepthFirstEnumerator(),
+                              lambda config: test_case_processor)
         # ACT #
-        exit_code = executor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
@@ -196,13 +196,13 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, []),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Processor(DUMMY_CASE_PROCESSING,
-                             suite_hierarchy_reader,
-                             reporter,
-                             DepthFirstEnumerator(),
-                             lambda config: TestCaseProcessorThatGivesConstantPerCase({}))
+        processor = Processor(DUMMY_CASE_PROCESSING,
+                              suite_hierarchy_reader,
+                              reporter,
+                              DepthFirstEnumerator(),
+                              lambda config: TestCaseProcessorThatGivesConstantPerCase({}))
         # ACT #
-        exit_code = executor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,
@@ -263,13 +263,13 @@ class TestComplexSuite(unittest.TestCase):
             ExpectedSuiteReporting(root, [(tc_executed_root, tcp.Status.EXECUTED)]),
         ]
         suite_hierarchy_reader = ReaderThatGivesConstantSuite(root)
-        executor = Processor(DUMMY_CASE_PROCESSING,
-                             suite_hierarchy_reader,
-                             reporter,
-                             DepthFirstEnumerator(),
-                             lambda config: test_case_processor)
+        processor = Processor(DUMMY_CASE_PROCESSING,
+                              suite_hierarchy_reader,
+                              reporter,
+                              DepthFirstEnumerator(),
+                              lambda config: test_case_processor)
         # ACT #
-        exit_code = executor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
+        exit_code = processor.process(pathlib.Path('root-suite-file'), str_std_out_files.stdout_files)
         # ASSERT #
         check_exit_code_and_empty_stdout(self,
                                          ExecutionTracingRootSuiteReporter.VALID_SUITE_EXIT_CODE,

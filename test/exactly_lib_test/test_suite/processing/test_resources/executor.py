@@ -15,7 +15,7 @@ from exactly_lib.test_suite.processing import TestCaseProcessorConstructor
 from exactly_lib_test.section_document.test_resources.element_parsers import \
     SectionElementParserThatRaisesRecognizedSectionElementSourceError
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
-from exactly_lib_test.test_suite.execution.test_resources.instruction_utils import instruction_setup
+from exactly_lib_test.test_suite.processing.test_resources.instruction_utils import instruction_setup
 from exactly_lib_test.test_suite.test_resources.execution_utils import \
     test_case_handling_setup_with_identity_preprocessor
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingProcessingReporter
