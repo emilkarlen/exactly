@@ -54,3 +54,9 @@ file-transformations/package.suite
 #
 
 misc-instructions/package.suite
+
+######################################################################
+# Test suites
+#
+
+suites/exactly.suite
