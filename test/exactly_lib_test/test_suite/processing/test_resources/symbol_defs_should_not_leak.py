@@ -6,7 +6,7 @@ from exactly_lib.test_case.phases.common import InstructionEnvironmentForPostSds
 from exactly_lib.test_case.phases.setup import SetupPhaseInstruction, SetupSettingsBuilder
 from exactly_lib.test_case.result import sh
 from exactly_lib_test.symbol.test_resources.symbol_utils import definition_with_arbitrary_element
-from exactly_lib_test.test_suite.execution.test_resources.instruction_utils import InstructionParserBase
+from exactly_lib_test.test_suite.processing.test_resources.instruction_utils import InstructionParserBase
 
 
 class Registry:
