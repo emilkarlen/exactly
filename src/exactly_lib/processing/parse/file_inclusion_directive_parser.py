@@ -8,6 +8,8 @@ from exactly_lib.section_document.section_element_parsing import SectionElementP
 from exactly_lib.section_document.source_location import FileSystemLocationInfo
 from exactly_lib.util.line_source import line_sequence_from_line
 
+FILE_ARGUMENT_NAME = 'FILE'
+
 
 class FileInclusionDirectiveParser(SectionElementParser):
     """
@@ -41,7 +43,7 @@ class FileInclusionDirectiveParser(SectionElementParser):
         source.consume_current_line()
         if len(parts) == 1:
             raise RecognizedSectionElementSourceError(directive_source,
-                                                      'Missing FILE argument')
+                                                      'Missing {} argument'.format(FILE_ARGUMENT_NAME))
 
         if len(parts) != 2:
             raise RecognizedSectionElementSourceError(directive_source,
