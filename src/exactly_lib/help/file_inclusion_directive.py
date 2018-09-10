@@ -5,6 +5,7 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, invokation_variant_from_args, \
     SyntaxElementDescription, cli_argument_syntax_element_description
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.processing.parse import file_inclusion_directive_parser
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -15,7 +16,7 @@ class FileInclusionDirectiveDocumentation(InstructionDocumentation,
                                           WithAssertPhasePurpose):
     def __init__(self):
         super().__init__(instruction_names.FILE_INCLUSION_DIRECTIVE_NAME)
-        self.file_argument = a.Named('FILE')
+        self.file_argument = a.Named(file_inclusion_directive_parser.FILE_ARGUMENT_NAME)
         self._tp = TextParser()
 
     @property
