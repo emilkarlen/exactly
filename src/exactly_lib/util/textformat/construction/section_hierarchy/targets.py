@@ -68,7 +68,7 @@ class NullCustomTargetInfoFactory(CustomTargetInfoFactory):
     def root(self, presentation: core.StringText) -> TargetInfo:
         return TargetInfo(presentation, CrossReferenceTarget())
 
-    def sub_factory(self, local_name: str):
+    def sub_factory(self, local_name: str) -> CustomTargetInfoFactory:
         return self
 
 

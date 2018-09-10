@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from . import core
 
@@ -6,8 +6,8 @@ from . import core
 class SectionItem(core.TaggedItem):
     def __init__(self,
                  header: core.Text,
-                 target: core.CrossReferenceTarget,
-                 tags: set):
+                 target: Optional[core.CrossReferenceTarget],
+                 tags: Optional[set]):
         self._header = header
         self._target = target
         self._tags = set() if tags is None else tags
@@ -17,7 +17,7 @@ class SectionItem(core.TaggedItem):
         return self._header
 
     @property
-    def target(self) -> core.CrossReferenceTarget:
+    def target(self) -> Optional[core.CrossReferenceTarget]:
         """
         :return: Not None if this item serves as a cross ref target
         """
