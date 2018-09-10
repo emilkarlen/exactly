@@ -1,1 +1,2 @@
-winpty docker run --interactive --tty -v C:/Users/emilk/vcs/exactly/0:/exactly linux-py3
+rem winpty docker run --interactive --tty --mount type=bind,src=c:/Users/emilk/vcs/exactly/0,dst=/exactly linux-py3
+docker run --interactive --tty --mount type=bind,src=c:/Users/emilk/vcs/exactly/0,dst=/exactly linux-py3
