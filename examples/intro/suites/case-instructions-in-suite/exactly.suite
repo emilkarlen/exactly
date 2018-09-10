@@ -1,0 +1,30 @@
+# A suite can contain all test case phases.
+#
+# The test case phases in a suite are included in all test cases
+# listed (directly) in the suite.
+#
+
+[cases]
+
+test.case
+
+
+[conf]
+
+including set-act-home-to-bin-dir.conf
+
+[setup]
+
+file file-created-by-instruction-in-suite.txt
+
+[act]
+
+hello-world
+
+[assert]
+
+exit-code == 0
+
+[cleanup]
+
+$ echo 'Everything is now clean!'

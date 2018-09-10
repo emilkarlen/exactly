@@ -1,0 +1,12 @@
+# Test case contents in the test suite
+# is included in this test case,
+# since it is listed in the test suite.
+
+[assert]
+
+stdout equals
+<<-
+Hello, World!
+-
+
+exists -file file-created-by-instruction-in-suite.txt

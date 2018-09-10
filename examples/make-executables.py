@@ -1,8 +1,9 @@
 import itertools
+import sys
+
 import os
 import pathlib
 import stat
-import sys
 from typing import List, Tuple
 
 
@@ -170,6 +171,7 @@ dir_contents_dir = pathlib.Path('dir-contents')
 external_programs_dir = pathlib.Path('external-programs')
 setup_dir = pathlib.Path('setup')
 file_transformations_dir = pathlib.Path('file-transformations')
+suites_dir = pathlib.Path('suites')
 
 readme_examples_root_dir = 'readme-file-examples'
 
@@ -249,6 +251,10 @@ intro_files = itertools.chain.from_iterable(
              'remove-all-files-in-the-current-directory',
              'print-environment-variables',
              'list-files-under-current-directory',
+             ]),
+
+        sts(suites_dir / 'case-instructions-in-suite' / 'bin',
+            ['hello-world',
              ]),
     ])
 
