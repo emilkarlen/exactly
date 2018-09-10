@@ -18,7 +18,7 @@ from exactly_lib.util import line_source
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.test_suite.test_resources.execution_utils import \
+from exactly_lib_test.test_suite.test_resources.processing_utils import \
     TestCaseProcessorThatGivesConstant, DUMMY_CASE_PROCESSING, \
     FULL_RESULT_PASS, test_suite, TestCaseProcessorThatGivesConstantPerCase
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingProcessingReporter, \

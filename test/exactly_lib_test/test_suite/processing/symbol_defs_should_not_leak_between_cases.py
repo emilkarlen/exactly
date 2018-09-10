@@ -10,7 +10,7 @@ from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOut
 from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir
 from exactly_lib_test.test_resources.name_and_value import NameAndValue
 from exactly_lib_test.test_suite.processing.test_resources import symbol_defs_should_not_leak as tr
-from exactly_lib_test.test_suite.processing.test_resources.executor import new_executor
+from exactly_lib_test.test_suite.processing.test_resources.processor import new_processor
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter
 
 
@@ -97,7 +97,7 @@ class Test(unittest.TestCase):
 
 def new_processor_with_no_symbols(registry: tr.Registry,
                                   test_case_processor_constructor: TestCaseProcessorConstructor) -> sut.Processor:
-    return new_executor(
+    return new_processor(
         {
             INSTR_DEFINE: tr.InstructionParserForDefine(),
             INSTR_REGISTER_EXISTENCE: tr.InstructionParserForRegistersExistenceOfSymbol(registry),

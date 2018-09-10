@@ -19,9 +19,9 @@ from exactly_lib_test.execution.full_execution.test_resources.result_values impo
     FULL_RESULT_IMPLEMENTATION_ERROR, FULL_RESULT_XPASS, FULL_RESULT_XFAIL
 from exactly_lib_test.test_case.test_resources import error_info
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
-from exactly_lib_test.test_suite.test_resources.execution_utils import FULL_RESULT_PASS, test_suite, test_case, \
+from exactly_lib_test.test_suite.test_resources.processing_utils import FULL_RESULT_PASS, test_suite, test_case, \
     FULL_RESULT_FAIL, FULL_RESULT_SKIP, TestCaseProcessorThatGivesConstantPerCase
-from exactly_lib_test.test_suite.test_resources.execution_utils import TestCaseProcessorThatGivesConstant, \
+from exactly_lib_test.test_suite.test_resources.processing_utils import TestCaseProcessorThatGivesConstant, \
     DUMMY_CASE_PROCESSING
 
 
