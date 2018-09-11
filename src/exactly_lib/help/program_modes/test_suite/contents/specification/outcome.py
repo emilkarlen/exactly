@@ -5,8 +5,8 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.help import texts
 from exactly_lib.help.render import see_also_section
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor, \
-    SectionContentsConstructor, ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+    ConstructionEnvironment, constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node, leaf
 from exactly_lib.util.textformat.structure import document as doc
@@ -19,7 +19,7 @@ def hierarchy_generator(header: str) -> structures.SectionHierarchyGenerator:
 
     def const_contents(header: str, paragraphs: List[ParagraphItem]) -> structures.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
-                              ConstantSectionContentsConstructor(section_contents(paragraphs)))
+                              constant_section_contents(section_contents(paragraphs)))
 
     return hierarchy.parent(
         header,

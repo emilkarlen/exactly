@@ -123,9 +123,5 @@ class SectionContentsConstructorForConstantContents(SectionContentsConstructor):
         return self.section_contents
 
 
-class ConstantSectionContentsConstructor(SectionContentsConstructor):
-    def __init__(self, section_contents: docs.SectionContents):
-        self.section_contents = section_contents
-
-    def apply(self, environment: ConstructionEnvironment) -> docs.SectionContents:
-        return self.section_contents
+def constant_section_contents(contents: docs.SectionContents) -> SectionContentsConstructor:
+    return SectionContentsConstructorForConstantContents(contents)
