@@ -1,7 +1,7 @@
 from exactly_lib.symbol import resolver_structure as vs
 from exactly_lib.symbol.data.restrictions.reference_restrictions import \
     ReferenceRestrictionsOnDirectAndIndirect
-from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction
+from exactly_lib.symbol.data.restrictions.value_restrictions import AnyDataTypeRestriction, StringRestriction
 from exactly_lib.symbol.data.value_restriction import ValueRestrictionFailure, ValueRestriction
 from exactly_lib.symbol.restriction import ReferenceRestrictions
 
@@ -20,3 +20,8 @@ def unconditionally_satisfied_reference_restrictions() -> ReferenceRestrictions:
 
 def unconditionally_unsatisfied_reference_restrictions() -> ReferenceRestrictions:
     return ReferenceRestrictionsOnDirectAndIndirect(RestrictionThatCannotBeSatisfied())
+
+
+def string_made_up_of_just_strings_reference_restrictions() -> ReferenceRestrictionsOnDirectAndIndirect:
+    return ReferenceRestrictionsOnDirectAndIndirect(StringRestriction(),
+                                                    StringRestriction())
