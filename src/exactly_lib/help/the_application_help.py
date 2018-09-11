@@ -14,16 +14,10 @@ from exactly_lib.help.entities.configuration_parameters.entity_configuration imp
 from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTAX_ELEMENT_ENTITY_CONFIGURATION
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
-from exactly_lib.help.file_inclusion_directive import FileInclusionDirectiveDocumentation
-from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from exactly_lib.help.program_modes.test_case.config import phase_help_name
-from exactly_lib.help.program_modes.test_case.contents.phase import act, assert_, before_assert, configuration, \
-    setup, cleanup
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.program_modes.test_case.test_case_help import test_case_help
 from exactly_lib.help.program_modes.test_suite.test_suite_help import test_suite_help
 from exactly_lib.processing.instruction_setup import InstructionsSetup
-from exactly_lib.test_case import phase_identifier
 
 
 def new_application_help(instructions_setup: InstructionsSetup,
@@ -31,7 +25,7 @@ def new_application_help(instructions_setup: InstructionsSetup,
                          builtin_symbol_documentation_list: Sequence[BuiltinSymbolDocumentation] = ()
                          ) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
-                           TestCaseHelp(phase_helps_for(instructions_setup)),
+                           test_case_help(instructions_setup),
                            test_suite_help(suite_configuration_section_instructions),
                            entity_name_2_entity_configuration(list(builtin_symbol_documentation_list)))
 
@@ -53,37 +47,3 @@ def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list) 
         BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.identifier: builtin_symbols_entity_configuration(
             builtin_symbol_documentation_list),
     }
-
-
-def phase_helps_for(instructions_setup: InstructionsSetup) -> Sequence[SectionDocumentation]:
-    return [
-        configuration.ConfigurationPhaseDocumentation(
-            phase_help_name(phase_identifier.CONFIGURATION),
-            _phase_instruction_set_help(instructions_setup.config_instruction_set)),
-
-        setup.SetupPhaseDocumentation(
-            phase_help_name(phase_identifier.SETUP),
-            _phase_instruction_set_help(instructions_setup.setup_instruction_set)),
-
-        act.ActPhaseDocumentation(phase_help_name(phase_identifier.ACT)),
-
-        before_assert.BeforeAssertPhaseDocumentation(
-            phase_help_name(phase_identifier.BEFORE_ASSERT),
-            _phase_instruction_set_help(instructions_setup.before_assert_instruction_set)),
-
-        assert_.AssertPhaseDocumentation(
-            phase_help_name(phase_identifier.ASSERT),
-            _phase_instruction_set_help(instructions_setup.assert_instruction_set)),
-
-        cleanup.CleanupPhaseDocumentation(
-            phase_help_name(phase_identifier.CLEANUP),
-            _phase_instruction_set_help(instructions_setup.cleanup_instruction_set)),
-    ]
-
-
-def _phase_instruction_set_help(single_instruction_setup_dic: Dict[str, SingleInstructionSetup]
-                                ) -> SectionInstructionSet:
-    return SectionInstructionSet(
-        list(map(lambda x: x.documentation, single_instruction_setup_dic.values())) +
-        [FileInclusionDirectiveDocumentation()]
-    )
