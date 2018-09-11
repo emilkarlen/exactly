@@ -4,8 +4,6 @@ from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
     CONF_PARAM_ENTITY_TYPE_NAMES, SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, \
     TYPE_ENTITY_TYPE_NAMES, BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.definitions.test_suite.section_names import SECTION_NAME__CONF, SECTION_NAME__SUITS, \
-    SECTION_NAME__CASES
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_CONFIGURATION
@@ -23,10 +21,7 @@ from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.help.program_modes.test_case.contents.phase import act, assert_, before_assert, configuration, \
     setup, cleanup
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.program_modes.test_suite.section.sections.cases import CasesSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.sections.configuration import ConfigurationSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.sections.suites import SuitesSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.test_suite_help import test_suite_help
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
 
@@ -60,24 +55,6 @@ def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list) 
     }
 
 
-def test_suite_help(configuration_section_instructions: Dict[str, SingleInstructionSetup]) -> TestSuiteHelp:
-    """
-    :param configuration_section_instructions: instruction-name -> setup
-    """
-    return TestSuiteHelp(
-        [
-            CasesSectionDocumentation(SECTION_NAME__CASES),
-
-            SuitesSectionDocumentation(SECTION_NAME__SUITS),
-        ],
-        [
-            ConfigurationSectionDocumentation(
-                SECTION_NAME__CONF,
-                _instruction_set_help(configuration_section_instructions)),
-        ]
-    )
-
-
 def phase_helps_for(instructions_setup: InstructionsSetup) -> Sequence[SectionDocumentation]:
     return [
         configuration.ConfigurationPhaseDocumentation(
@@ -102,10 +79,6 @@ def phase_helps_for(instructions_setup: InstructionsSetup) -> Sequence[SectionDo
             phase_help_name(phase_identifier.CLEANUP),
             _phase_instruction_set_help(instructions_setup.cleanup_instruction_set)),
     ]
-
-
-def _instruction_set_help(single_instruction_setup_dic: Dict[str, SingleInstructionSetup]) -> SectionInstructionSet:
-    return SectionInstructionSet(map(lambda x: x.documentation, single_instruction_setup_dic.values()))
 
 
 def _phase_instruction_set_help(single_instruction_setup_dic: Dict[str, SingleInstructionSetup]
