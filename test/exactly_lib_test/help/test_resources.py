@@ -1,5 +1,8 @@
+from typing import Iterable, List, Sequence, Optional, Dict
+
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.contents_structure.application import ApplicationHelp
+from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
@@ -24,25 +27,25 @@ def single_line_description_that_identifies_instruction_and_section(phase_name: 
     return phase_name + '/' + instruction_name
 
 
-def section_documentation(phase_name: str,
-                          instruction_names: list,
+def section_documentation(section_name: str,
+                          instruction_names: List[str],
                           is_mandatory: bool = False) -> SectionDocumentation:
-    instruction_set = section_instruction_set(phase_name, instruction_names)
-    return SectionDocumentationForSectionWithInstructionsTestImpl(phase_name,
+    instruction_set = section_instruction_set(section_name, instruction_names)
+    return SectionDocumentationForSectionWithInstructionsTestImpl(section_name,
                                                                   instruction_set,
                                                                   is_mandatory)
 
 
 def section_instruction_set(section_name: str,
-                            instruction_names: list) -> SectionInstructionSet:
+                            instruction_names: List[str]) -> SectionInstructionSet:
     instruction_descriptions = map(lambda name: instr_descr(section_name, name),
                                    instruction_names)
     return SectionInstructionSet(instruction_descriptions)
 
 
-def application_help_for(test_case_phase_helps: list,
+def application_help_for(test_case_phase_helps: Sequence[SectionDocumentation],
                          suite_sections=(),
-                         entity_name_2_entity_configuration: dict = None,
+                         entity_name_2_entity_configuration: Optional[Dict[str, EntityTypeConfiguration]] = None,
                          ) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp(test_case_phase_helps),
@@ -50,7 +53,7 @@ def application_help_for(test_case_phase_helps: list,
                            {} if entity_name_2_entity_configuration is None else entity_name_2_entity_configuration)
 
 
-def application_help_for_suite_sections(suite_sections: list) -> ApplicationHelp:
+def application_help_for_suite_sections(suite_sections: Iterable[SectionDocumentation]) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp([]),
                            TestSuiteHelp(suite_sections),
