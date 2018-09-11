@@ -64,15 +64,18 @@ def test_suite_help(configuration_section_instructions: Dict[str, SingleInstruct
     """
     :param configuration_section_instructions: instruction-name -> setup
     """
-    return TestSuiteHelp([
-        ConfigurationSectionDocumentation(
-            SECTION_NAME__CONF,
-            _instruction_set_help(configuration_section_instructions)),
+    return TestSuiteHelp(
+        [
+            CasesSectionDocumentation(SECTION_NAME__CASES),
 
-        CasesSectionDocumentation(SECTION_NAME__CASES),
-
-        SuitesSectionDocumentation(SECTION_NAME__SUITS),
-    ])
+            SuitesSectionDocumentation(SECTION_NAME__SUITS),
+        ],
+        [
+            ConfigurationSectionDocumentation(
+                SECTION_NAME__CONF,
+                _instruction_set_help(configuration_section_instructions)),
+        ]
+    )
 
 
 def phase_helps_for(instructions_setup: InstructionsSetup) -> Sequence[SectionDocumentation]:

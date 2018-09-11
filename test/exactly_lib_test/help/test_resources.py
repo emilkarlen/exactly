@@ -44,19 +44,19 @@ def section_instruction_set(section_name: str,
 
 
 def application_help_for(test_case_phase_helps: Sequence[SectionDocumentation],
-                         suite_sections=(),
+                         suite_sections: Sequence[SectionDocumentation] = (),
                          entity_name_2_entity_configuration: Optional[Dict[str, EntityTypeConfiguration]] = None,
                          ) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp(test_case_phase_helps),
-                           TestSuiteHelp(suite_sections),
+                           TestSuiteHelp(suite_sections, []),
                            {} if entity_name_2_entity_configuration is None else entity_name_2_entity_configuration)
 
 
 def application_help_for_suite_sections(suite_sections: Iterable[SectionDocumentation]) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            TestCaseHelp([]),
-                           TestSuiteHelp(suite_sections),
+                           TestSuiteHelp(suite_sections, []),
                            {})
 
 

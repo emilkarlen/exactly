@@ -30,7 +30,7 @@ class TestRenderInstruction(unittest.TestCase):
     def _check_resolver_gives_renderer_that_produces_section_contents(self,
                                                                       request: sut.TestSuiteHelpRequest):
         # ARRANGE #
-        constructor_resolver = sut.TestSuiteHelpConstructorResolver(TestSuiteHelp(()))
+        constructor_resolver = sut.TestSuiteHelpConstructorResolver(TestSuiteHelp((), ()))
         # ACT #
         constructor = constructor_resolver.resolve(request)
         # ASSERT #
