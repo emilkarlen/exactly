@@ -1,4 +1,5 @@
 import pathlib
+from typing import Optional
 
 from exactly_lib.cli.program_modes.test_case import result_reporting
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
@@ -53,7 +54,7 @@ def _get_reporter(std_output_files: StdOutputFiles,
 def _resolve_handling_setup(default_handling_setup: TestCaseHandlingSetup,
                             configuration_section_parser: SectionElementParser,
                             test_case_parsing_setup: TestCaseParsingSetup,
-                            suite_to_read_config_from: pathlib.Path) -> TestCaseHandlingSetup:
+                            suite_to_read_config_from: Optional[pathlib.Path]) -> TestCaseHandlingSetup:
     if not suite_to_read_config_from:
         return default_handling_setup
     from exactly_lib.test_suite.file_reading.suite_file_reading import resolve_handling_setup_from_suite_file

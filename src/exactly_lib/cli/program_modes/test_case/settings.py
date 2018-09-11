@@ -1,5 +1,6 @@
 import enum
 import pathlib
+from typing import Optional
 
 from exactly_lib import program_info
 from exactly_lib.execution import sandbox_dir_resolving
@@ -23,7 +24,7 @@ class TestCaseExecutionSettings:
                  handling_setup: TestCaseHandlingSetup,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
                  sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
-                 suite_to_read_config_from: pathlib.Path = None,
+                 suite_to_read_config_from: Optional[pathlib.Path] = None,
                  ):
         self.__test_case_file_path = test_case_file_path
         self.__initial_home_dir_path = initial_home_dir_path
@@ -53,7 +54,7 @@ class TestCaseExecutionSettings:
         return self.__sandbox_root_dir_resolver
 
     @property
-    def suite_to_read_config_from(self) -> pathlib.Path:
+    def suite_to_read_config_from(self) -> Optional[pathlib.Path]:
         """
         If this is not None, then a suite file has been given,
         and config should be read from that file and
