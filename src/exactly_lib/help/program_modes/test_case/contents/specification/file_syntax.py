@@ -2,7 +2,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE

@@ -3,7 +3,8 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.definitions.formatting import cli_option, program_name
 from exactly_lib.definitions.misc_texts import SYNTAX_ERROR_NAME
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
+    post_setup_validation_step_name, \
     step_with_single_exit_value
 from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsConstructorWithSetup
 from exactly_lib.processing import exit_values

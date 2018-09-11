@@ -1,6 +1,6 @@
 from exactly_lib.definitions.test_case import phase_names_plain
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment
@@ -26,7 +26,12 @@ def phases_documentation(setup: Setup) -> doc.SectionContents:
 
 
 INTRO = """\
+A test case contains a sequence of "phases".
+
 Executing a test case means executing all of it's phases.
+
+
+All phases are optional.
 
 
 The phases are (in order of execution):

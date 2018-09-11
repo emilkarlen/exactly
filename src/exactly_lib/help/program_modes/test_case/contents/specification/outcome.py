@@ -9,9 +9,10 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
 from exactly_lib.help import texts
-from exactly_lib.help.program_modes.test_case.contents.main.ref_test_case_processing import \
+from exactly_lib.help.program_modes.test_case.contents.specification.processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup, post_setup_validation_step_name, \
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
+    post_setup_validation_step_name, \
     step_with_single_exit_value, singe_exit_value_display
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
