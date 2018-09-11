@@ -1,5 +1,6 @@
 import re
 import textwrap
+from typing import List, Optional
 
 from exactly_lib.util.string import lines_content
 from exactly_lib.util.textformat.structure import lists
@@ -39,27 +40,24 @@ class ListSettings(tuple):
 DEFAULT_LIST_SETTINGS = ListSettings(None, lists.Separations(1, 1))
 
 
-def parse(normalized_lines: list,
-          list_settings: ListSettings = DEFAULT_LIST_SETTINGS) -> list:
+def parse(normalized_lines: List[str],
+          list_settings: ListSettings = DEFAULT_LIST_SETTINGS) -> List[ParagraphItem]:
     return _Parser(normalized_lines, list_settings).apply()
 
 
-def normalize_lines(text: str) -> list:
+def normalize_lines(text: str) -> List[str]:
     ret_val = textwrap.dedent(text).splitlines()
     _strip_empty_lines(ret_val)
     return ret_val
 
 
 def normalize_and_parse(text: str,
-                        list_settings: ListSettings = DEFAULT_LIST_SETTINGS) -> list:
-    """
-    :rtype: [`ParagraphItem`]
-    """
+                        list_settings: ListSettings = DEFAULT_LIST_SETTINGS) -> List[ParagraphItem]:
     normalized_lines = normalize_lines(text)
     return _Parser(normalized_lines, list_settings).apply()
 
 
-def _strip_empty_lines(space_normalized_lines: list):
+def _strip_empty_lines(space_normalized_lines: List[str]):
     while space_normalized_lines and not space_normalized_lines[0]:
         del space_normalized_lines[0]
     while space_normalized_lines and not space_normalized_lines[-1]:
@@ -68,7 +66,7 @@ def _strip_empty_lines(space_normalized_lines: list):
 
 class _Parser:
     def __init__(self,
-                 lines: list,
+                 lines: List[str],
                  list_settings: ListSettings):
         self.itemized_list_format = lists.Format(lists.ListType.ITEMIZED_LIST,
                                                  custom_indent_spaces=list_settings.custom_indent_spaces,
@@ -76,7 +74,7 @@ class _Parser:
         self.lines = lines
         self.result = []
 
-    def apply(self) -> list:
+    def apply(self) -> List[ParagraphItem]:
         self.consume_separator_lines()
         while self.has_more_lines():
             self.result.append(self.parse_paragraph_item())
@@ -147,14 +145,14 @@ class _Parser:
         content_paragraph_items = self.parse_list_content_paragraph_items(len(item_line_prefix))
         return docs.list_item(StringText(header), content_paragraph_items)
 
-    def parse_list_content_paragraph_items(self, item_contents_indent_len: int) -> list:
+    def parse_list_content_paragraph_items(self, item_contents_indent_len: int) -> List[ParagraphItem]:
         texts = self.parse_list_content_texts(item_contents_indent_len)
         if texts:
             return [Paragraph(texts)]
         else:
             return []
 
-    def parse_list_content_texts(self, item_contents_indent_len: int) -> list:
+    def parse_list_content_texts(self, item_contents_indent_len: int) -> List[Text]:
         ret_val = []
         while self.has_more_lines():
             num_blank_lines = self.number_of_blank_lines()
@@ -192,7 +190,7 @@ class _Parser:
         return StringText(contents)
 
     def has_more_lines(self) -> bool:
-        return self.lines
+        return bool(self.lines)
 
     def is_at_separator(self):
         return self.number_of_blank_lines() > 0
@@ -226,7 +224,7 @@ class _Parser:
         return line == _LITERAL_TOKEN
 
 
-def _is_itemized_list_item_level(line: str) -> int:
+def _is_itemized_list_item_level(line: str) -> Optional[int]:
     match = _ITEMIZED_LIST_ITEM_RE.match(line)
     if match:
         return len(match.group(1))

@@ -73,7 +73,7 @@ class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumenta
         return False
 
     @property
-    def instruction_set(self) -> SectionInstructionSet:
+    def instruction_set(self) -> Optional[SectionInstructionSet]:
         raise NotImplementedError('This section does not have instructions.')
 
 
@@ -98,5 +98,5 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
         return True
 
     @property
-    def instruction_set(self) -> SectionInstructionSet:
+    def instruction_set(self) -> Optional[SectionInstructionSet]:
         return self._instruction_set

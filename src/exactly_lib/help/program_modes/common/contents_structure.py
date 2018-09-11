@@ -1,4 +1,4 @@
-from typing import Sequence, Dict, Callable, List, Iterable
+from typing import Sequence, Dict, Callable, List, Iterable, Optional
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.definitions import doc_format
@@ -84,7 +84,7 @@ class SectionDocumentation:
         raise NotImplementedError()
 
     @property
-    def instruction_set(self) -> SectionInstructionSet:
+    def instruction_set(self) -> Optional[SectionInstructionSet]:
         """
         :return: None if this phase does not have instructions.
         """

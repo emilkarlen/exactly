@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.definitions.test_suite.section_names import DEFAULT_SECTION_NAME
@@ -24,7 +26,7 @@ class TestSuiteSectionDocumentationConstructor(SectionDocumentationConstructorBa
 
     def _section_contents(self,
                           environment: ConstructionEnvironment,
-                          purpose_rest: list) -> doc.SectionContents:
+                          purpose_rest: List[docs.ParagraphItem]) -> doc.SectionContents:
         mandatory_info = self._mandatory_info_para()
         paras = (purpose_rest +
                  [mandatory_info] +
@@ -36,11 +38,11 @@ class TestSuiteSectionDocumentationConstructor(SectionDocumentationConstructorBa
 
         return doc.SectionContents(paras, sections)
 
-    def _add_section_for_contents_description(self, output: list):
+    def _add_section_for_contents_description(self, output: List[docs.SectionItem]):
         output.append(docs.section(self.CONTENTS_HEADER,
                                    self._doc.contents_description()))
 
-    def _add_section_for_see_also(self, environment: ConstructionEnvironment, sections: list):
+    def _add_section_for_see_also(self, environment: ConstructionEnvironment, sections: List[docs.SectionItem]):
         sections += see_also_sections(self._doc.see_also_targets, environment)
 
     def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:

@@ -1,4 +1,4 @@
-from typing import List, Sequence
+from typing import List, Sequence, Optional
 
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
@@ -78,7 +78,7 @@ class TestCasePhaseDocumentation(SectionDocumentation):
 class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str,
-                 instruction_set: SectionInstructionSet):
+                 instruction_set: Optional[SectionInstructionSet]):
         """
         :param instruction_set: None if this phase does not have instructions.
         """
@@ -90,17 +90,14 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         return True
 
     @property
-    def instruction_set(self) -> SectionInstructionSet:
+    def instruction_set(self) -> Optional[SectionInstructionSet]:
         return self._instruction_set
 
     def contents_description(self) -> doc.SectionContents:
         return docs.section_contents([docs.para('Consists of zero or more instructions.')] +
                                      self.instruction_purpose_description())
 
-    def instruction_purpose_description(self) -> list:
-        """
-        :return: [ParagraphItem]
-        """
+    def instruction_purpose_description(self) -> List[ParagraphItem]:
         raise NotImplementedError()
 
 
@@ -114,5 +111,5 @@ class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumen
         return False
 
     @property
-    def instruction_set(self) -> SectionInstructionSet:
+    def instruction_set(self) -> Optional[SectionInstructionSet]:
         return None
