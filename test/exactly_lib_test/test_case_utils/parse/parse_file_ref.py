@@ -36,6 +36,8 @@ from exactly_lib_test.section_document.element_parsers.test_resources.token_stre
     assert_token_string_is
 from exactly_lib_test.section_document.test_resources.parse_source import remaining_source
 from exactly_lib_test.section_document.test_resources.parse_source_assertions import assert_source
+from exactly_lib_test.symbol.data.restrictions.test_resources.concrete_restrictions import \
+    string_made_up_of_just_strings_reference_restrictions
 from exactly_lib_test.symbol.data.test_resources import data_symbol_utils
 from exactly_lib_test.symbol.data.test_resources.concrete_value_assertions import equals_file_ref_resolver, \
     matches_file_ref_resolver
@@ -44,12 +46,10 @@ from exactly_lib_test.symbol.data.test_resources.data_symbol_utils import \
     entry
 from exactly_lib_test.symbol.data.test_resources.list_values import ListResolverTestImplForConstantListValue
 from exactly_lib_test.symbol.data.test_resources.symbol_reference_assertions import \
-    equals_symbol_reference
+    equals_symbol_reference, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.symbol.test_resources import symbol_utils
 from exactly_lib_test.symbol.test_resources.file_matcher import FileMatcherResolverConstantTestImpl
 from exactly_lib_test.symbol.test_resources.string_transformer import StringTransformerResolverConstantTestImpl
-from exactly_lib_test.symbol.test_resources.symbol_reference_assertions import \
-    string_made_up_of_just_strings_reference_restrictions, is_reference_to_string_made_up_of_just_plain_strings
 from exactly_lib_test.test_case_file_structure.test_resources import format_rel_option
 from exactly_lib_test.test_case_utils.parse.test_resources.source_case import SourceCase
 from exactly_lib_test.test_resources.name_and_value import NameAndValue

@@ -151,9 +151,6 @@ def symbol_table_from_names(names: Iterable[str]) -> SymbolTable:
 
 
 def symbol_table_from_symbol_definitions(symbols: Iterable[SymbolDefinition]) -> SymbolTable:
-    """
-    :param symbols: [`SymbolDefinition`]
-    """
     elements = [(vd.name, vd.resolver_container)
                 for vd in symbols]
     return SymbolTable(dict(elements))
