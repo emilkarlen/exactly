@@ -1,12 +1,15 @@
 import unittest
 
-from exactly_lib_test.act_phase_setups import null, command_line, source_interpreter, file_interpreter
-from exactly_lib_test.act_phase_setups.util import executor_made_of_parts
+from exactly_lib_test.act_phase_setups import null
+from exactly_lib_test.act_phase_setups.command_line import z_package_suite as command_line
+from exactly_lib_test.act_phase_setups.file_interpreter import z_package_suite as file_interpreter
+from exactly_lib_test.act_phase_setups.source_interpreter import z_package_suite as source_interpreter
+from exactly_lib_test.act_phase_setups.util import z_package_suite as util
 
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(executor_made_of_parts.suite())
+    ret_val.addTest(util.suite())
     ret_val.addTest(null.suite())
     ret_val.addTest(command_line.suite())
     ret_val.addTest(file_interpreter.suite())
