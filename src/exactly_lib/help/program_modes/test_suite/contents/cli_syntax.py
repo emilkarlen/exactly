@@ -14,7 +14,7 @@ from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
-from exactly_lib.help.program_modes.test_suite.contents import suite_outcome
+from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.help.texts import IS_A_SHELL_CMD
@@ -59,7 +59,7 @@ class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
 
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         contents_constructor = SectionContentsConstructorFromHierarchyGenerator(
-            suite_outcome.hierarchy_generator('unused'))
+            outcome.hierarchy_generator('unused'))
         ret_val = contents_constructor.apply(environment)
         return ret_val
 
