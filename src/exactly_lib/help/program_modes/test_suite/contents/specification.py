@@ -4,10 +4,13 @@ from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.definitions.test_suite import section_names_with_syntax
 from exactly_lib.definitions.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents import suite_outcome
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.test_suite import exit_values
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionContentsConstructorForConstantContents
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
@@ -39,6 +42,10 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
             'executable_name': program_info.PROGRAM_NAME,
             'suite_program_mode': SUITE_COMMAND,
             'reporter_concept': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
+            'cases': section_names_with_syntax.SECTION_NAME__CASES,
+            'suites': section_names_with_syntax.SECTION_NAME__SUITS,
+            'ALL_PASS': exit_values.ALL_PASS.exit_identifier,
+            'generic_section': SectionName('NAME'),
         })
 
     def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
@@ -93,12 +100,12 @@ A test suite is written as a plain text file:
 
 
 ```
-[cases]
+{cases:syntax}
 
 a.case
 group-dir/*.case
 
-[suites]
+{suites:syntax}
 
 sub-suite.suite
 sub-dir/*.suite
@@ -111,7 +118,7 @@ If the file 'example.suite' contains this text, then {program_name} can execute 
 ```
 > {executable_name} {suite_program_mode} example.suite
 ...
-OK
+{ALL_PASS}
 ```
 
 
@@ -123,7 +130,7 @@ A suite is made up of "sections". The sections are:
 """
 
 _FILE_SYNTAX = """\
-"[NAME]" on a single line declares the start of section NAME.
+"{generic_section:syntax}" on a single line declares the start of section "{generic_section:plain}".
 
 
 The order of sections is irrelevant.
