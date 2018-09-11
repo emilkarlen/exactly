@@ -1,4 +1,4 @@
-from typing import Sequence, Dict
+from typing import Sequence, Dict, List
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
@@ -22,15 +22,16 @@ from exactly_lib.processing.instruction_setup import InstructionsSetup
 
 def new_application_help(instructions_setup: InstructionsSetup,
                          suite_configuration_section_instructions: Dict[str, SingleInstructionSetup],
-                         builtin_symbol_documentation_list: Sequence[BuiltinSymbolDocumentation] = ()
+                         builtin_symbols: Sequence[BuiltinSymbolDocumentation] = ()
                          ) -> ApplicationHelp:
     return ApplicationHelp(MainProgramHelp(),
                            test_case_help(instructions_setup),
                            test_suite_help(suite_configuration_section_instructions),
-                           entity_name_2_entity_configuration(list(builtin_symbol_documentation_list)))
+                           entity_name_2_entity_configuration(list(builtin_symbols)))
 
 
-def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list) -> Dict[str, EntityTypeConfiguration]:
+def entity_name_2_entity_configuration(builtin_symbols: List[BuiltinSymbolDocumentation]
+                                       ) -> Dict[str, EntityTypeConfiguration]:
     return {
         CONCEPT_ENTITY_TYPE_NAMES.identifier: CONCEPT_ENTITY_CONFIGURATION,
 
@@ -45,5 +46,5 @@ def entity_name_2_entity_configuration(builtin_symbol_documentation_list: list) 
         SYNTAX_ELEMENT_ENTITY_TYPE_NAMES.identifier: SYNTAX_ELEMENT_ENTITY_CONFIGURATION,
 
         BUILTIN_SYMBOL_ENTITY_TYPE_NAMES.identifier: builtin_symbols_entity_configuration(
-            builtin_symbol_documentation_list),
+            builtin_symbols),
     }

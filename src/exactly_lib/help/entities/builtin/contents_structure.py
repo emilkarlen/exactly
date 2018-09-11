@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.entity.builtins import name_and_ref_target
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
@@ -30,9 +32,6 @@ class BuiltinSymbolDocumentation(EntityDocumentation):
         return self._description
 
 
-def builtin_symbols_help(builtin_documentations: iter) -> EntityTypeHelp:
-    """
-    :param builtin_documentations: [BuiltinSymbolDocumentation]
-    """
+def builtin_symbols_help(builtin_documentations: List[BuiltinSymbolDocumentation]) -> EntityTypeHelp:
     return EntityTypeHelp(BUILTIN_SYMBOL_ENTITY_TYPE_NAMES,
                           builtin_documentations)
