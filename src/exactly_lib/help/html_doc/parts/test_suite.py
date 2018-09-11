@@ -7,7 +7,7 @@ from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.test_suite.contents.specification import SpecificationHierarchyGenerator
+from exactly_lib.help.program_modes.test_suite.contents.specification.main import SpecificationHierarchyGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy

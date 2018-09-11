@@ -8,14 +8,14 @@ from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_suite import section_names_with_syntax
 from exactly_lib.definitions.test_suite.section_names import DEFAULT_SECTION_NAME
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
-from exactly_lib.help.program_modes.test_suite.contents import suite_outcome
+from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     SectionContentsConstructorForConstantContents
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import leaf, parent, Node
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionItemGeneratorNode, \
     SectionHierarchyGenerator
@@ -49,24 +49,25 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
         })
 
     def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
-        generator = parent(self.header,
-                           [],
-                           [
-                               Node('files-and-execution',
-                                    leaf('Suite files and execution',
-                                         self._section_of_parsed(_FILES_AND_EXECUTION_TEXT))
-                                    ),
-                               Node('sections-overview',
-                                    leaf('Sections overview',
-                                         self._suite_structure_contents())
-                                    ),
-                               Node('file-syntax',
-                                    leaf('Suite file syntax',
-                                         self._section_of_parsed(_FILE_SYNTAX))
-                                    ),
-                               Node('outcome',
-                                    suite_outcome.hierarchy_generator('Suite outcome')),
-                           ])
+        generator = hierarchy.parent(
+            self.header,
+            [],
+            [
+                hierarchy.Node('introduction',
+                               hierarchy.leaf('Introduction',
+                                              self._section_of_parsed(_FILES_AND_EXECUTION_TEXT))
+                               ),
+                hierarchy.Node('sections-overview',
+                               hierarchy.leaf('Sections overview',
+                                              self._suite_structure_contents())
+                               ),
+                hierarchy.Node('file-syntax',
+                               hierarchy.leaf('Suite file syntax',
+                                              self._section_of_parsed(_FILE_SYNTAX))
+                               ),
+                hierarchy.Node('outcome',
+                               outcome.hierarchy_generator('Suite outcome')),
+            ])
 
         return generator.generator_node(target_factory)
 
