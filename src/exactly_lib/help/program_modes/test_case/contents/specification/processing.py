@@ -1,7 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
-from exactly_lib.definitions.formatting import cli_option, program_name
 from exactly_lib.definitions.misc_texts import SYNTAX_ERROR_NAME
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
     post_setup_validation_step_name, \
@@ -18,10 +18,10 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
     def __init__(self, setup: Setup):
         super().__init__(setup, {
             'phase': setup.phase_names,
-            'program_name': program_name(program_info.PROGRAM_NAME),
+            'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': SYMBOL_CONCEPT_INFO.name.singular,
             'symbols': SYMBOL_CONCEPT_INFO.name.plural,
-            'cli_option_for_preprocessor': cli_option(OPTION_FOR_PREPROCESSOR),
+            'cli_option_for_preprocessor': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'an_error_in_source': SYNTAX_ERROR_NAME.singular_determined,
         })
 

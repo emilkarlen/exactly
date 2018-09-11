@@ -23,6 +23,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy.targets import C
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
+from . import structure
 
 
 def specification_constructor(suite_help: TestSuiteHelp) -> SectionContentsConstructor:
@@ -55,7 +56,10 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
             [
                 hierarchy.Node('introduction',
                                hierarchy.leaf('Introduction',
-                                              self._section_of_parsed(_FILES_AND_EXECUTION_TEXT))
+                                              self._section_of_parsed(_INTRODUCTION))
+                               ),
+                hierarchy.Node('structure',
+                               structure.hierarchy_generator('Structure', self._suite_help)
                                ),
                 hierarchy.Node('sections-overview',
                                hierarchy.leaf('Sections overview',
@@ -98,7 +102,7 @@ A test suite can contain test cases as well as sub suites.
 The result of executing a test suite is reported by a {reporter_concept}.
 """
 
-_FILES_AND_EXECUTION_TEXT = """\
+_INTRODUCTION = """\
 A test suite is written as a plain text file:
 
 
