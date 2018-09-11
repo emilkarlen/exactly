@@ -1,13 +1,9 @@
-from typing import List
-
 from exactly_lib import program_info
 from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_suite import section_names_with_syntax
-from exactly_lib.definitions.test_suite.section_names import DEFAULT_SECTION_NAME
-from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.test_suite import exit_values
@@ -21,7 +17,6 @@ from exactly_lib.util.textformat.construction.section_hierarchy.structures impor
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from . import structure
 
@@ -61,10 +56,6 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                 hierarchy.Node('structure',
                                structure.hierarchy_generator('Structure', self._suite_help)
                                ),
-                hierarchy.Node('sections-overview',
-                               hierarchy.leaf('Sections overview',
-                                              self._suite_structure_contents())
-                               ),
                 hierarchy.Node('file-syntax',
                                hierarchy.leaf('Suite file syntax',
                                               self._section_of_parsed(_FILE_SYNTAX))
@@ -78,19 +69,6 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
     def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:
         return constant_section_contents(
             docs.section_contents(self._tp.fnap(contents))
-        )
-
-    def _suite_structure_paragraphs(self) -> List[ParagraphItem]:
-        ret_val = []
-        ret_val.extend(self._tp.fnap(_STRUCTURE_INTRO))
-        ret_val.append(sections_short_list(self._suite_help.section_helps,
-                                           default_section_name=DEFAULT_SECTION_NAME,
-                                           section_concept_name='section'))
-        return ret_val
-
-    def _suite_structure_contents(self) -> SectionContentsConstructor:
-        return constant_section_contents(
-            docs.section_contents(self._suite_structure_paragraphs())
         )
 
 
