@@ -1,4 +1,5 @@
 import unittest
+from typing import Iterable
 
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
@@ -123,11 +124,11 @@ class TestTestCasePhase(unittest.TestCase):
         self.assertEqual(expected_phase_name,
                          actual.data.name.plain)
 
-    def _application_help_with_phases(self, all_phases):
+    def _application_help_with_phases(self, all_phases: Iterable[str]):
         return ApplicationHelp(MainProgramHelp(),
                                TestCaseHelp(map(lambda ph_name: section_documentation(ph_name, []),
                                                 all_phases)),
-                               TestSuiteHelp({}),
+                               TestSuiteHelp([], []),
                                {})
 
 
