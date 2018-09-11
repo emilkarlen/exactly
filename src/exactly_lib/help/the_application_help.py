@@ -24,9 +24,9 @@ from exactly_lib.help.program_modes.test_case.contents.phase import act, assert_
     setup, cleanup
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.section.sections.cases import CasesSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.section.sections.configuration import ConfigurationSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.section.sections.suites import SuitesSectionDocumentation
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
 
