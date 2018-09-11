@@ -44,7 +44,7 @@ class _HierarchyGenerator:
         return hierarchy.leaf(
             header,
             constant_section_contents(
-                docs.section_contents(self._suite_structure_paragraphs())
+                docs.section_contents(self._cases_and_sub_suites_paragraphs())
             )
         )
 
@@ -52,12 +52,19 @@ class _HierarchyGenerator:
         return hierarchy.leaf(
             header,
             constant_section_contents(
-                docs.section_contents(self._tp.fnap(_COMMON_TC_CONTENTS))
+                docs.section_contents(self._common_tc_contents_paragraphs())
             ))
 
-    def _suite_structure_paragraphs(self) -> List[ParagraphItem]:
+    def _cases_and_sub_suites_paragraphs(self) -> List[ParagraphItem]:
         ret_val = self._tp.fnap(_CASES_AND_SUB_SUITES)
         ret_val.append(sections_short_list(self._suite_help.test_cases_and_sub_suites_sections,
+                                           default_section_name=section_names.DEFAULT_SECTION_NAME,
+                                           section_concept_name='section'))
+        return ret_val
+
+    def _common_tc_contents_paragraphs(self) -> List[ParagraphItem]:
+        ret_val = self._tp.fnap(_COMMON_TC_CONTENTS)
+        ret_val.append(sections_short_list(self._suite_help.test_case_phase_sections,
                                            default_section_name=section_names.DEFAULT_SECTION_NAME,
                                            section_concept_name='section'))
         return ret_val
@@ -94,6 +101,5 @@ has no functionality for looking up the ultimate root suite
 that a test case belongs to.
 
 
-The sections have the same name as the corresponding phases and accepts
-all contents that is accepted in the corresponding phases.
+Sections:
 """
