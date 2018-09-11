@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser

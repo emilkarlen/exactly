@@ -4,7 +4,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import emphasis
 from exactly_lib.definitions.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.help.program_modes.test_case.contents.main.utils import Setup
+from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     ConstructionEnvironment

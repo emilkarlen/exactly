@@ -7,7 +7,7 @@ from exactly_lib.instructions.assert_ import define_symbol, change_dir, \
 
 INSTRUCTIONS = instruction_set_from_name_and_setup_constructor_list(
     [
-        ('exit-code', exitcode.setup),
+        (instruction_names.EXIT_CODE_INSTRUCTION_NAME, exitcode.setup),
         (instruction_names.CONTENTS_OF_STDOUT_INSTRUCTION_NAME, stdout.setup_for_stdout),
         ('stderr', stderr.setup_for_stderr),
         ('contents', contents_of_file.setup),

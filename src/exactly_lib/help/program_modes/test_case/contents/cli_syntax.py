@@ -7,7 +7,7 @@ from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_al
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
-from exactly_lib.help.program_modes.test_case.contents.main import test_outcome as case_outcome_help
+from exactly_lib.help.program_modes.test_case.contents.specification import outcome as case_outcome_help
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.cli_syntax.elements import argument as arg

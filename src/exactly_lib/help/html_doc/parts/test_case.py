@@ -5,7 +5,7 @@ from exactly_lib.definitions.test_case.phase_names_plain import SECTION_CONCEPT_
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.test_case.contents.main import specification as test_case_specification_rendering
+from exactly_lib.help.program_modes.test_case.contents.specification import main as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
