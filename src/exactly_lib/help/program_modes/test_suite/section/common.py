@@ -1,7 +1,10 @@
+from typing import List, Optional
+
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class TestSuiteSectionDocumentation(SectionDocumentation):
@@ -9,10 +12,7 @@ class TestSuiteSectionDocumentation(SectionDocumentation):
         super().__init__(name)
         self._section_name = SectionName(name)
 
-    def contents_description(self) -> list:
-        """
-        :return: [`ParagraphItem`]
-        """
+    def contents_description(self) -> List[ParagraphItem]:
         raise NotImplementedError()
 
 
@@ -31,16 +31,13 @@ class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDo
         return True
 
     @property
-    def instruction_set(self) -> SectionInstructionSet:
+    def instruction_set(self) -> Optional[SectionInstructionSet]:
         return self._instruction_set
 
-    def contents_description(self) -> list:
+    def contents_description(self) -> List[ParagraphItem]:
         return [docs.para('Consists of zero or more instructions.')] + self.instruction_purpose_description()
 
-    def instruction_purpose_description(self) -> list:
-        """
-        :return: [ParagraphItem]
-        """
+    def instruction_purpose_description(self) -> List[ParagraphItem]:
         raise NotImplementedError()
 
 

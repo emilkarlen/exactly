@@ -1,9 +1,12 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
 from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-def file_ref_contents_description(case_or_suite_string: str) -> list:
+def file_ref_contents_description(case_or_suite_string: str) -> List[ParagraphItem]:
     return normalize_and_parse(_TEXT.format(case=case_or_suite_string,
                                             program_name=formatting.program_name(program_info.PROGRAM_NAME)))
 

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentation, \
@@ -71,5 +73,5 @@ class _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(TestCasePhas
         return True
 
     @property
-    def instruction_set(self) -> SectionInstructionSet:
+    def instruction_set(self) -> Optional[SectionInstructionSet]:
         return self._instruction_set
