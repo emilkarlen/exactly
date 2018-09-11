@@ -16,7 +16,7 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
     step_with_single_exit_value, singe_exit_value_display
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstantSectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents_constructor import constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.parse import normalize_and_parse
@@ -29,7 +29,7 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
 
     def const_contents(header: str, paragraphs: List[ParagraphItem]) -> structures.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
-                              ConstantSectionContentsConstructor(section_contents(paragraphs)))
+                              constant_section_contents(section_contents(paragraphs)))
 
     return hierarchy.parent(
         header,

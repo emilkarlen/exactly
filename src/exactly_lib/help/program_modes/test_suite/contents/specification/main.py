@@ -12,7 +12,7 @@ from exactly_lib.help.program_modes.test_suite.contents.specification import out
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
-    SectionContentsConstructorForConstantContents
+    constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
@@ -72,8 +72,9 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
         return generator.generator_node(target_factory)
 
     def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:
-        return SectionContentsConstructorForConstantContents(
-            docs.section_contents(self._tp.fnap(contents)))
+        return constant_section_contents(
+            docs.section_contents(self._tp.fnap(contents))
+        )
 
     def _suite_structure_paragraphs(self) -> List[ParagraphItem]:
         ret_val = []
@@ -84,8 +85,9 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
         return ret_val
 
     def _suite_structure_contents(self) -> SectionContentsConstructor:
-        return SectionContentsConstructorForConstantContents(
-            docs.section_contents(self._suite_structure_paragraphs()))
+        return constant_section_contents(
+            docs.section_contents(self._suite_structure_paragraphs())
+        )
 
 
 _INTRODUCTION_SUMMARY = """\
