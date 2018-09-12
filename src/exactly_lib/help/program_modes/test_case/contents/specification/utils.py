@@ -50,5 +50,11 @@ def post_setup_validation_step_name(setup: Setup) -> str:
 def step_with_single_exit_value(purpose_paragraphs: List[ParagraphItem],
                                 failure_condition: ParagraphItem,
                                 exit_value_on_error: ExitValue) -> List[ParagraphItem]:
+    return step_with_single_exit_value2(purpose_paragraphs, [failure_condition], exit_value_on_error)
+
+
+def step_with_single_exit_value2(purpose_paragraphs: List[ParagraphItem],
+                                 failure_condition: List[ParagraphItem],
+                                 exit_value_on_error: ExitValue) -> List[ParagraphItem]:
     outcome_on_error = singe_exit_value_display(exit_value_on_error)
-    return purpose_paragraphs + [failure_condition, outcome_on_error]
+    return purpose_paragraphs + failure_condition + [outcome_on_error]
