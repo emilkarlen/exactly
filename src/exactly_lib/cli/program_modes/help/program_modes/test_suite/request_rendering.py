@@ -2,11 +2,12 @@ from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request im
     TestSuiteHelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
 from exactly_lib.help.program_modes.common import render_instruction
+from exactly_lib.help.program_modes.test_suite.cont_struct.section_documentation import TestSuiteSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.cont_struct.test_suite_help import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.contents.cli_syntax import TestSuiteCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.specification import main
-from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.program_modes.test_suite.section.common import TestSuiteSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
+from exactly_lib.help.program_modes.test_suite.render.section_documentation import \
+    TestSuiteSectionDocumentationConstructor
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \

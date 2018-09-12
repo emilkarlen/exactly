@@ -7,7 +7,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
     SectionDocumentation
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
+from exactly_lib.help.program_modes.test_suite.cont_struct.test_suite_help import TestSuiteHelp
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure.structures import para, text
 from exactly_lib_test.common.test_resources.instruction_documentation import InstructionDocumentationWithConstantValues

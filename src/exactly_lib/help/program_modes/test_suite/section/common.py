@@ -1,58 +1,34 @@
-from typing import List, Optional
+from typing import List
 
-from exactly_lib.definitions.formatting import SectionName
-from exactly_lib.help.program_modes.common import contents as common_contents
-from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
-    SectionDocumentation
-from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
+from exactly_lib import program_info
+from exactly_lib.definitions import formatting
+from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
-class TestSuiteSectionDocumentation(SectionDocumentation):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self._section_name = SectionName(name)
-
-    def contents_description(self) -> List[ParagraphItem]:
-        raise NotImplementedError()
-
-    def instructions_section_header(self) -> Text:
-        return common_contents.INSTRUCTIONS_SECTION_HEADER
+def file_ref_contents_description(case_or_suite_string: str) -> List[ParagraphItem]:
+    return normalize_and_parse(_TEXT.format(case=case_or_suite_string,
+                                            program_name=formatting.program_name(program_info.PROGRAM_NAME)))
 
 
-class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentation):
-    def __init__(self,
-                 name: str,
-                 instruction_set: SectionInstructionSet):
-        """
-        :param instruction_set: None if this phase does not have instructions.
-        """
-        super().__init__(name)
-        self._instruction_set = instruction_set
-
-    @property
-    def has_instructions(self) -> bool:
-        return True
-
-    @property
-    def instruction_set(self) -> Optional[SectionInstructionSet]:
-        return self._instruction_set
-
-    def contents_description(self) -> List[ParagraphItem]:
-        return [docs.para('Consists of zero or more instructions.')] + self.instruction_purpose_description()
-
-    def instruction_purpose_description(self) -> List[ParagraphItem]:
-        raise NotImplementedError()
+_TEXT = """\
+Each line specifies zero or more test {case}s to include in the suite,
+by giving the names of files that contain individual test {case}s.
 
 
-class TestSuiteSectionDocumentationBaseForSectionWithoutInstructions(TestSuiteSectionDocumentation):
-    def __init__(self, name: str):
-        super().__init__(name)
+File names are relative the location of the test suite file.
 
-    @property
-    def has_instructions(self) -> bool:
-        return False
 
-    @property
-    def instruction_set(self) -> SectionInstructionSet:
-        return None
+A test {case} file can have any name - {program_name} does not put any restriction on file names.
+
+
+Each line consists of a single file name glob pattern:
+
+
+```
+file.{case}
+*.{case}
+**/the.{case}
+**/test-{case}s/*.{case}
+```
+"""

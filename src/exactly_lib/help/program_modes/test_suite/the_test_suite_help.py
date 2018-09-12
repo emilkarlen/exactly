@@ -3,11 +3,11 @@ from typing import Dict
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
-from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
-from exactly_lib.help.program_modes.test_suite.section.sections.cases import CasesSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.sections.configuration import ConfigurationSectionDocumentation
-from exactly_lib.help.program_modes.test_suite.section.sections.suites import SuitesSectionDocumentation
-from .section.sections.test_case_phase_sections import section_documentation
+from exactly_lib.help.program_modes.test_suite.cont_struct.test_suite_help import TestSuiteHelp
+from exactly_lib.help.program_modes.test_suite.section.cases import CasesSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.section.configuration import ConfigurationSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.section.suites import SuitesSectionDocumentation
+from exactly_lib.help.program_modes.test_suite.section.test_case_phase_sections import section_documentation
 
 
 def test_suite_help(configuration_section_instructions: Dict[str, SingleInstructionSetup]) -> TestSuiteHelp:
