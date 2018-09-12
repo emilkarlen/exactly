@@ -13,7 +13,7 @@ from exactly_lib.help.program_modes.test_case.contents.specification.processing 
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
     post_setup_validation_step_name, \
-    step_with_single_exit_value, singe_exit_value_display
+    step_with_single_exit_value, singe_exit_value_display, step_with_single_exit_value2
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_contents_constructor import constant_section_contents
@@ -332,7 +332,7 @@ def _other_non_cli_errors() -> ParagraphItem:
         list_item('File access',
                   step_with_single_exit_value(
                       [],
-                      para('Failure of accessing a file on the command line.'),
+                      TEXT_PARSER.para(_FILE_ACCESS_ERROR),
                       exit_values.NO_EXECUTION__FILE_ACCESS_ERROR)
                   ),
         list_item('Preprocessing',
@@ -342,9 +342,9 @@ def _other_non_cli_errors() -> ParagraphItem:
                       exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
                   ),
         list_item('Syntax checking',
-                  step_with_single_exit_value(
+                  step_with_single_exit_value2(
                       [],
-                      TEXT_PARSER.para('Fails if the test case contains {an_error_in_source}.'),
+                      TEXT_PARSER.fnap(_SYNTAX_ERROR),
                       exit_values.NO_EXECUTION__SYNTAX_ERROR)
                   ),
     ]
@@ -352,3 +352,14 @@ def _other_non_cli_errors() -> ParagraphItem:
                                    lists.Format(lists.ListType.ITEMIZED_LIST,
                                                 custom_separations=SEPARATION_OF_HEADER_AND_CONTENTS)
                                    )
+
+
+_FILE_ACCESS_ERROR = 'Failure of accessing a file on the command line.'
+
+_SYNTAX_ERROR = """\
+Fails if the test case contains {an_error_in_source}.
+
+
+Also fails if the test case is run as part of a test suite,
+and the test suite contains {an_error_in_source}.
+"""
