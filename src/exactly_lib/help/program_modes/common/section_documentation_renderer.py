@@ -12,9 +12,11 @@ class SectionDocumentationConstructorBase(ArticleContentsConstructor):
 
     def __init__(self,
                  section_documentation: SectionDocumentation,
-                 section_concept_name: str):
+                 section_concept_name: str,
+                 instructions_section_header: docs.Text):
         self.__section_documentation = section_documentation
         self.__section_concept_name = section_concept_name
+        self.__instructions_section_header = instructions_section_header
 
     def _default_section_info(self, default_section_name: str) -> List[docs.ParagraphItem]:
         ret_val = []
@@ -39,5 +41,5 @@ class SectionDocumentationConstructorBase(ArticleContentsConstructor):
                 self.__section_documentation.instruction_set,
                 self._instruction_cross_ref_text,
                 instruction_group_by=self.__section_documentation.instruction_group_by)
-            output.append(docs.Section(docs.text('Instructions'),
+            output.append(docs.Section(self.__instructions_section_header,
                                        renderer.apply(environment)))

@@ -1,10 +1,11 @@
 from typing import List, Optional
 
 from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.help.program_modes.common import contents as common_contents
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import ParagraphItem
+from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 
 
 class TestSuiteSectionDocumentation(SectionDocumentation):
@@ -14,6 +15,9 @@ class TestSuiteSectionDocumentation(SectionDocumentation):
 
     def contents_description(self) -> List[ParagraphItem]:
         raise NotImplementedError()
+
+    def instructions_section_header(self) -> Text:
+        return common_contents.INSTRUCTIONS_SECTION_HEADER
 
 
 class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentation):

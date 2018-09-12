@@ -13,8 +13,9 @@ from exactly_lib.util.textformat.structure import structures as docs
 
 
 class TestSuiteSectionDocumentationConstructor(SectionDocumentationConstructorBase):
-    def __init__(self, tss_doc: TestSuiteSectionDocumentation):
-        super().__init__(tss_doc, SECTION_CONCEPT_NAME)
+    def __init__(self,
+                 tss_doc: TestSuiteSectionDocumentation):
+        super().__init__(tss_doc, SECTION_CONCEPT_NAME, tss_doc.instructions_section_header())
         self._doc = tss_doc
 
     def apply(self, environment: ConstructionEnvironment) -> doc.ArticleContents:

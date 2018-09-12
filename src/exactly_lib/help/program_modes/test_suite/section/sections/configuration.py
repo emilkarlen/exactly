@@ -6,6 +6,7 @@ from exactly_lib.help.program_modes.test_suite.section.common import \
     TestSuiteSectionDocumentationForSectionWithInstructions
 from exactly_lib.help.program_modes.test_suite.section.sections import test_case_phase_sections
 from exactly_lib.util.description import Description
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -18,6 +19,9 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
         self._tp = TextParser({
             'conf_phase': phase_names.CONFIGURATION_PHASE_NAME,
         })
+
+    def instructions_section_header(self) -> docs.Text:
+        return docs.text('Additional instructions')
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         return []
