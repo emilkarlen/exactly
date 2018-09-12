@@ -71,14 +71,17 @@ class _HierarchyGenerator:
 
 
 _PRELUDE = """\
-A suite is a sequence of "sections".
+A suite is made up of "sections".
 
 
 Some sections correspond to test case "phases".
+
+
+All sections are optional.
 """
 
 _CASES_AND_SUB_SUITES = """\
-A test suite is made up of test cases and sub suites.
+A test suite contains test cases and sub suites.
 
 
 These are specified in sections:
@@ -94,7 +97,7 @@ The contents is included in every test case in the suite.
 
 
 Note that the contents is only included in test cases listed directly in the suite -
-not in sub suites!
+not in sub suites.
 
 The reason for this is that it should be easy to run a test case standalone, and {program_name}
 has no functionality for looking up the ultimate root suite
