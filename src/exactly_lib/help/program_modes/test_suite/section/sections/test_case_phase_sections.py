@@ -1,5 +1,7 @@
 from typing import List
 
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.help.program_modes.test_suite.section.common import \
     TestSuiteSectionDocumentationBaseForSectionWithoutInstructions, TestSuiteSectionDocumentation
@@ -37,6 +39,12 @@ class _SectionThatIsIdenticalToTestCasePhase(TestSuiteSectionDocumentationBaseFo
 
         return Description(self._tp.text(_SINGLE_LINE_DESCRIPTION),
                            paragraphs)
+
+    @property
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        return [
+            TestCasePhaseCrossReference(self.name.plain)
+        ]
 
 
 def insertion_position_description(phase: SectionName,
