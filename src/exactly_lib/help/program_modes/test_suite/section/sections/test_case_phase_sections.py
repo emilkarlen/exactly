@@ -59,10 +59,10 @@ Corresponds to the {phase:syntax} test case phase.
 """
 
 _INSERTION_DESCRIPTION_PARAGRAPHS = """\
-The contents is inserted into each test case {insertion_position} the contents
+The section contents is inserted {insertion_position} the contents
 of the {phase} phase of each test case.
 """
 
 _CONTENTS_DESCRIPTION = """\
-Accepts identical contents as the {phase:syntax} test case phase.
+Identical to contents of the {phase:syntax} test case phase.
 """
