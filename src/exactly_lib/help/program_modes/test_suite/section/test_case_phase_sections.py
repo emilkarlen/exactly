@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.formatting import SectionName
-from exactly_lib.help.program_modes.test_suite.section.common import \
+from exactly_lib.help.program_modes.test_suite.cont_struct.section_documentation import \
     TestSuiteSectionDocumentationBaseForSectionWithoutInstructions, TestSuiteSectionDocumentation
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse

@@ -16,7 +16,7 @@ from exactly_lib.help.entities.syntax_elements.entity_configuration import SYNTA
 from exactly_lib.help.entities.types.entity_configuration import TYPE_ENTITY_CONFIGURATION
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
 from exactly_lib.help.program_modes.test_case.test_case_help import test_case_help
-from exactly_lib.help.program_modes.test_suite.test_suite_help import test_suite_help
+from exactly_lib.help.program_modes.test_suite.the_test_suite_help import test_suite_help
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 
 
