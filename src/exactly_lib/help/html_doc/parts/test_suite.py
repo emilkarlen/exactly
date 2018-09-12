@@ -7,6 +7,7 @@ from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
     HtmlDocGeneratorForSectionDocumentBase
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
+from exactly_lib.help.program_modes.test_suite.contents.specification import structure as test_suite_structure
 from exactly_lib.help.program_modes.test_suite.contents.specification.main import SpecificationHierarchyGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.section.render import TestSuiteSectionDocumentationConstructor
@@ -28,7 +29,21 @@ def generator(header: str,
                                                  test_suite_help)
                  ),
             Node('sections',
-                 sections_helper.generator_for_sections('Sections')
+                 hierarchy.parent(
+                     'Sections',
+                     [],
+                     [
+                         Node('cases-and-sub-suites',
+                              sections_helper.generator_for_custom_sections(
+                                  test_suite_structure.CASES_AND_SUB_SUITES_HEADER,
+                                  test_suite_help.test_cases_and_sub_suites_sections,
+                              )),
+                         Node('common-case-contents',
+                              sections_helper.generator_for_custom_sections(
+                                  test_suite_structure.COMMON_CASE_CONTENTS_AND_CONFIG_HEADER,
+                                  test_suite_help.test_case_phase_sections,
+                              )),
+                     ])
                  ),
             Node('reporters',
                  suite_reporter_conf.get_hierarchy_generator(SUITE_REPORTER_ENTITY_TYPE_NAMES.name.plural.capitalize())
