@@ -41,9 +41,6 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
         succeeding_phase = self._parser.fnap(SEQUENCE_INFO__SUCCEEDING_PHASE)
         return PhaseSequenceInfo(preceding_phase, succeeding_phase)
 
-    def is_mandatory(self) -> bool:
-        return False
-
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         return self._parser.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 

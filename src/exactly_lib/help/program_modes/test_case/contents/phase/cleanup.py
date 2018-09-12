@@ -41,9 +41,6 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
                                  self._tp.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
-    def is_mandatory(self) -> bool:
-        return False
-
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 

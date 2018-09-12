@@ -52,9 +52,6 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                                  sequence_info__succeeding_phase(BEFORE_ASSERT_PHASE_NAME),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
-    def is_mandatory(self) -> bool:
-        return False
-
     def contents_description(self) -> doc.SectionContents:
         initial_paragraphs = self._tp.fnap(_CONTENTS_DESCRIPTION) + [_escape_sequence_table()]
         return docs.section_contents(initial_paragraphs)

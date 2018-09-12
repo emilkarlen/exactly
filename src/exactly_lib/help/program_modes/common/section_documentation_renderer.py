@@ -27,12 +27,6 @@ class SectionDocumentationConstructorBase(ArticleContentsConstructor):
     def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
         raise NotImplementedError('abstract method')
 
-    def _mandatory_info_para(self):
-        mandatory_or_optional = 'mandatory' if self.__section_documentation.is_mandatory() else 'optional'
-        return docs.para('The {} {} is {}.'.format(self.__section_documentation.name,
-                                                   self.__section_concept_name,
-                                                   mandatory_or_optional))
-
     def _add_section_for_instructions(self,
                                       environment: ConstructionEnvironment,
                                       output: List[docs.SectionItem]):

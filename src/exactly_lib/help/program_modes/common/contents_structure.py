@@ -75,9 +75,6 @@ class SectionDocumentation:
     def purpose(self) -> Description:
         raise NotImplementedError()
 
-    def is_mandatory(self) -> bool:
-        raise NotImplementedError()
-
     @property
     def has_instructions(self) -> bool:
         raise NotImplementedError()

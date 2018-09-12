@@ -28,9 +28,7 @@ class TestSuiteSectionDocumentationConstructor(SectionDocumentationConstructorBa
     def _section_contents(self,
                           environment: ConstructionEnvironment,
                           purpose_rest: List[docs.ParagraphItem]) -> doc.SectionContents:
-        mandatory_info = self._mandatory_info_para()
         paras = (purpose_rest +
-                 [mandatory_info] +
                  self._default_section_info(DEFAULT_SECTION_NAME))
         sections = []
         self._add_section_for_contents_description(sections)

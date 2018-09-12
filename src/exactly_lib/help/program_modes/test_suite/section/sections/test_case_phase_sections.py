@@ -26,9 +26,6 @@ class _SectionThatIsIdenticalToTestCasePhase(TestSuiteSectionDocumentationBaseFo
             'phase': self._section_name,
         })
 
-    def is_mandatory(self) -> bool:
-        return False
-
     def contents_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(_CONTENTS_DESCRIPTION)
 
@@ -67,7 +64,7 @@ Corresponds to the {phase:syntax} test case phase.
 """
 
 _INSERTION_DESCRIPTION_PARAGRAPHS = """\
-The section contents is inserted {insertion_position} the contents
+The section contents is included {insertion_position} the contents
 of the {phase} phase of each test case.
 """
 

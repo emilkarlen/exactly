@@ -28,9 +28,6 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         return []
 
-    def is_mandatory(self) -> bool:
-        return False
-
     def contents_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(_CONTENTS_DESCRIPTION)
 
