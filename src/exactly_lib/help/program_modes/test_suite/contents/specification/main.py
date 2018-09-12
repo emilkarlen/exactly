@@ -125,5 +125,6 @@ A section may appear any number of times.
 The contents of all appearances are accumulated.
 
 
-Empty lines, and lines beginning with "#" are ignored.
+Empty lines, and lines beginning with "#" are ignored,
+unless part of an instruction.
 """
