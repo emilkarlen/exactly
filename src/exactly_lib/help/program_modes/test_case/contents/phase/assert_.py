@@ -11,7 +11,7 @@ from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip, execution_environment_prologue_for_post_act_phase, \
     env_vars_prologue_for_inherited_from_previous_phase
-from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
+from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case.phases.assert_ import AssertPhasePurpose, WithAssertPhasePurpose

@@ -6,7 +6,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.help.program_modes.test_case.contents.phase import configuration, setup, act, before_assert, assert_, \
     cleanup
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.test_case import phase_identifier
 

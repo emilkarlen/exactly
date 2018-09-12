@@ -9,7 +9,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_first_phase_executed_in_the_sandbox, sequence_info__succeeding_phase, \
     sequence_info__not_executed_if_execution_mode_is_skip
-from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
+from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case_file_structure.environment_variables import EXISTS_AT_SETUP_MAIN
 from exactly_lib.util.description import Description

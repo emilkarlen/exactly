@@ -2,7 +2,7 @@ from typing import Dict
 
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.program_modes.main_program.contents_structure import MainProgramHelp
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 
 
