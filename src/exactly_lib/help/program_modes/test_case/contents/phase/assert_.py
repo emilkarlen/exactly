@@ -1,6 +1,7 @@
 from typing import List, Callable
 
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case.phase_names import BEFORE_ASSERT_PHASE_NAME, \
@@ -48,10 +49,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
                                  self._tp.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
-    def is_mandatory(self) -> bool:
-        return False
-
-    def instruction_purpose_description(self) -> list:
+    def instruction_purpose_description(self) -> List[docs.ParagraphItem]:
         paragraphs = self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
         paragraphs += self._instruction_groups_list()
         return paragraphs
@@ -68,7 +66,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         return self._instruction_group_by
 
     @property
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,

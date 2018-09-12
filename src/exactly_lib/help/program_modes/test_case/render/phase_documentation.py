@@ -32,9 +32,7 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
     def _section_contents(self,
                           environment: ConstructionEnvironment,
                           purpose_rest_paras: List[docs.ParagraphItem]) -> doc.SectionContents:
-        mandatory_info = self._mandatory_info_para()
         paras = (purpose_rest_paras +
-                 [mandatory_info] +
                  self._default_section_info(DEFAULT_PHASE.section_name))
         sections = []
         self._add_section_for_contents_description(sections)

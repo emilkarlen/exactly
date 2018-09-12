@@ -9,9 +9,6 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem
 
 
 class CasesSectionDocumentation(TestSuiteSectionDocumentationBaseForSectionWithoutInstructions):
-    def is_mandatory(self) -> bool:
-        return False
-
     def contents_description(self) -> List[ParagraphItem]:
         return file_ref_contents_description('case')
 

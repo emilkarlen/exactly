@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
@@ -15,8 +15,7 @@ def test_case_help_with_production_phases() -> TestCaseHelp:
     return TestCaseHelp([
         _phase_doc(phase_identifier.CONFIGURATION.identifier, []),
         _phase_doc(phase_identifier.SETUP.identifier, []),
-        _phase_doc(phase_identifier.ACT.identifier, [],
-                   is_mandatory=True),
+        _phase_doc(phase_identifier.ACT.identifier, []),
         _phase_doc(phase_identifier.BEFORE_ASSERT.identifier, []),
         _phase_doc(phase_identifier.ASSERT.identifier, []),
         _phase_doc(phase_identifier.CLEANUP.identifier, []),
@@ -24,25 +23,18 @@ def test_case_help_with_production_phases() -> TestCaseHelp:
 
 
 def _phase_doc(phase_name: str,
-               instruction_names: list,
-               is_mandatory: bool = False) -> TestCasePhaseDocumentation:
+               instruction_names: List[str]) -> TestCasePhaseDocumentation:
     instruction_set = section_instruction_set(phase_name, instruction_names)
     return _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(phase_name,
-                                                                         instruction_set,
-                                                                         is_mandatory)
+                                                                         instruction_set)
 
 
 class _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(TestCasePhaseDocumentation):
     def __init__(self,
                  name: str,
-                 instruction_set: SectionInstructionSet,
-                 is_mandatory: bool = False):
+                 instruction_set: SectionInstructionSet):
         super().__init__(name)
         self._instruction_set = instruction_set
-        self._is_mandatory = is_mandatory
-
-    def is_mandatory(self) -> bool:
-        return self._is_mandatory
 
     def purpose(self) -> Description:
         return Description(docs.text('Single line purpose for phase ' + self.name.syntax),
