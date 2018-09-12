@@ -40,26 +40,33 @@ def hierarchy_generator(header: str, setup: Setup) -> structures.SectionHierarch
                                 TEXT_PARSER.fnap(REPORTING))
 
                  ),
-            Node('complete-execution',
-                 const_contents('Complete execution',
-                                _description_of_complete_execution(setup))
+            Node('scenarios',
+                 hierarchy.parent(
+                     'Scenarios',
+                     [],
+                     [
+                         Node('complete-execution',
+                              const_contents('Complete execution',
+                                             _description_of_complete_execution(setup))
 
-                 ),
-            Node('error-during-validation',
-                 const_contents('Error during validation',
-                                _error_in_validation_before_execution())
+                              ),
+                         Node('error-during-validation',
+                              const_contents('Error during validation',
+                                             _error_in_validation_before_execution())
 
-                 ),
-            Node('error-during-execution',
-                 const_contents('Error during execution',
-                                _interrupted_execution(setup))
+                              ),
+                         Node('error-during-execution',
+                              const_contents('Error during execution',
+                                             _interrupted_execution(setup))
 
-                 ),
-            Node('other-errors',
-                 const_contents('Other errors',
-                                _other_errors(setup))
+                              ),
+                         Node('other-errors',
+                              const_contents('Other errors',
+                                             _other_errors(setup))
 
-                 ),
+                              ),
+                     ]
+                 )),
             Node('summary-of-exit-codes',
                  const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
                                 [all_exit_values_summary_table()]
