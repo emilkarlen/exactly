@@ -13,6 +13,13 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
+CASES_AND_SUB_SUITES_HEADER = 'Test cases and sub suites'
+
+COMMON_CASE_CONTENTS_HEADER = 'Common test case contents'
+
+COMMON_CASE_CONTENTS_AND_CONFIG_HEADER = 'Common test case contents and configuration'
+
+
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
@@ -33,10 +40,10 @@ class _HierarchyGenerator:
             self._tp.fnap(_PRELUDE),
             [
                 Node('cases-and-sub-suites',
-                     self._cases_and_sub_suites('Test cases and sub suites')
+                     self._cases_and_sub_suites(CASES_AND_SUB_SUITES_HEADER)
                      ),
                 Node('common-test-case-contents',
-                     self._common_tc_contents('Common test case contents')
+                     self._common_tc_contents(COMMON_CASE_CONTENTS_HEADER)
                      ),
             ])
 
