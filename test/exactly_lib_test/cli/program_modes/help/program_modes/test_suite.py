@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.cli.program_modes.help.program_modes.test_suite import request_rendering as sut
 from exactly_lib.cli.program_modes.help.program_modes.test_suite.help_request import TestSuiteHelpItem
-from exactly_lib.help.program_modes.test_suite.cont_struct.test_suite_help import TestSuiteHelp
+from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib_test.common.test_resources.instruction_documentation import instruction_documentation
 from exactly_lib_test.util.textformat.construction.test_resources import CONSTRUCTION_ENVIRONMENT
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check

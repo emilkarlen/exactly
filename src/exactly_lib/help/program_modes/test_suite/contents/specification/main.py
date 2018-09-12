@@ -4,8 +4,8 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_suite import section_names_with_syntax
-from exactly_lib.help.program_modes.test_suite.cont_struct.test_suite_help import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
+from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
     constant_section_contents
