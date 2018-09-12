@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.doc_format import syntax_text, instruction_name_text
 from exactly_lib.definitions.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
@@ -27,7 +29,7 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
 
     def _section_contents(self,
                           environment: ConstructionEnvironment,
-                          purpose_rest_paras: list) -> doc.SectionContents:
+                          purpose_rest_paras: List[docs.ParagraphItem]) -> doc.SectionContents:
         mandatory_info = self._mandatory_info_para()
         paras = (purpose_rest_paras +
                  [mandatory_info] +
@@ -41,17 +43,17 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
 
         return doc.SectionContents(paras, sections)
 
-    def _add_section_for_contents_description(self, sections: list):
+    def _add_section_for_contents_description(self, output: List[docs.SectionItem]):
         section_contents = self.doc.contents_description()
-        sections.append(doc.Section(self.CONTENTS_HEADER,
-                                    section_contents))
+        output.append(doc.Section(self.CONTENTS_HEADER,
+                                  section_contents))
 
-    def _add_section_for_phase_sequence_description(self, sections: list):
+    def _add_section_for_phase_sequence_description(self, output: List[docs.SectionItem]):
         si = self.doc.sequence_info()
-        sections.append(docs.section('Phase execution order',
-                                     si.prelude + si.preceding_phase + si.succeeding_phase))
+        output.append(docs.section('Phase execution order',
+                                   si.prelude + si.preceding_phase + si.succeeding_phase))
 
-    def _add_section_for_environment(self, sections: list):
+    def _add_section_for_environment(self, output: List[docs.SectionItem]):
         eei = self.doc.execution_environment_info()
         paragraphs = []
         if eei.cwd_at_start_of_phase:
@@ -66,7 +68,7 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
                                             'these environment variables will not be available!'))
         paragraphs.extend(eei.prologue)
         if paragraphs:
-            sections.append(docs.section('Environment', paragraphs))
+            output.append(docs.section('Environment', paragraphs))
 
     def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
         return docs.cross_reference(instruction_name_text(instr_name),
@@ -75,9 +77,9 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
                                     allow_rendering_of_visible_extra_target_text=False)
 
     @staticmethod
-    def _environment_variables_list(environment_variable_names: list) -> ParagraphItem:
+    def _environment_variables_list(environment_variable_names: List[str]) -> ParagraphItem:
         return docs.simple_header_only_list(map(syntax_text, environment_variable_names),
                                             lists.ListType.ITEMIZED_LIST)
 
-    def _add_section_for_see_also(self, environment: ConstructionEnvironment, sections: list):
-        sections += see_also_sections(self.doc.see_also_targets, environment)
+    def _add_section_for_see_also(self, environment: ConstructionEnvironment, output: List[docs.SectionItem]):
+        output += see_also_sections(self.doc.see_also_targets, environment)

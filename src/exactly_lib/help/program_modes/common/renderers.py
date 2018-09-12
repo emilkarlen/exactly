@@ -1,5 +1,4 @@
-import types
-from typing import Sequence, List, Callable
+from typing import Sequence, List, Callable, Optional
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet, \
@@ -19,7 +18,8 @@ class InstructionSetSummaryConstructor(ParagraphItemsConstructor):
     def __init__(self,
                  instruction_set: SectionInstructionSet,
                  name_2_name_text_fun: Callable[[str], docs.Text],
-                 instruction_group_by: Callable[[Sequence[InstructionDocumentation]], InstructionGroup]):
+                 instruction_group_by: Optional[
+                     Callable[[Sequence[InstructionDocumentation]], Sequence[InstructionGroup]]]):
         self.instruction_set = instruction_set
         self.name_2_name_text_fun = name_2_name_text_fun
         self.instruction_group_by = instruction_group_by
@@ -62,8 +62,9 @@ class InstructionSetSummaryConstructor(ParagraphItemsConstructor):
 
 class SectionInstructionSetConstructor(SectionContentsConstructorFromParagraphItemsConstructor):
     def __init__(self, instruction_set: SectionInstructionSet,
-                 name_2_name_text_fun: types.FunctionType = docs.text,
-                 instruction_group_by: types.FunctionType = None):
+                 name_2_name_text_fun: Callable[[str], docs.Text] = docs.text,
+                 instruction_group_by:
+                 Optional[Callable[[Sequence[InstructionDocumentation]], Sequence[InstructionGroup]]] = None):
         super().__init__([InstructionSetSummaryConstructor(instruction_set,
                                                            name_2_name_text_fun,
                                                            instruction_group_by)])
