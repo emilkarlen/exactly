@@ -6,17 +6,19 @@ from exactly_lib.definitions.misc_texts import SYNTAX_ERROR_NAME
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
     post_setup_validation_step_name, \
     step_with_single_exit_value
-from exactly_lib.help.program_modes.test_case.contents.util import SectionContentsConstructorWithSetup
 from exactly_lib.processing import exit_values
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+    SectionContentsConstructor
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.document import SectionContents
+from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-class ContentsConstructor(SectionContentsConstructorWithSetup):
+class ContentsConstructor(SectionContentsConstructor):
     def __init__(self, setup: Setup):
-        super().__init__(setup, {
+        self._setup = setup
+        self._tp = TextParser({
             'phase': setup.phase_names,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
             'symbol': SYMBOL_CONCEPT_INFO.name.singular,
@@ -26,7 +28,7 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
         })
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
-        preamble_paragraphs = self.fnap(BEFORE_STEP_LIST)
+        preamble_paragraphs = self._tp.fnap(BEFORE_STEP_LIST)
         paragraphs = (
                 preamble_paragraphs +
                 [self.processing_step_list()]
@@ -40,26 +42,26 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
         items = [
             docs.list_item('preprocessing',
                            step_with_single_exit_value(
-                               self.fnap(PURPOSE_OF_PREPROCESSING),
-                               self.text_parser.para(FAILURE_CONDITION_OF_PREPROCESSING),
+                               self._tp.fnap(PURPOSE_OF_PREPROCESSING),
+                               self._tp.para(FAILURE_CONDITION_OF_PREPROCESSING),
                                exit_values.NO_EXECUTION__PRE_PROCESS_ERROR)
                            ),
             docs.list_item('syntax checking',
                            step_with_single_exit_value(
-                               self.fnap(PURPOSE_OF_SYNTAX_CHECKING),
-                               self.text_parser.para(FAILURE_CONDITION_OF_SYNTAX_CHECKING),
+                               self._tp.fnap(PURPOSE_OF_SYNTAX_CHECKING),
+                               self._tp.para(FAILURE_CONDITION_OF_SYNTAX_CHECKING),
                                exit_values.NO_EXECUTION__SYNTAX_ERROR)
                            ),
             docs.list_item('validation',
                            step_with_single_exit_value(
-                               self.fnap(PURPOSE_OF_VALIDATION),
-                               self.text_parser.para(FAILURE_CONDITION_OF_VALIDATION),
+                               self._tp.fnap(PURPOSE_OF_VALIDATION),
+                               self._tp.para(FAILURE_CONDITION_OF_VALIDATION),
                                exit_values.EXECUTION__VALIDATION_ERROR)
                            ),
             docs.list_item('execution',
-                           self.fnap(EXECUTION_DESCRIPTION) +
+                           self._tp.fnap(EXECUTION_DESCRIPTION) +
                            [self.execution_sub_steps_description()] +
-                           self.fnap(OUTCOME_OF_EXECUTION)),
+                           self._tp.fnap(OUTCOME_OF_EXECUTION)),
         ]
         return lists.HeaderContentList(items,
                                        lists.Format(lists.ListType.ORDERED_LIST,
@@ -68,8 +70,8 @@ class ContentsConstructor(SectionContentsConstructorWithSetup):
 
     def execution_sub_steps_description(self) -> docs.ParagraphItem:
         return lists.HeaderContentList([
-            docs.list_item(self.text_parser.text('execution of {phase[setup]:syntax}')),
-            docs.list_item(docs.text(post_setup_validation_step_name(self.setup))),
+            docs.list_item(self._tp.text('execution of {phase[setup]:syntax}')),
+            docs.list_item(docs.text(post_setup_validation_step_name(self._setup))),
             docs.list_item(docs.text('execution of remaining phases')),
         ],
             lists.Format(lists.ListType.ORDERED_LIST,

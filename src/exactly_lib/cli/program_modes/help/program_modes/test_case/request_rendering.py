@@ -6,8 +6,8 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.common.renderers import SectionInstructionSetConstructor
 from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.specification import main as tc_specification
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
-from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import TestCasePhaseDocumentation
+from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import TestCasePhaseDocumentation
+from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render import instruction_set
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
 from exactly_lib.help.render.cli_program import \

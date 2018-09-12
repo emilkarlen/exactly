@@ -5,7 +5,7 @@ from exactly_lib.definitions.doc_format import exit_value_text
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.help import texts
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import first_column_is_header_table, para, cell

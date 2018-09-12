@@ -3,7 +3,7 @@ from exactly_lib.help.program_modes.test_case.contents.specification import file
 from exactly_lib.help.program_modes.test_case.contents.specification import outcome
 from exactly_lib.help.program_modes.test_case.contents.specification import processing as processing
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
-from exactly_lib.help.program_modes.test_case.contents_structure import TestCaseHelp
+from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \

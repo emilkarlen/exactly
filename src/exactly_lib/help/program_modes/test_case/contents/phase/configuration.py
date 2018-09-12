@@ -10,7 +10,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionInst
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_configuration_phase, \
     env_vars_for_configuration_phase
-from exactly_lib.help.program_modes.test_case.phase_help_contents_structures import \
+from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import \
     TestCasePhaseDocumentationForPhaseWithInstructions, PhaseSequenceInfo, ExecutionEnvironmentInfo
 from exactly_lib.test_case.test_case_status import NAME_SKIP
 from exactly_lib.util.description import Description
