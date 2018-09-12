@@ -1,18 +1,18 @@
-import types
-from typing import Sequence
+from typing import Sequence, List, Callable
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.help import std_tags
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents_constructor import ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionItemGeneratorNode, \
     SectionHierarchyGenerator, LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import StringText
+from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
 _INSTRUCTIONS_IN = 'The instructions in the {section} {section_concept}.'
 
@@ -21,10 +21,10 @@ class HtmlDocGeneratorForSectionDocumentBase:
     def __init__(self,
                  section_concept_name: str,
                  sections: Sequence[SectionDocumentation],
-                 get_article_contents_constructor_for_section_document: types.FunctionType):
+                 get_article_contents_constructor: Callable[[SectionDocumentation], ArticleContentsConstructor]):
         self.section_concept_name = section_concept_name
         self.sections = sections
-        self.get_article_contents_constructor_for_section_document = get_article_contents_constructor_for_section_document
+        self.get_article_contents_constructor = get_article_contents_constructor
 
     def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
         raise NotImplementedError()
@@ -67,7 +67,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
                                                      cross_reference_target)
             section_node = LeafArticleGeneratorNode(
                 section_target_info,
-                self.get_article_contents_constructor_for_section_document(section),
+                self.get_article_contents_constructor(section),
                 tags={std_tags.SECTION})
             sub_section_nodes.append(section_node)
 
@@ -99,7 +99,8 @@ class HtmlDocGeneratorForSectionDocumentBase:
 class _SectionInstructionsNodeConstructor:
     def __init__(self,
                  section_concept_name: str,
-                 mk_instruction_cross_ref_target: types.FunctionType,
+                 mk_instruction_cross_ref_target: Callable[
+                     [InstructionDocumentation, SectionDocumentation], CrossReferenceId],
                  section_target_factory: CustomTargetInfoFactory,
                  section: SectionDocumentation
                  ):
@@ -115,13 +116,13 @@ class _SectionInstructionsNodeConstructor:
             self._initial_paras(),
             self._instructions_sub_nodes())
 
-    def _initial_paras(self) -> list:
+    def _initial_paras(self) -> List[ParagraphItem]:
         return docs.paras(_INSTRUCTIONS_IN.format(
             section_concept=self.section_concept_name,
             section=self.section.name)
         )
 
-    def _instructions_sub_nodes(self) -> list:
+    def _instructions_sub_nodes(self) -> Sequence[SectionItemGeneratorNode]:
         instr_docs = self.section.instruction_set.instruction_documentations
         if self.section.instruction_group_by:
             return self._instruction_group_nodes(self.section.instruction_group_by.__call__(instr_docs))
@@ -129,13 +130,13 @@ class _SectionInstructionsNodeConstructor:
             return self._instruction_nodes(instr_docs)
 
     def _instruction_nodes(self,
-                           instructions: list) -> list:
+                           instructions: Sequence[InstructionDocumentation]) -> List[SectionItemGeneratorNode]:
         return [
             self._instruction_node(instruction)
             for instruction in instructions
         ]
 
-    def _instruction_group_nodes(self, groups: list) -> list:
+    def _instruction_group_nodes(self, groups: Sequence[InstructionGroup]) -> List[SectionItemGeneratorNode]:
         return list(map(self._instruction_group_node, groups))
 
     def _instruction_group_node(self, group: InstructionGroup) -> SectionItemGeneratorNode:
