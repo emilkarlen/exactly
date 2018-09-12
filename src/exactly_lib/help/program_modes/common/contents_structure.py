@@ -90,7 +90,8 @@ class SectionDocumentation:
         raise NotImplementedError('abstract method')
 
     @property
-    def instruction_group_by(self) -> Callable[[List[InstructionDocumentation]], List[InstructionGroup]]:
+    def instruction_group_by(self
+                             ) -> Optional[Callable[[Sequence[InstructionDocumentation]], Sequence[InstructionGroup]]]:
         """
         A function group instructions for presentation.
 

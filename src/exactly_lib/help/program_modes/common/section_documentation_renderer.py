@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import default_section_para, SectionInstructionSetConstructor
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
@@ -14,7 +16,7 @@ class SectionDocumentationConstructorBase(ArticleContentsConstructor):
         self.__section_documentation = section_documentation
         self.__section_concept_name = section_concept_name
 
-    def _default_section_info(self, default_section_name: str) -> list:
+    def _default_section_info(self, default_section_name: str) -> List[docs.ParagraphItem]:
         ret_val = []
         if self.__section_documentation.name.plain == default_section_name:
             ret_val.append(default_section_para(self.__section_concept_name))
@@ -31,11 +33,11 @@ class SectionDocumentationConstructorBase(ArticleContentsConstructor):
 
     def _add_section_for_instructions(self,
                                       environment: ConstructionEnvironment,
-                                      sections: list):
+                                      output: List[docs.SectionItem]):
         if self.__section_documentation.has_instructions:
             renderer = SectionInstructionSetConstructor(
                 self.__section_documentation.instruction_set,
                 self._instruction_cross_ref_text,
                 instruction_group_by=self.__section_documentation.instruction_group_by)
-            sections.append(docs.Section(docs.text('Instructions'),
-                                         renderer.apply(environment)))
+            output.append(docs.Section(docs.text('Instructions'),
+                                       renderer.apply(environment)))
