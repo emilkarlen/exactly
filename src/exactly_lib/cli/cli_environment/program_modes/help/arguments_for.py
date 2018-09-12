@@ -3,8 +3,6 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
     SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, TYPE_ENTITY_TYPE_NAMES, \
     BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
-from exactly_lib.help.program_modes.test_case.config import phase_help_name
-from exactly_lib.test_case import phase_identifier
 
 
 def complete_help_for(help_arguments: list) -> list:
@@ -33,10 +31,6 @@ def case_specification() -> list:
 
 def case_instructions() -> list:
     return [clo.INSTRUCTIONS]
-
-
-def case_phase(ph: phase_identifier.Phase) -> list:
-    return case_phase_for_name(phase_help_name(ph))
 
 
 def case_phase_for_name(phase_name: str) -> list:

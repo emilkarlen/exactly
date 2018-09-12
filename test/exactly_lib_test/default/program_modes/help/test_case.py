@@ -2,7 +2,6 @@ import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
 from exactly_lib.definitions.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.help.program_modes.test_case.config import phase_help_name
 from exactly_lib.test_case import phase_identifier
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
@@ -20,7 +19,7 @@ def suite_that_does_require_main_program_runner(main_program_runner: MainProgram
 def _test_cases_for_all_case_phases() -> list:
     return [
         ProcessTestCase("""help for "case/phase '%s'" SHOULD be successful""" % phase.section_name,
-                        HelpInvokation(arguments_for.case_phase(phase)),
+                        HelpInvokation(arguments_for.case_phase_for_name(phase.identifier)),
                         RESULT_IS_SUCCESSFUL)
         for phase in phase_identifier.ALL
     ]
@@ -37,17 +36,18 @@ def _global_test_cases() -> list:
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "case instruction in phase" SHOULD be successful',
-                        HelpInvokation(arguments_for.case_instruction_in_phase(phase_help_name(phase_identifier.SETUP),
-                                                                               CHANGE_DIR_INSTRUCTION_NAME)),
+                        HelpInvokation(arguments_for.case_instruction_in_phase(
+                            phase_identifier.SETUP.identifier,
+                            CHANGE_DIR_INSTRUCTION_NAME)),
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "phase specification" SHOULD be successful',
-                        HelpInvokation(arguments_for.case_phase(phase_identifier.SETUP)),
+                        HelpInvokation(arguments_for.case_phase_for_name(phase_identifier.SETUP.identifier)),
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "phase instruction list" SHOULD be successful',
                         HelpInvokation(
-                            arguments_for.case_instructions_in_phase(phase_help_name(phase_identifier.SETUP))),
+                            arguments_for.case_instructions_in_phase(phase_identifier.SETUP.identifier)),
                         RESULT_IS_SUCCESSFUL),
 
         ProcessTestCase('help for "case instruction list" SHOULD be successful',
