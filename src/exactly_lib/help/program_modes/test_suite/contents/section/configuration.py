@@ -6,7 +6,7 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_suite.cont_struct.section_documentation import \
     TestSuiteSectionDocumentationForSectionWithInstructions
-from exactly_lib.help.program_modes.test_suite.section import test_case_phase_sections
+from exactly_lib.help.program_modes.test_suite.contents.section import test_case_phase_sections
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
