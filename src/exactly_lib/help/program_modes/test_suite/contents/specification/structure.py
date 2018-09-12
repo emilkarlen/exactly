@@ -2,7 +2,9 @@ from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import section_names
+from exactly_lib.definitions.test_suite import section_names_with_syntax
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure import TestSuiteHelp
 from exactly_lib.util.textformat.construction.section_contents_constructor import constant_section_contents
@@ -19,6 +21,7 @@ COMMON_CASE_CONTENTS_HEADER = 'Common test case contents'
 
 COMMON_CASE_CONTENTS_AND_CONFIG_HEADER = 'Common test case contents and configuration'
 
+ADDITIONAL_TEST_CASE_CONFIG_HEADER = 'Additional test case configuration'
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
@@ -32,6 +35,8 @@ class _HierarchyGenerator:
         self._suite_help = suite_help
         self._tp = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+            'conf_section': section_names_with_syntax.SECTION_NAME__CONF,
+            'conf_phase': phase_names.CONFIGURATION_PHASE_NAME,
         })
 
     def generator(self, header: str) -> SectionHierarchyGenerator:
@@ -44,6 +49,13 @@ class _HierarchyGenerator:
                      ),
                 Node('common-test-case-contents',
                      self._common_tc_contents(COMMON_CASE_CONTENTS_HEADER)
+                     ),
+                Node('additional-test-case-conf',
+                     hierarchy.leaf(
+                         ADDITIONAL_TEST_CASE_CONFIG_HEADER,
+                         constant_section_contents(
+                             docs.section_contents(self._tp.fnap(_ADDITIONAL_TEST_CASE_CONFIG))
+                         ))
                      ),
             ])
 
@@ -112,4 +124,9 @@ that a test case belongs to.
 
 
 Sections:
+"""
+
+_ADDITIONAL_TEST_CASE_CONFIG = """\
+The {conf_section} section has some additional configuration possibilities,
+compared to those of the {conf_phase} test case phase.
 """
