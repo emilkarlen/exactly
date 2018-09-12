@@ -6,7 +6,6 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
-from exactly_lib.util.textformat.structure.paragraph import Paragraph
 
 
 class SectionInstructionSet(tuple):
@@ -49,7 +48,7 @@ class InstructionGroup(tuple):
         return self[1]
 
     @property
-    def description_paragraphs(self) -> Sequence[Paragraph]:
+    def description_paragraphs(self) -> Sequence[ParagraphItem]:
         return self[2]
 
     @property

@@ -1,9 +1,12 @@
+from typing import Sequence
+
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionItemConstructor, \
     ConstructionEnvironment, ArticleContentsConstructor, ArticleConstructor, SectionConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, TargetInfo, \
     CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
@@ -100,14 +103,9 @@ class SectionItemGeneratorNodeWithSubSections(SectionItemGeneratorNodeWithRoot):
 
     def __init__(self,
                  root_target_info: TargetInfo,
-                 initial_paragraphs: list,
-                 sub_sections: list,
+                 initial_paragraphs: Sequence[ParagraphItem],
+                 sub_sections: Sequence[SectionItemGeneratorNode],
                  ):
-        """
-        :param root_target_info: Root section
-        :param initial_paragraphs: [ParagraphItem]
-        :param sub_sections: [SectionItemGeneratorNode]
-        """
         super().__init__(root_target_info)
         self._sub_section_nodes = sub_sections
         self._initial_paragraphs = initial_paragraphs
@@ -126,7 +124,7 @@ class SectionItemGeneratorNodeWithSubSections(SectionItemGeneratorNodeWithRoot):
                 sub_sections = [ss.section_item_constructor(hierarchy_environment).apply(environment)
                                 for ss in super_self._sub_section_nodes]
                 return doc.Section(super_self._root_target_info.presentation_text,
-                                   doc.SectionContents(super_self._initial_paragraphs,
+                                   doc.SectionContents(list(super_self._initial_paragraphs),
                                                        sub_sections),
                                    target=super_self._root_target_info.target,
                                    tags=hierarchy_environment.toc_section_item_tags)

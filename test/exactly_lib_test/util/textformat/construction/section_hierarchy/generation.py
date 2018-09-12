@@ -78,7 +78,8 @@ class Test(unittest.TestCase):
         target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object1 = doc.empty_section_contents()
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
-        expected_root_initial_paras = docs.paras('root initial paras')
+        expected_root_initial_para = docs.para('root initial paras')
+        expected_root_initial_paras = [expected_root_initial_para]
         object_to_test = hierarchy.parent(
             'root header',
             expected_root_initial_paras,
@@ -104,7 +105,7 @@ class Test(unittest.TestCase):
             target=equals_custom_cross_ref_test_impl(expected_root_target_info.target),
             header=asrt_para.equals_text(expected_root_target_info.presentation_text),
             contents=section_contents_matches(
-                initial_paragraphs=asrt.Is(expected_root_initial_paras),
+                initial_paragraphs=asrt.matches_sequence([asrt.Is(expected_root_initial_para)]),
                 sections=asrt.matches_sequence([
                     section_matches(
                         target=equals_custom_cross_ref_test_impl(sub1_target.target),
