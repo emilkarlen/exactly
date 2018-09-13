@@ -13,7 +13,8 @@ from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
-def generator(header: str, test_case_help: TestCaseHelp
+def generator(header: str,
+              test_case_help: TestCaseHelp
               ) -> structures.SectionHierarchyGenerator:
     setup = Setup(test_case_help)
     return hierarchy.parent(
@@ -22,10 +23,10 @@ def generator(header: str, test_case_help: TestCaseHelp
         [
             Node('introduction', leaf('Introduction', intro.Documentation())),
             Node('structure', structure.hierarchy_root('Structure', setup)),
-            Node('environment', leaf('Environment', env_doc.Documentation(setup))),
-            Node('file-syntax', file_syntax.generator('Test case file syntax', setup)),
-            Node('processing', leaf('Test case processing steps', processing.ContentsConstructor(setup))),
-            Node('outcome', outcome.hierarchy_generator('Test outcome', setup)),
+            Node('environment', leaf('Execution environment', env_doc.Documentation(setup))),
+            Node('file-syntax', file_syntax.generator('File syntax', setup)),
+            Node('processing', leaf('Processing steps', processing.ContentsConstructor(setup))),
+            Node('outcome', outcome.hierarchy_generator('Outcome', setup)),
         ])
 
 

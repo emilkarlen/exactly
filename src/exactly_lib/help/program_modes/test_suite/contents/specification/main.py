@@ -57,11 +57,11 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                                structure.hierarchy_generator('Structure', self._suite_help)
                                ),
                 hierarchy.Node('file-syntax',
-                               hierarchy.leaf('Suite file syntax',
+                               hierarchy.leaf('File syntax',
                                               self._section_of_parsed(_FILE_SYNTAX))
                                ),
                 hierarchy.Node('outcome',
-                               outcome.hierarchy_generator('Suite outcome')),
+                               outcome.hierarchy_generator('Outcome')),
             ])
 
         return generator.generator_node(target_factory)
