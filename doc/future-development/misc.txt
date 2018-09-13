@@ -158,25 +158,6 @@ samma sätt som med omgivningsvariabler.
 assert/JÄMFÖRELSE
 Vore naturligtvis även användbart att kunna asserta att innehållet i en
 katalog är identiskt (el innehåller som minst) en sådan hårdkodad filstruktur.
-* Have setup in test suites
-<2016-12-22 tor>
-Both variants are usefull:
-  1 setup that is executed once for each test case (thus included in each tc)
-  2 setup that is executed once for the whole suite:
-    [setup] and [cleanup] of the suite
-
-Option (1) may be difficult to implement, since each test is run in its
-own sandbox.
-
-** Implementation
-Setup instructions should be parsed and prepended to instructions from
-the test case file.
-This constitutes a kind of file inclusion.  Perhaps the easiest way to
-get some file inclusion mechanism.
-* suite: default values for configuration parameters
-<2016-12-22 tor>
-Any instruction in the test case "conf" phase could be possible to use in test
-suites, and would provide defaults to test cases.
 * non-assertions in [assert]
 <2017-09-24 Sun>
 shall they be specified using a special instruction "do" to make
