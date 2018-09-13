@@ -29,7 +29,7 @@ def suite() -> unittest.TestSuite:
 
 class ActPhaseConfig(PhaseConfig):
     def phase_name(self) -> SectionName:
-        return phase_names.ACT_PHASE_NAME
+        return phase_names.ACT
 
     def phase_contents_line_that_registers(self, marker_to_register: str) -> str:
         return marker_to_register

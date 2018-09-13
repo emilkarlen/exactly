@@ -5,8 +5,8 @@ from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestS
 from exactly_lib.common import instruction_setup
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.definitions.test_case.phase_names import ASSERT_PHASE_NAME, ACT_PHASE_NAME
-from exactly_lib.definitions.test_suite.section_names_with_syntax import SECTION_NAME__CONF
+from exactly_lib.definitions.test_case.phase_names import ASSERT, ACT
+from exactly_lib.definitions.test_suite.section_names import CONFIGURATION
 from exactly_lib.processing import exit_values
 from exactly_lib.processing import instruction_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -168,21 +168,21 @@ def preprocessor_that_gives_const_source_with_single_assert_instruction(instruct
 
 def test_suite_source_with_single_conf_instruction(instruction: str) -> str:
     return lines_content([
-        SECTION_NAME__CONF.syntax,
+        CONFIGURATION.syntax,
         instruction,
     ])
 
 
 def test_case_source_with_single_assert_phase_instruction(instruction: str) -> str:
     return lines_content([
-        ASSERT_PHASE_NAME.syntax,
+        ASSERT.syntax,
         instruction,
     ])
 
 
 def test_case_source_with_single_act_phase_instruction(instruction: str) -> str:
     return lines_content([
-        ACT_PHASE_NAME.syntax,
+        ACT.syntax,
         instruction,
     ])
 

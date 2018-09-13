@@ -2,7 +2,7 @@ import functools
 
 from exactly_lib.definitions import type_system
 from exactly_lib.definitions.entity.all_entity_types import TYPE_ENTITY_TYPE_NAMES
-from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME
+from exactly_lib.definitions.test_case.phase_names import ACT
 from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
@@ -40,7 +40,7 @@ class IndividualTypeConstructor(ArticleContentsConstructor):
     def __init__(self, type_doc: TypeDocumentation):
         self.doc = type_doc
         format_map = {
-            'act_phase': ACT_PHASE_NAME.emphasis,
+            'act_phase': ACT.emphasis,
         }
         self._parser = TextParser(format_map)
 

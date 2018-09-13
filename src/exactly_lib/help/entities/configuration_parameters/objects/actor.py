@@ -4,8 +4,8 @@ from exactly_lib.definitions.entity import actors
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.conf_params import ACTOR_CONF_PARAM_INFO
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME
-from exactly_lib.definitions.test_suite import formatted_section_names
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION
+from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import structures as docs
@@ -23,9 +23,9 @@ class _ActorConcept(ConfigurationParameterDocumentation):
         return (
             [
                 concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
-                TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+                TestCasePhaseInstructionCrossReference(CONFIGURATION.plain,
                                                        ACTOR_INSTRUCTION_NAME),
-                TestSuiteSectionInstructionCrossReference(formatted_section_names.CONFIGURATION_SECTION_NAME.plain,
+                TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
                                                           ACTOR_INSTRUCTION_NAME),
             ]
             +

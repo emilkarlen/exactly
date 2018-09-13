@@ -1,7 +1,7 @@
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity.conf_params import TIMEOUT_CONF_PARAM_INFO
 from exactly_lib.definitions.test_case.instructions.instruction_names import TIMEOUT_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION, \
     PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -22,7 +22,7 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
 
     def see_also_targets(self) -> list:
         return [
-            TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+            TestCasePhaseInstructionCrossReference(CONFIGURATION.plain,
                                                    TIMEOUT_INSTRUCTION_NAME),
         ]
 

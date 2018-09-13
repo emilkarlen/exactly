@@ -4,7 +4,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossRef
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, \
     EntityTypeNames
 from exactly_lib.definitions.entity import all_entity_types
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME, PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION, PHASE_NAME_DICTIONARY
 from exactly_lib.util.name import Name, name_with_plural_s
 
 
@@ -39,7 +39,7 @@ A value set in the {0} phase that determine how the remaining phases are execute
 
 CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
     all_entity_types.CONF_PARAM_ENTITY_TYPE_NAMES,
-    _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION_PHASE_NAME)
+    _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION)
 )
 
 TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(

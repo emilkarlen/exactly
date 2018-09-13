@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
 
 class BeforeAssertPhaseConfig(PhaseConfigForPhaseWithInstructions):
     def phase_name(self) -> SectionName:
-        return phase_names.BEFORE_ASSERT_PHASE_NAME
+        return phase_names.BEFORE_ASSERT
 
     def mk_instruction_set_for_phase(self, instructions: Dict[str, SingleInstructionSetup]) -> InstructionsSetup:
         return InstructionsSetup(before_assert_instruction_set=instructions)

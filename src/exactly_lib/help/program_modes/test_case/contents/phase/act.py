@@ -3,9 +3,9 @@ from exactly_lib.definitions import test_case_file_structure as tc_fs, formattin
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params, actors
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import SETUP_PHASE_NAME, \
-    BEFORE_ASSERT_PHASE_NAME, \
-    ASSERT_PHASE_NAME, PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_case.phase_names import SETUP, \
+    BEFORE_ASSERT, \
+    ASSERT, PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.concepts.objects.actor import HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
@@ -48,8 +48,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                            actor_info)
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo(sequence_info__preceding_phase(SETUP_PHASE_NAME),
-                                 sequence_info__succeeding_phase(BEFORE_ASSERT_PHASE_NAME),
+        return PhaseSequenceInfo(sequence_info__preceding_phase(SETUP),
+                                 sequence_info__succeeding_phase(BEFORE_ASSERT),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def contents_description(self) -> doc.SectionContents:
@@ -68,9 +68,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(SETUP_PHASE_NAME.plain),
-            TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
-            TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(SETUP.plain),
+            TestCasePhaseCrossReference(BEFORE_ASSERT.plain),
+            TestCasePhaseCrossReference(ASSERT.plain),
             actors.NULL_ACTOR.cross_reference_target,
             actors.DEFAULT_ACTOR.cross_reference_target,
         ]

@@ -3,7 +3,7 @@ from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import SectionName
-from exactly_lib.definitions.test_suite import section_names_with_syntax
+from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.test_suite import exit_values
@@ -38,8 +38,8 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
             'executable_name': program_info.PROGRAM_NAME,
             'suite_program_mode': SUITE_COMMAND,
             'reporter_concept': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
-            'cases': section_names_with_syntax.SECTION_NAME__CASES,
-            'suites': section_names_with_syntax.SECTION_NAME__SUITS,
+            'cases': section_names.CASES,
+            'suites': section_names.SUITES,
             'ALL_PASS': exit_values.ALL_PASS.exit_identifier,
             'generic_section': SectionName('NAME'),
         })

@@ -2,8 +2,8 @@ from typing import List
 
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.doc_format import instruction_name_text
-from exactly_lib.definitions.test_suite.section_names import DEFAULT_SECTION_NAME
-from exactly_lib.definitions.test_suite.section_names import SECTION_CONCEPT_NAME
+from exactly_lib.definitions.test_suite.section_names_plain import DEFAULT_SECTION_NAME
+from exactly_lib.definitions.test_suite.section_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationConstructorBase
 from exactly_lib.help.program_modes.test_suite.contents_structure.section_documentation import \
     TestSuiteSectionDocumentation

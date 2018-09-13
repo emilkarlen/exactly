@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
 
 class CleanupPhaseConfig(PhaseConfigForPhaseWithInstructions):
     def phase_name(self) -> SectionName:
-        return phase_names.CLEANUP_PHASE_NAME
+        return phase_names.CLEANUP
 
     def mk_instruction_set_for_phase(self, instructions: Dict[str, SingleInstructionSetup]) -> InstructionsSetup:
         return InstructionsSetup(cleanup_instruction_set=instructions)

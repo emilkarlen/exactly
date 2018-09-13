@@ -4,8 +4,8 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME, ASSERT_PHASE_NAME, \
-    SETUP_PHASE_NAME, PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_case.phase_names import ACT, ASSERT, \
+    SETUP, PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
@@ -35,15 +35,15 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
                            self._tp.fnap(REST_OF_DESCRIPTION))
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo(sequence_info__preceding_phase(ACT_PHASE_NAME),
-                                 sequence_info__succeeding_phase(ASSERT_PHASE_NAME),
+        return PhaseSequenceInfo(sequence_info__preceding_phase(ACT),
+                                 sequence_info__succeeding_phase(ASSERT),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        previous = '{setup} phase'.format(setup=SETUP_PHASE_NAME.emphasis)
+        previous = '{setup} phase'.format(setup=SETUP.emphasis)
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_is_same_as_at_end_of_the(previous),
             EXISTS_AT_BEFORE_ASSERT_MAIN,
@@ -55,8 +55,8 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(ACT_PHASE_NAME.plain),
-            TestCasePhaseCrossReference(ASSERT_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(ACT.plain),
+            TestCasePhaseCrossReference(ASSERT.plain),
         ]
 
 

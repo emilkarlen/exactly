@@ -3,7 +3,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseI
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.file_ref import REL_HOME_ACT_OPTION
 from exactly_lib.definitions.test_case.instructions.instruction_names import HOME_ACT_DIRECTORY_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME, \
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION, \
     PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HOME_ACT
@@ -28,7 +28,7 @@ class _HomeActDirectoryConfigurationParameter(ConfigurationParameterDocumentatio
 
     def see_also_targets(self) -> list:
         return [
-            TestCasePhaseInstructionCrossReference(CONFIGURATION_PHASE_NAME.plain,
+            TestCasePhaseInstructionCrossReference(CONFIGURATION.plain,
                                                    HOME_ACT_DIRECTORY_INSTRUCTION_NAME),
         ]
 

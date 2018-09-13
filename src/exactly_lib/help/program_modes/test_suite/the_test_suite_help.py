@@ -1,7 +1,7 @@
 from typing import Dict
 
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.definitions.test_suite import section_names
+from exactly_lib.definitions.test_suite import section_names_plain
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_suite.contents.section.cases import CasesSectionDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.section.configuration import ConfigurationSectionDocumentation
@@ -16,33 +16,33 @@ def test_suite_help(configuration_section_instructions: Dict[str, SingleInstruct
     """
     return TestSuiteHelp(
         [
-            CasesSectionDocumentation(section_names.SECTION_NAME__CASES),
+            CasesSectionDocumentation(section_names_plain.SECTION_NAME__CASES),
 
-            SuitesSectionDocumentation(section_names.SECTION_NAME__SUITS),
+            SuitesSectionDocumentation(section_names_plain.SECTION_NAME__SUITS),
         ],
         [
             ConfigurationSectionDocumentation(
-                section_names.SECTION_NAME__CONF,
+                section_names_plain.SECTION_NAME__CONF,
                 _instruction_set_help(configuration_section_instructions)
             ),
             section_documentation(
-                section_names.SECTION_NAME__CASE_SETUP,
+                section_names_plain.SECTION_NAME__CASE_SETUP,
                 True,
             ),
             section_documentation(
-                section_names.SECTION_NAME__CASE_ACT,
+                section_names_plain.SECTION_NAME__CASE_ACT,
                 True,
             ),
             section_documentation(
-                section_names.SECTION_NAME__CASE_BEFORE_ASSERT,
+                section_names_plain.SECTION_NAME__CASE_BEFORE_ASSERT,
                 True,
             ),
             section_documentation(
-                section_names.SECTION_NAME__CASE_ASSERT,
+                section_names_plain.SECTION_NAME__CASE_ASSERT,
                 True,
             ),
             section_documentation(
-                section_names.SECTION_NAME__CASE_CLEANUP,
+                section_names_plain.SECTION_NAME__CASE_CLEANUP,
                 False,
             ),
         ]

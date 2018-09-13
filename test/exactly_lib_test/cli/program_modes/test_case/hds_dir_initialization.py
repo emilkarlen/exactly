@@ -2,7 +2,7 @@ import unittest
 from pathlib import Path
 
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION_PHASE_NAME
+from exactly_lib.definitions.test_case.phase_names import CONFIGURATION
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
@@ -35,7 +35,7 @@ class TestInitialHdsDirPaths(unittest.TestCase):
         root_file_base_name = 'root-file-base-name.src'
 
         root_file_in_cwd = file_with_lines(root_file_base_name, [
-            CONFIGURATION_PHASE_NAME.syntax,
+            CONFIGURATION.syntax,
             INSTR_THAT_ASSERTS_HDS_DIR_MATCHES_PATH,
         ])
 
@@ -62,7 +62,7 @@ class TestInitialHdsDirPaths(unittest.TestCase):
         root_file_base_name = 'root-file-base-name.src'
 
         root_file_in_cwd = file_with_lines(root_file_base_name, [
-            CONFIGURATION_PHASE_NAME.syntax,
+            CONFIGURATION.syntax,
             INSTR_THAT_ASSERTS_HDS_DIR_MATCHES_PATH,
         ])
 
@@ -90,7 +90,7 @@ class TestInitialHdsDirPaths(unittest.TestCase):
         root_file_base_name = 'root-file-base-name.src'
 
         root_file_in_sub_dir = file_with_lines(root_file_base_name, [
-            CONFIGURATION_PHASE_NAME.syntax,
+            CONFIGURATION.syntax,
             INSTR_THAT_ASSERTS_HDS_DIR_MATCHES_PATH,
         ])
 

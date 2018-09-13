@@ -4,8 +4,8 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.test_case.phase_names import BEFORE_ASSERT_PHASE_NAME, \
-    CLEANUP_PHASE_NAME, PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_case.phase_names import BEFORE_ASSERT, \
+    CLEANUP, PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, InstructionGroup
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__preceding_phase, \
@@ -45,7 +45,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
                            self._tp.fnap(REST_OF_DESCRIPTION))
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo(sequence_info__preceding_phase(BEFORE_ASSERT_PHASE_NAME),
+        return PhaseSequenceInfo(sequence_info__preceding_phase(BEFORE_ASSERT),
                                  self._tp.fnap(_SEQUENCE_INFO__SUCCEEDING_PHASE),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
@@ -70,8 +70,8 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(BEFORE_ASSERT_PHASE_NAME.plain),
-            TestCasePhaseCrossReference(CLEANUP_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(BEFORE_ASSERT.plain),
+            TestCasePhaseCrossReference(CLEANUP.plain),
         ]
 
     def _instruction_group_by(self, instr_docs: List[WithAssertPhasePurpose]) -> List[InstructionGroup]:

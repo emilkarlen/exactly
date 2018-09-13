@@ -11,7 +11,7 @@ from exactly_lib.definitions import formatting, instruction_arguments
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts, actors
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.definitions.test_case.phase_names import ACT_PHASE_NAME
+from exactly_lib.definitions.test_case.phase_names import ACT
 from exactly_lib.help.entities.actors.objects import command_line as command_line_actor_help
 from exactly_lib.instructions.configuration.utils.single_arg_utils import MANDATORY_EQ_ARG
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
@@ -47,7 +47,7 @@ class InstructionDocumentation(InstructionDocumentationWithCommandLineRenderingB
             'EXECUTABLE': self.command_line_syntax.executable.name,
             'ARGUMENT': self.command_line_syntax.argument.name,
             'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-            'act_phase': ACT_PHASE_NAME.emphasis,
+            'act_phase': ACT.emphasis,
             'command_line_actor': formatting.entity_(actors.COMMAND_LINE_ACTOR)
         })
 
