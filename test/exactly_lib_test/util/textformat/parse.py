@@ -10,14 +10,18 @@ from exactly_lib_test.util.textformat.test_resources.equals_paragraph_item impor
 
 def suite() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
+
+    ret_val.addTest(unittest.makeSuite(TestNormalize))
+
     ret_val.addTest(unittest.makeSuite(TestParseEmpty))
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithSingleText))
     ret_val.addTest(unittest.makeSuite(TestSingleParagraphWithMultipleTexts))
     ret_val.addTest(unittest.makeSuite(TestMultipleParagraphs))
     ret_val.addTest(unittest.makeSuite(TestLiteral))
-    ret_val.addTest(unittest.makeSuite(TestItemizedList))
 
-    ret_val.addTest(unittest.makeSuite(TestNormalize))
+    ret_val.addTest(unittest.makeSuite(TestItemizedList))
+    ret_val.addTest(unittest.makeSuite(TestOrderedList))
+    ret_val.addTest(unittest.makeSuite(TestOrderedAndItemizedLists))
 
     ret_val.addTest(unittest.makeSuite(TestNormalizeAndParse))
     return ret_val
@@ -452,6 +456,77 @@ class TestItemizedList(unittest.TestCase):
                             '      * item 1/2',
                             '',
                             '  * item 2',
+                            ])
+        check(self, expected, actual)
+
+
+class TestOrderedList(unittest.TestCase):
+    EXPECTED_LIST_FORMAT = lists.Format(lists.ListType.ORDERED_LIST,
+                                        custom_indent_spaces=sut.DEFAULT_LIST_SETTINGS.custom_indent_spaces,
+                                        custom_separations=sut.DEFAULT_LIST_SETTINGS.custom_separations)
+
+    def test_single_list_with_single_item_as_last_line(self):
+        expected = [lists.HeaderContentList([_list_item('item')],
+                                            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  1. item'])
+        check(self, expected, actual)
+
+    def test_single_list_with_single_item_with_contents_on_next_line(self):
+        expected = [lists.HeaderContentList([
+            _list_item('item',
+                       [
+                           Paragraph([StringText('contents')]),
+                       ])],
+            self.EXPECTED_LIST_FORMAT)]
+        actual = sut.parse(['  1. item',
+                            '     contents',
+                            ])
+        check(self, expected, actual)
+
+
+class TestOrderedAndItemizedLists(unittest.TestCase):
+    EXPECTED_ORDERED_LIST_FORMAT = lists.Format(lists.ListType.ORDERED_LIST,
+                                                custom_indent_spaces=sut.DEFAULT_LIST_SETTINGS.custom_indent_spaces,
+                                                custom_separations=sut.DEFAULT_LIST_SETTINGS.custom_separations)
+
+    EXPECTED_ITEMIZED_LIST_FORMAT = lists.Format(lists.ListType.ITEMIZED_LIST,
+                                                 custom_indent_spaces=sut.DEFAULT_LIST_SETTINGS.custom_indent_spaces,
+                                                 custom_separations=sut.DEFAULT_LIST_SETTINGS.custom_separations)
+
+    def test_nested_lists(self):
+        expected = [
+            lists.HeaderContentList([
+                _list_item('itemized item 1',
+                           [
+                               Paragraph([StringText('item 1 contents paragraph')]),
+                               lists.HeaderContentList(
+                                   [
+                                       _list_item('ordered item 1/1',
+                                                  [
+                                                      Paragraph([StringText('item 1/1 contents paragraph')]),
+                                                  ]),
+                                       _list_item('ordered item 1/2',
+                                                  []),
+                                   ],
+                                   self.EXPECTED_ORDERED_LIST_FORMAT),
+                           ]),
+                _list_item('itemized item 2',
+                           []),
+            ],
+                self.EXPECTED_ITEMIZED_LIST_FORMAT),
+        ]
+        actual = sut.parse(['  * itemized item 1',
+                            '',
+                            '    item 1 contents paragraph',
+                            '',
+                            '',
+                            '      1. ordered item 1/1',
+                            '',
+                            '         item 1/1 contents paragraph',
+                            '',
+                            '      1. ordered item 1/2',
+                            '',
+                            '  * itemized item 2',
                             ])
         check(self, expected, actual)
 
