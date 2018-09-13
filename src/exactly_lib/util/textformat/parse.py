@@ -68,6 +68,7 @@ class _Parser:
     def __init__(self,
                  lines: List[str],
                  list_settings: ListSettings):
+        self.list_settings = list_settings
         self.itemized_list_format = lists.Format(lists.ListType.ITEMIZED_LIST,
                                                  custom_indent_spaces=list_settings.custom_indent_spaces,
                                                  custom_separations=list_settings.custom_separations)
@@ -120,67 +121,39 @@ class _Parser:
         items = [self.parse_list_item_from_item_line(self.consume_current_line(),
                                                      level,
                                                      item_line_prefix)]
-        while self.has_more_lines():
-            num_blank_lines = self.number_of_blank_lines()
-            if num_blank_lines > 1:
-                self.consume_separator_lines()
-                break
-            if num_blank_lines == 1:
-                self.consume_current_line()
-            if not self.has_more_lines():
-                break
-            current_line = self.consume_current_line()
-            if not current_line.startswith(item_line_prefix):
-                break
-            next_item = self.parse_list_item_from_item_line(current_line, level, item_line_prefix)
+        while self.has_more_lines() and self.lines[0].startswith(item_line_prefix):
+            next_item = self.parse_list_item_from_item_line(self.consume_current_line(),
+                                                            level,
+                                                            item_line_prefix)
             items.append(next_item)
         return lists.HeaderContentList(items, self.itemized_list_format)
 
-    def parse_list_item_from_item_line(self, current_line: str,
+    def parse_list_item_from_item_line(self,
+                                       first_item_header_line: str,
                                        level: int,
                                        item_line_prefix: str) -> lists.HeaderContentListItem:
         item_line_prefix_len = len(item_line_prefix)
-        header = current_line[item_line_prefix_len:].strip()
+        header = first_item_header_line[item_line_prefix_len:].strip()
 
-        content_paragraph_items = self.parse_list_content_paragraph_items(len(item_line_prefix))
+        content_paragraph_items = self.parse_list_content_paragraph_items(item_line_prefix_len)
         return docs.list_item(StringText(header), content_paragraph_items)
 
     def parse_list_content_paragraph_items(self, item_contents_indent_len: int) -> List[ParagraphItem]:
-        texts = self.parse_list_content_texts(item_contents_indent_len)
-        if texts:
-            return [Paragraph(texts)]
-        else:
-            return []
+        normalized_item_contents_lines = self.consume_and_normalize_indented_lines(item_contents_indent_len)
+        return _Parser(normalized_item_contents_lines,
+                       self.list_settings).apply()
 
-    def parse_list_content_texts(self, item_contents_indent_len: int) -> List[Text]:
+    def consume_and_normalize_indented_lines(self, indent_len: int) -> List[str]:
         ret_val = []
-        while self.has_more_lines():
-            num_blank_lines = self.number_of_blank_lines()
-            if num_blank_lines > 1:
-                break
-            if num_blank_lines == 1:
-                self.consume_current_line()
-            if not self.has_more_lines():
-                break
-            non_empty_line = self.lines[0]
-            assert isinstance(non_empty_line, str)
-            if _is_itemized_list_item_level(non_empty_line):
-                return ret_val
-            if not non_empty_line[:item_contents_indent_len].isspace():
-                break
-            ret_val.append(self.parse_list_item_text(item_contents_indent_len))
+        while self.lines and self.lines[0][:indent_len].lstrip(' ') == '':
+            line = self.consume_current_line()
+            if len(line) >= indent_len:
+                line = line[indent_len:]
+            else:
+                line = ''
+            ret_val.append(line)
+        _strip_empty_lines(ret_val)
         return ret_val
-
-    def parse_list_item_text(self, item_line_prefix_len: int) -> Text:
-        lines = [self.consume_current_line().strip()]
-        while self.has_more_lines() and not self.is_at_separator():
-            non_empty_line = self.lines[0]
-            assert isinstance(non_empty_line, str)
-            if not non_empty_line[:item_line_prefix_len].isspace():
-                break
-            lines.append(self.consume_current_line().strip())
-        contents = ' '.join(lines)
-        return StringText(contents)
 
     def parse_text(self) -> Text:
         lines = [self.consume_current_line().strip()]

@@ -335,6 +335,126 @@ class TestItemizedList(unittest.TestCase):
                             'last paragraph'])
         check(self, expected, actual)
 
+    def test_list_with_item_contents_in_middle_of_paragraphs(self):
+        expected = [
+            Paragraph([StringText('first paragraph')]),
+            lists.HeaderContentList([
+                _list_item('item 1',
+                           [
+                               Paragraph([StringText('item contents paragraph')]),
+                           ]),
+            ],
+                self.EXPECTED_LIST_FORMAT),
+            Paragraph([StringText('last paragraph')]),
+        ]
+        actual = sut.parse(['first paragraph',
+                            '',
+                            '',
+                            '  * item 1',
+                            '',
+                            '    item contents paragraph',
+                            '',
+                            '',
+                            'last paragraph'])
+        check(self, expected, actual)
+
+    def test_list_with_item_multiple_paragraphs_contents_in_middle_of_paragraphs(self):
+        expected = [
+            Paragraph([StringText('first paragraph')]),
+            lists.HeaderContentList([
+                _list_item('item 1',
+                           [
+                               Paragraph([StringText('line 1 in contents paragraph 1'),
+                                          StringText('line 2 in contents paragraph 1')]),
+                               Paragraph([StringText('line 1 in contents paragraph 2')]),
+                           ]),
+            ],
+                self.EXPECTED_LIST_FORMAT),
+            Paragraph([StringText('last paragraph')]),
+        ]
+        actual = sut.parse(['first paragraph',
+                            '',
+                            '',
+                            '  * item 1',
+                            '',
+                            '    line 1 in contents paragraph 1',
+                            '',
+                            '    line 2 in contents paragraph 1',
+                            '',
+                            '',
+                            '    line 1 in contents paragraph 2',
+                            '',
+                            '',
+                            'last paragraph'])
+        check(self, expected, actual)
+
+    def test_list_with_item_multiple_paragraphs_contents_before_other_item(self):
+        expected = [
+            lists.HeaderContentList([
+                _list_item('item 1',
+                           [
+                               Paragraph([StringText('item 1 contents paragraph 1')]),
+                               Paragraph([StringText('item 1 contents paragraph 2')]),
+                           ]),
+                _list_item('item 2',
+                           [
+                               Paragraph([StringText('item 2 contents paragraph 1')]),
+                           ]),
+            ],
+                self.EXPECTED_LIST_FORMAT),
+            Paragraph([StringText('last paragraph')]),
+        ]
+        actual = sut.parse(['  * item 1',
+                            '',
+                            '    item 1 contents paragraph 1',
+                            '',
+                            '',
+                            '    item 1 contents paragraph 2',
+                            '',
+                            '  * item 2',
+                            '',
+                            '    item 2 contents paragraph 1',
+                            '',
+                            'last paragraph'])
+        check(self, expected, actual)
+
+    def test_nested_lists(self):
+        expected = [
+            lists.HeaderContentList([
+                _list_item('item 1',
+                           [
+                               Paragraph([StringText('item 1 contents paragraph')]),
+                               lists.HeaderContentList(
+                                   [
+                                       _list_item('item 1/1',
+                                                  [
+                                                      Paragraph([StringText('item 1/1 contents paragraph')]),
+                                                  ]),
+                                       _list_item('item 1/2',
+                                                  []),
+                                   ],
+                                   self.EXPECTED_LIST_FORMAT),
+                           ]),
+                _list_item('item 2',
+                           []),
+            ],
+                self.EXPECTED_LIST_FORMAT),
+        ]
+        actual = sut.parse(['  * item 1',
+                            '',
+                            '    item 1 contents paragraph',
+                            '',
+                            '',
+                            '      * item 1/1',
+                            '',
+                            '        item 1/1 contents paragraph',
+                            '',
+                            '      * item 1/2',
+                            '',
+                            '  * item 2',
+                            ])
+        check(self, expected, actual)
+
 
 class TestNormalizeAndParse(unittest.TestCase):
     def test_misc(self):
