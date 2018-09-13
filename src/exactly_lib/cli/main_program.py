@@ -4,8 +4,6 @@ from typing import List, Dict, Callable
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND, SUITE_COMMAND, COMMAND_DESCRIPTIONS
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
-from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
-from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.execution import sandbox_dir_resolving
@@ -14,6 +12,8 @@ from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolv
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.processing.standalone import process as test_case_execution
+from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin, SymbolContainer
@@ -138,7 +138,7 @@ class MainProgram:
                           settings: TestCaseExecutionSettings,
                           output: StdOutputFiles,
                           ) -> int:
-        return test_case_execution.execute(output,
+        return test_case_execution.process(output,
                                            self._test_case_definition,
                                            self._test_suite_definition.configuration_section_parser,
                                            settings,

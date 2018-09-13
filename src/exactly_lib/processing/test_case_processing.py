@@ -70,7 +70,6 @@ class Result(tuple):
                 error_type: Optional[AccessErrorType] = None,
                 execution_result: Optional[FullExeResult] = None):
         """
-        :param error_info:
         :param error_type: Given iff status is Status.ACCESS_ERROR
         :param execution_result: Given iff status is Status.EXECUTED
         """
