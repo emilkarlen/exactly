@@ -1,4 +1,5 @@
 from exactly_lib.definitions.test_case import phase_names_plain
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.test_case import phase_identifier
@@ -10,7 +11,9 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def hierarchy_root(header: str, setup: Setup) -> structures.SectionHierarchyGenerator:
-    tp = TextParser()
+    tp = TextParser({
+        'default_suite_file_name': file_names.DEFAULT_SUITE_FILE
+    })
 
     def const_paragraphs(header: str, paragraphs: List[ParagraphItem]) -> structures.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
@@ -69,7 +72,14 @@ When run in the following ways, it is part of a suite:
     
   * Standalone
   
-    A suite file is given via command line arguments.
+      * A suite file is given via command line arguments.
+      
+      * A file "{default_suite_file_name}" exits in the same directory as the test case file
+      
+        The "{default_suite_file_name}" file must be test suite.
+        
+        
+        Note that the test case file need not be listed in "{default_suite_file_name}"
 
   * Via test suite
   
