@@ -1,5 +1,5 @@
 from exactly_lib.help.program_modes.test_case.contents.specification import file_syntax, intro, \
-    environment as env_doc, phases
+    environment as env_doc, structure
 from exactly_lib.help.program_modes.test_case.contents.specification import outcome
 from exactly_lib.help.program_modes.test_case.contents.specification import processing as processing
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
@@ -21,7 +21,7 @@ def generator(header: str, test_case_help: TestCaseHelp
         [],
         [
             Node('introduction', leaf('Introduction', intro.Documentation())),
-            Node('phases', leaf('Phases', phases.Documentation(setup))),
+            Node('structure', structure.hierarchy_root('Structure', setup)),
             Node('environment', leaf('Environment', env_doc.Documentation(setup))),
             Node('file-syntax', file_syntax.generator('Test case file syntax', setup)),
             Node('processing', leaf('Test case processing steps', processing.ContentsConstructor(setup))),
