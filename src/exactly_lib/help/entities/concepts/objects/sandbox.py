@@ -7,7 +7,7 @@ from exactly_lib.definitions.doc_format import file_name_text
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.definitions.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import SETUP_PHASE_NAME, PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_case.phase_names import SETUP, PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
@@ -43,7 +43,7 @@ class _SandboxConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> list:
         return [
-            TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME.plain,
+            TestCasePhaseInstructionCrossReference(SETUP.plain,
                                                    CHANGE_DIR_INSTRUCTION_NAME),
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
         ]

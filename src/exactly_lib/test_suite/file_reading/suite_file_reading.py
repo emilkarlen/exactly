@@ -1,7 +1,7 @@
 import pathlib
 from typing import Tuple
 
-from exactly_lib.definitions.test_suite import section_names
+from exactly_lib.definitions.test_suite import section_names_plain
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
 from exactly_lib.processing.parse.test_case_parser import SectionParserConstructorForParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup, ComposedTestCaseTransformer, \
@@ -71,7 +71,7 @@ class _Parser:
         parser_configuration = section_parsing.SectionsConfiguration(
             (
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__CONF,
+                    section_names_plain.SECTION_NAME__CONF,
                     ParserFromSequenceOfParsers(
                         (
                             configuration_section_parser,
@@ -80,34 +80,34 @@ class _Parser:
                     )),
 
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__SUITS,
+                    section_names_plain.SECTION_NAME__SUITS,
                     suites.new_parser()),
 
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__CASES,
+                    section_names_plain.SECTION_NAME__CASES,
                     cases.new_parser()),
 
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__CASE_SETUP,
+                    section_names_plain.SECTION_NAME__CASE_SETUP,
                     phase_parser_constructor.of(InstructionsSetup.setup_instruction_set.fget)),
 
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__CASE_ACT,
+                    section_names_plain.SECTION_NAME__CASE_ACT,
                     test_case_parsing_setup.act_phase_parser),
 
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__CASE_BEFORE_ASSERT,
+                    section_names_plain.SECTION_NAME__CASE_BEFORE_ASSERT,
                     phase_parser_constructor.of(InstructionsSetup.before_assert_instruction_set.fget)),
 
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__CASE_ASSERT,
+                    section_names_plain.SECTION_NAME__CASE_ASSERT,
                     phase_parser_constructor.of(InstructionsSetup.assert_instruction_set.fget)),
 
                 section_parsing.SectionConfiguration(
-                    section_names.SECTION_NAME__CASE_CLEANUP,
+                    section_names_plain.SECTION_NAME__CASE_CLEANUP,
                     phase_parser_constructor.of(InstructionsSetup.cleanup_instruction_set.fget)),
             ),
-            default_section_name=section_names.DEFAULT_SECTION_NAME
+            default_section_name=section_names_plain.DEFAULT_SECTION_NAME
         )
         self.__section_doc_parser = document_parsers.new_parser_for(parser_configuration)
 
@@ -115,24 +115,24 @@ class _Parser:
         document = self.__section_doc_parser.parse_file(suite_file_path)
 
         suite_conf, case_conf = _separate_configuration_elements(
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CONF)
+            document.elements_for_section_or_empty_if_phase_not_present(section_names_plain.SECTION_NAME__CONF)
         )
         return test_suite_doc.TestSuiteDocument(
             suite_conf,
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__SUITS),
-            document.elements_for_section_or_empty_if_phase_not_present(section_names.SECTION_NAME__CASES),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names_plain.SECTION_NAME__SUITS),
+            document.elements_for_section_or_empty_if_phase_not_present(section_names_plain.SECTION_NAME__CASES),
             TestCase(
                 case_conf,
                 document.elements_for_section_or_empty_if_phase_not_present(
-                    section_names.SECTION_NAME__CASE_SETUP),
+                    section_names_plain.SECTION_NAME__CASE_SETUP),
                 document.elements_for_section_or_empty_if_phase_not_present(
-                    section_names.SECTION_NAME__CASE_ACT),
+                    section_names_plain.SECTION_NAME__CASE_ACT),
                 document.elements_for_section_or_empty_if_phase_not_present(
-                    section_names.SECTION_NAME__CASE_BEFORE_ASSERT),
+                    section_names_plain.SECTION_NAME__CASE_BEFORE_ASSERT),
                 document.elements_for_section_or_empty_if_phase_not_present(
-                    section_names.SECTION_NAME__CASE_ASSERT),
+                    section_names_plain.SECTION_NAME__CASE_ASSERT),
                 document.elements_for_section_or_empty_if_phase_not_present(
-                    section_names.SECTION_NAME__CASE_CLEANUP),
+                    section_names_plain.SECTION_NAME__CASE_CLEANUP),
             ),
         )
 

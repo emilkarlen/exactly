@@ -94,7 +94,7 @@ class _Documentation(SyntaxElementDocumentation):
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
             types.PATH_TYPE_INFO,
         ]) + [
-                   TestCasePhaseInstructionCrossReference(phase_names.SETUP_PHASE_NAME.plain,
+                   TestCasePhaseInstructionCrossReference(phase_names.SETUP.plain,
                                                           instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME)
                ]
 

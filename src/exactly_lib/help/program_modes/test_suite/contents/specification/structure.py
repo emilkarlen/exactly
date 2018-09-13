@@ -4,7 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite import section_names
-from exactly_lib.definitions.test_suite import section_names_with_syntax
+from exactly_lib.definitions.test_suite import section_names_plain
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.util.textformat.construction.section_contents_constructor import constant_section_contents
@@ -35,8 +35,8 @@ class _HierarchyGenerator:
         self._suite_help = suite_help
         self._tp = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
-            'conf_section': section_names_with_syntax.SECTION_NAME__CONF,
-            'conf_phase': phase_names.CONFIGURATION_PHASE_NAME,
+            'conf_section': section_names.CONFIGURATION,
+            'conf_phase': phase_names.CONFIGURATION,
         })
 
     def generator(self, header: str) -> SectionHierarchyGenerator:
@@ -77,14 +77,14 @@ class _HierarchyGenerator:
     def _cases_and_sub_suites_paragraphs(self) -> List[ParagraphItem]:
         ret_val = self._tp.fnap(_CASES_AND_SUB_SUITES)
         ret_val.append(sections_short_list(self._suite_help.test_cases_and_sub_suites_sections,
-                                           default_section_name=section_names.DEFAULT_SECTION_NAME,
+                                           default_section_name=section_names_plain.DEFAULT_SECTION_NAME,
                                            section_concept_name='section'))
         return ret_val
 
     def _common_tc_contents_paragraphs(self) -> List[ParagraphItem]:
         ret_val = self._tp.fnap(_COMMON_TC_CONTENTS)
         ret_val.append(sections_short_list(self._suite_help.test_case_phase_sections,
-                                           default_section_name=section_names.DEFAULT_SECTION_NAME,
+                                           default_section_name=section_names_plain.DEFAULT_SECTION_NAME,
                                            section_concept_name='section'))
         return ret_val
 

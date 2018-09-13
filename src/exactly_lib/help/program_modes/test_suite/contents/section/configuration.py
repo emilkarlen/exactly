@@ -19,7 +19,7 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
         self._tp = TextParser({
-            'conf_phase': phase_names.CONFIGURATION_PHASE_NAME,
+            'conf_phase': phase_names.CONFIGURATION,
         })
 
     def instructions_section_header(self) -> docs.Text:
@@ -40,7 +40,7 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
     @property
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            TestCasePhaseCrossReference(phase_names.CONFIGURATION_PHASE_NAME.plain)
+            TestCasePhaseCrossReference(phase_names.CONFIGURATION.plain)
         ]
 
 

@@ -3,20 +3,20 @@ from typing import Dict
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.test_case import phase_identifier
 
-CONFIGURATION_PHASE_NAME = SectionName(phase_identifier.CONFIGURATION.identifier)
-SETUP_PHASE_NAME = SectionName(phase_identifier.SETUP.section_name)
-ACT_PHASE_NAME = SectionName(phase_identifier.ACT.section_name)
-BEFORE_ASSERT_PHASE_NAME = SectionName(phase_identifier.BEFORE_ASSERT.section_name)
-ASSERT_PHASE_NAME = SectionName(phase_identifier.ASSERT.section_name)
-CLEANUP_PHASE_NAME = SectionName(phase_identifier.CLEANUP.section_name)
+CONFIGURATION = SectionName(phase_identifier.CONFIGURATION.identifier)
+SETUP = SectionName(phase_identifier.SETUP.section_name)
+ACT = SectionName(phase_identifier.ACT.section_name)
+BEFORE_ASSERT = SectionName(phase_identifier.BEFORE_ASSERT.section_name)
+ASSERT = SectionName(phase_identifier.ASSERT.section_name)
+CLEANUP = SectionName(phase_identifier.CLEANUP.section_name)
 
 ALL = (
-    CONFIGURATION_PHASE_NAME,
-    SETUP_PHASE_NAME,
-    ACT_PHASE_NAME,
-    BEFORE_ASSERT_PHASE_NAME,
-    ASSERT_PHASE_NAME,
-    CLEANUP_PHASE_NAME,
+    CONFIGURATION,
+    SETUP,
+    ACT,
+    BEFORE_ASSERT,
+    ASSERT,
+    CLEANUP,
 )
 
 

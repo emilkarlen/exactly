@@ -4,7 +4,7 @@ from pathlib import Path
 from typing import Dict
 
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
-from exactly_lib.definitions.test_case.phase_names import SETUP_PHASE_NAME
+from exactly_lib.definitions.test_case.phase_names import SETUP
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.section_document import model
 from exactly_lib.section_document.element_parsers.section_element_parsers import InstructionParser
@@ -36,7 +36,7 @@ class TestInitialEnvVarsInInstructionEnvironment(unittest.TestCase):
         root_file_base_name = 'root-file-base-name.src'
 
         root_file_in_cwd = file_with_lines(root_file_base_name, [
-            SETUP_PHASE_NAME.syntax,
+            SETUP.syntax,
             INSTR_THAT_ASSERTS_ENV_VARS,
         ])
 

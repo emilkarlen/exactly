@@ -1,7 +1,7 @@
 import unittest
 
 from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
-from exactly_lib.definitions.test_suite import section_names
+from exactly_lib.definitions.test_suite import section_names_plain
 from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL
 from exactly_lib_test.test_resources.main_program.constant_arguments_check import ProcessTestCase
@@ -21,7 +21,7 @@ def _test_cases_for_all_suite_sections() -> list:
         ProcessTestCase("""help for "suite/section '%s'" SHOULD be successful""" % section_name,
                         HelpInvokation(arguments_for.suite_section_for_name(section_name)),
                         RESULT_IS_SUCCESSFUL)
-        for section_name in section_names.ALL_SUITE_SPECIFIC_SECTION_NAMES
+        for section_name in section_names_plain.ALL_SUITE_SPECIFIC_SECTION_NAMES
         ]
 
 
@@ -37,7 +37,7 @@ def _global_test_cases() -> list:
 
         ProcessTestCase('help for "suite section instruction" SHOULD be successful',
                         HelpInvokation(arguments_for.suite_instruction_in_section(
-                            section_names.SECTION_NAME__CONF,
+                            section_names_plain.SECTION_NAME__CONF,
                             INSTRUCTION_NAME__ACTOR)),
                         RESULT_IS_SUCCESSFUL),
     ]

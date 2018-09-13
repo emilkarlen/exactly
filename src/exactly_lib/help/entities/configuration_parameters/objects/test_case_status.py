@@ -28,7 +28,7 @@ class _ExecutionModeConfigurationParameter(ConfigurationParameterDocumentation):
 DOCUMENTATION = _ExecutionModeConfigurationParameter()
 
 _TEXT_PARSER = TextParser({
-    'assert_phase': phase_names.ASSERT_PHASE_NAME,
+    'assert_phase': phase_names.ASSERT,
     'full_result_skipped': FullExeResultStatus.SKIPPED.name,
 
     'ASSERT_PASS': exit_values.EXECUTION__PASS.exit_identifier,

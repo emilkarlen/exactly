@@ -30,7 +30,7 @@ class _ActionToCheckConcept(ConceptDocumentation):
     def see_also_targets(self) -> list:
         return (
             [
-                TestCasePhaseCrossReference(phase_names.ACT_PHASE_NAME.plain),
+                TestCasePhaseCrossReference(phase_names.ACT.plain),
                 concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
                 conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
             ]

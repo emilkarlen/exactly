@@ -19,7 +19,7 @@ def suite() -> unittest.TestSuite:
 
 class ConfigurationPhaseConfig(PhaseConfigForPhaseWithInstructions):
     def phase_name(self) -> SectionName:
-        return phase_names.CONFIGURATION_PHASE_NAME
+        return phase_names.CONFIGURATION
 
     def mk_instruction_set_for_phase(self, instructions: Dict[str, SingleInstructionSetup]) -> InstructionsSetup:
         return InstructionsSetup(config_instruction_set=instructions)

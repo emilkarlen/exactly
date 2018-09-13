@@ -35,7 +35,7 @@ class ActorDocumentation(EntityDocumentation):
         """
         return [
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(phase_names.ACT_PHASE_NAME.plain),
+            TestCasePhaseCrossReference(phase_names.ACT.plain),
         ]
 
     def _see_also_specific(self) -> list:
