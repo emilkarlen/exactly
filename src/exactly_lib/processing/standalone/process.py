@@ -1,11 +1,11 @@
 import pathlib
 from typing import Optional
 
-from exactly_lib.cli.program_modes.test_case import result_reporting
-from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
+from exactly_lib.processing.standalone import result_reporting
+from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
@@ -13,7 +13,7 @@ from exactly_lib.test_suite.file_reading.exception import SuiteSyntaxError
 from exactly_lib.util.std import StdOutputFiles
 
 
-def execute(std_output_files: StdOutputFiles,
+def process(std_output_files: StdOutputFiles,
             test_case_definition: TestCaseDefinition,
             configuration_section_parser: SectionElementParser,
             settings: TestCaseExecutionSettings,

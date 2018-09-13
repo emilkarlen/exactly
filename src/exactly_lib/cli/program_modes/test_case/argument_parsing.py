@@ -4,6 +4,8 @@ import shlex
 from typing import List, Dict
 
 from exactly_lib import program_info
+from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import \
@@ -17,6 +19,7 @@ from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.help.texts import IS_A_SHELL_CMD
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
+from exactly_lib.processing.standalone.settings import ReportingOption, TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.processing.test_case_processing import Preprocessor
 from exactly_lib.util import argument_parsing_utils
