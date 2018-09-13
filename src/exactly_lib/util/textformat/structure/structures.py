@@ -82,10 +82,7 @@ def paras(str_or_text) -> List[ParagraphItem]:
 
 
 def normalize_and_parse(paragraphs: str,
-                        list_settings: parse.ListSettings = parse.DEFAULT_LIST_SETTINGS) -> list:
-    """
-    :rtype: [`ParagraphItem`]
-    """
+                        list_settings: parse.ListSettings = parse.DEFAULT_LIST_SETTINGS) -> List[ParagraphItem]:
     return parse.normalize_and_parse(paragraphs, list_settings)
 
 
