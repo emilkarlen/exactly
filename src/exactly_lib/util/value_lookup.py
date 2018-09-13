@@ -1,38 +1,45 @@
+from typing import Tuple, Iterable, TypeVar, Generic, Any, List
+
+
 class NoMatchError(LookupError):
     pass
 
 
 class MultipleMatchesError(LookupError):
-    def __init__(self, matching_key_values: list):
+    def __init__(self, matching_key_values: List[Tuple[str, Any]]):
         self.matching_key_values = matching_key_values
 
 
-class Match(tuple):
-    def __new__(cls,
-                key: str,
-                value,
-                is_exact_match: bool):
-        return tuple.__new__(cls, (key, value, is_exact_match))
+T = TypeVar('T')
+
+
+class Match(Generic[T]):
+    def __init__(self,
+                 key: str,
+                 value: T,
+                 is_exact_match: bool):
+        self._key = key
+        self._value = value
+        self._is_exact_match = is_exact_match
 
     @property
     def key(self) -> str:
-        return self[0]
+        return self._key
 
     @property
-    def value(self):
-        return self[1]
+    def value(self) -> T:
+        return self._value
 
     @property
     def is_exact_match(self) -> bool:
-        return self[2]
+        return self._is_exact_match
 
 
-def lookup(key_pattern: str, key_value_iter: iter) -> Match:
+def lookup(key_pattern: str, key_value_iter: Iterable[Tuple[str, T]]) -> Match[T]:
     """
     Looks up a value from a sequence of (key,value) pairs.
 
     :param key_pattern: str to look for, either as sub string, or as identical.
-    :param key_value_iter: iterable of (key, value) paris
     :return: The value for the key that matches. If a key is found that is identical to key_pattern,
     then the value associated with that key is returned. If no key is identical, but one, and only one,
     key contains key_pattern as a sub string, then the associated value is returned.

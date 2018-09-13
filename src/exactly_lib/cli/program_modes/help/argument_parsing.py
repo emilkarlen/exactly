@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.cli.definitions.program_modes.help.command_line_options import HELP, INSTRUCTIONS, TEST_CASE, \
     TEST_SUITE, SPECIFICATION, HTML_DOCUMENTATION
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
@@ -14,7 +16,7 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 
 
 def parse(application_help: ApplicationHelp,
-          help_command_arguments: list) -> help_request.HelpRequest:
+          help_command_arguments: List[str]) -> help_request.HelpRequest:
     """
     :raises HelpError Invalid usage
     """
@@ -81,9 +83,9 @@ class Parser:
         if not test_suite_section_help.has_instructions:
             raise HelpError('Section "%s" does not have instructions.')
         instruction_name = arguments[0]
-        match = argument_value_lookup.lookup_argument('instruction',
-                                                      instruction_name,
-                                                      test_suite_section_help.instruction_set.name_2_description)
+        match = argument_value_lookup.lookup_argument__dict('instruction',
+                                                            instruction_name,
+                                                            test_suite_section_help.instruction_set.name_2_description)
         return TestSuiteHelpRequest(TestSuiteHelpItem.INSTRUCTION,
                                     match.key,
                                     match.value)
@@ -108,9 +110,9 @@ class Parser:
             return TestCaseHelpRequest(TestCaseHelpItem.PHASE_INSTRUCTION_LIST,
                                        phase_name,
                                        test_case_phase_help)
-        match = argument_value_lookup.lookup_argument('instruction',
-                                                      instruction_name,
-                                                      test_case_phase_help.instruction_set.name_2_description)
+        match = argument_value_lookup.lookup_argument__dict('instruction',
+                                                            instruction_name,
+                                                            test_case_phase_help.instruction_set.name_2_description)
         return TestCaseHelpRequest(TestCaseHelpItem.INSTRUCTION,
                                    match.key,
                                    match.value,
@@ -132,7 +134,7 @@ class Parser:
                                    instruction_name,
                                    phase_and_instr_descr_list)
 
-    def _parse_entity_help(self, entity_type_name: str, arguments: list) -> EntityHelpRequest:
+    def _parse_entity_help(self, entity_type_name: str, arguments: List[str]) -> EntityHelpRequest:
         if not arguments:
             return EntityHelpRequest(entity_type_name, EntityHelpItem.ALL_ENTITIES_LIST)
         entities_help = self.application_help.entity_type_id_2_entity_type_conf[entity_type_name].entities_help
@@ -143,13 +145,13 @@ class Parser:
                                  not match.is_exact_match)
 
     @staticmethod
-    def _parse_html_doc_help(arguments: list) -> HtmlDocHelpRequest:
+    def _parse_html_doc_help(arguments: List[str]) -> HtmlDocHelpRequest:
         if arguments:
             raise HelpError('The %s command expects no arguments.' % HTML_DOCUMENTATION)
         return HtmlDocHelpRequest()
 
 
-def lookup_entity(entities: EntityTypeHelp, arguments: list) -> argument_value_lookup.Match:
+def lookup_entity(entities: EntityTypeHelp, arguments: List[str]) -> argument_value_lookup.Match:
     return argument_value_lookup.lookup_argument(entities.names.name.singular,
                                                  ' '.join(arguments),
                                                  argument_value_lookup.entities_key_value_iter(entities))

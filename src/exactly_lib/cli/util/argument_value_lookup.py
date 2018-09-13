@@ -1,23 +1,30 @@
 import os
+from typing import Iterable, Tuple, Dict
 
 from exactly_lib.cli.program_modes.help.error import HelpError
-from exactly_lib.cli.util import value_lookup
-from exactly_lib.cli.util.value_lookup import Match
-from exactly_lib.help.contents_structure.entity import EntityTypeHelp
+from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
+from exactly_lib.util import value_lookup
+from exactly_lib.util.value_lookup import Match, T
 
 
-def entities_key_value_iter(entities_help: EntityTypeHelp) -> iter:
+def entities_key_value_iter(entities_help: EntityTypeHelp) -> Iterable[Tuple[str, EntityDocumentation]]:
     return map(lambda entity_doc: (entity_doc.singular_name(), entity_doc),
                entities_help.all_entities)
 
 
+def lookup_argument__dict(object_name: str,
+                          argument_pattern: str,
+                          elements: Dict[str, T]) -> Match[T]:
+    return lookup_argument(object_name,
+                           argument_pattern,
+                           list(elements.items()))
+
+
 def lookup_argument(object_name: str,
                     argument_pattern: str,
-                    key_value_iter_or_dict) -> Match:
-    if isinstance(key_value_iter_or_dict, dict):
-        key_value_iter_or_dict = key_value_iter_or_dict.items()
+                    elements: Iterable[Tuple[str, T]]) -> Match[T]:
     try:
-        return value_lookup.lookup(argument_pattern, key_value_iter_or_dict)
+        return value_lookup.lookup(argument_pattern, elements)
     except value_lookup.NoMatchError:
         raise HelpError('No matching ' + object_name)
     except value_lookup.MultipleMatchesError as ex:

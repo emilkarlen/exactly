@@ -1,15 +1,11 @@
 import unittest
 
 from exactly_lib_test.cli.program_modes import z_package_suite as program_modes
-from exactly_lib_test.cli.util import value_lookup
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        value_lookup.suite(),
-        program_modes.suite_that_does_not_require_main_program_runner(),
-    ])
+    return program_modes.suite_that_does_not_require_main_program_runner()
 
 
 def suite_that_does_require_main_program_runner(main_program_runner: MainProgramRunner) -> unittest.TestSuite:

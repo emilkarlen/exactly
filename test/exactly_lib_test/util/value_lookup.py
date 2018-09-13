@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.cli.util import value_lookup as sut
+from exactly_lib.util import value_lookup as sut
 
 
 def suite() -> unittest.TestSuite:
