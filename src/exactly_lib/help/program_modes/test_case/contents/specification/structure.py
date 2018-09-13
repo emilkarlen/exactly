@@ -34,6 +34,10 @@ def hierarchy_root(header: str, setup: Setup) -> structures.SectionHierarchyGene
                  const_paragraphs('Inclusion of phase contents from test suites',
                                   tp.fnap(_SUITE_CONTENTS_INCLUSION))
                  ),
+            Node('part-of-suite',
+                 const_paragraphs('Part of suite',
+                                  tp.fnap(_PART_OF_SUITE))
+                 ),
         ]
     )
 
@@ -54,4 +58,20 @@ _SUITE_CONTENTS_INCLUSION = """\
 A test suite can contain test case contents.
 
 When a test case is run as part of a suite, this contents is included in the case.
+"""
+
+_PART_OF_SUITE = """\
+A test case is considered part of a suite, depending on how it is run.
+
+
+When run in the following ways, it is part of a suite:
+
+    
+  * Standalone
+  
+    A suite file is given via command line arguments.
+
+  * Via test suite
+  
+    The test case file is listed in the suite.
 """
