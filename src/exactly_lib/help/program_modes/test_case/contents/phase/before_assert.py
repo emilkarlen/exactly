@@ -4,8 +4,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.test_case.phase_names import ACT, ASSERT, \
-    SETUP, PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
@@ -26,7 +25,7 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
         self._tp = TextParser({
-            'phase': PHASE_NAME_DICTIONARY,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
             'CWD': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
         })
 
@@ -35,15 +34,15 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
                            self._tp.fnap(REST_OF_DESCRIPTION))
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo(sequence_info__preceding_phase(ACT),
-                                 sequence_info__succeeding_phase(ASSERT),
+        return PhaseSequenceInfo(sequence_info__preceding_phase(phase_names.ACT),
+                                 sequence_info__succeeding_phase(phase_names.ASSERT),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         return self._tp.fnap(INSTRUCTION_PURPOSE_DESCRIPTION)
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
-        previous = '{setup} phase'.format(setup=SETUP.emphasis)
+        previous = '{setup} phase'.format(setup=phase_names.SETUP.emphasis)
         return ExecutionEnvironmentInfo(
             cwd_at_start_of_phase_is_same_as_at_end_of_the(previous),
             EXISTS_AT_BEFORE_ASSERT_MAIN,
@@ -55,8 +54,8 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(ACT.plain),
-            TestCasePhaseCrossReference(ASSERT.plain),
+            TestCasePhaseCrossReference(phase_names.ACT.plain),
+            TestCasePhaseCrossReference(phase_names.ASSERT.plain),
         ]
 
 

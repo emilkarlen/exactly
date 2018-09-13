@@ -4,7 +4,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossRef
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, \
     EntityTypeNames
 from exactly_lib.definitions.entity import all_entity_types
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION, PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.util.name import Name, name_with_plural_s
 
 
@@ -27,7 +27,7 @@ def name_and_ref_target_for_entity_type(names: EntityTypeNames,
 
 def _format(s: str) -> str:
     return s.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
-                    phase=PHASE_NAME_DICTIONARY,
+                    phase=phase_names.PHASE_NAME_DICTIONARY,
                     actor=formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
                     action_to_check=formatting.concept(ACTION_TO_CHECK_NAME.singular))
 
@@ -39,7 +39,7 @@ A value set in the {0} phase that determine how the remaining phases are execute
 
 CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
     all_entity_types.CONF_PARAM_ENTITY_TYPE_NAMES,
-    _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(CONFIGURATION)
+    _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(phase_names.CONFIGURATION)
 )
 
 TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(

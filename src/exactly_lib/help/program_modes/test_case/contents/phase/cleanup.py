@@ -4,9 +4,8 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference, \
     TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import ASSERT, \
-    CONFIGURATION, PHASE_NAME_DICTIONARY
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_non_first_phases, sequence_info__not_executed_if_execution_mode_is_skip, \
@@ -26,7 +25,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
                  instruction_set: SectionInstructionSet):
         super().__init__(name, instruction_set)
         self._tp = TextParser({
-            'phase': PHASE_NAME_DICTIONARY,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
             'SKIP': NAME_SKIP,
             'execution_mode': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
             'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
@@ -56,8 +55,8 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(ASSERT.plain),
-            TestCasePhaseInstructionCrossReference(CONFIGURATION.plain,
+            TestCasePhaseCrossReference(phase_names.ASSERT.plain),
+            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                    TEST_CASE_STATUS_INSTRUCTION_NAME),
         ]
 

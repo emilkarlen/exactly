@@ -7,8 +7,8 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.entity.actors import COMMAND_LINE_ACTOR
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.actors import command_line as command_line_actor
-from exactly_lib.definitions.test_case.phase_names import ACT, PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.actors.objects.common import \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, \
@@ -26,7 +26,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
     def __init__(self):
         super().__init__(COMMAND_LINE_ACTOR)
         self._tp = TextParser({
-            'phase': PHASE_NAME_DICTIONARY,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
             'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
         })
 
@@ -63,7 +63,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
             'EXECUTABLE': self.executable.name,
             'ARGUMENT': self.argument.name,
             'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-            'act_phase': ACT.emphasis,
+            'act_phase': phase_names.ACT.emphasis,
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
         }
