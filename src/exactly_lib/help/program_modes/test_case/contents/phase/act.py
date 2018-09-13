@@ -2,10 +2,8 @@ from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_option
 from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params, actors
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import SETUP, \
-    BEFORE_ASSERT, \
-    ASSERT, PHASE_NAME_DICTIONARY
 from exactly_lib.help.entities.concepts.objects.actor import HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     sequence_info__succeeding_phase, \
@@ -26,7 +24,7 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
     def __init__(self, name: str):
         super().__init__(name)
         self._tp = TextParser({
-            'phase': PHASE_NAME_DICTIONARY,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
             'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
@@ -48,8 +46,8 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
                            actor_info)
 
     def sequence_info(self) -> PhaseSequenceInfo:
-        return PhaseSequenceInfo(sequence_info__preceding_phase(SETUP),
-                                 sequence_info__succeeding_phase(BEFORE_ASSERT),
+        return PhaseSequenceInfo(sequence_info__preceding_phase(phase_names.SETUP),
+                                 sequence_info__succeeding_phase(phase_names.BEFORE_ASSERT),
                                  prelude=sequence_info__not_executed_if_execution_mode_is_skip())
 
     def contents_description(self) -> doc.SectionContents:
@@ -68,9 +66,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(SETUP.plain),
-            TestCasePhaseCrossReference(BEFORE_ASSERT.plain),
-            TestCasePhaseCrossReference(ASSERT.plain),
+            TestCasePhaseCrossReference(phase_names.SETUP.plain),
+            TestCasePhaseCrossReference(phase_names.BEFORE_ASSERT.plain),
+            TestCasePhaseCrossReference(phase_names.ASSERT.plain),
             actors.NULL_ACTOR.cross_reference_target,
             actors.DEFAULT_ACTOR.cross_reference_target,
         ]

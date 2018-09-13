@@ -6,9 +6,8 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseI
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION, \
-    PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
@@ -23,7 +22,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
         super().__init__(SOURCE_INTERPRETER_ACTOR)
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATION_ERROR
         format_map = {
-            'phase': PHASE_NAME_DICTIONARY,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
             'home_directory': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
@@ -46,7 +45,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
     def _see_also_specific(self) -> list:
         return [
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseInstructionCrossReference(CONFIGURATION.plain,
+            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                    ACTOR_INSTRUCTION_NAME),
             TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
                                                       ACTOR_INSTRUCTION_NAME),

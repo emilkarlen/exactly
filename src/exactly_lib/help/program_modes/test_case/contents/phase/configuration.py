@@ -4,8 +4,8 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import SETUP
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_for_configuration_phase, \
@@ -28,7 +28,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
             'configuration_parameters': formatting.concept(concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.plural_name),
             'execution_mode': formatting.conf_param_(conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO),
             'SKIP': NAME_SKIP,
-            'setup': SETUP,
+            'setup': phase_names.SETUP,
         })
 
     def purpose(self) -> Description:
@@ -55,7 +55,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(self.name.plain,
                                                    TEST_CASE_STATUS_INSTRUCTION_NAME),
-            TestCasePhaseCrossReference(SETUP.plain),
+            TestCasePhaseCrossReference(phase_names.SETUP.plain),
         ]
 
 

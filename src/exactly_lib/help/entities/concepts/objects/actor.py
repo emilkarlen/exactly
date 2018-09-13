@@ -7,8 +7,6 @@ from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION, \
-    PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -26,7 +24,7 @@ class _ActorConcept(ConceptDocumentation):
             'actor_concept': formatting.concept(self.singular_name()),
             'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
-            'phase': PHASE_NAME_DICTIONARY,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
         })
         contents = parse.fnap(_AFTER_SINGLE_LINE_DESCRIPTION) + parse.fnap(HOW_TO_SPECIFY_ACTOR)
         return DescriptionWithSubSections(self.single_line_description(),
@@ -37,7 +35,7 @@ class _ActorConcept(ConceptDocumentation):
                 [
                     TestCasePhaseCrossReference(phase_names.ACT.plain),
                     conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
-                    TestCasePhaseInstructionCrossReference(CONFIGURATION.plain,
+                    TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                            ACTOR_INSTRUCTION_NAME),
                     TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
                                                               ACTOR_INSTRUCTION_NAME),

@@ -3,7 +3,7 @@ from typing import List
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.formatting import InstructionName
-from exactly_lib.definitions.test_case.phase_names import ASSERT
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.test_case.phases.assert_ import WithAssertPhasePurpose, AssertPhasePurpose
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure.core import Text, ParagraphItem
@@ -90,7 +90,7 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
                  format_map: dict,
                  is_in_assert_phase: bool):
         the_format_map = {
-            'assert_phase': ASSERT,
+            'assert_phase': phase_names.ASSERT,
         }
         if format_map:
             the_format_map.update(format_map)
@@ -101,7 +101,7 @@ class InstructionDocumentationThatIsNotMeantToBeAnAssertionInAssertPhaseBase(
     def assert_phase_purpose(self) -> AssertPhasePurpose:
         return AssertPhasePurpose.HELPER
 
-    def _main_description_rest_prelude(self) -> list:
+    def _main_description_rest_prelude(self) -> List[ParagraphItem]:
         if self._is_in_assert_phase:
             return self._paragraphs(_NOT_AN_ASSERTION_IN_ASSERT_PHASE)
         else:

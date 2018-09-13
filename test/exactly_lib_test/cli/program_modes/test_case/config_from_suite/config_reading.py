@@ -5,7 +5,7 @@ from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram, TestS
 from exactly_lib.common import instruction_setup
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.default import instruction_name_and_argument_splitter
-from exactly_lib.definitions.test_case.phase_names import ASSERT, ACT
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_suite.section_names import CONFIGURATION
 from exactly_lib.processing import exit_values
 from exactly_lib.processing import instruction_setup
@@ -175,14 +175,14 @@ def test_suite_source_with_single_conf_instruction(instruction: str) -> str:
 
 def test_case_source_with_single_assert_phase_instruction(instruction: str) -> str:
     return lines_content([
-        ASSERT.syntax,
+        phase_names.ASSERT.syntax,
         instruction,
     ])
 
 
 def test_case_source_with_single_act_phase_instruction(instruction: str) -> str:
     return lines_content([
-        ACT.syntax,
+        phase_names.ACT.syntax,
         instruction,
     ])
 

@@ -6,10 +6,9 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseI
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.actors import file_interpreter as help_texts
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names import CONFIGURATION, \
-    ACT, PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEMENT, \
@@ -35,7 +34,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
         super().__init__(FILE_INTERPRETER_ACTOR)
         from exactly_lib.processing.exit_values import EXECUTION__VALIDATION_ERROR
         format_map = {
-            'phase': PHASE_NAME_DICTIONARY,
+            'phase': phase_names.PHASE_NAME_DICTIONARY,
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATION_ERROR.exit_identifier,
@@ -63,7 +62,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
     def _see_also_specific(self) -> list:
         return [
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseInstructionCrossReference(CONFIGURATION.plain,
+            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                    ACTOR_INSTRUCTION_NAME),
             TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
                                                       ACTOR_INSTRUCTION_NAME),
@@ -81,7 +80,7 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
             'FILE': self.file.name,
             'ARGUMENT': self.argument.name,
             'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-            'act_phase': ACT.emphasis,
+            'act_phase': phase_names.ACT.emphasis,
             'home_directory_concept': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }

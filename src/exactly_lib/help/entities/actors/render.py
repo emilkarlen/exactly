@@ -2,7 +2,7 @@ from typing import List
 
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.test_case.phase_names import ACT
+from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.render.see_also_section import see_also_sections
 from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
@@ -20,7 +20,7 @@ class IndividualActorConstructor(ArticleContentsConstructor):
         self.rendering_environment = None
         format_map = {
             'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-            'act_phase': ACT.emphasis,
+            'act_phase': phase_names.ACT.emphasis,
         }
         self._parser = TextParser(format_map)
 

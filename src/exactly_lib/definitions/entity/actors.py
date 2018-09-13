@@ -2,7 +2,7 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.definitions.test_case.phase_names import ACT
+from exactly_lib.definitions.test_case import phase_names
 
 
 def actor_cross_ref(actor_name: str) -> EntityCrossReferenceId:
@@ -25,7 +25,7 @@ COMMAND_LINE_ACTOR = name_and_ref_target(
 SOURCE_INTERPRETER_ACTOR = name_and_ref_target(
     'source interpreter',
     'Treats the {act_phase} phase as source code to be executed by an interpreter'.format(
-        act_phase=ACT.syntax)
+        act_phase=phase_names.ACT.syntax)
 )
 
 FILE_INTERPRETER_ACTOR = name_and_ref_target(
@@ -37,7 +37,7 @@ NULL_ACTOR = name_and_ref_target(
     'null',
     'Ignores the contents of the {act_phase} phase. '
     'Exit code is unconditionally 0, and there is no output on neither stdout nor stderr'.format(
-        act_phase=ACT.syntax)
+        act_phase=phase_names.ACT.syntax)
 )
 
 ALL_ACTORS = [
