@@ -18,7 +18,9 @@ PARAGRAPH_SEPARATOR_LINES = NUM_PARAGRAPH_SEPARATOR_LINES * ['']
 _LITERAL_TOKEN = '```'
 _LITERAL_TOKEN_LEN = len(_LITERAL_TOKEN)
 
-_ITEMIZED_LIST_ITEM_RE = re.compile(r'( +)\* +')
+_ITEMIZED_LIST_ITEM_RE = re.compile(r' +\* ')
+
+_ORDERED_LIST_ITEM_RE = re.compile(r' +1\. ')
 
 
 class ListSettings(tuple):
@@ -69,9 +71,6 @@ class _Parser:
                  lines: List[str],
                  list_settings: ListSettings):
         self.list_settings = list_settings
-        self.itemized_list_format = lists.Format(lists.ListType.ITEMIZED_LIST,
-                                                 custom_indent_spaces=list_settings.custom_indent_spaces,
-                                                 custom_separations=list_settings.custom_separations)
         self.lines = lines
         self.result = []
 
@@ -85,9 +84,9 @@ class _Parser:
         first_line = self.lines[0]
         if self._marks_start_of_literal_block(first_line):
             return self.parse_literal_layout_from_first_marker_line()
-        list_level = _is_itemized_list_item_level(first_line)
-        if list_level is not None:
-            return self.parse_itemized_list_from_first_item_line(list_level)
+        list_paragraph = self._try_parse_list()
+        if list_paragraph:
+            return list_paragraph
         if first_line[0] == '\\':
             self.lines[0] = first_line[1:]
         return self.parse_paragraph()
@@ -116,21 +115,38 @@ class _Parser:
             lines.append(self.lines[0])
             del self.lines[0]
 
-    def parse_itemized_list_from_first_item_line(self, level: int) -> lists.HeaderContentList:
-        item_line_prefix = ' ' * level + '* '
+    def _try_parse_list(self) -> Optional[lists.HeaderContentList]:
+        first_line = self.lines[0]
+        match = _ITEMIZED_LIST_ITEM_RE.match(first_line)
+        if match:
+            return self.parse_list_from_first_item_line(match.group(0),
+                                                        lists.ListType.ITEMIZED_LIST)
+
+        match = _ORDERED_LIST_ITEM_RE.match(first_line)
+        if match:
+            return self.parse_list_from_first_item_line(match.group(0),
+                                                        lists.ListType.ORDERED_LIST)
+
+        return None
+
+    def parse_list_from_first_item_line(self,
+                                        item_line_prefix: str,
+                                        list_type: lists.ListType) -> lists.HeaderContentList:
         items = [self.parse_list_item_from_item_line(self.consume_current_line(),
-                                                     level,
                                                      item_line_prefix)]
         while self.has_more_lines() and self.lines[0].startswith(item_line_prefix):
             next_item = self.parse_list_item_from_item_line(self.consume_current_line(),
-                                                            level,
                                                             item_line_prefix)
             items.append(next_item)
-        return lists.HeaderContentList(items, self.itemized_list_format)
+        return lists.HeaderContentList(items, self._list_format(list_type))
+
+    def _list_format(self, list_type: lists.ListType) -> lists.Format:
+        return lists.Format(list_type,
+                            custom_indent_spaces=self.list_settings.custom_indent_spaces,
+                            custom_separations=self.list_settings.custom_separations)
 
     def parse_list_item_from_item_line(self,
                                        first_item_header_line: str,
-                                       level: int,
                                        item_line_prefix: str) -> lists.HeaderContentListItem:
         item_line_prefix_len = len(item_line_prefix)
         header = first_item_header_line[item_line_prefix_len:].strip()
@@ -195,11 +211,3 @@ class _Parser:
     @staticmethod
     def _marks_end_of_literal_block(line: str) -> bool:
         return line == _LITERAL_TOKEN
-
-
-def _is_itemized_list_item_level(line: str) -> Optional[int]:
-    match = _ITEMIZED_LIST_ITEM_RE.match(line)
-    if match:
-        return len(match.group(1))
-    else:
-        return None
