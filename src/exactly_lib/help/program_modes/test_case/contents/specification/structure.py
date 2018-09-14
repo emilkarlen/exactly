@@ -72,14 +72,14 @@ When run in the following ways, it is part of a suite:
     
   * Standalone
   
-      * A suite file is given via command line arguments.
+      * A suite file is given via command line arguments
       
       * A file "{default_suite_file_name}" exits in the same directory as the test case file
       
-        The "{default_suite_file_name}" file must be test suite.
+        The file "{default_suite_file_name}" must be a test suite.
         
         
-        Note that the test case file need not be listed in "{default_suite_file_name}"
+        Note that the test case file need not be listed in "{default_suite_file_name}".
 
   * Via test suite
   
