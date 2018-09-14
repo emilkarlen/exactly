@@ -2,7 +2,7 @@ import os
 from typing import List, Dict, Callable
 
 from exactly_lib.cli.definitions import exit_codes
-from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND, SUITE_COMMAND
+from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND, SUITE_COMMAND, COMMAND_DESCRIPTIONS
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings
@@ -22,11 +22,6 @@ from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
 from exactly_lib.util.symbol_table import SymbolTable
 from exactly_lib.util.textformat.structure.document import SectionContents
-
-COMMAND_DESCRIPTIONS = {
-    HELP_COMMAND: 'Help system (use "help help" for help on help.)',
-    SUITE_COMMAND: 'Runs a test suite (use "help suite" for help.)'
-}
 
 
 class BuiltinSymbol:
