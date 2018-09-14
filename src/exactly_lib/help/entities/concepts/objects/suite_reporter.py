@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.program_modes.test_suite.command_line_options import OPTION_FOR_REPORTER
+from exactly_lib.cli.definitions.program_modes.test_suite.command_line_options import OPTION_FOR_REPORTER
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import suite_reporters as reporters, concepts
 from exactly_lib.definitions.entity.concepts import SUITE_REPORTER_CONCEPT_INFO

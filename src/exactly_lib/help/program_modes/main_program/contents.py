@@ -1,9 +1,9 @@
 from typing import List, Sequence
 
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
-from exactly_lib.cli.cli_environment.program_modes.help import arguments_for as help_arguments
-from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
+from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND
+from exactly_lib.cli.definitions.program_modes.help import arguments_for as help_arguments
+from exactly_lib.cli.definitions.program_modes.help import command_line_options as clo
 from exactly_lib.definitions import formatting
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as test_case_cli_syntax

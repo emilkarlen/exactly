@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
+from exactly_lib.cli.definitions.program_modes.help import arguments_for
 from exactly_lib.definitions.test_suite import section_names_plain
 from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib_test.default.program_modes.help.test_resources import HelpInvokation, RESULT_IS_SUCCESSFUL

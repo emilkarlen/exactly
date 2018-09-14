@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment import exit_codes
+from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import misc_texts

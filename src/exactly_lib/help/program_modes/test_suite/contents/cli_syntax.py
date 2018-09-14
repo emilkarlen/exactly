@@ -1,9 +1,9 @@
 from typing import List, Optional
 
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment import common_cli_options as common_opts
-from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as case_opts
-from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options as opts
+from exactly_lib.cli.definitions import common_cli_options as common_opts
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as case_opts
+from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference

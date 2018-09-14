@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.program_modes.help.command_line_options import HELP, INSTRUCTIONS, TEST_CASE, \
+from exactly_lib.cli.definitions.program_modes.help.command_line_options import HELP, INSTRUCTIONS, TEST_CASE, \
     TEST_SUITE, SPECIFICATION, HTML_DOCUMENTATION
 from exactly_lib.cli.program_modes.help.entities_requests import EntityHelpItem, EntityHelpRequest
 from exactly_lib.cli.program_modes.help.error import HelpError

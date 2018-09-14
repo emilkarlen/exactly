@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.definitions.misc_texts import SYNTAX_ERROR_NAME

@@ -1,5 +1,5 @@
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.common_cli_options import SUITE_COMMAND
+from exactly_lib.cli.definitions.common_cli_options import SUITE_COMMAND
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import SectionName

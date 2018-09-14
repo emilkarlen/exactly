@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity.concepts import PREPROCESSOR_CONCEPT_INFO
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation

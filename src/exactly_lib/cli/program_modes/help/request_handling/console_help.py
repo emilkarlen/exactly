@@ -2,8 +2,8 @@ import os
 import shutil
 from typing import Sequence
 
-from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
-from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
+from exactly_lib.cli.definitions.program_modes.help import arguments_for
+from exactly_lib.cli.definitions.program_modes.help import command_line_options as clo
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.definitions.cross_ref import concrete_cross_refs
 from exactly_lib.help.contents_structure.application import ApplicationHelp

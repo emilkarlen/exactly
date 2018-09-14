@@ -1,8 +1,8 @@
 import io
 import unittest
 
-from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND
-from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
+from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND
+from exactly_lib.cli.definitions.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import default_instructions_setup
 from exactly_lib.default.program_modes.test_suite import CONFIGURATION_SECTION_INSTRUCTIONS
 from exactly_lib.help.html_doc import main as sut
