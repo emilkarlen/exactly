@@ -1,8 +1,8 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
-from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
+from exactly_lib.cli.definitions.program_modes.help import arguments_for
+from exactly_lib.cli.definitions.program_modes.help import command_line_options as clo
 from exactly_lib.definitions import doc_format, formatting
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER

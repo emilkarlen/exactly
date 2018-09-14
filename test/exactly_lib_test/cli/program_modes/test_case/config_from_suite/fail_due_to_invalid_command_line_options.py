@@ -2,8 +2,8 @@ import pathlib
 import unittest
 from typing import List
 
-from exactly_lib.cli.cli_environment import exit_codes
-from exactly_lib.cli.cli_environment.exit_codes import EXIT_INVALID_USAGE
+from exactly_lib.cli.definitions import exit_codes
+from exactly_lib.cli.definitions.exit_codes import EXIT_INVALID_USAGE
 from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
 from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file

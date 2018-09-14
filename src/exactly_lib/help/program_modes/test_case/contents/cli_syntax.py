@@ -1,7 +1,7 @@
 from typing import List, Optional
 
 from exactly_lib import program_info
-from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \

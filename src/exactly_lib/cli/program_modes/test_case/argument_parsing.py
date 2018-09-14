@@ -5,7 +5,7 @@ from typing import List, Dict
 
 from exactly_lib import program_info
 from exactly_lib.cli.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
-from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case.settings import ReportingOption, TestCaseExecutionSettings
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts

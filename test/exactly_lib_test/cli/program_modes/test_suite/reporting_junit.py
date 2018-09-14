@@ -2,8 +2,9 @@ import pathlib
 import unittest
 from typing import List
 
-import exactly_lib.cli.cli_environment.common_cli_options as opt
-from exactly_lib.cli.cli_environment.program_modes.test_suite import command_line_options
+import exactly_lib.cli.definitions.common_cli_options as opt
+from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options
+from exactly_lib.definitions.entity import suite_reporters
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
@@ -24,10 +25,10 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 class SuiteWithSingleEmptyTestCase(main_program_check_for_test_suite.SetupWithoutPreprocessorWithTestActor):
-    def first_arguments(self, root_path: pathlib.Path) -> list:
+    def first_arguments(self, root_path: pathlib.Path) -> List[str]:
         return [opt.SUITE_COMMAND,
                 short_and_long_option_syntax.long_syntax(command_line_options.OPTION_FOR_REPORTER__LONG),
-                command_line_options.REPORTER_OPTION__JUNIT]
+                suite_reporters.JUNIT_REPORTER.singular_name]
 
     def root_suite_file_based_at(self, root_path: pathlib.Path) -> pathlib.Path:
         return root_path / 'main.suite'

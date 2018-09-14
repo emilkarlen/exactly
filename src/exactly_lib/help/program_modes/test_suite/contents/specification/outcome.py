@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment import exit_codes
+from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import concepts

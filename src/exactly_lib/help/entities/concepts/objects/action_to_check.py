@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options as opt
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts

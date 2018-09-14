@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from typing import List
 
-import exactly_lib.cli.cli_environment.common_cli_options as opt
+import exactly_lib.cli.definitions.common_cli_options as opt
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.main_program import main_program_check_base
 from exactly_lib_test.test_resources.main_program.main_program_runner_utils import ARGUMENTS_FOR_TEST_INTERPRETER

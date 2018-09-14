@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from typing import List
 
-from exactly_lib.cli.cli_environment import exit_codes
+from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
 from exactly_lib_test.default.test_resources.internal_main_program_runner import \
     main_program_runner_with_default_setup__in_same_process

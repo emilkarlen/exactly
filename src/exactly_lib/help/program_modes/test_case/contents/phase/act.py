@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
+from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_ACTOR
 from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params, actors

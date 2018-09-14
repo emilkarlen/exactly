@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference

@@ -1,4 +1,4 @@
-from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.section_document.element_parsers import section_element_parsers

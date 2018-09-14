@@ -1,5 +1,5 @@
 from exactly_lib.act_phase_setups import file_interpreter as actor
-from exactly_lib.cli.cli_environment.program_modes.test_case import command_line_options
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \

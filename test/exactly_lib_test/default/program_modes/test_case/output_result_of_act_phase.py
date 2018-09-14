@@ -1,7 +1,7 @@
 import unittest
 from typing import List
 
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import \
+from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import \
     OPTION_FOR_EXECUTING_ACT_PHASE
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.processing import exit_values

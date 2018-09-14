@@ -1,8 +1,8 @@
 import os
 from typing import List, Dict, Callable
 
-from exactly_lib.cli.cli_environment import exit_codes
-from exactly_lib.cli.cli_environment.common_cli_options import HELP_COMMAND, SUITE_COMMAND
+from exactly_lib.cli.definitions import exit_codes
+from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND, SUITE_COMMAND
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_case import execution as test_case_execution
 from exactly_lib.cli.program_modes.test_case.settings import TestCaseExecutionSettings

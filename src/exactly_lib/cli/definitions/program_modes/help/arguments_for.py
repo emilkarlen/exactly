@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.cli.cli_environment.program_modes.help import command_line_options as clo
+from exactly_lib.cli.definitions.program_modes.help import command_line_options as clo
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
     SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, TYPE_ENTITY_TYPE_NAMES, \

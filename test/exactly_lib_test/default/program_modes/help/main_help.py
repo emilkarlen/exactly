@@ -1,8 +1,9 @@
 import itertools
+
 import unittest
 
-from exactly_lib.cli.cli_environment import exit_codes
-from exactly_lib.cli.cli_environment.program_modes.help import arguments_for
+from exactly_lib.cli.definitions import exit_codes
+from exactly_lib.cli.definitions.program_modes.help import arguments_for
 from exactly_lib.default.program_modes.test_case import builtin_symbols
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.entity import concepts

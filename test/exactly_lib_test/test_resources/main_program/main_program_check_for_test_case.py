@@ -2,7 +2,7 @@ import pathlib
 import unittest
 from typing import List
 
-from exactly_lib.cli.cli_environment.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
+from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib_test.test_resources import string_formatting
 from exactly_lib_test.test_resources.files.file_structure import File, DirContents, FileSystemElement
 from exactly_lib_test.test_resources.main_program import main_program_check_base
