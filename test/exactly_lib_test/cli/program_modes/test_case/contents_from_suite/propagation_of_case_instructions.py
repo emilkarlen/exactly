@@ -4,8 +4,7 @@ from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for, \
-    test_suite_definition_without_instructions
+from exactly_lib_test.cli.program_modes.test_case.contents_from_suite.test_resources.cli_args import cli_args_for
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_of, \
     run_test_case
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
@@ -14,6 +13,7 @@ from exactly_lib_test.test_suite.test_resources.list_recording_instructions impo
     instruction_setup_with_setup_instructions, Recording
 from exactly_lib_test.test_suite.test_resources.processing_utils import \
     test_case_handling_setup_with_identity_preprocessor
+from exactly_lib_test.test_suite.test_resources.test_suite_definition import test_suite_definition_without_instructions
 
 
 def suite() -> unittest.TestSuite:

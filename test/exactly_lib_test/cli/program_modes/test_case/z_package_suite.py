@@ -3,7 +3,7 @@ import unittest
 from exactly_lib_test.cli.program_modes.test_case import \
     argument_parsing, source_file_paths, hds_dir_initialization, env_var_initialization, \
     keep_sandbox
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite import z_package_suite as config_from_suite
+from exactly_lib_test.cli.program_modes.test_case.contents_from_suite import z_package_suite as config_from_suite
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
 

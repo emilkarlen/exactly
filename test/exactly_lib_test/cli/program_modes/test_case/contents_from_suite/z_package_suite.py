@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite import config_reading, \
+from exactly_lib_test.cli.program_modes.test_case.contents_from_suite import config_only_available_in_suite, \
     fail_due_to_invalid_command_line_options, propagation_of_case_instructions
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 from exactly_lib_test.test_resources.main_program.main_program_runner_via_same_process import \
@@ -9,7 +9,7 @@ from exactly_lib_test.test_resources.main_program.main_program_runner_via_same_p
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     return unittest.TestSuite([
-        config_reading.suite(),
+        config_only_available_in_suite.suite(),
         propagation_of_case_instructions.suite(),
     ])
 

@@ -24,8 +24,6 @@ from exactly_lib.test_case.phases.common import TestCaseInstruction
 from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import \
-    test_suite_definition_without_instructions
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_of, \
     run_test_case
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
@@ -39,6 +37,7 @@ from exactly_lib_test.test_resources.actions import do_return, do_raise
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import T, MessageBuilder
+from exactly_lib_test.test_suite.test_resources.test_suite_definition import test_suite_definition_without_instructions
 
 
 def suite() -> unittest.TestSuite:

@@ -22,8 +22,7 @@ from exactly_lib.test_case.result import pfh
 from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_definition import \
     ConfigurationSectionInstruction, ConfigurationSectionEnvironment
 from exactly_lib.util.string import lines_content
-from exactly_lib_test.cli.program_modes.test_case.config_from_suite.test_resources import cli_args_for, \
-    test_suite_definition_without_instructions, test_suite_definition_with_instructions
+from exactly_lib_test.cli.program_modes.test_case.contents_from_suite.test_resources.cli_args import cli_args_for
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_of, \
     run_test_case
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
@@ -37,6 +36,8 @@ from exactly_lib_test.test_resources.actions import do_return
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_resources.process import SubProcessResult
 from exactly_lib_test.test_resources.value_assertions.process_result_assertions import is_result_for_exit_value
+from exactly_lib_test.test_suite.test_resources.test_suite_definition import test_suite_definition_without_instructions, \
+    test_suite_definition_with_instructions
 
 
 def suite() -> unittest.TestSuite:
