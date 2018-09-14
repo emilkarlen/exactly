@@ -1,6 +1,7 @@
 import pathlib
 from typing import Optional
 
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.processing import test_case_processing, processors
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.standalone import result_reporting
@@ -28,6 +29,7 @@ class Processor:
         result_reporter = self._get_reporter(std_output_files, settings.reporting_option)
         try:
             handling_setup = self._resolve_handling_setup(settings.handling_setup,
+                                                          settings.test_case_file_path,
                                                           settings.suite_to_read_config_from)
         except SuiteSyntaxError as ex:
             reporter = result_reporting.TestSuiteSyntaxErrorReporter(std_output_files)
@@ -56,11 +58,24 @@ class Processor:
 
     def _resolve_handling_setup(self,
                                 default_handling_setup: TestCaseHandlingSetup,
-                                suite_to_read_config_from: Optional[pathlib.Path]) -> TestCaseHandlingSetup:
-        if not suite_to_read_config_from:
+                                test_case_file_path: pathlib.Path,
+                                explicit_suite_file_path: Optional[pathlib.Path]) -> TestCaseHandlingSetup:
+        def get_suite_file() -> Optional[pathlib.Path]:
+            if explicit_suite_file_path:
+                return explicit_suite_file_path
+
+            default_suite_file_path = test_case_file_path.parent / file_names.DEFAULT_SUITE_FILE
+            if default_suite_file_path.is_file():
+                return default_suite_file_path
+
+            return None
+
+        suite_file_path = get_suite_file()
+
+        if not suite_file_path:
             return default_handling_setup
         from exactly_lib.test_suite.file_reading.suite_file_reading import resolve_handling_setup_from_suite_file
         return resolve_handling_setup_from_suite_file(default_handling_setup,
                                                       self._suite_configuration_section_parser,
                                                       self._test_case_definition.parsing_setup,
-                                                      suite_to_read_config_from)
+                                                      suite_file_path)

@@ -142,6 +142,16 @@ class DirContents:
     def file_system_elements(self) -> List[FileSystemElement]:
         return self._file_system_element_contents
 
+    def in_dir(self, parent_dir: str):
+        return DirContents([
+            Dir(parent_dir, self.file_system_elements)
+        ])
+
+    def in_dir_path(self, parent_dir: pathlib.Path):
+        return DirContents([
+            Dir(str(parent_dir), self.file_system_elements)
+        ])
+
 
 def add_dir_contents(dir_contents_sequence: Sequence[DirContents]) -> DirContents:
     elements = []

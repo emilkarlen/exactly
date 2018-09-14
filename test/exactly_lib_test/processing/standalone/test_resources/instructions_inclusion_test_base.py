@@ -1,7 +1,9 @@
 import unittest
 from pathlib import Path
+from typing import Optional
 
 from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
@@ -40,13 +42,29 @@ class TestCaseRunner:
             test_case_handling_setup: TestCaseHandlingSetup,
             test_suite_definition: TestSuiteDefinition,
             case_file: Path,
-            suite_file: Path) -> SubProcessResult:
+            suite_file: Optional[Path]) -> SubProcessResult:
         raise NotImplementedError('abstract method')
 
 
-class TestInclusionOfCaseContentsFromSuiteTestBase(unittest.TestCase):
-    def _setup_instructions_in_containing_suite_SHOULD_be_executed_first_in_the_case(self,
-                                                                                     test_case_runner: TestCaseRunner):
+class ContentsFromSuiteShouldBeIncludedInTheCaseTestBase(unittest.TestCase):
+    def _setup_instructions_in_suite__explicit_suite_argument(self,
+                                                              test_case_runner: TestCaseRunner):
+        suite_file_name = Path('test.suite')
+
+        self._run(test_case_runner,
+                  suite_file_name=str(suite_file_name),
+                  suite_file_overriding=suite_file_name)
+
+    def _setup_instructions_in_suite__implicit_default_suite(self,
+                                                             test_case_runner: TestCaseRunner):
+        self._run(test_case_runner,
+                  suite_file_name=file_names.DEFAULT_SUITE_FILE,
+                  suite_file_overriding=None)
+
+    def _run(self,
+             test_case_runner: TestCaseRunner,
+             suite_file_name: str,
+             suite_file_overriding: Optional[Path]):
         # ARRANGE #
 
         expected_instruction_recording = [
@@ -55,7 +73,7 @@ class TestInclusionOfCaseContentsFromSuiteTestBase(unittest.TestCase):
             SETUP_INSTRUCTION_IN_CASE,
         ]
 
-        suite_file = File('test.suite',
+        suite_file = File(suite_file_name,
                           SUITE_WITH_SETUP_INSTRUCTION.format(
                               marker=SETUP_INSTRUCTION_IN_CONTAINING_SUITE))
 
@@ -63,10 +81,16 @@ class TestInclusionOfCaseContentsFromSuiteTestBase(unittest.TestCase):
                          CASE_THAT_REGISTERS_MARKER.format(
                              marker=SETUP_INSTRUCTION_IN_CASE))
 
+        sub_dir_path = Path('dir-containing-test-case')
+
         suite_and_case_files = DirContents([
             suite_file,
             case_file,
         ])
+
+        explicit_suite_file_path = None
+        if suite_file_overriding:
+            explicit_suite_file_path = sub_dir_path / suite_file_overriding
 
         recording_media = []
 
@@ -79,12 +103,12 @@ class TestInclusionOfCaseContentsFromSuiteTestBase(unittest.TestCase):
 
         test_suite_definition = test_suite_definition_without_instructions()
         # ACT #
-        with tmp_dir_as_cwd(suite_and_case_files):
+        with tmp_dir_as_cwd(suite_and_case_files.in_dir_path(sub_dir_path)):
             actual_result = test_case_runner.run(test_case_parsing_setup,
                                                  test_case_handling_setup,
                                                  test_suite_definition,
-                                                 case_file.name_as_path,
-                                                 suite_file.name_as_path)
+                                                 sub_dir_path / case_file.name_as_path,
+                                                 explicit_suite_file_path)
         # ASSERT #
 
         self.assertEqual(exit_values.EXECUTION__PASS.exit_code,
