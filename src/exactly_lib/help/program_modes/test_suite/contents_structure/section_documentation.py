@@ -1,5 +1,6 @@
 from typing import List, Optional
 
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionCrossReference
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.help.program_modes.common import contents as common_contents
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
@@ -18,6 +19,12 @@ class TestSuiteSectionDocumentation(SectionDocumentation):
 
     def instructions_section_header(self) -> Text:
         return common_contents.INSTRUCTIONS_SECTION_HEADER
+
+    @property
+    def syntax_name_cross_ref_text(self) -> docs.Text:
+        return docs.cross_reference(self.syntax_name_text,
+                                    TestSuiteSectionCrossReference(self.name.plain),
+                                    allow_rendering_of_visible_extra_target_text=False)
 
 
 class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentation):

@@ -1,5 +1,6 @@
 from typing import List, Sequence, Optional
 
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.util.textformat.structure import document as doc
@@ -73,6 +74,12 @@ class TestCasePhaseDocumentation(SectionDocumentation):
 
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         raise NotImplementedError()
+
+    @property
+    def syntax_name_cross_ref_text(self) -> docs.Text:
+        return docs.cross_reference(self.syntax_name_text,
+                                    TestCasePhaseCrossReference(self.name.plain),
+                                    allow_rendering_of_visible_extra_target_text=False)
 
 
 class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentation):

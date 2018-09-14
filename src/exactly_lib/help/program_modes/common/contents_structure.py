@@ -5,7 +5,7 @@ from exactly_lib.definitions import doc_format
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.util.description import Description
-from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
+from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem, Text
 
 
 class SectionInstructionSet(tuple):
@@ -71,6 +71,10 @@ class SectionDocumentation:
     @property
     def syntax_name_text(self) -> StringText:
         return doc_format.section_name_text(self.name)
+
+    @property
+    def syntax_name_cross_ref_text(self) -> Text:
+        raise NotImplementedError('abstract method')
 
     def purpose(self) -> Description:
         raise NotImplementedError()
