@@ -1,5 +1,4 @@
 from exactly_lib import program_info
-from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.current_directory_and_path_type import cd_instruction_section_on_def_instruction
 from exactly_lib.definitions.entity import concepts
@@ -20,7 +19,6 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
 
     def purpose(self) -> DescriptionWithSubSections:
         tp = TextParser({
-            'preprocessor_option': formatting.cli_option(OPTION_FOR_PREPROCESSOR),
             'phase': PHASE_NAME_DICTIONARY,
             'act_dir': SUB_DIRECTORY__ACT,
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
