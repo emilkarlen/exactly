@@ -4,13 +4,10 @@ import shlex
 from typing import List, Dict
 
 from exactly_lib import program_info
-from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import resolve_act_phase_setup_from_argparse_argument
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
-from exactly_lib.cli.definitions import common_cli_options
+from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import \
     resolve_act_phase_setup_from_argparse_argument
-from exactly_lib.cli.program_modes.test_case.settings import ReportingOption, TestCaseExecutionSettings
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
@@ -94,8 +91,8 @@ def _new_argument_parser(commands: Dict[str, str]) -> argparse.ArgumentParser:
                          action="store_true",
                          help=TEXT_PARSER.format(EXECUTING_ACT_PHASE_OPTION_DESCRIPTION))
     ret_val.add_argument(short_and_long_option_syntax.long_syntax(
-        common_cli_options.OPTION_FOR_ACTOR__LONG),
-        metavar=common_cli_options.ACTOR_OPTION_ARGUMENT,
+        common_opts.OPTION_FOR_ACTOR__LONG),
+        metavar=common_opts.ACTOR_OPTION_ARGUMENT,
         nargs=1,
         help=TEXT_PARSER.format(ACTOR_OPTION_DESCRIPTION))
     ret_val.add_argument(short_and_long_option_syntax.long_syntax(opt.OPTION_FOR_SUITE__LONG),
@@ -174,7 +171,7 @@ TEXT_PARSER = TextParser({
     'phase': PHASE_NAME_DICTIONARY,
     'preprocessor': opt.PREPROCESSOR_OPTION_ARGUMENT,
     'sandbox': formatting.concept_(SANDBOX_CONCEPT_INFO),
-    'interpreter_program': common_cli_options.ACTOR_OPTION_ARGUMENT,
+    'interpreter_program': common_opts.ACTOR_OPTION_ARGUMENT,
     'INTERPRETER_ACTOR_TERM': formatting.entity(SOURCE_INTERPRETER_ACTOR.singular_name),
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,
     'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
