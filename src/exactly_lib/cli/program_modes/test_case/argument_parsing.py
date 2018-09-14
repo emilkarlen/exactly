@@ -13,6 +13,7 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
 from exactly_lib.help.texts import IS_A_SHELL_CMD
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
@@ -127,6 +128,9 @@ Note that an {ACTOR_CONCEPT} specified in the test case has precedence over the
 
 SUITE_OPTION_DESCRIPTION = """\
 Runs the test case as if it were part of the given suite.
+
+
+This overrides the default suite file "{default_suite_file}".
 """
 
 EXECUTING_ACT_PHASE_OPTION_DESCRIPTION = """\
@@ -176,4 +180,5 @@ TEXT_PARSER = TextParser({
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,
     'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
     'is_a_shell_cmd': IS_A_SHELL_CMD,
+    'default_suite_file': file_names.DEFAULT_SUITE_FILE,
 })
