@@ -1,6 +1,5 @@
-from typing import Dict, List
+from typing import Dict
 
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
 from exactly_lib.default import instruction_name_and_argument_splitter
@@ -9,10 +8,6 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
     InstructionWithOptionalDescriptionParser
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
-
-
-def cli_args_for(suite_file: str, case_file: str) -> List[str]:
-    return [command_line_options.OPTION_FOR_SUITE, suite_file, case_file]
 
 
 def test_suite_definition_without_instructions() -> TestSuiteDefinition:
