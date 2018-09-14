@@ -7,6 +7,7 @@ from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.specification import outcome as case_outcome_help
 from exactly_lib.help.render.cli_program import \
@@ -113,7 +114,12 @@ def synopsis() -> cli_syntax.Synopsis:
 
 _SINGLE_LINE_DESCRIPTION = 'Runs a test case'
 
-_DESCRIPTION_PARAGRAPH = """Runs the test case in file {TEST_CASE_FILE}."""
+_DESCRIPTION_PARAGRAPH = """Runs the test case in file {TEST_CASE_FILE}.
+
+
+If there exists a file "{default_suite_file}" in the same directory as {TEST_CASE_FILE},
+then this file must be a test suite, and the test case is run as part of this suite. 
+"""
 
 _OUTCOME_INITIAL_PARAGRAPHS_EXTRA = """\
 See test case specification for details.
@@ -139,4 +145,5 @@ _SUITE_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_SUITE__LONG,
 
 _TP = TextParser({
     'TEST_CASE_FILE': _FILE_ARGUMENT.name,
+    'default_suite_file': file_names.DEFAULT_SUITE_FILE,
 })
