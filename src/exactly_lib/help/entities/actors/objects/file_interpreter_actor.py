@@ -3,6 +3,7 @@ from typing import List
 from exactly_lib.act_phase_setups import file_interpreter as actor
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.definitions import instruction_arguments, formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.entity import concepts
@@ -51,7 +52,7 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
         sub_sections.append(synopsis_section)
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
-    def _see_also_specific(self) -> list:
+    def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,

@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
@@ -42,7 +43,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
     def act_phase_contents_syntax(self) -> SectionContents:
         return section_contents(self._parser.fnap(_ACT_PHASE_CONTENTS_SYNTAX))
 
-    def _see_also_specific(self) -> list:
+    def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
