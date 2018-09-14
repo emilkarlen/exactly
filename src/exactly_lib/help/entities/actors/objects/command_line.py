@@ -4,6 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.act_phase_setups import command_line as actor
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import cross_reference_id_list
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.entity.actors import COMMAND_LINE_ACTOR
@@ -44,7 +45,7 @@ class CommandLineActorDocumentation(ActorDocumentation):
         sub_sections.append(synopsis_section)
         return doc.SectionContents(initial_paragraphs, sub_sections)
 
-    def _see_also_specific(self) -> list:
+    def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return cross_reference_id_list([
             conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
             concepts.SHELL_SYNTAX_CONCEPT_INFO,
