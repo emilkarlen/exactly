@@ -30,7 +30,7 @@ class Processor:
         try:
             handling_setup = self._resolve_handling_setup(settings.handling_setup,
                                                           settings.test_case_file_path,
-                                                          settings.suite_to_read_config_from)
+                                                          settings.run_as_part_of_explicit_suite)
         except SuiteSyntaxError as ex:
             reporter = result_reporting.TestSuiteSyntaxErrorReporter(std_output_files)
             return reporter.report(ex)

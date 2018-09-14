@@ -115,7 +115,7 @@ class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
                                                            tmp_dir / sub_dir_path,
                                                            ReportingOption.STATUS_CODE,
                                                            default_test_case_handling,
-                                                           suite_to_read_config_from=explicit_suite_file_path)
+                                                           run_as_part_of_explicit_suite=explicit_suite_file_path)
 
             # ACT #
             actual_result = capture_output_from_processor(processor,

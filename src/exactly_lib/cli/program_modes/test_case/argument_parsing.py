@@ -57,7 +57,7 @@ def parse(default: TestCaseHandlingSetup,
                                      output,
                                      actual_handling_setup,
                                      sandbox_root_dir_resolver=default_sandbox_root_dir_name_resolver,
-                                     suite_to_read_config_from=suite_file)
+                                     run_as_part_of_explicit_suite=suite_file)
 
 
 def _resolve_and_fail_if_is_not_an_existing_file(test_case_file_path) -> pathlib.Path:

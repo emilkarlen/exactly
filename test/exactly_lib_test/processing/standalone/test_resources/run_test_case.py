@@ -21,7 +21,7 @@ class TestCaseRunner(base.TestCaseRunner):
             test_case_handling_setup: TestCaseHandlingSetup,
             test_suite_definition: TestSuiteDefinition,
             case_file: Path,
-            suite_file: Optional[Path]) -> SubProcessResult:
+            explicit_suite_file_path: Optional[Path]) -> SubProcessResult:
         processor = sut.Processor(TestCaseDefinition(parsing_setup,
                                                      PredefinedProperties.new_empty()),
                                   ActPhaseOsProcessExecutorThatJustReturnsConstant(),
@@ -31,6 +31,6 @@ class TestCaseRunner(base.TestCaseRunner):
                                                        case_file.parent,
                                                        ReportingOption.STATUS_CODE,
                                                        test_case_handling_setup,
-                                                       suite_to_read_config_from=suite_file)
+                                                       run_as_part_of_explicit_suite=explicit_suite_file_path)
         return capture_output_from_processor(processor,
                                              execution_settings)

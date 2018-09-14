@@ -49,7 +49,7 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
                                                            tmp_dir,
                                                            ReportingOption.STATUS_CODE,
                                                            default_test_case_handling,
-                                                           suite_to_read_config_from=suite_file.name_as_path)
+                                                           run_as_part_of_explicit_suite=suite_file.name_as_path)
             # ACT #
             actual_result = capture_output_from_processor(processor,
                                                           execution_settings)
