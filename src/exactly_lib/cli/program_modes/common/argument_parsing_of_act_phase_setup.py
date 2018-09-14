@@ -1,5 +1,6 @@
 import pathlib
 import shlex
+from typing import List
 
 from exactly_lib.act_phase_setups.source_interpreter import act_phase_setup
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -7,7 +8,7 @@ from exactly_lib.util.process_execution.commands import executable_file_command
 
 
 def resolve_act_phase_setup_from_argparse_argument(default_setup: ActPhaseSetup,
-                                                   interpreter: list) -> ActPhaseSetup:
+                                                   interpreter: List[str]) -> ActPhaseSetup:
     interpreter_argument = None
     if interpreter and len(interpreter) > 0:
         interpreter_argument = interpreter[0]
