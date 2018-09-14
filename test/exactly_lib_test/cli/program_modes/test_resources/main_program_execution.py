@@ -111,7 +111,6 @@ def main_program_of(test_case_definition: TestCaseDefinitionForMainProgram,
 
 
 def capture_output_from_main_program(command_line_arguments: List[str],
-                                     cwd_contents: DirContents,
                                      main_pgm: main_program.MainProgram,
                                      ) -> SubProcessResult:
     stdout_file = io.StringIO()
@@ -119,9 +118,7 @@ def capture_output_from_main_program(command_line_arguments: List[str],
     std_output_files = StdOutputFiles(stdout_file=stdout_file,
                                       stderr_file=stderr_file)
 
-    with tmp_dir_as_cwd(cwd_contents):
-        # ACT #
-        actual_exit_code = main_pgm.execute(command_line_arguments, std_output_files)
+    actual_exit_code = main_pgm.execute(command_line_arguments, std_output_files)
 
     ret_val = SubProcessResult(actual_exit_code,
                                stdout=stdout_file.getvalue(),
@@ -129,3 +126,11 @@ def capture_output_from_main_program(command_line_arguments: List[str],
     stdout_file.close()
     stderr_file.close()
     return ret_val
+
+
+def capture_output_from_main_program__in_tmp_dir(command_line_arguments: List[str],
+                                                 cwd_contents: DirContents,
+                                                 main_pgm: main_program.MainProgram,
+                                                 ) -> SubProcessResult:
+    with tmp_dir_as_cwd(cwd_contents):
+        return capture_output_from_main_program(command_line_arguments, main_pgm)
