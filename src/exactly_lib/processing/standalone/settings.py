@@ -24,14 +24,14 @@ class TestCaseExecutionSettings:
                  handling_setup: TestCaseHandlingSetup,
                  sandbox_root_dir_resolver: SandboxRootDirNameResolver =
                  sandbox_dir_resolving.mk_tmp_dir_with_prefix(program_info.PROGRAM_NAME + '-'),
-                 suite_to_read_config_from: Optional[pathlib.Path] = None,
+                 run_as_part_of_explicit_suite: Optional[pathlib.Path] = None,
                  ):
         self.__test_case_file_path = test_case_file_path
         self.__initial_home_dir_path = initial_home_dir_path
         self.__output = output
         self.__handling_setup = handling_setup
         self.__sandbox_root_dir_resolver = sandbox_root_dir_resolver
-        self.__suite_to_read_config_from = suite_to_read_config_from
+        self.__run_as_part_of_explicit_suite = run_as_part_of_explicit_suite
 
     @property
     def test_case_file_path(self) -> pathlib.Path:
@@ -54,11 +54,8 @@ class TestCaseExecutionSettings:
         return self.__sandbox_root_dir_resolver
 
     @property
-    def suite_to_read_config_from(self) -> Optional[pathlib.Path]:
+    def run_as_part_of_explicit_suite(self) -> Optional[pathlib.Path]:
         """
-        If this is not None, then a suite file has been given,
-        and config should be read from that file and
-        used as default.
-        :return: None iff config should not be read from a suite.
+        If not None, the the file must exist as a suite and the test case is run as part of this suite
         """
-        return self.__suite_to_read_config_from
+        return self.__run_as_part_of_explicit_suite

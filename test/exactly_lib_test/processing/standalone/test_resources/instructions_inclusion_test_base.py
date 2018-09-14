@@ -42,7 +42,7 @@ class TestCaseRunner:
             test_case_handling_setup: TestCaseHandlingSetup,
             test_suite_definition: TestSuiteDefinition,
             case_file: Path,
-            suite_file: Optional[Path]) -> SubProcessResult:
+            explicit_suite_file_path: Optional[Path]) -> SubProcessResult:
         raise NotImplementedError('abstract method')
 
 

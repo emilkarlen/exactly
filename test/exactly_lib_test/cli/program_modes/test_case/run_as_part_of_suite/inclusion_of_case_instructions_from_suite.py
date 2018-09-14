@@ -21,12 +21,12 @@ class _TestCaseRunner(TestCaseRunner):
             test_case_handling_setup: TestCaseHandlingSetup,
             test_suite_definition: TestSuiteDefinition,
             case_file: Path,
-            suite_file: Optional[Path]) -> SubProcessResult:
+            explicit_suite_file_path: Optional[Path]) -> SubProcessResult:
         return run_test_case(parsing_setup,
                              test_case_handling_setup,
                              test_suite_definition,
                              case_file,
-                             suite_file)
+                             explicit_suite_file_path)
 
 
 class SetupSectionContentsFromSuiteShouldBeIncludedInTheCaseTest(ContentsFromSuiteShouldBeIncludedInTheCaseTestBase):
