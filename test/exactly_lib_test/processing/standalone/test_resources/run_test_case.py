@@ -1,4 +1,5 @@
 from pathlib import Path
+from typing import Optional
 
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.execution.configuration import PredefinedProperties
@@ -20,7 +21,7 @@ class TestCaseRunner(base.TestCaseRunner):
             test_case_handling_setup: TestCaseHandlingSetup,
             test_suite_definition: TestSuiteDefinition,
             case_file: Path,
-            suite_file: Path) -> SubProcessResult:
+            suite_file: Optional[Path]) -> SubProcessResult:
         processor = sut.Processor(TestCaseDefinition(parsing_setup,
                                                      PredefinedProperties.new_empty()),
                                   ActPhaseOsProcessExecutorThatJustReturnsConstant(),

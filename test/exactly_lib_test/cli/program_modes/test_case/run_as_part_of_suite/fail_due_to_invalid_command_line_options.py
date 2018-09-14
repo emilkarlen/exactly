@@ -5,7 +5,8 @@ from typing import List
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.definitions.exit_codes import EXIT_INVALID_USAGE
 from exactly_lib.util.cli_syntax.short_and_long_option_syntax import long_syntax
-from exactly_lib_test.cli.program_modes.test_case.run_as_part_of_suite.test_resources.cli_args import cli_args_for
+from exactly_lib_test.cli.program_modes.test_case.run_as_part_of_suite.test_resources.cli_args import \
+    cli_args_for_explicit_suite
 from exactly_lib_test.test_resources.files.file_structure import DirContents, empty_file
 from exactly_lib_test.test_resources.main_program import main_program_check_base as mpr_check
 from exactly_lib_test.test_resources.main_program.main_program_check_for_test_case import \
@@ -58,7 +59,7 @@ class InvalidCommandLineOptionShouldExitWithInvalidUsageStatus(SetupWithoutPrepr
 
 class WhenNeitherTestSuiteNorTestCaseFileExistsResultShouldBeFileAccessError(mpr_check.SetupWithJustMainProgramRunner):
     def arguments(self) -> List[str]:
-        return cli_args_for('non-existing.suite', 'non-existing.case')
+        return cli_args_for_explicit_suite('non-existing.suite', 'non-existing.case')
 
     def check(self,
               put: unittest.TestCase,
@@ -75,7 +76,7 @@ class WhenTestSuiteExistsButNotTestCaseFileExistsResultShouldBeFileAccessError(m
         return DirContents([empty_file(self.name_of_test_suite)])
 
     def arguments(self, tmp_cwd_dir_path: pathlib.Path) -> list:
-        return cli_args_for(self.name_of_test_suite, self.name_of_test_case)
+        return cli_args_for_explicit_suite(self.name_of_test_suite, self.name_of_test_case)
 
     def check(self,
               put: unittest.TestCase,
@@ -94,7 +95,7 @@ class WhenTestSuiteFileDoNotExistAndTestCaseFileExistsResultShouldBeFileAccessEr
         return DirContents([empty_file(self.name_of_test_case)])
 
     def arguments(self, tmp_cwd_dir_path: pathlib.Path) -> list:
-        return cli_args_for(self.name_of_test_suite, self.name_of_test_case)
+        return cli_args_for_explicit_suite(self.name_of_test_suite, self.name_of_test_case)
 
     def check(self,
               put: unittest.TestCase,

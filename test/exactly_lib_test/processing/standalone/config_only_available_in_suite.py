@@ -1,7 +1,10 @@
 import unittest
+from pathlib import Path
+from typing import Optional
 
 from exactly_lib.cli.main_program import TestSuiteDefinition
 from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.definitions.test_suite.section_names import CONFIGURATION
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.act_phase import ActPhaseSetup
@@ -34,7 +37,7 @@ from exactly_lib_test.test_suite.test_resources.test_suite_definition import tes
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
-        TestConfigFromSuiteShouldBeForwardedToTestCase(),
+        unittest.makeSuite(TestConfigFromSuiteShouldBeForwardedToTestCase),
     ])
 
 
@@ -42,7 +45,19 @@ SUCCESS_INDICATOR_STRING = 'output from actor set in suite'
 
 
 class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
-    def runTest(self):
+    def test_explicit_suite_file(self):
+        suite_file_name = Path('test.suite')
+
+        self._run(suite_file_name=str(suite_file_name),
+                  suite_file_overriding=suite_file_name)
+
+    def test_implicit_default_suite(self):
+        self._run(suite_file_name=file_names.DEFAULT_SUITE_FILE,
+                  suite_file_overriding=None)
+
+    def _run(self,
+             suite_file_name: str,
+             suite_file_overriding: Optional[Path]):
         default_test_case_handling = setup_with_null_act_phase_and_null_preprocessing()
 
         suite_conf_instruction = SuiteConfInstructionThatSets(
@@ -74,7 +89,7 @@ class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
                                   suite_conf_parser)
 
         suite_file = File(
-            'test.suite',
+            suite_file_name,
             test_suite_source_with_single_conf_instruction(
                 SUITE_CONF_INSTRUCTION_THAT_SETS_PREPROCESSOR_AND_ACTOR__NAME)
         )
@@ -84,17 +99,23 @@ class TestConfigFromSuiteShouldBeForwardedToTestCase(unittest.TestCase):
                 ASSERT_PHASE_INSTRUCTION_THAT_FAILS_UNCONDITIONALLY__NAME)
         )
 
+        sub_dir_path = Path('sub-dir')
+
         suite_and_case_files = DirContents([
             suite_file,
             case_file,
-        ])
+        ]).in_dir(str(sub_dir_path))
+
+        explicit_suite_file_path = None
+        if suite_file_overriding:
+            explicit_suite_file_path = sub_dir_path / suite_file_overriding
 
         with tmp_dir_as_cwd(suite_and_case_files) as tmp_dir:
-            execution_settings = TestCaseExecutionSettings(case_file.name_as_path,
-                                                           tmp_dir,
+            execution_settings = TestCaseExecutionSettings(sub_dir_path / case_file.name_as_path,
+                                                           tmp_dir / sub_dir_path,
                                                            ReportingOption.STATUS_CODE,
                                                            default_test_case_handling,
-                                                           suite_to_read_config_from=suite_file.name_as_path)
+                                                           suite_to_read_config_from=explicit_suite_file_path)
 
             # ACT #
             actual_result = capture_output_from_processor(processor,
