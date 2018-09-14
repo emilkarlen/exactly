@@ -139,8 +139,8 @@ class MainProgram:
                           ) -> int:
         from exactly_lib.processing.standalone import processor
         processor = processor.Processor(self._test_case_definition,
-                                        self._test_suite_definition.configuration_section_parser,
-                                        self._act_phase_os_process_executor)
+                                        self._act_phase_os_process_executor,
+                                        self._test_suite_definition.configuration_section_parser)
         return processor.process(output, settings)
 
     def execute_test_suite(self,

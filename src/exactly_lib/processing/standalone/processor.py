@@ -15,12 +15,11 @@ from exactly_lib.util.std import StdOutputFiles
 class Processor:
     def __init__(self,
                  test_case_definition: TestCaseDefinition,
-                 configuration_section_parser: SectionElementParser,
                  act_phase_os_process_executor: ActPhaseOsProcessExecutor,
-                 ):
+                 suite_configuration_section_parser: SectionElementParser):
         self._test_case_definition = test_case_definition
-        self._configuration_section_parser = configuration_section_parser
         self._act_phase_os_process_executor = act_phase_os_process_executor
+        self._suite_configuration_section_parser = suite_configuration_section_parser
 
     def process(self,
                 std_output_files: StdOutputFiles,
@@ -62,6 +61,6 @@ class Processor:
             return default_handling_setup
         from exactly_lib.test_suite.file_reading.suite_file_reading import resolve_handling_setup_from_suite_file
         return resolve_handling_setup_from_suite_file(default_handling_setup,
-                                                      self._configuration_section_parser,
+                                                      self._suite_configuration_section_parser,
                                                       self._test_case_definition.parsing_setup,
                                                       suite_to_read_config_from)

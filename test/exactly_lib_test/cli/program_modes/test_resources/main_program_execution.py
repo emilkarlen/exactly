@@ -110,10 +110,10 @@ def main_program_of(test_case_definition: TestCaseDefinitionForMainProgram,
     )
 
 
-def run_test_case(command_line_arguments: List[str],
-                  cwd_contents: DirContents,
-                  main_pgm: main_program.MainProgram,
-                  ) -> SubProcessResult:
+def capture_output_from_main_program(command_line_arguments: List[str],
+                                     cwd_contents: DirContents,
+                                     main_pgm: main_program.MainProgram,
+                                     ) -> SubProcessResult:
     stdout_file = io.StringIO()
     stderr_file = io.StringIO()
     std_output_files = StdOutputFiles(stdout_file=stdout_file,

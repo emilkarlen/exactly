@@ -4,9 +4,9 @@ from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
-from exactly_lib_test.cli.program_modes.test_case.contents_from_suite.test_resources.cli_args import cli_args_for
+from exactly_lib_test.cli.program_modes.test_case.run_as_part_of_suite.test_resources.cli_args import cli_args_for
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_of, \
-    run_test_case
+    capture_output_from_main_program
 from exactly_lib_test.section_document.test_resources.misc import space_separator_instruction_name_extractor
 from exactly_lib_test.test_resources.files.file_structure import DirContents, File
 from exactly_lib_test.test_suite.test_resources.list_recording_instructions import \
@@ -78,9 +78,9 @@ class Test(unittest.TestCase):
                                    test_suite_definition_without_instructions(),
                                    test_case_handling_setup_with_identity_preprocessor())
         # ACT #
-        actual_result = run_test_case(command_line_arguments,
-                                      suite_and_case_files,
-                                      main_pgm)
+        actual_result = capture_output_from_main_program(command_line_arguments,
+                                                         suite_and_case_files,
+                                                         main_pgm)
         # ASSERT #
 
         self.assertEqual(exit_values.EXECUTION__PASS.exit_code,

@@ -25,7 +25,7 @@ from exactly_lib.test_case.result import pfh, sh, svh
 from exactly_lib.util.file_utils import resolved_path_name
 from exactly_lib.util.string import lines_content
 from exactly_lib_test.cli.program_modes.test_resources.main_program_execution import main_program_of, \
-    run_test_case
+    capture_output_from_main_program
 from exactly_lib_test.cli.program_modes.test_resources.test_case_setup import test_case_definition_for
 from exactly_lib_test.common.test_resources.instruction_setup import single_instruction_setup
 from exactly_lib_test.execution.test_resources.instruction_test_resources import setup_phase_instruction_that, \
@@ -486,9 +486,9 @@ def _check(put: unittest.TestCase,
             tc_handling_setup,
             sandbox_root_dir_name_resolver=mk_sds_resolver(dir_name)
         )
-        actual_result = run_test_case(command_line_arguments,
-                                      source_files_dir_contents,
-                                      main_pgm)
+        actual_result = capture_output_from_main_program(command_line_arguments,
+                                                         source_files_dir_contents,
+                                                         main_pgm)
 
         # ASSERT #
 
