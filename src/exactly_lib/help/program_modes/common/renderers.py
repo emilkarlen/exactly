@@ -80,7 +80,7 @@ def sections_short_list(sections: Sequence[SectionDocumentation],
     def list_item(doc: SectionDocumentation) -> HeaderContentListItem:
         paras = [docs.para(doc.purpose().single_line_description)]
         add_default_info(doc, paras)
-        return docs.list_item(doc.syntax_name_text, paras)
+        return docs.list_item(doc.syntax_name_cross_ref_text, paras)
 
     items = map(list_item, sections)
     return docs.simple_list_with_space_between_elements_and_content(
