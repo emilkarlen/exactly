@@ -1,6 +1,9 @@
 import unittest
+from pathlib import Path
+from typing import Optional
 
 from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.processing import exit_values
 from exactly_lib.processing.standalone import processor as sut
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings, ReportingOption
@@ -17,13 +20,23 @@ from exactly_lib_test.test_suite.test_resources.test_suite_definition import con
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        TestSyntaxErrorInSuiteFile(),
-    ])
+    return unittest.makeSuite(TestSyntaxErrorInSuiteFile)
 
 
 class TestSyntaxErrorInSuiteFile(unittest.TestCase):
-    def runTest(self):
+    def test_explicit_suite_to_run_as_part_of(self):
+        suite_file_name = Path('test.suite')
+
+        self._run(suite_file_name=str(suite_file_name),
+                  run_as_part_of_explicit_suite=suite_file_name)
+
+    def test_implicit_default_suite_to_run_as_part_of(self):
+        self._run(suite_file_name=file_names.DEFAULT_SUITE_FILE,
+                  run_as_part_of_explicit_suite=None)
+
+    def _run(self,
+             suite_file_name: str,
+             run_as_part_of_explicit_suite: Optional[Path]):
         default_test_case_handling = setup_with_null_act_phase_and_null_preprocessing()
 
         conf_parser_with_no_instructions = configuration_section_parser({})
@@ -34,7 +47,7 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
                          source_with_single_act_phase_instruction('act-phase-content-that-should-be-ignored')
                          )
 
-        suite_file = File('test.suite', '[this_is_not_a_suite_section]\n')
+        suite_file = File(suite_file_name, '[this_is_not_a_suite_section]\n')
 
         suite_and_case_files = DirContents([suite_file,
                                             case_file,
@@ -49,7 +62,7 @@ class TestSyntaxErrorInSuiteFile(unittest.TestCase):
                                                            tmp_dir,
                                                            ReportingOption.STATUS_CODE,
                                                            default_test_case_handling,
-                                                           run_as_part_of_explicit_suite=suite_file.name_as_path)
+                                                           run_as_part_of_explicit_suite=run_as_part_of_explicit_suite)
             # ACT #
             actual_result = capture_output_from_processor(processor,
                                                           execution_settings)
