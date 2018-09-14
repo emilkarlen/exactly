@@ -16,7 +16,7 @@ from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin
+from exactly_lib.symbol.resolver_structure import SymbolValueResolver, container_of_builtin, SymbolContainer
 from exactly_lib.test_case.act_phase_handling import ActPhaseOsProcessExecutor
 from exactly_lib.util import argument_parsing_utils
 from exactly_lib.util.std import StdOutputFiles
@@ -41,12 +41,8 @@ class BuiltinSymbol:
         return self._name
 
     @property
-    def as_name_and_container_pair(self):
-        return self._name, container_of_builtin(self._resolver)
-
-    @property
-    def resolver(self) -> SymbolValueResolver:
-        return self._resolver
+    def container(self) -> SymbolContainer:
+        return container_of_builtin(self._resolver)
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
@@ -86,12 +82,12 @@ class TestSuiteDefinition(tuple):
         return self[1]
 
     @property
-    def __get_sds_root_name_prefix(self) -> Callable[[], str]:
-        return self[2]
-
-    @property
     def sandbox_root_dir_resolver(self) -> SandboxRootDirNameResolver:
         return sandbox_dir_resolving.mk_tmp_dir_with_prefix(self.__get_sds_root_name_prefix())
+
+    @property
+    def __get_sds_root_name_prefix(self) -> Callable[[], str]:
+        return self[2]
 
 
 class MainProgram:
@@ -104,12 +100,17 @@ class MainProgram:
                  ):
 
         self._test_suite_definition = test_suite_definition
+        predefined_symbols = SymbolTable(
+            {
+                bs.name: bs.container
+                for bs in test_case_definition.builtin_symbols
+            }
+        )
         self._test_case_definition = TestCaseDefinition(
             test_case_definition.test_case_parsing_setup,
             PredefinedProperties(
                 os.environ,
-                SymbolTable(dict(map(BuiltinSymbol.as_name_and_container_pair.fget,
-                                     test_case_definition.builtin_symbols)))
+                predefined_symbols,
             )
         )
         self._act_phase_os_process_executor = act_phase_os_process_executor
@@ -122,16 +123,16 @@ class MainProgram:
                 output: StdOutputFiles) -> int:
         if len(command_line_arguments) > 0:
             if command_line_arguments[0] == HELP_COMMAND:
-                return self._parse_and_exit_on_error(self._parse_and_execute_help,
-                                                     command_line_arguments[1:],
-                                                     output)
+                return _parse_and_exit_on_error(self._parse_and_execute_help,
+                                                command_line_arguments[1:],
+                                                output)
             if command_line_arguments[0] == SUITE_COMMAND:
-                return self._parse_and_exit_on_error(self._parse_and_execute_test_suite,
-                                                     command_line_arguments[1:],
-                                                     output)
-        return self._parse_and_exit_on_error(self._parse_and_execute_test_case,
-                                             command_line_arguments,
-                                             output)
+                return _parse_and_exit_on_error(self._parse_and_execute_test_suite,
+                                                command_line_arguments[1:],
+                                                output)
+        return _parse_and_exit_on_error(self._parse_and_execute_test_case,
+                                        command_line_arguments,
+                                        output)
 
     def execute_test_case(self,
                           settings: TestCaseExecutionSettings,
@@ -209,19 +210,23 @@ class MainProgram:
             help_request = argument_parsing.parse(application_help,
                                                   help_command_arguments)
         except HelpError as ex:
-            output.err.write(ex.msg + os.linesep)
-            return exit_codes.EXIT_INVALID_USAGE
+            return _exit_invalid_usage(output, ex.msg)
         handle_help_request(output, application_help, help_request)
         return 0
 
-    @staticmethod
-    def _parse_and_exit_on_error(parse_arguments_and_execute_callable: Callable[[List[str], StdOutputFiles], int],
-                                 arguments: List[str],
-                                 output: StdOutputFiles,
-                                 ) -> int:
-        try:
-            return parse_arguments_and_execute_callable(arguments, output)
-        except argument_parsing_utils.ArgumentParsingError as ex:
-            output.err.write(ex.error_message)
-            output.err.write(os.linesep)
-            return exit_codes.EXIT_INVALID_USAGE
+
+def _parse_and_exit_on_error(parse_arguments_and_execute_callable: Callable[[List[str], StdOutputFiles], int],
+                             arguments: List[str],
+                             output: StdOutputFiles,
+                             ) -> int:
+    try:
+        return parse_arguments_and_execute_callable(arguments, output)
+    except argument_parsing_utils.ArgumentParsingError as ex:
+        return _exit_invalid_usage(output, ex.error_message)
+
+
+def _exit_invalid_usage(output: StdOutputFiles,
+                        error_message: str) -> int:
+    output.err.write(error_message)
+    output.err.write(os.linesep)
+    return exit_codes.EXIT_INVALID_USAGE
