@@ -12,7 +12,6 @@ from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolv
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.processors import TestCaseDefinition
-from exactly_lib.processing.standalone import process as test_case_execution
 from exactly_lib.processing.standalone.settings import TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
@@ -138,11 +137,11 @@ class MainProgram:
                           settings: TestCaseExecutionSettings,
                           output: StdOutputFiles,
                           ) -> int:
-        return test_case_execution.process(output,
-                                           self._test_case_definition,
-                                           self._test_suite_definition.configuration_section_parser,
-                                           settings,
-                                           self._act_phase_os_process_executor)
+        from exactly_lib.processing.standalone import processor
+        processor = processor.Processor(self._test_case_definition,
+                                        self._test_suite_definition.configuration_section_parser,
+                                        self._act_phase_os_process_executor)
+        return processor.process(output, settings)
 
     def execute_test_suite(self,
                            settings: TestSuiteExecutionSettings,
