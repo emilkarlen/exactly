@@ -19,6 +19,10 @@ class PredefinedProperties:
         self.__environ = environ
         self.__predefined_symbols = predefined_symbols
 
+    @staticmethod
+    def new_empty():
+        return PredefinedProperties({}, None)
+
     @property
     def environ(self) -> Dict[str, str]:
         return self.__environ

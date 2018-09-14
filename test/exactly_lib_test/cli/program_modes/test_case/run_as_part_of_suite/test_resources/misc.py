@@ -3,7 +3,8 @@ from typing import Sequence, Tuple
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
 from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.definitions.test_case import phase_names
-from exactly_lib.processing.instruction_setup import TestCaseParsingSetup, InstructionsSetup
+from exactly_lib.processing.instruction_setup import InstructionsSetup
+from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.test_case.phases.assert_ import AssertPhaseInstruction
 from exactly_lib.util.string import lines_content
