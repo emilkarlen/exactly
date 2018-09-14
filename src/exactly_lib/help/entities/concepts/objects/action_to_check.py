@@ -1,4 +1,4 @@
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
+from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
@@ -20,7 +20,7 @@ class _ActionToCheckConcept(ConceptDocumentation):
         parser = TextParser({
             'action_to_check': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
             'actor_concept': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-            'actor_option': formatting.cli_option(opt.OPTION_FOR_ACTOR),
+            'actor_option': formatting.cli_option(common_cli_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'phase': PHASE_NAME_DICTIONARY,
         })

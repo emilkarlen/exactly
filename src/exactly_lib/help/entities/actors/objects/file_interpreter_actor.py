@@ -1,10 +1,11 @@
+from typing import List
+
 from exactly_lib.act_phase_setups import file_interpreter as actor
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
-from exactly_lib.definitions.entity import concepts, conf_params
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.actors import file_interpreter as help_texts
@@ -17,7 +18,6 @@ from exactly_lib.help.program_modes.common.render_syntax_contents import invokat
 from exactly_lib.help.render import doc_utils
 from exactly_lib.instructions.utils.documentation.relative_path_options_documentation import path_element_2
 from exactly_lib.section_document.syntax import LINE_COMMENT_MARKER
-from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.cli_syntax.render import cli_program_syntax
 from exactly_lib.util.textformat.structure import document as doc
@@ -32,25 +32,17 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
 
     def __init__(self):
         super().__init__(FILE_INTERPRETER_ACTOR)
-        from exactly_lib.processing.exit_values import EXECUTION__VALIDATION_ERROR
-        format_map = {
-            'phase': phase_names.PHASE_NAME_DICTIONARY,
-            'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
-            'result_subdir': sds.SUB_DIRECTORY__RESULT,
-            'VALIDATION': EXECUTION__VALIDATION_ERROR.exit_identifier,
-            'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
-            'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
+        self._tp = TextParser({
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
             'LINE_COMMENT_MARKER': formatting.string_constant(LINE_COMMENT_MARKER),
-        }
-        self._parser = TextParser(format_map)
+        })
 
     def act_phase_contents(self) -> doc.SectionContents:
-        return section_contents(self._parser.fnap(_ACT_PHASE_CONTENTS))
+        return section_contents(self._tp.fnap(_ACT_PHASE_CONTENTS))
 
     def act_phase_contents_syntax(self) -> doc.SectionContents:
         documentation = ActPhaseDocumentationSyntax()
-        initial_paragraphs = self._parser.fnap(SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
+        initial_paragraphs = self._tp.fnap(SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH)
         sub_sections = []
         synopsis_section = doc_utils.synopsis_section(
             invokation_variants_content(None,
@@ -77,16 +69,11 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
         self.file = instruction_arguments.FILE_ARGUMENT
         self.argument = a.Named(help_texts.ARGUMENT)
         fm = {
-            'FILE': self.file.name,
-            'ARGUMENT': self.argument.name,
-            'actor': formatting.concept_(concepts.ACTOR_CONCEPT_INFO),
-            'act_phase': phase_names.ACT.emphasis,
-            'home_directory_concept': formatting.conf_param_(conf_params.HOME_CASE_DIRECTORY_CONF_PARAM_INFO),
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }
         super().__init__(TextParser(fm))
 
-    def invokation_variants(self) -> list:
+    def invokation_variants(self) -> List[InvokationVariant]:
         executable_arg = a.Single(a.Multiplicity.MANDATORY, self.file)
         optional_arguments_arg = a.Single(a.Multiplicity.ZERO_OR_MORE, self.argument)
         return [
@@ -94,12 +81,12 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
                                                         optional_arguments_arg])),
         ]
 
-    def syntax_element_descriptions(self) -> list:
+    def syntax_element_descriptions(self) -> List[SyntaxElementDescription]:
         return [
             path_element_2(actor.RELATIVITY_CONFIGURATION,
-                           self._paragraphs(_SOURCE_FILE_SYNTAX_ELEMENT)),
+                           self._parser.fnap(_SOURCE_FILE_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.argument.name,
-                                     self._paragraphs(ARGUMENT_SYNTAX_ELEMENT)),
+                                     self._parser.fnap(ARGUMENT_SYNTAX_ELEMENT)),
         ]
 
 

@@ -1,8 +1,8 @@
 from typing import List, Optional
 
 from exactly_lib import program_info
+from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import common_cli_options as common_opts
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting
@@ -119,8 +119,8 @@ Note: An {actor} specified in the test suite or individual test cases
 will have precedence over the {actor} specified by this option.
 """
 
-_ACTOR_OPTION = arg.short_long_option(long_name=opts.OPTION_FOR_ACTOR__LONG,
-                                      argument=case_opts.ACTOR_OPTION_ARGUMENT)
+_ACTOR_OPTION = arg.short_long_option(long_name=common_cli_options.OPTION_FOR_ACTOR__LONG,
+                                      argument=common_cli_options.ACTOR_OPTION_ARGUMENT)
 
 _REPORTER_OPTION = arg.short_long_option(long_name=opts.OPTION_FOR_REPORTER__LONG,
                                          argument=opts.REPORTER_OPTION_ARGUMENT)
