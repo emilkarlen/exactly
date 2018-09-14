@@ -87,11 +87,11 @@ class ActPhaseDocumentationSyntax(ActPhaseDocumentationSyntaxBase):
     def syntax_element_descriptions(self) -> list:
         return [
             path_element_2(actor.RELATIVITY_CONFIGURATION,
-                           self._paragraphs(_EXECUTABLE_SYNTAX_ELEMENT)),
+                           self._parser.fnap(_EXECUTABLE_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.argument.name,
-                                     self._paragraphs(ARGUMENT_SYNTAX_ELEMENT)),
+                                     self._parser.fnap(ARGUMENT_SYNTAX_ELEMENT)),
             SyntaxElementDescription(self.command.name,
-                                     self._paragraphs(_COMMAND_SYNTAX_ELEMENT))
+                                     self._parser.fnap(_COMMAND_SYNTAX_ELEMENT))
         ]
 
 

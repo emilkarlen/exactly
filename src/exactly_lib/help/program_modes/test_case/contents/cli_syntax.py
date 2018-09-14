@@ -1,6 +1,7 @@
 from typing import List, Optional
 
 from exactly_lib import program_info
+from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
@@ -122,8 +123,8 @@ _FILE_ARGUMENT = arg.Named(opt.TEST_CASE_FILE_ARGUMENT)
 
 _OPTION_PLACEHOLDER_ARGUMENT = arg.Named('OPTION')
 
-_ACTOR_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_ACTOR__LONG,
-                                      argument=opt.ACTOR_OPTION_ARGUMENT)
+_ACTOR_OPTION = arg.short_long_option(long_name=common_cli_options.OPTION_FOR_ACTOR__LONG,
+                                      argument=common_cli_options.ACTOR_OPTION_ARGUMENT)
 
 _KEEP_SANDBOX_OPTION = arg.short_long_option(long_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__LONG,
                                              short_name=opt.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY__SHORT)

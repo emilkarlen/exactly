@@ -3,9 +3,9 @@ import pathlib
 from typing import List
 
 from exactly_lib import program_info
+from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.help import arguments_for as help_args
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as case_opts
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
 from exactly_lib.cli.program_modes.common.argument_parsing_of_act_phase_setup import \
     resolve_act_phase_setup_from_argparse_argument
@@ -73,11 +73,11 @@ class _Parser:
                              nargs=1,
                              choices=self.reporter_names,
                              help=self._reporter_option_description())
-        ret_val.add_argument(short_and_long_option_syntax.long_syntax(opts.OPTION_FOR_ACTOR__LONG),
-                             metavar=case_opts.ACTOR_OPTION_ARGUMENT,
+        ret_val.add_argument(short_and_long_option_syntax.long_syntax(common_cli_options.OPTION_FOR_ACTOR__LONG),
+                             metavar=common_cli_options.ACTOR_OPTION_ARGUMENT,
                              nargs=1,
                              help=_ACTOR_OPTION_DESCRIPTION.format(
-                                 ARGUMENT=case_opts.ACTOR_OPTION_ARGUMENT,
+                                 ARGUMENT=common_cli_options.ACTOR_OPTION_ARGUMENT,
                                  INTERPRETER_ACTOR_TERM=formatting.entity(
                                      actors.SOURCE_INTERPRETER_ACTOR.singular_name),
                                  ACTOR_CONCEPT=formatting.concept_(concepts.ACTOR_CONCEPT_INFO),

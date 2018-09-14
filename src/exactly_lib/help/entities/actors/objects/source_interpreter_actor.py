@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
+from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
     TestSuiteSectionInstructionCrossReference
@@ -27,7 +27,7 @@ class InterpreterActorDocumentation(ActorDocumentation):
             'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
             'result_subdir': sds.SUB_DIRECTORY__RESULT,
             'VALIDATION': EXECUTION__VALIDATION_ERROR.exit_identifier,
-            'actor_option': formatting.cli_option(command_line_options.OPTION_FOR_ACTOR),
+            'actor_option': formatting.cli_option(common_cli_options.OPTION_FOR_ACTOR),
             'actor_instruction': formatting.InstructionName(ACTOR_INSTRUCTION_NAME),
             'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
         }
