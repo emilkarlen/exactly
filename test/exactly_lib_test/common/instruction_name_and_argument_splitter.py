@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.default.instruction_name_and_argument_splitter import splitter
+from exactly_lib.common.instruction_name_and_argument_splitter import splitter
 
 
 def suite() -> unittest.TestSuite:

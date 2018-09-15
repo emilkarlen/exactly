@@ -1,8 +1,8 @@
 from typing import Dict
 
 from exactly_lib.cli.main_program import TestSuiteDefinition
+from exactly_lib.common import instruction_name_and_argument_splitter
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
-from exactly_lib.default import instruction_name_and_argument_splitter
 from exactly_lib.section_document.element_parsers import section_element_parsers
 from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
     InstructionWithOptionalDescriptionParser

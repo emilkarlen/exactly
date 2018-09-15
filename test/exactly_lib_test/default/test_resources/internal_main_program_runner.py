@@ -1,4 +1,4 @@
-from exactly_lib.default.instruction_name_and_argument_splitter import \
+from exactly_lib.common.instruction_name_and_argument_splitter import \
     splitter as default_splitter
 from exactly_lib.default.program_modes.test_case import builtin_symbols, test_case_handling_setup
 from exactly_lib.default.program_modes.test_case.default_instructions_setup import INSTRUCTIONS_SETUP

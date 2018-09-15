@@ -3,7 +3,7 @@ import sys
 from exactly_lib import program_info
 from exactly_lib.cli import main_program
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
-from exactly_lib.default import instruction_name_and_argument_splitter
+from exactly_lib.common import instruction_name_and_argument_splitter
 from exactly_lib.default.program_modes import test_suite
 from exactly_lib.default.program_modes.test_case import builtin_symbols, default_instructions_setup, \
     test_case_handling_setup

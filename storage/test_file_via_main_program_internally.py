@@ -1,6 +1,6 @@
 import unittest
 
-from exactly_lib.default.instruction_name_and_argument_splitter import splitter
+from exactly_lib.common.instruction_name_and_argument_splitter import splitter
 from exactly_lib_test.default.test_resources.internal_main_program_runner import RunViaMainProgramInternally
 
 TEST_CASE_FILE = '../tmp/error-source-file-location/sub1/the.case'
