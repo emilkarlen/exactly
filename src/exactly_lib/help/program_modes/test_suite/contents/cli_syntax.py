@@ -5,6 +5,7 @@ from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
+from exactly_lib.definitions import conf_params
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
@@ -12,7 +13,6 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_suite import section_names_plain, file_names
-from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.render.cli_program import \
@@ -78,7 +78,7 @@ class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                                 concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
                                                 TestSuiteSectionInstructionCrossReference(
                                                     section_names_plain.SECTION_NAME__CONF,
-                                                    INSTRUCTION_NAME__ACTOR),
+                                                    conf_params.ACTOR),
                                             ]))
 
     def _reporter_argument(self) -> cli_syntax.DescribedArgument:
