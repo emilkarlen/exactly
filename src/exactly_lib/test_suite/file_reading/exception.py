@@ -71,12 +71,16 @@ class SuiteDoubleInclusion(SuiteReadError):
 class SuiteFileReferenceError(SuiteReadError):
     def __init__(self,
                  suite_file: pathlib.Path,
+                 section_name: str,
                  source: line_source.LineSequence,
-                 reference: pathlib.Path):
+                 reference: pathlib.Path,
+                 error_message_header: str,
+                 ):
         super().__init__(suite_file,
                          source,
-                         section_names_plain.SECTION_NAME__SUITS)
+                         section_name)
         self._reference = reference
+        self.error_message_header = error_message_header
 
     @property
     def reference(self) -> pathlib.Path:
@@ -84,7 +88,7 @@ class SuiteFileReferenceError(SuiteReadError):
 
     def error_message_lines(self) -> List[str]:
         return [
-            'Cannot access file:',
+            self.error_message_header + ':',
             str(self.reference)
         ]
 
