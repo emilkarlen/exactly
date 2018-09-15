@@ -11,13 +11,14 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
-from exactly_lib.definitions.test_suite import section_names_plain
+from exactly_lib.definitions.test_suite import section_names_plain, file_names
 from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.help.texts import IS_A_SHELL_CMD
+from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -56,6 +57,9 @@ class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             self._actor_argument(),
             self._reporter_argument(),
         ]
+
+    def files(self) -> Optional[SectionContents]:
+        return _TP.section_contents(_FILES_DESCRIPTION)
 
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         contents_constructor = SectionContentsConstructorFromHierarchyGenerator(
@@ -135,6 +139,12 @@ Options: {reporter_name_list} (default {default_reporter_name}).
 
 _FILE_ARGUMENT = arg.Named(opts.TEST_SUITE_FILE_ARGUMENT)
 
+_FILES_DESCRIPTION = """\
+If {TEST_SUITE_FILE} is a directory
+that contains a file "{default_suite_file}",
+then this file becomes the suite file argument.
+"""
+
 
 def _reporter_name(x: SingularNameAndCrossReferenceId) -> str:
     return formatting.cli_argument_option_string(x.singular_name)
@@ -148,4 +158,5 @@ _TP = TextParser({
     'default_reporter_name': _reporter_name(reporters.DEFAULT_REPORTER),
     'suite_reporter': formatting.concept_(concepts.SUITE_REPORTER_CONCEPT_INFO),
     'is_a_shell_cmd': IS_A_SHELL_CMD,
+    'default_suite_file': file_names.DEFAULT_SUITE_FILE,
 })

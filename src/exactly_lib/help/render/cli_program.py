@@ -34,6 +34,7 @@ class _ProgramDocumentationRenderer:
         sections = [self._synopsis_section(program)]
         sections += self._description_sections(program)
         sections += self._options_sections(program.argument_descriptions())
+        sections += self._files_sections(program.files())
         sections += self._outcome_sections(program.outcome(self.environment))
         sections += see_also_sections(program.see_also(), self.environment, True)
 
@@ -63,6 +64,12 @@ class _ProgramDocumentationRenderer:
         if not outcome:
             return []
         return [docs.Section(docs.text('OUTCOME'), outcome)]
+
+    @staticmethod
+    def _files_sections(files: Optional[docs.SectionContents]) -> List[docs.Section]:
+        if not files:
+            return []
+        return [docs.Section(docs.text('FILES'), files)]
 
     def _arg_description_list_item(self, argument: DescribedArgument) -> lists.HeaderContentListItem:
         header = doc_format.syntax_text(self.arg_in_description_renderer.visit(argument.argument))

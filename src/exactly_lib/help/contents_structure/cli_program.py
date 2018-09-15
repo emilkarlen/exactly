@@ -24,6 +24,9 @@ class CliProgramSyntaxDocumentation:
     def argument_descriptions(self) -> List[DescribedArgument]:
         return []
 
+    def files(self) -> Optional[SectionContents]:
+        return None
+
     def outcome(self, environment: ConstructionEnvironment) -> Optional[SectionContents]:
         return None
 
