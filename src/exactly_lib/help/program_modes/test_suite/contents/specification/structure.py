@@ -127,6 +127,6 @@ Sections:
 """
 
 _ADDITIONAL_TEST_CASE_CONFIG = """\
-The {conf_section} section has some additional configuration possibilities,
+The {conf_section} section has additional configuration possibilities,
 compared to those of the {conf_phase} test case phase.
 """

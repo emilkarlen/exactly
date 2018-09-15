@@ -48,7 +48,7 @@ _PURPOSE_SINGLE_LINE_DESCRIPTION_TEXT = 'Common configuration, for all test case
 
 _PURPOSE_REST_TEXT = """\
 Corresponds to the {conf_phase:syntax} test case phase,
-with some additional configuration possibilities.
+with additional configuration possibilities.
 """
 
 _CONTENTS_DESCRIPTION = """\
