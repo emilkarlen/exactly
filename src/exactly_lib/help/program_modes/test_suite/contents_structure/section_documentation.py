@@ -14,7 +14,7 @@ class TestSuiteSectionDocumentation(SectionDocumentation):
         super().__init__(name)
         self._section_name = SectionName(name)
 
-    def contents_description(self) -> List[ParagraphItem]:
+    def contents_description(self) -> docs.SectionContents:
         raise NotImplementedError()
 
     def instructions_section_header(self) -> Text:
@@ -45,8 +45,9 @@ class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDo
     def instruction_set(self) -> Optional[SectionInstructionSet]:
         return self._instruction_set
 
-    def contents_description(self) -> List[ParagraphItem]:
-        return [docs.para('Consists of zero or more instructions.')] + self.instruction_purpose_description()
+    def contents_description(self) -> docs.SectionContents:
+        return docs.section_contents([docs.para('Consists of zero or more instructions.')] +
+                                     self.instruction_purpose_description())
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         raise NotImplementedError()

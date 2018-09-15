@@ -39,7 +39,7 @@ class TestSuiteSectionDocumentationConstructor(SectionDocumentationConstructorBa
         return doc.SectionContents(paras, sections)
 
     def _add_section_for_contents_description(self, output: List[docs.SectionItem]):
-        output.append(docs.section(self.CONTENTS_HEADER,
+        output.append(docs.Section(self.CONTENTS_HEADER,
                                    self._doc.contents_description()))
 
     def _add_section_for_see_also(self, environment: ConstructionEnvironment, sections: List[docs.SectionItem]):

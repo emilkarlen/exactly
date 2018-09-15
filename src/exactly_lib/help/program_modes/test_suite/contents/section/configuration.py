@@ -28,8 +28,8 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         return []
 
-    def contents_description(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_CONTENTS_DESCRIPTION)
+    def contents_description(self) -> docs.SectionContents:
+        return self._tp.section_contents(_CONTENTS_DESCRIPTION)
 
     def purpose(self) -> Description:
         paragraphs = self._tp.fnap(_PURPOSE_REST_TEXT)
