@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.section_document import parsed_section_element
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -8,7 +9,8 @@ from exactly_lib.test_suite.instruction_set.sections import suites as sut
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
-from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, DirContents, empty_dir_contents
+from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, DirContents, empty_dir_contents, \
+    Dir
 from exactly_lib_test.test_suite.instruction_set.sections.test_resources.file_resolving_test_base import \
     ResolvePathsTestBase
 
@@ -86,6 +88,34 @@ class TestResolvePaths(ResolvePathsTestBase):
         self._expect_resolving_error(
             contents_dir_contents=DirContents([a_dir]),
             source=a_dir.name,
+        )
+
+    def test_single_file_WHEN_argument_is_existing_dir_which_contains_default_suite_file(self):
+        a_dir = Dir('a-dir', [
+            empty_file(file_names.DEFAULT_SUITE_FILE)
+        ])
+        self._expect_success(
+            contents_dir_contents=DirContents([a_dir]),
+            source=a_dir.name,
+            expected_contents_rel_contents_dir=[
+                a_dir.name_as_path / file_names.DEFAULT_SUITE_FILE,
+            ]
+        )
+
+    def test_all_files_in_dir_WHEN_argument_is_glob_including_all_files_and_dir_contains_default_suite_file(self):
+        file_1 = empty_file('1-file.ext')
+        dir_2 = Dir('2-dir', [
+            empty_file(file_names.DEFAULT_SUITE_FILE)
+        ])
+
+        self._expect_success(
+            contents_dir_contents=DirContents([file_1,
+                                               dir_2]),
+            source='*',
+            expected_contents_rel_contents_dir=[
+                file_1.name_as_path,
+                dir_2.name_as_path / file_names.DEFAULT_SUITE_FILE,
+            ]
         )
 
     def _expected_instruction_class(self):

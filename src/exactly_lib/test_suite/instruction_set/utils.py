@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List, Iterable
+from typing import List, Iterable, Callable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -16,7 +16,17 @@ class FileNamesResolver:
         raise NotImplementedError()
 
 
-def parse_file_names_resolver(source: ParseSource) -> FileNamesResolver:
+SinglePathResolver = Callable[[Path], Path]
+
+
+def single_regular_file_resolver(path: Path) -> Path:
+    if path.is_file():
+        return path
+    raise FileNotAccessibleSimpleError(path)
+
+
+def parse_file_names_resolver(source: ParseSource,
+                              path_resolver: SinglePathResolver = single_regular_file_resolver) -> FileNamesResolver:
     token = parse_token_on_current_line(source, 'file name or glob pattern')
     source.consume_initial_space_on_current_line()
     if not source.is_at_eol:
@@ -24,35 +34,41 @@ def parse_file_names_resolver(source: ParseSource) -> FileNamesResolver:
         raise SingleInstructionInvalidArgumentException(msg)
     source.consume_current_line()
     if token.is_quoted:
-        return FileNamesResolverForPlainFileName(token.string)
+        return FileNamesResolverForPlainFileName(path_resolver, token.string)
     else:
         if is_wildcard_pattern(token.string):
-            return FileNamesResolverForGlobPattern(token.string)
+            return FileNamesResolverForGlobPattern(path_resolver, token.string)
         else:
-            return FileNamesResolverForPlainFileName(token.string)
+            return FileNamesResolverForPlainFileName(path_resolver, token.string)
 
 
 class FileNamesResolverForPlainFileName(FileNamesResolver):
-    def __init__(self, file_name: str):
+    def __init__(self,
+                 path_resolver: SinglePathResolver,
+                 file_name: str,
+                 ):
+        self.path_resolver = path_resolver
         self.file_name = file_name
 
     def resolve(self, environment: instruction.Environment) -> List[Path]:
         path = environment.suite_file_dir_path / self.file_name
-        if not path.is_file():
-            raise FileNotAccessibleSimpleError(path)
-        return [path]
+        return [self.path_resolver(path)]
 
 
 class FileNamesResolverForGlobPattern(FileNamesResolver):
-    def __init__(self, pattern: str):
+    def __init__(self,
+                 path_resolver: SinglePathResolver,
+                 pattern: str
+                 ):
+        self.path_resolver = path_resolver
         self.pattern = pattern
 
     def resolve(self, environment: instruction.Environment) -> List[Path]:
-        paths = sorted(environment.suite_file_dir_path.glob(self.pattern))
-        for path in paths:
-            if not path.is_file():
-                raise FileNotAccessibleSimpleError(path)
-        return paths
+        paths = environment.suite_file_dir_path.glob(self.pattern)
+        return sorted([
+            self.path_resolver(path)
+            for path in paths
+        ])
 
 
 def is_wildcard_pattern(instruction_text: str) -> bool:
