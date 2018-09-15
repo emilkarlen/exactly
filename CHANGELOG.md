@@ -12,7 +12,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - Run test case as part of suite if the default suite file - exactly.suite - exists
  - Run suites - accepts DIR as suite file CLI arg if DIR contains default suite file
  - Sub suite list accepts DIR if DIR contains default suite file
-  
+
+### Removed
+
+ - suite/conf instruction `actor`
+
+
 ## [0.8.9.4] - 2018-08-08
 
 ### Added
