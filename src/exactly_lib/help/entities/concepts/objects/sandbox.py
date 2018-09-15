@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.doc_format import file_name_text
 from exactly_lib.definitions.entity import concepts
@@ -12,6 +13,7 @@ from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumen
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import DirWithSubDirs
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
@@ -41,16 +43,16 @@ class _SandboxConcept(ConceptDocumentation):
         return DescriptionWithSubSections(self.single_line_description(),
                                           SectionContents(rest_paragraphs, sub_sections))
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             TestCasePhaseInstructionCrossReference(phase_names.SETUP.plain,
                                                    CHANGE_DIR_INSTRUCTION_NAME),
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
         ]
 
-    def _sandbox_directories_info_sections(self) -> list:
-        def section(directory_name: str, paragraph_items: list) -> Section:
-            return docs.section('%s/' % directory_name,
+    def _sandbox_directories_info_sections(self) -> List[docs.SectionItem]:
+        def section(directory_name: str, paragraph_items: List[ParagraphItem]) -> Section:
+            return docs.section(_dir_name_text(directory_name),
                                 paragraph_items)
 
         return [
@@ -164,20 +166,24 @@ def _dir_info_items_table(env_var_name: Text,
     ])
 
 
-def directory_structure_list_section(dir_with_sub_dir_list: list) -> Section:
+def directory_structure_list_section(dir_with_sub_dir_list: List[DirWithSubDirs]) -> Section:
     return docs.section('Directory structure',
                         [_directory_structure_list(dir_with_sub_dir_list)])
 
 
-def _directory_structure_list(dir_with_sub_dir_list: list) -> ParagraphItem:
+def _directory_structure_list(dir_with_sub_dir_list: List[DirWithSubDirs]) -> ParagraphItem:
     items = []
     for dir_wsd in sorted(dir_with_sub_dir_list, key=lambda x: x.name):
         sub_dirs_items = []
         if dir_wsd.sub_dirs:
             sub_dirs_items = [_directory_structure_list(dir_wsd.sub_dirs)]
-        items.append(docs.list_item(file_name_text(dir_wsd.name + '/'), sub_dirs_items))
+        items.append(docs.list_item(_dir_name_text(dir_wsd.name), sub_dirs_items))
     return lists.HeaderContentList(items,
                                    lists.Format(lists.ListType.ITEMIZED_LIST))
+
+
+def _dir_name_text(dir_name: str) -> docs.Text:
+    return file_name_text(dir_name + '/')
 
 
 _OTHER_DIRECTORIES_THAN_THOSE_LISTED = """\
