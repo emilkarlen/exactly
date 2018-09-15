@@ -1,5 +1,7 @@
 from exactly_lib.common.help.documentation_text import POSIX_SYNTAX
+from exactly_lib.definitions import formatting
 from exactly_lib.definitions.current_directory_and_path_type import path_type_path_rendering
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import types, syntax_elements
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -9,10 +11,10 @@ from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 _LIST_MAIN_DESCRIPTION_REST = """\
-Used for argument lists.
+Used for argument lists, etc.
  
  
-Useful when the SUT is a command line program,
+Useful when the {ATC} is a program with arguments,
 and for the {run} instruction, e.g.
 """
 
@@ -26,6 +28,7 @@ When used as a relative file name, {POSIX_SYNTAX} should be used.
 _TEXT_PARSER = TextParser({
     'run': InstructionName(instruction_names.RUN_INSTRUCTION_NAME),
     'POSIX_SYNTAX': POSIX_SYNTAX,
+    'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO),
 })
 
 STRING_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
