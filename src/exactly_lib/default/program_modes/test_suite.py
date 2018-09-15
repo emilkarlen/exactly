@@ -10,12 +10,11 @@ from exactly_lib.section_document.element_parsers.optional_description_and_instr
 from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
     InstructionParserForDictionaryOfInstructions
 from exactly_lib.section_document.section_element_parsing import SectionElementParser
-from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor, actor
+from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor
 
 CONFIGURATION_SECTION_INSTRUCTIONS = instruction_setup.instruction_set_from_name_and_setup_constructor_list(
     [
         (instruction_names.INSTRUCTION_NAME__PREPROCESSOR, preprocessor.setup),
-        (instruction_names.INSTRUCTION_NAME__ACTOR, actor.setup),
     ]
 )
 
