@@ -16,6 +16,10 @@ class FileSystemElement:
     def name(self) -> str:
         return ''
 
+    @property
+    def name_as_path(self) -> pathlib.Path:
+        return pathlib.Path(self.name)
+
 
 class File(FileSystemElement):
     def __init__(self,
@@ -27,10 +31,6 @@ class File(FileSystemElement):
     @property
     def name(self) -> str:
         return self.file_name
-
-    @property
-    def name_as_path(self) -> pathlib.Path:
-        return pathlib.Path(self.file_name)
 
     def write_to(self,
                  parent_dir_path: pathlib.Path):

@@ -1,5 +1,6 @@
 import argparse
 import pathlib
+import stat
 from typing import List
 
 from exactly_lib import program_info
@@ -12,14 +13,16 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import actors
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
 from exactly_lib.util import argument_parsing_utils
+from exactly_lib.util.argument_parsing_utils import ArgumentParsingError
 from exactly_lib.util.cli_syntax import short_and_long_option_syntax
 from .settings import TestSuiteExecutionSettings
 
 
 def parse(default: TestCaseHandlingSetup,
-          argv: list) -> TestSuiteExecutionSettings:
+          argv: List[str]) -> TestSuiteExecutionSettings:
     """
     :raises ArgumentParsingError Invalid usage
     """
@@ -44,13 +47,33 @@ class _Parser:
                                                                                        argv)
         act_phase_setup = resolve_act_phase_setup_from_argparse_argument(self.default.act_phase_setup,
                                                                          namespace.actor)
-        suite_file_path = pathlib.Path(namespace.file)
-        argument_parsing_utils.resolve_existing_path(suite_file_path),
+        suite_file_path = self._resolve_file_path(namespace.file)
         return TestSuiteExecutionSettings(self._resolve_reporter(vars(namespace)),
                                           TestCaseHandlingSetup(act_phase_setup,
                                                                 self.default.preprocessor),
                                           suite_file_path,
                                           )
+
+    def _resolve_file_path(self, file_argument: str) -> pathlib.Path:
+        suite_file_path = pathlib.Path(file_argument)
+        try:
+            stat_mode = suite_file_path.stat().st_mode
+        except FileNotFoundError as ex:
+            raise ArgumentParsingError('Files does not exist: ' + file_argument)
+
+        if stat.S_ISREG(stat_mode):
+            return suite_file_path
+        elif stat.S_ISDIR(stat_mode):
+            suite_file_path = suite_file_path / file_names.DEFAULT_SUITE_FILE
+            if suite_file_path.is_file():
+                return suite_file_path
+            else:
+                raise ArgumentParsingError('{} is a directory, but do not contain the default suite file {}'.format(
+                    file_argument,
+                    file_names.DEFAULT_SUITE_FILE,
+                ))
+        else:
+            raise ArgumentParsingError('Neither a file nor a directory: ' + file_argument)
 
     def _resolve_reporter(self, namespace: dict):
         reporter_name = self.default_reporter_name
