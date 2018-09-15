@@ -2,7 +2,6 @@ import pathlib
 import unittest
 
 from exactly_lib.act_phase_setups import command_line
-from exactly_lib.definitions.test_suite.instruction_names import INSTRUCTION_NAME__ACTOR
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.instructions.configuration.utils.actor_utils import SOURCE_INTERPRETER_OPTION
 from exactly_lib.processing import test_case_processing
@@ -14,6 +13,7 @@ from exactly_lib_test.test_resources.files.file_structure import DirContents, Fi
 from exactly_lib_test.test_resources.programs.python_program_execution import \
     abs_path_to_interpreter_quoted_for_exactly, \
     abs_path_to_interpreter
+from exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources import INSTRUCTION_NAME__ACTOR
 from exactly_lib_test.test_suite.test_resources.check_full_processing import Setup, check
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingRootSuiteReporter, \
     ExecutionTracingSubSuiteProgressReporter, CaseEndInfo

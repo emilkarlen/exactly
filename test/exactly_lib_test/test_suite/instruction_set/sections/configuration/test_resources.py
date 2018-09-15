@@ -7,6 +7,8 @@ from exactly_lib.test_suite.instruction_set.sections.configuration.instruction_d
     ConfigurationSectionEnvironment, ConfigurationSectionInstruction
 from exactly_lib_test.processing.processing_utils import PreprocessorThat
 
+INSTRUCTION_NAME__ACTOR = 'actor'
+
 
 def configuration_section_environment() -> ConfigurationSectionEnvironment:
     def f():
