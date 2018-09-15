@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ### Added
 
- - Test case section contents in suites
+ - Test case phase contents in corresponding suites sections
  - Run test case as part of suite if the default suite file - exactly.suite - exists
  - Run suites - accepts DIR as suite file CLI arg if DIR contains default suite file
  - Sub suite list accepts DIR if DIR contains default suite file
