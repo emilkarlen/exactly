@@ -1,5 +1,8 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts, syntax_elements
 from exactly_lib.definitions.test_case_file_structure import HDS_DIR_INFOS_IN_DISPLAY_ORDER, \
@@ -29,14 +32,14 @@ class _TcdsConcept(ConceptDocumentation):
         return DescriptionWithSubSections(self.single_line_description(),
                                           SectionContents(rest_paragraphs, sub_sections))
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             syntax_elements.PATH_SYNTAX_ELEMENT.cross_reference_target,
         ]
 
-    def _dir_structure_list(self) -> list:
+    def _dir_structure_list(self) -> List[docs.ParagraphItem]:
         items = [
             self._dir_structure_item(concept, tc_dir_infos)
             for concept, tc_dir_infos in _DIR_STRUCTURES
@@ -47,7 +50,7 @@ class _TcdsConcept(ConceptDocumentation):
 
     def _dir_structure_item(self,
                             dir_structure: SingularAndPluralNameAndCrossReferenceId,
-                            tc_dir_infos: list,
+                            tc_dir_infos: List[TcDirInfo],
                             ) -> lists.HeaderContentListItem:
         contents = [
             docs.para(dir_structure.single_line_description),
@@ -56,13 +59,13 @@ class _TcdsConcept(ConceptDocumentation):
         return docs.list_item(dir_structure.singular_name.capitalize(),
                               contents)
 
-    def _dirs_list(self, tc_dir_infos: list) -> docs.ParagraphItem:
+    def _dirs_list(self, tc_dir_infos: List[TcDirInfo]) -> docs.ParagraphItem:
         return docs.first_column_is_header_table([
             self._dir_row(tc_dir_info)
             for tc_dir_info in tc_dir_infos
         ])
 
-    def _dir_row(self, tc_dir_info: TcDirInfo) -> list:
+    def _dir_row(self, tc_dir_info: TcDirInfo) -> List[docs.TableCell]:
         return [
             docs.text_cell(tc_dir_info.informative_name),
             docs.text_cell(tc_dir_info.single_line_description_str),

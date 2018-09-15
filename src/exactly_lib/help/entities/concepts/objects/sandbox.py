@@ -144,7 +144,7 @@ is the absolute path of this directory
 
 
 def _dir_env_variables_and_rel_options(env_var_name: Text,
-                                       rel_option: Text) -> list:
+                                       rel_option: Text) -> List[ParagraphItem]:
     return [_dir_info_items_table(env_var_name,
                                   rel_option,
                                   'The value of this environment variable is the absolute path of this directory.')

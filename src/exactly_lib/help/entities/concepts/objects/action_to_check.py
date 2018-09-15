@@ -1,5 +1,8 @@
+from typing import List
+
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import conf_params
@@ -27,7 +30,7 @@ class _ActionToCheckConcept(ConceptDocumentation):
         return DescriptionWithSubSections(concepts.ACTION_TO_CHECK_CONCEPT_INFO.single_line_description,
                                           docs.section_contents(parser.fnap(_DESCRIPTION)))
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return (
             [
                 TestCasePhaseCrossReference(phase_names.ACT.plain),

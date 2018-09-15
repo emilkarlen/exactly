@@ -1,6 +1,9 @@
+from typing import List
+
 from exactly_lib.cli.definitions.program_modes.test_suite.command_line_options import OPTION_FOR_REPORTER
 from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.entity.concepts import SHELL_SYNTAX_CONCEPT_INFO
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
@@ -24,7 +27,7 @@ class _ShellSyntaxConcept(ConceptDocumentation):
             Description(self.single_line_description(),
                         tp.fnap(_DESCRIPTION_REST)))
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             PYTHON_SHELL_SYNTAX_SEE_ALSO_URL_INFO
         ]
