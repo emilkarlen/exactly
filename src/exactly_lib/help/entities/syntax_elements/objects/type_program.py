@@ -336,7 +336,7 @@ An individual argument, or a list of arguments, in case of an unquoted reference
 to a {list_type} {symbol}.
 
 
-An argument list is an ordinary {list_type} value, with some additional features
+An argument list is an ordinary {list_type} value, with additional features
 for text-until-end-of-line and references to existing files.
 """
 
