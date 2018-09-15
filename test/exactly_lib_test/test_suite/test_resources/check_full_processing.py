@@ -2,7 +2,6 @@ import pathlib
 import tempfile
 import unittest
 
-import exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources
 from exactly_lib import program_info
 from exactly_lib.common import instruction_setup
 from exactly_lib.definitions.test_suite import instruction_names
@@ -27,6 +26,8 @@ from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
 from exactly_lib_test.test_resources.files.file_structure import DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import null_output_files
+from exactly_lib_test.test_suite.instruction_set.sections.configuration import \
+    test_resources as conf_section_test_resources
 from exactly_lib_test.test_suite.test_resources.suite_reporting import ExecutionTracingProcessingReporter, \
     ExecutionTracingRootSuiteReporter
 
@@ -51,8 +52,9 @@ class Setup:
         configuration_section_instructions = instruction_setup.instruction_set_from_name_and_setup_constructor_list(
             [
                 (instruction_names.INSTRUCTION_NAME__PREPROCESSOR, preprocessor.setup),
-                (instruction_names.INSTRUCTION_NAME__ACTOR,
-                 exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources.setup),
+                (
+                    conf_section_test_resources.INSTRUCTION_NAME__ACTOR,
+                    conf_section_test_resources.setup),
             ]
         )
         return section_element_parsers.standard_syntax_element_parser(
