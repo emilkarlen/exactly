@@ -1,5 +1,6 @@
 import unittest
 
+from exactly_lib.section_document import parsed_section_element
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_suite.instruction_set.sections import suites as sut
@@ -36,7 +37,11 @@ class TestParse(unittest.TestCase):
         for instruction_argument in test_cases:
             with self.subTest(msg='instruction argument=' + repr(instruction_argument)):
                 for source in equivalent_source_variants__with_source_check(self, instruction_argument):
-                    parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+                    actual = parser.parse(ARBITRARY_FS_LOCATION_INFO, source)
+                    self.assertIsInstance(actual,
+                                          parsed_section_element.ParsedInstruction)
+                    self.assertIsInstance(actual.instruction_info.instruction,
+                                          sut.SuitesSectionInstruction)
 
 
 if __name__ == '__main__':
