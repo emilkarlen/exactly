@@ -4,7 +4,15 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Next release
 
+### Added
+
+ - Test case section contents in suites
+ - Run test case as part of suite if the default suite file - exactly.suite - exists
+ - Run suites - accepts DIR as suite file CLI arg if DIR contains default suite file
+ - Sub suite list accepts DIR if DIR contains default suite file
+  
 ## [0.8.9.4] - 2018-08-08
 
 ### Added
