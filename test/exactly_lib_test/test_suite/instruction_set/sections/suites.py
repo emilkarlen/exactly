@@ -3,14 +3,21 @@ import unittest
 from exactly_lib.section_document import parsed_section_element
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_suite.instruction_set.sections import suites as sut
 from exactly_lib_test.instructions.test_resources.single_line_source_instruction_utils import \
     equivalent_source_variants__with_source_check, equivalent_source_variants
 from exactly_lib_test.section_document.test_resources.misc import ARBITRARY_FS_LOCATION_INFO
+from exactly_lib_test.test_resources.files.file_structure import empty_file, empty_dir, DirContents, empty_dir_contents
+from exactly_lib_test.test_suite.instruction_set.sections.test_resources.file_resolving_test_base import \
+    ResolvePathsTestBase
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.makeSuite(TestParse)
+    return unittest.TestSuite([
+        unittest.makeSuite(TestParse),
+        unittest.makeSuite(TestResolvePaths),
+    ])
 
 
 class TestParse(unittest.TestCase):
@@ -42,6 +49,50 @@ class TestParse(unittest.TestCase):
                                           parsed_section_element.ParsedInstruction)
                     self.assertIsInstance(actual.instruction_info.instruction,
                                           sut.SuitesSectionInstruction)
+
+
+class TestResolvePaths(ResolvePathsTestBase):
+    def test_single_file_WHEN_argument_is_existing_single_file(self):
+        file = empty_file('suite.file')
+        self._expect_success(
+            contents_dir_contents=DirContents([file]),
+            source=file.name,
+            expected_contents_rel_contents_dir=[
+                file.name_as_path,
+            ]
+        )
+
+    def test_fail_WHEN_argument_is_non_existing_file(self):
+        self._expect_resolving_error(
+            contents_dir_contents=empty_dir_contents(),
+            source='non-existing.file',
+        )
+
+    def test_all_files_in_dir_WHEN_argument_is_glob_including_all_files(self):
+        file_1 = empty_file('1-file.ext')
+        file_2 = empty_file('2-file.ext')
+        self._expect_success(
+            contents_dir_contents=DirContents([file_1,
+                                               file_2]),
+            source='*',
+            expected_contents_rel_contents_dir=[
+                file_1.name_as_path,
+                file_2.name_as_path,
+            ]
+        )
+
+    def test_fail_WHEN_argument_is_existing_dir_which_does_not_contain_default_suite_file(self):
+        a_dir = empty_dir('a-dir')
+        self._expect_resolving_error(
+            contents_dir_contents=DirContents([a_dir]),
+            source=a_dir.name,
+        )
+
+    def _expected_instruction_class(self):
+        return sut.SuitesSectionInstruction
+
+    def _parser(self) -> SectionElementParser:
+        return sut.new_parser()
 
 
 if __name__ == '__main__':

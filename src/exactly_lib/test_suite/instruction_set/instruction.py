@@ -21,7 +21,7 @@ class Environment:
 class TestSuiteFileReferencesInstruction(TestSuiteInstruction):
     def resolve_paths(self, environment: Environment) -> List[pathlib.Path]:
         """
-        :raises FileNotAccessibleError: A referenced file is not accessible.
+        :raises FileNotAccessibleSimpleError: A referenced file is not accessible.
         """
         raise NotImplementedError('abstract method')
 
