@@ -1,13 +1,11 @@
 import unittest
 
-from exactly_lib_test.default import instruction_name_and_argument_splitter as splitter
 from exactly_lib_test.default.program_modes import z_package_suite as program_modes
 from exactly_lib_test.test_resources.main_program.main_program_runner import MainProgramRunner
 
 
 def suite_that_does_not_require_main_program_runner() -> unittest.TestSuite:
     ret_val = unittest.TestSuite()
-    ret_val.addTest(splitter.suite())
     ret_val.addTest(program_modes.suite_that_does_not_require_main_program_runner())
     return ret_val
 

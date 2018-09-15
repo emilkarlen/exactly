@@ -1,7 +1,7 @@
 from typing import Sequence, Tuple
 
 from exactly_lib.cli.main_program import TestCaseDefinitionForMainProgram
-from exactly_lib.default import instruction_name_and_argument_splitter
+from exactly_lib.common import instruction_name_and_argument_splitter
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.processing.instruction_setup import InstructionsSetup
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
