@@ -3,13 +3,11 @@ from typing import List
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
-    TestSuiteSectionInstructionCrossReference
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
-from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.test_case_file_structure import sandbox_directory_structure as sds
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -48,8 +46,6 @@ class InterpreterActorDocumentation(ActorDocumentation):
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                    ACTOR_INSTRUCTION_NAME),
-            TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
-                                                      ACTOR_INSTRUCTION_NAME),
         ]
 
 
