@@ -1,6 +1,7 @@
 from typing import Iterable, List
 
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant, SyntaxElementDescription
+from exactly_lib.definitions import doc_format
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.help import std_tags
 from exactly_lib.util.textformat.structure import document as doc, lists
@@ -80,8 +81,8 @@ def invokation_variants_content(instruction_name_or_none: str,
                                [])
 
 
-_WHERE_PARA = docs.para('where')
-_FORMS_PARA = docs.para('Forms:')
+_WHERE_PARA = docs.para(doc_format.text_as_header('where'))
+_FORMS_PARA = docs.para(doc_format.text_as_header('Forms:'))
 
 
 def _custom_list_indent(indented: bool) -> int:
