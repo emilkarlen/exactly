@@ -25,7 +25,7 @@ class TcDirInfo:
 
 
 _FORMAT_MAP = {
-    'phase': PHASE_NAME_DICTIONARY
+    'phase': PHASE_NAME_DICTIONARY,
 }
 
 
@@ -42,7 +42,7 @@ HDS_CASE_INFO = TcDirInfo(
 HDS_ACT_INFO = TcDirInfo(
     'act-home',
     'act-home directory',
-    _format('Location of the SUT file, referenced from {phase[act]:syntax}'),
+    _format('Default location of files referenced from {phase[act]} phase, that should probably not be modified.'),
 )
 
 HDS_DIR_INFOS_IN_DISPLAY_ORDER = (
