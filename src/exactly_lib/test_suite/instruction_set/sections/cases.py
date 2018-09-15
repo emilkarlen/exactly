@@ -19,13 +19,11 @@ class CasesSectionInstruction(TestSuiteFileReferencesInstruction):
         self._resolver = resolver
 
     def resolve_paths(self, environment: Environment) -> List[Path]:
-        """
-        :raises FileNotAccessibleError: A referenced file is not accessible.
-        """
         return self._resolver.resolve(environment)
 
 
 class _CasesSectionParser(InstructionParserWithoutSourceFileLocationInfo):
     def parse_from_source(self, source: ParseSource) -> CasesSectionInstruction:
-        resolver = utils.parse_file_names_resolver(source)
+        resolver = utils.parse_file_names_resolver(source,
+                                                   utils.single_regular_file_resolver)
         return CasesSectionInstruction(resolver)
