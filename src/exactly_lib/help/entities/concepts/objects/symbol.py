@@ -4,6 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions import type_system
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO, TYPE_CONCEPT_INFO
@@ -70,7 +71,7 @@ class _SymbolConcept(ConceptDocumentation):
                                           SectionContents(rest_paragraphs,
                                                           sub_sections))
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             TYPE_CONCEPT_INFO.cross_reference_target,
             define_symbol.DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE,

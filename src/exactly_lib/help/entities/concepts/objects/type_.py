@@ -1,5 +1,8 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.definitions import type_system, formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.entities.types import all_types
@@ -36,7 +39,7 @@ class _TypeConcept(ConceptDocumentation):
     def _list_header(self, template_string: str) -> str:
         return self._parser.format(template_string).capitalize()
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return list(map(lambda type_doc: type_doc.cross_reference_target(),
                         all_types.all_types()))
 
@@ -79,7 +82,7 @@ def _categories_list(data_types_header: str, logic_types_header: str) -> Paragra
 def _list_types_in_category(type_category: TypeCategory) -> ParagraphItem:
     from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 
-    def row(type_doc: TypeDocumentation) -> list:
+    def row(type_doc: TypeDocumentation) -> List[docs.TableCell]:
         return [
             docs.text_cell(type_doc.name().singular),
             docs.text_cell(type_doc.single_line_description()),

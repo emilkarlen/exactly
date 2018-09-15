@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Iterable
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
@@ -7,6 +7,7 @@ from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
     EntityDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.name import Name
+from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import para
 
 
@@ -29,10 +30,7 @@ class ConceptDocumentation(EntityDocumentation):
     def purpose(self) -> DescriptionWithSubSections:
         raise NotImplementedError()
 
-    def summary_paragraphs(self) -> list:
-        """
-        :rtype: [`ParagraphItem`]
-        """
+    def summary_paragraphs(self) -> List[ParagraphItem]:
         return [para(self.purpose().single_line_description)]
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
@@ -42,9 +40,6 @@ class ConceptDocumentation(EntityDocumentation):
         return []
 
 
-def concepts_help(concepts: iter) -> EntityTypeHelp:
-    """
-    :param concepts: [ConceptDocumentation]
-    """
+def concepts_help(concepts: Iterable[ConceptDocumentation]) -> EntityTypeHelp:
     return EntityTypeHelp(CONCEPT_ENTITY_TYPE_NAMES,
                           concepts)

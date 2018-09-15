@@ -1,5 +1,8 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements
@@ -67,7 +70,7 @@ class _HdsConcept(ConceptDocumentation):
         return docs.section(header,
                             self._tp.fnap(text_to_format))
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         ret_val = [
             concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target
         ]
@@ -82,7 +85,7 @@ class _HdsConcept(ConceptDocumentation):
         ]
         return ret_val
 
-    def _directory_listing(self) -> list:
+    def _directory_listing(self) -> List[docs.ParagraphItem]:
         items = [
             self._dir_item(d)
             for d in _ALL_DIRECTORIES
@@ -92,7 +95,7 @@ class _HdsConcept(ConceptDocumentation):
         ]
 
     def _dir_item(self, x: _DirInfo) -> HeaderContentListItem:
-        def prop_row(header: str, value_str_or_text) -> list:
+        def prop_row(header: str, value_str_or_text) -> List[docs.TableCell]:
             return [docs.text_cell(header),
                     docs.text_cell(value_str_or_text),
                     ]
