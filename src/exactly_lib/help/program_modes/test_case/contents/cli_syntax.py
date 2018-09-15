@@ -52,6 +52,9 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             self._suite_argument(),
         ]
 
+    def files(self) -> Optional[docs.SectionContents]:
+        return _TP.section_contents(_FILES_DESCRIPTION)
+
     def outcome(self, environment: ConstructionEnvironment) -> Optional[docs.SectionContents]:
         paragraphs = case_outcome_help.TEXT_PARSER.fnap(case_outcome_help.REPORTING)
         paragraphs += _TP.fnap(_OUTCOME_INITIAL_PARAGRAPHS_EXTRA)
@@ -114,9 +117,11 @@ def synopsis() -> cli_syntax.Synopsis:
 
 _SINGLE_LINE_DESCRIPTION = 'Runs a test case'
 
-_DESCRIPTION_PARAGRAPH = """Runs the test case in file {TEST_CASE_FILE}.
+_DESCRIPTION_PARAGRAPH = """\
+Runs the test case in file {TEST_CASE_FILE}.
+"""
 
-
+_FILES_DESCRIPTION = """\
 If there exists a file "{default_suite_file}" in the same directory as {TEST_CASE_FILE},
 then this file must be a test suite, and the test case is run as part of this suite. 
 """
