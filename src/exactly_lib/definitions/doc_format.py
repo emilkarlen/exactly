@@ -9,6 +9,11 @@ def syntax_text(text: str) -> StringText:
                       tags={std_tags.SYNTAX_TEXT})
 
 
+def text_as_header(text: str) -> StringText:
+    return StringText(text,
+                      tags={std_tags.TEXT_AS_HEADER})
+
+
 def enum_name_text(name: str) -> StringText:
     return StringText(name,
                       tags={std_tags.SYNTAX_TEXT,
