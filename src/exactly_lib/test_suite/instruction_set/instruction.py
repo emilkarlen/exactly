@@ -28,9 +28,15 @@ class TestSuiteFileReferencesInstruction(TestSuiteInstruction):
 
 class FileNotAccessibleSimpleError(Exception):
     def __init__(self,
-                 file_path: pathlib.Path):
+                 file_path: pathlib.Path,
+                 error_message_header: str):
         self._file_path = file_path
+        self._error_message_header = error_message_header
 
     @property
     def file_path(self) -> pathlib.Path:
         return self._file_path
+
+    @property
+    def error_message_header(self) -> str:
+        return self._error_message_header

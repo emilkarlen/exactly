@@ -1,6 +1,9 @@
+import stat
 from pathlib import Path
 from typing import List, Iterable, Callable
 
+from exactly_lib.definitions.instruction_arguments import FILE_ARGUMENT
+from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.section_document.element_parsers.token_parse import parse_token_on_current_line
@@ -20,9 +23,16 @@ SinglePathResolver = Callable[[Path], Path]
 
 
 def single_regular_file_resolver(path: Path) -> Path:
-    if path.is_file():
+    try:
+        stat_mode = path.stat().st_mode
+    except FileNotFoundError:
+        raise FileNotAccessibleSimpleError(path,
+                                           ERR_MSG__NOT_EXISTS)
+    if stat.S_ISREG(stat_mode):
         return path
-    raise FileNotAccessibleSimpleError(path)
+    else:
+        raise FileNotAccessibleSimpleError(path,
+                                           ERR_MSG__NOT_REG)
 
 
 def parse_file_names_resolver(source: ParseSource,
@@ -80,3 +90,12 @@ def _contains_any_of(strings_looking_for: Iterable[str], string_looking_in: str)
         if string_looking_in.find(string_looking_for) != -1:
             return True
     return False
+
+
+ERR_MSG__NOT_A_REGULAR_FILE = FILE_ARGUMENT.name + ' is not a regular file'
+
+ERR_MSG__NOT_EXISTS = FILE_ARGUMENT.name + ' does not exist'
+ERR_MSG__NOT_REG = FILE_ARGUMENT.name + ' is not a regular file'
+ERR_MSG__NOT_REG_NOT_DIR = FILE_ARGUMENT.name + ' is neither a regular file nor a directory'
+ERR_MSG__DIR_WO_DEFAULT_SUITE = (FILE_ARGUMENT.name + ' is a directory, but it does not contain ' +
+                                 file_names.DEFAULT_SUITE_FILE)

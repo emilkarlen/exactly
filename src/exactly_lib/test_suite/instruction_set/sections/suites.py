@@ -36,7 +36,8 @@ def regular_file_or_default_suite_file(path: Path) -> Path:
     try:
         stat_mode = path.stat().st_mode
     except FileNotFoundError:
-        raise FileNotAccessibleSimpleError(path)
+        raise FileNotAccessibleSimpleError(path,
+                                           utils.ERR_MSG__NOT_EXISTS)
 
     if stat.S_ISREG(stat_mode):
         return path
@@ -45,6 +46,8 @@ def regular_file_or_default_suite_file(path: Path) -> Path:
         if suite_file_path.is_file():
             return suite_file_path
         else:
-            raise FileNotAccessibleSimpleError(path)
+            raise FileNotAccessibleSimpleError(path,
+                                               utils.ERR_MSG__DIR_WO_DEFAULT_SUITE)
     else:
-        raise FileNotAccessibleSimpleError(path)
+        raise FileNotAccessibleSimpleError(path,
+                                           utils.ERR_MSG__NOT_REG_NOT_DIR)

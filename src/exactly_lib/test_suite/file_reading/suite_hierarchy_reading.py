@@ -3,6 +3,7 @@ import pathlib
 from pathlib import Path
 from typing import List, Tuple, Callable
 
+from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.processing import test_case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
@@ -91,6 +92,7 @@ class _SingleFileReader:
                        suite_file_path: pathlib.Path) -> Tuple[List[Path], List[Path]]:
 
         def paths_for_instructions(env: instruction.Environment,
+                                   section_name: str,
                                    section_contents: SectionContents,
                                    paths_checker: Callable[[SectionContentElement, List[Path]], None]
                                    ) -> List[Path]:
@@ -105,8 +107,10 @@ class _SingleFileReader:
                         ret_val.extend(paths)
                     except instruction.FileNotAccessibleSimpleError as ex:
                         raise exception.SuiteFileReferenceError(suite_file_path,
+                                                                section_name,
                                                                 element.source,
-                                                                ex.file_path)
+                                                                ex.file_path,
+                                                                ex.error_message_header)
             return ret_val
 
         def check_suite_paths_for_double_inclusion(element: SectionContentElement,
@@ -126,5 +130,11 @@ class _SingleFileReader:
             pass
 
         environment = instruction.Environment(suite_file_path.parent)
-        return (paths_for_instructions(environment, test_suite.suites_section, check_suite_paths_for_double_inclusion),
-                paths_for_instructions(environment, test_suite.cases_section, no_check))
+        return (paths_for_instructions(environment,
+                                       section_names.SUITES.plain,
+                                       test_suite.suites_section,
+                                       check_suite_paths_for_double_inclusion),
+                paths_for_instructions(environment,
+                                       section_names.CASES.plain,
+                                       test_suite.cases_section,
+                                       no_check))
