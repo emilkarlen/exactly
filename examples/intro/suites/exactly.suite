@@ -1,3 +1,8 @@
 [suites]
 
 case-instructions-in-suite/exactly.suite
+
+# A directory serves as a test suite
+# if it contains the default suite file "exactly.suite".
+
+dir-w-default-suite-file
