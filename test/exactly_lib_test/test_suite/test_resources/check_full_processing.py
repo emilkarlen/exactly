@@ -3,16 +3,24 @@ import tempfile
 import unittest
 
 from exactly_lib import program_info
-from exactly_lib.default.program_modes import test_suite
+from exactly_lib.common import instruction_setup
+from exactly_lib.definitions.test_suite import instruction_names
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.processing import processors as case_processing
 from exactly_lib.processing.instruction_setup import TestCaseParsingSetup
 from exactly_lib.processing.parse.act_phase_source_parser import ActPhaseParser
 from exactly_lib.processing.processors import TestCaseDefinition
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup
+from exactly_lib.section_document.element_parsers import section_element_parsers
+from exactly_lib.section_document.element_parsers.optional_description_and_instruction_parser import \
+    InstructionWithOptionalDescriptionParser
+from exactly_lib.section_document.element_parsers.parser_for_dictionary_of_instructions import \
+    InstructionParserForDictionaryOfInstructions
+from exactly_lib.section_document.section_element_parsing import SectionElementParser
 from exactly_lib.test_case import os_services
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader, Environment
+from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor, actor
 from exactly_lib.test_suite.processing import Processor
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
@@ -38,6 +46,19 @@ class Setup:
                    actual_exit_code: int):
         raise NotImplementedError()
 
+    def suite_configuration_section_parser(self) -> SectionElementParser:
+        configuration_section_instructions = instruction_setup.instruction_set_from_name_and_setup_constructor_list(
+            [
+                (instruction_names.INSTRUCTION_NAME__PREPROCESSOR, preprocessor.setup),
+                (instruction_names.INSTRUCTION_NAME__ACTOR, actor.setup),
+            ]
+        )
+        return section_element_parsers.standard_syntax_element_parser(
+            InstructionWithOptionalDescriptionParser(
+                InstructionParserForDictionaryOfInstructions(
+                    white_space_name_and_argument_splitter,
+                    configuration_section_instructions)))
+
 
 def check(setup: Setup,
           put: unittest.TestCase):
@@ -45,7 +66,7 @@ def check(setup: Setup,
         tmp_dir_path = resolved_path(tmp_dir)
         setup.file_structure_to_read(tmp_dir_path).write_to(tmp_dir_path)
         test_case_handling_setup = setup.test_case_handling_setup()
-        suite_reading_environment = Environment(test_suite.new_parser(),
+        suite_reading_environment = Environment(setup.suite_configuration_section_parser(),
                                                 _TEST_CASE_PARSING_SETUP,
                                                 test_case_handling_setup)
         hierarchy_reader = Reader(suite_reading_environment)
