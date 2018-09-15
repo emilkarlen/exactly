@@ -11,20 +11,31 @@ test.case
 
 [conf]
 
-including set-act-home-to-bin-dir.conf
+
+act-home = bin
+
+actor = -file $ python
+
 
 [setup]
 
+
 file file-created-by-instruction-in-suite.txt
+
 
 [act]
 
-hello-world
+
+hello-world.py
+
 
 [assert]
 
+
 exit-code == 0
 
+
 [cleanup]
+
 
 $ echo 'Everything is now clean!'

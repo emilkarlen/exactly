@@ -252,10 +252,6 @@ intro_files = itertools.chain.from_iterable(
              'print-environment-variables',
              'list-files-under-current-directory',
              ]),
-
-        sts(suites_dir / 'case-instructions-in-suite' / 'bin',
-            ['hello-world',
-             ]),
     ])
 
 wiki_files = itertools.chain.from_iterable(
