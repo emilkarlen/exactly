@@ -28,7 +28,9 @@ def suite_for(main_program_runner: MainProgramRunner) -> unittest.TestSuite:
 
 
 def suite_for_running_main_program_internally() -> unittest.TestSuite:
-    from exactly_lib_test import main_program_runner_with_default_setup__in_same_process
+    from exactly_lib_test.default.test_resources.internal_main_program_runner import \
+        main_program_runner_with_default_setup__in_same_process
+
     return suite_for(main_program_runner_with_default_setup__in_same_process())
 
 
