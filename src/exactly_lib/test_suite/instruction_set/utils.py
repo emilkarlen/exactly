@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Iterable
 
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
@@ -55,26 +55,11 @@ class FileNamesResolverForGlobPattern(FileNamesResolver):
         return paths
 
 
-def resolve_non_wildcard_path(file_name: str, environment: instruction.Environment) -> list:
-    path = environment.suite_file_dir_path / file_name
-    if not path.is_file():
-        raise FileNotAccessibleSimpleError(path)
-    return [path]
-
-
-def resolve_wildcard_paths(pattern: str, environment: instruction.Environment) -> list:
-    paths = sorted(environment.suite_file_dir_path.glob(pattern))
-    for path in paths:
-        if not path.is_file():
-            raise FileNotAccessibleSimpleError(path)
-    return paths
-
-
 def is_wildcard_pattern(instruction_text: str) -> bool:
     return _contains_any_of(_WILDCARD_CHARACTERS, instruction_text)
 
 
-def _contains_any_of(strings_looking_for: tuple, string_looking_in: str):
+def _contains_any_of(strings_looking_for: Iterable[str], string_looking_in: str) -> bool:
     for string_looking_for in strings_looking_for:
         if string_looking_in.find(string_looking_for) != -1:
             return True
