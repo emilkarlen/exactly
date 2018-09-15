@@ -20,6 +20,7 @@ _TEXT_PARSER = TextParser({
     'sandbox': formatting.concept_(concepts.SANDBOX_CONCEPT_INFO),
     'ENV_VAR_RESULT': ENV_VAR_RESULT,
     'phase': PHASE_NAME_DICTIONARY,
+    'ATC': formatting.concept_(concepts.ACTION_TO_CHECK_CONCEPT_INFO)
 })
 
 
@@ -126,7 +127,7 @@ Otherwise, the {following_phase} phase follows.
 """
 
 _ENVIRONMENT_PROLOGUE_POST_ACT_RESULT_DIR = """\
-Instructions have access to the result of the SUT via
+Instructions have access to the result of the {ATC} via
 the files in the {result_subdir}/ sub directory of the {sandbox}:
 """
 
