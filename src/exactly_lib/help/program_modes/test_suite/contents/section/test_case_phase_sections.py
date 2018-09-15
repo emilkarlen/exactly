@@ -5,6 +5,7 @@ from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseC
 from exactly_lib.definitions.formatting import SectionName
 from exactly_lib.help.program_modes.test_suite.contents_structure.section_documentation import \
     TestSuiteSectionDocumentationBaseForSectionWithoutInstructions, TestSuiteSectionDocumentation
+from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.description import Description
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -26,8 +27,8 @@ class _SectionThatIsIdenticalToTestCasePhase(TestSuiteSectionDocumentationBaseFo
             'phase': self._section_name,
         })
 
-    def contents_description(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_CONTENTS_DESCRIPTION)
+    def contents_description(self) -> SectionContents:
+        return self._tp.section_contents(_CONTENTS_DESCRIPTION)
 
     def purpose(self) -> Description:
         paragraphs = self._tp.fnap(_CORRESPONDENCE_DESCRIPTION)
