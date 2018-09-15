@@ -1,13 +1,10 @@
 import unittest
 
-from exactly_lib_test.test_suite.instruction_set.sections.configuration import preprocessor, actor
+from exactly_lib_test.test_suite.instruction_set.sections.configuration import preprocessor
 
 
 def suite() -> unittest.TestSuite:
-    return unittest.TestSuite([
-        preprocessor.suite(),
-        actor.suite(),
-    ])
+    return preprocessor.suite()
 
 
 if __name__ == '__main__':

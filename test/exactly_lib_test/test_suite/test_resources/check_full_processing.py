@@ -2,6 +2,7 @@ import pathlib
 import tempfile
 import unittest
 
+import exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources
 from exactly_lib import program_info
 from exactly_lib.common import instruction_setup
 from exactly_lib.definitions.test_suite import instruction_names
@@ -20,7 +21,7 @@ from exactly_lib.section_document.section_element_parsing import SectionElementP
 from exactly_lib.test_case import os_services
 from exactly_lib.test_suite.enumeration import DepthFirstEnumerator
 from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader, Environment
-from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor, actor
+from exactly_lib.test_suite.instruction_set.sections.configuration import preprocessor
 from exactly_lib.test_suite.processing import Processor
 from exactly_lib.util.file_utils import resolved_path
 from exactly_lib_test.processing.test_resources.test_case_setup import instruction_set_with_no_instructions
@@ -50,7 +51,8 @@ class Setup:
         configuration_section_instructions = instruction_setup.instruction_set_from_name_and_setup_constructor_list(
             [
                 (instruction_names.INSTRUCTION_NAME__PREPROCESSOR, preprocessor.setup),
-                (instruction_names.INSTRUCTION_NAME__ACTOR, actor.setup),
+                (instruction_names.INSTRUCTION_NAME__ACTOR,
+                 exactly_lib_test.test_suite.instruction_set.sections.configuration.test_resources.setup),
             ]
         )
         return section_element_parsers.standard_syntax_element_parser(
