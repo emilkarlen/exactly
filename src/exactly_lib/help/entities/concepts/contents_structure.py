@@ -1,3 +1,6 @@
+from typing import List
+
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
@@ -32,9 +35,9 @@ class ConceptDocumentation(EntityDocumentation):
         """
         return [para(self.purpose().single_line_description)]
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         """
-        :returns: A new list of :class:`SeeAlsoTarget`, which may contain duplicate elements.
+        :returns: A new list, which may contain duplicate elements.
         """
         return []
 
