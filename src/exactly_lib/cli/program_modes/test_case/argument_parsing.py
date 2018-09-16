@@ -12,10 +12,10 @@ from exactly_lib.definitions import formatting
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO
+from exactly_lib.definitions.misc_texts import IS_A_SHELL_CMD
 from exactly_lib.definitions.test_case.phase_names import PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
-from exactly_lib.help.texts import IS_A_SHELL_CMD
 from exactly_lib.processing.preprocessor import PreprocessorViaExternalProgram
 from exactly_lib.processing.standalone.settings import ReportingOption, TestCaseExecutionSettings
 from exactly_lib.processing.test_case_handling_setup import TestCaseHandlingSetup

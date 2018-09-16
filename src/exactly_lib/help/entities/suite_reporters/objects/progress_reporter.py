@@ -1,8 +1,8 @@
 from exactly_lib.common.exit_value import ExitValue
+from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.doc_format import exit_value_text
 from exactly_lib.definitions.entity.suite_reporters import PROGRESS_REPORTER
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
-from exactly_lib.help import texts
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.processing import exit_values as case_exit_values
 from exactly_lib.test_suite import exit_values
@@ -36,8 +36,8 @@ class SimpleProgressSuiteReporterDocumentation(SuiteReporterDocumentation):
         return first_row_is_header_table(
             [
                 [
-                    cell(paras(texts.EXIT_CODE_TITLE)),
-                    cell(paras(texts.EXIT_IDENTIFIER_TITLE)),
+                    cell(paras(misc_texts.EXIT_CODE_TITLE)),
+                    cell(paras(misc_texts.EXIT_IDENTIFIER_TITLE)),
                     cell(paras('When')),
                 ]] +
             [_row(exit_value, description) for exit_value, description in exit_value_and_description_list],

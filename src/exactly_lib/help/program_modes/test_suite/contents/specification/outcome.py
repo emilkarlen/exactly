@@ -2,7 +2,6 @@ from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.help import texts
 from exactly_lib.help.render import see_also_section
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
@@ -99,7 +98,7 @@ def singe_exit_value_display(exit_code: str,
                              stdout: str) -> ParagraphItem:
     return first_column_is_header_table([
         [
-            cell([para(texts.EXIT_CODE_TITLE)]),
+            cell([para(misc_texts.EXIT_CODE_TITLE)]),
             cell([para(exit_code)]),
         ],
         [
