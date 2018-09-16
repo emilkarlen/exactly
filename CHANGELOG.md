@@ -13,6 +13,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
  - Run suites - accepts DIR as suite file CLI arg if DIR contains default suite file
  - Sub suite list accepts DIR if DIR contains default suite file
 
+### Changed
+
+ - Changes the layout of the sandbox directory structure
+
 ### Removed
 
  - suite/conf instruction `actor`
