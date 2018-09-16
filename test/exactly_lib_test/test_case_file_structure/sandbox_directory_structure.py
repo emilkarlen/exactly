@@ -19,30 +19,27 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
             sds = sandbox_directory_structure.construct_at(tmp_dir_name)
 
             self._assert_is_existing_dir_with_given_number_of_files_in_it(sds.root_dir,
-                                                                          5)
+                                                                          4)
 
-            self._assert_is_existing_empty_dir_with_name(root / 'testcase',
-                                                         sds.test_case_dir)
-
-            self._assert_is_existing_dir_with_given_number_of_files_in_it(root / 'tmp',
-                                                                          2)
-
-            self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'internal',
-                                                         sds.internal_tmp_dir)
-
-            self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'user',
+            self._assert_is_existing_empty_dir_with_name(root / 'tmp',
                                                          sds.user_tmp_dir)
-
-            self._assert_is_existing_empty_dir_with_name(root / 'testcase',
-                                                         sds.test_case_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'act',
                                                          sds.act_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'result',
-                                                         sds.result.root_dir)
+                                                         sds.result_dir)
 
-            self._assert_is_existing_empty_dir_with_name(root / 'log',
+            self._assert_is_existing_dir_with_given_number_of_files_in_it(root / 'internal',
+                                                                          3)
+
+            self._assert_is_existing_empty_dir_with_name(root / 'internal' / 'testcase',
+                                                         sds.test_case_dir)
+
+            self._assert_is_existing_empty_dir_with_name(root / 'internal' / 'tmp',
+                                                         sds.internal_tmp_dir)
+
+            self._assert_is_existing_empty_dir_with_name(root / 'internal' / 'log',
                                                          sds.log_dir)
 
     def _assert_is_existing_empty_dir_with_name(self,

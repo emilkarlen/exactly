@@ -6,25 +6,19 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.util.process_execution import process_output_files
 
-TMP_INTERNAL__STDIN_CONTENTS = 'stdin.txt'
-
-TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR = 'with-replaced-env-vars'
-
 LOG__PHASE_SUB_DIR = 'phase'
 
-SUB_DIR_FOR_REPLACEMENT_SOURCES_UNDER_ACT_DIR = 'act'
-
-SUB_DIR_FOR_REPLACEMENT_SOURCES_NOT_UNDER_ACT_DIR = 'global'
-
 SUB_DIRECTORY__ACT = 'act'
-
-SUB_DIRECTORY__TMP = 'tmp'
-SUB_DIRECTORY__TMP_USER = 'user'
-SUB_DIRECTORY__TMP_INTERNAL = 'internal'
-
-PATH__TMP_USER = SUB_DIRECTORY__TMP + '/' + SUB_DIRECTORY__TMP_USER
-
+SUB_DIRECTORY__TMP_USER = 'tmp'
 SUB_DIRECTORY__RESULT = 'result'
+
+SUB_DIRECTORY__INTERNAL = 'internal'
+
+SUB_DIRECTORY__TMP_INTERNAL = 'tmp'
+SUB_DIRECTORY__TEST_CASE = 'testcase'
+SUB_DIRECTORY__LOG = 'log'
+
+PATH__TMP_USER = SUB_DIRECTORY__TMP_USER
 
 RESULT_FILE__STDERR = process_output_files.STDERR_FILE_NAME
 RESULT_FILE__STDOUT = process_output_files.STDOUT_FILE_NAME
@@ -35,6 +29,8 @@ RESULT_FILE_ALL = (
     RESULT_FILE__STDOUT,
     RESULT_FILE__EXITCODE,
 )
+
+TMP_INTERNAL__STDIN_CONTENTS = 'stdin.txt'
 
 
 class DirWithSubDirs:
@@ -57,14 +53,14 @@ def empty_dir(name: str) -> DirWithSubDirs:
 
 
 execution_directories = [
-    empty_dir('testcase'),
     empty_dir(SUB_DIRECTORY__ACT),
-    DirWithSubDirs(SUB_DIRECTORY__TMP, [
-        empty_dir(SUB_DIRECTORY__TMP_INTERNAL),
-        empty_dir(SUB_DIRECTORY__TMP_USER)
-    ]),
     empty_dir(SUB_DIRECTORY__RESULT),
-    empty_dir('log'),
+    empty_dir(SUB_DIRECTORY__TMP_USER),
+    DirWithSubDirs(SUB_DIRECTORY__INTERNAL, [
+        empty_dir(SUB_DIRECTORY__TMP_INTERNAL),
+        empty_dir(SUB_DIRECTORY__LOG),
+        empty_dir(SUB_DIRECTORY__TEST_CASE),
+    ]),
 ]
 
 
@@ -106,19 +102,24 @@ class Result(DirWithRoot):
         ]
 
 
-class Tmp(DirWithRoot):
+class Internal(DirWithRoot):
     def __init__(self, root_dir: Path):
         super().__init__(root_dir)
-        self.__internal_dir = self.root_dir / SUB_DIRECTORY__TMP_INTERNAL
-        self.__user_dir = self.root_dir / SUB_DIRECTORY__TMP_USER
+        self.__tmp_dir = self.root_dir / SUB_DIRECTORY__TMP_INTERNAL
+        self.__log_dir = self.root_dir / SUB_DIRECTORY__LOG
+        self.__test_case_dir = self.root_dir / SUB_DIRECTORY__TEST_CASE
 
     @property
-    def internal_dir(self) -> Path:
-        return self.__internal_dir
+    def tmp_dir(self) -> Path:
+        return self.__tmp_dir
 
     @property
-    def user_dir(self) -> Path:
-        return self.__user_dir
+    def log_dir(self) -> Path:
+        return self.__log_dir
+
+    @property
+    def test_case_dir(self) -> Path:
+        return self.__test_case_dir
 
 
 class SandboxDirectoryStructure(DirWithRoot):
@@ -128,19 +129,18 @@ class SandboxDirectoryStructure(DirWithRoot):
 
     def __init__(self, dir_name: str):
         super().__init__(Path(dir_name))
-        self.__test_case_dir = self.root_dir / 'testcase'
         self.__act_dir = self.root_dir / SUB_DIRECTORY__ACT
-        self.__tmp = Tmp(self.root_dir / SUB_DIRECTORY__TMP)
+        self.__user_tmp = self.root_dir / SUB_DIRECTORY__TMP_USER
         self.__result = Result(self.root_dir / SUB_DIRECTORY__RESULT)
-        self.__log_dir = self.root_dir / 'log'
-
-    @property
-    def test_case_dir(self) -> Path:
-        return self.__test_case_dir
+        self.__internal = Internal(self.root_dir / SUB_DIRECTORY__INTERNAL)
 
     @property
     def act_dir(self) -> Path:
         return self.__act_dir
+
+    @property
+    def user_tmp_dir(self) -> Path:
+        return self.__user_tmp
 
     @property
     def result(self) -> Result:
@@ -151,16 +151,16 @@ class SandboxDirectoryStructure(DirWithRoot):
         return self.__result.root_dir
 
     @property
-    def user_tmp_dir(self) -> Path:
-        return self.__tmp.user_dir
-
-    @property
     def internal_tmp_dir(self) -> Path:
-        return self.__tmp.internal_dir
+        return self.__internal.tmp_dir
 
     @property
     def log_dir(self) -> Path:
-        return self.__log_dir
+        return self.__internal.log_dir
+
+    @property
+    def test_case_dir(self) -> Path:
+        return self.__internal.test_case_dir
 
     def relative_to_sds_root(self, file_in_sub_dir: pathlib.PurePath) -> pathlib.PurePath:
         return file_in_sub_dir.relative_to(self.root_dir)
@@ -168,9 +168,9 @@ class SandboxDirectoryStructure(DirWithRoot):
     def all_leaf_dirs__except_result(self) -> List[Path]:
         return [
             self.act_dir,
-            self.test_case_dir,
-            self.internal_tmp_dir,
             self.user_tmp_dir,
+            self.internal_tmp_dir,
+            self.test_case_dir,
             self.log_dir,
         ]
 
@@ -180,10 +180,9 @@ class SandboxDirectoryStructure(DirWithRoot):
     def all_root_dirs__including_result(self) -> List[Path]:
         return [
             self.act_dir,
-            self.test_case_dir,
-            self.__tmp.root_dir,
-            self.log_dir,
+            self.user_tmp_dir,
             self.result.root_dir,
+            self.__internal.root_dir,
         ]
 
 
@@ -196,10 +195,6 @@ def construct_at(execution_directory_root: str) -> SandboxDirectoryStructure:
 def construct_at_tmp_root() -> SandboxDirectoryStructure:
     root_dir_name = tempfile.mkdtemp(prefix=program_info.PROGRAM_NAME + '-')
     return construct_at(root_dir_name)
-
-
-def root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(sds: SandboxDirectoryStructure) -> Path:
-    return sds.internal_tmp_dir / TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR
 
 
 def stdin_contents_file(sds: SandboxDirectoryStructure) -> Path:

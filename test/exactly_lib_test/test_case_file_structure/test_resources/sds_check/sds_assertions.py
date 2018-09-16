@@ -38,8 +38,8 @@ class _IsSdsRootDir(asrt.ValueAssertion[str]):
         sds = SandboxDirectoryStructure(value)
 
         fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
-                                                              len(sds.all_leaf_dirs__except_result()))
-        for d in sds.all_leaf_dirs__except_result():
+                                                              len(sds.all_root_dirs__including_result()))
+        for d in sds.all_leaf_dirs__including_result():
             fc.assert_exists_dir(d)
 
 
