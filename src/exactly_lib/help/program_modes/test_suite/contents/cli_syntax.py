@@ -11,6 +11,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
+from exactly_lib.definitions.misc_texts import IS_A_SHELL_CMD
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_suite import file_names
@@ -18,7 +19,6 @@ from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocu
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
-from exactly_lib.help.texts import IS_A_SHELL_CMD
 from exactly_lib.section_document.model import SectionContents
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax

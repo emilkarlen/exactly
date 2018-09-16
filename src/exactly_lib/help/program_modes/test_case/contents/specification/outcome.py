@@ -8,7 +8,6 @@ from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.execution.full_execution.result import FullExeResultStatus
 from exactly_lib.execution.partial_execution.result import PartialExeResultStatus
-from exactly_lib.help import texts
 from exactly_lib.help.program_modes.test_case.contents.specification.processing import \
     FAILURE_CONDITION_OF_PREPROCESSING
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
@@ -237,8 +236,8 @@ def _exit_value_table_for(exit_value_list: List[ExitValue]) -> ParagraphItem:
     return first_row_is_header_table(
         [
             [
-                cell(paras(texts.EXIT_IDENTIFIER_TITLE)),
-                cell(paras(texts.EXIT_CODE_TITLE))
+                cell(paras(misc_texts.EXIT_IDENTIFIER_TITLE)),
+                cell(paras(misc_texts.EXIT_CODE_TITLE))
             ]] +
         [_row(exit_value) for exit_value in exit_value_list],
         '  ')
@@ -256,8 +255,8 @@ def _outcome_and_exit_value_table_for(exit_value_list: List[ExitValue]) -> Parag
         [
             [
                 cell(paras('Test Case')),
-                cell(paras(texts.EXIT_IDENTIFIER_TITLE)),
-                cell(paras(texts.EXIT_CODE_TITLE)),
+                cell(paras(misc_texts.EXIT_IDENTIFIER_TITLE)),
+                cell(paras(misc_texts.EXIT_CODE_TITLE)),
             ]] +
         [_row(exit_value) for exit_value in exit_value_list],
         '  ')
