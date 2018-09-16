@@ -1,5 +1,6 @@
 import pathlib
 import types
+from typing import Callable
 
 from exactly_lib.test_case_file_structure import path_relativity
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -124,7 +125,7 @@ class RelNonHomeRootResolverForCwd(RelNonHomeRootResolver):
 class RelSdsRootResolver(RelNonHomeRootResolver):
     def __init__(self,
                  relativity_type: RelSdsOptionType,
-                 sds_2_root_fun: types.FunctionType):
+                 sds_2_root_fun: Callable[[SandboxDirectoryStructure], pathlib.Path]):
         super().__init__(path_relativity.rel_non_home_from_rel_sds(relativity_type))
         self._relativity_type_sds = relativity_type
         self._sds_2_root_fun = sds_2_root_fun
@@ -149,13 +150,13 @@ class RelSdsRootResolver(RelNonHomeRootResolver):
 
 
 resolver_for_act = RelSdsRootResolver(RelSdsOptionType.REL_ACT,
-                                      lambda sds: sds.act_dir)
+                                      SandboxDirectoryStructure.act_dir.fget)
 
 resolver_for_result = RelSdsRootResolver(RelSdsOptionType.REL_RESULT,
-                                         lambda sds: sds.result.root_dir)
+                                         SandboxDirectoryStructure.result_dir.fget)
 
 resolver_for_tmp_user = RelSdsRootResolver(RelSdsOptionType.REL_TMP,
-                                           lambda sds: sds.tmp.user_dir)
+                                           SandboxDirectoryStructure.user_tmp_dir.fget)
 
 resolver_for_cwd = RelNonHomeRootResolverForCwd()
 

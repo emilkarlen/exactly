@@ -95,7 +95,7 @@ class ExpectedTestEnvironmentVariablesAreSetCorrectlyVa(asrt.ValueAssertion):
         expected_printed_variables = [
             '%s=%s' % (environment_variables.ENV_VAR_HOME_CASE, str(value.file_argument.parent)),
             '%s=%s' % (environment_variables.ENV_VAR_ACT, str(sds.act_dir)),
-            '%s=%s' % (environment_variables.ENV_VAR_TMP, str(sds.tmp.user_dir)),
+            '%s=%s' % (environment_variables.ENV_VAR_TMP, str(sds.user_tmp_dir)),
         ]
         put.assertEqual(expected_printed_variables,
                         actually_printed_variables,

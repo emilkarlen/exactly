@@ -206,7 +206,7 @@ def sds_2_result_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
 
 
 def sds_2_tmp_user_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:
-    return sds.tmp.user_dir
+    return sds.user_tmp_dir
 
 
 def sds_2_cwd_dir(sds: SandboxDirectoryStructure) -> pathlib.Path:

@@ -41,7 +41,7 @@ def set_at_setup_pre_validate(hds: HomeDirectoryStructure) -> dict:
 def set_at_setup_main(sds: SandboxDirectoryStructure) -> dict:
     return {
         ENV_VAR_ACT: str(sds.act_dir),
-        ENV_VAR_TMP: str(sds.tmp.user_dir),
+        ENV_VAR_TMP: str(sds.user_tmp_dir),
     }
 
 

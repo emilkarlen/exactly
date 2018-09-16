@@ -1,12 +1,11 @@
 import pathlib
-import types
-from typing import Sequence
+from typing import Sequence, Callable
 
 from exactly_lib.test_case_file_structure.path_relativity import RelSdsOptionType
 from exactly_lib.test_case_file_structure.relative_path_options import REL_SDS_OPTIONS_MAP
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.test_case_file_structure.test_resources.dir_populator import SdsPopulator
-from exactly_lib_test.test_resources.files.file_structure import DirContents, File
+from exactly_lib_test.test_resources.files.file_structure import DirContents
 
 
 def empty() -> SdsPopulator:
@@ -46,7 +45,7 @@ class SdsSubDirResolver:
 
 
 class SdsSubDirResolverFromSdsFun(SdsSubDirResolver):
-    def __init__(self, sds_2_path: types.FunctionType):
+    def __init__(self, sds_2_path: Callable[[SandboxDirectoryStructure], pathlib.Path]):
         self.sds_2_path = sds_2_path
 
     def root_dir(self, sds: SandboxDirectoryStructure) -> pathlib.Path:
@@ -103,28 +102,6 @@ def contents_in_resolved_dir(dir_resolver: SdsSubDirResolver,
                                  dir_contents)
 
 
-class SdsPopulatorForFileWithContentsThatDependOnSds(SdsPopulator):
-    def __init__(self,
-                 file_name: str,
-                 sds__2__file_contents_str,
-                 dir_contents__2__sds_populator):
-        """
-        :type sds__2__file_contents_str: `SandboxDirectoryStructure` -> str
-        :type dir_contents__2__sds_populator: `DirContents` -> `SdsPopulator`
-        """
-        self.file_name = file_name
-        self.sds_2_file_contents_str = sds__2__file_contents_str
-        self.dir_contents__2__sds_populator = dir_contents__2__sds_populator
-
-    def populate_sds(self, sds: SandboxDirectoryStructure):
-        file_contents = self.sds_2_file_contents_str(sds)
-        dir_contents = DirContents([
-            File(self.file_name, file_contents)
-        ])
-        sds_populator = self.dir_contents__2__sds_populator(dir_contents)
-        sds_populator.write_to(sds)
-
-
 class _ListOfPopulators(SdsPopulator):
     def __init__(self, populator_list: Sequence[SdsPopulator]):
         self.__populator_list = populator_list
@@ -140,7 +117,7 @@ class _FilesInTmpInternalDir(SdsPopulator):
         self.test_root_contents = contents
 
     def populate_sds(self, sds: SandboxDirectoryStructure):
-        self.test_root_contents.write_to(sds.tmp.internal_dir)
+        self.test_root_contents.write_to(sds.internal_tmp_dir)
 
 
 class _FilesInCwd(SdsPopulator):

@@ -2,6 +2,7 @@ import functools
 import pathlib
 import types
 import unittest
+from typing import Callable
 
 from exactly_lib.test_case_file_structure.path_relativity import DirectoryStructurePartition, RelOptionType, \
     RESOLVING_DEPENDENCY_OF, RelHomeOptionType
@@ -37,7 +38,7 @@ def suite() -> unittest.TestSuite:
                           lambda home_and_sds: home_and_sds.hds.act_dir),
         _RelativityConfig(sut.rel_tmp_user,
                           DirectoryStructurePartition.NON_HOME,
-                          lambda home_and_sds: home_and_sds.sds.tmp.user_dir),
+                          lambda home_and_sds: home_and_sds.sds.user_tmp_dir),
         _RelativityConfig(sut.rel_act,
                           DirectoryStructurePartition.NON_HOME,
                           lambda home_and_sds: home_and_sds.sds.act_dir),
@@ -69,7 +70,7 @@ def configs_for_rel_option_argument() -> list:
     return ret_val
 
 
-def _of_rel_option__path_suffix_2_file_ref(rel_option_type: RelOptionType) -> types.FunctionType:
+def _of_rel_option__path_suffix_2_file_ref(rel_option_type: RelOptionType) -> Callable[[PathPart], FileRef]:
     def ret_val(path_suffix: PathPart) -> FileRef:
         return sut.of_rel_option(rel_option_type, path_suffix)
 
@@ -78,7 +79,7 @@ def _of_rel_option__path_suffix_2_file_ref(rel_option_type: RelOptionType) -> ty
 
 class _RelativityConfig:
     def __init__(self,
-                 path_suffix_2_file_ref: types.FunctionType,
+                 path_suffix_2_file_ref: Callable[[PathPart], FileRef],
                  resolving_dependency: DirectoryStructurePartition,
                  home_and_sds_2_relativity_root: types.FunctionType,
                  function_name: str = '',
