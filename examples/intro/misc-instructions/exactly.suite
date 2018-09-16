@@ -1,0 +1,9 @@
+[suites]
+
+shell/exactly.suite
+
+dir-contents/exactly.suite
+
+file/exactly.suite
+
+stdout/exactly.suite

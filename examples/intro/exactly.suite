@@ -4,56 +4,56 @@
 # Basic examples.
 #
 
-first-step/package.suite
+first-step/exactly.suite
 
 ######################################################################
 # Examples that utilize the "sandbox directory structure"
 #
 
-sandbox-directories/package.suite
+sandbox-directories/exactly.suite
 
 ######################################################################
 # Examples that utilize the "home directory structure"
 #
 
-home-directories/package.suite
+home-directories/exactly.suite
 
 ######################################################################
 # Examples with "symbols"
 #
 
-symbols/package.suite
+symbols/exactly.suite
 
 ######################################################################
 # Setup using the "setup" phase.
 #
 
-setup/package.suite
+setup/exactly.suite
 
 ######################################################################
 # Cleanup using the "cleanup" phase.
 #
 
-cleanup/package.suite
+cleanup/exactly.suite
 
 ######################################################################
 # Implementing custom behaviour using external programs
 # and the OS shell.
 #
 
-external-programs/package.suite
+external-programs/exactly.suite
 
 ######################################################################
 # Transforming the contents of a checked file, before comparing it.
 #
 
-file-transformations/package.suite
+file-transformations/exactly.suite
 
 ######################################################################
 # Miscellaneous instructions
 #
 
-misc-instructions/package.suite
+misc-instructions/exactly.suite
 
 ######################################################################
 # Test suites
