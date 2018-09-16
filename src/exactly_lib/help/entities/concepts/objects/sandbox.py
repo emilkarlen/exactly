@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions import test_case_file_structure as tcds
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.doc_format import file_name_text
@@ -51,19 +52,25 @@ class _SandboxConcept(ConceptDocumentation):
         ]
 
     def _sandbox_directories_info_sections(self) -> List[docs.SectionItem]:
-        def section(directory_name: str, paragraph_items: List[ParagraphItem]) -> Section:
+        def section(directory_name: str,
+                    dir_info: tcds.TcDirInfo,
+                    paragraph_items: List[ParagraphItem]) -> Section:
             return docs.section(_dir_name_text(directory_name),
+                                docs.paras(dir_info.single_line_description_str + '.') +
                                 paragraph_items)
 
         return [
             section(sds.SUB_DIRECTORY__ACT,
+                    tcds.SDS_ACT_INFO,
                     self._act_dir_description_paragraphs()),
             section(sds.SUB_DIRECTORY__RESULT,
+                    tcds.SDS_RESULT_INFO,
                     self._result_dir_description_paragraphs()),
             section(sds.PATH__TMP_USER,
+                    tcds.SDS_TMP_INFO,
                     self._tmp_user_dir_description_paragraphs()),
-            docs.section('Other directories',
-                         self._other_directories_than_those_listed())
+            docs.section(_dir_name_text(sds.SUB_DIRECTORY__INTERNAL),
+                         self._internal_dir_description_paragraphs())
         ]
 
     def _act_dir_description_paragraphs(self) -> List[ParagraphItem]:
@@ -97,8 +104,8 @@ class _SandboxConcept(ConceptDocumentation):
                                       self._tp.format(_RESULT_DIR_ENV_VARIABLE))
                 ]
 
-    def _other_directories_than_those_listed(self) -> List[ParagraphItem]:
-        return self._tp.fnap(_OTHER_DIRECTORIES_THAN_THOSE_LISTED)
+    def _internal_dir_description_paragraphs(self) -> List[ParagraphItem]:
+        return self._tp.fnap(_INTERNAL_DIRECTORIES)
 
 
 SANDBOX_CONCEPT = _SandboxConcept()
@@ -112,10 +119,7 @@ and deleted after the test case has finished.
 """
 
 _ACT_DIR_DESCRIPTION = """\
-This directory is the {cwd} when the {phase[setup]} phase begin.
-
-
-It will also be the {cwd} for the {phase[act]} phase, and following phases,
+It will be the {cwd} for the {phase[act]} phase, and following phases,
 unless it is changed by the {cd_instruction} instruction.
 
 
@@ -131,7 +135,7 @@ with the following files (with obvious contents):
 """
 
 _USR_TMP_DIR_DESCRIPTION = """\
-A directory that {program_name} does not touch.
+{program_name} does not touch this directory.
 
 The test case can use it as a place where it is safe to put temporary files without
 the risk of clashes with files from other program.
@@ -173,7 +177,7 @@ def directory_structure_list_section(dir_with_sub_dir_list: List[DirWithSubDirs]
 
 def _directory_structure_list(dir_with_sub_dir_list: List[DirWithSubDirs]) -> ParagraphItem:
     items = []
-    for dir_wsd in sorted(dir_with_sub_dir_list, key=lambda x: x.name):
+    for dir_wsd in dir_with_sub_dir_list:
         sub_dirs_items = []
         if dir_wsd.sub_dirs:
             sub_dirs_items = [_directory_structure_list(dir_wsd.sub_dirs)]
@@ -186,7 +190,6 @@ def _dir_name_text(dir_name: str) -> docs.Text:
     return file_name_text(dir_name + '/')
 
 
-_OTHER_DIRECTORIES_THAN_THOSE_LISTED = """\
-The directories not mentioned above are reserved for {program_name},
-and should not be touched.
+_INTERNAL_DIRECTORIES = """\
+Root directory for files that are reserved for {program_name}.
 """

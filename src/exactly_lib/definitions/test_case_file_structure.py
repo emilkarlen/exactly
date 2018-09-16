@@ -53,7 +53,7 @@ HDS_DIR_INFOS_IN_DISPLAY_ORDER = (
 SDS_ACT_INFO = TcDirInfo(
     'act',
     'act directory',
-    _format('This is the current directory when {phase[setup]:syntax} begins'),
+    _format('The current directory when {phase[setup]:syntax} begins'),
 )
 
 SDS_RESULT_INFO = TcDirInfo(
