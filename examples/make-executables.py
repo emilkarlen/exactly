@@ -177,6 +177,7 @@ readme_examples_root_dir = 'readme-file-examples'
 
 readme_contacts_dir = pathlib.Path('contacts')
 readme_classify_dir = pathlib.Path('classify')
+readme_sandbox_dir = pathlib.Path('sandbox')
 
 
 def st(target_base: pathlib.Path, file_name: str) -> SourceAndTarget:
@@ -203,6 +204,9 @@ readme_files = itertools.chain.from_iterable([
          ]),
     sts(readme_classify_dir,
         ['classify-files-by-moving-to-appropriate-dir',
+         ]),
+    sts(readme_sandbox_dir,
+        ['hello-world',
          ]),
 ])
 

@@ -1,0 +1,17 @@
+[setup]
+
+file my-file.txt
+
+file -rel-tmp my-tmp-file.txt
+
+dir my-dir
+
+cd  my-dir
+
+[act]
+
+hello-world -o output-from-action-to-check.txt
+
+[assert]
+
+exit-code == 0

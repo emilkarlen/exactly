@@ -283,12 +283,17 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 
     [setup]
 
-    dir  my-dir
     file my-file.txt
+
+    file -rel-tmp my-tmp-file.txt
+
+    dir  my-dir
+
+    cd my-dir
 
     [act]
 
-    my-prog my-file.txt
+    hello-world -o output-from-action-to-check.txt
 
     [assert]
 
@@ -297,29 +302,32 @@ This can be used to inspect the outcome of the "setup" phase, e.g::
 ::
 
     > exactly --keep my-test.case
-    /tmp/exactly-1strbro1
+    /tmp/exactly-68jn8c08
+    PASS
 
-    > find /tmp/exactly-1strbro1
-    /tmp/exactly-1strbro1
-    /tmp/exactly-1strbro1/tmp
-    /tmp/exactly-1strbro1/tmp/user
-    /tmp/exactly-1strbro1/tmp/internal
-    /tmp/exactly-1strbro1/testcase
-    /tmp/exactly-1strbro1/act
-    /tmp/exactly-1strbro1/act/my-dir
-    /tmp/exactly-1strbro1/act/my-file.txt
-    /tmp/exactly-1strbro1/result
-    /tmp/exactly-1strbro1/result/exitcode
-    /tmp/exactly-1strbro1/result/stderr
-    /tmp/exactly-1strbro1/result/stdout
-    /tmp/exactly-1strbro1/log
+    > find /tmp/exactly-68jn8c08
+    /tmp/exactly-68jn8c08/
+    /tmp/exactly-68jn8c08/act/
+    /tmp/exactly-68jn8c08/act/my-file.txt
+    /tmp/exactly-68jn8c08/act/my-dir/
+    /tmp/exactly-68jn8c08/act/my-dir/output-from-action-to-check.txt
+    /tmp/exactly-68jn8c08/tmp/
+    /tmp/exactly-68jn8c08/tmp/my-tmp-file.txt
+    /tmp/exactly-68jn8c08/result/
+    /tmp/exactly-68jn8c08/result/stdout
+    /tmp/exactly-68jn8c08/result/stderr
+    /tmp/exactly-68jn8c08/result/exitcode
+    /tmp/exactly-68jn8c08/internal/
+    /tmp/exactly-68jn8c08/internal/tmp/
+    /tmp/exactly-68jn8c08/internal/testcase/
+    /tmp/exactly-68jn8c08/internal/log/
 
 The ``act/`` directory is the current directory when the test starts.
 The ``file`` instruction has put the file ``my-file.txt`` there.
 
 The result of the "act" phase is saved in the ``result/`` directory.
 
-``tmp/user/`` is a directory where the test can put temporary files.
+``tmp/`` is a directory where the test can put temporary files.
 
 TEST SUITES
 ========================================
