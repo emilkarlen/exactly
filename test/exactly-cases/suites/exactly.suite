@@ -1,0 +1,5 @@
+[suites]
+
+case-instructions-in-suite/exactly.suite
+
+default-suite-file/exactly.suite
