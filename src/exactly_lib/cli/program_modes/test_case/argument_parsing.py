@@ -157,18 +157,10 @@ then nothing is output on stdout.
 """
 
 PREPROCESSOR_OPTION_DESCRIPTION = """\
-A command that preprocesses the test case before it is parsed.
+{concept_single_line_description}.
 
 
 {preprocessor} {is_a_shell_cmd}
-
-
-The name of the test case file is given to the command as the last argument.
-
-The command should output the result of the processing on stdout.
-
-If the exit code from the preprocessor is non-zero,
-then processing is considered to have failed.
 """
 
 TEXT_PARSER = TextParser({
@@ -180,5 +172,6 @@ TEXT_PARSER = TextParser({
     'ACTOR_CONCEPT': concepts.ACTOR_CONCEPT_INFO.singular_name,
     'shell_syntax_concept': formatting.concept_(concepts.SHELL_SYNTAX_CONCEPT_INFO),
     'is_a_shell_cmd': IS_A_SHELL_CMD,
+    'concept_single_line_description': concepts.PREPROCESSOR_CONCEPT_INFO.single_line_description_str,
     'default_suite_file': file_names.DEFAULT_SUITE_FILE,
 })
