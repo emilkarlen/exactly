@@ -13,20 +13,14 @@ def is_sandbox_directory_structure_after_execution(fc: FileChecker,
                                                    root_dir_name: str):
     sds = SandboxDirectoryStructure(root_dir_name)
     fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
-                                                          5)
-    fc.assert_exists_dir(sds.test_case_dir)
-    fc.assert_exists_dir(sds.tmp.root_dir)
-    fc.assert_exists_dir(sds.tmp.internal_dir)
-    fc.assert_exists_dir(sds.tmp.user_dir)
-    fc.assert_exists_dir(sds.act_dir)
+                                                          len(sds.all_root_dirs__including_result()))
+    for d in sds.all_leaf_dirs__including_result():
+        fc.assert_exists_dir(d)
 
     fc.assert_exists_dir_with_given_number_of_files_in_it(sds.result.root_dir,
-                                                          3)
-    fc.assert_exists_plain_file(sds.result.exitcode_file)
-    fc.assert_exists_plain_file(sds.result.stdout_file)
-    fc.assert_exists_plain_file(sds.result.stderr_file)
-
-    fc.assert_exists_dir(sds.log_dir)
+                                                          len(sds.result.all_files))
+    for f in sds.result.all_files:
+        fc.assert_exists_plain_file(f)
 
 
 def is_sds_root_dir() -> asrt.ValueAssertion[str]:
@@ -44,14 +38,9 @@ class _IsSdsRootDir(asrt.ValueAssertion[str]):
         sds = SandboxDirectoryStructure(value)
 
         fc.assert_exists_dir_with_given_number_of_files_in_it(sds.root_dir,
-                                                              5)
-        fc.assert_exists_dir(sds.test_case_dir)
-        fc.assert_exists_dir(sds.tmp.root_dir)
-        fc.assert_exists_dir(sds.tmp.internal_dir)
-        fc.assert_exists_dir(sds.tmp.user_dir)
-        fc.assert_exists_dir(sds.act_dir)
-
-        fc.assert_exists_dir(sds.log_dir)
+                                                              len(sds.all_leaf_dirs__except_result()))
+        for d in sds.all_leaf_dirs__except_result():
+            fc.assert_exists_dir(d)
 
 
 def sds_root_dir_exists_and_has_sds_dirs() -> asrt.ValueAssertion[SandboxDirectoryStructure]:
@@ -73,7 +62,7 @@ def is_existing_sds_with_post_execution_w_only_exitcode_result_files(exit_code: 
     return asrt.and_([
         sds_root_dir_exists_and_has_sds_dirs(),
         asrt.sub_component('result-dir',
-                           lambda sds: sds.result.root_dir,
+                           SandboxDirectoryStructure.result_dir.fget,
                            DirContainsExactly(DirContents([
                                File(RESULT_FILE__EXITCODE, str(exit_code))
                            ])))

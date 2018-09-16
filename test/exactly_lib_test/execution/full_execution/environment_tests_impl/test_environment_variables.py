@@ -108,13 +108,13 @@ class Test(FullExecutionTestCaseBase):
             environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
             environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.sds.tmp.user_dir),
+            environment_variables.ENV_VAR_TMP: str(self.sds.user_tmp_dir),
         }
         set_after_act = {
             environment_variables.ENV_VAR_HOME_CASE: home_case_dir_after_configuration,
             environment_variables.ENV_VAR_HOME_ACT: home_act_dir_after_configuration,
             environment_variables.ENV_VAR_ACT: str(self.sds.act_dir),
-            environment_variables.ENV_VAR_TMP: str(self.sds.tmp.user_dir),
+            environment_variables.ENV_VAR_TMP: str(self.sds.user_tmp_dir),
             environment_variables.ENV_VAR_RESULT: str(self.sds.result.root_dir),
         }
         expected_recorded_internally = {

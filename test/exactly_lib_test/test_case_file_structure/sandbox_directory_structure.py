@@ -28,10 +28,10 @@ class TestConstructExecutionDirectoryStructure(unittest.TestCase):
                                                                           2)
 
             self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'internal',
-                                                         sds.tmp.internal_dir)
+                                                         sds.internal_tmp_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'tmp' / 'user',
-                                                         sds.tmp.user_dir)
+                                                         sds.user_tmp_dir)
 
             self._assert_is_existing_empty_dir_with_name(root / 'testcase',
                                                          sds.test_case_dir)

@@ -255,10 +255,10 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                                          empty_dir('sub2')
                                                                      ])
                                                                  ])),
-                                 pre_action_action=ChangeDirTo(lambda sds: sds.tmp.user_dir)),
+                                 pre_action_action=ChangeDirTo(lambda sds: sds.user_tmp_dir)),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(
-                                                      lambda sds: sds.tmp.user_dir / 'sub1' / 'sub2')
+                                                      lambda sds: sds.user_tmp_dir / 'sub1' / 'sub2')
                                                   ))
 
     def test_no_argument_should_have_no_effect(self):
@@ -304,14 +304,14 @@ class TestSuccessfulScenarios(TestCaseBase):
         self._check_argument(format_rel_options('{rel_tmp}'),
                              sds_test.Arrangement(),
                              sds_test.Expectation(expected_action_result=is_success(),
-                                                  post_action_check=CwdIs(lambda sds: sds.tmp.user_dir)
+                                                  post_action_check=CwdIs(lambda sds: sds.user_tmp_dir)
                                                   ))
 
     def test_relative_tmp__without_argument__dot_arg(self):
         self._check_argument(format_rel_options('{rel_tmp} .'),
                              sds_test.Arrangement(),
                              sds_test.Expectation(expected_action_result=is_success(),
-                                                  post_action_check=CwdIs(lambda sds: sds.tmp.user_dir)
+                                                  post_action_check=CwdIs(lambda sds: sds.user_tmp_dir)
                                                   ))
 
     def test_relative_tmp__with_argument(self):
@@ -324,7 +324,7 @@ class TestSuccessfulScenarios(TestCaseBase):
                                                                                   ]))),
                              sds_test.Expectation(expected_action_result=is_success(),
                                                   post_action_check=CwdIs(
-                                                      lambda sds: sds.tmp.user_dir / 'sub1' / 'sub2')
+                                                      lambda sds: sds.user_tmp_dir / 'sub1' / 'sub2')
                                                   ))
 
     def test_relative_result__after_act_phase(self):

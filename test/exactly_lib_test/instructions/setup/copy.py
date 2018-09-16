@@ -4,6 +4,7 @@ from exactly_lib.instructions.setup import copy as sut
 from exactly_lib.section_document.element_parsers.instruction_parser_exceptions import \
     SingleInstructionInvalidArgumentException
 from exactly_lib.test_case_file_structure.path_relativity import RelNonHomeOptionType, RelHomeOptionType
+from exactly_lib.test_case_file_structure.sandbox_directory_structure import SandboxDirectoryStructure
 from exactly_lib_test.common.help.test_resources.check_documentation import suite_for_instruction_documentation
 from exactly_lib_test.instructions.setup.test_resources.instruction_check import TestCaseBase, Arrangement, \
     Expectation
@@ -390,7 +391,7 @@ def some_destination_relativity_options() -> list:
     ]
 
 
-CWD_RESOLVER = SdsSubDirResolverFromSdsFun(lambda sds: sds.tmp.internal_dir)
+CWD_RESOLVER = SdsSubDirResolverFromSdsFun(SandboxDirectoryStructure.internal_tmp_dir.fget)
 MAKE_SUB_DIR_OF_SDS_CURRENT_DIRECTORY = ChangeDirectoryToDirectory(CWD_RESOLVER)
 
 

@@ -1,6 +1,7 @@
 import pathlib
 import tempfile
 from pathlib import Path
+from typing import List
 
 from exactly_lib import program_info
 from exactly_lib.util.process_execution import process_output_files
@@ -96,6 +97,14 @@ class Result(DirWithRoot):
     def stderr_file(self) -> Path:
         return self.__stderr_file
 
+    @property
+    def all_files(self) -> List[Path]:
+        return [
+            self.exitcode_file,
+            self.stdout_file,
+            self.stderr_file,
+        ]
+
 
 class Tmp(DirWithRoot):
     def __init__(self, root_dir: Path):
@@ -138,8 +147,16 @@ class SandboxDirectoryStructure(DirWithRoot):
         return self.__result
 
     @property
-    def tmp(self) -> Tmp:
-        return self.__tmp
+    def result_dir(self) -> Path:
+        return self.__result.root_dir
+
+    @property
+    def user_tmp_dir(self) -> Path:
+        return self.__tmp.user_dir
+
+    @property
+    def internal_tmp_dir(self) -> Path:
+        return self.__tmp.internal_dir
 
     @property
     def log_dir(self) -> Path:
@@ -147,6 +164,27 @@ class SandboxDirectoryStructure(DirWithRoot):
 
     def relative_to_sds_root(self, file_in_sub_dir: pathlib.PurePath) -> pathlib.PurePath:
         return file_in_sub_dir.relative_to(self.root_dir)
+
+    def all_leaf_dirs__except_result(self) -> List[Path]:
+        return [
+            self.act_dir,
+            self.test_case_dir,
+            self.internal_tmp_dir,
+            self.user_tmp_dir,
+            self.log_dir,
+        ]
+
+    def all_leaf_dirs__including_result(self) -> List[Path]:
+        return self.all_leaf_dirs__except_result() + [self.result.root_dir]
+
+    def all_root_dirs__including_result(self) -> List[Path]:
+        return [
+            self.act_dir,
+            self.test_case_dir,
+            self.__tmp.root_dir,
+            self.log_dir,
+            self.result.root_dir,
+        ]
 
 
 def construct_at(execution_directory_root: str) -> SandboxDirectoryStructure:
@@ -161,11 +199,11 @@ def construct_at_tmp_root() -> SandboxDirectoryStructure:
 
 
 def root_dir_for_non_stdout_or_stderr_files_with_replaced_env_vars(sds: SandboxDirectoryStructure) -> Path:
-    return sds.tmp.internal_dir / TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR
+    return sds.internal_tmp_dir / TMP_INTERNAL__WITH_REPLACED_ENV_VARS_SUB_DIR
 
 
 def stdin_contents_file(sds: SandboxDirectoryStructure) -> Path:
-    return sds.tmp.internal_dir / TMP_INTERNAL__STDIN_CONTENTS
+    return sds.internal_tmp_dir / TMP_INTERNAL__STDIN_CONTENTS
 
 
 def sds_log_phase_dir(sds: SandboxDirectoryStructure,

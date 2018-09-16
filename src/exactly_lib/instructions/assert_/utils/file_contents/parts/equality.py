@@ -107,7 +107,7 @@ class EqualityContentsAssertionPart(FileContentsAssertionPart):
             return tmp_text_file_containing(contents,
                                             prefix='contents-',
                                             suffix='.txt',
-                                            directory=str(environment.sds.tmp.internal_dir))
+                                            directory=str(environment.sds.internal_tmp_dir))
 
     def _fail(self,
               environment: i.InstructionEnvironmentForPostSdsStep,
