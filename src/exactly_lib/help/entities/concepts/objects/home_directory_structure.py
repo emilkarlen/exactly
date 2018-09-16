@@ -5,7 +5,7 @@ from exactly_lib.definitions import test_case_file_structure as tc_fs, formattin
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.doc_format import instruction_name_text
-from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements
+from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements, types
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -72,7 +72,9 @@ class _HdsConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         ret_val = [
-            concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target
+            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+            concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
+            types.PATH_TYPE_INFO.cross_reference_target,
         ]
         ret_val += [
             dir_info.conf_param.cross_reference_target

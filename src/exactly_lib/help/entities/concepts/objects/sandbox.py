@@ -6,7 +6,7 @@ from exactly_lib.definitions import test_case_file_structure as tcds
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.doc_format import file_name_text
-from exactly_lib.definitions.entity import concepts
+from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary, InstructionName
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import CHANGE_DIR_INSTRUCTION_NAME
@@ -46,9 +46,11 @@ class _SandboxConcept(ConceptDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
+            concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+            types.PATH_TYPE_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(phase_names.SETUP.plain,
                                                    CHANGE_DIR_INSTRUCTION_NAME),
-            concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
         ]
 
     def _sandbox_directories_info_sections(self) -> List[docs.SectionItem]:
