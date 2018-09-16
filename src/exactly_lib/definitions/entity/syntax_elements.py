@@ -87,7 +87,7 @@ REGEX_SYNTAX_ELEMENT = name_and_ref_target(
 
 GLOB_PATTERN_SYNTAX_ELEMENT = name_and_ref_target(
     instruction_arguments.GLOB_PATTERN.name,
-    'A shell glob pattern'
+    'A file name glob pattern'
 )
 
 INTEGER_SYNTAX_ELEMENT = name_and_ref_target(
