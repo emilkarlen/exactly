@@ -5,9 +5,10 @@ from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
-from exactly_lib.definitions.test_suite import file_names
+from exactly_lib.definitions.test_suite import file_names, section_names, instruction_names
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.specification import outcome as case_outcome_help
 from exactly_lib.help.render.cli_program import \
@@ -93,7 +94,9 @@ class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
             argument_parsing.TEXT_PARSER.fnap(argument_parsing.PREPROCESSOR_OPTION_DESCRIPTION),
             see_also_items=see_also_items_from_cross_refs([
                 PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
-                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target
+                SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
+                TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
+                                                          instruction_names.INSTRUCTION_NAME__PREPROCESSOR),
             ]
             ))
 

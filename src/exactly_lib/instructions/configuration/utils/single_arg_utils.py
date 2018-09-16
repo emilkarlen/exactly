@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.common.help.syntax_contents_structure import InvokationVariant
 from exactly_lib.definitions import instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax
@@ -30,7 +32,7 @@ def extract_single_eq_argument_string(rest_of_line: str) -> str:
     return arguments[1]
 
 
-def extract_mandatory_arguments_after_eq(rest_of_line: str) -> list:
+def extract_mandatory_arguments_after_eq(rest_of_line: str) -> List[str]:
     arguments = split_arguments_list_string(rest_of_line)
     if not arguments:
         raise SingleInstructionInvalidArgumentException('Missing arguments')

@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.render import see_also_section as render_utils
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -32,6 +34,6 @@ class IndividualConceptConstructor(ArticleContentsConstructor):
                             rest.sections)
         return [sect]
 
-    def _see_also_sections(self, environment: ConstructionEnvironment) -> list:
+    def _see_also_sections(self, environment: ConstructionEnvironment) -> List[docs.SectionItem]:
         return render_utils.see_also_sections(self.concept.see_also_targets(),
                                               environment)
