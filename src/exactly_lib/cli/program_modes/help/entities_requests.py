@@ -3,7 +3,8 @@ from enum import Enum
 from exactly_lib.cli.program_modes.help.program_modes.help_request import HelpRequest
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
 from exactly_lib.help.contents_structure.entity import EntityDocumentation, CliListConstructorGetter
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor
 
 
 class EntityHelpItem(Enum):

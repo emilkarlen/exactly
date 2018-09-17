@@ -1,6 +1,7 @@
 from exactly_lib.help.program_modes.common.renderers import SectionInstructionSetConstructor
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import TestCaseHelpConstructorBase
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.structures import text

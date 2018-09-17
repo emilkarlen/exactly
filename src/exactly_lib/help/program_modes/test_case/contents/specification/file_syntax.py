@@ -6,16 +6,18 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment, \
     SectionContentsConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def generator(header: str, setup: Setup) -> structures.SectionHierarchyGenerator:
+def generator(header: str, setup: Setup) -> structure.SectionHierarchyGenerator:
     text_parser = _text_parser(setup)
     return hierarchy.parent(
         header, [],

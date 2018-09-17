@@ -1,7 +1,7 @@
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor, \
     ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
-    HierarchyGeneratorEnvironment, \
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import HierarchyGeneratorEnvironment, \
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure import document, core

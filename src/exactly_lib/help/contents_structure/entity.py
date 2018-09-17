@@ -8,9 +8,10 @@ from typing import List, Callable, Iterable
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, EntityTypeNames
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor, \
     ArticleContentsConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy.structures import SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text, StringText
 

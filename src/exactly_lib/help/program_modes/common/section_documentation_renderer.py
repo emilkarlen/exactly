@@ -2,7 +2,8 @@ from typing import List
 
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import default_section_para, SectionInstructionSetConstructor
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment, \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import structures as docs
 

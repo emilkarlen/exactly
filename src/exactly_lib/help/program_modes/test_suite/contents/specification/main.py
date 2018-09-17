@@ -7,13 +7,12 @@ from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
-    constant_section_contents
+from exactly_lib.util.textformat.construction.section_contents.constructors import \
+    SectionContentsConstructor, constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
-    SectionItemGeneratorNode, \
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorNode, \
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs

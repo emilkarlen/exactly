@@ -5,7 +5,8 @@ from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.render.see_also_section import see_also_sections
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment, \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs

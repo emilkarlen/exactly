@@ -4,12 +4,14 @@ from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGenerator
     EntityDocumentation
 from exactly_lib.help.render import entities_list_renderer
 from exactly_lib.help.render.entity_docs import EntitiesListConstructor
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor, \
     SectionConstructor, \
-    SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections, \
     ArticleContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents.constructors import \
+    SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy import structures
+from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -88,7 +90,7 @@ class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
     def get_hierarchy_generator(self,
                                 header: str,
                                 all_entity_doc_list: List[EntityDocumentation]
-                                ) -> structures.SectionHierarchyGenerator:
+                                ) -> structure.SectionHierarchyGenerator:
         def section_hierarchy_node(partition: EntitiesPartition) -> Node:
             return Node(partition.partition_names_setup.local_target_name,
                         entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(

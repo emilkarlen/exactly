@@ -6,7 +6,8 @@ from exactly_lib.instructions.assert_.utils.file_contents.instruction_options im
 from exactly_lib.processing import exit_values
 from exactly_lib.program_info import PROGRAM_NAME
 from exactly_lib.test_case_utils.condition import comparators
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor, \
     ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs

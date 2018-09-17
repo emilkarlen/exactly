@@ -1,12 +1,14 @@
 from typing import List
 
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor, \
     SectionConstructor, ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import HierarchyGeneratorEnvironment, \
+    SectionItemGeneratorNode, SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
-    SectionHierarchyGenerator, \
-    SectionItemGeneratorNode, SectionItemGeneratorNodeWithRoot, \
-    HierarchyGeneratorEnvironment, SectionItemGeneratorNodeWithSubSections
+    SectionItemGeneratorNodeWithRoot, \
+    SectionItemGeneratorNodeWithSubSections
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo, \
     TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc

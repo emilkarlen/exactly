@@ -8,7 +8,8 @@ from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArg
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \
     ArgumentInArgumentDescriptionRenderer
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment, \
     SectionContentsConstructor
 from exactly_lib.util.textformat.structure import structures as docs, lists
 

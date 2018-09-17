@@ -5,11 +5,13 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.help import std_tags
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsConstructor
-from exactly_lib.util.textformat.construction.section_contents_constructor import ArticleContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorNode, \
+    SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
-    SectionItemGeneratorNode, \
-    SectionHierarchyGenerator, LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
+    LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem

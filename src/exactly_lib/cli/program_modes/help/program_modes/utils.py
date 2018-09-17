@@ -1,6 +1,9 @@
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment, \
     SectionContentsConstructor, \
-    ArticleContentsConstructor, SectionContentsConstructorFromArticleContentsConstructor
+    ArticleContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents.constructors import \
+    SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import text, Text
 

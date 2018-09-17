@@ -4,14 +4,15 @@ from exactly_lib.definitions import test_case_file_structure
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
-from exactly_lib.util.textformat.construction.section_contents_constructor import constant_section_contents
-from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_root(header: str) -> structures.SectionHierarchyGenerator:
+def hierarchy_root(header: str) -> structure.SectionHierarchyGenerator:
     tp = TextParser({
 
         'program_name': formatting.program_name(program_info.PROGRAM_NAME),
@@ -49,7 +50,7 @@ def hierarchy_root(header: str) -> structures.SectionHierarchyGenerator:
         'CD': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
     })
 
-    def const_paragraphs(header_: str, paragraphs: List[ParagraphItem]) -> structures.SectionHierarchyGenerator:
+    def const_paragraphs(header_: str, paragraphs: List[ParagraphItem]) -> structure.SectionHierarchyGenerator:
         return hierarchy.leaf(header_,
                               constant_section_contents(section_contents(paragraphs)))
 
