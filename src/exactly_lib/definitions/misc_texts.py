@@ -13,3 +13,5 @@ EXIT_IDENTIFIER_TITLE = EXIT_IDENTIFIER.singular.capitalize()
 EXIT_CODE_TITLE = EXIT_CODE.singular.capitalize()
 
 IS_A_SHELL_CMD = """is a shell command (with optional arguments), using Unix shell syntax."""
+
+RELATIVITY = name.a_name(name.Name('relativity', 'relativities'))

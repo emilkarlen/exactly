@@ -36,7 +36,7 @@ def _format(x: str) -> str:
 HDS_CASE_INFO = TcDirInfo(
     'home',
     'home directory',
-    'Default location of predefined helper files, that should probably not be modified.',
+    'Default location of persistent helper files, that should probably not be modified.',
 )
 
 HDS_ACT_INFO = TcDirInfo(
