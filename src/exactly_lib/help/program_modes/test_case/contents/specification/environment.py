@@ -4,9 +4,10 @@ from exactly_lib.definitions import test_case_file_structure
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.help.render import see_also_section
 from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -51,15 +52,15 @@ def hierarchy_root(header: str) -> generator.SectionHierarchyGenerator:
     })
 
     def const_paragraphs(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return hierarchies.leaf(header_,
-                                constant_section_contents(section_contents(paragraphs)))
+        return hierarchy.leaf(header_,
+                              constant_section_contents(section_contents(paragraphs)))
 
-    return hierarchies.parent(
+    return hierarchy.parent(
         header,
         [],
         [
             Node('dir-structure',
-                 hierarchies.parent(
+                 hierarchy.parent(
                      'Directory structure and Current directory',
                      tp.fnap(_DS_CD_PROLOG),
                      [
@@ -78,6 +79,13 @@ def hierarchy_root(header: str) -> generator.SectionHierarchyGenerator:
                               const_paragraphs(
                                   'File references',
                                   tp.fnap(_FILE_REFERENCES))
+                              ),
+                         Node('see-also',
+                              hierarchy.leaf_not_in_toc(
+                                  see_also_section.SEE_ALSO_TITLE,
+                                  see_also_section.SeeAlsoSectionContentsConstructor(
+                                      see_also_section.items_of_targets(_dir_struct_see_also_targets())
+                                  ))
                               ),
                      ])
                  ),
@@ -183,6 +191,18 @@ different default {relativity}.
 The defaults are chosen to be the most likely {relativity}.
 The accepted {relativities} are chosen to prevent modification of files in the {HDS}.
 """
+
+
+def _dir_struct_see_also_targets() -> List[see_also_section.SeeAlsoTarget]:
+    return [
+        concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+        concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
+        concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+        concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
+        concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
+        types.PATH_TYPE_INFO.cross_reference_target,
+    ]
+
 
 _ENVIRONMENT_VARIABLES = """\
 All system environment variables
