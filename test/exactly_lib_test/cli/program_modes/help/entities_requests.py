@@ -8,8 +8,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ConstructionEnvironment, \
     SectionContentsConstructor
 from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl
-from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

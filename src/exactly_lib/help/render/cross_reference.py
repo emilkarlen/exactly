@@ -4,12 +4,12 @@ from exactly_lib.definitions.test_case.phase_names import phase_name_dict_key_fo
     PHASE_NAME_DICTIONARY
 from exactly_lib.definitions.test_suite.section_names import suite_section_name_dictionary, \
     suite_section_name_dict_key_for
-from exactly_lib.util.textformat.construction.section_hierarchy import targets
+from exactly_lib.util.textformat.construction.section_contents import cross_ref
 from exactly_lib.util.textformat.structure.core import Text, CrossReferenceText, UrlCrossReferenceTarget, StringText, \
     CrossReferenceTarget
 
 
-class CrossReferenceTextConstructor(targets.CrossReferenceTextConstructor):
+class CrossReferenceTextConstructor(cross_ref.CrossReferenceTextConstructor):
     def apply(self, x: CrossReferenceTarget) -> Text:
         return CrossReferenceText(StringText(_TITLE_RENDERER.visit(x)), x)
 

@@ -4,10 +4,11 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    CrossReferenceTextConstructorTestImpl, TEST_GENERATOR_ENVIRONMENT
+    TEST_GENERATOR_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     is_target_info_node
-from exactly_lib_test.util.textformat.construction.test_resources import TargetInfoFactoryTestImpl
+from exactly_lib_test.util.textformat.construction.test_resources import TargetInfoFactoryTestImpl, \
+    CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

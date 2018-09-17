@@ -1,12 +1,12 @@
 from typing import List
 
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_contents.cross_ref import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo
-from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceTarget
+from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceTarget, Text
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
-from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    CrossReferenceTextConstructorTestImpl
 
 
 class CustomCrossReferenceTargetTestImpl(CrossReferenceTarget):
@@ -35,6 +35,11 @@ class TargetInfoFactoryTestImpl(TargetInfoFactory):
     def root(self, presentation: StringText) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceTargetTestImpl('.'.join(self._components)))
+
+
+class CrossReferenceTextConstructorTestImpl(CrossReferenceTextConstructor):
+    def apply(self, x: CrossReferenceId) -> Text:
+        return StringText('Reference to ' + str(x))
 
 
 CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
