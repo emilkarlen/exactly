@@ -9,8 +9,8 @@ from exactly_lib.help.program_modes.test_case.contents.specification import main
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 
 
 def generator(header: str,

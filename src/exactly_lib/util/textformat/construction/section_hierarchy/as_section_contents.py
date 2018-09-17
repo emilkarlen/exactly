@@ -1,8 +1,8 @@
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     SectionContentsConstructor, \
     ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNodeEnvironment, \
-    SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNodeEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure import document, core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget

@@ -11,9 +11,9 @@ from exactly_lib.help.render.entity_docs import sorted_entity_list
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNode, \
-    SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.generators import \
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNode
+from exactly_lib.util.textformat.construction.section_hierarchy.section_nodes import \
     LeafArticleNode, SectionItemNodeWithSubSections
 from exactly_lib.util.textformat.structure.core import StringText
 

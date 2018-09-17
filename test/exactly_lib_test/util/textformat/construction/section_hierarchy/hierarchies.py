@@ -5,8 +5,8 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as sut
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, target_info_leaf, \
     TargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
         # ARRANGE #
         target_factory = TargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object = doc.empty_section_contents()
-        object_to_test = hierarchy.leaf('header', section_contents(expected_section_contents_object))
+        object_to_test = sut.leaf('header', section_contents(expected_section_contents_object))
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('header'))
 
@@ -56,7 +56,7 @@ class Test(unittest.TestCase):
     def test_parent_without_sub_sections(self):
         # ARRANGE #
         target_factory = TargetInfoFactoryTestImpl(['target_component'])
-        object_to_test = hierarchy.parent('top header', [], [])
+        object_to_test = sut.parent('top header', [], [])
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('top header'))
 
@@ -83,13 +83,13 @@ class Test(unittest.TestCase):
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
         expected_root_initial_para = docs.para('root initial paras')
         expected_root_initial_paras = [expected_root_initial_para]
-        object_to_test = hierarchy.parent(
+        object_to_test = sut.parent(
             'root header',
             expected_root_initial_paras,
-            [Node('sub-target1', hierarchy.leaf('sub1',
-                                                section_contents(expected_section_contents_object1))),
-             Node('sub-target2', hierarchy.leaf('sub2',
-                                                section_contents(expected_section_contents_object2)))
+            [Node('sub-target1', sut.leaf('sub1',
+                                          section_contents(expected_section_contents_object1))),
+             Node('sub-target2', sut.leaf('sub2',
+                                          section_contents(expected_section_contents_object2)))
              ])
         # EXPECTATION #
         expected_root_target_info = target_factory.root(StringText('root header'))

@@ -1,13 +1,13 @@
 import unittest
 
 from exactly_lib_test.util.textformat.construction.section_hierarchy import table_of_contents, \
-    hierarchy
+    hierarchies
 
 
 def suite() -> unittest.TestSuite:
     return unittest.TestSuite([
         table_of_contents.suite(),
-        hierarchy.suite(),
+        hierarchies.suite(),
     ])
 
 

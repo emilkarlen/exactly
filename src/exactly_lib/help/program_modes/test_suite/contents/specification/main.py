@@ -9,11 +9,11 @@ from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_hel
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.textformat.construction.section_contents.constructors import \
     SectionContentsConstructor, constant_section_contents
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNode, \
-    SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNode
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser

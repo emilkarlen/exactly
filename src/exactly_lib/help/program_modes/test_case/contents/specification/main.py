@@ -6,11 +6,11 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     SectionContentsConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node, leaf
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node, leaf
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 

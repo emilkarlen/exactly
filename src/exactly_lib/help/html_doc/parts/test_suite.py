@@ -13,8 +13,8 @@ from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_hel
 from exactly_lib.help.program_modes.test_suite.render.section_documentation import \
     TestSuiteSectionDocumentationConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 
 
 def generator(header: str,
