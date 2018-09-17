@@ -5,14 +5,17 @@ from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, TextSe
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment
+    ConstructionEnvironment, ParagraphItemsConstructor, SectionContentsConstructor, SectionConstructor
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
-from exactly_lib.util.textformat.utils import append_section_if_contents_is_non_empty
 
 SEE_ALSO_TITLE = docs.string_text('See also')
 SEE_ALSO_TITLE__UPPERCASE = docs.string_text(SEE_ALSO_TITLE.value.upper())
+
+
+def items_of_targets(targets: Sequence[SeeAlsoTarget]) -> List[SeeAlsoItem]:
+    return SeeAlsoSet(targets).see_also_items
 
 
 def see_also_items_paragraph(see_also_items: List[SeeAlsoItem],
@@ -42,14 +45,11 @@ def see_also_sections(see_also_targets: Sequence[SeeAlsoTarget],
     """
     :return: An empty list if no targets, otherwise a singleton list.
     """
-    ret_val = []
-    title = SEE_ALSO_TITLE__UPPERCASE if uppercase_title else SEE_ALSO_TITLE
-    append_section_if_contents_is_non_empty(
-        ret_val,
-        title,
-        see_also_items_paragraphs(SeeAlsoSet(see_also_targets).see_also_items,
-                                  rendering_environment))
-    return ret_val
+    items = items_of_targets(see_also_targets)
+    if not items:
+        return []
+    section = SeeAlsoSectionConstructor(items, uppercase_title).apply(rendering_environment)
+    return [section]
 
 
 class _Renderer(SeeAlsoItemVisitor):
@@ -61,3 +61,31 @@ class _Renderer(SeeAlsoItemVisitor):
 
     def visit_text(self, x: TextSeeAlsoItem) -> Text:
         return x.text
+
+
+class SeeAlsoParagraphConstructor(ParagraphItemsConstructor):
+    def __init__(self, items: List[SeeAlsoItem]):
+        self._items = items
+
+    def apply(self, environment: ConstructionEnvironment) -> List[ParagraphItem]:
+        return see_also_items_paragraphs(self._items, environment)
+
+
+class SeeAlsoSectionContentsConstructor(SectionContentsConstructor):
+    def __init__(self, items: List[SeeAlsoItem]):
+        self._paragraphs_constructor = SeeAlsoParagraphConstructor(items)
+
+    def apply(self, environment: ConstructionEnvironment) -> docs.SectionContents:
+        return docs.section_contents(self._paragraphs_constructor.apply(environment))
+
+
+class SeeAlsoSectionConstructor(SectionConstructor):
+    def __init__(self,
+                 items: List[SeeAlsoItem],
+                 uppercase_title: bool = False):
+        self._title = SEE_ALSO_TITLE__UPPERCASE if uppercase_title else SEE_ALSO_TITLE
+        self._section_contents_constructor = SeeAlsoSectionContentsConstructor(items)
+
+    def apply(self, environment: ConstructionEnvironment) -> docs.SectionItem:
+        return docs.Section(self._title,
+                            self._section_contents_constructor.apply(environment))
