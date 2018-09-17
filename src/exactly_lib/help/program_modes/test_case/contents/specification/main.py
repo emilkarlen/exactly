@@ -23,7 +23,7 @@ def generator(header: str,
         [
             Node('introduction', leaf('Introduction', intro.Documentation())),
             Node('structure', structure.hierarchy_root('Structure', setup)),
-            Node('environment', leaf('Execution environment', env_doc.Documentation(setup))),
+            Node('exe-env', env_doc.hierarchy_root('Execution environment')),
             Node('file-syntax', file_syntax.generator('File syntax', setup)),
             Node('processing', leaf('Processing steps', processing.ContentsConstructor(setup))),
             Node('outcome', outcome.hierarchy_generator('Outcome', setup)),

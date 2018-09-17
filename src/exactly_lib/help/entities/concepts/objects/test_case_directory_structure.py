@@ -4,7 +4,7 @@ from exactly_lib import program_info
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
-from exactly_lib.definitions.entity import concepts, syntax_elements
+from exactly_lib.definitions.entity import concepts, syntax_elements, types
 from exactly_lib.definitions.test_case_file_structure import HDS_DIR_INFOS_IN_DISPLAY_ORDER, \
     SDS_DIR_INFOS_IN_DISPLAY_ORDER, TcDirInfo
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
@@ -21,6 +21,7 @@ class _TcdsConcept(ConceptDocumentation):
 
         self._tp = TextParser({
             'program_name': formatting.program_name(program_info.PROGRAM_NAME),
+            'path_type': formatting.entity_(types.PATH_TYPE_INFO)
         })
 
     def purpose(self) -> DescriptionWithSubSections:
@@ -91,5 +92,5 @@ Consists of two sets of directories:
 
 _MAIN_DESCRIPTION_LAST = """\
 {program_name} has support for referring to all of these directories
-from a test case.
+from a test case via the {path_type} type.
 """
