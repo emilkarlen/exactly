@@ -12,7 +12,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy.structure import
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
@@ -48,7 +48,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
         super_self = self
 
         class _HierarchyGenerator(SectionHierarchyGenerator):
-            def generator_node(self, target_factory: targets.CustomTargetInfoFactory
+            def generator_node(self, target_factory: targets.TargetInfoFactory
                                ) -> SectionItemGeneratorNode:
                 return super_self._instructions_per_section_node(header, target_factory)
 
@@ -56,7 +56,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
 
     def _instructions_per_section_node(self,
                                        header: str,
-                                       targets_factory: targets.CustomTargetInfoFactory
+                                       targets_factory: targets.TargetInfoFactory
                                        ) -> SectionItemGeneratorNode:
         root_target_info = targets_factory.root(StringText(header))
         section_nodes = []
@@ -80,7 +80,7 @@ class _SectionInstructionsNodeConstructor:
                  section_concept_name: str,
                  mk_instruction_cross_ref_target: Callable[
                      [InstructionDocumentation, SectionDocumentation], CrossReferenceId],
-                 section_target_factory: CustomTargetInfoFactory,
+                 section_target_factory: TargetInfoFactory,
                  section: SectionDocumentation
                  ):
 
@@ -142,7 +142,7 @@ class _SectionsListGenerator(SectionHierarchyGenerator):
         self._sections = sections
         self._header = header
 
-    def generator_node(self, target_factory: targets.CustomTargetInfoFactory
+    def generator_node(self, target_factory: targets.TargetInfoFactory
                        ) -> SectionItemGeneratorNode:
         root_target_info = target_factory.root(docs.string_text(self._header))
         sub_section_nodes = []

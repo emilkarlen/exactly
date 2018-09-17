@@ -45,7 +45,7 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
         self.entity_2_article_contents_renderer = entity_2_article_contents_renderer
         self.all_entities = all_entities
 
-    def generator_node(self, target_factory: targets.CustomTargetInfoFactory) -> SectionItemGeneratorNode:
+    def generator_node(self, target_factory: targets.TargetInfoFactory) -> SectionItemGeneratorNode:
         entity_nodes = [
             self._entity_node(entity)
             for entity in sorted_entity_list(self.all_entities)

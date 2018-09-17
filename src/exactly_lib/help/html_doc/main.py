@@ -1,7 +1,7 @@
 from typing import List, Sequence
 
-from exactly_lib.definitions.cross_ref.custom_target_info_factory import root_factory
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
+from exactly_lib.definitions.cross_ref.target_info_factory import root_factory
 from exactly_lib.definitions.entity.all_entity_types import ALL_ENTITY_TYPES_IN_DISPLAY_ORDER, \
     SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.help import std_tags

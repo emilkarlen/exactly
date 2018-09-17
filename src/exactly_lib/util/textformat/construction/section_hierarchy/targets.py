@@ -47,7 +47,7 @@ def target_info_leaf(ti: TargetInfo) -> TargetInfoNode:
     return TargetInfoNode(ti, [])
 
 
-class CustomTargetInfoFactory:
+class TargetInfoFactory:
     """Build a hierarchical structure of targets to appear in a TOC."""
 
     def sub(self,

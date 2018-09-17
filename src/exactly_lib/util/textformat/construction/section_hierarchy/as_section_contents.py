@@ -3,7 +3,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.structure import HierarchyGeneratorEnvironment, \
     SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure import document, core
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -21,7 +21,7 @@ class SectionContentsConstructorFromHierarchyGenerator(SectionContentsConstructo
         self._targets_stripper = _TargetsStripper()
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
-        target_factory = _NullCustomTargetInfoFactory()
+        target_factory = _NullTargetInfoFactory()
         section_item = self.generator.generator_node(target_factory).section_item(HierarchyGeneratorEnvironment(set()),
                                                                                   environment)
         section_item = self._targets_stripper.visit(section_item)
@@ -50,11 +50,11 @@ class _TargetsStripper(document.SectionItemVisitor):
                                         list(map(self.visit, contents.sections)))
 
 
-class _NullCustomTargetInfoFactory(CustomTargetInfoFactory):
+class _NullTargetInfoFactory(TargetInfoFactory):
     """A CustomTargetInfoFactory that build empty CrossReferenceTarget:s"""
 
     def root(self, presentation: core.StringText) -> TargetInfo:
         return TargetInfo(presentation, CrossReferenceTarget())
 
-    def sub_factory(self, local_name: str) -> CustomTargetInfoFactory:
+    def sub_factory(self, local_name: str) -> TargetInfoFactory:
         return self

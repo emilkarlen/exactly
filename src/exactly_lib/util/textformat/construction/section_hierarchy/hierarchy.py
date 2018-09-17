@@ -9,7 +9,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy.structure import
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionItemGeneratorNodeWithRoot, \
     SectionItemGeneratorNodeWithSubSections
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo, \
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo, \
     TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
@@ -62,7 +62,7 @@ class _SectionLeafGenerator(SectionHierarchyGenerator):
         self._header = header
         self._contents_renderer = contents_renderer
 
-    def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
+    def generator_node(self, target_factory: TargetInfoFactory) -> SectionItemGeneratorNode:
         return _LeafSectionGeneratorNode(target_factory.root(self._header),
                                          self._contents_renderer)
 
@@ -109,7 +109,7 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
         self._initial_paragraphs = initial_paragraphs
         self._nodes = nodes
 
-    def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
+    def generator_node(self, target_factory: TargetInfoFactory) -> SectionItemGeneratorNode:
         sub_sections = [node.generator.generator_node(target_factory.sub_factory(node.local_target_name))
                         for node
                         in self._nodes
