@@ -1,3 +1,5 @@
+from typing import Optional
+
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.util.name import Name
 from exactly_lib.util.textformat.structure.core import Text, StringText
@@ -66,6 +68,24 @@ class SingularAndPluralNameAndCrossReferenceId(SingularNameAndCrossReferenceId):
     @property
     def plural_name(self) -> str:
         return self.name.plural
+
+
+class SingularAndPluralAndAcronymNameAndCrossReferenceId(SingularAndPluralNameAndCrossReferenceId):
+    def __init__(self,
+                 name: Name,
+                 single_line_description_str: str,
+                 cross_reference_target: CrossReferenceId,
+                 acronym: Optional[str] = None):
+        super().__init__(name,
+                         single_line_description_str,
+                         cross_reference_target)
+        self._acronym = acronym
+
+    @property
+    def acronym(self) -> str:
+        if not self._acronym:
+            raise ValueError(self.name.singular + ' has no acronym')
+        return self._acronym
 
 
 def cross_reference_id_list(singular_name_and_cross_reference_id_iterable) -> list:

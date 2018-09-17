@@ -1,8 +1,10 @@
+from typing import Optional
+
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import EntityCrossReferenceId
-from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, \
-    EntityTypeNames
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames, \
+    SingularAndPluralAndAcronymNameAndCrossReferenceId
 from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.util.name import Name, name_with_plural_s
@@ -14,14 +16,17 @@ def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
 
 
 def name_and_ref_target(name: Name,
-                        single_line_description_str: str) -> SingularAndPluralNameAndCrossReferenceId:
-    return SingularAndPluralNameAndCrossReferenceId(name,
-                                                    single_line_description_str,
-                                                    concept_cross_ref(name.singular))
+                        single_line_description_str: str,
+                        acronym: Optional[str] = None) -> SingularAndPluralAndAcronymNameAndCrossReferenceId:
+    return SingularAndPluralAndAcronymNameAndCrossReferenceId(name,
+                                                              single_line_description_str,
+                                                              concept_cross_ref(name.singular),
+                                                              acronym)
 
 
 def name_and_ref_target_for_entity_type(names: EntityTypeNames,
-                                        single_line_description_str: str) -> SingularAndPluralNameAndCrossReferenceId:
+                                        single_line_description_str: str
+                                        ) -> SingularAndPluralAndAcronymNameAndCrossReferenceId:
     return name_and_ref_target(names.name, single_line_description_str)
 
 
@@ -44,18 +49,21 @@ CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 
 TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('test case directory structure'),
-    'Predefined and temporary directories used during the execution of a test case.'
+    'Persistent and temporary directories used in the execution of a test case.',
+    'TCDS',
 )
 
 HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('home directory structure'),
-    'Predefined directories and files accessed by a test case.'
+    'Persistent directories for files used in every execution of a test case.',
+    'HDS',
 )
 
 SANDBOX_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('sandbox directory structure'),
-    _format('Temporary directories used during a single execution of a test case, '
-            'one of which is the current directory when {phase[setup]:syntax} begins'),
+    _format('Temporary directories used in a single execution of a test case, '
+            'one of which is the initial current directory.'),
+    'SDS',
 )
 
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(

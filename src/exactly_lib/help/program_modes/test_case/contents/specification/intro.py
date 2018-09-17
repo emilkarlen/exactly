@@ -79,7 +79,7 @@ _FILE_STRUCTURE = """\
 {act:syntax} marks the beginning of the {act} phase.
 
 
-The {act} phase contains the {ATC} (also known as "system under test").
+The {act} phase contains the {ATC} - the thing that is tested by the test case.
 
 
 It must consist of a single command line,
