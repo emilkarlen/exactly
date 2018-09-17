@@ -4,18 +4,20 @@ from exactly_lib.help.program_modes.test_case.contents.specification import outc
 from exactly_lib.help.program_modes.test_case.contents.specification import processing as processing
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node, leaf
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionHierarchyGenerator
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
 def generator(header: str,
               test_case_help: TestCaseHelp
-              ) -> structures.SectionHierarchyGenerator:
+              ) -> SectionHierarchyGenerator:
     setup = Setup(test_case_help)
     return hierarchy.parent(
         header,

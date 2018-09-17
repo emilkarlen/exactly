@@ -4,7 +4,8 @@ from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, TextSe
     SeeAlsoSet, SeeAlsoItem
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text

@@ -11,8 +11,10 @@ from exactly_lib.help.program_modes.test_suite.render.section_documentation impo
     TestSuiteSectionDocumentationConstructor
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment, \
-    SectionContentsConstructor, \
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment, \
+    SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents.constructors import \
     SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 

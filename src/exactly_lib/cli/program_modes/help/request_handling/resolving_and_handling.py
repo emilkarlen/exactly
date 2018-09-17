@@ -15,7 +15,8 @@ from exactly_lib.cli.program_modes.help.request_handling.request_handler import 
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.util.std import StdOutputFiles
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor
 
 
 def handle_help_request(output: StdOutputFiles,

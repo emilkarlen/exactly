@@ -8,7 +8,8 @@ from exactly_lib.help.program_modes.common.section_documentation_renderer import
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import TestCasePhaseDocumentation
 from exactly_lib.help.render.see_also_section import see_also_sections
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
-from exactly_lib.util.textformat.construction.section_contents_constructor import ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

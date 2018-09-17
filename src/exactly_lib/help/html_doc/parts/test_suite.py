@@ -12,14 +12,15 @@ from exactly_lib.help.program_modes.test_suite.contents.specification.main impor
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.render.section_documentation import \
     TestSuiteSectionDocumentationConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 
 
 def generator(header: str,
               test_suite_help: TestSuiteHelp,
               suite_reporter_conf: EntityTypeConfiguration,
-              ) -> structures.SectionHierarchyGenerator:
+              ) -> structure.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestSuiteHelp(test_suite_help)
     return hierarchy.parent(
         header,

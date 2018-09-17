@@ -8,11 +8,13 @@ from typing import List, Callable
 from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure.entity import EntityDocumentation, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.render.entity_docs import sorted_entity_list
-from exactly_lib.util.textformat.construction.section_contents_constructor import ArticleContentsConstructor
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorNode, \
+    SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
-    SectionItemGeneratorNode, \
-    SectionHierarchyGenerator, LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
+    LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
 from exactly_lib.util.textformat.structure.core import StringText
 
 

@@ -1,9 +1,11 @@
 import unittest
 
-from exactly_lib.util.textformat.construction.section_contents_constructor import SectionContentsConstructor, \
-    ConstructionEnvironment, \
-    constant_section_contents
-from exactly_lib.util.textformat.construction.section_hierarchy import structures, hierarchy
+from exactly_lib.util.textformat.construction.section_contents.constructor import \
+    SectionContentsConstructor, \
+    ConstructionEnvironment
+from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, target_info_leaf, \
     CustomTargetInfoFactory
@@ -124,7 +126,7 @@ class Test(unittest.TestCase):
                              section_assertion2)
 
     def _act_and_assert(self,
-                        object_to_test: structures.SectionHierarchyGenerator,
+                        object_to_test: structure.SectionHierarchyGenerator,
                         target_factory: CustomTargetInfoFactory,
                         target_info_node_assertion: ValueAssertion[TargetInfoNode],
                         section_item_assertion: ValueAssertion[docs.SectionItem]):
