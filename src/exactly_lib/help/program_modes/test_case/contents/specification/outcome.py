@@ -16,18 +16,18 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
+from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_generator(header: str, setup: Setup) -> structure.SectionHierarchyGenerator:
+def hierarchy_generator(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     preamble_paragraphs = normalize_and_parse(PREAMBLE)
 
-    def const_contents(header: str, paragraphs: List[ParagraphItem]) -> structure.SectionHierarchyGenerator:
+    def const_contents(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
                               constant_section_contents(section_contents(paragraphs)))
 

@@ -8,9 +8,9 @@ from exactly_lib.help.program_modes.common.render_instruction import Instruction
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorNode, \
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorNode, \
     SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
+from exactly_lib.util.textformat.construction.section_hierarchy.generators import \
     LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs

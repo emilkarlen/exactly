@@ -8,18 +8,18 @@ from exactly_lib.util.textformat.construction.section_contents.constructors impo
     SectionContentsConstructor, \
     ConstructionEnvironment, \
     constant_section_contents
+from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node, leaf
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_generator(header: str) -> structure.SectionHierarchyGenerator:
+def hierarchy_generator(header: str) -> generator.SectionHierarchyGenerator:
     preamble_paragraphs = TEXT_PARSER.fnap(PREAMBLE)
 
-    def const_contents(header: str, paragraphs: List[ParagraphItem]) -> structure.SectionHierarchyGenerator:
+    def const_contents(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
                               constant_section_contents(section_contents(paragraphs)))
 

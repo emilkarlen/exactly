@@ -2,7 +2,7 @@ import unittest
 
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
     CrossReferenceTextConstructorTestImpl, TEST_GENERATOR_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \

@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     SectionItemConstructor, \
     ConstructionEnvironment, ArticleContentsConstructor, ArticleConstructor, SectionConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorEnvironment, \
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorEnvironment, \
     SectionItemGeneratorNode
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import document as doc
