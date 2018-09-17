@@ -9,8 +9,8 @@ from exactly_lib.util.textformat.construction.section_contents.constructors impo
     ConstructionEnvironment, \
     constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node, leaf
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node, leaf
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser

@@ -6,8 +6,8 @@ from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
+from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -51,15 +51,15 @@ def hierarchy_root(header: str) -> generator.SectionHierarchyGenerator:
     })
 
     def const_paragraphs(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return hierarchy.leaf(header_,
-                              constant_section_contents(section_contents(paragraphs)))
+        return hierarchies.leaf(header_,
+                                constant_section_contents(section_contents(paragraphs)))
 
-    return hierarchy.parent(
+    return hierarchies.parent(
         header,
         [],
         [
             Node('dir-structure',
-                 hierarchy.parent(
+                 hierarchies.parent(
                      'Directory structure and Current directory',
                      tp.fnap(_DS_CD_PROLOG),
                      [
