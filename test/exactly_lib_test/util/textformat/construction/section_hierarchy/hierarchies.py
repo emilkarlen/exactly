@@ -53,6 +53,27 @@ class Test(unittest.TestCase):
                              target_info_node_assertion,
                              section_assertion)
 
+    def test_leaf_not_in_toc(self):
+        # ARRANGE #
+        target_factory = TargetInfoFactoryTestImpl(['target_component'])
+        expected_section_contents_object = doc.empty_section_contents()
+        header = StringText('header')
+        object_to_test = sut.leaf_not_in_toc(header, section_contents(expected_section_contents_object))
+        # EXPECTATION #
+
+        target_info_node_assertion = asrt.is_none
+
+        section_assertion = section_matches(
+            target=asrt.is_none,
+            header=asrt_para.equals_text(header),
+            contents=asrt.Is(expected_section_contents_object))
+
+        # ACT & ASSERT #
+        self._act_and_assert(object_to_test,
+                             target_factory,
+                             target_info_node_assertion,
+                             section_assertion)
+
     def test_parent_without_sub_sections(self):
         # ARRANGE #
         target_factory = TargetInfoFactoryTestImpl(['target_component'])

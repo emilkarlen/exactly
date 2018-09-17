@@ -1,4 +1,4 @@
-from typing import Set
+from typing import Set, Optional
 
 from exactly_lib.util.textformat.construction.section_contents.constructor import SectionItemConstructor, \
     ConstructionEnvironment
@@ -25,7 +25,10 @@ class SectionItemNode:
     (for rendering the contents).
     """
 
-    def target_info_node(self) -> TargetInfoNode:
+    def target_info_node(self) -> Optional[TargetInfoNode]:
+        """
+        :return: Not None iff the section should appear in the TOC
+        """
         raise NotImplementedError()
 
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
