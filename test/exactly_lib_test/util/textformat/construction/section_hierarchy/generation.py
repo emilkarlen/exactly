@@ -11,6 +11,7 @@ from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
+from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
     CrossReferenceTextConstructorTestImpl, TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
@@ -125,8 +126,8 @@ class Test(unittest.TestCase):
     def _act_and_assert(self,
                         object_to_test: structures.SectionHierarchyGenerator,
                         target_factory: CustomTargetInfoFactory,
-                        target_info_node_assertion: asrt.ValueAssertion,
-                        section_assertion: asrt.ValueAssertion):
+                        target_info_node_assertion: ValueAssertion[TargetInfoNode],
+                        section_item_assertion: ValueAssertion[docs.SectionItem]):
         # ACT #
         section_renderer_node = object_to_test.generator_node(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()
@@ -134,7 +135,7 @@ class Test(unittest.TestCase):
             CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')
-        section_assertion.apply_with_message(self, actual_section, 'Section')
+        section_item_assertion.apply_with_message(self, actual_section, 'Section')
 
 
 def section_contents(x: docs.SectionContents) -> SectionContentsConstructor:
