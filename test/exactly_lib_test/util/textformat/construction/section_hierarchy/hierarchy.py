@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    CrossReferenceTextConstructorTestImpl, TEST_HIERARCHY_ENVIRONMENT
+    CrossReferenceTextConstructorTestImpl, TEST_GENERATOR_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     equals_target_info_node
 from exactly_lib_test.util.textformat.construction.test_resources import TargetInfoFactoryTestImpl, \
@@ -133,7 +133,7 @@ class Test(unittest.TestCase):
         # ACT #
         section_renderer_node = object_to_test.generator_node(target_factory)
         actual_target_info_node = section_renderer_node.target_info_node()
-        actual_section = section_renderer_node.section_item_constructor(TEST_HIERARCHY_ENVIRONMENT).apply(
+        actual_section = section_renderer_node.section_item_constructor(TEST_GENERATOR_ENVIRONMENT).apply(
             CONSTRUCTION_ENVIRONMENT)
         # ASSERT #
         target_info_node_assertion.apply_with_message(self, actual_target_info_node, 'TargetInfoNode')

@@ -17,7 +17,7 @@ from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructo
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent, Node
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import HierarchyGeneratorEnvironment, \
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorEnvironment, \
     SectionItemGeneratorNode, SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.table_of_contents import toc_list
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
@@ -47,7 +47,7 @@ def generate_and_output(output_file,
 
 def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
     section_node = _section_rendering_node(application_help)
-    hierarchy_environment = HierarchyGeneratorEnvironment({std_tags.TOC_SECTION})
+    hierarchy_environment = SectionItemGeneratorEnvironment({std_tags.TOC_SECTION})
     rendering_environment = ConstructionEnvironment(CrossReferenceTextConstructor(),
                                                     construct_simple_header_value_lists_as_tables=True)
     section_item = section_node.section_item(hierarchy_environment, rendering_environment)

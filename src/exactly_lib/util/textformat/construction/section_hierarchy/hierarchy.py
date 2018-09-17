@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     SectionContentsConstructor, \
     SectionConstructor, ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import HierarchyGeneratorEnvironment, \
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorEnvironment, \
     SectionItemGeneratorNode, SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     SectionItemGeneratorNodeWithRoot, \
@@ -82,7 +82,7 @@ class _LeafSectionGeneratorNode(SectionItemGeneratorNodeWithRoot):
     def target_info_node(self) -> TargetInfoNode:
         return targets.target_info_leaf(self._root_target_info)
 
-    def section_item_constructor(self, hierarchy_environment: HierarchyGeneratorEnvironment) -> SectionConstructor:
+    def section_item_constructor(self, generator_environment: SectionItemGeneratorEnvironment) -> SectionConstructor:
         super_self = self
 
         class RetVal(SectionConstructor):
@@ -90,7 +90,7 @@ class _LeafSectionGeneratorNode(SectionItemGeneratorNodeWithRoot):
                 return doc.Section(super_self._root_target_info.presentation_text,
                                    super_self._contents_renderer.apply(environment),
                                    target=super_self._root_target_info.target,
-                                   tags=hierarchy_environment.toc_section_item_tags)
+                                   tags=generator_environment.toc_section_item_tags)
 
         return RetVal()
 

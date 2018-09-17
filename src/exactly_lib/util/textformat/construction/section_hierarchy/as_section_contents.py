@@ -1,7 +1,7 @@
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     SectionContentsConstructor, \
     ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import HierarchyGeneratorEnvironment, \
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorEnvironment, \
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure import document, core
@@ -22,8 +22,9 @@ class SectionContentsConstructorFromHierarchyGenerator(SectionContentsConstructo
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
         target_factory = _NullTargetInfoFactory()
-        section_item = self.generator.generator_node(target_factory).section_item(HierarchyGeneratorEnvironment(set()),
-                                                                                  environment)
+        section_item = self.generator.generator_node(target_factory).section_item(
+            SectionItemGeneratorEnvironment(set()),
+            environment)
         section_item = self._targets_stripper.visit(section_item)
         return section_item_contents_as_section_contents(section_item)
 

@@ -7,7 +7,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy.targets import T
 from exactly_lib.util.textformat.structure import document as doc
 
 
-class HierarchyGeneratorEnvironment:
+class SectionItemGeneratorEnvironment:
     def __init__(self, toc_section_item_tags: Set[str]):
         self._toc_section_item_tags = toc_section_item_tags
 
@@ -29,15 +29,15 @@ class SectionItemGeneratorNode:
     def target_info_node(self) -> TargetInfoNode:
         raise NotImplementedError()
 
-    def section_item_constructor(self, hierarchy_environment: HierarchyGeneratorEnvironment
-                                 ) -> SectionItemConstructor:
+    def section_item_constructor(self,
+                                 generator_environment: SectionItemGeneratorEnvironment) -> SectionItemConstructor:
         raise NotImplementedError()
 
     def section_item(self,
-                     hierarchy_environment: HierarchyGeneratorEnvironment,
-                     environment: ConstructionEnvironment) -> doc.SectionItem:
+                     generator_environment: SectionItemGeneratorEnvironment,
+                     construction_environment: ConstructionEnvironment) -> doc.SectionItem:
         """Short cut"""
-        return self.section_item_constructor(hierarchy_environment).apply(environment)
+        return self.section_item_constructor(generator_environment).apply(construction_environment)
 
 
 class SectionHierarchyGenerator:
