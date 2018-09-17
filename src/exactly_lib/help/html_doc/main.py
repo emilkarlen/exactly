@@ -16,8 +16,8 @@ from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as sui
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorEnvironment, \
-    SectionItemGeneratorNode, SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNodeEnvironment, \
+    SectionItemNode, SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent, Node
 from exactly_lib.util.textformat.construction.section_hierarchy.table_of_contents import toc_list
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
@@ -47,7 +47,7 @@ def generate_and_output(output_file,
 
 def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
     section_node = _section_rendering_node(application_help)
-    hierarchy_environment = SectionItemGeneratorEnvironment({std_tags.TOC_SECTION})
+    hierarchy_environment = SectionItemNodeEnvironment({std_tags.TOC_SECTION})
     rendering_environment = ConstructionEnvironment(CrossReferenceTextConstructor(),
                                                     construct_simple_header_value_lists_as_tables=True)
     section_item = section_node.section_item(hierarchy_environment, rendering_environment)
@@ -132,9 +132,9 @@ def _cli_syntax_sections(local_target_name: str) -> List[Node]:
     ]
 
 
-def _section_rendering_node(application_help: ApplicationHelp) -> SectionItemGeneratorNode:
+def _section_rendering_node(application_help: ApplicationHelp) -> SectionItemNode:
     section_generator = _generator(application_help)
-    return section_generator.generator_node(root_factory())
+    return section_generator.generate(root_factory())
 
 
 def _add_toc_as_first_paragraphs(contents: doc.SectionContents,

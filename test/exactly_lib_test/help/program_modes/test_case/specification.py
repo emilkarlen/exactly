@@ -6,7 +6,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ConstructionEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    TEST_GENERATOR_ENVIRONMENT
+    TEST_NODE_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     is_target_info_node
 from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl
@@ -25,8 +25,8 @@ class Test(unittest.TestCase):
         rendering_environment = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())
         generator = sut.generator('header', self.test_case_help)
         # ACT #
-        actual = generator.generator_node(TheTargetInfoFactory('prefix')).section_item(TEST_GENERATOR_ENVIRONMENT,
-                                                                                       rendering_environment)
+        actual = generator.generate(TheTargetInfoFactory('prefix')).section_item(TEST_NODE_ENVIRONMENT,
+                                                                                 rendering_environment)
         # ASSERT #
         struct_check.is_section_item.apply(self, actual)
 
@@ -34,7 +34,7 @@ class Test(unittest.TestCase):
         # ARRANGE #
         generator = sut.generator('header', self.test_case_help)
         # ACT #
-        actual = generator.generator_node(TheTargetInfoFactory('prefix')).target_info_node()
+        actual = generator.generate(TheTargetInfoFactory('prefix')).target_info_node()
         # ASSERT #
         is_target_info_node.apply(self, actual)
 

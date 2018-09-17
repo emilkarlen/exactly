@@ -4,11 +4,11 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     SectionContentsConstructor, \
     SectionConstructor, ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorEnvironment, \
-    SectionItemGeneratorNode, SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNodeEnvironment, \
+    SectionItemNode, SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.generators import \
-    SectionItemGeneratorNodeWithRoot, \
-    SectionItemGeneratorNodeWithSubSections
+    SectionItemNodeWithRoot, \
+    SectionItemNodeWithSubSections
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo, \
     TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
@@ -62,12 +62,12 @@ class _SectionLeafGenerator(SectionHierarchyGenerator):
         self._header = header
         self._contents_renderer = contents_renderer
 
-    def generator_node(self, target_factory: TargetInfoFactory) -> SectionItemGeneratorNode:
-        return _LeafSectionGeneratorNode(target_factory.root(self._header),
-                                         self._contents_renderer)
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
+        return _LeafSectionNode(target_factory.root(self._header),
+                                self._contents_renderer)
 
 
-class _LeafSectionGeneratorNode(SectionItemGeneratorNodeWithRoot):
+class _LeafSectionNode(SectionItemNodeWithRoot):
     """
     A section without sub sections that appear in the target-hierarchy.
     """
@@ -82,7 +82,7 @@ class _LeafSectionGeneratorNode(SectionItemGeneratorNodeWithRoot):
     def target_info_node(self) -> TargetInfoNode:
         return targets.target_info_leaf(self._root_target_info)
 
-    def section_item_constructor(self, generator_environment: SectionItemGeneratorEnvironment) -> SectionConstructor:
+    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionConstructor:
         super_self = self
 
         class RetVal(SectionConstructor):
@@ -90,7 +90,7 @@ class _LeafSectionGeneratorNode(SectionItemGeneratorNodeWithRoot):
                 return doc.Section(super_self._root_target_info.presentation_text,
                                    super_self._contents_renderer.apply(environment),
                                    target=super_self._root_target_info.target,
-                                   tags=generator_environment.toc_section_item_tags)
+                                   tags=node_environment.toc_section_item_tags)
 
         return RetVal()
 
@@ -109,11 +109,11 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
         self._initial_paragraphs = initial_paragraphs
         self._nodes = nodes
 
-    def generator_node(self, target_factory: TargetInfoFactory) -> SectionItemGeneratorNode:
-        sub_sections = [node.generator.generator_node(target_factory.sub_factory(node.local_target_name))
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
+        sub_sections = [node.generator.generate(target_factory.sub_factory(node.local_target_name))
                         for node
                         in self._nodes
                         ]
-        return SectionItemGeneratorNodeWithSubSections(target_factory.root(self._header),
-                                                       self._initial_paragraphs,
-                                                       sub_sections)
+        return SectionItemNodeWithSubSections(target_factory.root(self._header),
+                                              self._initial_paragraphs,
+                                              sub_sections)

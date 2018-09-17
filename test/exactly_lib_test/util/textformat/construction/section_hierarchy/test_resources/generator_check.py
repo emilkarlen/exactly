@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    TEST_GENERATOR_ENVIRONMENT
+    TEST_NODE_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     is_target_info_node
 from exactly_lib_test.util.textformat.construction.test_resources import TargetInfoFactoryTestImpl, \
@@ -14,9 +14,9 @@ from exactly_lib_test.util.textformat.test_resources import structure as struct_
 
 def generator_generates_valid_data(put: unittest.TestCase,
                                    sut: SectionHierarchyGenerator):
-    node = sut.generator_node(_TARGET_FACTORY)
+    node = sut.generate(_TARGET_FACTORY)
 
-    actual_section = node.section_item(TEST_GENERATOR_ENVIRONMENT, _CONSTRUCTION_ENVIRONMENT)
+    actual_section = node.section_item(TEST_NODE_ENVIRONMENT, _CONSTRUCTION_ENVIRONMENT)
     struct_check.is_section_item.apply_with_message(put, actual_section, 'section')
 
     actual_target_info_node = node.target_info_node()

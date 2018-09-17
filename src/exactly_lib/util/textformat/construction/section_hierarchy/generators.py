@@ -4,15 +4,15 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     SectionItemConstructor, \
     ConstructionEnvironment, ArticleContentsConstructor, ArticleConstructor, SectionConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorEnvironment, \
-    SectionItemGeneratorNode
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNodeEnvironment, \
+    SectionItemNode
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
-class SectionItemGeneratorNodeWithRoot(SectionItemGeneratorNode):
+class SectionItemNodeWithRoot(SectionItemNode):
     """
     A node with a root `TargetInfo` that is a custom target.
     """
@@ -24,7 +24,7 @@ class SectionItemGeneratorNodeWithRoot(SectionItemGeneratorNode):
         raise NotImplementedError('abstract method')
 
 
-class LeafArticleGeneratorNode(SectionItemGeneratorNodeWithRoot):
+class LeafArticleNode(SectionItemNodeWithRoot):
     """
     An article who's sub sections do not appear in the target-hierarchy.
     """
@@ -41,9 +41,9 @@ class LeafArticleGeneratorNode(SectionItemGeneratorNodeWithRoot):
     def target_info_node(self) -> TargetInfoNode:
         return targets.target_info_leaf(self._root_target_info)
 
-    def section_item_constructor(self, generator_environment: SectionItemGeneratorEnvironment) -> ArticleConstructor:
+    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> ArticleConstructor:
         super_self = self
-        tags = self._tags.union(generator_environment.toc_section_item_tags)
+        tags = self._tags.union(node_environment.toc_section_item_tags)
 
         class RetVal(ArticleConstructor):
             def apply(self, environment: ConstructionEnvironment) -> doc.Article:
@@ -57,7 +57,7 @@ class LeafArticleGeneratorNode(SectionItemGeneratorNodeWithRoot):
         return RetVal()
 
 
-class SectionItemGeneratorNodeWithSubSections(SectionItemGeneratorNodeWithRoot):
+class SectionItemNodeWithSubSections(SectionItemNodeWithRoot):
     """
     A section who's sub sections do not appear in the target-hierarchy.
     """
@@ -65,7 +65,7 @@ class SectionItemGeneratorNodeWithSubSections(SectionItemGeneratorNodeWithRoot):
     def __init__(self,
                  root_target_info: TargetInfo,
                  initial_paragraphs: Sequence[ParagraphItem],
-                 sub_sections: Sequence[SectionItemGeneratorNode],
+                 sub_sections: Sequence[SectionItemNode],
                  ):
         super().__init__(root_target_info)
         self._initial_paragraphs = initial_paragraphs
@@ -76,18 +76,17 @@ class SectionItemGeneratorNodeWithSubSections(SectionItemGeneratorNodeWithRoot):
                               [ss.target_info_node()
                                for ss in self._sub_sections])
 
-    def section_item_constructor(self,
-                                 generator_environment: SectionItemGeneratorEnvironment) -> SectionItemConstructor:
+    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
         super_self = self
 
         class RetVal(SectionConstructor):
             def apply(self, environment: ConstructionEnvironment) -> doc.Section:
-                sub_sections = [ss.section_item_constructor(generator_environment).apply(environment)
+                sub_sections = [ss.section_item_constructor(node_environment).apply(environment)
                                 for ss in super_self._sub_sections]
                 return doc.Section(super_self._root_target_info.presentation_text,
                                    doc.SectionContents(list(super_self._initial_paragraphs),
                                                        sub_sections),
                                    target=super_self._root_target_info.target,
-                                   tags=generator_environment.toc_section_item_tags)
+                                   tags=node_environment.toc_section_item_tags)
 
         return RetVal()

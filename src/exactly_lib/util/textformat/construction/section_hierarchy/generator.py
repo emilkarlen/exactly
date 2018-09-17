@@ -7,7 +7,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy.targets import T
 from exactly_lib.util.textformat.structure import document as doc
 
 
-class SectionItemGeneratorEnvironment:
+class SectionItemNodeEnvironment:
     def __init__(self, toc_section_item_tags: Set[str]):
         self._toc_section_item_tags = toc_section_item_tags
 
@@ -16,7 +16,7 @@ class SectionItemGeneratorEnvironment:
         return self._toc_section_item_tags
 
 
-class SectionItemGeneratorNode:
+class SectionItemNode:
     """
     A node in the tree of sections with corresponding targets.
 
@@ -29,15 +29,14 @@ class SectionItemGeneratorNode:
     def target_info_node(self) -> TargetInfoNode:
         raise NotImplementedError()
 
-    def section_item_constructor(self,
-                                 generator_environment: SectionItemGeneratorEnvironment) -> SectionItemConstructor:
+    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
         raise NotImplementedError()
 
     def section_item(self,
-                     generator_environment: SectionItemGeneratorEnvironment,
+                     node_environment: SectionItemNodeEnvironment,
                      construction_environment: ConstructionEnvironment) -> doc.SectionItem:
         """Short cut"""
-        return self.section_item_constructor(generator_environment).apply(construction_environment)
+        return self.section_item_constructor(node_environment).apply(construction_environment)
 
 
 class SectionHierarchyGenerator:
@@ -46,8 +45,8 @@ class SectionHierarchyGenerator:
 
     Can be put anywhere in the section hierarchy,
     since it takes an `CustomTargetInfoFactory` as input and uses that to
-    generate a `SectionItemGeneratorNode`.
+    generate nodes.
     """
 
-    def generator_node(self, target_factory: TargetInfoFactory) -> SectionItemGeneratorNode:
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
         raise NotImplementedError()
