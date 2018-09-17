@@ -8,7 +8,7 @@ from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, target_info_leaf, \
-    CustomTargetInfoFactory
+    TargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
@@ -18,7 +18,7 @@ from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resour
     CrossReferenceTextConstructorTestImpl, TEST_HIERARCHY_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     equals_target_info_node
-from exactly_lib_test.util.textformat.construction.test_resources import CustomTargetInfoFactoryTestImpl, \
+from exactly_lib_test.util.textformat.construction.test_resources import TargetInfoFactoryTestImpl, \
     equals_custom_cross_ref_test_impl
 from exactly_lib_test.util.textformat.test_resources import equals_paragraph_item as asrt_para
 from exactly_lib_test.util.textformat.test_resources.section_item_assertions import section_matches, \
@@ -32,7 +32,7 @@ def suite() -> unittest.TestSuite:
 class Test(unittest.TestCase):
     def test_leaf(self):
         # ARRANGE #
-        target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
+        target_factory = TargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object = doc.empty_section_contents()
         object_to_test = hierarchy.leaf('header', section_contents(expected_section_contents_object))
         # EXPECTATION #
@@ -55,7 +55,7 @@ class Test(unittest.TestCase):
 
     def test_parent_without_sub_sections(self):
         # ARRANGE #
-        target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
+        target_factory = TargetInfoFactoryTestImpl(['target_component'])
         object_to_test = hierarchy.parent('top header', [], [])
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('top header'))
@@ -78,7 +78,7 @@ class Test(unittest.TestCase):
 
     def test_parent_with_sub_sections(self):
         # ARRANGE #
-        target_factory = CustomTargetInfoFactoryTestImpl(['target_component'])
+        target_factory = TargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object1 = doc.empty_section_contents()
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
         expected_root_initial_para = docs.para('root initial paras')
@@ -127,7 +127,7 @@ class Test(unittest.TestCase):
 
     def _act_and_assert(self,
                         object_to_test: structure.SectionHierarchyGenerator,
-                        target_factory: CustomTargetInfoFactory,
+                        target_factory: TargetInfoFactory,
                         target_info_node_assertion: ValueAssertion[TargetInfoNode],
                         section_item_assertion: ValueAssertion[docs.SectionItem]):
         # ACT #

@@ -3,7 +3,7 @@ from typing import Set
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     SectionItemConstructor, \
     ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, CustomTargetInfoFactory
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, TargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
 
 
@@ -49,5 +49,5 @@ class SectionHierarchyGenerator:
     generate a `SectionItemGeneratorNode`.
     """
 
-    def generator_node(self, target_factory: CustomTargetInfoFactory) -> SectionItemGeneratorNode:
+    def generator_node(self, target_factory: TargetInfoFactory) -> SectionItemGeneratorNode:
         raise NotImplementedError()
