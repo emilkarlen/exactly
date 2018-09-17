@@ -4,7 +4,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     SectionItemConstructor, \
     ConstructionEnvironment, ArticleContentsConstructor, ArticleConstructor, SectionConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import HierarchyGeneratorEnvironment, \
+from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorEnvironment, \
     SectionItemGeneratorNode
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import document as doc
@@ -41,9 +41,9 @@ class LeafArticleGeneratorNode(SectionItemGeneratorNodeWithRoot):
     def target_info_node(self) -> TargetInfoNode:
         return targets.target_info_leaf(self._root_target_info)
 
-    def section_item_constructor(self, hierarchy_environment: HierarchyGeneratorEnvironment) -> ArticleConstructor:
+    def section_item_constructor(self, generator_environment: SectionItemGeneratorEnvironment) -> ArticleConstructor:
         super_self = self
-        tags = self._tags.union(hierarchy_environment.toc_section_item_tags)
+        tags = self._tags.union(generator_environment.toc_section_item_tags)
 
         class RetVal(ArticleConstructor):
             def apply(self, environment: ConstructionEnvironment) -> doc.Article:
@@ -68,26 +68,26 @@ class SectionItemGeneratorNodeWithSubSections(SectionItemGeneratorNodeWithRoot):
                  sub_sections: Sequence[SectionItemGeneratorNode],
                  ):
         super().__init__(root_target_info)
-        self._sub_section_nodes = sub_sections
         self._initial_paragraphs = initial_paragraphs
+        self._sub_sections = sub_sections
 
     def target_info_node(self) -> TargetInfoNode:
         return TargetInfoNode(self._root_target_info,
                               [ss.target_info_node()
-                               for ss in self._sub_section_nodes])
+                               for ss in self._sub_sections])
 
-    def section_item_constructor(self, hierarchy_environment: HierarchyGeneratorEnvironment
-                                 ) -> SectionItemConstructor:
+    def section_item_constructor(self,
+                                 generator_environment: SectionItemGeneratorEnvironment) -> SectionItemConstructor:
         super_self = self
 
         class RetVal(SectionConstructor):
             def apply(self, environment: ConstructionEnvironment) -> doc.Section:
-                sub_sections = [ss.section_item_constructor(hierarchy_environment).apply(environment)
-                                for ss in super_self._sub_section_nodes]
+                sub_sections = [ss.section_item_constructor(generator_environment).apply(environment)
+                                for ss in super_self._sub_sections]
                 return doc.Section(super_self._root_target_info.presentation_text,
                                    doc.SectionContents(list(super_self._initial_paragraphs),
                                                        sub_sections),
                                    target=super_self._root_target_info.target,
-                                   tags=hierarchy_environment.toc_section_item_tags)
+                                   tags=generator_environment.toc_section_item_tags)
 
         return RetVal()
