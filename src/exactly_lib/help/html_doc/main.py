@@ -16,9 +16,9 @@ from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as sui
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent, Node
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorEnvironment, \
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorEnvironment, \
     SectionItemGeneratorNode, SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import parent, Node
 from exactly_lib.util.textformat.construction.section_hierarchy.table_of_contents import toc_list
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
 from exactly_lib.util.textformat.rendering.html import document as doc_rendering

@@ -9,8 +9,8 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node, leaf
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionHierarchyGenerator
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 

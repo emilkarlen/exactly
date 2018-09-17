@@ -11,7 +11,7 @@ from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAnd
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     SectionContentsConstructor, \
     ArticleContentsConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionHierarchyGenerator
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import Text, StringText
 

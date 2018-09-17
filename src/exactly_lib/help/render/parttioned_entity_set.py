@@ -10,8 +10,8 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents.constructors import \
     SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections
+from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -90,7 +90,7 @@ class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
     def get_hierarchy_generator(self,
                                 header: str,
                                 all_entity_doc_list: List[EntityDocumentation]
-                                ) -> structure.SectionHierarchyGenerator:
+                                ) -> generator.SectionHierarchyGenerator:
         def section_hierarchy_node(partition: EntitiesPartition) -> Node:
             return Node(partition.partition_names_setup.local_target_name,
                         entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(

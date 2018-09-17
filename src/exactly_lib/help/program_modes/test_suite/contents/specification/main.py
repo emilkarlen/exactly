@@ -12,7 +12,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructors impo
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.structure import SectionItemGeneratorNode, \
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorNode, \
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs

@@ -4,19 +4,19 @@ from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
+from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy import structure
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchy import Node
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_root(header: str, setup: Setup) -> structure.SectionHierarchyGenerator:
+def hierarchy_root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     tp = TextParser({
         'default_suite_file_name': file_names.DEFAULT_SUITE_FILE
     })
 
-    def const_paragraphs(header: str, paragraphs: List[ParagraphItem]) -> structure.SectionHierarchyGenerator:
+    def const_paragraphs(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
                               constant_section_contents(section_contents(paragraphs)))
 
