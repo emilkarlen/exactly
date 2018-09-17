@@ -6,9 +6,10 @@ from exactly_lib.util.textformat.construction.section_contents.constructor impor
     ConstructionEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    CrossReferenceTextConstructorTestImpl, TEST_GENERATOR_ENVIRONMENT
+    TEST_GENERATOR_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
     is_target_info_node
+from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

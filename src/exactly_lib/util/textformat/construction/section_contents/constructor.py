@@ -1,6 +1,6 @@
 from typing import List
 
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import CrossReferenceTextConstructor
+from exactly_lib.util.textformat.construction.section_contents.cross_ref import CrossReferenceTextConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 

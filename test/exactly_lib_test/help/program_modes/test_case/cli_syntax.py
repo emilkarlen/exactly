@@ -5,8 +5,7 @@ from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
-from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

@@ -10,8 +10,7 @@ from exactly_lib.util.description import Description, DescriptionWithSubSections
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
 from exactly_lib.util.textformat.structure.structures import text, para
-from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

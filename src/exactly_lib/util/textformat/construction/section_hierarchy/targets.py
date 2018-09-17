@@ -1,5 +1,4 @@
 from exactly_lib.util.textformat.structure import core
-from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, Text
 from exactly_lib.util.textformat.structure.structures import anchor_text
 
 
@@ -62,6 +61,3 @@ class TargetInfoFactory:
         raise NotImplementedError('abstract method')
 
 
-class CrossReferenceTextConstructor:
-    def apply(self, x: CrossReferenceTarget) -> Text:
-        raise NotImplementedError('abstract method')
