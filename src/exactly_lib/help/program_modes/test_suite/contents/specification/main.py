@@ -12,7 +12,7 @@ from exactly_lib.util.textformat.construction.section_contents.constructors impo
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
     SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorNode, \
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNode, \
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
@@ -43,7 +43,7 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
             'generic_section': SectionName('NAME'),
         })
 
-    def generator_node(self, target_factory: TargetInfoFactory) -> SectionItemGeneratorNode:
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
         generator = hierarchy.parent(
             self.header,
             [],
@@ -63,7 +63,7 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
                                outcome.hierarchy_generator('Outcome')),
             ])
 
-        return generator.generator_node(target_factory)
+        return generator.generate(target_factory)
 
     def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:
         return constant_section_contents(

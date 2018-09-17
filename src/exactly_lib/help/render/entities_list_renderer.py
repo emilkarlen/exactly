@@ -11,10 +11,10 @@ from exactly_lib.help.render.entity_docs import sorted_entity_list
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemGeneratorNode, \
+from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionItemNode, \
     SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.generators import \
-    LeafArticleGeneratorNode, SectionItemGeneratorNodeWithSubSections
+    LeafArticleNode, SectionItemNodeWithSubSections
 from exactly_lib.util.textformat.structure.core import StringText
 
 
@@ -45,22 +45,22 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
         self.entity_2_article_contents_renderer = entity_2_article_contents_renderer
         self.all_entities = all_entities
 
-    def generator_node(self, target_factory: targets.TargetInfoFactory) -> SectionItemGeneratorNode:
+    def generate(self, target_factory: targets.TargetInfoFactory) -> SectionItemNode:
         entity_nodes = [
             self._entity_node(entity)
             for entity in sorted_entity_list(self.all_entities)
         ]
-        return SectionItemGeneratorNodeWithSubSections(target_factory.root(StringText(self.header)),
-                                                       [],
-                                                       entity_nodes)
+        return SectionItemNodeWithSubSections(target_factory.root(StringText(self.header)),
+                                              [],
+                                              entity_nodes)
 
-    def _entity_node(self, entity: EntityDocumentation) -> SectionItemGeneratorNode:
+    def _entity_node(self, entity: EntityDocumentation) -> SectionItemNode:
         target_info = targets.TargetInfo(entity.singular_name_text,
                                          entity.cross_reference_target())
         tags = {
             std_tags.ENTITY,
             self.entity_type_identifier,
         }
-        return LeafArticleGeneratorNode(target_info,
-                                        self.entity_2_article_contents_renderer(entity),
-                                        tags=tags)
+        return LeafArticleNode(target_info,
+                               self.entity_2_article_contents_renderer(entity),
+                               tags=tags)
