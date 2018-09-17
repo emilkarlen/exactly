@@ -62,16 +62,6 @@ class CustomTargetInfoFactory:
         raise NotImplementedError('abstract method')
 
 
-class NullCustomTargetInfoFactory(CustomTargetInfoFactory):
-    """A CustomTargetInfoFactory that build empty CrossReferenceTarget:s"""
-
-    def root(self, presentation: core.StringText) -> TargetInfo:
-        return TargetInfo(presentation, CrossReferenceTarget())
-
-    def sub_factory(self, local_name: str) -> CustomTargetInfoFactory:
-        return self
-
-
 class CrossReferenceTextConstructor:
     def apply(self, x: CrossReferenceTarget) -> Text:
         raise NotImplementedError('abstract method')

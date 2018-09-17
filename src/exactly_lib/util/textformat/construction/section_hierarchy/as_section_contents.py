@@ -3,8 +3,9 @@ from exactly_lib.util.textformat.construction.section_contents_constructor impor
 from exactly_lib.util.textformat.construction.section_hierarchy.structures import \
     HierarchyGeneratorEnvironment, \
     SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import NullCustomTargetInfoFactory
-from exactly_lib.util.textformat.structure import document
+from exactly_lib.util.textformat.construction.section_hierarchy.targets import CustomTargetInfoFactory, TargetInfo
+from exactly_lib.util.textformat.structure import document, core
+from exactly_lib.util.textformat.structure.core import CrossReferenceTarget
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.utils import section_item_contents_as_section_contents
 
@@ -20,7 +21,7 @@ class SectionContentsConstructorFromHierarchyGenerator(SectionContentsConstructo
         self._targets_stripper = _TargetsStripper()
 
     def apply(self, environment: ConstructionEnvironment) -> SectionContents:
-        target_factory = NullCustomTargetInfoFactory()
+        target_factory = _NullCustomTargetInfoFactory()
         section_item = self.generator.generator_node(target_factory).section_item(HierarchyGeneratorEnvironment(set()),
                                                                                   environment)
         section_item = self._targets_stripper.visit(section_item)
@@ -47,3 +48,13 @@ class _TargetsStripper(document.SectionItemVisitor):
     def _strip_section_contents(self, contents: document.SectionContents) -> document.SectionContents:
         return document.SectionContents(contents.initial_paragraphs,
                                         list(map(self.visit, contents.sections)))
+
+
+class _NullCustomTargetInfoFactory(CustomTargetInfoFactory):
+    """A CustomTargetInfoFactory that build empty CrossReferenceTarget:s"""
+
+    def root(self, presentation: core.StringText) -> TargetInfo:
+        return TargetInfo(presentation, CrossReferenceTarget())
+
+    def sub_factory(self, local_name: str) -> CustomTargetInfoFactory:
+        return self
