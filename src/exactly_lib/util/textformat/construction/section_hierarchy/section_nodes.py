@@ -20,7 +20,7 @@ class SectionItemNodeWithRoot(SectionItemNode):
     def __init__(self, root_target_info: TargetInfo):
         self._root_target_info = root_target_info
 
-    def target_info_node(self) -> TargetInfoNode:
+    def target_info_node(self) -> Optional[TargetInfoNode]:
         raise NotImplementedError('abstract method')
 
 
@@ -38,7 +38,7 @@ class LeafArticleNode(SectionItemNodeWithRoot):
         self._tags = frozenset() if tags is None else tags
         self._contents_renderer = contents_renderer
 
-    def target_info_node(self) -> TargetInfoNode:
+    def target_info_node(self) -> Optional[TargetInfoNode]:
         return targets.target_info_leaf(self._root_target_info)
 
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> ArticleConstructor:
@@ -71,10 +71,11 @@ class SectionItemNodeWithSubSections(SectionItemNodeWithRoot):
         self._initial_paragraphs = initial_paragraphs
         self._sub_sections = sub_sections
 
-    def target_info_node(self) -> TargetInfoNode:
+    def target_info_node(self) -> Optional[TargetInfoNode]:
+        sub_nodes = [ss.target_info_node()
+                     for ss in self._sub_sections]
         return TargetInfoNode(self._root_target_info,
-                              [ss.target_info_node()
-                               for ss in self._sub_sections])
+                              [x for x in sub_nodes if x is not None])
 
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
         super_self = self
