@@ -1,6 +1,9 @@
+from typing import Set, Optional
+
+
 class TaggedItem:
     @property
-    def tags(self) -> set:
+    def tags(self) -> Set[str]:
         """
         Tags, used for CSS etc.
         :rtype: set of strings
@@ -36,18 +39,18 @@ class Text(TaggedItem):
 
 
 class ConcreteText(Text):
-    def __init__(self, tags: set = None):
+    def __init__(self, tags: Optional[Set[str]] = None):
         self._tags = set() if tags is None else tags
 
     @property
-    def tags(self) -> set:
+    def tags(self) -> Set[str]:
         return self._tags
 
 
 class StringText(ConcreteText):
     def __init__(self,
                  value: str,
-                 tags: set = None):
+                 tags: Optional[Set[str]] = None):
         super().__init__(tags)
         self._value = value
 
@@ -62,7 +65,7 @@ class CrossReferenceText(ConcreteText):
                  target: CrossReferenceTarget,
                  target_is_id_in_same_document: bool = True,
                  allow_rendering_of_visible_extra_target_text: bool = True,
-                 tags: set = None):
+                 tags: Optional[Set[str]] = None):
         super().__init__(tags)
         self._title = title
         self._target = target
@@ -106,7 +109,7 @@ class AnchorText(Text):
         return self._anchored_text
 
     @property
-    def tags(self) -> set:
+    def tags(self) -> Set[str]:
         return self._anchored_text.tags
 
 

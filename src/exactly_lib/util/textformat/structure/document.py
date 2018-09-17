@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from . import core
 
@@ -7,7 +7,7 @@ class SectionItem(core.TaggedItem):
     def __init__(self,
                  header: core.Text,
                  target: Optional[core.CrossReferenceTarget],
-                 tags: Optional[set]):
+                 tags: Optional[Set[str]]):
         self._header = header
         self._target = target
         self._tags = set() if tags is None else tags
@@ -24,14 +24,14 @@ class SectionItem(core.TaggedItem):
         return self._target
 
     @property
-    def tags(self) -> set:
+    def tags(self) -> Set[str]:
         return self._tags
 
 
 class SectionContents(tuple):
     def __new__(cls,
                 initial_paragraphs: List[core.ParagraphItem],
-                sections: List[SectionItem] = None):
+                sections: Optional[List[SectionItem]] = None):
         return tuple.__new__(cls, (initial_paragraphs,
                                    [] if sections is None else sections))
 
@@ -78,8 +78,8 @@ class Section(SectionItem):
     def __init__(self,
                  header: core.Text,
                  contents: SectionContents,
-                 target: core.CrossReferenceTarget = None,
-                 tags: set = None):
+                 target: Optional[core.CrossReferenceTarget] = None,
+                 tags: Optional[Set[str]] = None):
         super().__init__(header, target, tags)
         self._contents = contents
 
@@ -97,8 +97,8 @@ class Article(SectionItem):
     def __init__(self,
                  header: core.Text,
                  contents: ArticleContents,
-                 target: core.CrossReferenceTarget = None,
-                 tags: set = None):
+                 target: Optional[core.CrossReferenceTarget] = None,
+                 tags: Optional[Set[str]] = None):
         super().__init__(header, target, tags)
         self._contents = contents
 
