@@ -1,4 +1,4 @@
-from typing import Sequence
+from typing import Sequence, Optional, Set
 
 from exactly_lib.util.textformat.construction.section_contents_constructor import SectionItemConstructor, \
     ConstructionEnvironment, ArticleContentsConstructor, ArticleConstructor, SectionConstructor
@@ -11,11 +11,11 @@ from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
 class HierarchyGeneratorEnvironment:
-    def __init__(self, toc_section_item_tags: set):
+    def __init__(self, toc_section_item_tags: Set[str]):
         self._toc_section_item_tags = toc_section_item_tags
 
     @property
-    def toc_section_item_tags(self) -> set:
+    def toc_section_item_tags(self) -> Set[str]:
         return self._toc_section_item_tags
 
 
@@ -23,11 +23,13 @@ class SectionItemGeneratorNode:
     """
     A node in the tree of sections with corresponding targets.
 
-    Supplies one method for getting the target-hierarchy (for rendering a TOC),
-    and one method for getting the corresponding contents.
+    Supplies one method for getting the target-hierarchy
+    (for rendering a TOC),
+    and one method for getting the corresponding section-hierarchy
+    (for rendering the contents).
     """
 
-    def target_info_node(self, ) -> TargetInfoNode:
+    def target_info_node(self) -> TargetInfoNode:
         raise NotImplementedError()
 
     def section_item_constructor(self, hierarchy_environment: HierarchyGeneratorEnvironment
@@ -37,13 +39,16 @@ class SectionItemGeneratorNode:
     def section_item(self,
                      hierarchy_environment: HierarchyGeneratorEnvironment,
                      environment: ConstructionEnvironment) -> doc.SectionItem:
+        """Short cut"""
         return self.section_item_constructor(hierarchy_environment).apply(environment)
 
 
 class SectionHierarchyGenerator:
     """
-    A section that can be put anywhere in the section hierarchy, since
-    it takes an `CustomTargetInfoFactory` as input and uses that to
+    Generates a section with sub sections that that appear in the TOC.
+
+    Can be put anywhere in the section hierarchy,
+    since it takes an `CustomTargetInfoFactory` as input and uses that to
     generate a `SectionItemGeneratorNode`.
     """
 
@@ -65,13 +70,13 @@ class SectionItemGeneratorNodeWithRoot(SectionItemGeneratorNode):
 
 class LeafArticleGeneratorNode(SectionItemGeneratorNodeWithRoot):
     """
-    An article without sub sections that appear in the target-hierarchy.
+    An article who's sub sections do not appear in the target-hierarchy.
     """
 
     def __init__(self,
                  node_target_info: TargetInfo,
                  contents_renderer: ArticleContentsConstructor,
-                 tags: set = None,
+                 tags: Optional[Set[str]] = None,
                  ):
         super().__init__(node_target_info)
         self._tags = frozenset() if tags is None else tags
@@ -98,7 +103,7 @@ class LeafArticleGeneratorNode(SectionItemGeneratorNodeWithRoot):
 
 class SectionItemGeneratorNodeWithSubSections(SectionItemGeneratorNodeWithRoot):
     """
-    A section with sub sections that appear in the target-hierarchy.
+    A section who's sub sections do not appear in the target-hierarchy.
     """
 
     def __init__(self,
