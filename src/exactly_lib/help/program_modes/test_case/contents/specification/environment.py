@@ -1,6 +1,7 @@
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting, type_system, misc_texts
 from exactly_lib.definitions import test_case_file_structure
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
@@ -32,10 +33,10 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'hds_single_line_description':
             concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.single_line_description_str.capitalize(),
 
-        'conf_phase': phase_names.ACT,
-        'act_phase': phase_names.CONFIGURATION,
+        'conf_phase': phase_names.CONFIGURATION,
+        'act_phase': phase_names.ACT,
 
-        'act_home_dir': test_case_file_structure.HDS_ACT_INFO.informative_name,
+        'act_home_conf_param': formatting.conf_param(test_case_file_structure.HDS_ACT_INFO.identifier),
 
         'data': type_system.DATA_TYPE_CATEGORY_NAME,
         'path_type': formatting.term(types.PATH_TYPE_INFO.singular_name),
@@ -149,13 +150,14 @@ A change of {CD} stay in effect for all following instructions and phases.
 #
 # - HDS for persistent files
 # - HDS initial value
+# - Set in [conf]
 ############################################################
 _HDS = """\
 The {hds_concept} ({HDS}) organizes files that exist before the execution
 and that should probably not be modified.
 
 
-One of the directories in the {HDS} is the {act_home_dir}.
+One of the directories in the {HDS} is the {act_home_conf_param} directory.
 It is the default location of the executable program file
 that is tested, i.e. the location of files referenced from the {act_phase} phase.
 
@@ -176,7 +178,7 @@ and can be changed in the {conf_phase} phase.
 ############################################################
 _FILE_REFERENCES = """\
 {program_name} has functionality for referencing files in the
-{HDS} and {SDS}:
+{TCDS}:
 
 
   * The {path_type} {data} type has syntax for expressing paths relative to any of the {TCDS} directories.
@@ -207,6 +209,7 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
         concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
         concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
         types.PATH_TYPE_INFO.cross_reference_target,
+        TestCasePhaseCrossReference(phase_names.CONFIGURATION.plain),
     ]
 
 
