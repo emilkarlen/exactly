@@ -7,7 +7,7 @@ from exactly_lib.definitions.test_suite.section_names_plain import SECTION_CONCE
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationConstructorBase
 from exactly_lib.help.program_modes.test_suite.contents_structure.section_documentation import \
     TestSuiteSectionDocumentation
-from exactly_lib.help.render.see_also_section import see_also_sections
+from exactly_lib.help.render.see_also import see_also_sections
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment
 from exactly_lib.util.textformat.structure import document as doc

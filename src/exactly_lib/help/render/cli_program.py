@@ -3,7 +3,7 @@ from typing import List, Optional
 from exactly_lib.definitions import doc_format
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
 from exactly_lib.help.render.doc_utils import synopsis_section, description_section
-from exactly_lib.help.render.see_also_section import see_also_items_paragraph, SEE_ALSO_TITLE, see_also_sections
+from exactly_lib.help.render.see_also import see_also_items_paragraph, SEE_ALSO_TITLE, see_also_sections
 from exactly_lib.util.cli_syntax.elements.cli_program_syntax import DescribedArgument, \
     Synopsis
 from exactly_lib.util.cli_syntax.render.cli_program_syntax import CommandLineSyntaxRenderer, \

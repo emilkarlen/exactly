@@ -9,7 +9,7 @@ from exactly_lib.help.render import parttioned_entity_set as pes
 from exactly_lib.help.render.doc_utils import description_section_if_non_empty
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
-from exactly_lib.help.render.see_also_section import see_also_sections
+from exactly_lib.help.render.see_also import see_also_sections
 from exactly_lib.type_system.value_type import ValueType
 from exactly_lib.util.textformat.construction.section_contents.constructor import \
     ConstructionEnvironment, \

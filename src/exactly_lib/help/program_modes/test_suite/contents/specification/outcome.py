@@ -2,7 +2,7 @@ from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.help.render import see_also_section
+from exactly_lib.help.render import see_also
 from exactly_lib.test_suite import exit_values
 from exactly_lib.util.textformat.construction.section_contents.constructors import \
     SectionContentsConstructor, \
@@ -114,8 +114,8 @@ def singe_exit_value_display(exit_code: str,
 class _ReportingContentsConstructor(SectionContentsConstructor):
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         initial_paragraphs = TEXT_PARSER.fnap(REPORTING)
-        sub_sections = see_also_section.see_also_sections(_SEE_ALSO_TARGETS,
-                                                          environment)
+        sub_sections = see_also.see_also_sections(_SEE_ALSO_TARGETS,
+                                                  environment)
         return doc.SectionContents(initial_paragraphs,
                                    sub_sections)
 
