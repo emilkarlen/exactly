@@ -221,7 +221,7 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
 # - Manipulating env vars
 ############################################################
 _ENVIRONMENT_VARIABLES = """\
-All system environment variables
+All OS environment variables
 that are set when {program_name} is started
 are available in processes run from the test case.
 
