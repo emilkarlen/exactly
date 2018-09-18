@@ -4,10 +4,9 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet, \
     InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import instruction_set_list_item
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment, \
-    ParagraphItemsConstructor
-from exactly_lib.util.textformat.construction.section_contents.constructors import \
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
+from exactly_lib.util.textformat.constructor.sections import \
     SectionContentsConstructorFromParagraphItemsConstructor
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

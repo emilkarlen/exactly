@@ -1,9 +1,9 @@
 from typing import Callable, List, Iterable
 
 from exactly_lib.help.contents_structure.entity import EntityDocumentation, CliListConstructorGetter
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    SectionContentsConstructor, \
-    ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.section import \
+    SectionContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc, lists, structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.structures import SEPARATION_OF_HEADER_AND_CONTENTS

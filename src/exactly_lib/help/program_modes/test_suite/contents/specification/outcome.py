@@ -4,13 +4,13 @@ from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.help.render import see_also
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.textformat.construction.section_contents.constructors import \
-    SectionContentsConstructor, \
-    ConstructionEnvironment, \
-    constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node, leaf
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.sections import \
+    SectionContentsConstructor, \
+    constant_section_contents
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser

@@ -2,18 +2,12 @@ import itertools
 
 from typing import List, Optional
 
-from exactly_lib.util.textformat.construction.section_contents.constructor import ParagraphItemsConstructor, \
-    ConstructionEnvironment, SectionContentsConstructor, ArticleContentsConstructor, SectionConstructor
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
+from exactly_lib.util.textformat.constructor.section import SectionContentsConstructor, \
+    ArticleContentsConstructor, SectionConstructor
 from exactly_lib.util.textformat.structure import document as doc, structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
-
-
-class ParagraphItemsConstructorConstant(ParagraphItemsConstructor):
-    def __init__(self, paragraph_items: List[ParagraphItem]):
-        self._paragraph_items = paragraph_items
-
-    def apply(self, environment: ConstructionEnvironment) -> List[ParagraphItem]:
-        return self._paragraph_items
 
 
 class SectionContentsConstructorFromParagraphItemsConstructor(SectionContentsConstructor):

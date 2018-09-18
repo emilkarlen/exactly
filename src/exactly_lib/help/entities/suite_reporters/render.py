@@ -3,8 +3,8 @@ from exactly_lib.definitions.entity.concepts import SUITE_REPORTER_CONCEPT_INFO
 from exactly_lib.definitions.entity.suite_reporters import DEFAULT_REPORTER
 from exactly_lib.help.entities.suite_reporters.contents_structure import SuiteReporterDocumentation
 from exactly_lib.help.render.see_also import see_also_sections
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment, \
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs

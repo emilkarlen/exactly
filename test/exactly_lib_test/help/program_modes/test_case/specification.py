@@ -2,8 +2,7 @@ import unittest
 
 from exactly_lib.definitions.cross_ref.target_info_factory import TheTargetInfoFactory
 from exactly_lib.help.program_modes.test_case.contents.specification import main as sut
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib_test.help.program_modes.test_case.test_resources import test_case_help_with_production_phases
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
     TEST_NODE_ENVIRONMENT

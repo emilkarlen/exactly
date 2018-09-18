@@ -7,8 +7,8 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
     post_setup_validation_step_name, \
     step_with_single_exit_value
 from exactly_lib.processing import exit_values
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment, \
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs

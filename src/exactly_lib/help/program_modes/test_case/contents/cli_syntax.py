@@ -16,10 +16,9 @@ from exactly_lib.help.render.cli_program import \
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import leaf
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

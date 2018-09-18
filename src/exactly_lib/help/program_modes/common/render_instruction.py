@@ -4,10 +4,10 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.render.doc_utils import synopsis_section, description_section
 from exactly_lib.help.render.see_also import see_also_sections
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment, \
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
-from exactly_lib.util.textformat.construction.section_contents.constructors import \
+from exactly_lib.util.textformat.constructor.sections import \
     SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc, lists
 from exactly_lib.util.textformat.structure import structures as docs

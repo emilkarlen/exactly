@@ -5,10 +5,10 @@ from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
-from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
+from exactly_lib.util.textformat.constructor.sections import constant_section_contents
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 

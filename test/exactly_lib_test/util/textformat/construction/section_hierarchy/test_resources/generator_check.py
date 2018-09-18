@@ -1,8 +1,7 @@
 import unittest
 
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
     TEST_NODE_ENVIRONMENT
 from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
