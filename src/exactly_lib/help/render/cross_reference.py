@@ -1,4 +1,6 @@
 from exactly_lib.definitions.cross_ref import concrete_cross_refs
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
+    HelpPredefinedContentsPart
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary
 from exactly_lib.definitions.test_case.phase_names import phase_name_dict_key_for, \
     PHASE_NAME_DICTIONARY
@@ -51,5 +53,13 @@ class _TitleRenderer(concrete_cross_refs.CrossReferenceIdVisitor):
                      ) -> str:
         return x.entity_type_presentation_name.capitalize() + ' "' + x.entity_name + '"'
 
+    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference) -> str:
+        return _PREDEFINED_PART_TITLE[x.part]
+
 
 _TITLE_RENDERER = _TitleRenderer()
+
+_PREDEFINED_PART_TITLE = {
+    HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX: 'Test Case CLI Syntax',
+    HelpPredefinedContentsPart.TEST_SUITE_CLI_SYNTAX: 'Test Suite CLI Syntax',
+}

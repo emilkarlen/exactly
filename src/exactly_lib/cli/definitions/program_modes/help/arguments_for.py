@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib.cli.definitions.program_modes.help import command_line_options as clo
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import HelpPredefinedContentsPart
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES, ACTOR_ENTITY_TYPE_NAMES, \
     SUITE_REPORTER_ENTITY_TYPE_NAMES, SYNTAX_ELEMENT_ENTITY_TYPE_NAMES, TYPE_ENTITY_TYPE_NAMES, \
@@ -119,3 +120,9 @@ def entity_help(entity_type_names: EntityTypeNames,
         return [entity_type_names.identifier] + entity_name.split()
     else:
         return [entity_type_names.identifier]
+
+
+ARGUMENTS_FOR_PART = {
+    HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX: case_cli_syntax,
+    HelpPredefinedContentsPart.TEST_SUITE_CLI_SYNTAX: suite_cli_syntax,
+}

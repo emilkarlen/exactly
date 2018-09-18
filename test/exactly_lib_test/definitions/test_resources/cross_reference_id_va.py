@@ -45,6 +45,9 @@ class _IsCrossReferenceIdAssertionGetter(CrossReferenceIdVisitor):
     def visit_url(self, x: UrlCrossReferenceTarget):
         return _assertion_on_properties_of(x, url_is_valid)
 
+    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference):
+        return equals_predefined_contents_part(x)
+
 
 def _is_str(component_name: str, component_getter: types.FunctionType) -> asrt.ValueAssertion:
     return asrt.sub_component(component_name, component_getter, asrt.IsInstance(str))
@@ -69,6 +72,14 @@ def is_entity_for_type(entity_type_name: str) -> asrt.ValueAssertion:
                            EntityCrossReferenceId.entity_type_identifier.fget,
                            asrt.Equals(entity_type_name))
     ])
+
+
+def equals_predefined_contents_part(x: PredefinedHelpContentsPartReference) -> asrt.ValueAssertion[CrossReferenceId]:
+    return asrt.is_instance_with(PredefinedHelpContentsPartReference,
+                                 asrt.sub_component('part',
+                                                    PredefinedHelpContentsPartReference.part.fget,
+                                                    asrt.equals(x.part))
+                                 )
 
 
 is_entity = asrt.is_instance_with(EntityCrossReferenceId, entity_is_valid)
@@ -169,3 +180,9 @@ class _CrossReferenceIdEqualsWhenClassIsEqual(CrossReferenceIdVisitor):
         self.put.assertEqual(self.expected.url,
                              x.url,
                              self.message_builder.apply('url'))
+
+    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference):
+        assert isinstance(self.expected, PredefinedHelpContentsPartReference)
+        self.put.assertEqual(self.expected.part,
+                             x.part,
+                             self.message_builder.apply('part'))

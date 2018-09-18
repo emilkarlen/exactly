@@ -1,4 +1,5 @@
 from exactly_lib.definitions.cross_ref import concrete_cross_refs as cross_ref
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference
 from exactly_lib.util.textformat.rendering.html.cross_ref import TargetRenderer
 from exactly_lib.util.textformat.structure import core as doc
 from exactly_lib.util.textformat.structure.core import UrlCrossReferenceTarget
@@ -28,3 +29,6 @@ class HtmlTargetRenderer(TargetRenderer, cross_ref.CrossReferenceIdVisitor):
 
     def visit_url(self, x: UrlCrossReferenceTarget):
         return x.url
+
+    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference):
+        return 'help-part.' + x.part.name

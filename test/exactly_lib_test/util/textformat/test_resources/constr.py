@@ -1,3 +1,5 @@
+from typing import List, Iterable
+
 from exactly_lib.util.textformat.rendering.text import paragraph_item as sut
 from exactly_lib.util.textformat.rendering.text.text import CrossReferenceFormatter, TextFormatter
 from exactly_lib.util.textformat.structure import core, paragraph, lists, table
@@ -9,7 +11,7 @@ def text(string: str) -> core.Text:
     return core.StringText(string)
 
 
-def para(texts: iter) -> paragraph.Paragraph:
+def para(texts: List[core.Text]) -> paragraph.Paragraph:
     return paragraph.Paragraph(texts)
 
 
@@ -22,7 +24,7 @@ def single_text_cell(string: str) -> table.TableCell:
 
 
 def item(header: str,
-         content: list) -> lists.HeaderContentListItem:
+         content: Iterable[paragraph.ParagraphItem]) -> lists.HeaderContentListItem:
     return lists.HeaderContentListItem(text(header),
                                        content)
 

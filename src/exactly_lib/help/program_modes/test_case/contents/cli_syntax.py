@@ -5,7 +5,8 @@ from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.cli.definitions.program_modes.test_case import command_line_options as opt
 from exactly_lib.cli.program_modes.test_case import argument_parsing
 from exactly_lib.common.help.see_also import CrossReferenceIdSeeAlsoItem, see_also_items_from_cross_refs
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference, \
+    PredefinedHelpContentsPartReference, HelpPredefinedContentsPart
 from exactly_lib.definitions.entity.concepts import SANDBOX_CONCEPT_INFO, SHELL_SYNTAX_CONCEPT_INFO, \
     PREPROCESSOR_CONCEPT_INFO, ACTOR_CONCEPT_INFO
 from exactly_lib.definitions.test_suite import file_names, section_names, instruction_names
@@ -24,7 +25,10 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def root(header: str) -> SectionHierarchyGenerator:
-    return h.leaf(header, ProgramDocumentationSectionContentsConstructor(TestCaseCliSyntaxDocumentation()))
+    return h.leaf_with_constant_target(
+        header,
+        PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX),
+        ProgramDocumentationSectionContentsConstructor(TestCaseCliSyntaxDocumentation()))
 
 
 class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
