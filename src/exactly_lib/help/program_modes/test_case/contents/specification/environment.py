@@ -5,15 +5,13 @@ from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.constructor import sections
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_root(header: str) -> generator.SectionHierarchyGenerator:
+def root(header: str) -> generator.SectionHierarchyGenerator:
     tp = TextParser({
 
         'program_name': formatting.program_name(program_info.PROGRAM_NAME),
@@ -52,47 +50,47 @@ def hierarchy_root(header: str) -> generator.SectionHierarchyGenerator:
     })
 
     def const_paragraphs(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return hierarchy.leaf(header_,
-                              sections.constant_contents(section_contents(paragraphs)))
+        return h.leaf(header_,
+                      sections.constant_contents(section_contents(paragraphs)))
 
-    return hierarchy.parent(
+    return h.parent(
         header,
         [],
         [
-            Node('dir-structure',
-                 hierarchy.parent(
-                     'Directory structure and Current directory',
-                     tp.fnap(_DS_CD_PROLOG),
-                     [
-                         Node('sds',
-                              const_paragraphs(
-                                  concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize() +
-                                  ' and Current directory',
-                                  tp.fnap(_SDS_AND_CD))
-                              ),
-                         Node('hds',
-                              const_paragraphs(
-                                  concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
-                                  tp.fnap(_HDS))
-                              ),
-                         Node('file-ref',
-                              const_paragraphs(
-                                  'File references',
-                                  tp.fnap(_FILE_REFERENCES))
-                              ),
-                         Node('see-also',
-                              hierarchy.leaf_not_in_toc(
-                                  see_also.SEE_ALSO_TITLE,
-                                  see_also.SeeAlsoSectionContentsConstructor(
-                                      see_also.items_of_targets(_dir_struct_see_also_targets())
-                                  ))
-                              ),
-                     ])
-                 ),
-            Node('env-vars',
-                 const_paragraphs('Environment variables',
-                                  tp.fnap(_ENVIRONMENT_VARIABLES))
-                 ),
+            h.Node('dir-structure',
+                   h.parent(
+                       'Directory structure and Current directory',
+                       tp.fnap(_DS_CD_PROLOG),
+                       [
+                           h.Node('sds',
+                                  const_paragraphs(
+                                      concepts.SANDBOX_CONCEPT_INFO.singular_name.capitalize() +
+                                      ' and Current directory',
+                                      tp.fnap(_SDS_AND_CD))
+                                  ),
+                           h.Node('hds',
+                                  const_paragraphs(
+                                      concepts.HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO.singular_name.capitalize(),
+                                      tp.fnap(_HDS))
+                                  ),
+                           h.Node('file-ref',
+                                  const_paragraphs(
+                                      'File references',
+                                      tp.fnap(_FILE_REFERENCES))
+                                  ),
+                           h.Node('see-also',
+                                  h.leaf_not_in_toc(
+                                      see_also.SEE_ALSO_TITLE,
+                                      see_also.SeeAlsoSectionContentsConstructor(
+                                          see_also.items_of_targets(_dir_struct_see_also_targets())
+                                      ))
+                                  ),
+                       ])
+                   ),
+            h.Node('env-vars',
+                   const_paragraphs('Environment variables',
+                                    tp.fnap(_ENVIRONMENT_VARIABLES))
+                   ),
         ]
     )
 

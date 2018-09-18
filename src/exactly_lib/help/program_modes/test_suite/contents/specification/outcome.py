@@ -4,36 +4,34 @@ from exactly_lib.definitions import misc_texts
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.help.render import see_also
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node, leaf
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.sections import SectionContentsConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_generator(header: str) -> generator.SectionHierarchyGenerator:
+def root(header: str) -> generator.SectionHierarchyGenerator:
     preamble_paragraphs = TEXT_PARSER.fnap(PREAMBLE)
 
-    def const_contents(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return hierarchy.leaf(header,
-                              sections.constant_contents(section_contents(paragraphs)))
+    def const_contents(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
+        return h.leaf(header_,
+                      sections.constant_contents(section_contents(paragraphs)))
 
-    return hierarchy.parent(
+    return h.parent(
         header,
         preamble_paragraphs,
         [
-            Node('reporting',
-                 leaf('Reporting',
-                      _ReportingContentsConstructor())
-                 ),
-            Node('scenarios',
-                 const_contents('Scenarios',
-                                _scenarios_list())
-                 ),
+            h.Node('reporting',
+                   h.leaf('Reporting',
+                          _ReportingContentsConstructor())
+                   ),
+            h.Node('scenarios',
+                   const_contents('Scenarios',
+                                  _scenarios_list())
+                   ),
         ]
     )
 

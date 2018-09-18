@@ -1,18 +1,18 @@
 from typing import List, Optional
 
-from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNodeEnvironment, \
-    SectionItemNode
-from exactly_lib.util.textformat.construction.section_hierarchy.section_nodes import \
-    SectionItemNodeWithRoot, \
-    SectionItemNodeWithSubSections
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo, \
-    TargetInfoNode
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor, \
     SectionConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import targets
+from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
+from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNodeEnvironment, \
+    SectionItemNode
+from exactly_lib.util.textformat.section_target_hierarchy.section_nodes import \
+    SectionItemNodeWithRoot, \
+    SectionItemNodeWithSubSections
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory, TargetInfo, \
+    TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc, core
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem

@@ -12,47 +12,46 @@ from exactly_lib.help.program_modes.test_suite.contents.specification.main impor
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.render.section_documentation import \
     TestSuiteSectionDocumentationConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 
 
-def generator(header: str,
+def hierarchy(header: str,
               test_suite_help: TestSuiteHelp,
               suite_reporter_conf: EntityTypeConfiguration,
               ) -> generator.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestSuiteHelp(test_suite_help)
-    return hierarchy.parent(
+    return h.parent(
         header,
         [],
         [
-            Node('spec',
-                 SpecificationHierarchyGenerator('Specification of test suite functionality',
-                                                 test_suite_help)
-                 ),
-            Node('sections',
-                 hierarchy.parent(
-                     'Sections',
-                     [],
-                     [
-                         Node('cases-and-sub-suites',
-                              sections_helper.generator_for_custom_sections(
-                                  test_suite_structure.CASES_AND_SUB_SUITES_HEADER,
-                                  test_suite_help.test_cases_and_sub_suites_sections,
-                              )),
-                         Node('common-case-contents',
-                              sections_helper.generator_for_custom_sections(
-                                  test_suite_structure.COMMON_CASE_CONTENTS_AND_CONFIG_HEADER,
-                                  test_suite_help.test_case_phase_sections,
-                              )),
-                     ])
-                 ),
-            Node('reporters',
-                 suite_reporter_conf.get_hierarchy_generator(SUITE_REPORTER_ENTITY_TYPE_NAMES.name.plural.capitalize())
-                 ),
-            Node('instructions',
-                 sections_helper.generator_for_instructions_per_section('Instructions per section')
-                 ),
+            h.Node('spec',
+                   SpecificationHierarchyGenerator('Specification of test suite functionality',
+                                                   test_suite_help)
+                   ),
+            h.Node('sections',
+                   h.parent(
+                       'Sections',
+                       [],
+                       [
+                           h.Node('cases-and-sub-suites',
+                                  sections_helper.generator_for_custom_sections(
+                                      test_suite_structure.CASES_AND_SUB_SUITES_HEADER,
+                                      test_suite_help.test_cases_and_sub_suites_sections,
+                                  )),
+                           h.Node('common-case-contents',
+                                  sections_helper.generator_for_custom_sections(
+                                      test_suite_structure.COMMON_CASE_CONTENTS_AND_CONFIG_HEADER,
+                                      test_suite_help.test_case_phase_sections,
+                                  )),
+                       ])
+                   ),
+            h.Node('reporters',
+                   suite_reporter_conf.get_hierarchy_generator(
+                       SUITE_REPORTER_ENTITY_TYPE_NAMES.name.plural.capitalize())
+                   ),
+            h.Node('instructions',
+                   sections_helper.generator_for_instructions_per_section('Instructions per section')
+                   ),
         ]
     )
 

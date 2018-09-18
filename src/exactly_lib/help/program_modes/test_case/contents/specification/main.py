@@ -4,33 +4,32 @@ from exactly_lib.help.program_modes.test_case.contents.specification import outc
 from exactly_lib.help.program_modes.test_case.contents.specification import processing as processing
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
-    SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node, leaf
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
+from exactly_lib.util.textformat.section_target_hierarchy.as_section_contents import \
+    SectionContentsConstructorFromHierarchyGenerator
+from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
-def generator(header: str,
-              test_case_help: TestCaseHelp
-              ) -> SectionHierarchyGenerator:
+def root(header: str,
+         test_case_help: TestCaseHelp
+         ) -> SectionHierarchyGenerator:
     setup = Setup(test_case_help)
-    return hierarchy.parent(
+    return h.parent(
         header,
         [],
         [
-            Node('introduction', leaf('Introduction', intro.Documentation())),
-            Node('structure', structure.hierarchy_root('Structure', setup)),
-            Node('exe-env', env_doc.hierarchy_root('Execution environment')),
-            Node('file-syntax', file_syntax.generator('File syntax', setup)),
-            Node('processing', leaf('Processing steps', processing.ContentsConstructor(setup))),
-            Node('outcome', outcome.hierarchy_generator('Outcome', setup)),
+            h.Node('introduction', h.leaf('Introduction', intro.Documentation())),
+            h.Node('structure', structure.root('Structure', setup)),
+            h.Node('exe-env', env_doc.root('Execution environment')),
+            h.Node('file-syntax', file_syntax.root('File syntax', setup)),
+            h.Node('processing', h.leaf('Processing steps', processing.ContentsConstructor(setup))),
+            h.Node('outcome', outcome.root('Outcome', setup)),
         ])
 
 
 def as_section_contents_constructor(test_case_help: TestCaseHelp) -> SectionContentsConstructor:
-    return SectionContentsConstructorFromHierarchyGenerator(generator('unused header', test_case_help))
+    return SectionContentsConstructorFromHierarchyGenerator(root('unused header', test_case_help))

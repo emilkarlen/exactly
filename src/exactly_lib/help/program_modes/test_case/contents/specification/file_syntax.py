@@ -6,34 +6,32 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
 from exactly_lib.instructions.assert_.utils.file_contents import instruction_options as contents_opts
 from exactly_lib.section_document.syntax import section_header, LINE_COMMENT_MARKER
 from exactly_lib.test_case.phase_identifier import DEFAULT_PHASE
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def generator(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
+def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     text_parser = _text_parser(setup)
-    return hierarchies.parent(
+    return h.parent(
         header, [],
         [
-            Node('phases', hierarchies.leaf('Phases', _PhaseRenderer(text_parser))),
-            Node('phase-contents', hierarchies.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            Node('instructions', hierarchies.parent(
+            h.Node('phases', h.leaf('Phases', _PhaseRenderer(text_parser))),
+            h.Node('phase-contents', h.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
+            h.Node('instructions', h.parent(
                 'Instructions',
                 text_parser.fnap(INSTRUCTIONS_DOC),
-                [Node('description',
-                      hierarchies.leaf('Instruction descriptions',
-                                       _InstructionsRenderer(
-                                         text_parser)))])
-                 ),
-            Node('file-inclusion', hierarchies.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
-            Node('com-empty', hierarchies.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
+                [h.Node('description',
+                        h.leaf('Instruction descriptions',
+                               _InstructionsRenderer(
+                                   text_parser)))])
+                   ),
+            h.Node('file-inclusion', h.leaf('File inclusion', _FileInclusionContentsRenderer(text_parser))),
+            h.Node('com-empty', h.leaf('Comments and empty lines', _OtherContentsRenderer(text_parser))),
         ]
     )
 

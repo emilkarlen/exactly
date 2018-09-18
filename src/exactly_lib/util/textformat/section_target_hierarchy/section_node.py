@@ -1,8 +1,8 @@
 from typing import Set, Optional
 
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import SectionItemConstructor
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
 
 

@@ -14,17 +14,17 @@ from exactly_lib.help.html_doc.parts import test_suite
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as suite_cli_syntax
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import parent, Node
-from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNodeEnvironment, \
-    SectionItemNode
-from exactly_lib.util.textformat.construction.section_hierarchy.table_of_contents import toc_list
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.rendering.html import document as doc_rendering
 from exactly_lib.util.textformat.rendering.html import text
 from exactly_lib.util.textformat.rendering.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
 from exactly_lib.util.textformat.rendering.html.section import HnSectionHeaderRenderer
+from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
+from exactly_lib.util.textformat.section_target_hierarchy.hierarchies import parent, Node
+from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNodeEnvironment, \
+    SectionItemNode
+from exactly_lib.util.textformat.section_target_hierarchy.table_of_contents import toc_list
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoNode
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.utils import section_item_contents_as_section_contents
@@ -61,12 +61,12 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
         page_setup.PAGE_TITLE,
         [],
         (
-            _case_and_suite_sections(application_help)
-            +
-            _entity_sections(application_help,
-                             entity_types_to_exclude=[SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier])
-            +
-            _cli_syntax_sections('cli-syntax')
+                _case_and_suite_sections(application_help)
+                +
+                _entity_sections(application_help,
+                                 entity_types_to_exclude=[SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier])
+                +
+                _cli_syntax_sections('cli-syntax')
         ),
     )
 
@@ -75,13 +75,13 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> List[Node]:
     return [
         Node(
             'test-case',
-            test_case.generator(_TEST_CASES_HEADER,
+            test_case.hierarchy(_TEST_CASES_HEADER,
                                 application_help.test_case_help,
                                 )
         ),
         Node(
             'test-suite',
-            test_suite.generator(_TEST_SUITES_HEADER,
+            test_suite.hierarchy(_TEST_SUITES_HEADER,
                                  application_help.test_suite_help,
                                  application_help.entity_type_conf_for(
                                      SUITE_REPORTER_ENTITY_TYPE_NAMES.identifier))
@@ -118,13 +118,13 @@ def _cli_syntax_sections(local_target_name: str) -> List[Node]:
                    [],
                    [
                        Node('test-case',
-                            case_cli_syntax.generator(_TEST_CASES_HEADER)
+                            case_cli_syntax.root(_TEST_CASES_HEADER)
                             ),
                        Node('test-suite',
-                            suite_cli_syntax.generator(_TEST_SUITES_HEADER)
+                            suite_cli_syntax.root(_TEST_SUITES_HEADER)
                             ),
                        Node('help',
-                            help.generator('Getting Help')
+                            help.root('Getting Help')
                             ),
                    ]
                    )

@@ -1,5 +1,5 @@
 from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure import core
 
 

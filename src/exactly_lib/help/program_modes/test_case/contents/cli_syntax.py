@@ -16,15 +16,15 @@ from exactly_lib.help.render.cli_program import \
 from exactly_lib.util.cli_syntax.elements import argument as arg
 from exactly_lib.util.cli_syntax.elements import cli_program_syntax as cli_syntax
 from exactly_lib.util.description import DescriptionWithSubSections
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import leaf
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
+from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def generator(header: str) -> SectionHierarchyGenerator:
-    return leaf(header, ProgramDocumentationSectionContentsConstructor(TestCaseCliSyntaxDocumentation()))
+def root(header: str) -> SectionHierarchyGenerator:
+    return h.leaf(header, ProgramDocumentationSectionContentsConstructor(TestCaseCliSyntaxDocumentation()))
 
 
 class TestCaseCliSyntaxDocumentation(CliProgramSyntaxDocumentation):

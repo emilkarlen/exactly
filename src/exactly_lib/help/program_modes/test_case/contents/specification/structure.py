@@ -3,22 +3,20 @@ from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
 from exactly_lib.test_case import phase_identifier
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.constructor import sections
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
+def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     tp = TextParser({
         'default_suite_file_name': file_names.DEFAULT_SUITE_FILE
     })
 
     def const_paragraphs(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return hierarchy.leaf(header,
-                              sections.constant_contents(section_contents(paragraphs)))
+        return h.leaf(header,
+                      sections.constant_contents(section_contents(paragraphs)))
 
     def phases_documentation() -> List[ParagraphItem]:
         return (tp.fnap(_PHASES_INTRO) +
@@ -26,22 +24,22 @@ def hierarchy_root(header: str, setup: Setup) -> generator.SectionHierarchyGener
                                      phase_identifier.DEFAULT_PHASE.section_name,
                                      phase_names_plain.SECTION_CONCEPT_NAME)])
 
-    return hierarchy.parent(
+    return h.parent(
         header,
         [],
         [
-            Node('phases',
-                 const_paragraphs('Phases',
-                                  phases_documentation())
-                 ),
-            Node('suite-contents',
-                 const_paragraphs('Inclusion of phase contents from test suites',
-                                  tp.fnap(_SUITE_CONTENTS_INCLUSION))
-                 ),
-            Node('part-of-suite',
-                 const_paragraphs('Part of suite',
-                                  tp.fnap(_PART_OF_SUITE))
-                 ),
+            h.Node('phases',
+                   const_paragraphs('Phases',
+                                    phases_documentation())
+                   ),
+            h.Node('suite-contents',
+                   const_paragraphs('Inclusion of phase contents from test suites',
+                                    tp.fnap(_SUITE_CONTENTS_INCLUSION))
+                   ),
+            h.Node('part-of-suite',
+                   const_paragraphs('Part of suite',
+                                    tp.fnap(_PART_OF_SUITE))
+                   ),
         ]
     )
 
