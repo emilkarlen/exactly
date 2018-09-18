@@ -3,7 +3,7 @@ from exactly_lib.cli.program_modes.help.program_modes.test_case.help_request imp
 from exactly_lib.cli.program_modes.help.program_modes.utils import with_or_without_name
 from exactly_lib.help.program_modes.common import render_instruction
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.common.renderers import SectionInstructionSetConstructor
+from exactly_lib.help.program_modes.common.renderers import instruction_set_constructor
 from exactly_lib.help.program_modes.test_case.contents.cli_syntax import TestCaseCliSyntaxDocumentation
 from exactly_lib.help.program_modes.test_case.contents.specification import main as tc_specification
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import TestCasePhaseDocumentation
@@ -12,11 +12,10 @@ from exactly_lib.help.program_modes.test_case.render import instruction_set
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
-from exactly_lib.util.textformat.constructor.sections import \
-    SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import para, text
 
@@ -36,13 +35,12 @@ class TestCaseHelpConstructorResolver:
             return instruction_set.InstructionSetPerPhaseRenderer(self._contents)
         if item is TestCaseHelpItem.PHASE:
             assert isinstance(request.data, TestCasePhaseDocumentation), 'Must be a TestCasePhaseDoc'
-            return SectionContentsConstructorFromArticleContentsConstructor(
-                TestCasePhaseDocumentationConstructor(request.data))
+            return sections.contents_from_article_contents(TestCasePhaseDocumentationConstructor(request.data))
         if item is TestCaseHelpItem.PHASE_INSTRUCTION_LIST:
             section_documentation = request.data
             assert isinstance(section_documentation, SectionDocumentation), 'Must be a SectionDocumentation'
-            return SectionInstructionSetConstructor(section_documentation.instruction_set,
-                                                    instruction_group_by=section_documentation.instruction_group_by)
+            return instruction_set_constructor(section_documentation.instruction_set,
+                                               instruction_group_by=section_documentation.instruction_group_by)
         if item is TestCaseHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
                                         request.name,
@@ -63,7 +61,7 @@ class InstructionSearchConstructor(SectionContentsConstructor):
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         sections = []
         for phase_and_instruction_description in self.phase_and_instruction_description_list:
-            man_page_renderer = render_instruction.InstructionDocSectionContentsConstructor(
+            man_page_renderer = render_instruction.instruction_doc_section_contents_constructor(
                 phase_and_instruction_description[1])
             phase_section = doc.Section(text(phase_and_instruction_description[0].syntax),
                                         man_page_renderer.apply(environment))

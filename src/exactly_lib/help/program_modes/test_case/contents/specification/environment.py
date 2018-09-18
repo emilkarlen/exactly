@@ -8,7 +8,7 @@ from exactly_lib.help.render import see_also
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
-from exactly_lib.util.textformat.constructor.sections import constant_section_contents
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
@@ -53,7 +53,7 @@ def hierarchy_root(header: str) -> generator.SectionHierarchyGenerator:
 
     def const_paragraphs(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return hierarchy.leaf(header_,
-                              constant_section_contents(section_contents(paragraphs)))
+                              sections.constant_contents(section_contents(paragraphs)))
 
     return hierarchy.parent(
         header,

@@ -10,7 +10,7 @@ from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_hel
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
-from exactly_lib.util.textformat.constructor.sections import constant_section_contents
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -53,7 +53,7 @@ class _HierarchyGenerator:
                 Node('additional-test-case-conf',
                      hierarchy.leaf(
                          ADDITIONAL_TEST_CASE_CONFIG_HEADER,
-                         constant_section_contents(
+                         sections.constant_contents(
                              docs.section_contents(self._tp.fnap(_ADDITIONAL_TEST_CASE_CONFIG))
                          ))
                      ),
@@ -62,7 +62,7 @@ class _HierarchyGenerator:
     def _cases_and_sub_suites(self, header: str) -> SectionHierarchyGenerator:
         return hierarchy.leaf(
             header,
-            constant_section_contents(
+            sections.constant_contents(
                 docs.section_contents(self._cases_and_sub_suites_paragraphs())
             )
         )
@@ -70,7 +70,7 @@ class _HierarchyGenerator:
     def _common_tc_contents(self, header: str) -> SectionHierarchyGenerator:
         return hierarchy.leaf(
             header,
-            constant_section_contents(
+            sections.constant_contents(
                 docs.section_contents(self._common_tc_contents_paragraphs())
             ))
 

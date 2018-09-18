@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
-from exactly_lib.help.program_modes.common.renderers import default_section_para, SectionInstructionSetConstructor
+from exactly_lib.help.program_modes.common.renderers import default_section_para, instruction_set_constructor
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
@@ -32,7 +32,7 @@ class SectionDocumentationConstructorBase(ArticleContentsConstructor):
                                       environment: ConstructionEnvironment,
                                       output: List[docs.SectionItem]):
         if self.__section_documentation.has_instructions:
-            renderer = SectionInstructionSetConstructor(
+            renderer = instruction_set_constructor(
                 self.__section_documentation.instruction_set,
                 self._instruction_cross_ref_text,
                 instruction_group_by=self.__section_documentation.instruction_group_by)

@@ -5,10 +5,10 @@ from exactly_lib.util.textformat.construction.section_hierarchy import hierarchi
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, target_info_leaf, \
     TargetInfoFactory
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
-from exactly_lib.util.textformat.constructor.sections import constant_section_contents
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
@@ -162,7 +162,7 @@ class Test(unittest.TestCase):
 
 
 def section_contents(x: docs.SectionContents) -> SectionContentsConstructor:
-    return constant_section_contents(x)
+    return sections.constant_contents(x)
 
 
 CONSTRUCTION_ENVIRONMENT = ConstructionEnvironment(CrossReferenceTextConstructorTestImpl())

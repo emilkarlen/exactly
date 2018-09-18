@@ -4,10 +4,9 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, SectionInstructionSet, \
     InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import instruction_set_list_item
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
-from exactly_lib.util.textformat.constructor.sections import \
-    SectionContentsConstructorFromParagraphItemsConstructor
 from exactly_lib.util.textformat.structure import lists
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
@@ -61,14 +60,15 @@ class InstructionSetSummaryConstructor(ParagraphItemsConstructor):
             return instr_list
 
 
-class SectionInstructionSetConstructor(SectionContentsConstructorFromParagraphItemsConstructor):
-    def __init__(self, instruction_set: SectionInstructionSet,
-                 name_2_name_text_fun: Callable[[str], docs.Text] = docs.text,
-                 instruction_group_by:
-                 Optional[Callable[[Sequence[InstructionDocumentation]], Sequence[InstructionGroup]]] = None):
-        super().__init__([InstructionSetSummaryConstructor(instruction_set,
-                                                           name_2_name_text_fun,
-                                                           instruction_group_by)])
+def instruction_set_constructor(
+        instruction_set: SectionInstructionSet,
+        name_2_name_text_fun: Callable[[str], docs.Text] = docs.text,
+        instruction_group_by:
+        Optional[Callable[[Sequence[InstructionDocumentation]], Sequence[InstructionGroup]]] = None
+) -> sections.SectionContentsConstructor:
+    return sections.paragraphs_contents([InstructionSetSummaryConstructor(instruction_set,
+                                                                          name_2_name_text_fun,
+                                                                          instruction_group_by)])
 
 
 def sections_short_list(sections: Sequence[SectionDocumentation],
