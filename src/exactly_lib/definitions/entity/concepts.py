@@ -102,7 +102,7 @@ TYPE_CONCEPT_INFO = name_and_ref_target_for_entity_type(
 
 SYMBOL_CONCEPT_INFO = name_and_ref_target(
     all_entity_types.SYMBOL_CONCEPT_NAME,
-    'A named, constant, value.'
+    _format('A named constant, with one of the types of {program_name}\'s type system.')
 )
 
 ACTOR_CONCEPT_INFO = name_and_ref_target_for_entity_type(
