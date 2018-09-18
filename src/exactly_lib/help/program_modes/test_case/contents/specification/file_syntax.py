@@ -17,12 +17,12 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     text_parser = _text_parser(setup)
-    return h.parent(
+    return h.parent_(
         header, [],
         [
             h.Node('phases', h.leaf('Phases', _PhaseRenderer(text_parser))),
             h.Node('phase-contents', h.leaf('Phase contents', _PhaseContentsRenderer(text_parser))),
-            h.Node('instructions', h.parent(
+            h.Node('instructions', h.parent_(
                 'Instructions',
                 text_parser.fnap(INSTRUCTIONS_DOC),
                 [h.Node('description',

@@ -5,6 +5,8 @@ from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.help import std_tags
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsConstructor
+from exactly_lib.util.textformat.constructor import paragraphs
+from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
 from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.section_target_hierarchy import targets
@@ -14,7 +16,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.section_nodes import \
     LeafArticleNode, SectionItemNodeWithSubSections
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
+from exactly_lib.util.textformat.structure.core import StringText
 
 _INSTRUCTIONS_IN = 'The instructions in the {section} {section_concept}.'
 
@@ -71,7 +73,7 @@ class HtmlDocGeneratorForSectionDocumentBase:
                 section)
             section_nodes.append(instructions_node_constructor())
         return SectionItemNodeWithSubSections(root_target_info,
-                                              [],
+                                              paragraphs.empty(),
                                               section_nodes)
 
 
@@ -95,11 +97,11 @@ class _SectionInstructionsNodeConstructor:
             self._initial_paras(),
             self._instructions_sub_nodes())
 
-    def _initial_paras(self) -> List[ParagraphItem]:
-        return docs.paras(_INSTRUCTIONS_IN.format(
+    def _initial_paras(self) -> ParagraphItemsConstructor:
+        return paragraphs.constant(docs.paras(_INSTRUCTIONS_IN.format(
             section_concept=self.section_concept_name,
             section=self.section.name)
-        )
+        ))
 
     def _instructions_sub_nodes(self) -> Sequence[SectionItemNode]:
         instr_docs = self.section.instruction_set.instruction_documentations
@@ -121,7 +123,7 @@ class _SectionInstructionsNodeConstructor:
     def _instruction_group_node(self, group: InstructionGroup) -> SectionItemNode:
         return SectionItemNodeWithSubSections(
             self.section_target_factory.sub_factory(group.identifier).root(StringText(group.header)),
-            group.description_paragraphs,
+            paragraphs.constant(group.description_paragraphs),
             self._instruction_nodes(group.instruction_documentations))
 
     def _instruction_node(self, instruction: InstructionDocumentation) -> SectionItemNode:
@@ -157,5 +159,5 @@ class _SectionsListGenerator(SectionHierarchyGenerator):
             sub_section_nodes.append(section_node)
 
         return SectionItemNodeWithSubSections(root_target_info,
-                                              [],
+                                              paragraphs.empty(),
                                               sub_section_nodes)

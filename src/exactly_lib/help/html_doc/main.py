@@ -19,8 +19,8 @@ from exactly_lib.util.textformat.rendering.html import document as doc_rendering
 from exactly_lib.util.textformat.rendering.html import text
 from exactly_lib.util.textformat.rendering.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer
 from exactly_lib.util.textformat.rendering.html.section import HnSectionHeaderRenderer
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
 from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.section_target_hierarchy.hierarchies import parent, Node
 from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNodeEnvironment, \
     SectionItemNode
 from exactly_lib.util.textformat.section_target_hierarchy.table_of_contents import toc_list
@@ -57,9 +57,8 @@ def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
 
 
 def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
-    return parent(
+    return h.sections(
         page_setup.PAGE_TITLE,
-        [],
         (
                 _case_and_suite_sections(application_help)
                 +
@@ -71,15 +70,15 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
     )
 
 
-def _case_and_suite_sections(application_help: ApplicationHelp) -> List[Node]:
+def _case_and_suite_sections(application_help: ApplicationHelp) -> List[h.Node]:
     return [
-        Node(
+        h.Node(
             'test-case',
             test_case.hierarchy(_TEST_CASES_HEADER,
                                 application_help.test_case_help,
                                 )
         ),
-        Node(
+        h.Node(
             'test-suite',
             test_suite.hierarchy(_TEST_SUITES_HEADER,
                                  application_help.test_suite_help,
@@ -90,14 +89,14 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> List[Node]:
 
 
 def _entity_sections(application_help: ApplicationHelp,
-                     entity_types_to_exclude: Sequence[EntityTypeNames]) -> List[Node]:
+                     entity_types_to_exclude: Sequence[EntityTypeNames]) -> List[h.Node]:
     all_entity_type_names = filter(
         lambda
             etn: etn.identifier not in entity_types_to_exclude,
         ALL_ENTITY_TYPES_IN_DISPLAY_ORDER)
 
-    def _section_setup_for_entity(names: EntityTypeNames) -> Node:
-        return Node(
+    def _section_setup_for_entity(names: EntityTypeNames) -> h.Node:
+        return h.Node(
             names.identifier,
             application_help.entity_type_conf_for(names.identifier).get_hierarchy_generator(
                 names.name.plural.capitalize()),
@@ -110,24 +109,23 @@ def _entity_sections(application_help: ApplicationHelp,
     ]
 
 
-def _cli_syntax_sections(local_target_name: str) -> List[Node]:
+def _cli_syntax_sections(local_target_name: str) -> List[h.Node]:
     return [
-        Node(
+        h.Node(
             local_target_name,
-            parent('Command line syntax',
-                   [],
-                   [
-                       Node('test-case',
-                            case_cli_syntax.root(_TEST_CASES_HEADER)
-                            ),
-                       Node('test-suite',
-                            suite_cli_syntax.root(_TEST_SUITES_HEADER)
-                            ),
-                       Node('help',
-                            help.root('Getting Help')
-                            ),
-                   ]
-                   )
+            h.sections('Command line syntax',
+                       [
+                           h.Node('test-case',
+                                  case_cli_syntax.root(_TEST_CASES_HEADER)
+                                  ),
+                           h.Node('test-suite',
+                                  suite_cli_syntax.root(_TEST_SUITES_HEADER)
+                                  ),
+                           h.Node('help',
+                                  help.root('Getting Help')
+                                  ),
+                       ]
+                       )
         )
     ]
 

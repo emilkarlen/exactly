@@ -54,12 +54,12 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs_)))
 
-    return h.parent(
+    return h.parent_(
         header,
         [],
         [
             h.Node('dir-structure',
-                   h.parent(
+                   h.parent_(
                        'Directory structure and Current directory',
                        tp.fnap(_DS_CD_PREAMBLE),
                        [

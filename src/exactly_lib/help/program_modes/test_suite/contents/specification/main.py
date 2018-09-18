@@ -45,9 +45,8 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
         })
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        generator = h.parent(
+        generator = h.sections(
             self.header,
-            [],
             [
                 h.Node('introduction',
                        h.leaf('Introduction',

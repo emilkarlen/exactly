@@ -9,6 +9,10 @@ def constant(paragraphs: Iterable[ParagraphItem]) -> ParagraphItemsConstructor:
     return _Constant(paragraphs)
 
 
+def empty() -> ParagraphItemsConstructor:
+    return _Constant([])
+
+
 class _Constant(ParagraphItemsConstructor):
     def __init__(self, paragraph_items: Iterable[ParagraphItem]):
         self._paragraph_items = paragraph_items

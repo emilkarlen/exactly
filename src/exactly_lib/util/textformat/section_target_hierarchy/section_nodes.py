@@ -1,6 +1,7 @@
 from typing import Sequence, Optional, Set
 
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
 from exactly_lib.util.textformat.constructor.section import \
     SectionItemConstructor, \
     ArticleContentsConstructor, ArticleConstructor, SectionConstructor
@@ -9,7 +10,6 @@ from exactly_lib.util.textformat.section_target_hierarchy.section_node import Se
     SectionItemNode
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
@@ -65,7 +65,7 @@ class SectionItemNodeWithSubSections(SectionItemNodeWithRoot):
 
     def __init__(self,
                  root_target_info: TargetInfo,
-                 initial_paragraphs: Sequence[ParagraphItem],
+                 initial_paragraphs: ParagraphItemsConstructor,
                  sub_sections: Sequence[SectionItemNode],
                  ):
         super().__init__(root_target_info)
@@ -86,7 +86,7 @@ class SectionItemNodeWithSubSections(SectionItemNodeWithRoot):
                 sub_sections = [ss.section_item_constructor(node_environment).apply(environment)
                                 for ss in super_self._sub_sections]
                 return doc.Section(super_self._root_target_info.presentation_text,
-                                   doc.SectionContents(list(super_self._initial_paragraphs),
+                                   doc.SectionContents(super_self._initial_paragraphs.apply(environment),
                                                        sub_sections),
                                    target=super_self._root_target_info.target,
                                    tags=node_environment.toc_section_item_tags)

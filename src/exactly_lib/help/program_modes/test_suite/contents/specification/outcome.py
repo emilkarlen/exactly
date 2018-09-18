@@ -20,7 +20,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs)))
 
-    return h.parent(
+    return h.parent_(
         header,
         preamble_paragraphs,
         [
