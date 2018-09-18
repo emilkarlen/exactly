@@ -1,6 +1,8 @@
 from typing import List, Optional
 
+from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor, \
     SectionConstructor, SectionItemConstructor
@@ -45,8 +47,20 @@ class Node(tuple):
         return self[1]
 
 
+def parent_(header: str,
+            initial_paragraphs: List[ParagraphItem],
+            nodes: List[Node],
+            ) -> SectionHierarchyGenerator:
+    """
+    A section with sub sections that appear in the TOC/target hierarchy.
+    """
+    return parent(header,
+                  paragraphs.constant(initial_paragraphs),
+                  nodes)
+
+
 def parent(header: str,
-           initial_paragraphs: List[ParagraphItem],
+           initial_paragraphs: ParagraphItemsConstructor,
            nodes: List[Node],
            ) -> SectionHierarchyGenerator:
     """
@@ -55,6 +69,17 @@ def parent(header: str,
     return _SectionHierarchyGeneratorWithSubSections(StringText(header),
                                                      initial_paragraphs,
                                                      nodes)
+
+
+def sections(header: str,
+             nodes: List[Node],
+             ) -> SectionHierarchyGenerator:
+    """
+    A section with sub sections that appear in the TOC/target hierarchy.
+    """
+    return parent(header,
+                  paragraphs.empty(),
+                  nodes)
 
 
 class _SectionLeafGenerator(SectionHierarchyGenerator):
@@ -136,7 +161,7 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
 
     def __init__(self,
                  header: StringText,
-                 initial_paragraphs: List[ParagraphItem],
+                 initial_paragraphs: ParagraphItemsConstructor,
                  nodes: List[Node],
                  ):
         self._header = header

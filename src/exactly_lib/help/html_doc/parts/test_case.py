@@ -14,9 +14,8 @@ from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as 
 def hierarchy(header: str,
               test_case_help: TestCaseHelp) -> generator.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help)
-    return h.parent(
+    return h.sections(
         header,
-        [],
         [
             h.Node('spec',
                    test_case_specification_rendering.root(

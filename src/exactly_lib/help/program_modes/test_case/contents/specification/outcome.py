@@ -29,7 +29,7 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs)))
 
-    return h.parent(
+    return h.parent_(
         header,
         preamble_paragraphs,
         [
@@ -39,7 +39,7 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
 
                    ),
             h.Node('scenarios',
-                   h.parent(
+                   h.parent_(
                        'Scenarios',
                        [],
                        [

@@ -39,7 +39,7 @@ class _HierarchyGenerator:
         })
 
     def generator(self, header: str) -> SectionHierarchyGenerator:
-        return h.parent(
+        return h.parent_(
             header,
             self._tp.fnap(_PRELUDE),
             [

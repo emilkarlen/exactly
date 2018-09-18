@@ -77,7 +77,7 @@ class Test(unittest.TestCase):
     def test_parent_without_sub_sections(self):
         # ARRANGE #
         target_factory = TargetInfoFactoryTestImpl(['target_component'])
-        object_to_test = sut.parent('top header', [], [])
+        object_to_test = sut.parent_('top header', [], [])
         # EXPECTATION #
         expected_target_info = target_factory.root(StringText('top header'))
 
@@ -104,7 +104,7 @@ class Test(unittest.TestCase):
         expected_section_contents_object2 = docs.section_contents(docs.paras('testing testing'))
         expected_root_initial_para = docs.para('root initial paras')
         expected_root_initial_paras = [expected_root_initial_para]
-        object_to_test = sut.parent(
+        object_to_test = sut.parent_(
             'root header',
             expected_root_initial_paras,
             [Node('sub-target1', sut.leaf('sub1',

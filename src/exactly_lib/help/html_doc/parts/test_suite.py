@@ -20,18 +20,16 @@ def hierarchy(header: str,
               suite_reporter_conf: EntityTypeConfiguration,
               ) -> generator.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestSuiteHelp(test_suite_help)
-    return h.parent(
+    return h.sections(
         header,
-        [],
         [
             h.Node('spec',
                    SpecificationHierarchyGenerator('Specification of test suite functionality',
                                                    test_suite_help)
                    ),
             h.Node('sections',
-                   h.parent(
+                   h.sections(
                        'Sections',
-                       [],
                        [
                            h.Node('cases-and-sub-suites',
                                   sections_helper.generator_for_custom_sections(

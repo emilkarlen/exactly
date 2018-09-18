@@ -8,6 +8,7 @@ from typing import List, Callable
 from exactly_lib.help import std_tags
 from exactly_lib.help.contents_structure.entity import EntityDocumentation, HtmlDocHierarchyGeneratorGetter
 from exactly_lib.help.render.entity_docs import sorted_entity_list
+from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.section_target_hierarchy import targets
@@ -51,7 +52,7 @@ class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
             for entity in sorted_entity_list(self.all_entities)
         ]
         return SectionItemNodeWithSubSections(target_factory.root(StringText(self.header)),
-                                              [],
+                                              paragraphs.empty(),
                                               entity_nodes)
 
     def _entity_node(self, entity: EntityDocumentation) -> SectionItemNode:
