@@ -15,10 +15,10 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
     step_with_single_exit_value, singe_exit_value_display, step_with_single_exit_value2
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
-from exactly_lib.util.textformat.construction.section_contents.constructors import constant_section_contents
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
+from exactly_lib.util.textformat.constructor.sections import constant_section_contents
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser

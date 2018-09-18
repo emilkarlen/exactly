@@ -2,8 +2,7 @@ import unittest
 
 from exactly_lib.help.entities.suite_reporters import render as sut
 from exactly_lib.help.entities.suite_reporters.entity_configuration import SUITE_REPORTER_ENTITY_CONFIGURATION
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.entities.suite_reporters.test_resources.documentation import SuiteReporterDocTestImpl
 from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl

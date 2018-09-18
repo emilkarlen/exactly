@@ -14,14 +14,13 @@ from exactly_lib.help.html_doc.parts import test_suite
 from exactly_lib.help.program_modes.test_case.contents import cli_syntax as case_cli_syntax
 from exactly_lib.help.program_modes.test_suite.contents import cli_syntax as suite_cli_syntax
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import parent, Node
 from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNodeEnvironment, \
     SectionItemNode
 from exactly_lib.util.textformat.construction.section_hierarchy.table_of_contents import toc_list
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.rendering.html import document as doc_rendering
 from exactly_lib.util.textformat.rendering.html import text
 from exactly_lib.util.textformat.rendering.html.paragraph_item.full_paragraph_item import FullParagraphItemRenderer

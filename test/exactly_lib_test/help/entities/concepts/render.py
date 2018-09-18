@@ -7,8 +7,7 @@ from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumen
 from exactly_lib.help.entities.concepts.entity_configuration import CONCEPT_ENTITY_CONFIGURATION
 from exactly_lib.util.description import Description, DescriptionWithSubSections
 from exactly_lib.util.name import Name
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure.document import SectionContents
 from exactly_lib.util.textformat.structure.structures import text, para
 from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl

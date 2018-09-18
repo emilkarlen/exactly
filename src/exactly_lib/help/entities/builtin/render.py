@@ -11,8 +11,8 @@ from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.render.see_also import see_also_sections
 from exactly_lib.type_system.value_type import ValueType
-from exactly_lib.util.textformat.construction.section_contents.constructor import \
-    ConstructionEnvironment, \
+from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
+from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
