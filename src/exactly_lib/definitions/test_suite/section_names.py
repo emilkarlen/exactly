@@ -23,3 +23,10 @@ def suite_section_name_dictionary() -> Dict[str, SectionName]:
 
 def suite_section_name_dict_key_for(section_name: str) -> str:
     return section_name.replace('-', '_')
+
+
+CASE__SETUP = SectionName(section_names_plain.SECTION_NAME__CASE_SETUP)
+CASE__ACT = SectionName(section_names_plain.SECTION_NAME__CASE_ACT)
+CASE__BEFORE_ASSERT = SectionName(section_names_plain.SECTION_NAME__CASE_BEFORE_ASSERT)
+CASE__ASSERT = SectionName(section_names_plain.SECTION_NAME__CASE_ASSERT)
+CASE__CLEANUP = SectionName(section_names_plain.SECTION_NAME__CASE_CLEANUP)
