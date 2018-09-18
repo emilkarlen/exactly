@@ -15,7 +15,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.section_nodes import \
     SectionItemNodeWithSubSections
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory, TargetInfo, \
     TargetInfoNode
-from exactly_lib.util.textformat.structure import document as doc
+from exactly_lib.util.textformat.structure import document as doc, core
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
 
@@ -23,6 +23,15 @@ def leaf(header: str,
          contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
     """A section without sub sections that appear in the TOC/target hierarchy"""
     return _SectionLeafGenerator(StringText(header), contents_constructor)
+
+
+def leaf_with_constant_target(header: str,
+                              constant_target: core.CrossReferenceTarget,
+                              contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
+    """A section without sub sections that appear in the TOC/target hierarchy"""
+    return _SectionLeafGenerator(StringText(header),
+                                 contents_constructor,
+                                 constant_target)
 
 
 def leaf_not_in_toc(section: SectionItemConstructor) -> SectionHierarchyGenerator:
@@ -82,6 +91,18 @@ def sections(header: str,
                   nodes)
 
 
+def hierarchy_with_constant_target(header: str,
+                                   constant_target: core.CrossReferenceTarget,
+                                   initial_paragraphs: ParagraphItemsConstructor,
+                                   nodes: List[Node],
+                                   ) -> SectionHierarchyGenerator:
+    return _SectionHierarchyGeneratorWithSubSections(StringText(header),
+                                                     initial_paragraphs,
+                                                     nodes,
+                                                     constant_target,
+                                                     )
+
+
 class _SectionLeafGenerator(SectionHierarchyGenerator):
     """
     A section without sub sections.
@@ -90,13 +111,21 @@ class _SectionLeafGenerator(SectionHierarchyGenerator):
     def __init__(self,
                  header: StringText,
                  contents_renderer: SectionContentsConstructor,
+                 constant_target: Optional[core.CrossReferenceTarget] = None,
                  ):
         self._header = header
         self._contents_renderer = contents_renderer
+        self._constant_target = constant_target
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        return _LeafSectionNode(target_factory.root(self._header),
+        return _LeafSectionNode(self._root_target_info(target_factory),
                                 self._contents_renderer)
+
+    def _root_target_info(self, target_factory: TargetInfoFactory) -> TargetInfo:
+        if self._constant_target is not None:
+            return TargetInfo(self._header,
+                              self._constant_target)
+        return target_factory.root(self._header)
 
 
 class _SectionNotInTocLeafGenerator(SectionHierarchyGenerator):
@@ -163,16 +192,24 @@ class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
                  header: StringText,
                  initial_paragraphs: ParagraphItemsConstructor,
                  nodes: List[Node],
+                 constant_target: Optional[core.CrossReferenceTarget] = None,
                  ):
         self._header = header
         self._initial_paragraphs = initial_paragraphs
         self._nodes = nodes
+        self._constant_target = constant_target
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
         sub_sections = [node.generator.generate(target_factory.sub_factory(node.local_target_name))
                         for node
                         in self._nodes
                         ]
-        return SectionItemNodeWithSubSections(target_factory.root(self._header),
+        return SectionItemNodeWithSubSections(self._root_target_info(target_factory),
                                               self._initial_paragraphs,
                                               sub_sections)
+
+    def _root_target_info(self, target_factory: TargetInfoFactory) -> TargetInfo:
+        if self._constant_target is not None:
+            return TargetInfo(self._header,
+                              self._constant_target)
+        return target_factory.root(self._header)
