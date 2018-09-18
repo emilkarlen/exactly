@@ -57,7 +57,8 @@ class Test(unittest.TestCase):
         target_factory = TargetInfoFactoryTestImpl(['target_component'])
         expected_section_contents_object = doc.empty_section_contents()
         header = StringText('header')
-        object_to_test = sut.leaf_not_in_toc(header, section_contents(expected_section_contents_object))
+        object_to_test = sut.leaf_not_in_toc(sections.section(header,
+                                                              section_contents(expected_section_contents_object)))
         # EXPECTATION #
 
         target_info_node_assertion = asrt.is_none

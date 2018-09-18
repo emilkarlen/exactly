@@ -5,6 +5,7 @@ from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
+from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.structure.structures import *
@@ -49,9 +50,9 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         'CD': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
     })
 
-    def const_paragraphs(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
+    def const_paragraphs(header_: str, paragraphs_: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
-                      sections.constant_contents(section_contents(paragraphs)))
+                      sections.constant_contents(section_contents(paragraphs_)))
 
     return h.parent(
         header,
@@ -60,7 +61,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
             h.Node('dir-structure',
                    h.parent(
                        'Directory structure and Current directory',
-                       tp.fnap(_DS_CD_PROLOG),
+                       tp.fnap(_DS_CD_PREAMBLE),
                        [
                            h.Node('sds',
                                   const_paragraphs(
@@ -80,22 +81,29 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                                   ),
                            h.Node('see-also',
                                   h.leaf_not_in_toc(
-                                      see_also.SEE_ALSO_TITLE,
-                                      see_also.SeeAlsoSectionContentsConstructor(
+                                      see_also.SeeAlsoSectionConstructor(
                                           see_also.items_of_targets(_dir_struct_see_also_targets())
                                       ))
                                   ),
                        ])
                    ),
             h.Node('env-vars',
-                   const_paragraphs('Environment variables',
-                                    tp.fnap(_ENVIRONMENT_VARIABLES))
+                   h.leaf(
+                       'Environment variables',
+                       sections.contents(
+                           [paragraphs.constant(tp.fnap(_ENVIRONMENT_VARIABLES))],
+                           [
+                               see_also.SeeAlsoSectionConstructor(
+                                   see_also.items_of_targets(_env_var_see_also_targets())
+                               )
+                           ]
+                       ))
                    ),
         ]
     )
 
 
-_DS_CD_PROLOG = """\
+_DS_CD_PREAMBLE = """\
 Files and directories used by tests are organized in the {tcds_concept} ({TCDS}).
 
 It consists of two parts:
@@ -202,6 +210,13 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
     ]
 
 
+############################################################
+# MENTION
+#
+# - Which env vars are available.
+# - Env vars and TCDS
+# - Manipulating env vars
+############################################################
 _ENVIRONMENT_VARIABLES = """\
 All system environment variables
 that are set when {program_name} is started
@@ -209,8 +224,15 @@ are available in processes run from the test case.
 
 
 In addition to these, {program_name} sets some environment variables
-that correspond to directories in the {TCDS}.
+that correspond to directories in the {tcds_concept}.
 
 
 Environment variables can be manipulated by the {env} instruction.
 """
+
+
+def _env_var_see_also_targets() -> List[see_also.SeeAlsoTarget]:
+    return [
+        concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+        concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+    ]

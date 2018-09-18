@@ -3,7 +3,7 @@ from typing import List, Optional
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor, \
-    SectionConstructor
+    SectionConstructor, SectionItemConstructor
 from exactly_lib.util.textformat.section_target_hierarchy import targets
 from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNodeEnvironment, \
@@ -13,8 +13,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.section_nodes import \
     SectionItemNodeWithSubSections
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory, TargetInfo, \
     TargetInfoNode
-from exactly_lib.util.textformat.structure import document as doc, core
-from exactly_lib.util.textformat.structure import structures as docs
+from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
 
@@ -24,10 +23,9 @@ def leaf(header: str,
     return _SectionLeafGenerator(StringText(header), contents_constructor)
 
 
-def leaf_not_in_toc(header: docs.Text,
-                    contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
+def leaf_not_in_toc(section: SectionItemConstructor) -> SectionHierarchyGenerator:
     """A section without sub sections that does not appear in the TOC/target hierarchy"""
-    return _SectionNotInTocLeafGenerator(header, contents_constructor)
+    return _SectionNotInTocLeafGenerator(section)
 
 
 class Node(tuple):
@@ -81,16 +79,11 @@ class _SectionNotInTocLeafGenerator(SectionHierarchyGenerator):
     A section that does not appear in the TOC.
     """
 
-    def __init__(self,
-                 header: core.Text,
-                 contents_renderer: SectionContentsConstructor,
-                 ):
-        self._header = header
-        self._contents_renderer = contents_renderer
+    def __init__(self, section: SectionItemConstructor):
+        self._section = section
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        return _LeafSectionNodeNotInToc(self._header,
-                                        self._contents_renderer)
+        return _LeafSectionNodeNotInToc(self._section)
 
 
 class _LeafSectionNode(SectionItemNodeWithRoot):
@@ -126,25 +119,14 @@ class _LeafSectionNodeNotInToc(SectionItemNode):
     A section without sub sections that appear in the target-hierarchy.
     """
 
-    def __init__(self,
-                 header: core.Text,
-                 contents_renderer: SectionContentsConstructor,
-                 ):
-        self._header = header
-        self._contents_renderer = contents_renderer
+    def __init__(self, section: SectionItemConstructor):
+        self._section = section
 
     def target_info_node(self) -> Optional[TargetInfoNode]:
         return None
 
-    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionConstructor:
-        super_self = self
-
-        class RetVal(SectionConstructor):
-            def apply(self, environment: ConstructionEnvironment) -> doc.Section:
-                return doc.Section(super_self._header,
-                                   super_self._contents_renderer.apply(environment))
-
-        return RetVal()
+    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
+        return self._section
 
 
 class _SectionHierarchyGeneratorWithSubSections(SectionHierarchyGenerator):
