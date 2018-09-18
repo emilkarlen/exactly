@@ -7,7 +7,7 @@ from exactly_lib.help.contents_structure.entity import CliListConstructorGetter,
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.help.entities.types.render import LOGIC_TYPES_HEADER, DATA_TYPES_HEADER
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_paragraphs
-from exactly_lib.help.render import parttioned_entity_set as pes
+from exactly_lib.help.render import partitioned_entity_set as pes
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
 from exactly_lib.help.render.see_also import see_also_sections
