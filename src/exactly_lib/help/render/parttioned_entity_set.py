@@ -7,12 +7,11 @@ from exactly_lib.help.render.entity_docs import EntitiesListConstructor
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor, \
     SectionConstructor, \
     ArticleContentsConstructor
-from exactly_lib.util.textformat.constructor.sections import \
-    SectionConstructorFromSectionContentsConstructor, section_contents_constructor_with_sub_sections
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -67,14 +66,12 @@ class PartitionedCliListConstructorGetter(CliListConstructorGetter):
         partitions = partition_entities(self.partition_setup_list, all_entity_doc_list)
 
         def section_constructor(partition: EntitiesPartition) -> SectionConstructor:
-            return SectionConstructorFromSectionContentsConstructor(
+            return sections.section(
                 docs.text(partition.partition_names_setup.header),
                 EntitiesListConstructor(self.entity_2_summary_paragraphs,
                                         partition.entity_doc_list))
 
-        return section_contents_constructor_with_sub_sections(list(
-            map(section_constructor, partitions)
-        ))
+        return sections.contents(sub_sections=map(section_constructor, partitions))
 
 
 class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):

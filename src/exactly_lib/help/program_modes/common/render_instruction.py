@@ -4,11 +4,10 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
 from exactly_lib.help.render.doc_utils import synopsis_section, description_section
 from exactly_lib.help.render.see_also import see_also_sections
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
-    ArticleContentsConstructor
-from exactly_lib.util.textformat.constructor.sections import \
-    SectionContentsConstructorFromArticleContentsConstructor
+    ArticleContentsConstructor, SectionContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc, lists
 from exactly_lib.util.textformat.structure import structures as docs
 
@@ -39,9 +38,8 @@ class InstructionDocArticleContentsConstructor(ArticleContentsConstructor):
                                    doc.SectionContents([], sub_sections))
 
 
-class InstructionDocSectionContentsConstructor(SectionContentsConstructorFromArticleContentsConstructor):
-    def __init__(self, documentation: InstructionDocumentation):
-        super().__init__(InstructionDocArticleContentsConstructor(documentation))
+def instruction_doc_section_contents_constructor(documentation: InstructionDocumentation) -> SectionContentsConstructor:
+    return sections.contents_from_article_contents(InstructionDocArticleContentsConstructor(documentation))
 
 
 def instruction_set_list_item(description: InstructionDocumentation,

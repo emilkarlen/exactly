@@ -18,7 +18,7 @@ from exactly_lib.test_case import test_case_status
 from exactly_lib.util.textformat.construction.section_hierarchy import generator
 from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
 from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
-from exactly_lib.util.textformat.constructor.sections import constant_section_contents
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.parse import normalize_and_parse
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -29,7 +29,7 @@ def hierarchy_generator(header: str, setup: Setup) -> generator.SectionHierarchy
 
     def const_contents(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
         return hierarchy.leaf(header,
-                              constant_section_contents(section_contents(paragraphs)))
+                              sections.constant_contents(section_contents(paragraphs)))
 
     return hierarchy.parent(
         header,

@@ -13,8 +13,9 @@ from exactly_lib.util.textformat.construction.section_hierarchy.as_section_conte
 from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNode
 from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.sections import \
-    SectionContentsConstructor, constant_section_contents
+    SectionContentsConstructor
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from . import structure
@@ -66,7 +67,7 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
         return generator.generate(target_factory)
 
     def _section_of_parsed(self, contents: str) -> SectionContentsConstructor:
-        return constant_section_contents(
+        return sections.constant_contents(
             docs.section_contents(self._tp.fnap(contents))
         )
 

@@ -1,9 +1,8 @@
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor, \
     ArticleContentsConstructor
-from exactly_lib.util.textformat.constructor.sections import \
-    SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.structures import text, Text
 
@@ -14,7 +13,7 @@ def with_or_without_name(do_include_name: bool,
     if do_include_name:
         return _WithElementNameConstructor(text(name), contents_renderer)
     else:
-        return SectionContentsConstructorFromArticleContentsConstructor(contents_renderer)
+        return sections.contents_from_article_contents(contents_renderer)
 
 
 class _WithElementNameConstructor(SectionContentsConstructor):

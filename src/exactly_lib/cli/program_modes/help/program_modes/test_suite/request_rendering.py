@@ -11,11 +11,10 @@ from exactly_lib.help.program_modes.test_suite.render.section_documentation impo
     TestSuiteSectionDocumentationConstructor
 from exactly_lib.help.render.cli_program import \
     ProgramDocumentationSectionContentsConstructor
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
-from exactly_lib.util.textformat.constructor.sections import \
-    SectionContentsConstructorFromArticleContentsConstructor
 from exactly_lib.util.textformat.structure import document as doc
 
 
@@ -31,8 +30,7 @@ class TestSuiteHelpConstructorResolver:
             return main.specification_constructor(self._contents)
         if item is TestSuiteHelpItem.SECTION:
             assert isinstance(request.data, TestSuiteSectionDocumentation), 'Must be a TestSuiteSectionDoc'
-            return SectionContentsConstructorFromArticleContentsConstructor(
-                TestSuiteSectionDocumentationConstructor(request.data))
+            return sections.contents_from_article_contents(TestSuiteSectionDocumentationConstructor(request.data))
 
         if item is TestSuiteHelpItem.INSTRUCTION:
             return with_or_without_name(request.do_include_name_in_output,
