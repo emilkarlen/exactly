@@ -264,6 +264,19 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
                       returned,
                       'The object itself is expected to be returned by the visitor')
 
+    def test_visit_PredefinedContentsPart(self):
+        # ARRANGE #
+        x = sut.PredefinedHelpContentsPartReference(sut.HelpPredefinedContentsPart.TEST_SUITE_CLI_SYNTAX)
+        visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
+        # ACT #
+        returned = visitor.visit(x)
+        # ASSERT #
+        self.assertEqual([sut.PredefinedHelpContentsPartReference],
+                         visitor.visited_classes)
+        self.assertIs(x,
+                      returned,
+                      'The object itself is expected to be returned by the visitor')
+
     def test_visit_SHOULD_raise_exception_WHEN_an_unknown_class_is_visited(self):
         # ARRANGE #
         x = UnknownCrossReferenceId()
@@ -299,6 +312,10 @@ class VisitorThatRegistersVisitedClassesAndReturnsTheArgument(sut.CrossReference
 
     def visit_custom(self, x: sut.CustomCrossReferenceId):
         self.visited_classes.append(sut.CustomCrossReferenceId)
+        return x
+
+    def visit_predefined_part(self, x: sut.PredefinedHelpContentsPartReference):
+        self.visited_classes.append(sut.PredefinedHelpContentsPartReference)
         return x
 
 

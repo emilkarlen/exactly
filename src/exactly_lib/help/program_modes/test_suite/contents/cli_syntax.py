@@ -6,7 +6,8 @@ from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
+    PredefinedHelpContentsPartReference, HelpPredefinedContentsPart
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
@@ -33,7 +34,10 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def root(header: str) -> SectionHierarchyGenerator:
-    return h.leaf(header, ProgramDocumentationSectionContentsConstructor(TestSuiteCliSyntaxDocumentation()))
+    return h.leaf_with_constant_target(
+        header,
+        PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_SUITE_CLI_SYNTAX),
+        ProgramDocumentationSectionContentsConstructor(TestSuiteCliSyntaxDocumentation()))
 
 
 class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):

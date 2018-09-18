@@ -6,6 +6,7 @@ from exactly_lib.cli.definitions.program_modes.help import arguments_for
 from exactly_lib.cli.definitions.program_modes.help import command_line_options as clo
 from exactly_lib.cli.program_modes.help.request_handling.request_handler import RequestHandler
 from exactly_lib.definitions.cross_ref import concrete_cross_refs
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.render.cross_reference import CrossReferenceTextConstructor
 from exactly_lib.util.std import StdOutputFiles
@@ -92,6 +93,9 @@ class _HelpCommandLineGetterVisitor(concrete_cross_refs.CrossReferenceIdVisitor)
     def visit_test_suite_section_instruction(self, x: concrete_cross_refs.TestSuiteSectionInstructionCrossReference):
         return _command_line_display_for_help_arguments(arguments_for.suite_instruction_in_section(x.section_name,
                                                                                                    x.instruction_name))
+
+    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference):
+        return _command_line_display_for_help_arguments(arguments_for.ARGUMENTS_FOR_PART[x.part]())
 
 
 def _command_line_display_for_help_arguments(arguments: Sequence[str]) -> str:

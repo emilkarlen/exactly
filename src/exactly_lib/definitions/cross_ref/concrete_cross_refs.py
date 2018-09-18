@@ -1,3 +1,5 @@
+from enum import Enum
+
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import EntityTypeNames
 from exactly_lib.util.textformat.structure.core import CrossReferenceTarget, UrlCrossReferenceTarget
@@ -122,6 +124,25 @@ class EntityCrossReferenceId(CrossReferenceId):
                self.entity_name == other.entity_name
 
 
+class HelpPredefinedContentsPart(Enum):
+    TEST_CASE_CLI_SYNTAX = 1
+    TEST_SUITE_CLI_SYNTAX = 2
+
+
+class PredefinedHelpContentsPartReference(CrossReferenceId):
+    def __init__(self, part: HelpPredefinedContentsPart):
+        self._part = part
+
+    @property
+    def part(self) -> HelpPredefinedContentsPart:
+        return self._part
+
+    def _eq_object_of_same_type(self, other):
+        assert isinstance(other, PredefinedHelpContentsPartReference)
+
+        return self._part is other._part
+
+
 class CrossReferenceIdVisitor:
     def visit(self, x: CrossReferenceTarget):
         if isinstance(x, CustomCrossReferenceId):
@@ -138,6 +159,8 @@ class CrossReferenceIdVisitor:
             return self.visit_entity(x)
         if isinstance(x, UrlCrossReferenceTarget):
             return self.visit_url(x)
+        if isinstance(x, PredefinedHelpContentsPartReference):
+            return self.visit_predefined_part(x)
         else:
             raise TypeError('Not a concrete %s: %s' % (str(CrossReferenceTarget),
                                                        str(x)))
@@ -161,4 +184,7 @@ class CrossReferenceIdVisitor:
         raise NotImplementedError()
 
     def visit_url(self, x: UrlCrossReferenceTarget):
+        raise NotImplementedError()
+
+    def visit_predefined_part(self, x: PredefinedHelpContentsPartReference):
         raise NotImplementedError()
