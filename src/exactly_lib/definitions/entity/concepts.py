@@ -9,6 +9,8 @@ from exactly_lib.definitions.entity import all_entity_types
 from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.util.name import Name, name_with_plural_s
 
+_CURRENT_DIRECTORY_SINGULAR = 'current directory'
+
 
 def concept_cross_ref(concept_name: str) -> EntityCrossReferenceId:
     return EntityCrossReferenceId(all_entity_types.CONCEPT_ENTITY_TYPE_NAMES,
@@ -34,7 +36,8 @@ def _format(s: str) -> str:
     return s.format(program_name=formatting.program_name(program_info.PROGRAM_NAME),
                     phase=phase_names.PHASE_NAME_DICTIONARY,
                     actor=formatting.concept(all_entity_types.ACTOR_ENTITY_TYPE_NAMES.name.singular),
-                    action_to_check=formatting.concept(ACTION_TO_CHECK_NAME.singular))
+                    action_to_check=formatting.concept(ACTION_TO_CHECK_NAME.singular),
+                    current_directory_concept=formatting.concept(_CURRENT_DIRECTORY_SINGULAR))
 
 
 ACTION_TO_CHECK_NAME = Name('action to check', "actions to check")
@@ -62,13 +65,14 @@ HOME_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
 SANDBOX_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('sandbox directory structure'),
     _format('Temporary directories used in a single execution of a test case, '
-            'one of which is the initial current directory.'),
+            'one of which is the initial {current_directory_concept}.'),
     'SDS',
 )
 
 CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
-    Name('current directory', 'current directories'),
-    'The current directory of the environment in which an instruction is executed.'
+    Name(_CURRENT_DIRECTORY_SINGULAR, 'current directories'),
+    'The current directory of the environment in which instruction and OS processes are executed.',
+    'CD',
 )
 
 ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(

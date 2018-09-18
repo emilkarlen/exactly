@@ -65,11 +65,13 @@ def path_type_path_rendering() -> SectionItem:
 
 
 _CD_INSTRUCTION_SECTION_ON_DEF_INSTRUCTION = """\
-The {def_instruction} is special because {symbol_concept} definitions are
-evaluated before the test case execution step.
+The {def_instruction} is special because a {symbol_concept} definition is
+evaluated each time it is referenced - not when it is defined
+(i.e. not when the {def_instruction} instruction is executed).
 
 
-This means, that when a {path_type} {symbol_concept} is defined with a relativity of {current_directory_concept}
+This means, that when a {path_type} {symbol_concept} is defined
+with a relativity of {current_directory_concept}
 ({rel_cd_option})
 it is relative the directory that is current when the symbol is REFERENCED,
 
@@ -77,20 +79,10 @@ not when it is defined.
 """
 
 _DEF_INSTRUCTION_REL_CD_DESCRIPTION = """\
-NOTE: When a {path_arg} is defined to be relative the {current_directory_concept},
-
+NOTE: When a {path_arg} value is defined to be relative the {current_directory_concept},
 it means that it is relative the directory that is current when the symbol is REFERENCED,
 
 not when it is defined.
-
-
-The {current_directory_concept} refers to the current directory during
-test case execution.
-
-But since definitions of {symbols_concept} happens before test case execution
-({symbols_concept} are constants),
-the {current_directory_concept} is not applicable in the context of
-{symbol_concept} definition.
 """
 
 _PATH_TYPE_PATH_RENDERING_DESCRIPTION_HEADER = 'Rendering of {path_type} values'

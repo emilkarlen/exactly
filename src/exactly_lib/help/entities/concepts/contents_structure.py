@@ -1,7 +1,8 @@
 from typing import List, Iterable
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId
+from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularAndPluralNameAndCrossReferenceId, \
+    SingularAndPluralAndAcronymNameAndCrossReferenceId
 from exactly_lib.definitions.entity.all_entity_types import CONCEPT_ENTITY_TYPE_NAMES
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, \
     EntityDocumentation
@@ -16,7 +17,7 @@ class ConceptDocumentation(EntityDocumentation):
     Abstract base class for concepts.
     """
 
-    def __init__(self, info: SingularAndPluralNameAndCrossReferenceId):
+    def __init__(self, info: SingularAndPluralAndAcronymNameAndCrossReferenceId):
         super().__init__(info)
         self._info = info
 
@@ -26,6 +27,9 @@ class ConceptDocumentation(EntityDocumentation):
 
     def name(self) -> Name:
         return self._info.name
+
+    def acronym(self) -> str:
+        return self._info.acronym
 
     def purpose(self) -> DescriptionWithSubSections:
         raise NotImplementedError()

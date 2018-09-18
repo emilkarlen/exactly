@@ -7,6 +7,7 @@ from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions import syntax_descriptions
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.current_directory_and_path_type import def_instruction_rel_cd_description
 from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import types, syntax_elements, concepts
@@ -96,14 +97,13 @@ class TheInstructionDocumentation(InstructionDocumentationThatIsNotMeantToBeAnAs
                                      self._paragraphs(syntax_descriptions.SYMBOL_NAME_SYNTAX_DESCRIPTION)),
         ])
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         name_and_cross_refs = [concepts.SYMBOL_CONCEPT_INFO,
-                               syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
-                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
                                concepts.TYPE_CONCEPT_INFO,
                                concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO,
+                               syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
+                               syntax_elements.HERE_DOCUMENT_SYNTAX_ELEMENT,
                                ]
-        name_and_cross_refs += types.ALL_TYPES_INFO_TUPLE
         return name_and_cross_ref.cross_reference_id_list(name_and_cross_refs)
 
     @staticmethod
