@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib import program_info
-from exactly_lib.definitions import formatting
+from exactly_lib.definitions import formatting, file_ref
 from exactly_lib.definitions.cross_ref import name_and_cross_ref
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.current_directory_and_path_type import cd_instruction_section_on_def_instruction
@@ -32,6 +32,7 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
             'act_sub_dir': SUB_DIRECTORY__ACT + '/',
             'path_type': formatting.symbol_type_(types.PATH_TYPE_INFO),
             'act_phase': phase_names.ACT.syntax,
+            'rel_cd_option': formatting.cli_option(file_ref.REL_CWD_OPTION),
 
             'cd_instruction': InstructionName(instruction_names.CHANGE_DIR_INSTRUCTION_NAME),
             'run_instruction': InstructionName(instruction_names.RUN_INSTRUCTION_NAME),
@@ -96,7 +97,8 @@ A change of {CD} stay in effect for all following instructions and phases.
 _USING_THE_CD_HEADER = 'Using the {cd_concept}'
 
 _USING_THE_CD = """\
-Instruction arguments of type {path_type} are relative to the {CD}.
+Instruction arguments of type {path_type} that are relative to the {CD}
+(via the {rel_cd_option} option).
 
 
 OS processes executed from within a test case
