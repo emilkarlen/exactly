@@ -1,9 +1,13 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref import name_and_cross_ref
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.current_directory_and_path_type import cd_instruction_section_on_def_instruction
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import InstructionName
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
@@ -50,6 +54,17 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
                     ),
                 ]
             ))
+
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        ret_val = name_and_cross_ref.cross_reference_id_list([
+            concepts.SANDBOX_CONCEPT_INFO,
+            types.PATH_TYPE_INFO,
+        ])
+        ret_val += [
+            phase_infos.ACT.cross_ref_target,
+            phase_infos.SETUP.instruction_cross_ref_target(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+        ]
+        return ret_val
 
 
 CURRENT_WORKING_DIRECTORY_CONCEPT = _CurrentWorkingDirectoryConcept()
