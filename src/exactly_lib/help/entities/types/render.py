@@ -7,7 +7,7 @@ from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGenerator
 from exactly_lib.help.entities.types import all_types
 from exactly_lib.help.entities.types.contents_structure import TypeDocumentation
 from exactly_lib.help.program_modes.common.render_syntax_contents import invokation_variants_content
-from exactly_lib.help.render import parttioned_entity_set as pes
+from exactly_lib.help.render import partitioned_entity_set as pes
 from exactly_lib.help.render.doc_utils import synopsis_section
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs

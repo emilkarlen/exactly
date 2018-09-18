@@ -5,7 +5,7 @@ from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
 from exactly_lib.definitions.type_system import TYPE_INFO_DICT
 from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGeneratorGetter, CliListConstructorGetter
 from exactly_lib.help.entities.builtin.contents_structure import BuiltinSymbolDocumentation
-from exactly_lib.help.render import parttioned_entity_set as pes
+from exactly_lib.help.render import partitioned_entity_set as pes
 from exactly_lib.help.render.doc_utils import description_section_if_non_empty
 from exactly_lib.help.render.entity_docs import \
     single_line_description_as_summary_paragraphs
