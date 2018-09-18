@@ -13,10 +13,10 @@ from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.textformat.constructor.test_resources import TargetInfoFactoryTestImpl, \
-    equals_custom_cross_ref_test_impl, CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.constructor.test_resources import equals_custom_cross_ref_test_impl, \
+    CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.section_target_hierarchy.test_resources.misc import \
-    TEST_NODE_ENVIRONMENT
+    TEST_NODE_ENVIRONMENT, TargetInfoFactoryTestImpl
 from exactly_lib_test.util.textformat.section_target_hierarchy.test_resources.target_info_assertions import \
     equals_target_info_node
 from exactly_lib_test.util.textformat.test_resources import equals_paragraph_item as asrt_para
