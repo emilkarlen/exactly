@@ -34,12 +34,14 @@ _TEXT_PARSER = TextParser({
 STRING_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                          types.STRING_TYPE_INFO,
                                          syntax_elements.STRING_SYNTAX_ELEMENT,
-                                         _TEXT_PARSER.section_contents(_STRING_MAIN_DESCRIPTION_REST))
+                                         _TEXT_PARSER.section_contents(_STRING_MAIN_DESCRIPTION_REST)
+                                         )
 
 LIST_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                        types.LIST_TYPE_INFO,
                                        syntax_elements.LIST_SYNTAX_ELEMENT,
-                                       _TEXT_PARSER.section_contents(_LIST_MAIN_DESCRIPTION_REST))
+                                       _TEXT_PARSER.section_contents(_LIST_MAIN_DESCRIPTION_REST)
+                                       )
 
 PATH_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                        types.PATH_TYPE_INFO,
@@ -47,4 +49,8 @@ PATH_DOCUMENTATION = TypeDocumentation(TypeCategory.DATA,
                                        SectionContents([],
                                                        [
                                                            path_type_path_rendering()
-                                                       ]))
+                                                       ]),
+                                       [
+                                           concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.cross_reference_target,
+                                       ]
+                                       )
