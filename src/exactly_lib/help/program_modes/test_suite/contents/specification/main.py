@@ -7,15 +7,15 @@ from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.help.program_modes.test_suite.contents.specification import outcome
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.test_suite import exit_values
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.as_section_contents import \
-    SectionContentsConstructorFromHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNode
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.sections import \
     SectionContentsConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
+from exactly_lib.util.textformat.section_target_hierarchy.as_section_contents import \
+    SectionContentsConstructorFromHierarchyGenerator
+from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
+from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNode
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.textformat_parser import TextParser
 from . import structure
@@ -45,23 +45,23 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
         })
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        generator = hierarchy.parent(
+        generator = h.parent(
             self.header,
             [],
             [
-                hierarchy.Node('introduction',
-                               hierarchy.leaf('Introduction',
-                                              self._section_of_parsed(_INTRODUCTION))
-                               ),
-                hierarchy.Node('structure',
-                               structure.hierarchy_generator('Structure', self._suite_help)
-                               ),
-                hierarchy.Node('file-syntax',
-                               hierarchy.leaf('File syntax',
-                                              self._section_of_parsed(_FILE_SYNTAX))
-                               ),
-                hierarchy.Node('outcome',
-                               outcome.hierarchy_generator('Outcome')),
+                h.Node('introduction',
+                       h.leaf('Introduction',
+                              self._section_of_parsed(_INTRODUCTION))
+                       ),
+                h.Node('structure',
+                       structure.root('Structure', self._suite_help)
+                       ),
+                h.Node('file-syntax',
+                       h.leaf('File syntax',
+                              self._section_of_parsed(_FILE_SYNTAX))
+                       ),
+                h.Node('outcome',
+                       outcome.root('Outcome')),
             ])
 
         return generator.generate(target_factory)

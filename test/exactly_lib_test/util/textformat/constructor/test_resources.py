@@ -1,9 +1,9 @@
 from typing import List
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.text import CrossReferenceTextConstructor
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory, TargetInfo
 from exactly_lib.util.textformat.structure.core import StringText, CrossReferenceTarget, Text
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 

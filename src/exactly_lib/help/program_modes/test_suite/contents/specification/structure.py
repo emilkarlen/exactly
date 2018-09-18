@@ -7,10 +7,9 @@ from exactly_lib.definitions.test_suite import section_names
 from exactly_lib.definitions.test_suite import section_names_plain
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.constructor import sections
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
+from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.textformat_parser import TextParser
@@ -26,7 +25,7 @@ ADDITIONAL_TEST_CASE_CONFIG_HEADER = 'Additional test case configuration'
 ONE_LINE_DESCRIPTION = "Executes a program in a temporary sandbox directory and checks it's result."
 
 
-def hierarchy_generator(header: str, suite_help: TestSuiteHelp) -> SectionHierarchyGenerator:
+def root(header: str, suite_help: TestSuiteHelp) -> SectionHierarchyGenerator:
     return _HierarchyGenerator(suite_help).generator(header)
 
 
@@ -40,27 +39,27 @@ class _HierarchyGenerator:
         })
 
     def generator(self, header: str) -> SectionHierarchyGenerator:
-        return hierarchy.parent(
+        return h.parent(
             header,
             self._tp.fnap(_PRELUDE),
             [
-                Node('cases-and-sub-suites',
-                     self._cases_and_sub_suites(CASES_AND_SUB_SUITES_HEADER)
-                     ),
-                Node('common-test-case-contents',
-                     self._common_tc_contents(COMMON_CASE_CONTENTS_HEADER)
-                     ),
-                Node('additional-test-case-conf',
-                     hierarchy.leaf(
-                         ADDITIONAL_TEST_CASE_CONFIG_HEADER,
-                         sections.constant_contents(
-                             docs.section_contents(self._tp.fnap(_ADDITIONAL_TEST_CASE_CONFIG))
-                         ))
-                     ),
+                h.Node('cases-and-sub-suites',
+                       self._cases_and_sub_suites(CASES_AND_SUB_SUITES_HEADER)
+                       ),
+                h.Node('common-test-case-contents',
+                       self._common_tc_contents(COMMON_CASE_CONTENTS_HEADER)
+                       ),
+                h.Node('additional-test-case-conf',
+                       h.leaf(
+                           ADDITIONAL_TEST_CASE_CONFIG_HEADER,
+                           sections.constant_contents(
+                               docs.section_contents(self._tp.fnap(_ADDITIONAL_TEST_CASE_CONFIG))
+                           ))
+                       ),
             ])
 
     def _cases_and_sub_suites(self, header: str) -> SectionHierarchyGenerator:
-        return hierarchy.leaf(
+        return h.leaf(
             header,
             sections.constant_contents(
                 docs.section_contents(self._cases_and_sub_suites_paragraphs())
@@ -68,7 +67,7 @@ class _HierarchyGenerator:
         )
 
     def _common_tc_contents(self, header: str) -> SectionHierarchyGenerator:
-        return hierarchy.leaf(
+        return h.leaf(
             header,
             sections.constant_contents(
                 docs.section_contents(self._common_tc_contents_paragraphs())

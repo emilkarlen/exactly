@@ -8,29 +8,27 @@ from exactly_lib.help.program_modes.common.contents_structure import SectionDocu
 from exactly_lib.help.program_modes.test_case.contents.specification import main as test_case_specification_rendering
 from exactly_lib.help.program_modes.test_case.contents_structure.test_case_help import TestCaseHelp
 from exactly_lib.help.program_modes.test_case.render.phase_documentation import TestCasePhaseDocumentationConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 
 
-def generator(header: str,
+def hierarchy(header: str,
               test_case_help: TestCaseHelp) -> generator.SectionHierarchyGenerator:
     sections_helper = _HtmlDocGeneratorForTestCaseHelp(test_case_help)
-    return hierarchy.parent(
+    return h.parent(
         header,
         [],
         [
-            Node('spec',
-                 test_case_specification_rendering.generator(
-                     'Specification of test case functionality',
-                     test_case_help)
-                 ),
-            Node('phases',
-                 sections_helper.generator_for_sections('Phases')
-                 ),
-            Node('instructions',
-                 sections_helper.generator_for_instructions_per_section('Instructions per phase')
-                 ),
+            h.Node('spec',
+                   test_case_specification_rendering.root(
+                       'Specification of test case functionality',
+                       test_case_help)
+                   ),
+            h.Node('phases',
+                   sections_helper.generator_for_sections('Phases')
+                   ),
+            h.Node('instructions',
+                   sections_helper.generator_for_instructions_per_section('Instructions per phase')
+                   ),
         ]
     )
 

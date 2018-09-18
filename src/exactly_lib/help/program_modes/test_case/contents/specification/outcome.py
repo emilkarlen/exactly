@@ -15,64 +15,62 @@ from exactly_lib.help.program_modes.test_case.contents.specification.utils impor
     step_with_single_exit_value, singe_exit_value_display, step_with_single_exit_value2
 from exactly_lib.processing import exit_values
 from exactly_lib.test_case import test_case_status
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.parse import normalize_and_parse
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
 from exactly_lib.util.textformat.structure.structures import *
 from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
-def hierarchy_generator(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
+def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
     preamble_paragraphs = normalize_and_parse(PREAMBLE)
 
-    def const_contents(header: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
-        return hierarchy.leaf(header,
-                              sections.constant_contents(section_contents(paragraphs)))
+    def const_contents(header_: str, paragraphs: List[ParagraphItem]) -> generator.SectionHierarchyGenerator:
+        return h.leaf(header_,
+                      sections.constant_contents(section_contents(paragraphs)))
 
-    return hierarchy.parent(
+    return h.parent(
         header,
         preamble_paragraphs,
         [
-            Node('reporting',
-                 const_contents('Reporting',
-                                TEXT_PARSER.fnap(REPORTING))
+            h.Node('reporting',
+                   const_contents('Reporting',
+                                  TEXT_PARSER.fnap(REPORTING))
 
-                 ),
-            Node('scenarios',
-                 hierarchy.parent(
-                     'Scenarios',
-                     [],
-                     [
-                         Node('complete-execution',
-                              const_contents('Complete execution',
-                                             _description_of_complete_execution(setup))
+                   ),
+            h.Node('scenarios',
+                   h.parent(
+                       'Scenarios',
+                       [],
+                       [
+                           h.Node('complete-execution',
+                                  const_contents('Complete execution',
+                                                 _description_of_complete_execution(setup))
 
-                              ),
-                         Node('error-during-validation',
-                              const_contents('Error during validation',
-                                             _error_in_validation_before_execution())
+                                  ),
+                           h.Node('error-during-validation',
+                                  const_contents('Error during validation',
+                                                 _error_in_validation_before_execution())
 
-                              ),
-                         Node('error-during-execution',
-                              const_contents('Error during execution',
-                                             _interrupted_execution(setup))
+                                  ),
+                           h.Node('error-during-execution',
+                                  const_contents('Error during execution',
+                                                 _interrupted_execution(setup))
 
-                              ),
-                         Node('other-errors',
-                              const_contents('Other errors',
-                                             _other_errors(setup))
+                                  ),
+                           h.Node('other-errors',
+                                  const_contents('Other errors',
+                                                 _other_errors(setup))
 
-                              ),
-                     ]
-                 )),
-            Node('summary-of-exit-codes',
-                 const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
-                                [all_exit_values_summary_table()]
-                                )
+                                  ),
+                       ]
+                   )),
+            h.Node('summary-of-exit-codes',
+                   const_contents(ALL_EXIT_VALUES_SUMMARY_TABLE_HEADER,
+                                  [all_exit_values_summary_table()]
+                                  )
 
-                 ),
+                   ),
         ]
     )
 

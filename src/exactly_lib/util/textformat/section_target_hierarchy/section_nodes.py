@@ -1,13 +1,13 @@
 from typing import Sequence, Optional, Set
 
-from exactly_lib.util.textformat.construction.section_hierarchy import targets
-from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNodeEnvironment, \
-    SectionItemNode
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionItemConstructor, \
     ArticleContentsConstructor, ArticleConstructor, SectionConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import targets
+from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNodeEnvironment, \
+    SectionItemNode
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import ArticleContents

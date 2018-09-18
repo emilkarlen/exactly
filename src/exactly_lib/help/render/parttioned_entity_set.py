@@ -4,14 +4,13 @@ from exactly_lib.help.contents_structure.entity import HtmlDocHierarchyGenerator
     EntityDocumentation
 from exactly_lib.help.render import entities_list_renderer
 from exactly_lib.help.render.entity_docs import EntitiesListConstructor
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as hierarchy
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor, \
     SectionConstructor, \
     ArticleContentsConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as hierarchy, generator
+from exactly_lib.util.textformat.section_target_hierarchy.hierarchies import Node
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 

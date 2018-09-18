@@ -1,5 +1,5 @@
-from exactly_lib.util.textformat.construction.section_hierarchy.section_node import SectionItemNode
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoFactory
+from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNode
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory
 
 
 class SectionHierarchyGenerator:

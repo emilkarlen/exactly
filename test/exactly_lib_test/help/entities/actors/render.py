@@ -6,7 +6,7 @@ from exactly_lib.help.entities.actors.entity_configuration import ACTOR_ENTITY_C
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib_test.help.entities.actors.test_resources.documentation import ActorTestImpl
-from exactly_lib_test.util.textformat.construction.test_resources import CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.constructor.test_resources import CrossReferenceTextConstructorTestImpl
 from exactly_lib_test.util.textformat.test_resources import structure as struct_check
 
 

@@ -1,25 +1,24 @@
 import unittest
 
-from exactly_lib.util.textformat.construction.section_hierarchy import generator
-from exactly_lib.util.textformat.construction.section_hierarchy import hierarchies as sut
-from exactly_lib.util.textformat.construction.section_hierarchy.hierarchies import Node
-from exactly_lib.util.textformat.construction.section_hierarchy.targets import TargetInfoNode, target_info_leaf, \
-    TargetInfoFactory
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
     SectionContentsConstructor
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as sut, generator
+from exactly_lib.util.textformat.section_target_hierarchy.hierarchies import Node
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoNode, target_info_leaf, \
+    TargetInfoFactory
 from exactly_lib.util.textformat.structure import document as doc
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib_test.test_resources.value_assertions import value_assertion as asrt
 from exactly_lib_test.test_resources.value_assertions.value_assertion import ValueAssertion
-from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.misc import \
-    TEST_NODE_ENVIRONMENT
-from exactly_lib_test.util.textformat.construction.section_hierarchy.test_resources.target_info_assertions import \
-    equals_target_info_node
-from exactly_lib_test.util.textformat.construction.test_resources import TargetInfoFactoryTestImpl, \
+from exactly_lib_test.util.textformat.constructor.test_resources import TargetInfoFactoryTestImpl, \
     equals_custom_cross_ref_test_impl, CrossReferenceTextConstructorTestImpl
+from exactly_lib_test.util.textformat.section_target_hierarchy.test_resources.misc import \
+    TEST_NODE_ENVIRONMENT
+from exactly_lib_test.util.textformat.section_target_hierarchy.test_resources.target_info_assertions import \
+    equals_target_info_node
 from exactly_lib_test.util.textformat.test_resources import equals_paragraph_item as asrt_para
 from exactly_lib_test.util.textformat.test_resources.section_item_assertions import section_matches, \
     section_contents_matches
