@@ -3,7 +3,8 @@ from typing import List
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting, misc_texts
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference, \
+    PredefinedHelpContentsPartReference, HelpPredefinedContentsPart
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity.concepts import PREPROCESSOR_CONCEPT_INFO
 from exactly_lib.definitions.test_suite import section_names, instruction_names
@@ -32,6 +33,7 @@ class _PreprocessorConcept(ConceptDocumentation):
             syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.cross_reference_target,
             TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
                                                       instruction_names.INSTRUCTION_NAME__PREPROCESSOR),
+            PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX),
 
         ]
 
