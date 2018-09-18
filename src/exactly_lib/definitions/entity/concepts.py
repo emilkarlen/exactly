@@ -77,7 +77,7 @@ CURRENT_WORKING_DIRECTORY_CONCEPT_INFO = name_and_ref_target(
 
 ENVIRONMENT_VARIABLE_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('environment variable'),
-    _format('Environment variables set by {program_name}.')
+    _format('OS environment variables available to processes executed from within a test case.')
 )
 
 PREPROCESSOR_CONCEPT_INFO = name_and_ref_target(
