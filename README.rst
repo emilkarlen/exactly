@@ -330,129 +330,37 @@ The ``actor`` instruction can specify an interpreter to test a source code file:
     EOF
 
 
-
-Experimenting with source code
-------------------------------
-
-The "source interpreter" actor treats the contents of the "act" phase as source code.
-It's probably most useful as a tool for experimenting::
-
-    [conf]
-
-    actor = -source bash
-
-    [act]
-
-    var='hello world'
-    echo ${var:5}
-
-    [assert]
-
-    stdout equals <<EOF
-    world
-    EOF
-
-or for running a source file in a sandbox::
-
-    > exactly --actor bash my-script.sh
-    PASS
-
-
-This is more useful combined with ``--act`` (see below).
-
-
-[act] is the default phase
---------------------------
-
-
-``[act]`` is not needed to indicate what is being checked, since the "act" phase is the default phase.
- 
-The following is a valid test case,
-and if run by Exactly, it won't remove anything, since it is executed inside a temporary sandbox directory::
-
-    $ rm -rf *
-
-
 Print output from the tested program
 ------------------------------------
 
 
 If ``--act`` is used, the output of the "act" phase (the tested program) will become the output of ``exactly`` -
-stdout, stderr and exit code.
+stdout, stderr and exit code
 ::
 
-    $ echo Hello World
-
-    [assert]
-
-    stdout any line : matches regex Hello
-
-::
-
-    > exactly --act hello-world.case
-    Hello World
-
-
-The test case is executed in a sandbox, as usual.
-And all phases are executed, not just the "act" phase.
-But the outcome of tha "assert" phase is ignored.
-
-
-Keeping the sandbox directory for later inspection
---------------------------------------------------
-
-
-If ``--keep`` is used, the sandbox directory will not be deleted, and its name will be printed.
-
-This can be used to inspect the outcome of the "setup" phase, e.g::
 
     [setup]
 
-    file my-file.txt
-
-    file -rel-tmp my-tmp-file.txt
-
-    dir  my-dir
-
-    cd my-dir
+    dir  a-dir
+    file a-file
 
     [act]
 
-    hello-world -o output-from-action-to-check.txt
+    $ ls
 
     [assert]
 
-    exit-code == 0
+    stdout num-lines == 2
 
 ::
 
-    > exactly --keep my-test.case
-    /tmp/exactly-68jn8c08
-    PASS
+    > exactly --act my-test.case
+    a-dir
+    a-file
 
-    > find /tmp/exactly-68jn8c08
-    /tmp/exactly-68jn8c08/
-    /tmp/exactly-68jn8c08/act/
-    /tmp/exactly-68jn8c08/act/my-file.txt
-    /tmp/exactly-68jn8c08/act/my-dir/
-    /tmp/exactly-68jn8c08/act/my-dir/output-from-action-to-check.txt
-    /tmp/exactly-68jn8c08/tmp/
-    /tmp/exactly-68jn8c08/tmp/my-tmp-file.txt
-    /tmp/exactly-68jn8c08/result/
-    /tmp/exactly-68jn8c08/result/stdout
-    /tmp/exactly-68jn8c08/result/stderr
-    /tmp/exactly-68jn8c08/result/exitcode
-    /tmp/exactly-68jn8c08/internal/
-    /tmp/exactly-68jn8c08/internal/tmp/
-    /tmp/exactly-68jn8c08/internal/testcase/
-    /tmp/exactly-68jn8c08/internal/log/
 
-The ``act/`` directory is the current directory when the test starts.
-The ``file`` instruction has put the file ``my-file.txt`` there.
+The test case is executed in a temporary sandbox, as usual.
 
-The result of the "act" phase is saved in the ``result/`` directory.
-
-``tmp/`` is a directory where the test can put temporary files.
 
 TEST SUITES
 ========================================
@@ -511,136 +419,6 @@ EXAMPLES
 ========================================
 
 The ``examples/`` directory of the source distribution contains examples.
-
-A complex example
------------------
-
-The following test case displays a potpurri of features. (Beware that this test case does not make sense! -
-it just displays some of Exactly's features.)
-::
-
-    [conf]
-
-
-    status = SKIP
-    # This will cause the test case to not be executed.
-
-
-    [setup]
-
-
-    copy this-is-an-existing-file-in-same-dir-as-test-case.txt
-
-    dir first/second/third
-
-    file in/a/dir/file-name.txt = <<EOF
-    contents of the file
-    EOF
-
-    file output-from-git.txt = -stdout $ git status
-
-    file git-branch-info.txt = -stdout
-                               $ git status
-                               -transformed-by select line-num == 1
-
-    dir root-dir-for-act-phase
-
-    cd root-dir-for-act-phase
-    # This will be current directory for the "act" phase.
-
-    stdin = <<EOF
-    this will be stdin for the program in the "act" phase
-    EOF
-    # (It is also possible to have stdin redirected to an existing file.)
-
-    env MY_VAR = 'value of my environment variable'
-
-    env PATH   = '${PATH}:/my-dir'
-
-    env unset VARIABLE_THAT_SHOULD_NOT_BE_SET
-
-    run my-prog--located-in-same-dir-as-test-case--that-does-some-more-setup 'with an argument'
-
-    run -python -existing-file custom-setup.py 'with an argument'
-
-    run -python -c :> print('Setting up things...')
-
-
-    [act]
-
-
-    the-system-under-test
-
-
-    [before-assert]
-
-
-    cd ..
-    # Moves back to the original current directory.
-
-    $ sort root-dir-for-act-phase/output-from-sut.txt > sorted.txt
-
-
-    [assert]
-
-
-    exit-code != 0
-
-    stdout equals <<EOF
-    This is the expected output from the-system-under-test
-    EOF
-
-    stdout -transformed-by REPLACE_TEST_CASE_DIRS
-           any line : matches regex 'EXACTLY_ACT:[0-9]+'
-
-    stderr empty
-
-    contents a-file.txt empty
-
-    contents a-second-file.txt ! empty
-
-    contents another-file.txt
-             -transformed-by REPLACE_TEST_CASE_DIRS
-             equals -file expected-content.txt
-
-    contents file.txt any line : matches regex 'my .* reg ex'
-
-    exists actual-file
-
-    exists -dir actual-file
-
-    cd this-dir-is-where-we-should-be-for-the-following-assertions
-
-    run my-prog--located-in-same-dir-as-test-case--that-does-some-assertions
-
-    run -python -existing-file custom-assertion.py
-
-
-    file -rel-tmp modified-stdout.txt = -file -rel-result stdout
-                                        -transformed-by select line-num >= 10
-
-    contents -rel-tmp modified-stdout.txt
-             equals
-    <<EOF
-    this should be line 10 of original stdout.txt
-    this should be line 11 of original stdout.txt
-    EOF
-
-
-    stdout  -transformed-by ( select line-num >= 10 )
-            equals
-    <<EOF
-    this should be line 10 of original stdout.txt
-    this should be line 11 of original stdout.txt
-    EOF
-
-
-    [cleanup]
-
-
-    $ umount my-test-mount-point
-
-    run my-prog-that-removes-database 'my test database'
 
 
 INSTALLING

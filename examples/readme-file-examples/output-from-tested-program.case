@@ -1,5 +1,12 @@
-$ echo Hello World
+[setup]
+
+dir  a-dir
+file a-file
+
+[act]
+
+$ ls
 
 [assert]
 
-stdout any line : matches regex Hello
+stdout num-lines == 2
