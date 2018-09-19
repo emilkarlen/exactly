@@ -1,0 +1,30 @@
+[setup]
+
+run my-setup-helper-program first "second arg"
+
+# run % mysql -uu -pp -hlocalhost -Dd --batch --execute "create table my_table(id int)"
+
+$ touch file
+
+file root-files.txt = -stdout-from $ ls /
+
+[act]
+
+$ echo ${PATH}
+
+[assert]
+
+run my-assert-helper-program
+
+$ test -f root-files.txt
+
+stdout -from
+       % echo 'Interesting output'
+       equals
+<<EOF
+Interesting output
+EOF
+
+[cleanup]
+
+# run % mysql -uu -pp -hlocalhost -Dd --batch --execute "drop table my_table"
