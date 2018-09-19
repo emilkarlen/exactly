@@ -399,22 +399,6 @@ If the file ``my-suite.suite`` contains this text, then Exactly can run it::
 The result of a suite can also be reported as JUnit XML, by using ``--reporter junit``.
 
 
-HELP
-========================================
-
-
-Exactly has a built in help system.
-
-
-Use ``exactly --help`` or ``exactly help`` to get brief help.
-
-``exactly help help`` displays a summary of help options.
-
-``exactly help instructions`` lists the instructions that are available in each "phase".
-
-``exactly help htmldoc`` outputs all built in help as html, which serves as Exactly's reference manual.
-
-
 EXAMPLES
 ========================================
 
