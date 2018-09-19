@@ -4,12 +4,9 @@ from exactly_lib.act_phase_setups import file_interpreter as actor
 from exactly_lib.common.help.syntax_contents_structure import SyntaxElementDescription, InvokationVariant
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.actors import FILE_INTERPRETER_ACTOR
-from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.actors import file_interpreter as help_texts
-from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.entities.actors.contents_structure import ActorDocumentation
 from exactly_lib.help.entities.actors.objects.common import ARGUMENT_SYNTAX_ELEMENT, \
     SINGLE_LINE_PROGRAM_ACT_PHASE_CONTENTS_SYNTAX_INITIAL_PARAGRAPH, ActPhaseDocumentationSyntaxBase
@@ -53,8 +50,6 @@ class FileInterpreterActorDocumentation(ActorDocumentation):
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
-                                                   ACTOR_INSTRUCTION_NAME),
         ]
 
 

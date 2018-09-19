@@ -1,10 +1,10 @@
 from typing import List, Iterable
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity.all_entity_types import ACTOR_ENTITY_TYPE_NAMES
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_infos
+from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.contents_structure.entity import EntityTypeHelp, EntityDocumentation
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 from exactly_lib.util.textformat.structure.document import SectionContents
@@ -30,10 +30,12 @@ class ActorDocumentation(EntityDocumentation):
         """
         return self.__see_also_common() + self._see_also_specific()
 
-    def __see_also_common(self) -> List[SeeAlsoTarget]:
+    @staticmethod
+    def __see_also_common() -> List[SeeAlsoTarget]:
         return [
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(phase_names.ACT.plain),
+            phase_infos.ACT.cross_ref_target,
+            phase_infos.CONFIGURATION.instruction_cross_ref_target(instruction_names.ACTOR_INSTRUCTION_NAME),
         ]
 
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
