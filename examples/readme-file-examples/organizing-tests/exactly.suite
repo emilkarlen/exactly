@@ -1,0 +1,7 @@
+[cases]
+
+*.case
+
+[suites]
+
+suite-with-common-code

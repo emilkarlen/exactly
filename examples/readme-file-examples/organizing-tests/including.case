@@ -1,0 +1,5 @@
+[setup]
+
+including my-dir-symbols.def
+
+including my-common-setup-and-cleanup.xly
