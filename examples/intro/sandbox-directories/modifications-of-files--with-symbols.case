@@ -21,9 +21,7 @@ def string NAME_OF_BAD_FILE  = a-bad-file.txt
 
 def string GOOD_TOKEN        = "this is a GOOD file"
 
-def string ROOT_DIRECTORY    = .
-
-def list   ARGUMENTS_TO_SUT  = @[GOOD_TOKEN]@ @[ROOT_DIRECTORY]@
+def list   ARGUMENTS_TO_SUT  = @[GOOD_TOKEN]@ @[INPUT_DIR]@ @[OUTPUT_DIR]@
 
 
 dir @[INPUT_DIR]@

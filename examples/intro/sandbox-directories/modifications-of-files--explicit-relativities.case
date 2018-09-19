@@ -37,7 +37,7 @@ EOF
 # The SUT is given the current directory as argument ("."),
 # which is the "act" directory inside the sandbox:
 
-classify-files-by-moving-to-appropriate-dir GOOD .
+classify-files-by-moving-to-appropriate-dir GOOD  input-files output-files
 
 
 [assert]
