@@ -1,3 +1,9 @@
+[conf]
+
+
+act-home = bin
+
+
 [setup]
 
 
@@ -19,11 +25,9 @@ def string NAME_OF_BAD_FILE  = a-bad-file.txt
 
 def string GOOD_TOKEN        = "this is a GOOD file"
 
-def path ROOT_DIRECTORY      = @[EXACTLY_ACT]@
-
 # EXACTLY_ACT is a predefined symbol
 
-def list   ARGUMENTS_TO_SUT  = @[GOOD_TOKEN]@ @[ROOT_DIRECTORY]@
+def list   ARGUMENTS_TO_SUT  = @[GOOD_TOKEN]@ @[INPUT_DIR]@ @[OUTPUT_DIR]@
 
 
 dir @[INPUT_DIR]@
@@ -83,9 +87,3 @@ exists -file @[OUTPUT_BAD_DIR]@/@[NAME_OF_BAD_FILE]@
 'The dir for bad files should contain only the file found to be bad'
 
 dir-contents @[OUTPUT_BAD_DIR]@ num-files == 1
-
-
-[conf]
-
-
-act-home = bin

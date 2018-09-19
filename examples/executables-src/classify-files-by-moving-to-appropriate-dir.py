@@ -1,18 +1,16 @@
-import os
-import pathlib
 import sys
 
-if len(sys.argv) != 3:
-    sys.stderr.write('Invalid usage.\nSyntax: GOOD-TOKEN ROOT-DIR' + os.linesep)
+import os
+import pathlib
+
+if len(sys.argv) != 4:
+    sys.stderr.write('Invalid usage.\nSyntax: GOOD-TOKEN INPUT-DIR OUTPUT-DIR' + os.linesep)
     sys.exit(1)
 
 good_token = sys.argv[1]
 
-root_dir = pathlib.Path(sys.argv[2])
-
-
-input_dir = root_dir / 'input-files'
-output_dir = root_dir / 'output-files'
+input_dir = pathlib.Path(sys.argv[2])
+output_dir = pathlib.Path(sys.argv[3])
 
 output_good_dir = output_dir / 'good'
 output_bad_dir = output_dir / 'bad'

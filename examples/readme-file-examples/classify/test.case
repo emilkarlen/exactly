@@ -1,27 +1,27 @@
 [setup]
 
-dir input-files
-dir output-files/good
-dir output-files/bad
+dir input
+dir output/good
+dir output/bad
 
-file input-files/a.txt = <<EOF
+file input/a.txt = <<EOF
 GOOD contents
 EOF
 
-file input-files/b.txt = <<EOF
+file input/b.txt = <<EOF
 bad contents
 EOF
 
 [act]
 
-classify-files-by-moving-to-appropriate-dir GOOD .
+classify-files-by-moving-to-appropriate-dir GOOD input/ output/
 
 [assert]
 
-dir-contents input-files empty
+dir-contents input empty
 
-exists -file output-files/good/a.txt
-dir-contents  output-files/good num-files == 1
+exists -file output/good/a.txt
+dir-contents output/good num-files == 1
 
-exists -file output-files/bad/b.txt
-dir-contents  output-files/bad num-files == 1
+exists -file output/bad/b.txt
+dir-contents output/bad num-files == 1
