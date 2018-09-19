@@ -1,0 +1,19 @@
+[conf]
+
+act-home = ../bin/
+
+home     = data/
+
+[setup]
+
+copy input.txt actual.txt
+
+[act]
+
+filter-lines "text to find" actual.txt
+
+[assert]
+
+contents actual.txt
+         equals
+         -file expected.txt
