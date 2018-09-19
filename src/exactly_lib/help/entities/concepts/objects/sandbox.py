@@ -1,9 +1,13 @@
 from typing import List
 
 from exactly_lib import program_info
+from exactly_lib.cli.definitions.program_modes.test_case import command_line_options
+from exactly_lib.common.help.see_also import SeeAlsoUrlInfo
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions import test_case_file_structure as tcds
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
+    HelpPredefinedContentsPart
 from exactly_lib.definitions.doc_format import file_name_text
 from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import AnyInstructionNameDictionary, InstructionName
@@ -32,6 +36,7 @@ class _SandboxConcept(ConceptDocumentation):
             'instruction': AnyInstructionNameDictionary(),
             'cwd': formatting.concept_(concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO),
             'cd_instruction': InstructionName(CHANGE_DIR_INSTRUCTION_NAME),
+            'keep_sandbox_option': formatting.cli_option(command_line_options.OPTION_FOR_KEEPING_SANDBOX_DIRECTORY),
         })
 
     def purpose(self) -> DescriptionWithSubSections:
@@ -50,6 +55,9 @@ class _SandboxConcept(ConceptDocumentation):
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             types.PATH_TYPE_INFO.cross_reference_target,
             phase_infos.SETUP.instruction_cross_ref_target(CHANGE_DIR_INSTRUCTION_NAME),
+            PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX),
+            SeeAlsoUrlInfo('Location of temporary files',
+                           'https://docs.python.org/3/library/tempfile.html#tempfile.gettempdir')
         ]
 
     def _sandbox_directories_info_sections(self) -> List[docs.SectionItem]:
@@ -112,11 +120,15 @@ class _SandboxConcept(ConceptDocumentation):
 SANDBOX_CONCEPT = _SandboxConcept()
 
 _SANDBOX_PRE_DIRECTORY_TREE = """\
-Each test case uses its own sandbox.
+Each execution of a test case uses its own sandbox.
+
+
+It is created in a platform dependent location for temporary files.
 
 
 The sandbox is created just before the {phase[setup]} phase is executed,
-and deleted after the test case has finished.
+and deleted when test case execution ends
+(unless {keep_sandbox_option} is used).
 """
 
 _ACT_DIR_DESCRIPTION = """\
