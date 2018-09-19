@@ -362,8 +362,24 @@ stdout, stderr and exit code
 The test case is executed in a temporary sandbox, as usual.
 
 
-TEST SUITES
+ORGANIZING TESTS
 ========================================
+
+File inclusion
+------------------------------------
+
+Test case contents can be included from external files::
+
+    [setup]
+
+    including my-dir-symbols.def
+
+    including my-common-setup-and-cleanup.xly
+
+
+
+Test suites
+------------------------------------
 
 
 Tests can be grouped in suites::
@@ -383,20 +399,48 @@ or::
 
     [suites]
 
-    subsuite.suite
+    sub-suite.suite
     *.suite
     pkg/suite.suite
     **/*.suite
 
 
+
 If the file ``my-suite.suite`` contains this text, then Exactly can run it::
 
-  > exactly suite my-suite.suite
-  ...
-  OK
+    > exactly suite my-suite.suite
+    ...
+    OK
 
 
-The result of a suite can also be reported as JUnit XML, by using ``--reporter junit``.
+The result of a suite can be reported as
+simple progress information,
+or JUnit XML.
+
+
+Suites can contain test case functionality that is common
+to all cases in the suite. For example::
+
+
+    [cases]
+
+    *.case
+
+    [conf]
+
+    act-home = ../bin/
+
+    [setup]
+
+    def string CONF_FILE = my.conf
+
+    file @[CONF_FILE]@ =
+    <<EOF
+    common = configuration
+    EOF
+
+
+The common functionality is included in each test case.
 
 
 EXAMPLES

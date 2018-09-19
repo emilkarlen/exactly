@@ -1,0 +1,16 @@
+[cases]
+
+*.case
+
+[conf]
+
+act-home = ../bin/
+
+[setup]
+
+def string CONF_FILE = my.conf
+
+file @[CONF_FILE]@ =
+<<EOF
+common = configuration
+EOF

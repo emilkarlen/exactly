@@ -1,0 +1,3 @@
+[assert]
+
+exists -file @[CONF_FILE]@
