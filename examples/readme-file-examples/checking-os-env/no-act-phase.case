@@ -1,0 +1,12 @@
+[assert]
+
+def path SQL_DIR = -rel-here sql
+
+exists -dir @[SQL_DIR]@
+
+
+'sql/ must only contain sql files'
+
+dir-contents @[SQL_DIR]@
+             -selection ! name *.sql
+             empty

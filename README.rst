@@ -362,6 +362,27 @@ stdout, stderr and exit code
 The test case is executed in a temporary sandbox, as usual.
 
 
+Testing existing OS environment - tests without ``[act]``
+----------------------------------------------------------------------
+
+A test case does not need to have an ``[act]`` phase.
+
+For example, to just check that files names are correct::
+
+    [assert]
+
+    def path SQL_DIR = -rel-here sql
+
+    exists -dir @[SQL_DIR]@
+
+
+    'sql/ must only contain sql files'
+
+    dir-contents @[SQL_DIR]@
+                 -selection ! name *.sql
+                 empty
+
+
 ORGANIZING TESTS
 ========================================
 
