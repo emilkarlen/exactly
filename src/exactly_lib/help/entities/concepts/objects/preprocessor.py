@@ -33,7 +33,7 @@ class _PreprocessorConcept(ConceptDocumentation):
             syntax_elements.SHELL_COMMAND_LINE_SYNTAX_ELEMENT.cross_reference_target,
             TestSuiteSectionInstructionCrossReference(section_names.CONFIGURATION.plain,
                                                       instruction_names.INSTRUCTION_NAME__PREPROCESSOR),
-            PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX),
+            PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_CASE_CLI),
 
         ]
 

@@ -266,7 +266,7 @@ class CrossReferenceIdVisitorTest(unittest.TestCase):
 
     def test_visit_PredefinedContentsPart(self):
         # ARRANGE #
-        x = sut.PredefinedHelpContentsPartReference(sut.HelpPredefinedContentsPart.TEST_SUITE_CLI_SYNTAX)
+        x = sut.PredefinedHelpContentsPartReference(sut.HelpPredefinedContentsPart.TEST_SUITE_CLI)
         visitor = VisitorThatRegistersVisitedClassesAndReturnsTheArgument()
         # ACT #
         returned = visitor.visit(x)
