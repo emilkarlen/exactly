@@ -3,7 +3,6 @@ from typing import List
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.test_case import phase_names
@@ -44,8 +43,6 @@ class InterpreterActorDocumentation(ActorDocumentation):
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
-                                                   ACTOR_INSTRUCTION_NAME),
         ]
 
 
