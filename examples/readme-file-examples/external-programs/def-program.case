@@ -1,0 +1,22 @@
+[setup]
+
+# def program RUN_MYSQL      = % mysql -uu -pp -hlocalhost -Dd
+def program RUN_MYSQL = % echo
+def program EXECUTE_SQL     = @ RUN_MYSQL --skip-column-names --batch --execute
+
+
+run @ EXECUTE_SQL "create table my_table(id int)"
+
+[act]
+
+system-under-test
+
+[assert]
+
+stdout -from
+       @ EXECUTE_SQL "select * from my_table"
+       ! empty
+
+[cleanup]
+
+run @ EXECUTE_SQL "drop table my_table"

@@ -236,16 +236,26 @@ The ``-transformed-by`` option does not modify the tested file,
 it just applies the assertion to a transformed version of it.
 
 
-Using shell commands
---------------------
 
-Shell commands can be used both in the "act" phase (the system under test), and in other phases, using "$".
+Using external helper programs
+------------------------------------------------------------
 
-::
+External programs can with help with setup and assertions etc.
+
+Exactly can run executable files, shell commands  and programs in the OS PATH,
+using ``run``, ``$``, ``%``.
+
+The following case shows some examples, but doesn't make sense tough::
 
     [setup]
 
+    run my-setup-helper-program first "second arg"
+
+    run % mysql -uu -pp -hlocalhost -Dd --batch --execute "create table my_table(id int)"
+
     $ touch file
+
+    file root-files.txt = -stdout-from $ ls /
 
     [act]
 
@@ -253,11 +263,48 @@ Shell commands can be used both in the "act" phase (the system under test), and 
 
     [assert]
 
-    $ tr ':' '\n' < ../result/stdout | grep '^/usr/local/bin$'
+    run my-assert-helper-program
+
+    $ test -f root-files.txt
+
+    stdout -from
+           % echo 'Interesting output'
+           equals
+    <<EOF
+    Interesting output
+    EOF
+
+    [cleanup]
+
+    run % mysql -uu -pp -hlocalhost -Dd --batch --execute "drop table my_table"
 
 
-A shell command in the "assert" phase becomes an assertion that depends on the exit code
-of the command.
+A program executed in ``[assert]`` becomes an assertion that depends on the exit code.
+
+
+Program values can be defined for reuse using ``def`` and run using ``@``::
+
+    [setup]
+
+    def program RUN_MYSQL   = % mysql -uu -pp -hlocalhost -Dd
+    def program EXECUTE_SQL = @ RUN_MYSQL --skip-column-names --batch --execute
+
+
+    run @ EXECUTE_SQL "create table my_table(id int)"
+
+    [act]
+
+    system-under-test
+
+    [assert]
+
+    stdout -from
+           @ EXECUTE_SQL "select * from my_table"
+           ! empty
+
+    [cleanup]
+
+    run @ EXECUTE_SQL "drop table my_table"
 
 
 Testing source code files
