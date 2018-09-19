@@ -1,8 +1,10 @@
 import pathlib
-from typing import Iterable
+from typing import Iterable, Sequence
 
 from exactly_lib import program_info
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.doc_format import directory_variable_name_text
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.formatting import program_name
 from exactly_lib.test_case_file_structure import environment_variables
 from exactly_lib.test_case_file_structure.home_and_sds import HomeAndSds
@@ -72,25 +74,29 @@ def with_replaced_env_vars_help() -> SectionContents:
         'home_case_env_var': environment_variables.ENV_VAR_HOME_CASE,
         'home_env_var_with_replacement_precedence': HOME_ENV_VAR_WITH_REPLACEMENT_PRECEDENCE,
     })
-    prologue = text_parser.fnap(_WITH_REPLACED_ENV_VARS_PROLOGUE)
+    prologue = text_parser.fnap(_WITH_REPLACED_TCDS_PATHS_PROLOGUE)
     variables_list = [docs.simple_header_only_list(map(directory_variable_name_text,
                                                        sorted(environment_variables.ALL_REPLACED_ENV_VARS)),
                                                    docs.lists.ListType.ITEMIZED_LIST)]
     return SectionContents(prologue + variables_list)
 
 
+def with_replaced_env_vars_see_also() -> Sequence[SeeAlsoTarget]:
+    return [
+        concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
+    ]
+
+
 SINGLE_LINE_DESCRIPTION = """\
-Every occurrence of a string that matches the value of an {program_name} environment variable
-is replaced with the name of the matching variable.
-""".format(program_name=program_name(program_info.PROGRAM_NAME))
+Every occurrence of a string that matches the absolute path of a {TCDS} directory
+is replaced with the name of the corresponding symbol/environment variable.
+""".format(program_name=program_name(program_info.PROGRAM_NAME),
+           TCDS=concepts.TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO.acronym)
 
-_WITH_REPLACED_ENV_VARS_PROLOGUE = """\
-Variable values are replaced with variable names.
-
-
+_WITH_REPLACED_TCDS_PATHS_PROLOGUE = """\
 If {home_case_env_var} and {home_act_env_var} are equal, then paths will be replaced with
 {home_env_var_with_replacement_precedence}.
 
 
-The environment variables that are replaced are:
+Paths that are replaced:
 """
