@@ -123,6 +123,6 @@ def entity_help(entity_type_names: EntityTypeNames,
 
 
 ARGUMENTS_FOR_PART = {
-    HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX: case_cli_syntax,
-    HelpPredefinedContentsPart.TEST_SUITE_CLI_SYNTAX: suite_cli_syntax,
+    HelpPredefinedContentsPart.TEST_CASE_CLI: case_cli_syntax,
+    HelpPredefinedContentsPart.TEST_SUITE_CLI: suite_cli_syntax,
 }

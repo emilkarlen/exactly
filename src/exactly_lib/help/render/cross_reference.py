@@ -60,6 +60,6 @@ class _TitleRenderer(concrete_cross_refs.CrossReferenceIdVisitor):
 _TITLE_RENDERER = _TitleRenderer()
 
 _PREDEFINED_PART_TITLE = {
-    HelpPredefinedContentsPart.TEST_CASE_CLI_SYNTAX: 'Test Case CLI Syntax',
-    HelpPredefinedContentsPart.TEST_SUITE_CLI_SYNTAX: 'Test Suite CLI Syntax',
+    HelpPredefinedContentsPart.TEST_CASE_CLI: 'Test case CLI',
+    HelpPredefinedContentsPart.TEST_SUITE_CLI: 'Test suite CLI',
 }
