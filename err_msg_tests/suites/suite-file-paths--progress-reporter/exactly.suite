@@ -1,0 +1,7 @@
+[cases]
+
+failing.case
+
+[suites]
+
+sub/exactly.suite

@@ -6,18 +6,22 @@ from pathlib import Path
 from exactly_lib.common.exit_value import ExitValue
 from exactly_lib.execution.full_execution.result import FullExeResult
 from exactly_lib.processing import test_case_processing, exit_values as case_ev
-from exactly_lib.processing.test_case_processing import TestCaseFileReference
+from exactly_lib.processing.test_case_processing import test_case_reference_of_source_file
 from exactly_lib.test_suite import exit_values as suite_ev
 from exactly_lib.test_suite import processing
 from exactly_lib.test_suite import structure
+from exactly_lib.test_suite.file_reading.suite_hierarchy_reading import Reader
 from exactly_lib.test_suite.processing import SuitesExecutor
 from exactly_lib.test_suite.reporters import simple_progress_reporter as sut
 from exactly_lib.util.ansi_terminal_color import ForegroundColor
-from exactly_lib.util.string import lines_content_with_os_linesep
+from exactly_lib.util.string import lines_content_with_os_linesep, lines_content
 from exactly_lib_test.execution.full_execution.test_resources.result_values import FULL_RESULT_HARD_ERROR, \
     FULL_RESULT_VALIDATE, \
     FULL_RESULT_IMPLEMENTATION_ERROR
+from exactly_lib_test.test_resources.files.file_structure import File, empty_file, Dir, DirContents
 from exactly_lib_test.test_resources.files.str_std_out_files import StringStdOutFiles
+from exactly_lib_test.test_resources.files.tmp_dir import tmp_dir_as_cwd
+from exactly_lib_test.test_suite.test_resources.environment import default_environment
 from exactly_lib_test.test_suite.test_resources.processing_utils import TestCaseProcessorThatGivesConstant, \
     FULL_RESULT_PASS, test_suite, DUMMY_CASE_PROCESSING, test_case, FULL_RESULT_FAIL, FULL_RESULT_SKIP
 
@@ -145,14 +149,15 @@ class TestFinalResultFormatting(unittest.TestCase):
         elapsed_time = datetime.timedelta(seconds=1)
         num_test_cases = 6
         rel_root = Path.cwd().resolve()
-        errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED):
+        the_exit_value = ExitValue(4, 'identifier_4', ForegroundColor.RED)
+        errors = {the_exit_value:
             [
-                TestCaseFileReference(Path('case-1'), rel_root / Path('fip-1')),
-                TestCaseFileReference(Path('case-2'), rel_root / Path('fip-2')),
+                test_case_reference_of_source_file(rel_root / Path('fip-1') / 'case-1'),
+                test_case_reference_of_source_file(rel_root / Path('fip-2') / 'case-2'),
             ],
             ExitValue(12, 'longer_identifier_12', ForegroundColor.RED):
                 [
-                    TestCaseFileReference(Path('case-3'), rel_root / Path('fip-3')),
+                    test_case_reference_of_source_file(rel_root / Path('fip-3') / 'case-3'),
                 ],
         }
         # ACT #
@@ -163,7 +168,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertListEqual(['',
-                              'identifier_4',
+                              the_exit_value.exit_identifier,
                               '  ' + str(Path('fip-1') / Path('case-1')),
                               '  ' + str(Path('fip-2') / Path('case-2')),
                               'longer_identifier_12',
@@ -177,9 +182,10 @@ class TestFinalResultFormatting(unittest.TestCase):
         elapsed_time = datetime.timedelta(seconds=1)
         num_test_cases = 6
         rel_root = Path.cwd().resolve()
-        errors = {ExitValue(4, 'identifier_4', ForegroundColor.RED):
+        the_exit_value = ExitValue(4, 'exit_identifier_4', ForegroundColor.RED)
+        errors = {the_exit_value:
             [
-                TestCaseFileReference(Path('case-1'), rel_root.parent / Path('fip-1')),
+                test_case_reference_of_source_file(rel_root.parent / Path('fip-1') / 'case-1'),
             ],
         }
         # ACT #
@@ -190,8 +196,44 @@ class TestFinalResultFormatting(unittest.TestCase):
         self._assert_at_least_one_line_was_generated(actual_lines)
         self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
         self.assertListEqual(['',
-                              'identifier_4',
+                              the_exit_value.exit_identifier,
                               '  ' + str(rel_root.parent / Path('fip-1') / Path('case-1')),
+                              ],
+                             actual_lines[1:],
+                             'Lines after "Ran ..."')
+
+    def test_with_error_of_path_below_relativity_root__file_names_from_applied_hierarchy_reader(self):
+        # ARRANGE #
+        elapsed_time = datetime.timedelta(seconds=1)
+        num_test_cases = 6
+        case_file = empty_file('test.case')
+        suite_file = File('test.suite', lines_content([case_file.name]))
+        dir_with_suite = Dir('dir-with-suite',
+                             [suite_file,
+                              case_file])
+
+        with tmp_dir_as_cwd(DirContents([dir_with_suite])) as cwd_abs_path:
+            read_suite_hierarchy = Reader(default_environment()).apply(dir_with_suite.name_as_path / suite_file.name)
+        self.assertEqual(1,
+                         len(read_suite_hierarchy.test_cases),
+                         'Sanity check: number of read cases')
+        test_case_file_reference = read_suite_hierarchy.test_cases[0]
+
+        the_exit_value = ExitValue(4, 'exit_identifier_4', ForegroundColor.RED)
+        errors = {the_exit_value: [
+            test_case_file_reference,
+        ],
+        }
+        # ACT #
+        actual_lines = sut.format_final_result_for_valid_suite(num_test_cases, elapsed_time,
+                                                               cwd_abs_path,
+                                                               errors)
+        # ASSERT #
+        self._assert_at_least_one_line_was_generated(actual_lines)
+        self._assert_line_is_number_of_executed_tests_line(actual_lines[0], num_test_cases)
+        self.assertListEqual(['',
+                              the_exit_value.exit_identifier,
+                              '  ' + str(dir_with_suite.name_as_path / case_file.name_as_path),
                               ],
                              actual_lines[1:],
                              'Lines after "Ran ..."')
@@ -200,7 +242,7 @@ class TestFinalResultFormatting(unittest.TestCase):
         if not actual_lines:
             self.fail('No lines at all was generated')
 
-    def _assert_line_is_number_of_executed_tests_line(self, line: str, num_cases: int) -> str:
+    def _assert_line_is_number_of_executed_tests_line(self, line: str, num_cases: int):
         reg_ex = '^Ran %d tests in .*' % num_cases
         self.assertRegex(line,
                          reg_ex,
