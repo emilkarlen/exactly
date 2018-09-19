@@ -500,6 +500,24 @@ Current version is fully functional, but syntax and semantics are experimental.
 Comments are welcome!
 
 
+Future development
+------------------------------------
+
+More functionality is needed, smaller and larger.
+
+
+Including (but not limited to):
+
+* More string transformers
+* New type "string matcher"
+* Possibility to use "program" values in more places, e.g. in ``[act]``
+* Improved string character escaping
+* Variables - corresponding to symbol definitions -
+  but for variable values
+* Macros and functions
+* Python library for running cases and suites from within Python as a DSEL
+
+
 AUTHOR
 ========================================
 
