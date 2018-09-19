@@ -13,6 +13,7 @@ ALL = (
                   StringTransformerConstantOfValue(env_vars_replacement.value()),
                   env_vars_replacement.SINGLE_LINE_DESCRIPTION,
                   env_vars_replacement.with_replaced_env_vars_help(),
+                  env_vars_replacement.with_replaced_env_vars_see_also(),
                   ),
     BuiltinSymbol('TO_UPPER_CASE',
                   StringTransformerConstant(case_converters.ToUpperCaseStringTransformer()),

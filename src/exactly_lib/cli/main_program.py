@@ -1,11 +1,12 @@
 import os
-from typing import List, Dict, Callable
+from typing import List, Dict, Callable, Sequence
 
 from exactly_lib.cli.definitions import exit_codes
 from exactly_lib.cli.definitions.common_cli_options import HELP_COMMAND, SUITE_COMMAND, COMMAND_DESCRIPTIONS
 from exactly_lib.cli.program_modes.test_case import argument_parsing as case_argument_parsing
 from exactly_lib.cli.program_modes.test_suite.settings import TestSuiteExecutionSettings
 from exactly_lib.common.instruction_setup import SingleInstructionSetup
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.execution import sandbox_dir_resolving
 from exactly_lib.execution.configuration import PredefinedProperties
 from exactly_lib.execution.sandbox_dir_resolving import SandboxRootDirNameResolver
@@ -29,11 +30,13 @@ class BuiltinSymbol:
                  resolver: SymbolValueResolver,
                  single_line_description: str,
                  documentation: SectionContents,
+                 see_also: Sequence[SeeAlsoTarget] = (),
                  ):
         self._name = name
         self._resolver = resolver
         self._single_line_description = single_line_description
         self._documentation = documentation
+        self._see_also = see_also
 
     @property
     def name(self) -> str:
@@ -45,9 +48,11 @@ class BuiltinSymbol:
 
     @property
     def documentation(self) -> BuiltinSymbolDocumentation:
-        return BuiltinSymbolDocumentation(self._resolver.value_type, self.name,
+        return BuiltinSymbolDocumentation(self._resolver.value_type,
+                                          self.name,
                                           self._single_line_description,
-                                          self._documentation)
+                                          self._documentation,
+                                          self._see_also)
 
 
 class TestCaseDefinitionForMainProgram:

@@ -1,4 +1,5 @@
 import functools
+from typing import List
 
 from exactly_lib.definitions.entity.all_entity_types import BUILTIN_SYMBOL_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.entity.concepts import SYMBOL_CONCEPT_INFO
@@ -57,9 +58,10 @@ class IndividualBuiltinSymbolConstructor(ArticleContentsConstructor):
     def _type_paragraph(self) -> docs.ParagraphItem:
         return docs.para('Type: ' + TYPE_INFO_DICT[self.builtin_doc.value_type].name.singular)
 
-    def _see_also_sections(self, environment: ConstructionEnvironment) -> list:
+    def _see_also_sections(self, environment: ConstructionEnvironment) -> List[doc.SectionItem]:
         type_info = TYPE_INFO_DICT[self.builtin_doc.value_type]
-        return see_also_sections([type_info.cross_reference_target],
+        targets = [type_info.cross_reference_target] + list(self.builtin_doc.see_also)
+        return see_also_sections(targets,
                                  environment)
 
 
