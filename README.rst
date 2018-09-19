@@ -71,9 +71,12 @@ can be used to change the directories where Exactly looks for files referenced f
 Testing side effects on files and directories
 ------------------------------------------------------------
 
-A test case is executed in a temporary sandbox directory,
+The current directory is set to a temporary sandbox directory,
 so files and directories can be created and deleted
-without modifying a source code repo.
+without modifying a source files etc.
+
+The sandbox and all files withing it are removed after the execution.
+
 
 The following tests a program that classifies
 files as either good or bad, by moving them to the
@@ -81,53 +84,119 @@ appropriate output directory::
 
     [setup]
 
-    dir input-files
-    dir output-files/good
-    dir output-files/bad
+    dir input
+    dir output/good
+    dir output/bad
 
-    file input-files/a.txt = <<EOF
+    file input/a.txt = <<EOF
     GOOD contents
     EOF
 
-    file input-files/b.txt = <<EOF
+    file input/b.txt = <<EOF
     bad contents
     EOF
 
     [act]
 
-    classify-files-by-moving-to-appropriate-dir GOOD .
+    classify-files-by-moving-to-appropriate-dir GOOD input/ output/
 
     [assert]
 
-    dir-contents input-files empty
+    dir-contents input empty
 
-    exists -file output-files/good/a.txt
-    dir-contents  output-files/good num-files == 1
+    exists -file output/good/a.txt
+    dir-contents output/good num-files == 1
 
-    exists -file output-files/bad/b.txt
-    dir-contents  output-files/bad num-files == 1
+    exists -file output/bad/b.txt
+    dir-contents output/bad num-files == 1
+
+
+Referring to predefined source files
+------------------------------------------------------------
+
+The "home directory structure" is directories containing
+predefined files involved in a test case.
+
+All these directories defaults to the directory
+that contains the test case file,
+but can be changed in [conf].
+
+There are options to refer to these directories, and
+also the temporary directories, using special options,
+such as `-rel-home`::
+
+    [conf]
+
+    act-home = ../bin/
+
+    home     = data/
+
+    [setup]
+
+    copy  -rel-home input.txt  -rel-act actual.txt
+
+    [act]
+
+    filter-lines "text to find" actual.txt
+
+    [assert]
+
+    contents -rel-act actual.txt
+             equals
+             -file -rel-home expected.txt
+
+
+`-rel-act` denotes the temporary directory that is the
+current directory.
+
+This directory is inside the temporary "sandbox directory structure".
+
+
+The "relativity" options have defaults designed to minimize the
+need for them.
+The following case does the same thing as the one above::
+
+    [conf]
+
+    act-home = ../bin/
+
+    home     = data/
+
+    [setup]
+
+    copy input.txt actual.txt
+
+    [act]
+
+    filter-lines "text to find" actual.txt
+
+    [assert]
+
+    contents actual.txt
+             equals
+             -file expected.txt
 
 
 Testing and transforming the contents of files
 ------------------------------------------------------------
 
-The ``contents`` instruction tests the contents of a file.
-It can also test a transformed version of a file,
-by applying a "lines transformer".
+Use ``contents`` to test the contents of a file,
+or a transformed version of it,
+by applying a "string transformer".
 
-Such a "lines transformer" may be given a name
+Such a "string transformer" may be given a name
 using the ``def`` instruction
 to make the test easier to read.
 
-The following test case
+The following case
 tests that "timing lines" are output as part of a log file "log.txt".
 
 The challenge is that the (fictive) log file contains
 non-timing lines that we are not interested in,
 and that timing lines contains a time stamp of the form
-"NN:NN", whos exact value we are also not interested in.
+"NN:NN", who's exact value we are also not interested in.
 
-A "lines transformer" is used to extract all timing lines
+A "string transformer" is used to extract all timing lines
 and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
 
@@ -141,7 +210,7 @@ and to replace "NN:NN" time stamps with the constant string ``TIMESTAMP``::
 
     [act]
 
-    $ python @[EXACTLY_HOME]@/my-system-under-test.py
+    $ python @[EXACTLY_HOME]@/program-that-writes-log-file.py
 
     [assert]
 

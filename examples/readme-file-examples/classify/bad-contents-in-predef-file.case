@@ -1,0 +1,25 @@
+[setup]
+
+dir input
+dir output/good
+dir output/bad
+
+file input/a.txt = <<EOF
+GOOD contents
+EOF
+
+file input/b.txt = -file -rel-home predefined-bad-contents-file.txt
+
+[act]
+
+classify-files-by-moving-to-appropriate-dir GOOD input/ output/
+
+[assert]
+
+dir-contents input empty
+
+exists -file output/good/a.txt
+dir-contents output/good num-files == 1
+
+exists -file output/bad/b.txt
+dir-contents output/bad num-files == 1
