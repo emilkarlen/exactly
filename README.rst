@@ -72,10 +72,8 @@ Testing side effects on files and directories
 ------------------------------------------------------------
 
 When the execution of a test case starts,
-the current directory is set to a temporary sandbox directory.
-
-So files and directories can be created and deleted
-without modifying source files etc.
+the current directory is set to a temporary directory.
+This gives the test case a sandbox where it can create and manipulate files.
 
 The sandbox - and all files within it - are removed when the execution ends.
 
@@ -116,26 +114,31 @@ appropriate directory::
 ``file`` and ``dir`` makes files in the current directory (by default).
 
 
-Referring to predefined source files
+Using predefined source files
 ------------------------------------------------------------
 
-The "home directory structure" is directories containing
+The *home directory structure* is directories containing
 predefined files involved in a test case:
 
-  * "act-home"
-    Location of the program file being tested
+*act-home*
+ Location of the program file being tested
 
-  * "home"
-    Location of arbitrary test resources
+*home*
+  Location of arbitrary test resources
 
-All these directories defaults to the directory
+
+Both of them defaults to the directory
 that contains the test case file,
 but can be changed via ``[conf]``.
 
-There are options for referring to these directories, and
-also to the temporary sandbox directories.
 
-``-rel-home`` refers to the "home" directory, e.g.::
+There are options for making paths relative to them,
+and also to the temporary sandbox directories.
+
+``-rel-home`` refers to the *home* directory,
+and ``-rel-act`` to the temporary directory
+that is the current directory at the start of the execution::
+
 
     [conf]
 
@@ -157,9 +160,6 @@ also to the temporary sandbox directories.
              equals
              -file -rel-home expected.txt
 
-
-``-rel-act`` denotes the temporary directory that is the
-current directory at the start of the execution.
 
 These "relativity" options have defaults designed to minimize the
 need for them.
