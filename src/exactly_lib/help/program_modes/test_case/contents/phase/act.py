@@ -1,8 +1,7 @@
 from exactly_lib.cli.definitions.common_cli_options import OPTION_FOR_ACTOR
 from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params, actors
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import ACTOR_INSTRUCTION_NAME
 from exactly_lib.help.entities.concepts.objects.actor import HOW_TO_SPECIFY_ACTOR
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
@@ -66,9 +65,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(phase_names.SETUP.plain),
-            TestCasePhaseCrossReference(phase_names.BEFORE_ASSERT.plain),
-            TestCasePhaseCrossReference(phase_names.ASSERT.plain),
+            phase_infos.SETUP.cross_ref_target,
+            phase_infos.BEFORE_ASSERT.cross_ref_target,
+            phase_infos.ASSERT.cross_ref_target,
             actors.NULL_ACTOR.cross_reference_target,
             actors.DEFAULT_ACTOR.cross_reference_target,
         ]

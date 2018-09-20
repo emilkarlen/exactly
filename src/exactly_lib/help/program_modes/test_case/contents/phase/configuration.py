@@ -1,10 +1,9 @@
 from typing import List
 
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
-    TestCasePhaseCrossReference
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
@@ -55,7 +54,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(self.name.plain,
                                                    TEST_CASE_STATUS_INSTRUCTION_NAME),
-            TestCasePhaseCrossReference(phase_names.SETUP.plain),
+            phase_infos.SETUP.cross_ref_target,
         ]
 
 

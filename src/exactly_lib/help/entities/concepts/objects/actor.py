@@ -3,12 +3,11 @@ from typing import List
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
-    TestCasePhaseCrossReference
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import actors, concepts
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -35,7 +34,7 @@ class _ActorConcept(ConceptDocumentation):
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return (
                 [
-                    TestCasePhaseCrossReference(phase_names.ACT.plain),
+                    phase_infos.ACT.cross_ref_target,
                     conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
                     TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                            instruction_names.ACTOR_INSTRUCTION_NAME),

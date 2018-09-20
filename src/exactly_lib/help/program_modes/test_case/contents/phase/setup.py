@@ -1,9 +1,8 @@
 from typing import List
 
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
     cwd_at_start_of_phase_first_phase_executed_in_the_sandbox, sequence_info__succeeding_phase, \
@@ -48,8 +47,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(phase_names.CONFIGURATION.plain),
-            TestCasePhaseCrossReference(phase_names.ACT.plain),
+            phase_infos.CONFIGURATION.cross_ref_target,
+            phase_infos.ACT.cross_ref_target,
         ]
 
 

@@ -1,9 +1,8 @@
 from exactly_lib import program_info
 from exactly_lib.definitions import formatting, type_system, misc_texts
 from exactly_lib.definitions import test_case_file_structure
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
 from exactly_lib.definitions.entity import concepts, types
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.render import see_also
 from exactly_lib.util.textformat.constructor import paragraphs
@@ -209,7 +208,7 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
         concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
         concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
         types.PATH_TYPE_INFO.cross_reference_target,
-        TestCasePhaseCrossReference(phase_names.CONFIGURATION.plain),
+        phase_infos.CONFIGURATION.cross_ref_target,
     ]
 
 
