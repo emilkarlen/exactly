@@ -64,7 +64,7 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         return self._instruction_group_by
 
     @property
-    def see_also_targets(self) -> List[SeeAlsoTarget]:
+    def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,

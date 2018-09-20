@@ -49,7 +49,7 @@ class BeforeAssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstr
             environment_variables_prologue=env_vars_prologue_for_inherited_from_previous_phase())
 
     @property
-    def see_also_targets(self) -> List[SeeAlsoTarget]:
+    def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
