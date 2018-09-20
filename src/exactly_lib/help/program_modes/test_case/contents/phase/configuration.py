@@ -48,7 +48,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
                                         env_vars_for_configuration_phase())
 
     @property
-    def see_also_targets(self) -> List[SeeAlsoTarget]:
+    def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,

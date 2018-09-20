@@ -1,5 +1,7 @@
 from typing import List, Sequence, Optional
 
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.section_info import SectionInfo
 from exactly_lib.definitions.test_case.phase_infos import TestCasePhaseInfo, TestCasePhaseWithoutInstructionsInfo
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
@@ -105,6 +107,16 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
 
     def instruction_purpose_description(self) -> List[ParagraphItem]:
         raise NotImplementedError()
+
+    @property
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        ret_val = [concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target]
+        ret_val += self._see_also_targets_specific
+        return ret_val
+
+    @property
+    def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
+        return []
 
 
 class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumentation):

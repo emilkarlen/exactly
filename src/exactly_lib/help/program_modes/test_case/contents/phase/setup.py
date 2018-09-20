@@ -1,6 +1,7 @@
 from typing import List
 
 from exactly_lib.definitions import formatting
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
@@ -43,7 +44,7 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
                                         environment_variables_prologue=self._tp.fnap(ENV_VARS_PROLOGUE))
 
     @property
-    def see_also_targets(self) -> list:
+    def _see_also_targets_specific(self) -> List[SeeAlsoTarget]:
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
