@@ -61,3 +61,16 @@ class TargetInfoFactory:
         raise NotImplementedError('abstract method')
 
 
+class TargetInfoFactoryWithFixedRoot(TargetInfoFactory):
+    def __init__(self,
+                 fixed_root_target: core.CrossReferenceTarget,
+                 original: TargetInfoFactory):
+        self._fixed_root_target = fixed_root_target
+        self._original = original
+
+    def root(self, presentation: core.StringText) -> TargetInfo:
+        return TargetInfo(presentation,
+                          self._fixed_root_target)
+
+    def sub_factory(self, local_name: str):
+        return self._original.sub_factory(local_name)

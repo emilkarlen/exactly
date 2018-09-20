@@ -12,9 +12,19 @@ from exactly_lib.util.textformat.section_target_hierarchy.section_node import Se
 from exactly_lib.util.textformat.section_target_hierarchy.section_nodes import \
     SectionItemNodeWithSubSections, LeafSectionItemNodeWithRoot, LeafArticleNode
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory, TargetInfo, \
-    TargetInfoNode
+    TargetInfoNode, TargetInfoFactoryWithFixedRoot
 from exactly_lib.util.textformat.structure import document as doc, core
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
+
+
+def with_fixed_root_target(fixed_root_target: core.CrossReferenceTarget,
+                           hierarchy_to_fix_root_target_for: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
+    return _HierarchyWithFixedRootTarget(fixed_root_target,
+                                         hierarchy_to_fix_root_target_for)
+
+
+def with_hidden_from_toc(hierarchy_to_hide: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
+    return _HierarchyNotInToc(hierarchy_to_hide)
 
 
 def leaf(header: str,
@@ -294,6 +304,32 @@ class _SectionItemNotInTocLeafGenerator(SectionHierarchyGenerator):
         return _LeafSectionNodeNotInToc(self._section)
 
 
+class _HierarchyWithFixedRootTarget(SectionHierarchyGenerator):
+    def __init__(self,
+                 fixed_root_target: core.CrossReferenceTarget,
+                 hierarchy_to_fix_root_target_for: SectionHierarchyGenerator,
+                 ):
+        self._fixed_root_target = fixed_root_target
+        self._hierarchy_to_fix_root_target_for = hierarchy_to_fix_root_target_for
+
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
+        return self._hierarchy_to_fix_root_target_for.generate(
+            TargetInfoFactoryWithFixedRoot(self._fixed_root_target,
+                                           target_factory))
+
+
+class _HierarchyNotInToc(SectionHierarchyGenerator):
+    """
+    A section item that does not appear in the TOC.
+    """
+
+    def __init__(self, hidden: SectionHierarchyGenerator):
+        self._hidden = hidden
+
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
+        return _NodeWithNoTargetInfoNode(self._hidden.generate(target_factory))
+
+
 class _LeafSectionNode(LeafSectionItemNodeWithRoot):
     """
     A section without sub sections that appear in the target-hierarchy.
@@ -332,3 +368,18 @@ class _LeafSectionNodeNotInToc(SectionItemNode):
 
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
         return self._section
+
+
+class _NodeWithNoTargetInfoNode(SectionItemNode):
+    """
+    A section that have no target info
+    """
+
+    def __init__(self, node: SectionItemNode):
+        self._section = node
+
+    def target_info_node(self) -> Optional[TargetInfoNode]:
+        return None
+
+    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
+        return self._section.section_item_constructor(node_environment)

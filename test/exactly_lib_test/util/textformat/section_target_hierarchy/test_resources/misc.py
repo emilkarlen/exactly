@@ -18,3 +18,15 @@ class TargetInfoFactoryTestImpl(TargetInfoFactory):
     def root(self, presentation: StringText) -> TargetInfo:
         return TargetInfo(presentation,
                           CustomCrossReferenceTargetTestImpl('.'.join(self._components)))
+
+
+class ConstantTargetInfoFactoryTestImpl(TargetInfoFactory):
+    def __init__(self, constant: CustomCrossReferenceTargetTestImpl):
+        self._constant = constant
+
+    def sub_factory(self, local_name: str) -> TargetInfoFactory:
+        return ConstantTargetInfoFactoryTestImpl(self._constant)
+
+    def root(self, presentation: StringText) -> TargetInfo:
+        return TargetInfo(presentation,
+                          self._constant)
