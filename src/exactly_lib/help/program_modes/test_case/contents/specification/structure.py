@@ -1,7 +1,9 @@
+from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.test_case import phase_names_plain
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.program_modes.common.renderers import sections_short_list
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup
+from exactly_lib.help.render import see_also
 from exactly_lib.test_case import phase_identifier
 from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
@@ -31,6 +33,10 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                     const_paragraphs('Phases',
                                      phases_documentation())
                     ),
+            h.child('instructions',
+                    const_paragraphs('Instructions',
+                                     tp.fnap(_INSTRUCTIONS))
+                    ),
             h.child('suite-contents',
                     const_paragraphs('Inclusion of phase contents from test suites',
                                      tp.fnap(_SUITE_CONTENTS_INCLUSION))
@@ -39,8 +45,22 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                     const_paragraphs('Part of suite',
                                      tp.fnap(_PART_OF_SUITE))
                     ),
+            h.child('see-also',
+                    h.with_not_in_toc(
+                        h.leaf(
+                            see_also.SEE_ALSO_TITLE,
+                            see_also.SeeAlsoSectionContentsConstructor(
+                                see_also.items_of_targets(_see_also_targets())
+                            )))
+                    ),
         ]
     )
+
+
+def _see_also_targets() -> List[see_also.SeeAlsoTarget]:
+    return [
+        concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target,
+    ]
 
 
 _PHASES_INTRO = """\
@@ -53,6 +73,10 @@ All phases are optional.
 
 
 The phases are (in order of execution):
+"""
+
+_INSTRUCTIONS = """\
+TODO
 """
 
 _SUITE_CONTENTS_INCLUSION = """\
