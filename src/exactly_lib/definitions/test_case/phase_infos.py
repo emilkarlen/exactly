@@ -10,10 +10,10 @@ from exactly_lib.definitions.test_case import phase_names
 class TestCasePhaseInfo(SectionInfo):
 
     @property
-    def cross_ref_target(self) -> TestCasePhaseCrossReference:
+    def cross_reference_target(self) -> TestCasePhaseCrossReference:
         return TestCasePhaseCrossReference(self.name.plain)
 
-    def instruction_cross_ref_target(self, instruction_name: str) -> TestCasePhaseInstructionCrossReference:
+    def instruction_cross_reference_target(self, instruction_name: str) -> TestCasePhaseInstructionCrossReference:
         return TestCasePhaseInstructionCrossReference(self.name.plain,
                                                       instruction_name)
 

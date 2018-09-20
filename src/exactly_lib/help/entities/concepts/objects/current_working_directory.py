@@ -62,8 +62,8 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
             types.PATH_TYPE_INFO,
         ])
         ret_val += [
-            phase_infos.ACT.cross_ref_target,
-            phase_infos.SETUP.instruction_cross_ref_target(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+            phase_infos.ACT.cross_reference_target,
+            phase_infos.SETUP.instruction_cross_reference_target(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
         ]
         return ret_val
 

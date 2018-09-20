@@ -14,8 +14,8 @@ class SectionInfo:
         return self._section_name
 
     @property
-    def cross_ref_target(self) -> CrossReferenceId:
+    def cross_reference_target(self) -> CrossReferenceId:
         raise NotImplementedError('abstract method')
 
-    def instruction_cross_ref_target(self, instruction_name: str) -> CrossReferenceId:
+    def instruction_cross_reference_target(self, instruction_name: str) -> CrossReferenceId:
         raise NotImplementedError('abstract method')

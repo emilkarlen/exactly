@@ -34,7 +34,7 @@ class _ActorConcept(ConceptDocumentation):
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return (
                 [
-                    phase_infos.ACT.cross_ref_target,
+                    phase_infos.ACT.cross_reference_target,
                     conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
                     TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                            instruction_names.ACTOR_INSTRUCTION_NAME),

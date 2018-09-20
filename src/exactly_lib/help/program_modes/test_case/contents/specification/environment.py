@@ -208,7 +208,7 @@ def _dir_struct_see_also_targets() -> List[see_also.SeeAlsoTarget]:
         concepts.CURRENT_WORKING_DIRECTORY_CONCEPT_INFO.cross_reference_target,
         concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
         types.PATH_TYPE_INFO.cross_reference_target,
-        phase_infos.CONFIGURATION.cross_ref_target,
+        phase_infos.CONFIGURATION.cross_reference_target,
     ]
 
 

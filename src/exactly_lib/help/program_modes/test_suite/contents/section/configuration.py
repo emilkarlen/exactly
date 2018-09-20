@@ -39,7 +39,7 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
     @property
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            phase_infos.CONFIGURATION.cross_ref_target
+            phase_infos.CONFIGURATION.cross_reference_target
         ]
 
 

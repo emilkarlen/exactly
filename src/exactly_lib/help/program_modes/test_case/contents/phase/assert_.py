@@ -68,8 +68,8 @@ class AssertPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstruction
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            phase_infos.BEFORE_ASSERT.cross_ref_target,
-            phase_infos.CLEANUP.cross_ref_target,
+            phase_infos.BEFORE_ASSERT.cross_reference_target,
+            phase_infos.CLEANUP.cross_reference_target,
         ]
 
     def _instruction_group_by(self, instr_docs: List[WithAssertPhasePurpose]) -> List[InstructionGroup]:

@@ -34,8 +34,8 @@ class ActorDocumentation(EntityDocumentation):
     def __see_also_common() -> List[SeeAlsoTarget]:
         return [
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
-            phase_infos.ACT.cross_ref_target,
-            phase_infos.CONFIGURATION.instruction_cross_ref_target(instruction_names.ACTOR_INSTRUCTION_NAME),
+            phase_infos.ACT.cross_reference_target,
+            phase_infos.CONFIGURATION.instruction_cross_reference_target(instruction_names.ACTOR_INSTRUCTION_NAME),
         ]
 
     def _see_also_specific(self) -> List[SeeAlsoTarget]:
