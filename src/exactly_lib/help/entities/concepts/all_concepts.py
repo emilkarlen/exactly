@@ -2,6 +2,7 @@ from typing import List
 
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.help.entities.concepts.objects import \
+    instruction, \
     action_to_check, actor, \
     environment_variable, preprocessor, sandbox, shell_syntax, \
     home_directory_structure, test_case_directory_structure, \
@@ -10,6 +11,7 @@ from exactly_lib.help.entities.concepts.objects import \
 
 def all_concepts() -> List[ConceptDocumentation]:
     return [
+        instruction.INSTRUCTION_CONCEPT,
         actor.ACTOR_CONCEPT,
         action_to_check.ACTOR_CONCEPT,
         shell_syntax.SHELL_SYNTAX_CONCEPT,
