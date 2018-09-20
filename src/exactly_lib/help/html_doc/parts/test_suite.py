@@ -1,8 +1,8 @@
 from exactly_lib.definitions.entity.all_entity_types import SUITE_REPORTER_ENTITY_TYPE_NAMES
 from exactly_lib.definitions.test_suite.section_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
-from exactly_lib.help.html_doc.parts.utils.section_document_renderer_base import \
-    HtmlDocGeneratorForSectionDocumentBase
+from exactly_lib.help.html_doc.parts.common.section_document_renderer import \
+    HtmlDocGeneratorForSectionDocument
 from exactly_lib.help.program_modes.test_suite.contents.specification import structure as test_suite_structure
 from exactly_lib.help.program_modes.test_suite.contents.specification.main import SpecificationHierarchyGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
@@ -15,7 +15,9 @@ def hierarchy(header: str,
               test_suite_help: TestSuiteHelp,
               suite_reporter_conf: EntityTypeConfiguration,
               ) -> generator.SectionHierarchyGenerator:
-    sections_helper = _HtmlDocGeneratorForTestSuiteHelp(test_suite_help)
+    sections_helper = HtmlDocGeneratorForSectionDocument(SECTION_CONCEPT_NAME,
+                                                         test_suite_help.section_helps,
+                                                         TestSuiteSectionDocumentationConstructor)
     return h.sections(
         header,
         [
@@ -48,10 +50,3 @@ def hierarchy(header: str,
                    ),
         ]
     )
-
-
-class _HtmlDocGeneratorForTestSuiteHelp(HtmlDocGeneratorForSectionDocumentBase):
-    def __init__(self, test_suite_help: TestSuiteHelp):
-        super().__init__(SECTION_CONCEPT_NAME,
-                         test_suite_help.section_helps,
-                         TestSuiteSectionDocumentationConstructor)

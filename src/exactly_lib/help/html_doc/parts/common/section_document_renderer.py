@@ -20,7 +20,7 @@ from exactly_lib.util.textformat.structure.core import StringText
 _INSTRUCTIONS_IN = 'The instructions in the {section} {section_concept}.'
 
 
-class HtmlDocGeneratorForSectionDocumentBase:
+class HtmlDocGeneratorForSectionDocument:
     def __init__(self,
                  section_concept_name: str,
                  sections: Sequence[SectionDocumentation],
@@ -126,7 +126,7 @@ class _SectionsListGenerator(SectionHierarchyGenerator):
     def __init__(self,
                  header: str,
                  sections: Sequence[SectionDocumentation],
-                 conf: HtmlDocGeneratorForSectionDocumentBase):
+                 conf: HtmlDocGeneratorForSectionDocument):
         self._conf = conf
         self._sections = sections
         self._header = header
