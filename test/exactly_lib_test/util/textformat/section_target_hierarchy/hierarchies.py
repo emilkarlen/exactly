@@ -55,7 +55,7 @@ class TestAdjusters(TestBase):
         header = StringText('header')
         unadjusted_object = sut.leaf(header.value,
                                      section_contents(expected_section_contents_object))
-        adjusted_object = sut.with_hidden_from_toc(unadjusted_object)
+        adjusted_object = sut.with_not_in_toc(unadjusted_object)
         # EXPECTATION #
         expected_target_info = target_factory.root(header)
 
@@ -149,28 +149,6 @@ class Test(TestBase):
         section_assertion = section_matches(
             target=equals_custom_cross_ref_test_impl(expected_target_info.target),
             header=asrt_para.equals_text(expected_target_info.presentation_text),
-            contents=asrt.Is(expected_section_contents_object))
-
-        # ACT & ASSERT #
-        self._act_and_assert(object_to_test,
-                             target_factory,
-                             target_info_node_assertion,
-                             section_assertion)
-
-    def test_leaf_not_in_toc(self):
-        # ARRANGE #
-        target_factory = TargetInfoFactoryTestImpl(['target_component'])
-        expected_section_contents_object = doc.empty_section_contents()
-        header = StringText('header')
-        object_to_test = sut.leaf_not_in_toc(sections.section(header,
-                                                              section_contents(expected_section_contents_object)))
-        # EXPECTATION #
-
-        target_info_node_assertion = asrt.is_none
-
-        section_assertion = section_matches(
-            target=asrt.is_none,
-            header=asrt_para.equals_text(header),
             contents=asrt.Is(expected_section_contents_object))
 
         # ACT & ASSERT #

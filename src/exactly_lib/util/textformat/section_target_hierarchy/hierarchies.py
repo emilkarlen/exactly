@@ -25,7 +25,7 @@ def with_fixed_root_target(fixed_root_target: core.CrossReferenceTarget,
                                          hierarchy_to_fix_root_target_for)
 
 
-def with_hidden_from_toc(hierarchy_to_hide: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
+def with_not_in_toc(hierarchy_to_hide: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
     return _HierarchyNotInToc(hierarchy_to_hide)
 
 
@@ -35,19 +35,14 @@ def leaf(header: StrOrStringText,
     return _SectionLeafGenerator(docs.str_text(header), contents_constructor)
 
 
-def leaf_article(header: StringText,
+def leaf_article(header: StrOrStringText,
                  contents_constructor: ArticleContentsConstructor,
                  tags: Optional[Set[str]] = None,
                  ) -> SectionHierarchyGenerator:
     """An article without sub sections that appear in the TOC/target hierarchy"""
-    return _ArticleLeafGenerator(header,
+    return _ArticleLeafGenerator(docs.str_text(header),
                                  contents_constructor,
                                  tags=tags)
-
-
-def leaf_not_in_toc(section: SectionItemConstructor) -> SectionHierarchyGenerator:
-    """A section without sub sections that does not appear in the TOC/target hierarchy"""
-    return _SectionItemNotInTocLeafGenerator(section)
 
 
 class Node(tuple):
@@ -214,18 +209,6 @@ class _Hierarchy(_SectionHierarchyGeneratorBase):
                                               sub_sections)
 
 
-class _SectionItemNotInTocLeafGenerator(SectionHierarchyGenerator):
-    """
-    A section item that does not appear in the TOC.
-    """
-
-    def __init__(self, section: SectionItemConstructor):
-        self._section = section
-
-    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        return _LeafSectionNodeNotInToc(self._section)
-
-
 class _HierarchyWithFixedRootTarget(SectionHierarchyGenerator):
     def __init__(self,
                  fixed_root_target: core.CrossReferenceTarget,
@@ -275,21 +258,6 @@ class _LeafSectionNode(LeafSectionItemNodeWithRoot):
                                    tags=node_environment.toc_section_item_tags)
 
         return RetVal()
-
-
-class _LeafSectionNodeNotInToc(SectionItemNode):
-    """
-    A section without sub sections that appear in the target-hierarchy.
-    """
-
-    def __init__(self, section: SectionItemConstructor):
-        self._section = section
-
-    def target_info_node(self) -> Optional[TargetInfoNode]:
-        return None
-
-    def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> SectionItemConstructor:
-        return self._section
 
 
 class _NodeWithNoTargetInfoNode(SectionItemNode):
