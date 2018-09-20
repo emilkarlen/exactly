@@ -1,7 +1,6 @@
 from typing import List
 
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
-from exactly_lib.definitions.doc_format import syntax_text, instruction_name_text
+from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.test_case.phase_names_plain import SECTION_CONCEPT_NAME, ACT_PHASE_NAME
 from exactly_lib.help.program_modes.common import contents as common_contents
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationConstructorBase
@@ -69,12 +68,6 @@ class TestCasePhaseDocumentationConstructor(SectionDocumentationConstructorBase)
         paragraphs.extend(eei.prologue)
         if paragraphs:
             output.append(docs.section('Environment', paragraphs))
-
-    def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
-        return docs.cross_reference(instruction_name_text(instr_name),
-                                    TestCasePhaseInstructionCrossReference(self.doc.name.plain,
-                                                                           instr_name),
-                                    allow_rendering_of_visible_extra_target_text=False)
 
     @staticmethod
     def _environment_variables_list(environment_variable_names: List[str]) -> ParagraphItem:

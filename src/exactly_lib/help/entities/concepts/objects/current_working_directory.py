@@ -9,6 +9,7 @@ from exactly_lib.definitions.entity import concepts, types
 from exactly_lib.definitions.formatting import InstructionName
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.test_case_file_structure.sandbox_directory_structure import SUB_DIRECTORY__ACT
 from exactly_lib.util.description import DescriptionWithSubSections
@@ -63,7 +64,7 @@ class _CurrentWorkingDirectoryConcept(ConceptDocumentation):
         ])
         ret_val += [
             phase_infos.ACT.cross_reference_target,
-            phase_infos.SETUP.instruction_cross_reference_target(instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME),
+            DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE,
         ]
         return ret_val
 

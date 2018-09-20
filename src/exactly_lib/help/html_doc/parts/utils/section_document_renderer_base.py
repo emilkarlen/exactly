@@ -1,7 +1,6 @@
 from typing import Sequence, List, Callable
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
-from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
 from exactly_lib.help import std_tags
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation, InstructionGroup
 from exactly_lib.help.program_modes.common.render_instruction import InstructionDocArticleContentsConstructor
@@ -29,14 +28,6 @@ class HtmlDocGeneratorForSectionDocumentBase:
         self.section_concept_name = section_concept_name
         self.sections = sections
         self.get_article_contents_constructor = get_article_contents_constructor
-
-    def _section_cross_ref_target(self, section: SectionDocumentation) -> CrossReferenceId:
-        raise NotImplementedError()
-
-    def _instruction_cross_ref_target(self,
-                                      instruction: InstructionDocumentation,
-                                      section: SectionDocumentation) -> CrossReferenceId:
-        raise NotImplementedError()
 
     def generator_for_sections(self, header: str) -> SectionHierarchyGenerator:
         return _SectionsListGenerator(header, self.sections, self)
@@ -68,7 +59,6 @@ class HtmlDocGeneratorForSectionDocumentBase:
                 continue
             instructions_node_constructor = _SectionInstructionsNodeConstructor(
                 self.section_concept_name,
-                self._instruction_cross_ref_target,
                 targets_factory.sub_factory(section.name.plain),
                 section)
             section_nodes.append(instructions_node_constructor())
@@ -80,14 +70,11 @@ class HtmlDocGeneratorForSectionDocumentBase:
 class _SectionInstructionsNodeConstructor:
     def __init__(self,
                  section_concept_name: str,
-                 mk_instruction_cross_ref_target: Callable[
-                     [InstructionDocumentation, SectionDocumentation], CrossReferenceId],
                  section_target_factory: TargetInfoFactory,
                  section: SectionDocumentation
                  ):
 
         self.section_concept_name = section_concept_name
-        self.mk_instruction_cross_ref_target = mk_instruction_cross_ref_target
         self.section_target_factory = section_target_factory
         self.section = section
 
@@ -127,7 +114,7 @@ class _SectionInstructionsNodeConstructor:
             self._instruction_nodes(group.instruction_documentations))
 
     def _instruction_node(self, instruction: InstructionDocumentation) -> SectionItemNode:
-        cross_ref_target = self.mk_instruction_cross_ref_target(instruction, self.section)
+        cross_ref_target = self.section.section_info.instruction_cross_reference_target(instruction.instruction_name())
         target_info = targets.TargetInfo(instruction.instruction_name_text,
                                          cross_ref_target)
         return LeafArticleNode(target_info,
@@ -149,9 +136,8 @@ class _SectionsListGenerator(SectionHierarchyGenerator):
         root_target_info = target_factory.root(docs.string_text(self._header))
         sub_section_nodes = []
         for section in self._sections:
-            cross_reference_target = self._conf._section_cross_ref_target(section)
             section_target_info = targets.TargetInfo(section.syntax_name_text,
-                                                     cross_reference_target)
+                                                     section.section_info.cross_reference_target)
             section_node = LeafArticleNode(
                 section_target_info,
                 self._conf.get_article_contents_constructor(section),

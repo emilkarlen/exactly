@@ -1,9 +1,8 @@
 from typing import List
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity.conf_params import TIMEOUT_CONF_PARAM_INFO
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import TIMEOUT_INSTRUCTION_NAME
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
@@ -24,8 +23,7 @@ class _TimeoutConfigurationParameter(ConfigurationParameterDocumentation):
 
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
-                                                   TIMEOUT_INSTRUCTION_NAME),
+            phase_infos.CONFIGURATION.instruction_cross_reference_target(TIMEOUT_INSTRUCTION_NAME),
         ]
 
 

@@ -1,7 +1,5 @@
 from typing import List
 
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionInstructionCrossReference
-from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.definitions.test_suite.section_names_plain import DEFAULT_SECTION_NAME
 from exactly_lib.definitions.test_suite.section_names_plain import SECTION_CONCEPT_NAME
 from exactly_lib.help.program_modes.common.section_documentation_renderer import SectionDocumentationConstructorBase
@@ -44,9 +42,3 @@ class TestSuiteSectionDocumentationConstructor(SectionDocumentationConstructorBa
 
     def _add_section_for_see_also(self, environment: ConstructionEnvironment, sections: List[docs.SectionItem]):
         sections += see_also_sections(self._doc.see_also_targets, environment)
-
-    def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
-        return docs.cross_reference(instruction_name_text(instr_name),
-                                    TestSuiteSectionInstructionCrossReference(self._doc.name.plain,
-                                                                              instr_name),
-                                    allow_rendering_of_visible_extra_target_text=False)

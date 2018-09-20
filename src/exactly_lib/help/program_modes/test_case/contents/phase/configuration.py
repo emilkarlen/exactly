@@ -1,7 +1,7 @@
 from typing import List
 
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
@@ -48,12 +48,11 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
                                         env_vars_for_configuration_phase())
 
     @property
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
             concepts.CONFIGURATION_PARAMETER_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
-            TestCasePhaseInstructionCrossReference(self.name.plain,
-                                                   TEST_CASE_STATUS_INSTRUCTION_NAME),
+            self.section_info.instruction_cross_reference_target(TEST_CASE_STATUS_INSTRUCTION_NAME),
             phase_infos.SETUP.cross_reference_target,
         ]
 

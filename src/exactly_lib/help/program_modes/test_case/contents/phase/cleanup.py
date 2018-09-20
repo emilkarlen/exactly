@@ -1,7 +1,6 @@
 from typing import List
 
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
 from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
@@ -55,8 +54,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
             phase_infos.ASSERT.cross_reference_target,
-            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
-                                                   TEST_CASE_STATUS_INSTRUCTION_NAME),
+            phase_infos.CONFIGURATION.instruction_cross_reference_target(TEST_CASE_STATUS_INSTRUCTION_NAME),
         ]
 
 

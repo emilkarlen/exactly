@@ -3,7 +3,6 @@ from typing import List
 from exactly_lib.cli.definitions import common_cli_options
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import actors, concepts
 from exactly_lib.definitions.entity import conf_params
 from exactly_lib.definitions.entity.concepts import ACTOR_CONCEPT_INFO
@@ -36,8 +35,8 @@ class _ActorConcept(ConceptDocumentation):
                 [
                     phase_infos.ACT.cross_reference_target,
                     conf_params.ACTOR_CONF_PARAM_INFO.cross_reference_target,
-                    TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
-                                                           instruction_names.ACTOR_INSTRUCTION_NAME),
+                    phase_infos.CONFIGURATION.instruction_cross_reference_target(
+                        instruction_names.ACTOR_INSTRUCTION_NAME),
                 ]
                 +
                 actors.all_actor_cross_refs()

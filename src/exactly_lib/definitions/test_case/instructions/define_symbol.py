@@ -2,13 +2,12 @@ from typing import List, Sequence
 
 from exactly_lib.definitions import type_system, instruction_arguments
 from exactly_lib.definitions.argument_rendering import cl_syntax, path_syntax
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import syntax_elements
 from exactly_lib.definitions.entity import types
 from exactly_lib.definitions.entity.types import TypeNameAndCrossReferenceId
+from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_case.instructions.instruction_names import SYMBOL_DEFINITION_INSTRUCTION_NAME
-from exactly_lib.definitions.test_case.phase_names_plain import SETUP_PHASE_NAME
 from exactly_lib.type_system.value_type import DataValueType, ValueType
 from exactly_lib.util.cli_syntax.elements import argument as a
 from exactly_lib.util.textformat.structure import structures as docs
@@ -22,8 +21,8 @@ VALUE_SYNTAX_ELEMENT = 'VALUE'
 
 PATH_SUFFIX_IS_REQUIRED = False
 
-DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE = TestCasePhaseInstructionCrossReference(SETUP_PHASE_NAME,
-                                                                                   SYMBOL_DEFINITION_INSTRUCTION_NAME)
+DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE = phase_infos.SETUP.instruction_cross_reference_target(
+    SYMBOL_DEFINITION_INSTRUCTION_NAME)
 
 
 def def_instruction_argument_syntax() -> List[a.ArgumentUsage]:

@@ -6,14 +6,14 @@ from exactly_lib.cli.definitions import common_cli_options as common_opts
 from exactly_lib.cli.definitions.program_modes.test_suite import command_line_options as opts
 from exactly_lib.common.help.see_also import see_also_items_from_cross_refs
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference, \
-    PredefinedHelpContentsPartReference, HelpPredefinedContentsPart
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import PredefinedHelpContentsPartReference, \
+    HelpPredefinedContentsPart
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity import concepts
 from exactly_lib.definitions.entity import suite_reporters as reporters
 from exactly_lib.definitions.entity.actors import SOURCE_INTERPRETER_ACTOR
 from exactly_lib.definitions.misc_texts import IS_A_SHELL_CMD
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.definitions.test_suite import file_names
 from exactly_lib.help.contents_structure.cli_program import CliProgramSyntaxDocumentation
@@ -80,8 +80,7 @@ class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
                                             see_also_items=see_also_items_from_cross_refs([
                                                 concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
                                                 concepts.SHELL_SYNTAX_CONCEPT_INFO.cross_reference_target,
-                                                TestCasePhaseInstructionCrossReference(
-                                                    phase_names.CONFIGURATION.plain,
+                                                phase_infos.CONFIGURATION.instruction_cross_reference_target(
                                                     instruction_names.ACTOR_INSTRUCTION_NAME),
                                             ]))
 

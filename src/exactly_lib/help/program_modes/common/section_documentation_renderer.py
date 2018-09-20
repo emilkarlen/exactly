@@ -1,5 +1,6 @@
 from typing import List
 
+from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.help.program_modes.common.contents_structure import SectionDocumentation
 from exactly_lib.help.program_modes.common.renderers import default_section_para, instruction_set_constructor
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
@@ -26,7 +27,10 @@ class SectionDocumentationConstructorBase(ArticleContentsConstructor):
         return ret_val
 
     def _instruction_cross_ref_text(self, instr_name: str) -> docs.Text:
-        raise NotImplementedError('abstract method')
+        return docs.cross_reference(
+            instruction_name_text(instr_name),
+            self.__section_documentation.section_info.instruction_cross_reference_target(instr_name),
+            allow_rendering_of_visible_extra_target_text=False)
 
     def _add_section_for_instructions(self,
                                       environment: ConstructionEnvironment,
