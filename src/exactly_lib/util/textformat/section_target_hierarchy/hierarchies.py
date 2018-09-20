@@ -76,6 +76,37 @@ class Node(tuple):
         return self[1]
 
 
+def child(local_target_name: str,
+          generator: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
+    return _ChildSectionHierarchyGenerator(local_target_name, generator)
+
+
+def hierarchy(header: StringText,
+              initial_paragraphs: ParagraphItemsConstructor,
+              children: List[SectionHierarchyGenerator],
+              ) -> SectionHierarchyGenerator:
+    """
+    A section with sub sections that appear in the TOC/target hierarchy.
+    """
+    return _Hierarchy(header,
+                      initial_paragraphs,
+                      children)
+
+
+def child_hierarchy(local_target_name: str,
+                    header: StringText,
+                    initial_paragraphs: ParagraphItemsConstructor,
+                    children: List[SectionHierarchyGenerator],
+                    ) -> SectionHierarchyGenerator:
+    """
+    Short cut to child(hierarchy(...))
+    """
+    return child(local_target_name,
+                 hierarchy(header,
+                           initial_paragraphs,
+                           children))
+
+
 def parent_(header: str,
             initial_paragraphs: List[ParagraphItem],
             nodes: List[Node],
@@ -95,9 +126,10 @@ def parent(header: str,
     """
     A section with sub sections that appear in the TOC/target hierarchy.
     """
-    return _SectionHierarchyGeneratorWithSubSections(StringText(header),
-                                                     initial_paragraphs,
-                                                     nodes)
+    return _Hierarchy(StringText(header),
+                      initial_paragraphs,
+                      [child(node.local_target_name, node.generator)
+                       for node in nodes])
 
 
 def parent3(header: StringText,
@@ -133,6 +165,18 @@ def hierarchy_with_constant_target(header: str,
                                                      nodes,
                                                      constant_target,
                                                      )
+
+
+class _ChildSectionHierarchyGenerator(SectionHierarchyGenerator):
+    def __init__(self,
+                 local_target_name: str,
+                 generator: SectionHierarchyGenerator
+                 ):
+        self._local_target_name = local_target_name
+        self._generator = generator
+
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
+        return self._generator.generate(target_factory.sub_factory(self._local_target_name))
 
 
 class _SectionHierarchyGeneratorBase(SectionHierarchyGenerator):
@@ -207,6 +251,31 @@ class _SectionHierarchyGeneratorWithSubSections(_SectionHierarchyGeneratorBase):
         sub_sections = [node.generator.generate(target_factory.sub_factory(node.local_target_name))
                         for node
                         in self._nodes
+                        ]
+        return SectionItemNodeWithSubSections(self._root_target_info(target_factory),
+                                              self._initial_paragraphs,
+                                              sub_sections)
+
+
+class _Hierarchy(_SectionHierarchyGeneratorBase):
+    """
+    A section with sub sections.
+    """
+
+    def __init__(self,
+                 header: StringText,
+                 initial_paragraphs: ParagraphItemsConstructor,
+                 sub_section: List[SectionHierarchyGenerator],
+                 constant_target: Optional[core.CrossReferenceTarget] = None,
+                 ):
+        super().__init__(header, constant_target)
+        self._initial_paragraphs = initial_paragraphs
+        self._sub_section = sub_section
+
+    def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
+        sub_sections = [sub_section.generate(target_factory)
+                        for sub_section
+                        in self._sub_section
                         ]
         return SectionItemNodeWithSubSections(self._root_target_info(target_factory),
                                               self._initial_paragraphs,

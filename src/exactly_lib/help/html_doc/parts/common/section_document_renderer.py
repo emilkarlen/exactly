@@ -10,7 +10,6 @@ from exactly_lib.util.textformat.constructor.section import \
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
 from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
-from exactly_lib.util.textformat.structure.core import StringText
 
 _INSTRUCTIONS_IN = 'The instructions in the {section} {section_concept}.'
 
@@ -30,18 +29,18 @@ class GeneratorsForSectionDocument:
     def custom_sections_list(self,
                              header: str,
                              sections: Sequence[SectionDocumentation]) -> SectionHierarchyGenerator:
-        return h.parent(
-            header,
+        return h.hierarchy(
+            docs.string_text(header),
             paragraphs.empty(),
             [
-                h.Node(section.name.plain,
-                       h.leaf_article_with_constant_target(
-                           section.syntax_name_text,
-                           section.section_info.cross_reference_target,
-                           self._article_constructor_for_section(section),
-                           tags={std_tags.SECTION},
-                       ),
-                       )
+                h.child(section.name.plain,
+                        h.leaf_article_with_constant_target(
+                            section.syntax_name_text,
+                            section.section_info.cross_reference_target,
+                            self._article_constructor_for_section(section),
+                            tags={std_tags.SECTION},
+                        ),
+                        )
                 for section in sections
             ]
         )
@@ -49,16 +48,16 @@ class GeneratorsForSectionDocument:
     def instructions_per_section(self,
                                  header: str,
                                  ) -> SectionHierarchyGenerator:
-        return h.parent3(StringText(header),
-                         paragraphs.empty(),
-                         [
-                             h.Node(section.name.plain,
-                                    _InstructionsInSection(self._section_concept_name,
-                                                           section).generator(),
-                                    )
-                             for section in self._sections
-                             if section.has_instructions
-                         ])
+        return h.hierarchy(docs.string_text(header),
+                           paragraphs.empty(),
+                           [
+                               h.child(section.name.plain,
+                                       _InstructionsInSection(self._section_concept_name,
+                                                              section).hierarchy(),
+                                       )
+                               for section in self._sections
+                               if section.has_instructions
+                           ])
 
 
 class _InstructionsInSection:
@@ -70,46 +69,43 @@ class _InstructionsInSection:
         self.section_concept_name = section_concept_name
         self.section = section
 
-    def generator(self) -> SectionHierarchyGenerator:
+    def hierarchy(self) -> SectionHierarchyGenerator:
         initial_paragraphs = paragraphs.constant(docs.paras(_INSTRUCTIONS_IN.format(
             section_concept=self.section_concept_name,
             section=self.section.name)
         ))
-        return h.parent3(self.section.syntax_name_text,
-                         initial_paragraphs,
-                         self.instruction_generators(),
-                         )
+        return h.hierarchy(self.section.syntax_name_text,
+                           initial_paragraphs,
+                           self._instructions_layout(),
+                           )
 
-    def instruction_generators(self) -> List[h.Node]:
-        instr_docs = self.section.instruction_set.instruction_documentations
+    def _instructions_layout(self) -> List[SectionHierarchyGenerator]:
+        instructions = self.section.instruction_set.instruction_documentations
         if self.section.instruction_group_by:
-            return self._instruction_group_nodes(self.section.instruction_group_by.__call__(instr_docs))
+            return self._instruction_groups(self.section.instruction_group_by.__call__(instructions))
         else:
-            return self._instruction_nodes(instr_docs)
+            return self._instructions(instructions)
 
-    def _instruction_group_nodes(self, groups: Sequence[InstructionGroup]) -> List[h.Node]:
+    def _instruction_groups(self, groups: Sequence[InstructionGroup]) -> List[SectionHierarchyGenerator]:
         return [
-            h.Node(group.identifier,
-                   h.parent(group.header,
-                            paragraphs.constant(group.description_paragraphs),
-                            self._instruction_nodes(group.instruction_documentations)))
+            h.child_hierarchy(group.identifier,
+                              docs.string_text(group.header),
+                              paragraphs.constant(group.description_paragraphs),
+                              self._instructions(group.instruction_documentations)
+                              )
             for group in groups
         ]
 
-    def _instruction_nodes(self, instructions: Sequence[InstructionDocumentation]) -> List[h.Node]:
+    def _instructions(self, instructions: Sequence[InstructionDocumentation]) -> List[SectionHierarchyGenerator]:
         return [
-            self._instruction_node(instruction)
+            self._instruction(instruction)
             for instruction in instructions
         ]
 
-    def _instruction_node(self, instruction: InstructionDocumentation) -> h.Node:
-        # TODO Gör om t SectionHierarchyGenerator?
-        cross_ref_target = self.section.section_info.instruction_cross_reference_target(instruction.instruction_name())
-
-        return h.Node(instruction.instruction_name(),  # Unused local target
-                      h.leaf_article_with_constant_target(
-                          instruction.instruction_name_text,
-                          cross_ref_target,
-                          InstructionDocArticleContentsConstructor(instruction),
-                          tags={std_tags.INSTRUCTION},
-                      ))
+    def _instruction(self, instruction: InstructionDocumentation) -> SectionHierarchyGenerator:
+        return h.leaf_article_with_constant_target(
+            instruction.instruction_name_text,
+            self.section.section_info.instruction_cross_reference_target(instruction.instruction_name()),
+            InstructionDocArticleContentsConstructor(instruction),
+            tags={std_tags.INSTRUCTION},
+        )
