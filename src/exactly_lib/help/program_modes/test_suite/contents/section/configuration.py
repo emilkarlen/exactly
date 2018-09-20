@@ -32,7 +32,7 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
 
     def purpose(self) -> Description:
         paragraphs = self._tp.fnap(_PURPOSE_REST_TEXT)
-        paragraphs += test_case_phase_sections.insertion_position_description(self._section_name, True)
+        paragraphs += test_case_phase_sections.insertion_position_description(self.section_info.name, True)
         return Description(self._tp.text(_PURPOSE_SINGLE_LINE_DESCRIPTION_TEXT),
                            paragraphs)
 

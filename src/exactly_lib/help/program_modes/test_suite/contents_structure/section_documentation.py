@@ -1,7 +1,8 @@
 from typing import List, Optional
 
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestSuiteSectionCrossReference
-from exactly_lib.definitions.formatting import SectionName
+from exactly_lib.definitions.section_info import SectionInfo
+from exactly_lib.definitions.test_suite.section_infos import TestSuiteSectionInfo, \
+    TestSuiteSectionWithoutInstructionsInfo
 from exactly_lib.help.program_modes.common import contents as common_contents
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
@@ -10,21 +11,18 @@ from exactly_lib.util.textformat.structure.core import ParagraphItem, Text
 
 
 class TestSuiteSectionDocumentation(SectionDocumentation):
-    def __init__(self, name: str):
-        super().__init__(name)
-        self._section_name = SectionName(name)
+    def __init__(self, section_info: SectionInfo):
+        self._section_info = section_info
+
+    @property
+    def section_info(self) -> SectionInfo:
+        return self._section_info
 
     def contents_description(self) -> docs.SectionContents:
         raise NotImplementedError()
 
     def instructions_section_header(self) -> Text:
         return common_contents.INSTRUCTIONS_SECTION_HEADER
-
-    @property
-    def syntax_name_cross_ref_text(self) -> docs.Text:
-        return docs.cross_reference(self.syntax_name_text,
-                                    TestSuiteSectionCrossReference(self.name.plain),
-                                    allow_rendering_of_visible_extra_target_text=False)
 
 
 class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDocumentation):
@@ -34,7 +32,7 @@ class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDo
         """
         :param instruction_set: None if this phase does not have instructions.
         """
-        super().__init__(name)
+        super().__init__(TestSuiteSectionInfo(name))
         self._instruction_set = instruction_set
 
     @property
@@ -55,7 +53,7 @@ class TestSuiteSectionDocumentationForSectionWithInstructions(TestSuiteSectionDo
 
 class TestSuiteSectionDocumentationBaseForSectionWithoutInstructions(TestSuiteSectionDocumentation):
     def __init__(self, name: str):
-        super().__init__(name)
+        super().__init__(TestSuiteSectionWithoutInstructionsInfo(name))
 
     @property
     def has_instructions(self) -> bool:

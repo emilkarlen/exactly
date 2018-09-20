@@ -1,6 +1,7 @@
 from typing import List, Sequence, Optional
 
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
+from exactly_lib.definitions.section_info import SectionInfo
+from exactly_lib.definitions.test_case.phase_infos import TestCasePhaseInfo, TestCasePhaseWithoutInstructionsInfo
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
     SectionDocumentation
 from exactly_lib.util.textformat.structure import document as doc
@@ -63,8 +64,12 @@ class ExecutionEnvironmentInfo(tuple):
 
 
 class TestCasePhaseDocumentation(SectionDocumentation):
-    def __init__(self, name: str):
-        super().__init__(name)
+    def __init__(self, section_info: SectionInfo):
+        self._section_info = section_info
+
+    @property
+    def section_info(self) -> SectionInfo:
+        return self._section_info
 
     def sequence_info(self) -> PhaseSequenceInfo:
         raise NotImplementedError()
@@ -75,12 +80,6 @@ class TestCasePhaseDocumentation(SectionDocumentation):
     def execution_environment_info(self) -> ExecutionEnvironmentInfo:
         raise NotImplementedError()
 
-    @property
-    def syntax_name_cross_ref_text(self) -> docs.Text:
-        return docs.cross_reference(self.syntax_name_text,
-                                    TestCasePhaseCrossReference(self.name.plain),
-                                    allow_rendering_of_visible_extra_target_text=False)
-
 
 class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentation):
     def __init__(self,
@@ -89,7 +88,7 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
         """
         :param instruction_set: None if this phase does not have instructions.
         """
-        super().__init__(name)
+        super().__init__(TestCasePhaseInfo(name))
         self._instruction_set = instruction_set
 
     @property
@@ -109,9 +108,8 @@ class TestCasePhaseDocumentationForPhaseWithInstructions(TestCasePhaseDocumentat
 
 
 class TestCasePhaseDocumentationForPhaseWithoutInstructions(TestCasePhaseDocumentation):
-    def __init__(self,
-                 name: str):
-        super().__init__(name)
+    def __init__(self, name: str):
+        super().__init__(TestCasePhaseWithoutInstructionsInfo(name))
 
     @property
     def has_instructions(self) -> bool:

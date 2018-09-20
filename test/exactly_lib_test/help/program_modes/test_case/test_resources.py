@@ -1,5 +1,6 @@
 from typing import Optional, List
 
+from exactly_lib.definitions.test_case.phase_infos import TestCasePhaseWithoutInstructionsInfo
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents_structure.phase_documentation import TestCasePhaseDocumentation, \
     PhaseSequenceInfo, ExecutionEnvironmentInfo
@@ -33,7 +34,7 @@ class _SectionDocumentationForTestCasePhaseWithInstructionsTestImpl(TestCasePhas
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet):
-        super().__init__(name)
+        super().__init__(TestCasePhaseWithoutInstructionsInfo(name))
         self._instruction_set = instruction_set
 
     def purpose(self) -> Description:

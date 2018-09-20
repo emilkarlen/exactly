@@ -1,6 +1,9 @@
 from typing import Iterable, List, Sequence, Optional, Dict
 
 from exactly_lib.common.help.instruction_documentation import InstructionDocumentation
+from exactly_lib.definitions.cross_ref.app_cross_ref import CrossReferenceId
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import CustomCrossReferenceId
+from exactly_lib.definitions.section_info import SectionInfo
 from exactly_lib.help.contents_structure.application import ApplicationHelp
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet, \
@@ -60,7 +63,11 @@ def application_help_for_suite_sections(suite_sections: Iterable[SectionDocument
 
 class SectionDocumentationForSectionWithoutInstructionsTestImpl(SectionDocumentation):
     def __init__(self, name: str):
-        super().__init__(name)
+        self._section_info = SectionInfoTestImpl(name)
+
+    @property
+    def section_info(self) -> SectionInfo:
+        return self._section_info
 
     def purpose(self) -> Description:
         return Description(text('Single line purpose for phase ' + self.name.syntax),
@@ -79,8 +86,12 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
     def __init__(self,
                  name: str,
                  instruction_set: SectionInstructionSet):
-        super().__init__(name)
         self._instruction_set = instruction_set
+        self._section_info = SectionInfoWithoutInstructionsInfoTestImpl(name)
+
+    @property
+    def section_info(self) -> SectionInfo:
+        return self._section_info
 
     def purpose(self) -> Description:
         return Description(text('Single line purpose for phase ' + self.name.syntax),
@@ -93,3 +104,18 @@ class SectionDocumentationForSectionWithInstructionsTestImpl(SectionDocumentatio
     @property
     def instruction_set(self) -> Optional[SectionInstructionSet]:
         return self._instruction_set
+
+
+class SectionInfoTestImpl(SectionInfo):
+
+    @property
+    def cross_reference_target(self) -> CrossReferenceId:
+        return CustomCrossReferenceId('section.test.impl.' + self.name.plain)
+
+    def instruction_cross_reference_target(self, instruction_name: str) -> CrossReferenceId:
+        return CustomCrossReferenceId('section-instruction.test.impl.' + self.name.plain + '.' + instruction_name)
+
+
+class SectionInfoWithoutInstructionsInfoTestImpl(SectionInfoTestImpl):
+    def instruction_cross_reference_target(self, instruction_name: str) -> CrossReferenceId:
+        raise ValueError('The {} section do not have instructions'.format(self.name.plain))

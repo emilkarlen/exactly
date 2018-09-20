@@ -4,7 +4,9 @@ from exactly_lib.common.help.instruction_documentation import InstructionDocumen
 from exactly_lib.definitions import doc_format
 from exactly_lib.definitions import formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
+from exactly_lib.definitions.section_info import SectionInfo
 from exactly_lib.util.description import Description
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem, Text
 
 
@@ -60,21 +62,23 @@ class SectionDocumentation:
     """
     Documentation about a section in a "section document".
     """
-
-    def __init__(self, name: str):
-        self._name_formats = formatting.SectionName(name)
-
     @property
     def name(self) -> formatting.SectionName:
-        return self._name_formats
+        return self.section_info.name
+
+    @property
+    def section_info(self) -> SectionInfo:
+        raise NotImplementedError('abstract method')
 
     @property
     def syntax_name_text(self) -> StringText:
-        return doc_format.section_name_text(self.name)
+        return doc_format.section_name_text(self.section_info.name)
 
     @property
     def syntax_name_cross_ref_text(self) -> Text:
-        raise NotImplementedError('abstract method')
+        return docs.cross_reference(self.syntax_name_text,
+                                    self.section_info.cross_reference_target,
+                                    allow_rendering_of_visible_extra_target_text=False)
 
     def purpose(self) -> Description:
         raise NotImplementedError()

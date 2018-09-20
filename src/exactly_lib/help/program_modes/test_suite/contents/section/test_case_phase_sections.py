@@ -24,7 +24,7 @@ class _SectionThatIsIdenticalToTestCasePhase(TestSuiteSectionDocumentationBaseFo
         super().__init__(phase_name)
         self._contents_is_inserted_before_case_contents = contents_is_inserted_before_case_contents
         self._tp = TextParser({
-            'phase': self._section_name,
+            'phase': self.section_info.name,
         })
 
     def contents_description(self) -> SectionContents:
@@ -32,7 +32,7 @@ class _SectionThatIsIdenticalToTestCasePhase(TestSuiteSectionDocumentationBaseFo
 
     def purpose(self) -> Description:
         paragraphs = self._tp.fnap(_CORRESPONDENCE_DESCRIPTION)
-        paragraphs += insertion_position_description(self._section_name,
+        paragraphs += insertion_position_description(self.section_info.name,
                                                      self._contents_is_inserted_before_case_contents)
 
         return Description(self._tp.text(_SINGLE_LINE_DESCRIPTION),
