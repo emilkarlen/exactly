@@ -1,5 +1,6 @@
 from typing import Sequence, Optional, Set
 
+from exactly_lib.util.textformat.constructor import sections
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
 from exactly_lib.util.textformat.constructor.section import \
@@ -10,7 +11,6 @@ from exactly_lib.util.textformat.section_target_hierarchy.section_node import Se
     SectionItemNode
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoNode, TargetInfo
 from exactly_lib.util.textformat.structure import document as doc
-from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
 class SectionItemNodeWithRoot(SectionItemNode):
@@ -54,30 +54,10 @@ class LeafArticleNode(LeafSectionItemNodeWithRoot):
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> ArticleConstructor:
         tags = self._tags.union(node_environment.toc_section_item_tags)
 
-        return ArticleConstructorFromContentsConstructor(
-            self._root_target_info,
-            self._contents_renderer,
-            tags,
-        )
-
-
-class ArticleConstructorFromContentsConstructor(ArticleConstructor):
-    def __init__(self,
-                 node_target_info: TargetInfo,
-                 contents_renderer: ArticleContentsConstructor,
-                 tags: Optional[Set[str]] = None,
-                 ):
-        self._node_target_info = node_target_info
-        self._tags = frozenset() if tags is None else tags
-        self._contents_renderer = contents_renderer
-
-    def apply(self, environment: ConstructionEnvironment) -> doc.Article:
-        article_contents = self._contents_renderer.apply(environment)
-        return doc.Article(self._node_target_info.presentation_text,
-                           ArticleContents(article_contents.abstract_paragraphs,
-                                           article_contents.section_contents),
-                           target=self._node_target_info.target,
-                           tags=self._tags)
+        return sections.article(self._root_target_info,
+                                self._contents_renderer,
+                                tags,
+                                )
 
 
 class SectionItemNodeWithSubSections(SectionItemNodeWithRoot):
