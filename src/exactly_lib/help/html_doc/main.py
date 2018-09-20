@@ -57,7 +57,7 @@ def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
 
 
 def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
-    return h.hierarchy__str(
+    return h.hierarchy(
         page_setup.PAGE_TITLE,
         children=(
                 _case_and_suite_sections(application_help)
@@ -113,8 +113,8 @@ def _cli_syntax_sections(local_target_name: str) -> List[SectionHierarchyGenerat
     return [
         h.child(
             local_target_name,
-            h.hierarchy__str('Command line syntax',
-                             children=[
+            h.hierarchy('Command line syntax',
+                        children=[
                                  h.child('test-case',
                                          case_cli_syntax.root(_TEST_CASES_HEADER)
                                          ),
@@ -125,7 +125,7 @@ def _cli_syntax_sections(local_target_name: str) -> List[SectionHierarchyGenerat
                                          help.root('Getting Help')
                                          ),
                              ]
-                             )
+                        )
         )
     ]
 

@@ -54,7 +54,7 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
         return h.leaf(header_,
                       sections.constant_contents(section_contents(paragraphs_)))
 
-    return h.hierarchy__str(
+    return h.hierarchy(
         header,
         children=[
             h.child_hierarchy('dir-structure',
