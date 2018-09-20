@@ -89,10 +89,10 @@ class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
                                 ) -> generator.SectionHierarchyGenerator:
         def section_hierarchy_node(partition: EntitiesPartition) -> SectionHierarchyGenerator:
             return h.child(partition.partition_names_setup.local_target_name,
-                           entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(
+                           entities_list_renderer.entity_list_hierarchy(
                                self.entity_type_identifier,
-                               partition.partition_names_setup.header,
                                self.entity_2_article_contents_renderer,
+                               partition.partition_names_setup.header,
                                partition.entity_doc_list,
                            ))
 
