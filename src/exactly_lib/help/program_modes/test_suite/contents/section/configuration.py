@@ -1,8 +1,7 @@
 from typing import List
 
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_suite.contents.section import test_case_phase_sections
 from exactly_lib.help.program_modes.test_suite.contents_structure.section_documentation import \
@@ -40,7 +39,7 @@ class ConfigurationSectionDocumentation(TestSuiteSectionDocumentationForSectionW
     @property
     def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            TestCasePhaseCrossReference(phase_names.CONFIGURATION.plain)
+            phase_infos.CONFIGURATION.cross_ref_target
         ]
 
 

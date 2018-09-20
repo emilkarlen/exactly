@@ -1,10 +1,9 @@
 from typing import List
 
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseCrossReference, \
-    TestCasePhaseInstructionCrossReference
+from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.entity import concepts, conf_params
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import TEST_CASE_STATUS_INSTRUCTION_NAME
 from exactly_lib.help.program_modes.common.contents_structure import SectionInstructionSet
 from exactly_lib.help.program_modes.test_case.contents.phase.utils import \
@@ -55,7 +54,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
-            TestCasePhaseCrossReference(phase_names.ASSERT.plain),
+            phase_infos.ASSERT.cross_ref_target,
             TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                    TEST_CASE_STATUS_INSTRUCTION_NAME),
         ]
