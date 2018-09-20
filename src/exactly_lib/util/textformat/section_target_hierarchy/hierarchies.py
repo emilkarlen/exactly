@@ -45,27 +45,6 @@ def leaf_article(header: StringText,
                                  tags=tags)
 
 
-def leaf_with_constant_target(header: str,
-                              constant_target: core.CrossReferenceTarget,
-                              contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
-    """A section without sub sections that appear in the TOC/target hierarchy"""
-    return _SectionLeafGenerator(StringText(header),
-                                 contents_constructor,
-                                 constant_target)
-
-
-def leaf_article_with_constant_target(header: StringText,
-                                      constant_target: core.CrossReferenceTarget,
-                                      contents_constructor: ArticleContentsConstructor,
-                                      tags: Optional[Set[str]] = None,
-                                      ) -> SectionHierarchyGenerator:
-    """An article without sub sections that appear in the TOC/target hierarchy"""
-    return _ArticleLeafGenerator(header,
-                                 contents_constructor,
-                                 constant_target,
-                                 tags)
-
-
 def leaf_not_in_toc(section: SectionItemConstructor) -> SectionHierarchyGenerator:
     """A section without sub sections that does not appear in the TOC/target hierarchy"""
     return _SectionItemNotInTocLeafGenerator(section)
