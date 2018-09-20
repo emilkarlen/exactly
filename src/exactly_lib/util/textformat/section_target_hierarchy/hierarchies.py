@@ -29,10 +29,10 @@ def with_hidden_from_toc(hierarchy_to_hide: SectionHierarchyGenerator) -> Sectio
     return _HierarchyNotInToc(hierarchy_to_hide)
 
 
-def leaf(header: str,
+def leaf(header: StrOrStringText,
          contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
     """A section without sub sections that appear in the TOC/target hierarchy"""
-    return _SectionLeafGenerator(StringText(header), contents_constructor)
+    return _SectionLeafGenerator(docs.str_text(header), contents_constructor)
 
 
 def leaf_article(header: StringText,
