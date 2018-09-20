@@ -24,21 +24,21 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                                      phase_identifier.DEFAULT_PHASE.section_name,
                                      phase_names_plain.SECTION_CONCEPT_NAME)])
 
-    return h.sections(
+    return h.hierarchy__str(
         header,
-        [
-            h.Node('phases',
-                   const_paragraphs('Phases',
-                                    phases_documentation())
-                   ),
-            h.Node('suite-contents',
-                   const_paragraphs('Inclusion of phase contents from test suites',
-                                    tp.fnap(_SUITE_CONTENTS_INCLUSION))
-                   ),
-            h.Node('part-of-suite',
-                   const_paragraphs('Part of suite',
-                                    tp.fnap(_PART_OF_SUITE))
-                   ),
+        children=[
+            h.child('phases',
+                    const_paragraphs('Phases',
+                                     phases_documentation())
+                    ),
+            h.child('suite-contents',
+                    const_paragraphs('Inclusion of phase contents from test suites',
+                                     tp.fnap(_SUITE_CONTENTS_INCLUSION))
+                    ),
+            h.child('part-of-suite',
+                    const_paragraphs('Part of suite',
+                                     tp.fnap(_PART_OF_SUITE))
+                    ),
         ]
     )
 

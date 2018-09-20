@@ -10,7 +10,7 @@ from exactly_lib.util.textformat.constructor.section import \
     SectionConstructor, \
     ArticleContentsConstructor
 from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h, generator
-from exactly_lib.util.textformat.section_target_hierarchy.hierarchies import Node
+from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import ParagraphItem
 
@@ -87,20 +87,20 @@ class PartitionedHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
                                 header: str,
                                 all_entity_doc_list: List[EntityDocumentation]
                                 ) -> generator.SectionHierarchyGenerator:
-        def section_hierarchy_node(partition: EntitiesPartition) -> Node:
-            return Node(partition.partition_names_setup.local_target_name,
-                        entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(
-                            self.entity_type_identifier,
-                            partition.partition_names_setup.header,
-                            self.entity_2_article_contents_renderer,
-                            partition.entity_doc_list,
-                        ))
+        def section_hierarchy_node(partition: EntitiesPartition) -> SectionHierarchyGenerator:
+            return h.child(partition.partition_names_setup.local_target_name,
+                           entities_list_renderer.HtmlDocHierarchyGeneratorForEntitiesHelp(
+                               self.entity_type_identifier,
+                               partition.partition_names_setup.header,
+                               self.entity_2_article_contents_renderer,
+                               partition.entity_doc_list,
+                           ))
 
         partitions = partition_entities(self.partition_setup_list, all_entity_doc_list)
 
-        return h.sections(
-            header,
-            [
+        return h.hierarchy(
+            docs.string_text(header),
+            children=[
                 section_hierarchy_node(partition)
                 for partition in partitions
             ]

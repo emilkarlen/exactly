@@ -1,4 +1,4 @@
-from typing import List, Optional, Set
+from typing import List, Optional, Set, Iterable
 
 from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
@@ -14,6 +14,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.section_nodes import \
 from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfoFactory, TargetInfo, \
     TargetInfoNode, TargetInfoFactoryWithFixedRoot
 from exactly_lib.util.textformat.structure import document as doc, core
+from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
 
 
@@ -92,15 +93,30 @@ def child(local_target_name: str,
 
 
 def hierarchy(header: StringText,
-              initial_paragraphs: ParagraphItemsConstructor,
-              children: List[SectionHierarchyGenerator],
+              initial_paragraphs: ParagraphItemsConstructor = paragraphs.empty(),
+              children: Iterable[SectionHierarchyGenerator] = (),
               ) -> SectionHierarchyGenerator:
     """
     A section with sub sections that appear in the TOC/target hierarchy.
     """
     return _Hierarchy(header,
                       initial_paragraphs,
-                      children)
+                      list(children))
+
+
+def hierarchy__str(header: str,
+                   initial_paragraphs: ParagraphItemsConstructor = paragraphs.empty(),
+                   children: Iterable[SectionHierarchyGenerator] = (),
+                   ) -> SectionHierarchyGenerator:
+    return hierarchy(docs.string_text(header),
+                     initial_paragraphs,
+                     children)
+    """
+    A section with sub sections that appear in the TOC/target hierarchy.
+    """
+    return _Hierarchy(header,
+                      initial_paragraphs,
+                      list(children))
 
 
 def child_hierarchy(local_target_name: str,
