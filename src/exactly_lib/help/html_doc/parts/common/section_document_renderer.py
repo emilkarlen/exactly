@@ -34,11 +34,13 @@ class GeneratorsForSectionDocument:
             paragraphs.empty(),
             [
                 h.child(section.name.plain,
-                        h.leaf_article_with_constant_target(
-                            section.syntax_name_text,
+                        h.with_fixed_root_target(
                             section.section_info.cross_reference_target,
-                            self._article_constructor_for_section(section),
-                            tags={std_tags.SECTION},
+                            h.leaf_article(
+                                section.syntax_name_text,
+                                self._article_constructor_for_section(section),
+                                tags={std_tags.SECTION},
+                            )
                         ),
                         )
                 for section in sections
@@ -103,9 +105,11 @@ class _InstructionsInSection:
         ]
 
     def _instruction(self, instruction: InstructionDocumentation) -> SectionHierarchyGenerator:
-        return h.leaf_article_with_constant_target(
-            instruction.instruction_name_text,
+        return h.with_fixed_root_target(
             self.section.section_info.instruction_cross_reference_target(instruction.instruction_name()),
-            InstructionDocArticleContentsConstructor(instruction),
-            tags={std_tags.INSTRUCTION},
+            h.leaf_article(
+                instruction.instruction_name_text,
+                InstructionDocArticleContentsConstructor(instruction),
+                tags={std_tags.INSTRUCTION},
+            )
         )

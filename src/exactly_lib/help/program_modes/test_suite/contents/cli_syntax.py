@@ -34,10 +34,12 @@ from exactly_lib.util.textformat.textformat_parser import TextParser
 
 
 def root(header: str) -> SectionHierarchyGenerator:
-    return h.leaf_with_constant_target(
-        header,
+    return h.with_fixed_root_target(
         PredefinedHelpContentsPartReference(HelpPredefinedContentsPart.TEST_SUITE_CLI),
-        ProgramDocumentationSectionContentsConstructor(TestSuiteCliSyntaxDocumentation()))
+        h.leaf(
+            header,
+            ProgramDocumentationSectionContentsConstructor(TestSuiteCliSyntaxDocumentation()))
+    )
 
 
 class TestSuiteCliSyntaxDocumentation(CliProgramSyntaxDocumentation):
