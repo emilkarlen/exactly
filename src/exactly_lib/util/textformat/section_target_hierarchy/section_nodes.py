@@ -25,7 +25,19 @@ class SectionItemNodeWithRoot(SectionItemNode):
         raise NotImplementedError('abstract method')
 
 
-class LeafArticleNode(SectionItemNodeWithRoot):
+class LeafSectionItemNodeWithRoot(SectionItemNodeWithRoot):
+    """
+    A node with a root `TargetInfo` that is a custom target.
+    """
+
+    def __init__(self, node_target_info: TargetInfo):
+        super().__init__(node_target_info)
+
+    def target_info_node(self) -> Optional[TargetInfoNode]:
+        return targets.target_info_leaf(self._root_target_info)
+
+
+class LeafArticleNode(LeafSectionItemNodeWithRoot):
     """
     An article who's sub sections do not appear in the target-hierarchy.
     """
@@ -38,9 +50,6 @@ class LeafArticleNode(SectionItemNodeWithRoot):
         super().__init__(node_target_info)
         self._tags = frozenset() if tags is None else tags
         self._contents_renderer = contents_renderer
-
-    def target_info_node(self) -> Optional[TargetInfoNode]:
-        return targets.target_info_leaf(self._root_target_info)
 
     def section_item_constructor(self, node_environment: SectionItemNodeEnvironment) -> ArticleConstructor:
         super_self = self
