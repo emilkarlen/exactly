@@ -78,10 +78,12 @@ def root(header: str) -> generator.SectionHierarchyGenerator:
                                               tp.fnap(_FILE_REFERENCES))
                                           ),
                                   h.child('see-also',
-                                          h.leaf_not_in_toc(
-                                              see_also.SeeAlsoSectionConstructor(
-                                                  see_also.items_of_targets(_dir_struct_see_also_targets())
-                                              ))
+                                          h.with_not_in_toc(
+                                              h.leaf(
+                                                  see_also.SEE_ALSO_TITLE,
+                                                  see_also.SeeAlsoSectionContentsConstructor(
+                                                      see_also.items_of_targets(_dir_struct_see_also_targets())
+                                                  )))
                                           ),
                               ]
                               ),
