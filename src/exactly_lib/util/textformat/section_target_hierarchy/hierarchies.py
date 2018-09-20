@@ -1,4 +1,4 @@
-from typing import List, Optional, Set, Iterable
+from typing import Optional, Set, Iterable
 
 from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
@@ -60,13 +60,13 @@ def hierarchy(header: StrOrStringText,
     """
     return _Hierarchy(docs.str_text(header),
                       initial_paragraphs,
-                      list(children))
+                      children)
 
 
 def child_hierarchy(local_target_name: str,
                     header: StrOrStringText,
                     initial_paragraphs: ParagraphItemsConstructor,
-                    children: List[SectionHierarchyGenerator],
+                    children: Iterable[SectionHierarchyGenerator],
                     ) -> SectionHierarchyGenerator:
     """
     Short cut to child(hierarchy(...))
@@ -131,7 +131,7 @@ class _Hierarchy(SectionHierarchyGenerator):
     def __init__(self,
                  header: StringText,
                  initial_paragraphs: ParagraphItemsConstructor,
-                 sub_section: List[SectionHierarchyGenerator],
+                 sub_section: Iterable[SectionHierarchyGenerator],
                  ):
         self._header = header
         self._initial_paragraphs = initial_paragraphs
