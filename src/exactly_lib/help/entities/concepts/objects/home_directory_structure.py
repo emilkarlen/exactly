@@ -3,14 +3,12 @@ from typing import List
 from exactly_lib import program_info
 from exactly_lib.definitions import test_case_file_structure as tc_fs, formatting
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.doc_format import instruction_name_text
 from exactly_lib.definitions.entity import concepts, conf_params, syntax_elements, types
 from exactly_lib.definitions.entity.conf_params import ConfigurationParameterInfo
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions import instruction_names
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
-from exactly_lib.test_case import phase_identifier
 from exactly_lib.test_case_file_structure.path_relativity import RelHomeOptionType
 from exactly_lib.util.description import DescriptionWithSubSections
 from exactly_lib.util.textformat.structure import lists
@@ -81,8 +79,7 @@ class _HdsConcept(ConceptDocumentation):
             for dir_info in _ALL_DIRECTORIES
         ]
         ret_val += [
-            TestCasePhaseInstructionCrossReference(phase_identifier.CONFIGURATION.identifier,
-                                                   dir_info.instruction_name)
+            phase_infos.CONFIGURATION.instruction_cross_reference_target(dir_info.instruction_name)
             for dir_info in _ALL_DIRECTORIES
         ]
         return ret_val

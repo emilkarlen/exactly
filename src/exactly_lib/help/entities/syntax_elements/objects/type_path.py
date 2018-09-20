@@ -6,7 +6,6 @@ from exactly_lib.common.help.syntax_contents_structure import InvokationVariant,
 from exactly_lib.definitions import instruction_arguments, formatting
 from exactly_lib.definitions.argument_rendering import cl_syntax
 from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId, \
     cross_reference_id_list
 from exactly_lib.definitions.current_directory_and_path_type import path_type_path_rendering
@@ -14,9 +13,9 @@ from exactly_lib.definitions.doc_format import syntax_text
 from exactly_lib.definitions.entity import syntax_elements, types, concepts
 from exactly_lib.definitions.file_ref import HDS_DIR_DISPLAY_ORDER, SDS_DIR_DISPLAY_ORDER, REL_source_file_dir_OPTION
 from exactly_lib.definitions.instruction_arguments import REL_SYMBOL_OPTION
-from exactly_lib.definitions.test_case import phase_names
 from exactly_lib.definitions.test_case.instructions import define_symbol
 from exactly_lib.definitions.test_case.instructions import instruction_names
+from exactly_lib.definitions.test_case.instructions.define_symbol import DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE
 from exactly_lib.help.entities.syntax_elements.contents_structure import SyntaxElementDocumentation
 from exactly_lib.symbol.symbol_syntax import symbol_reference_syntax_for_name
 from exactly_lib.test_case_file_structure.relative_path_options import REL_HOME_OPTIONS_MAP, \
@@ -93,10 +92,7 @@ class _Documentation(SyntaxElementDocumentation):
             syntax_elements.STRING_SYNTAX_ELEMENT,
             syntax_elements.SYMBOL_NAME_SYNTAX_ELEMENT,
             types.PATH_TYPE_INFO,
-        ]) + [
-                   TestCasePhaseInstructionCrossReference(phase_names.SETUP.plain,
-                                                          instruction_names.SYMBOL_DEFINITION_INSTRUCTION_NAME)
-               ]
+        ]) + [DEFINE_SYMBOL_INSTRUCTION_CROSS_REFERENCE]
 
     def _relativity_sed(self) -> SyntaxElementDescription:
         description_rest = self._parser.fnap(_RELATIVITY_DESCRIPTION_REST)

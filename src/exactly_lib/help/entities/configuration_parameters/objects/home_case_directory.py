@@ -1,8 +1,10 @@
+from typing import List
+
 from exactly_lib.definitions import formatting
-from exactly_lib.definitions.cross_ref.concrete_cross_refs import TestCasePhaseInstructionCrossReference
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.entity.conf_params import HOME_CASE_DIRECTORY_CONF_PARAM_INFO
 from exactly_lib.definitions.file_ref import REL_HOME_CASE_OPTION
-from exactly_lib.definitions.test_case import phase_names
+from exactly_lib.definitions.test_case import phase_names, phase_infos
 from exactly_lib.definitions.test_case.instructions.instruction_names import HOME_CASE_DIRECTORY_INSTRUCTION_NAME
 from exactly_lib.help.entities.configuration_parameters.contents_structure import ConfigurationParameterDocumentation
 from exactly_lib.test_case_file_structure.environment_variables import ENV_VAR_HOME_CASE
@@ -26,10 +28,9 @@ class _HomeCaseDirectoryConfigurationParameter(ConfigurationParameterDocumentati
                         parser.fnap(_REST_DESCRIPTION))
         )
 
-    def see_also_targets(self) -> list:
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
         return [
-            TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
-                                                   HOME_CASE_DIRECTORY_INSTRUCTION_NAME),
+            phase_infos.CONFIGURATION.instruction_cross_reference_target(HOME_CASE_DIRECTORY_INSTRUCTION_NAME),
         ]
 
 
