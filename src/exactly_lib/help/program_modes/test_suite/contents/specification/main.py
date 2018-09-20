@@ -45,22 +45,22 @@ class SpecificationHierarchyGenerator(SectionHierarchyGenerator):
         })
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        generator = h.sections(
+        generator = h.hierarchy__str(
             self.header,
-            [
-                h.Node('introduction',
-                       h.leaf('Introduction',
-                              self._section_of_parsed(_INTRODUCTION))
-                       ),
-                h.Node('structure',
-                       structure.root('Structure', self._suite_help)
-                       ),
-                h.Node('file-syntax',
-                       h.leaf('File syntax',
-                              self._section_of_parsed(_FILE_SYNTAX))
-                       ),
-                h.Node('outcome',
-                       outcome.root('Outcome')),
+            children=[
+                h.child('introduction',
+                        h.leaf('Introduction',
+                               self._section_of_parsed(_INTRODUCTION))
+                        ),
+                h.child('structure',
+                        structure.root('Structure', self._suite_help)
+                        ),
+                h.child('file-syntax',
+                        h.leaf('File syntax',
+                               self._section_of_parsed(_FILE_SYNTAX))
+                        ),
+                h.child('outcome',
+                        outcome.root('Outcome')),
             ])
 
         return generator.generate(target_factory)

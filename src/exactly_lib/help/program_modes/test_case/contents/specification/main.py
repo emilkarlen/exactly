@@ -18,15 +18,15 @@ def root(header: str,
          test_case_help: TestCaseHelp
          ) -> SectionHierarchyGenerator:
     setup = Setup(test_case_help)
-    return h.sections(
+    return h.hierarchy__str(
         header,
-        [
-            h.Node('introduction', h.leaf('Introduction', intro.Documentation())),
-            h.Node('structure', structure.root('Structure', setup)),
-            h.Node('exe-env', env_doc.root('Execution environment')),
-            h.Node('file-syntax', file_syntax.root('File syntax', setup)),
-            h.Node('processing', h.leaf('Processing steps', processing.ContentsConstructor(setup))),
-            h.Node('outcome', outcome.root('Outcome', setup)),
+        children=[
+            h.child('introduction', h.leaf('Introduction', intro.Documentation())),
+            h.child('structure', structure.root('Structure', setup)),
+            h.child('exe-env', env_doc.root('Execution environment')),
+            h.child('file-syntax', file_syntax.root('File syntax', setup)),
+            h.child('processing', h.leaf('Processing steps', processing.ContentsConstructor(setup))),
+            h.child('outcome', outcome.root('Outcome', setup)),
         ])
 
 

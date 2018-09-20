@@ -13,19 +13,19 @@ def hierarchy(header: str,
                                                    test_case_help.phase_helps_in_order_of_execution,
                                                    TestCasePhaseDocumentationConstructor
                                                    )
-    return h.sections(
+    return h.hierarchy__str(
         header,
-        [
-            h.Node('spec',
-                   test_case_specification_rendering.root(
-                       'Specification of test case functionality',
-                       test_case_help)
-                   ),
-            h.Node('phases',
-                   sections_helper.all_sections_list('Phases')
-                   ),
-            h.Node('instructions',
-                   sections_helper.instructions_per_section('Instructions per phase')
-                   ),
+        children=[
+            h.child('spec',
+                    test_case_specification_rendering.root(
+                        'Specification of test case functionality',
+                        test_case_help)
+                    ),
+            h.child('phases',
+                    sections_helper.all_sections_list('Phases')
+                    ),
+            h.child('instructions',
+                    sections_helper.instructions_per_section('Instructions per phase')
+                    ),
         ]
     )

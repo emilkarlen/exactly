@@ -57,9 +57,9 @@ def section_contents(application_help: ApplicationHelp) -> doc.SectionContents:
 
 
 def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
-    return h.sections(
+    return h.hierarchy__str(
         page_setup.PAGE_TITLE,
-        (
+        children=(
                 _case_and_suite_sections(application_help)
                 +
                 _entity_sections(application_help,
@@ -70,15 +70,15 @@ def _generator(application_help: ApplicationHelp) -> SectionHierarchyGenerator:
     )
 
 
-def _case_and_suite_sections(application_help: ApplicationHelp) -> List[h.Node]:
+def _case_and_suite_sections(application_help: ApplicationHelp) -> List[SectionHierarchyGenerator]:
     return [
-        h.Node(
+        h.child(
             'test-case',
             test_case.hierarchy(_TEST_CASES_HEADER,
                                 application_help.test_case_help,
                                 )
         ),
-        h.Node(
+        h.child(
             'test-suite',
             test_suite.hierarchy(_TEST_SUITES_HEADER,
                                  application_help.test_suite_help,
@@ -89,14 +89,14 @@ def _case_and_suite_sections(application_help: ApplicationHelp) -> List[h.Node]:
 
 
 def _entity_sections(application_help: ApplicationHelp,
-                     entity_types_to_exclude: Sequence[EntityTypeNames]) -> List[h.Node]:
+                     entity_types_to_exclude: Sequence[EntityTypeNames]) -> List[SectionHierarchyGenerator]:
     all_entity_type_names = filter(
         lambda
             etn: etn.identifier not in entity_types_to_exclude,
         ALL_ENTITY_TYPES_IN_DISPLAY_ORDER)
 
-    def _section_setup_for_entity(names: EntityTypeNames) -> h.Node:
-        return h.Node(
+    def _section_setup_for_entity(names: EntityTypeNames) -> SectionHierarchyGenerator:
+        return h.child(
             names.identifier,
             application_help.entity_type_conf_for(names.identifier).get_hierarchy_generator(
                 names.name.plural.capitalize()),
@@ -109,23 +109,23 @@ def _entity_sections(application_help: ApplicationHelp,
     ]
 
 
-def _cli_syntax_sections(local_target_name: str) -> List[h.Node]:
+def _cli_syntax_sections(local_target_name: str) -> List[SectionHierarchyGenerator]:
     return [
-        h.Node(
+        h.child(
             local_target_name,
-            h.sections('Command line syntax',
-                       [
-                           h.Node('test-case',
-                                  case_cli_syntax.root(_TEST_CASES_HEADER)
-                                  ),
-                           h.Node('test-suite',
-                                  suite_cli_syntax.root(_TEST_SUITES_HEADER)
-                                  ),
-                           h.Node('help',
-                                  help.root('Getting Help')
-                                  ),
-                       ]
-                       )
+            h.hierarchy__str('Command line syntax',
+                             children=[
+                                 h.child('test-case',
+                                         case_cli_syntax.root(_TEST_CASES_HEADER)
+                                         ),
+                                 h.child('test-suite',
+                                         suite_cli_syntax.root(_TEST_SUITES_HEADER)
+                                         ),
+                                 h.child('help',
+                                         help.root('Getting Help')
+                                         ),
+                             ]
+                             )
         )
     ]
 
