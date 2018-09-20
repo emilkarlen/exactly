@@ -11,57 +11,51 @@ from exactly_lib.help.render.entity_docs import sorted_entity_list
 from exactly_lib.util.textformat.constructor import paragraphs
 from exactly_lib.util.textformat.constructor.section import \
     ArticleContentsConstructor
-from exactly_lib.util.textformat.section_target_hierarchy import targets
+from exactly_lib.util.textformat.section_target_hierarchy import hierarchies as h
 from exactly_lib.util.textformat.section_target_hierarchy.generator import SectionHierarchyGenerator
-from exactly_lib.util.textformat.section_target_hierarchy.section_node import SectionItemNode
-from exactly_lib.util.textformat.section_target_hierarchy.section_nodes import \
-    LeafArticleNode, SectionItemNodeWithSubSections
-from exactly_lib.util.textformat.structure.core import StringText
 
 
 class FlatEntityListHierarchyGeneratorGetter(HtmlDocHierarchyGeneratorGetter):
     def __init__(self,
                  entity_type_identifier: str,
-                 entity_doc_2_article_contents_renderer):
+                 mk_article_constructor: Callable[[EntityDocumentation], ArticleContentsConstructor]):
         self._entity_type_identifier = entity_type_identifier
-        self._entity_doc_2_article_contents_renderer = entity_doc_2_article_contents_renderer
+        self._mk_article_constructor = mk_article_constructor
 
     def get_hierarchy_generator(self,
                                 header: str,
                                 all_entity_doc_list: List[EntityDocumentation]) -> SectionHierarchyGenerator:
-        return HtmlDocHierarchyGeneratorForEntitiesHelp(self._entity_type_identifier,
-                                                        header,
-                                                        self._entity_doc_2_article_contents_renderer,
-                                                        all_entity_doc_list)
+        return entity_list_hierarchy(
+            self._entity_type_identifier,
+            self._mk_article_constructor,
+            header,
+            all_entity_doc_list
+        )
 
 
-class HtmlDocHierarchyGeneratorForEntitiesHelp(SectionHierarchyGenerator):
-    def __init__(self,
-                 entity_type_identifier: str,
-                 header: str,
-                 entity_2_article_contents_renderer: Callable[[EntityDocumentation], ArticleContentsConstructor],
-                 all_entities: List[EntityDocumentation]):
-        self.entity_type_identifier = entity_type_identifier
-        self.header = header
-        self.entity_2_article_contents_renderer = entity_2_article_contents_renderer
-        self.all_entities = all_entities
-
-    def generate(self, target_factory: targets.TargetInfoFactory) -> SectionItemNode:
-        entity_nodes = [
-            self._entity_node(entity)
-            for entity in sorted_entity_list(self.all_entities)
-        ]
-        return SectionItemNodeWithSubSections(target_factory.root(StringText(self.header)),
-                                              paragraphs.empty(),
-                                              entity_nodes)
-
-    def _entity_node(self, entity: EntityDocumentation) -> SectionItemNode:
-        target_info = targets.TargetInfo(entity.singular_name_text,
-                                         entity.cross_reference_target())
-        tags = {
+def entity_list_hierarchy(entity_type_identifier: str,
+                          mk_article_constructor: Callable[[EntityDocumentation], ArticleContentsConstructor],
+                          header: str,
+                          entities: List[EntityDocumentation]
+                          ) -> SectionHierarchyGenerator:
+    def entity_node(entity: EntityDocumentation) -> SectionHierarchyGenerator:
+        additional_tags = {
             std_tags.ENTITY,
-            self.entity_type_identifier,
+            entity_type_identifier,
         }
-        return LeafArticleNode(target_info,
-                               self.entity_2_article_contents_renderer(entity),
-                               tags=tags)
+        return h.with_fixed_root_target(
+            entity.cross_reference_target(),
+            h.leaf_article(
+                entity.singular_name_text,
+                mk_article_constructor(entity),
+                additional_tags)
+        )
+
+    return h.hierarchy(
+        header,
+        paragraphs.empty(),
+        [
+            entity_node(entity)
+            for entity in sorted_entity_list(entities)
+        ]
+    )

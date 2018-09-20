@@ -3,8 +3,8 @@ from exactly_lib.definitions.test_suite.section_names_plain import SECTION_CONCE
 from exactly_lib.help.contents_structure.entity import EntityTypeConfiguration
 from exactly_lib.help.html_doc.parts.common.section_document_renderer import \
     GeneratorsForSectionDocument
+from exactly_lib.help.program_modes.test_suite.contents.specification import main
 from exactly_lib.help.program_modes.test_suite.contents.specification import structure as test_suite_structure
-from exactly_lib.help.program_modes.test_suite.contents.specification.main import SpecificationHierarchyGenerator
 from exactly_lib.help.program_modes.test_suite.contents_structure.test_suite_help import TestSuiteHelp
 from exactly_lib.help.program_modes.test_suite.render.section_documentation import \
     TestSuiteSectionDocumentationConstructor
@@ -22,8 +22,8 @@ def hierarchy(header: str,
         header,
         children=[
             h.child('spec',
-                    SpecificationHierarchyGenerator('Specification of test suite functionality',
-                                                    test_suite_help)
+                    main.hierarchy('Specification of test suite functionality',
+                                   test_suite_help)
                     ),
             h.child('sections',
                     h.hierarchy(
