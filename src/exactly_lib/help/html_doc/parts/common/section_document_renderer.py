@@ -30,7 +30,7 @@ class GeneratorsForSectionDocument:
                              header: str,
                              sections: Sequence[SectionDocumentation]) -> SectionHierarchyGenerator:
         return h.hierarchy(
-            docs.string_text(header),
+            header,
             paragraphs.empty(),
             [
                 h.child(section.name.plain,
@@ -50,12 +50,12 @@ class GeneratorsForSectionDocument:
     def instructions_per_section(self,
                                  header: str,
                                  ) -> SectionHierarchyGenerator:
-        return h.hierarchy(docs.string_text(header),
+        return h.hierarchy(header,
                            paragraphs.empty(),
                            [
                                h.child(section.name.plain,
-                                       _InstructionsInSection(self._section_concept_name,
-                                                              section).hierarchy(),
+                                       _InstructionsInSection.hierarchy_for(self._section_concept_name,
+                                                                            section),
                                        )
                                for section in self._sections
                                if section.has_instructions
@@ -71,11 +71,19 @@ class _InstructionsInSection:
         self.section_concept_name = section_concept_name
         self.section = section
 
+    @staticmethod
+    def hierarchy_for(section_concept_name: str,
+                      section: SectionDocumentation
+                      ) -> SectionHierarchyGenerator:
+        return _InstructionsInSection(section_concept_name,
+                                      section).hierarchy()
+
     def hierarchy(self) -> SectionHierarchyGenerator:
-        initial_paragraphs = paragraphs.constant(docs.paras(_INSTRUCTIONS_IN.format(
-            section_concept=self.section_concept_name,
-            section=self.section.name)
-        ))
+        initial_paragraphs = paragraphs.constant(
+            docs.paras(_INSTRUCTIONS_IN.format(
+                section_concept=self.section_concept_name,
+                section=self.section.name)
+            ))
         return h.hierarchy(self.section.syntax_name_text,
                            initial_paragraphs,
                            self._instructions_layout(),
@@ -91,7 +99,7 @@ class _InstructionsInSection:
     def _instruction_groups(self, groups: Sequence[InstructionGroup]) -> List[SectionHierarchyGenerator]:
         return [
             h.child_hierarchy(group.identifier,
-                              docs.string_text(group.header),
+                              group.header,
                               paragraphs.constant(group.description_paragraphs),
                               self._instructions(group.instruction_documentations)
                               )
