@@ -10,16 +10,16 @@ from exactly_lib.definitions.test_suite import section_names
 class TestSuiteSectionInfo(SectionInfo):
 
     @property
-    def cross_ref_target(self) -> TestSuiteSectionCrossReference:
+    def cross_reference_target(self) -> TestSuiteSectionCrossReference:
         return TestSuiteSectionCrossReference(self.name.plain)
 
-    def instruction_cross_ref_target(self, instruction_name: str) -> TestSuiteSectionInstructionCrossReference:
+    def instruction_cross_reference_target(self, instruction_name: str) -> TestSuiteSectionInstructionCrossReference:
         return TestSuiteSectionInstructionCrossReference(self.name.plain,
                                                          instruction_name)
 
 
 class TestSuiteSectionWithoutInstructionsInfo(TestSuiteSectionInfo):
-    def instruction_cross_ref_target(self, instruction_name: str) -> TestSuiteSectionInstructionCrossReference:
+    def instruction_cross_reference_target(self, instruction_name: str) -> TestSuiteSectionInstructionCrossReference:
         raise ValueError('The {} section do not have instructions'.format(self.name.plain))
 
 

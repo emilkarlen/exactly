@@ -54,7 +54,7 @@ class ConfigurationPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInst
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
             TestCasePhaseInstructionCrossReference(self.name.plain,
                                                    TEST_CASE_STATUS_INSTRUCTION_NAME),
-            phase_infos.SETUP.cross_ref_target,
+            phase_infos.SETUP.cross_reference_target,
         ]
 
 

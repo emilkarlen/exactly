@@ -47,8 +47,8 @@ class SetupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructions
         return [
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            phase_infos.CONFIGURATION.cross_ref_target,
-            phase_infos.ACT.cross_ref_target,
+            phase_infos.CONFIGURATION.cross_reference_target,
+            phase_infos.ACT.cross_reference_target,
         ]
 
 

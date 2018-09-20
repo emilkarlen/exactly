@@ -54,7 +54,7 @@ class CleanupPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithInstructio
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
             conf_params.TEST_CASE_STATUS_CONF_PARAM_INFO.cross_reference_target,
-            phase_infos.ASSERT.cross_ref_target,
+            phase_infos.ASSERT.cross_reference_target,
             TestCasePhaseInstructionCrossReference(phase_names.CONFIGURATION.plain,
                                                    TEST_CASE_STATUS_INSTRUCTION_NAME),
         ]

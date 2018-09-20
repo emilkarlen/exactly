@@ -51,7 +51,7 @@ class _EnvironmentVariableConcept(ConceptDocumentation):
             conf_params.HOME_ACT_DIRECTORY_CONF_PARAM_INFO,
         ])
         ret_val += [
-            phase_infos.SETUP.instruction_cross_ref_target(instruction_names.ENV_VAR_INSTRUCTION_NAME)
+            phase_infos.SETUP.instruction_cross_reference_target(instruction_names.ENV_VAR_INSTRUCTION_NAME)
         ]
         return ret_val
 

@@ -65,9 +65,9 @@ class ActPhaseDocumentation(TestCasePhaseDocumentationForPhaseWithoutInstruction
             concepts.ACTOR_CONCEPT_INFO.cross_reference_target,
             concepts.SANDBOX_CONCEPT_INFO.cross_reference_target,
             concepts.ENVIRONMENT_VARIABLE_CONCEPT_INFO.cross_reference_target,
-            phase_infos.SETUP.cross_ref_target,
-            phase_infos.BEFORE_ASSERT.cross_ref_target,
-            phase_infos.ASSERT.cross_ref_target,
+            phase_infos.SETUP.cross_reference_target,
+            phase_infos.BEFORE_ASSERT.cross_reference_target,
+            phase_infos.ASSERT.cross_reference_target,
             actors.NULL_ACTOR.cross_reference_target,
             actors.DEFAULT_ACTOR.cross_reference_target,
         ]
