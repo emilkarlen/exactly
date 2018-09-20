@@ -99,71 +99,41 @@ class _ChildSectionHierarchyGenerator(SectionHierarchyGenerator):
         return self._generator.generate(target_factory.sub_factory(self._local_target_name))
 
 
-class _SectionHierarchyGeneratorBase(SectionHierarchyGenerator):
+class _SectionLeafGenerator(SectionHierarchyGenerator):
     def __init__(self,
                  header: StringText,
-                 constant_target: Optional[core.CrossReferenceTarget] = None,
-                 ):
+                 contents_renderer: SectionContentsConstructor):
         self._header = header
-        self._constant_target = constant_target
-
-    def _root_target_info(self, target_factory: TargetInfoFactory) -> TargetInfo:
-        if self._constant_target is not None:
-            return TargetInfo(self._header,
-                              self._constant_target)
-        return target_factory.root(self._header)
-
-
-class _SectionLeafGenerator(_SectionHierarchyGeneratorBase):
-    """
-    A section without sub sections.
-    """
-
-    def __init__(self,
-                 header: StringText,
-                 contents_renderer: SectionContentsConstructor,
-                 constant_target: Optional[core.CrossReferenceTarget] = None):
-        super().__init__(header, constant_target)
         self._contents_renderer = contents_renderer
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        return _LeafSectionNode(self._root_target_info(target_factory),
+        return _LeafSectionNode(target_factory.root(self._header),
                                 self._contents_renderer)
 
 
-class _ArticleLeafGenerator(_SectionHierarchyGeneratorBase):
-    """
-    An article without sub sections.
-    """
-
+class _ArticleLeafGenerator(SectionHierarchyGenerator):
     def __init__(self,
                  header: StringText,
                  contents_renderer: ArticleContentsConstructor,
-                 constant_target: Optional[core.CrossReferenceTarget] = None,
                  tags: Optional[Set[str]] = None
                  ):
-        super().__init__(header, constant_target)
-        self._tags = tags
+        self._header = header
         self._contents_renderer = contents_renderer
+        self._tags = tags
 
     def generate(self, target_factory: TargetInfoFactory) -> SectionItemNode:
-        return LeafArticleNode(self._root_target_info(target_factory),
+        return LeafArticleNode(target_factory.root(self._header),
                                self._contents_renderer,
                                self._tags)
 
 
-class _Hierarchy(_SectionHierarchyGeneratorBase):
-    """
-    A section with sub sections.
-    """
-
+class _Hierarchy(SectionHierarchyGenerator):
     def __init__(self,
                  header: StringText,
                  initial_paragraphs: ParagraphItemsConstructor,
                  sub_section: List[SectionHierarchyGenerator],
-                 constant_target: Optional[core.CrossReferenceTarget] = None,
                  ):
-        super().__init__(header, constant_target)
+        self._header = header
         self._initial_paragraphs = initial_paragraphs
         self._sub_section = sub_section
 
@@ -172,7 +142,7 @@ class _Hierarchy(_SectionHierarchyGeneratorBase):
                         for sub_section
                         in self._sub_section
                         ]
-        return SectionItemNodeWithSubSections(self._root_target_info(target_factory),
+        return SectionItemNodeWithSubSections(target_factory.root(self._header),
                                               self._initial_paragraphs,
                                               sub_sections)
 
