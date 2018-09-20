@@ -19,16 +19,6 @@ from exactly_lib.util.textformat.structure.core import StringText
 from exactly_lib.util.textformat.structure.structures import StrOrStringText
 
 
-def with_fixed_root_target(fixed_root_target: core.CrossReferenceTarget,
-                           hierarchy_to_fix_root_target_for: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
-    return _HierarchyWithFixedRootTarget(fixed_root_target,
-                                         hierarchy_to_fix_root_target_for)
-
-
-def with_not_in_toc(hierarchy_to_hide: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
-    return _HierarchyNotInToc(hierarchy_to_hide)
-
-
 def leaf(header: StrOrStringText,
          contents_constructor: SectionContentsConstructor) -> SectionHierarchyGenerator:
     """A section without sub sections that appear in the TOC/target hierarchy"""
@@ -48,6 +38,17 @@ def leaf_article(header: StrOrStringText,
 def child(local_target_name: str,
           generator: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
     return _ChildSectionHierarchyGenerator(local_target_name, generator)
+
+
+def child_leaf(local_target_name: str,
+               header: StrOrStringText,
+               contents_constructor: SectionContentsConstructor,
+               ) -> SectionHierarchyGenerator:
+    """
+    Short cut to child(leaf(...))
+    """
+    return child(local_target_name,
+                 leaf(header, contents_constructor))
 
 
 def hierarchy(header: StrOrStringText,
@@ -76,15 +77,14 @@ def child_hierarchy(local_target_name: str,
                            children))
 
 
-def child_leaf(local_target_name: str,
-               header: str,
-               contents_constructor: SectionContentsConstructor,
-               ) -> SectionHierarchyGenerator:
-    """
-    Short cut to child(leaf(...))
-    """
-    return child(local_target_name,
-                 leaf(header, contents_constructor))
+def with_fixed_root_target(fixed_root_target: core.CrossReferenceTarget,
+                           hierarchy_to_fix_root_target_for: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
+    return _HierarchyWithFixedRootTarget(fixed_root_target,
+                                         hierarchy_to_fix_root_target_for)
+
+
+def with_not_in_toc(hierarchy_to_hide: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
+    return _HierarchyNotInToc(hierarchy_to_hide)
 
 
 class _ChildSectionHierarchyGenerator(SectionHierarchyGenerator):
