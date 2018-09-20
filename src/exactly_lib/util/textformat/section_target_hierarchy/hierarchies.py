@@ -16,6 +16,7 @@ from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetI
 from exactly_lib.util.textformat.structure import document as doc, core
 from exactly_lib.util.textformat.structure import structures as docs
 from exactly_lib.util.textformat.structure.core import StringText, ParagraphItem
+from exactly_lib.util.textformat.structure.structures import StrOrStringText
 
 
 def with_fixed_root_target(fixed_root_target: core.CrossReferenceTarget,
@@ -92,14 +93,14 @@ def child(local_target_name: str,
     return _ChildSectionHierarchyGenerator(local_target_name, generator)
 
 
-def hierarchy(header: StringText,
+def hierarchy(header: StrOrStringText,
               initial_paragraphs: ParagraphItemsConstructor = paragraphs.empty(),
               children: Iterable[SectionHierarchyGenerator] = (),
               ) -> SectionHierarchyGenerator:
     """
     A section with sub sections that appear in the TOC/target hierarchy.
     """
-    return _Hierarchy(header,
+    return _Hierarchy(docs.str_text(header),
                       initial_paragraphs,
                       list(children))
 
@@ -120,7 +121,7 @@ def hierarchy__str(header: str,
 
 
 def child_hierarchy(local_target_name: str,
-                    header: StringText,
+                    header: StrOrStringText,
                     initial_paragraphs: ParagraphItemsConstructor,
                     children: List[SectionHierarchyGenerator],
                     ) -> SectionHierarchyGenerator:
@@ -131,6 +132,17 @@ def child_hierarchy(local_target_name: str,
                  hierarchy(header,
                            initial_paragraphs,
                            children))
+
+
+def child_leaf(local_target_name: str,
+               header: str,
+               contents_constructor: SectionContentsConstructor,
+               ) -> SectionHierarchyGenerator:
+    """
+    Short cut to child(leaf(...))
+    """
+    return child(local_target_name,
+                 leaf(header, contents_constructor))
 
 
 def parent_(header: str,
