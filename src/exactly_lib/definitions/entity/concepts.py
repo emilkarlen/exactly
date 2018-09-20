@@ -50,6 +50,11 @@ CONFIGURATION_PARAMETER_CONCEPT_INFO = name_and_ref_target_for_entity_type(
     _CONFIGURATION_PARAMETER_SINGLE_LINE_DESCRIPTION.format(phase_names.CONFIGURATION)
 )
 
+INSTRUCTION_CONCEPT_INFO = name_and_ref_target(
+    name_with_plural_s('instruction'),
+    _format('The smallest executable unit - the building block of all phases except {phase[act]:syntax}.'),
+)
+
 TEST_CASE_DIRECTORY_STRUCTURE_CONCEPT_INFO = name_and_ref_target(
     name_with_plural_s('test case directory structure'),
     'Persistent and temporary directories used in the execution of a test case.',
