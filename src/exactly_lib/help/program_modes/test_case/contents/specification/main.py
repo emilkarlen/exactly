@@ -18,7 +18,7 @@ def root(header: str,
          test_case_help: TestCaseHelp
          ) -> SectionHierarchyGenerator:
     setup = Setup(test_case_help)
-    return h.hierarchy__str(
+    return h.hierarchy(
         header,
         children=[
             h.child('introduction', h.leaf('Introduction', intro.Documentation())),

@@ -24,7 +24,7 @@ def root(header: str, setup: Setup) -> generator.SectionHierarchyGenerator:
                                      phase_identifier.DEFAULT_PHASE.section_name,
                                      phase_names_plain.SECTION_CONCEPT_NAME)])
 
-    return h.hierarchy__str(
+    return h.hierarchy(
         header,
         children=[
             h.child('phases',

@@ -13,7 +13,7 @@ def hierarchy(header: str,
                                                    test_case_help.phase_helps_in_order_of_execution,
                                                    TestCasePhaseDocumentationConstructor
                                                    )
-    return h.hierarchy__str(
+    return h.hierarchy(
         header,
         children=[
             h.child('spec',

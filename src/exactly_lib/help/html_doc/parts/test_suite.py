@@ -18,7 +18,7 @@ def hierarchy(header: str,
     sections_helper = GeneratorsForSectionDocument(SECTION_CONCEPT_NAME,
                                                    test_suite_help.section_helps,
                                                    TestSuiteSectionDocumentationConstructor)
-    return h.hierarchy__str(
+    return h.hierarchy(
         header,
         children=[
             h.child('spec',
@@ -26,7 +26,7 @@ def hierarchy(header: str,
                                                     test_suite_help)
                     ),
             h.child('sections',
-                    h.hierarchy__str(
+                    h.hierarchy(
                         'Sections',
                         children=[
                             h.child('cases-and-sub-suites',

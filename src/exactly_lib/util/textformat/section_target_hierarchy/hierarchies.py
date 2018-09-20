@@ -79,21 +79,6 @@ def hierarchy(header: StrOrStringText,
                       list(children))
 
 
-def hierarchy__str(header: str,
-                   initial_paragraphs: ParagraphItemsConstructor = paragraphs.empty(),
-                   children: Iterable[SectionHierarchyGenerator] = (),
-                   ) -> SectionHierarchyGenerator:
-    return hierarchy(docs.string_text(header),
-                     initial_paragraphs,
-                     children)
-    """
-    A section with sub sections that appear in the TOC/target hierarchy.
-    """
-    return _Hierarchy(header,
-                      initial_paragraphs,
-                      list(children))
-
-
 def child_hierarchy(local_target_name: str,
                     header: StrOrStringText,
                     initial_paragraphs: ParagraphItemsConstructor,
