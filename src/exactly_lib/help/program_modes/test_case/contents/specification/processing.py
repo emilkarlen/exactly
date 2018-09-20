@@ -1,3 +1,5 @@
+from typing import List
+
 from exactly_lib import program_info
 from exactly_lib.cli.definitions.program_modes.test_case.command_line_options import OPTION_FOR_PREPROCESSOR
 from exactly_lib.definitions import formatting, misc_texts
@@ -6,6 +8,7 @@ from exactly_lib.definitions.test_case import phase_infos
 from exactly_lib.help.program_modes.test_case.contents.specification.utils import Setup, \
     post_setup_validation_step_name, \
     step_with_single_exit_value
+from exactly_lib.help.render import see_also
 from exactly_lib.processing import exit_values
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.section import \
@@ -40,7 +43,11 @@ class ContentsConstructor(SectionContentsConstructor):
         )
         return docs.SectionContents(
             paragraphs,
-            []
+            [
+                see_also.SeeAlsoSectionConstructor(
+                    see_also.items_of_targets(_see_also_targets())
+                ).apply(environment)
+            ]
         )
 
     def processing_step_list(self) -> docs.ParagraphItem:
@@ -82,6 +89,14 @@ class ContentsConstructor(SectionContentsConstructor):
             lists.Format(lists.ListType.ORDERED_LIST,
                          custom_separations=docs.SEPARATION_OF_HEADER_AND_CONTENTS)
         )
+
+
+def _see_also_targets() -> List[see_also.SeeAlsoTarget]:
+    return [
+        concepts.PREPROCESSOR_CONCEPT_INFO.cross_reference_target,
+        concepts.INSTRUCTION_CONCEPT_INFO.cross_reference_target,
+        concepts.SYMBOL_CONCEPT_INFO.cross_reference_target,
+    ]
 
 
 BEFORE_STEP_LIST = """\
