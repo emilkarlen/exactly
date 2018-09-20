@@ -16,6 +16,8 @@ COLON_TABLE_COLUMN_SEPARATOR = ' : '
 
 StrOrText = Union[str, Text]
 
+StrOrStringText = Union[str, StringText]
+
 T = TypeVar('T')
 
 
@@ -86,6 +88,10 @@ def text(s: str) -> ConcreteText:
 
 def string_text(s: str) -> StringText:
     return StringText(s)
+
+
+def str_text(x: StrOrStringText) -> StringText:
+    return StringText(x) if isinstance(x, str) else x
 
 
 def cross_reference(title_str_or_string_text,
