@@ -1,13 +1,15 @@
 import itertools
 
-from typing import Iterable
+from typing import Iterable, Optional, Set
 
 from exactly_lib.util.textformat.constructor.environment import ConstructionEnvironment
 from exactly_lib.util.textformat.constructor.paragraph import ParagraphItemsConstructor
 from exactly_lib.util.textformat.constructor.section import SectionContentsConstructor, \
-    ArticleContentsConstructor, SectionConstructor
+    ArticleContentsConstructor, SectionConstructor, ArticleConstructor
+from exactly_lib.util.textformat.section_target_hierarchy.targets import TargetInfo
 from exactly_lib.util.textformat.structure import document as doc, structures as docs
 from exactly_lib.util.textformat.structure.core import Text
+from exactly_lib.util.textformat.structure.document import ArticleContents
 
 
 def paragraphs_contents(paragraphs: Iterable[ParagraphItemsConstructor]) -> SectionContentsConstructor:
@@ -33,6 +35,15 @@ def section(header: Text,
             section_contents: SectionContentsConstructor) -> SectionConstructor:
     return _SectionConstructorFromSectionContentsConstructor(header,
                                                              section_contents)
+
+
+def article(node_target_info: TargetInfo,
+            contents_renderer: ArticleContentsConstructor,
+            tags: Optional[Set[str]] = None,
+            ) -> ArticleConstructor:
+    return _ArticleConstructorFromContentsConstructor(node_target_info,
+                                                      contents_renderer,
+                                                      tags)
 
 
 class _SectionConstructorFromSectionContentsConstructor(SectionConstructor):
@@ -81,3 +92,22 @@ class _ConstantSectionContentsConstructor(SectionContentsConstructor):
 
     def apply(self, environment: ConstructionEnvironment) -> doc.SectionContents:
         return self.section_contents
+
+
+class _ArticleConstructorFromContentsConstructor(ArticleConstructor):
+    def __init__(self,
+                 node_target_info: TargetInfo,
+                 contents_renderer: ArticleContentsConstructor,
+                 tags: Optional[Set[str]] = None,
+                 ):
+        self._node_target_info = node_target_info
+        self._tags = frozenset() if tags is None else tags
+        self._contents_renderer = contents_renderer
+
+    def apply(self, environment: ConstructionEnvironment) -> doc.Article:
+        article_contents = self._contents_renderer.apply(environment)
+        return doc.Article(self._node_target_info.presentation_text,
+                           ArticleContents(article_contents.abstract_paragraphs,
+                                           article_contents.section_contents),
+                           target=self._node_target_info.target,
+                           tags=self._tags)
