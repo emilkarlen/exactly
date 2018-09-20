@@ -1,6 +1,11 @@
+from typing import List
+
+from exactly_lib.definitions.cross_ref.app_cross_ref import SeeAlsoTarget
 from exactly_lib.definitions.cross_ref.name_and_cross_ref import SingularNameAndCrossReferenceId
 from exactly_lib.definitions.entity.concepts import CONFIGURATION_PARAMETER_CONCEPT_INFO
 from exactly_lib.definitions.entity.conf_params import ALL_CONF_PARAM_INFOS
+from exactly_lib.definitions.test_case import phase_infos
+from exactly_lib.definitions.test_suite import section_infos
 from exactly_lib.help.entities.concepts.contents_structure import ConceptDocumentation
 from exactly_lib.util.description import Description, DescriptionWithSubSections, from_simple_description
 from exactly_lib.util.textformat.structure import lists
@@ -16,6 +21,12 @@ class _ConfigurationParameterConcept(ConceptDocumentation):
         return from_simple_description(
             Description(self.single_line_description(),
                         [_sorted_conf_params_list()]))
+
+    def see_also_targets(self) -> List[SeeAlsoTarget]:
+        return [
+            phase_infos.CONFIGURATION.cross_reference_target,
+            section_infos.CONFIGURATION.cross_reference_target,
+        ]
 
 
 def _sorted_conf_params_list() -> ParagraphItem:
