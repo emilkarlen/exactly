@@ -45,23 +45,6 @@ def leaf_article(header: StrOrStringText,
                                  tags=tags)
 
 
-class Node(tuple):
-    """A SectionHierarchyGenerator with a local target name."""
-
-    def __new__(cls,
-                local_target_name: str,
-                generator: SectionHierarchyGenerator):
-        return tuple.__new__(cls, (local_target_name, generator))
-
-    @property
-    def local_target_name(self) -> str:
-        return self[0]
-
-    @property
-    def generator(self) -> SectionHierarchyGenerator:
-        return self[1]
-
-
 def child(local_target_name: str,
           generator: SectionHierarchyGenerator) -> SectionHierarchyGenerator:
     return _ChildSectionHierarchyGenerator(local_target_name, generator)
